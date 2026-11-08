@@ -5,16 +5,23 @@ loss: \mathcal{L}=\sum_i w_i\,\mathrm{FL}(p_i)+\lambda\,\mathrm{ECE}(p)
 con: p99 under 8 ms inside the auth path ; PCI-DSS scope minimisation ; every decline needs a reason code ; 99.99% availability
 sn: Velocity | Rolling counts and sums per card, device and merchant over 1m/1h/24h | Lifetime averages and static account age | Lifetime aggregates dilute a burst that lasts 90 seconds
 sn: Metrics | PR-AUC at a fixed 0.5% false-positive rate | Accuracy and ROC-AUC on a 0.1% positive class | ROC-AUC reads 0.99 while the operating region is useless
+sn: Labels | Labels used only after the chargeback window closes, with unreported recent rows excluded | Treating every transaction not yet reported as fraud as a genuine one | Recent fraud trained as negative teaches the model to ignore this week's attacks
+sn: Takeover | Account takeover signals such as a new device, changed contact details and session behaviour | Velocity as the only fraud signal | Quiet takeovers make three ordinary purchases and never trip a velocity rule
 sig: Card velocity 1m/1h/24h | count and sum of authorisations in sliding windows keyed by card token | Fraudsters cash out quickly | Windows must close strictly before decision time
 sig: Device-card fan-out | distinct cards seen on the device fingerprint in 24h | Mule devices touch many cards | Fingerprint must be hashed at event time, not retro-joined
 sig: Merchant risk drift | 7-day chargeback rate of the merchant versus its 90-day baseline | Compromised merchants shift abruptly | Chargebacks mature in 30-90 days so use matured labels only
+sig: New device for card | first time this card token is seen on this device fingerprint | Takeover and card testing start on unfamiliar devices | The first-seen table must be built from events before the decision, not from full history
+sig: Amount versus card baseline | amount divided by the card's trailing 90-day median ticket | A ten-times-normal basket is unusual for this card even if small in absolute terms | The baseline must exclude the scored transaction and any fraud already known
 noise: Cardholder name length | no causal link to fraud, overfits to data-entry quirks
 noise: Raw merchant free-text | high cardinality, replaced by MCC and a learned merchant embedding
+noise: Issuer country alone | too coarse, mostly proxies for population and creates unfair declines for travellers
 base: Calibrated logistic regression on 40 velocity features, because it sets the cost floor and gives instant reason codes.
 prod: LightGBM on 300 features plus a GNN-derived device-card embedding, served via Triton with an in-process feature cache.
 pipe: Auth gateway @ Envoy gRPC ; Feature store lookup @ Redis cluster ; Graph embedding @ cached GNN vectors ; Fraud scorer @ LightGBM on Triton ; Policy engine @ rules as config ; Case queue @ analyst review tool ; Label store @ Kafka to lakehouse
 edge: Flash-sale traffic spike | velocity features flag genuine buyers en masse | Per-merchant adaptive baselines plus an event-calendar feature
 edge: Issuer chargeback delay | labels mature 90 days later so recent data looks clean | Survival-aware label imputation and weekly refresh on matured windows
+edge: Genuine shopping session | four to nine purchases within minutes look like velocity | Per-card session baselines and step-up authentication between the review and block thresholds
+edge: Mule-device ring rotation | fraudsters rotate devices after a block so fan-out resets to zero | Cluster devices by shared payment tokens and IP ranges and carry risk across the cluster
 off: PR-AUC at 0.5% FPR ; Recall at fixed review capacity
 on: Fraud basis points per volume ; False-decline rate on good customers
 gap: Training on confirmed fraud only hides review-queue selection bias ; Random split leaks cardholders across train and test

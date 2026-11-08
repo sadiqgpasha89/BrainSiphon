@@ -1,0 +1,255 @@
+summary: >-
+  A point-in-time feature pipeline, a calibrated logistic-regression baseline and a regularised
+  gradient-boosted challenger for card fraud, evaluated chronologically on matured labels at a fixed
+  0.5% false-positive rate. The starter covers milestones M1-M4 as running code; M5-M6 (serving and
+  rollout) are specified with exit gates but need your platform.
+prerequisites:
+  skills:
+    - "pandas and NumPy fluency, including time-indexed data and as-of joins"
+    - "scikit-learn: pipelines, probability calibration, PR-AUC and ROC curves on imbalanced data"
+    - "Gradient boosting (LightGBM, XGBoost or sklearn HistGradientBoosting) and why it overfits when you have a few hundred positives"
+    - "Reading a confusion matrix as money: cost of a missed fraud versus cost of a declined genuine customer"
+  tools:
+    - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
+    - "A feature store or Redis for M5 (Feast, Tecton or plain Redis hashes with TTLs)"
+    - "k6 or Locust for the M5 load test"
+data:
+  strategy: >-
+    Start on the synthetic generator so every milestone is runnable on day one and the traps are known
+    to be present. Then validate the same code path on a public dataset (the ULB set is the quickest)
+    and finally on your own authorisation log. Public sets are anonymised and have no device or merchant
+    history, so they exercise the model code but not the fan-out and merchant-drift features.
+  datasets:
+    - name: "Credit Card Fraud Detection (ULB / Worldline)"
+      url: "https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud"
+      license: "Database Contents License (DbCL) v1.0; free Kaggle login required"
+      gives: "284,807 European card transactions over two days with 492 frauds (0.17%); a clean imbalanced benchmark for the model and metric code"
+      caveat: "Features are PCA-anonymised and only 48 hours long, so there are no velocity windows, devices or merchants and no label delay; do not draw conclusions about feature engineering from it"
+    - name: "IEEE-CIS Fraud Detection"
+      url: "https://www.kaggle.com/c/ieee-fraud-detection"
+      license: "Competition rules; accept them on Kaggle with a free login"
+      gives: "About 590K e-commerce transactions with card, address, email-domain and device fields plus a 6-month time axis; the closest public set to a real auth log"
+      caveat: "Columns are masked (V1-V339) and identity is joined by a hashed key; build time-based splits by TransactionDT and expect a noisy private-leaderboard-style shift"
+    - name: "PaySim synthetic mobile-money transactions"
+      url: "https://www.kaggle.com/datasets/ealaxi/paysim1"
+      license: "CC BY-SA 4.0 (check the dataset page); free Kaggle login"
+      gives: "6.3M simulated transfers with sender and recipient accounts, useful for account-level velocity and mule-account graph features"
+      caveat: "Simulated from one real company's logs, so fraud patterns are simpler than production; there is no card, device or merchant dimension"
+  synthetic:
+    file: "make_data.py"
+    description: >-
+      About 190K authorisations over 120 days for 2,500 cards. It includes genuine shopping sessions that
+      look like velocity, flash-sale merchant spikes that must not be flagged, a fast mule-device cash-out
+      and a quiet account takeover on the genuine device, and fraud labels that only arrive 7-21 days late.
+    knobs:
+      - "fraud_card_rate: share of cards compromised (default 3%; 0.36% of transactions end up fraud)"
+      - "n_flash_sales: genuine merchant-level spikes that stress false positives (default 6)"
+      - "n_cards, days, n_merchants: scale and history length"
+      - "seed: every run with the same seed is byte-identical"
+  sample:
+    columns: [txn_id, ts_s, card, device, merchant, amount, is_fraud, label_ts_s]
+    rows:
+      - [5000, 297007, 843, 2354, 16, 30.4, 0, 2111407]
+      - [38461, 2153265, 1078, 2671, 50, 31.3, 1, 2798507]
+      - [38469, 2153586, 1078, 2671, 110, 34.0, 1, 3939795]
+  label: >-
+    is_fraud = 1 when the issuer confirms fraud or a chargeback is filed. The label for a fraud row arrives
+    between 7 and 21 days after the event (30-90 in production) and a row only counts as a confirmed
+    negative after the full maturity window. Train only on rows whose label had matured by the training
+    cut-off, never on "everything not yet reported as fraud".
+milestones:
+  - id: M0
+    title: "Frame the decision and set the operating point"
+    days: "1-2"
+    tasks:
+      - "Write the cost matrix: cost of a missed fraud (amount plus dispute fee plus churn risk) against the cost of a declined genuine customer (lost margin plus complaint plus churn)"
+      - "Turn it into one operating constraint, for example false declines under 0.3% of genuine volume, and a review capacity in alerts per day"
+      - "Agree the label definition and its delay with the risk team, and decide what happens to a transaction when the model is unavailable (fail open or closed)"
+    deliverable: "One-page decision spec with the cost matrix, operating point, SLA and kill criteria"
+    gate:
+      metric: "Operating point"
+      threshold: "A written FPR or false-decline ceiling plus a named owner who signed it"
+      how: "Review with risk and product; no modelling starts before this exists"
+  - id: M1
+    title: "Get data and fix the label and split"
+    days: "3-4"
+    tasks:
+      - "Run python make_data.py (or load a public set) and confirm the fraud rate and the label delay"
+      - "Write the split down: train before day 45, validate days 45-59, leave a 21-day maturity gap, test from day 80"
+      - "Add the data-quality checks: no null card ids, timestamps monotone per card, amounts positive, fraud rate inside a sane band"
+    deliverable: "Reproducible dataset snapshot and a written split definition"
+    gate:
+      metric: "Generator and split tests"
+      threshold: "pytest -k 'deterministic or matured' passes; fraud rate between 0.2% and 1.2%"
+      how: "Run pytest in the starter directory"
+  - id: M2
+    title: "Point-in-time features"
+    days: "4-5"
+    tasks:
+      - "Implement card velocity over 1 minute, 1 hour and 24 hours with windows that close strictly before the decision time"
+      - "Implement device-to-card fan-out as a stateful class and reuse the same class for training replay and serving"
+      - "Compute merchant fraud rates only from labels that had arrived by the decision time, over 7 and 90 days"
+    deliverable: "features.py with an as-of guarantee and the future-truncation test in CI"
+    gate:
+      metric: "Leakage test"
+      threshold: "Deleting all rows after day 60 changes no feature of any earlier row (max absolute difference 0)"
+      how: "pytest -k only_the_past"
+  - id: M3
+    title: "Calibrated baseline"
+    days: "2-3"
+    tasks:
+      - "Fit a log-scaled logistic regression with isotonic calibration on the training window only"
+      - "Report PR-AUC and recall at 0.5% FPR on the test window, never accuracy or ROC-AUC"
+      - "Write down the baseline number; every later model has to beat it"
+    deliverable: "Baseline model, metric report and the number to beat"
+    gate:
+      metric: "Recall at 0.5% FPR and PR-AUC on the starter data"
+      threshold: "Recall at 0.5% FPR at least 0.60 and PR-AUC at least 0.55 (starter reaches 0.74 and 0.69). On your own data: at least the recall your current rules reach at the same FPR"
+      how: "python baseline.py, then pytest -k clears_the_gate"
+  - id: M4
+    title: "Challenger model and error analysis"
+    days: "3-4"
+    tasks:
+      - "Train a gradient-boosted model with strong regularisation (depth 3, 100+ rows per leaf) because you have only a few hundred positives"
+      - "Bootstrap over cards, not rows, to get a confidence interval on the lift over the baseline"
+      - "Read the 50 highest-scoring genuine rows and the 50 lowest-scoring frauds by hand and write what they have in common"
+    deliverable: "Challenger artifact, evaluation report with intervals and an error-analysis note"
+    gate:
+      metric: "PR-AUC lift of challenger over baseline"
+      threshold: "Starter: challenger PR-AUC at least 0.95 times baseline (it reaches 1.08 times). Real data: lower bound of the 95% card-level bootstrap interval above 0"
+      how: "python baseline.py; compare the two reported blocks"
+  - id: M5
+    title: "Serving path and degradation ladder"
+    days: "6-8"
+    tasks:
+      - "Serve the model in-process behind the gateway with the feature lookup on a per-request deadline and the 8 ms budget split across stages"
+      - "Implement the degradation ladder: stale features, then last-known-good model, then versioned rules, then caller-side default"
+      - "Log every decision with the model version, feature snapshot and degradation level to the event bus without blocking the response"
+    deliverable: "Scoring service, runbook per ladder rung and a load-test report"
+    gate:
+      metric: "Latency and failure behaviour"
+      threshold: "p99 at most 8 ms at 1.5 times provisioned peak, and each injected dependency failure lands on the next ladder rung with no unhandled error"
+      how: "k6 or Locust load test plus the fault-injection game-day in the test plan"
+  - id: M6
+    title: "Shadow, canary and ramp"
+    days: "3-4"
+    tasks:
+      - "Shadow for 7 days: score live traffic, take no action, compare with the baseline and with analyst outcomes"
+      - "Canary at 1%, 5%, 25% and 100% with automatic rollback on the false-decline guardrail"
+      - "Keep a permanent control group so lift stays measurable after launch"
+    deliverable: "Launch review with measured lift, guardrail status and sign-off from product, risk and SRE"
+    gate:
+      metric: "Guardrail and lift"
+      threshold: "False-decline rate no more than 0.05 percentage points above the baseline at every canary step, and fraud basis points below the control group by the target set in M0"
+      how: "Dashboards on the decision log; read against the held-out control"
+starter:
+  runtime: "Python 3.11+ with numpy, pandas, scikit-learn and pytest (about 10 seconds on a laptop CPU)"
+  run:
+    - "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+    - "python make_data.py"
+    - "python baseline.py"
+    - "pytest"
+  expected: >-
+    make_data.py prints about 188,000 rows with a fraud rate near 0.36%. baseline.py prints a report where
+    the baseline reaches PR-AUC 0.69 and recall 0.74 at 0.5% FPR and the challenger reaches PR-AUC 0.75 and
+    recall 0.76. pytest reports 5 passed. These numbers are for the synthetic data; yours will be lower
+    and will move with every label you add.
+  files:
+    - path: "make_data.py"
+      purpose: "Synthetic authorisation stream with sessions, flash sales, mule devices, takeovers and delayed labels"
+    - path: "features.py"
+      purpose: "Point-in-time velocity, device fan-out and matured merchant-rate features"
+    - path: "baseline.py"
+      purpose: "Chronological split, calibrated baseline, gradient-boosted challenger and the metric report"
+    - path: "test_starter.py"
+      purpose: "Executable gates: determinism, no leakage, window boundaries, matured labels and model thresholds"
+    - path: "requirements.txt"
+      purpose: "Pinned-minimum Python dependencies"
+workedExample:
+  scenario: >-
+    Three real events from the test window of the starter data, scored by the baseline. The score threshold
+    that gives 0.5% false positives on the whole test window is 0.085.
+  steps:
+    - stage: "1. Fast cash-out is caught"
+      detail: "Transaction 129023, $14.31. The card made 6 purchases worth $379.68 in the previous hour and the device has touched 1 card. Features go in, the calibrated score is 1.00, far above 0.085, so the policy returns ACT with reason codes card_cnt_1h and card_sum_1h. Correct."
+    - stage: "2. A genuine shopping session is also blocked"
+      detail: "Transaction 185538, $85.20, genuine. The cardholder made 4 purchases in the last hour and the merchant had an elevated 7-day rate of 0.083. Score 1.00, so the policy blocks a good customer. Across the test window 73 of 1,185 genuine rows with 4 or more purchases an hour crossed the threshold: 6.2% against the 0.5% target. This is the false-decline cost the cost matrix in M0 prices."
+    - stage: "3. A quiet takeover slips through"
+      detail: "Transaction 150050, $56.99, fraud. Only 3 purchases in an hour, a normal merchant and the cardholder's own device. Score 0.068, below 0.085, so it passes. Velocity cannot see it; the signal lives in things this feature set does not have (new shipping address, changed email, session behaviour)."
+    - stage: "4. What the three events tell you to do next"
+      detail: "Add a session or login-risk feature for takeovers, add a cardholder-level shopping-session baseline so a burst is judged against that card's own history, and route scores between the threshold and 0.5 to step-up authentication instead of a hard decline."
+  outcome: >-
+    The baseline catches 74% of fraud at 0.5% false positives, but its misses and false declines are
+    systematic, not random: takeovers and genuine sessions. That is the backlog for the next iteration.
+tests:
+  - test: "Future-truncation leakage test"
+    tool: "pytest test_features_use_only_the_past"
+    pass: "No feature of any past row changes when all later rows are deleted"
+  - test: "Window boundary test"
+    tool: "pytest test_velocity_windows_exclude_the_current_event"
+    pass: "A 61-second-old event is outside a 1-minute window and the current event is never counted"
+  - test: "Label maturity guard"
+    tool: "pytest test_training_rows_have_matured_labels"
+    pass: "Every training label arrived before the first test row and training stops one maturity window before the test period"
+  - test: "Model gate"
+    tool: "pytest test_baseline_clears_the_gate_and_challenger_earns_its_complexity"
+    pass: "Baseline recall at 0.5% FPR at least 0.60 and PR-AUC at least 0.55; challenger PR-AUC at least 0.95 times baseline"
+  - test: "Train and serve skew replay"
+    tool: "Replay 1,000 logged production events through the serving code and through features.py"
+    pass: "Maximum absolute difference per feature is 0 (or within a documented rounding tolerance)"
+  - test: "Slice and calibration check"
+    tool: "Report recall at 0.5% FPR and a 10-bin reliability table per merchant category and new versus returning cardholder"
+    pass: "No slice with 200 or more transactions drops below half the overall recall, and each calibration bin is within 0.2 percentage points of the observed rate"
+decisions:
+  - question: "Which model should serve the first release?"
+    options:
+      - option: "Calibrated logistic regression"
+        chooseWhen: "You have a few hundred positives, need instant reason codes, or the regulator wants coefficients; ship this first and keep it as the fallback rung"
+      - option: "Gradient-boosted trees (LightGBM or XGBoost)"
+        chooseWhen: "You have thousands of positives and a bootstrap interval that shows lift over the baseline; add monotone constraints where policy requires them"
+      - option: "Graph neural network embeddings"
+        chooseWhen: "Mule rings are your dominant loss and a simple device fan-out feature has already been exhausted; precompute embeddings off the request path"
+    default: "Logistic regression to shadow, gradient boosting as the challenger; graph features only after error analysis points at rings"
+  - question: "Where do features live?"
+    options:
+      - option: "Compute inside the scoring service from a small state store"
+        chooseWhen: "The state is a few counters per card and device and you want the lowest latency and the fewest moving parts"
+      - option: "A managed feature store with online and offline views"
+        chooseWhen: "Many models share features and you need point-in-time backfills for training; accept an extra network hop in the budget"
+    default: "In-process state with Redis for the first release; adopt a feature store when a second model needs the same features"
+  - question: "Fail open or fail closed when the whole service is down?"
+    options:
+      - option: "Fail open with sampled post-hoc review"
+        chooseWhen: "Declining good customers costs more than the expected fraud during an outage"
+      - option: "Fail closed or step-up authentication"
+        chooseWhen: "Exposure per transaction is high, such as high-value or card-not-present flows"
+    default: "Decide per merchant category and amount band in M0, not during an incident"
+pitfalls:
+  - at: M1
+    mistake: "Labelling everything not yet reported as a genuine transaction"
+    symptom: "Offline recall looks fine but recent weeks of live fraud are missed, because recent frauds were trained as negatives"
+    fix: "Train only on rows whose label window has closed and keep a maturity gap before the test period"
+  - at: M2
+    mistake: "Computing a rolling window that includes the current transaction or later rows"
+    symptom: "Offline PR-AUC above 0.95 that collapses to the baseline in shadow"
+    fix: "Close windows strictly before the decision time and keep the future-truncation test in CI"
+  - at: M2
+    mistake: "Merchant risk computed from today's chargebacks"
+    symptom: "The model memorises merchants and the feature looks magical offline, then decays as labels mature"
+    fix: "Use only labels whose arrival time is before the decision time, as merchant_matured_rate does"
+  - at: M3
+    mistake: "Reporting accuracy or ROC-AUC"
+    symptom: "A model that approves everything scores 99.6% accuracy and ROC-AUC above 0.95 while catching nothing useful"
+    fix: "Report PR-AUC and recall at the fixed FPR the business agreed in M0"
+  - at: M4
+    mistake: "Letting a boosted model overfit a few hundred positives"
+    symptom: "In the starter, an unregularised depth-4 model scored PR-AUC 0.33 against a baseline of 0.69"
+    fix: "Regularise hard, validate chronologically and demand a bootstrap interval before promoting the challenger"
+  - at: M5
+    mistake: "Computing features differently in training and in the scoring service"
+    symptom: "Live score distribution drifts away from offline within days of launch"
+    fix: "Share one implementation (the DeviceFanOut class pattern) and run the skew replay test in CI"
+  - at: M6
+    mistake: "Ramping on fraud caught alone"
+    symptom: "Fraud losses fall while complaints and abandoned checkouts rise"
+    fix: "Make the false-decline rate an automatic rollback guardrail at every canary step"
