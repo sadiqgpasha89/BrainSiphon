@@ -1,0 +1,773 @@
+{
+ "overview": "Real estate is a market of unique, slow-moving and very high-value assets: every property differs, sales are rare, prices are only observed when a deal closes, and what happens depends on the street as much as the city. That gives property data its character: sparse, local, lagged and full of human judgement (appraisers, agents, assessors), and it is regulated by fair-housing, lending and building rules that limit which signals a model may use. Most systems here support a person who owns the decision, whether a lender, appraiser, leasing manager, underwriter or site engineer, and the main skill is knowing what the data cannot see.",
+ "concepts": [
+  {
+   "name": "How a property is valued: comparables, income and cost",
+   "explanation": "Appraisers value a property three ways: the sales comparison approach (what similar homes sold for, adjusted for differences), the income approach (the rent a property can earn, converted to value with a capitalisation rate) and the cost approach (land plus rebuilding cost less depreciation). An automated valuation model usually imitates the first, with the second for investment property.",
+   "whyItMatters": "The method you imitate decides your features, your labels and the audience that will trust your number.",
+   "tags": [
+    "valuation",
+    "avm",
+    "appraisal",
+    "comparable",
+    "comps",
+    "price",
+    "value",
+    "sales",
+    "income",
+    "cap",
+    "rate",
+    "assessment",
+    "tax",
+    "index",
+    "listing"
+   ]
+  },
+  {
+   "name": "Why property data is sparse, lagged and local",
+   "explanation": "A given home sells once every seven to ten years, so most properties have no recent price. Records are kept by local registries with varying quality, sales are recorded weeks after the contract, and prices differ across a single street because of schools, noise and views.",
+   "whyItMatters": "Training and test sets must be split by time and area, and models must say how little they know in a thin market.",
+   "tags": [
+    "sparse",
+    "sales",
+    "local",
+    "thin",
+    "market",
+    "registry",
+    "record",
+    "price",
+    "index",
+    "neighbourhood",
+    "micro",
+    "area",
+    "geospatial"
+   ]
+  },
+  {
+   "name": "Listing, search and the buyer funnel",
+   "explanation": "A buyer discovers listings on portals, saves and shares them, enquires, views, makes an offer and goes through a mortgage and a closing. Agents hold the listing relationship, and the portal sees search and engagement behaviour but rarely the final sale.",
+   "whyItMatters": "Engagement is a proxy; the outcome you care about (a sale, a lease) is rare, delayed and often outside the portal's data.",
+   "tags": [
+    "listing",
+    "search",
+    "ranking",
+    "portal",
+    "lead",
+    "buyer",
+    "enquiry",
+    "funnel",
+    "recommendation",
+    "photo",
+    "staging",
+    "description",
+    "duplicate",
+    "scam",
+    "closing"
+   ]
+  },
+  {
+   "name": "Fair housing and non-discrimination",
+   "explanation": "Housing law in many countries prohibits discrimination by race, religion, sex, disability, family status and similar attributes, in advertising, screening, pricing and lending. Proxies such as postcode, language or school-district descriptions can create unlawful steering even if no protected attribute is used.",
+   "whyItMatters": "Every real-estate model that ranks, prices, screens or describes must be tested for disparate outcomes and for proxies, and the test is part of the product.",
+   "tags": [
+    "fair",
+    "housing",
+    "fairness",
+    "screening",
+    "tenant",
+    "steering",
+    "protected",
+    "description",
+    "neighbourhood",
+    "lead",
+    "redlining",
+    "bias",
+    "ranking"
+   ]
+  },
+  {
+   "name": "Leasing, rent and property operations",
+   "explanation": "A landlord sets rent, screens applicants, collects payments, handles maintenance and decides renewals. Rent is observed as an asking rent and a signed rent, which differ, and tenant behaviour is shaped by notice periods, rent-control rules and payment cycles.",
+   "whyItMatters": "Operational models should support care and service (early outreach, correct dispatch) as much as revenue, and rules such as rent caps are hard constraints.",
+   "tags": [
+    "rent",
+    "lease",
+    "tenant",
+    "delinquency",
+    "renewal",
+    "maintenance",
+    "dispatch",
+    "multifamily",
+    "short",
+    "term",
+    "rental",
+    "pricing",
+    "occupancy",
+    "move"
+   ]
+  },
+  {
+   "name": "Commercial real estate: leases, rent roll and income",
+   "explanation": "Commercial properties earn rent under long, negotiated leases with options, breaks, indexation and incentives. The rent roll lists each tenant, rent and expiry, net operating income is rent minus operating costs, and value is set by income and the cap rate investors accept.",
+   "whyItMatters": "Lease terms are the data, and most of them are in documents, so extraction quality directly limits forecasting and valuation.",
+   "tags": [
+    "commercial",
+    "lease",
+    "abstraction",
+    "rent",
+    "roll",
+    "noi",
+    "income",
+    "investment",
+    "reit",
+    "portfolio",
+    "acquisition",
+    "due",
+    "diligence",
+    "tenant",
+    "credit",
+    "expiry"
+   ]
+  },
+  {
+   "name": "Construction: cost, schedule and site safety",
+   "explanation": "A project moves from design to tender, build and handover, with cost estimates at each stage, a critical path of tasks and a site where safety is the first duty. Overruns come from scope changes, late materials, weather and productivity, and are seen in earned-value indicators.",
+   "whyItMatters": "Early estimates are ranges, not points, and anything that touches site workers needs privacy and union considerations.",
+   "tags": [
+    "construction",
+    "cost",
+    "estimation",
+    "delay",
+    "overrun",
+    "schedule",
+    "safety",
+    "site",
+    "drone",
+    "progress",
+    "material",
+    "procurement",
+    "bid",
+    "contractor",
+    "permit",
+    "zoning",
+    "bim"
+   ]
+  },
+  {
+   "name": "Buildings as systems: HVAC, energy and sensors",
+   "explanation": "Buildings run on heating, ventilation and air-conditioning plants controlled by a building management system with sensors for temperature, CO2, occupancy and energy. Comfort, cost and carbon are traded off, and equipment ages and fails in patterns visible in sensor data.",
+   "whyItMatters": "Control models must stay inside comfort and safety limits and fall back to the schedule when sensors fail.",
+   "tags": [
+    "hvac",
+    "energy",
+    "building",
+    "sensor",
+    "comfort",
+    "air",
+    "quality",
+    "maintenance",
+    "predictive",
+    "equipment",
+    "benchmark",
+    "retrofit",
+    "occupancy",
+    "utilisation",
+    "office",
+    "space"
+   ]
+  },
+  {
+   "name": "Climate, flood and property risk",
+   "explanation": "Properties face flood, wildfire, heat and wind risk that depends on elevation, drainage, vegetation and building construction, and on the climate scenario chosen. Lenders and insurers price and limit exposure, and buyers increasingly ask for property-level scores.",
+   "whyItMatters": "Scores must state the scenario, the date of the hazard data and the uncertainty, because they affect prices and insurability.",
+   "tags": [
+    "flood",
+    "climate",
+    "risk",
+    "roof",
+    "hazard",
+    "insurance",
+    "imagery",
+    "aerial",
+    "catastrophe",
+    "wildfire",
+    "exposure",
+    "condition",
+    "underwriting"
+   ]
+  },
+  {
+   "name": "Transactions, title and fraud",
+   "explanation": "Buying property involves a contract, searches of title and liens, mortgage underwriting, an escrow or closing agent, and recording of the deed. Fraud includes forged deeds, owner impersonation and fake rental ads, and delay comes from missing conditions and lender steps.",
+   "whyItMatters": "Title and closing data are fragmented across parties, so labels are sparse and investigators need evidence, not just scores.",
+   "tags": [
+    "title",
+    "deed",
+    "fraud",
+    "closing",
+    "escrow",
+    "mortgage",
+    "transfer",
+    "recording",
+    "scam",
+    "delay",
+    "transaction",
+    "tax",
+    "assessment",
+    "registry"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "AVM",
+   "definition": "Automated valuation model: software that estimates a property's market value from data instead of an on-site appraisal.",
+   "tags": [
+    "avm",
+    "valuation",
+    "appraisal",
+    "value"
+   ]
+  },
+  {
+   "term": "Comparable (comp)",
+   "definition": "A recent sale of a similar nearby property used to estimate the value of the subject property.",
+   "tags": [
+    "comparable",
+    "comps",
+    "valuation",
+    "appraisal",
+    "sales"
+   ]
+  },
+  {
+   "term": "Appraisal",
+   "definition": "A professional opinion of a property's market value, usually required by a lender.",
+   "tags": [
+    "appraisal",
+    "valuation",
+    "review",
+    "lender",
+    "assessment"
+   ]
+  },
+  {
+   "term": "Hedonic model",
+   "definition": "A regression that explains price from property characteristics such as size, rooms and location.",
+   "tags": [
+    "hedonic",
+    "valuation",
+    "price",
+    "index",
+    "avm",
+    "rent"
+   ]
+  },
+  {
+   "term": "Repeat-sales index",
+   "definition": "A price index built from price changes of the same property across successive sales.",
+   "tags": [
+    "index",
+    "repeat",
+    "sales",
+    "price",
+    "trend"
+   ]
+  },
+  {
+   "term": "Cap rate",
+   "definition": "Capitalisation rate: net operating income divided by property value, used to value income-producing property.",
+   "tags": [
+    "cap",
+    "rate",
+    "noi",
+    "income",
+    "investment",
+    "commercial",
+    "valuation"
+   ]
+  },
+  {
+   "term": "NOI",
+   "definition": "Net operating income: rental income minus operating expenses, before debt service and tax.",
+   "tags": [
+    "noi",
+    "income",
+    "commercial",
+    "investment",
+    "rent"
+   ]
+  },
+  {
+   "term": "Rent roll",
+   "definition": "A schedule of each tenant, unit, rent and lease expiry for a property.",
+   "tags": [
+    "rent",
+    "roll",
+    "lease",
+    "commercial",
+    "occupancy",
+    "expiry"
+   ]
+  },
+  {
+   "term": "WALT",
+   "definition": "Weighted average lease term: the average remaining lease length weighted by rent.",
+   "tags": [
+    "lease",
+    "commercial",
+    "expiry",
+    "occupancy",
+    "reit"
+   ]
+  },
+  {
+   "term": "DSCR",
+   "definition": "Debt service coverage ratio: net operating income divided by debt payments.",
+   "tags": [
+    "dscr",
+    "investment",
+    "debt",
+    "noi",
+    "underwriting"
+   ]
+  },
+  {
+   "term": "LTV",
+   "definition": "Loan-to-value ratio: loan amount divided by property value.",
+   "tags": [
+    "ltv",
+    "mortgage",
+    "investment",
+    "valuation",
+    "reit"
+   ]
+  },
+  {
+   "term": "Days on market",
+   "definition": "The number of days a listing takes to go under contract.",
+   "tags": [
+    "days",
+    "market",
+    "listing",
+    "price",
+    "time",
+    "sell"
+   ]
+  },
+  {
+   "term": "Sale-to-list ratio",
+   "definition": "Final sale price divided by the last listing price.",
+   "tags": [
+    "sale",
+    "list",
+    "listing",
+    "price",
+    "bidding"
+   ]
+  },
+  {
+   "term": "MLS",
+   "definition": "Multiple listing service: a shared database of properties for sale among agents in a region.",
+   "tags": [
+    "listing",
+    "mls",
+    "agent",
+    "portal",
+    "search",
+    "duplicate"
+   ]
+  },
+  {
+   "term": "Fair housing",
+   "definition": "Laws prohibiting discrimination in selling, renting, advertising and financing housing.",
+   "tags": [
+    "fair",
+    "housing",
+    "screening",
+    "description",
+    "ranking",
+    "tenant"
+   ]
+  },
+  {
+   "term": "Steering",
+   "definition": "Guiding people toward or away from neighbourhoods based on protected characteristics.",
+   "tags": [
+    "steering",
+    "fair",
+    "housing",
+    "description",
+    "ranking",
+    "neighbourhood"
+   ]
+  },
+  {
+   "term": "Redlining",
+   "definition": "Denying or worsening services in certain areas based on the demographics of the area.",
+   "tags": [
+    "redlining",
+    "neighbourhood",
+    "fair",
+    "scoring",
+    "lending"
+   ]
+  },
+  {
+   "term": "Asking rent",
+   "definition": "The rent advertised for a unit, which is usually higher than the rent actually signed.",
+   "tags": [
+    "rent",
+    "asking",
+    "estimation",
+    "listing",
+    "pricing"
+   ]
+  },
+  {
+   "term": "Effective rent",
+   "definition": "Rent net of incentives such as free months, spread across the lease term.",
+   "tags": [
+    "rent",
+    "effective",
+    "incentive",
+    "lease",
+    "pricing"
+   ]
+  },
+  {
+   "term": "Occupancy",
+   "definition": "The share of units or floor area that is leased or in use.",
+   "tags": [
+    "occupancy",
+    "vacancy",
+    "forecasting",
+    "rent",
+    "utilisation"
+   ]
+  },
+  {
+   "term": "Vacancy",
+   "definition": "Space that is available and unleased, and the share it represents of total space.",
+   "tags": [
+    "vacancy",
+    "occupancy",
+    "rent",
+    "forecasting"
+   ]
+  },
+  {
+   "term": "RevPAR",
+   "definition": "Revenue per available room or unit: revenue divided by available room-nights.",
+   "tags": [
+    "revpar",
+    "short",
+    "term",
+    "rental",
+    "pricing",
+    "occupancy"
+   ]
+  },
+  {
+   "term": "Delinquency",
+   "definition": "A tenant being late on rent beyond the grace period.",
+   "tags": [
+    "delinquency",
+    "rent",
+    "tenant",
+    "payment"
+   ]
+  },
+  {
+   "term": "Security deposit",
+   "definition": "Money held against damage or unpaid rent, returned after deductions at move-out.",
+   "tags": [
+    "deposit",
+    "move",
+    "damage",
+    "tenant",
+    "dispute"
+   ]
+  },
+  {
+   "term": "CMMS",
+   "definition": "Computerised maintenance management system: software that tracks work orders and equipment maintenance.",
+   "tags": [
+    "maintenance",
+    "cmms",
+    "work",
+    "order",
+    "equipment",
+    "predictive"
+   ]
+  },
+  {
+   "term": "BMS",
+   "definition": "Building management system: the control system that runs heating, cooling, lighting and sensors in a building.",
+   "tags": [
+    "bms",
+    "hvac",
+    "energy",
+    "building",
+    "sensor",
+    "comfort"
+   ]
+  },
+  {
+   "term": "EUI",
+   "definition": "Energy use intensity: energy used per unit of floor area per year.",
+   "tags": [
+    "eui",
+    "energy",
+    "benchmark",
+    "retrofit",
+    "building"
+   ]
+  },
+  {
+   "term": "Setpoint",
+   "definition": "The target temperature or other value a control system tries to maintain.",
+   "tags": [
+    "setpoint",
+    "hvac",
+    "energy",
+    "control",
+    "comfort"
+   ]
+  },
+  {
+   "term": "BIM",
+   "definition": "Building information model: a digital 3D model of a building with data on every element.",
+   "tags": [
+    "bim",
+    "construction",
+    "progress",
+    "drone",
+    "design",
+    "cost"
+   ]
+  },
+  {
+   "term": "Critical path",
+   "definition": "The longest chain of dependent tasks, which determines the project's earliest completion date.",
+   "tags": [
+    "critical",
+    "path",
+    "schedule",
+    "delay",
+    "overrun",
+    "construction"
+   ]
+  },
+  {
+   "term": "Earned value",
+   "definition": "A project-control method that compares work completed with the plan and the cost spent.",
+   "tags": [
+    "earned",
+    "value",
+    "spi",
+    "delay",
+    "overrun",
+    "progress"
+   ]
+  },
+  {
+   "term": "Change order",
+   "definition": "A formal change to the construction contract scope, price or schedule.",
+   "tags": [
+    "change",
+    "order",
+    "scope",
+    "cost",
+    "overrun",
+    "construction"
+   ]
+  },
+  {
+   "term": "Bill of quantities",
+   "definition": "A list of materials and work items with quantities, used for tender and cost control.",
+   "tags": [
+    "bill",
+    "quantities",
+    "material",
+    "cost",
+    "estimation",
+    "procurement"
+   ]
+  },
+  {
+   "term": "Take-off",
+   "definition": "Measuring quantities from drawings to estimate materials and cost.",
+   "tags": [
+    "take",
+    "off",
+    "quantities",
+    "cost",
+    "estimation",
+    "plans"
+   ]
+  },
+  {
+   "term": "Zoning",
+   "definition": "Local rules that limit how land can be used and built on, such as height, density and use.",
+   "tags": [
+    "zoning",
+    "permit",
+    "site",
+    "development",
+    "compliance"
+   ]
+  },
+  {
+   "term": "Permit",
+   "definition": "Official approval to build, alter or occupy a structure.",
+   "tags": [
+    "permit",
+    "zoning",
+    "compliance",
+    "construction",
+    "tax"
+   ]
+  },
+  {
+   "term": "Escrow",
+   "definition": "A neutral third party holding money and documents until the conditions of a sale are met.",
+   "tags": [
+    "escrow",
+    "closing",
+    "title",
+    "transaction",
+    "delay"
+   ]
+  },
+  {
+   "term": "Title",
+   "definition": "The legal ownership of a property, and the search that checks for liens and defects.",
+   "tags": [
+    "title",
+    "deed",
+    "fraud",
+    "closing",
+    "transaction"
+   ]
+  },
+  {
+   "term": "Deed",
+   "definition": "The legal document that transfers ownership of property.",
+   "tags": [
+    "deed",
+    "title",
+    "fraud",
+    "transfer",
+    "recording"
+   ]
+  },
+  {
+   "term": "Lien",
+   "definition": "A legal claim on a property as security for a debt.",
+   "tags": [
+    "lien",
+    "title",
+    "closing",
+    "mortgage",
+    "due",
+    "diligence"
+   ]
+  },
+  {
+   "term": "Assessed value",
+   "definition": "The value a tax authority assigns to a property for property tax.",
+   "tags": [
+    "assessed",
+    "assessment",
+    "tax",
+    "value",
+    "equity",
+    "anomaly"
+   ]
+  },
+  {
+   "term": "COD",
+   "definition": "Coefficient of dispersion: a measure of how uniformly assessments relate to sale prices; lower is more uniform.",
+   "tags": [
+    "cod",
+    "prd",
+    "assessment",
+    "tax",
+    "equity",
+    "ratio"
+   ]
+  },
+  {
+   "term": "Floodplain",
+   "definition": "Land that is likely to flood in a given event, such as a one-in-a-hundred-year flood.",
+   "tags": [
+    "flood",
+    "floodplain",
+    "risk",
+    "climate",
+    "hazard",
+    "property"
+   ]
+  },
+  {
+   "term": "Cap-ex",
+   "definition": "Capital expenditure on improving or replacing building components, as distinct from routine repairs.",
+   "tags": [
+    "capex",
+    "retrofit",
+    "investment",
+    "condition",
+    "underwriting"
+   ]
+  },
+  {
+   "term": "Data room",
+   "definition": "A secure online repository of documents shared during a property sale or due diligence.",
+   "tags": [
+    "data",
+    "room",
+    "due",
+    "diligence",
+    "acquisition",
+    "documents",
+    "lease"
+   ]
+  },
+  {
+   "term": "Amendment",
+   "definition": "A change to a lease or contract after signing, which overrides the original terms.",
+   "tags": [
+    "amendment",
+    "lease",
+    "abstraction",
+    "contract",
+    "commercial"
+   ]
+  },
+  {
+   "term": "Break option",
+   "definition": "A lease clause that lets the tenant or landlord end the lease early on notice.",
+   "tags": [
+    "break",
+    "lease",
+    "expiry",
+    "commercial",
+    "abstraction",
+    "dates"
+   ]
+  },
+  {
+   "term": "Absorption",
+   "definition": "The rate at which available space or new units are leased or sold over time.",
+   "tags": [
+    "absorption",
+    "lease",
+    "development",
+    "market",
+    "forecasting",
+    "vacancy"
+   ]
+  }
+ ]
+}

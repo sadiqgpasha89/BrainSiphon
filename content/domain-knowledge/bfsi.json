@@ -1,0 +1,753 @@
+{
+ "overview": "BFSI is the part of finance that is run as a regulated institution: banks lending against collateral, treasuries funding the balance sheet, custodians and brokers settling trades, wealth managers advising clients and insurers pricing and paying claims. Unlike payments, most decisions here are slow, documented and reviewed by someone who can be held accountable, so the model is usually one input to a credit officer, underwriter, operations analyst or validator. What you may use, how you explain it and who signs off are set by regulation and internal model risk policy, and they shape the design as much as accuracy does.",
+ "concepts": [
+  {
+   "name": "How a bank lends: origination, servicing and workout",
+   "explanation": "A loan is originated (application, underwriting, approval, documents), serviced for years (payments, covenants, reviews) and, if the borrower struggles, moved to collections or workout. Each stage has its own data, owner and model: underwriting models see applicants, behaviour models see accounts, early-warning models see covenant and cash-flow signals.",
+   "whyItMatters": "Which stage you are modelling decides the label, the delay before you learn the outcome and which team acts on your score.",
+   "tags": [
+    "mortgage",
+    "loan",
+    "lending",
+    "underwriting",
+    "covenant",
+    "servicing",
+    "hardship",
+    "credit",
+    "obligor",
+    "pricing",
+    "raroc",
+    "collateral",
+    "spreading",
+    "memo",
+    "committee",
+    "rating"
+   ]
+  },
+  {
+   "name": "Expected credit loss, IFRS 9 staging and provisions",
+   "explanation": "Banks hold provisions against expected credit losses: twelve-month loss for performing loans (stage 1), lifetime loss once credit risk has increased significantly (stage 2) and for impaired loans (stage 3). Probability of default, loss given default and exposure at default are combined across scenarios, and a stage change can move provisions sharply.",
+   "whyItMatters": "A model that is slightly wrong near a stage boundary can move reported profit, so stability, hysteresis and explainability matter as much as discrimination.",
+   "tags": [
+    "ifrs",
+    "ecl",
+    "provision",
+    "staging",
+    "default",
+    "pd",
+    "lgd",
+    "stress",
+    "scenario",
+    "migration",
+    "rating",
+    "credit",
+    "loss",
+    "survival"
+   ]
+  },
+  {
+   "name": "Treasury, liquidity and interest-rate risk",
+   "explanation": "The treasury funds the bank, keeps enough liquid assets to survive outflows and manages how net interest income reacts to rates. Key ideas are intraday liquidity, deposit run-off, behavioural assumptions for deposits and prepayments, and the liquidity coverage and net stable funding rules.",
+   "whyItMatters": "Forecast errors here are measured in buffers held and funding costs paid, and the tail (a run, a rate shock) matters more than the average.",
+   "tags": [
+    "liquidity",
+    "treasury",
+    "deposit",
+    "run",
+    "nii",
+    "interest",
+    "rate",
+    "stress",
+    "funding",
+    "intraday",
+    "cash",
+    "vault",
+    "branch",
+    "alco",
+    "alm"
+   ]
+  },
+  {
+   "name": "Capital: risk-weighted assets and the capital ratio",
+   "explanation": "Regulators require banks to hold capital against risk-weighted assets, where each exposure's weight depends on its type, rating and collateral. Reducing RWA by selling, hedging or restructuring frees capital but costs income, so the choice is a trade-off between capital use and return.",
+   "whyItMatters": "Optimisation models must use the regulatory definitions exactly, and a reduction that cannot be executed is not a reduction.",
+   "tags": [
+    "rwa",
+    "capital",
+    "basel",
+    "risk",
+    "weighted",
+    "raroc",
+    "exposure",
+    "optimisation",
+    "pricing",
+    "counterparty",
+    "pfe",
+    "netting"
+   ]
+  },
+  {
+   "name": "Model risk management and validation",
+   "explanation": "Banks treat models as a source of risk: each is inventoried, tiered, independently validated, monitored and periodically re-approved. Validators check conceptual soundness, data, implementation and performance, and findings must be evidenced and tracked to closure.",
+   "whyItMatters": "A model that cannot be validated or explained to the validator does not go live, whatever its accuracy; this also applies to AI assistants used in the validation process.",
+   "tags": [
+    "model",
+    "validation",
+    "validator",
+    "policy",
+    "documentation",
+    "audit",
+    "regulatory",
+    "compliance",
+    "change",
+    "explainable",
+    "drift",
+    "fairness"
+   ]
+  },
+  {
+   "name": "Capital markets operations: trade, settle, reconcile",
+   "explanation": "After a trade is agreed it is confirmed, matched, allocated and settled, usually a day or two later, and the books of the bank, the custodian and the counterparty are reconciled. Fails, breaks and corporate actions create exceptions that operations teams chase against deadlines and penalties.",
+   "whyItMatters": "Operations capacity is the constraint, so models are judged on how well they rank exceptions within the number of items a team can handle.",
+   "tags": [
+    "settlement",
+    "fail",
+    "trade",
+    "break",
+    "reconciliation",
+    "corporate",
+    "action",
+    "custody",
+    "securities",
+    "lending",
+    "collateral",
+    "margin",
+    "nav",
+    "fund",
+    "dispute",
+    "custodian"
+   ]
+  },
+  {
+   "name": "Wealth management, advice and suitability",
+   "explanation": "Advisers recommend products to clients under a duty to act in the client's interest. Suitability requires that a recommendation fits the client's objectives, risk tolerance, knowledge and circumstances, and firms must evidence this and detect mis-selling.",
+   "whyItMatters": "Anything that suggests a product must be filtered by suitability rules, and the adviser, not the model, remains accountable.",
+   "tags": [
+    "wealth",
+    "advisor",
+    "adviser",
+    "suitability",
+    "mis",
+    "selling",
+    "portfolio",
+    "rebalancing",
+    "tax",
+    "client",
+    "attrition",
+    "fund",
+    "flow",
+    "research",
+    "factsheet",
+    "conduct"
+   ]
+  },
+  {
+   "name": "Insurance: pricing, underwriting, claims and reserving",
+   "explanation": "An insurer collects premiums, underwrites risks, pays claims and holds reserves for claims not yet settled. Underwriting selects and prices risk, claims handling pays and investigates, and actuaries estimate ultimate cost from development triangles using methods such as chain-ladder.",
+   "whyItMatters": "Labels arrive years later for long-tail lines, and the same data feed serves pricing, claims and reserving teams with different definitions.",
+   "tags": [
+    "insurance",
+    "underwriting",
+    "claims",
+    "reserve",
+    "reserving",
+    "lapse",
+    "persistency",
+    "subrogation",
+    "reinsurance",
+    "catastrophe",
+    "longevity",
+    "mortality",
+    "policy",
+    "actuarial",
+    "life",
+    "premium"
+   ]
+  },
+  {
+   "name": "Conduct, fairness and customer outcomes",
+   "explanation": "Regulators expect firms to treat customers fairly, identify vulnerable customers and handle complaints properly. Models that route, price or decline must be tested for disparate outcomes, and customers need a route to human review and redress.",
+   "whyItMatters": "A model that raises efficiency but worsens outcomes for one group is a conduct failure, not a success.",
+   "tags": [
+    "fair",
+    "fairness",
+    "vulnerable",
+    "hardship",
+    "complaint",
+    "conduct",
+    "customer",
+    "outcome",
+    "kyc",
+    "review",
+    "call",
+    "contact",
+    "centre",
+    "service"
+   ]
+  },
+  {
+   "name": "Regulatory change and reporting",
+   "explanation": "Rules change constantly across prudential, conduct and financial crime regimes. Firms track consultations, map obligations to policies and controls, report to supervisors on fixed schedules and keep evidence of compliance.",
+   "whyItMatters": "Language-model tools that summarise regulation must cite the paragraph and the version in force, because a confident summary of superseded text is worse than none.",
+   "tags": [
+    "regulatory",
+    "regulation",
+    "obligation",
+    "policy",
+    "control",
+    "compliance",
+    "change",
+    "impact",
+    "report",
+    "supervisor",
+    "gap",
+    "citation"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "LTV",
+   "definition": "Loan-to-value: the loan balance divided by the property value; a higher LTV means less equity cushion.",
+   "tags": [
+    "mortgage",
+    "collateral",
+    "loan",
+    "prepayment",
+    "ltv"
+   ]
+  },
+  {
+   "term": "DTI",
+   "definition": "Debt-to-income: total monthly debt payments divided by monthly income, a standard affordability measure.",
+   "tags": [
+    "mortgage",
+    "loan",
+    "credit",
+    "affordability",
+    "underwriting"
+   ]
+  },
+  {
+   "term": "Covenant",
+   "definition": "A condition in a loan agreement, such as a maximum leverage ratio, that the borrower must keep to; a breach lets the lender act.",
+   "tags": [
+    "covenant",
+    "loan",
+    "corporate",
+    "obligor",
+    "credit"
+   ]
+  },
+  {
+   "term": "Spreading",
+   "definition": "Entering a borrower's financial statements into standard lines so ratios can be compared across firms.",
+   "tags": [
+    "spreading",
+    "statement",
+    "financial",
+    "sme",
+    "credit"
+   ]
+  },
+  {
+   "term": "PD, LGD, EAD",
+   "definition": "Probability of default, loss given default and exposure at default: the three inputs to expected credit loss.",
+   "tags": [
+    "ifrs",
+    "ecl",
+    "pd",
+    "lgd",
+    "default",
+    "provision",
+    "rating",
+    "credit"
+   ]
+  },
+  {
+   "term": "IFRS 9 stage",
+   "definition": "The classification of a loan as performing (stage 1), significantly deteriorated (stage 2) or impaired (stage 3) that sets the provision horizon.",
+   "tags": [
+    "ifrs",
+    "staging",
+    "provision",
+    "ecl"
+   ]
+  },
+  {
+   "term": "RAROC",
+   "definition": "Risk-adjusted return on capital: income minus costs and expected loss, divided by the capital held against the risk.",
+   "tags": [
+    "raroc",
+    "pricing",
+    "loan",
+    "capital",
+    "rwa"
+   ]
+  },
+  {
+   "term": "RWA",
+   "definition": "Risk-weighted assets: exposures scaled by regulatory risk weights, used to compute capital requirements.",
+   "tags": [
+    "rwa",
+    "capital",
+    "basel",
+    "optimisation"
+   ]
+  },
+  {
+   "term": "CET1",
+   "definition": "Common equity tier 1: the highest-quality regulatory capital, held as a ratio of risk-weighted assets.",
+   "tags": [
+    "capital",
+    "rwa",
+    "basel"
+   ]
+  },
+  {
+   "term": "LCR",
+   "definition": "Liquidity coverage ratio: high-quality liquid assets divided by expected 30-day stressed net outflows.",
+   "tags": [
+    "liquidity",
+    "deposit",
+    "run",
+    "treasury",
+    "stress"
+   ]
+  },
+  {
+   "term": "NSFR",
+   "definition": "Net stable funding ratio: available stable funding relative to required stable funding over a one-year horizon.",
+   "tags": [
+    "liquidity",
+    "funding",
+    "treasury",
+    "deposit"
+   ]
+  },
+  {
+   "term": "ALM",
+   "definition": "Asset-liability management: managing the balance sheet so rate and liquidity risks stay within appetite.",
+   "tags": [
+    "alm",
+    "alco",
+    "nii",
+    "interest",
+    "treasury",
+    "liquidity"
+   ]
+  },
+  {
+   "term": "NII",
+   "definition": "Net interest income: interest earned on assets minus interest paid on liabilities.",
+   "tags": [
+    "nii",
+    "interest",
+    "rate",
+    "deposit",
+    "treasury"
+   ]
+  },
+  {
+   "term": "Deposit beta",
+   "definition": "How much of a change in the policy rate the bank passes on to depositors.",
+   "tags": [
+    "deposit",
+    "beta",
+    "nii",
+    "rate",
+    "run"
+   ]
+  },
+  {
+   "term": "Intraday liquidity",
+   "definition": "The funds a bank needs during the day to make payments before incoming payments arrive.",
+   "tags": [
+    "intraday",
+    "liquidity",
+    "cash",
+    "payment",
+    "treasury"
+   ]
+  },
+  {
+   "term": "PFE",
+   "definition": "Potential future exposure: a high percentile of a counterparty's future exposure to the bank, used for limits.",
+   "tags": [
+    "pfe",
+    "counterparty",
+    "exposure",
+    "netting",
+    "derivatives"
+   ]
+  },
+  {
+   "term": "Netting set",
+   "definition": "A group of trades with one counterparty that can legally be offset against each other on default.",
+   "tags": [
+    "netting",
+    "counterparty",
+    "pfe",
+    "exposure",
+    "collateral"
+   ]
+  },
+  {
+   "term": "Haircut",
+   "definition": "The percentage cut applied to an asset's market value when it is pledged as collateral.",
+   "tags": [
+    "collateral",
+    "haircut",
+    "margin",
+    "valuation",
+    "securities"
+   ]
+  },
+  {
+   "term": "Margin call",
+   "definition": "A demand for more collateral when exposure rises or collateral value falls.",
+   "tags": [
+    "margin",
+    "collateral",
+    "dispute",
+    "call",
+    "securities"
+   ]
+  },
+  {
+   "term": "Settlement fail",
+   "definition": "A trade that does not settle on the intended date because securities or cash are not delivered.",
+   "tags": [
+    "settlement",
+    "fail",
+    "trade",
+    "securities",
+    "custody"
+   ]
+  },
+  {
+   "term": "CSD",
+   "definition": "Central securities depository: the institution that holds securities and settles trades in a market.",
+   "tags": [
+    "settlement",
+    "custody",
+    "securities",
+    "csd",
+    "fail"
+   ]
+  },
+  {
+   "term": "Corporate action",
+   "definition": "An event initiated by an issuer, such as a dividend, split or merger, that affects security holders.",
+   "tags": [
+    "corporate",
+    "action",
+    "custody",
+    "event",
+    "securities",
+    "dividend"
+   ]
+  },
+  {
+   "term": "NAV",
+   "definition": "Net asset value: the value of a fund's assets minus liabilities, divided by units, usually struck daily.",
+   "tags": [
+    "nav",
+    "fund",
+    "factsheet",
+    "flow",
+    "administrator"
+   ]
+  },
+  {
+   "term": "Securities lending",
+   "definition": "Temporarily lending securities for a fee against collateral, often to short sellers.",
+   "tags": [
+    "securities",
+    "lending",
+    "recall",
+    "rate",
+    "collateral"
+   ]
+  },
+  {
+   "term": "Suitability",
+   "definition": "The requirement that a recommended product fits the client's objectives, risk tolerance and circumstances.",
+   "tags": [
+    "suitability",
+    "advisor",
+    "wealth",
+    "mis",
+    "selling",
+    "conduct"
+   ]
+  },
+  {
+   "term": "Mis-selling",
+   "definition": "Selling a product that does not suit the client or by misleading them about it.",
+   "tags": [
+    "mis",
+    "selling",
+    "suitability",
+    "advisor",
+    "conduct",
+    "claim"
+   ]
+  },
+  {
+   "term": "Rebalancing",
+   "definition": "Trading a portfolio back to its target allocation after market moves.",
+   "tags": [
+    "rebalancing",
+    "portfolio",
+    "tax",
+    "wealth",
+    "drift"
+   ]
+  },
+  {
+   "term": "Tax lot",
+   "definition": "A purchase of a security with its own date and cost basis, which determines the tax when sold.",
+   "tags": [
+    "tax",
+    "lot",
+    "rebalancing",
+    "portfolio"
+   ]
+  },
+  {
+   "term": "Underwriting",
+   "definition": "Assessing a risk and deciding whether to accept it and at what price.",
+   "tags": [
+    "underwriting",
+    "insurance",
+    "life",
+    "mortgage",
+    "commercial",
+    "submission"
+   ]
+  },
+  {
+   "term": "Chain-ladder",
+   "definition": "An actuarial method that projects ultimate claims from the development of past claims in a triangle.",
+   "tags": [
+    "reserve",
+    "reserving",
+    "triangle",
+    "claims",
+    "actuarial"
+   ]
+  },
+  {
+   "term": "Loss triangle",
+   "definition": "A table of claims by accident period and development period, used to estimate unpaid claims.",
+   "tags": [
+    "reserve",
+    "reserving",
+    "triangle",
+    "claims"
+   ]
+  },
+  {
+   "term": "IBNR",
+   "definition": "Incurred but not reported: claims that have happened but have not yet been reported or fully known.",
+   "tags": [
+    "reserve",
+    "reserving",
+    "ibnr",
+    "claims",
+    "insurance"
+   ]
+  },
+  {
+   "term": "Persistency",
+   "definition": "The share of policies that stay in force over time; lapse is its opposite.",
+   "tags": [
+    "lapse",
+    "persistency",
+    "policy",
+    "life",
+    "retention"
+   ]
+  },
+  {
+   "term": "Subrogation",
+   "definition": "The insurer's right to recover a paid claim from the party that caused the loss.",
+   "tags": [
+    "subrogation",
+    "recovery",
+    "claims",
+    "liability"
+   ]
+  },
+  {
+   "term": "Reinsurance",
+   "definition": "Insurance bought by an insurer to transfer part of its risk to another company.",
+   "tags": [
+    "reinsurance",
+    "treaty",
+    "catastrophe",
+    "capital",
+    "cession"
+   ]
+  },
+  {
+   "term": "Treaty",
+   "definition": "A reinsurance contract covering a whole book of business rather than a single risk.",
+   "tags": [
+    "reinsurance",
+    "treaty",
+    "allocation",
+    "cession"
+   ]
+  },
+  {
+   "term": "Catastrophe model",
+   "definition": "A simulation of hazard, exposure and vulnerability that estimates insured losses from events such as storms or earthquakes.",
+   "tags": [
+    "catastrophe",
+    "cat",
+    "imagery",
+    "loss",
+    "hazard"
+   ]
+  },
+  {
+   "term": "Longevity risk",
+   "definition": "The risk that people live longer than assumed, raising the cost of pensions and annuities.",
+   "tags": [
+    "longevity",
+    "mortality",
+    "annuity",
+    "pension",
+    "forecasting"
+   ]
+  },
+  {
+   "term": "Payment integrity",
+   "definition": "Making sure claims are paid correctly, with the right codes, amounts and no duplicates.",
+   "tags": [
+    "payment",
+    "integrity",
+    "medical",
+    "claims",
+    "coding",
+    "unbundling"
+   ]
+  },
+  {
+   "term": "Unbundling",
+   "definition": "Billing separately for services that should be billed as one procedure.",
+   "tags": [
+    "unbundling",
+    "coding",
+    "medical",
+    "claims",
+    "payment"
+   ]
+  },
+  {
+   "term": "Straight-through processing",
+   "definition": "Handling a transaction or claim end to end without manual touch.",
+   "tags": [
+    "straight",
+    "stp",
+    "claims",
+    "triage",
+    "document",
+    "automation"
+   ]
+  },
+  {
+   "term": "Four-eyes principle",
+   "definition": "A control requiring a second person to approve a sensitive action.",
+   "tags": [
+    "four",
+    "approval",
+    "control",
+    "break",
+    "reconciliation",
+    "change",
+    "audit"
+   ]
+  },
+  {
+   "term": "Model tier",
+   "definition": "A classification of a model by its materiality, which sets how deeply it is validated.",
+   "tags": [
+    "model",
+    "validation",
+    "validator",
+    "tier",
+    "risk"
+   ]
+  },
+  {
+   "term": "Vulnerable customer",
+   "definition": "A customer who, because of circumstances such as illness or bereavement, is at greater risk of harm and needs extra care.",
+   "tags": [
+    "vulnerable",
+    "hardship",
+    "complaint",
+    "conduct",
+    "kyc",
+    "fair"
+   ]
+  },
+  {
+   "term": "KYC refresh",
+   "definition": "Periodic review of a customer's identity and risk information, more often for higher-risk customers.",
+   "tags": [
+    "kyc",
+    "review",
+    "customer",
+    "periodic",
+    "risk"
+   ]
+  },
+  {
+   "term": "Complaint root cause",
+   "definition": "The underlying process, product or system failure behind a customer complaint, not just its topic.",
+   "tags": [
+    "complaint",
+    "root",
+    "cause",
+    "mining",
+    "conduct"
+   ]
+  },
+  {
+   "term": "ASR",
+   "definition": "Automatic speech recognition: converting audio of calls into text.",
+   "tags": [
+    "call",
+    "contact",
+    "centre",
+    "speech",
+    "qa",
+    "transcript"
+   ]
+  },
+  {
+   "term": "Obligation register",
+   "definition": "A list of regulatory requirements mapped to the policies and controls that satisfy them.",
+   "tags": [
+    "regulatory",
+    "obligation",
+    "policy",
+    "control",
+    "compliance"
+   ]
+  }
+ ]
+}

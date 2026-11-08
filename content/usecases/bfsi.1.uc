@@ -593,7 +593,7 @@ base: Last-week fee and utilisation by security, because the desk already works 
 prod: Gradient boosting for fee and recall probability with event features and owner-level models, producing price suggestions and hold-back inventory.
 pipe: Inventory and loan data @ lending platform ; Market data @ vendor feeds ; Feature builder @ Spark ; Fee and recall models @ gradient boosting ; Price suggester @ rules ; Desk screen @ trading UI ; Outcome archive @ warehouse
 edge: Short squeeze | fees spike far beyond history | Regime flag and cap on suggested pricing
-edge: Restricted securities | cannot be lent | Eligibility check from compliance
+edge: Restricted securities | Securities under borrowing restrictions are suggested for lending and the loan fails at the lender | Check eligibility and beneficial-owner restrictions from compliance before any price suggestion is shown
 edge: Data delay | utilisation arrives late | Freshness checks and fallback
 off: Fee MAE on specials ; Recall PR-AUC
 on: Lending revenue ; Failed returns due to recalls

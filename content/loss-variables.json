@@ -1482,5 +1482,149 @@
  },
  "spend-classification-taxonomy": {
   "\\mathrm{CE}": "Cross-entropy for classifying a spend line into the category at one level of the taxonomy: L1 is the top level, L2 the middle level and L3 the most detailed."
+ },
+ "mortgage-prepayment-and-default-risk": {
+  "\\delta": "Event indicator: 1 if loan i ended in default or prepayment (the exit being modelled), 0 if it was still active (censored).",
+  "h": "The hazard: the chance the event happens at time u given that it has not happened yet.",
+  "u": "The time variable of integration, running from 0 up to the observed time.",
+  "d": "The integration variable du: a tiny step in time."
+ },
+ "policy-lapse-and-persistency-prediction": {
+  "\\delta": "Event indicator: 1 if policy i lapsed, 0 if it was still in force at the end of observation (censored).",
+  "h": "The hazard: the chance the event happens at time u given that it has not happened yet.",
+  "u": "The time variable of integration, running from 0 up to the observed time.",
+  "d": "The integration variable du: a tiny step in time."
+ },
+ "listing-price-recommendation-and-time-to-sell": {
+  "\\delta": "Event indicator: 1 if listing i sold, 0 if it was withdrawn or still unsold at the end of observation (censored).",
+  "h": "The hazard: the chance the event happens at time u given that it has not happened yet.",
+  "u": "The time variable of integration, running from 0 up to the observed time.",
+  "d": "The integration variable du: a tiny step in time."
+ },
+ "property-recommendation-for-cold-start-buyers": {
+  "u": "The buyer's embedding: a vector summarising early actions and stated preferences."
+ },
+ "maintenance-request-triage-and-dispatch": {
+  "\\hat{u}": "The predicted urgency level of the request.",
+  "u": "The true urgency level assigned by a maintenance supervisor."
+ },
+ "project-delay-and-overrun-prediction": {
+  "d": "The actual delay of the project in days.",
+  "\\hat{d}": "The predicted delay in days."
+ },
+ "risk-adjusted-loan-pricing": {
+  "\\text{win}": "Whether the quote wins the deal; win(r) is 1 if the client accepts rate r and 0 if they do not.",
+  "r": "The rate (price) quoted to the client, the thing being optimised.",
+  "c": "A cost per unit of loan: c_funding is the funding cost and c_risk the expected-loss and capital cost.",
+  "K": "The size of the loan (exposure) the rate applies to."
+ },
+ "fund-nav-break-detection": {
+  "r": "The true daily return of the fund, with \\hat{r} the return implied by the reported NAV."
+ },
+ "subrogation-recovery-detection": {
+  "r": "The amount actually recovered on the claim, with \\hat{r} the model's estimate."
+ },
+ "development-site-feasibility-scoring": {
+  "r": "The realised development yield (margin) of a past project, with \\hat{r} the model's estimate."
+ },
+ "commercial-occupancy-and-rent-roll-forecasting": {
+  "r": "The actual rental income of the property in the period, with \\hat{r} the forecast."
+ },
+ "investment-property-screening-and-underwriting": {
+  "r": "The realised return of an acquired property, with \\hat{r} the underwriting estimate."
+ },
+ "risk-weighted-asset-optimisation": {
+  "\\mathrm{RWA}": "Risk-weighted assets of candidate action k: the capital-relevant exposure that action would remove or add.",
+  "\\mathrm{Cost}": "The income lost or execution cost of candidate action k."
+ },
+ "operational-risk-event-classification": {
+  "\\hat{s}": "The predicted loss severity of the event (the model works on its log).",
+  "s": "The actual loss severity of the event."
+ },
+ "branch-cash-and-vault-optimisation": {
+  "c": "A unit cost: c_hold is the cost of holding cash, c_ship the cost of a shipment and c_out the cost of a stock-out.",
+  "I": "The average cash inventory held at branch b.",
+  "S": "The number of cash shipments sent to branch b.",
+  "\\text{stockout}": "A stock-out at branch b: a day when the vault cannot meet withdrawals."
+ },
+ "custody-fee-billing-error-detection": {
+  "\\hat{f}": "The fee recomputed from contract terms and billable assets.",
+  "f": "The fee actually invoiced."
+ },
+ "tax-aware-portfolio-rebalancing": {
+  "\\mathrm{Drift}": "How far asset class i is from its target allocation; squared so larger drifts count more.",
+  "\\mathrm{Tax}": "The tax cost of selling lot j.",
+  "\\mathrm{Cost}": "The trading cost (spread and fee) of trade j."
+ },
+ "reinsurance-treaty-allocation": {
+  "\\mathrm{Premium}": "The premium charged for ceding risk under treaty option k.",
+  "\\text{net loss}": "The insurer's loss after reinsurance recoveries; its variance is penalised.",
+  "\\mathrm{Capital}": "The solvency capital the insurer must hold under the chosen programme x."
+ },
+ "complaint-root-cause-mining": {
+  "z": "The embedding vector of a complaint, used so similar root causes sit close together."
+ },
+ "neighbourhood-quality-scoring": {
+  "z": "The learned embedding of a neighbourhood and its surroundings, regularised over the map graph so adjacent areas stay similar."
+ },
+ "duplicate-listing-detection-across-portals": {
+  "z": "The embedding of listing i (z_j for listing j); pairs of the same property are pulled close together."
+ },
+ "site-selection-for-retail-and-logistics": {
+  "z": "The learned embedding of a site, regularised over the network graph of nearby sites and stores."
+ },
+ "acquisition-deal-sourcing": {
+  "z": "The embedding of a property or owner entity in the ownership graph."
+ },
+ "title-and-deed-fraud-detection": {
+  "z": "The embedding of a party, property or notary in the transfer graph."
+ },
+ "comparable-sales-selection": {
+  "a": "The anchor: the subject property's embedding.",
+  "n": "A negative: the embedding of a property that is not a good comparable."
+ },
+ "appraisal-review-and-valuation-anomaly-detection": {
+  "\\hat{v}": "The value the independent model expects for the property.",
+  "v": "The value stated in the appraisal."
+ },
+ "predictive-maintenance-for-building-equipment": {
+  "\\hat{t}": "The predicted time until the equipment fails.",
+  "t": "The actual time until failure."
+ },
+ "dynamic-rent-pricing-for-multifamily": {
+  "\\text{rent}": "The asking rent set on day t.",
+  "\\text{occ}": "The share of units occupied on day t.",
+  "\\text{vacancy}": "Vacant unit-days on day t, which cost income."
+ },
+ "home-search-ranking": {
+  "s": "The ranking score the model gives each listing in the result list."
+ },
+ "move-out-damage-assessment-from-photos": {
+  "\\hat{s}": "The predicted damage severity grade.",
+  "s": "The damage severity grade assigned by a reviewer."
+ },
+ "building-energy-benchmarking-and-retrofit-targeting": {
+  "\\hat{s}": "The estimated annual energy savings from a retrofit.",
+  "s": "The measured savings after a retrofit."
+ },
+ "office-space-utilisation-from-sensors": {
+  "\\hat{o}": "The estimated peak occupancy of the space.",
+  "o": "The observed peak occupancy from manual counts."
+ },
+ "construction-cost-estimation-from-plans": {
+  "\\hat{c}": "The predicted cost (or procurement spend) in the same units as the actual cost.",
+  "c": "The actual cost."
+ },
+ "building-material-demand-and-procurement-forecast": {
+  "\\hat{c}": "The predicted cost (or procurement spend) in the same units as the actual cost.",
+  "c": "The actual cost."
+ },
+ "contractor-bid-evaluation": {
+  "\\hat{c}": "The predicted cost (or procurement spend) in the same units as the actual cost.",
+  "c": "The actual cost."
+ },
+ "hvac-energy-optimisation": {
+  "\\text{energy}": "Energy consumed in step t, to be minimised.",
+  "\\text{discomfort}": "The comfort violation in step t: degrees outside the allowed band, weighted by occupancy."
  }
 }
