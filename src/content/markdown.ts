@@ -1,3 +1,5 @@
+import { PRIMITIVE_BY_ID } from './primitives';
+import { ROLE_META } from '../lib/roles';
 import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook, type UseCase } from '../schemas/usecase.schema';
 
 const fence = (lang: string, body: string) => `\`\`\`${lang}\n${body.trim()}\n\`\`\``;
@@ -28,7 +30,9 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   L.push('', '**Drop these (noise):**', '');
   u.dataAndFeatures.noisyFeaturesToDrop.forEach((f) => L.push(`- **${f.name}** — ${f.whyItIsNoise}`));
   L.push('', '## Architecture blueprint', '', `**Baseline.** ${u.architectureBlueprint.baselineModel}`, '', `**Production.** ${u.architectureBlueprint.productionModel}`, '', fence('mermaid', u.architectureBlueprint.mermaidDiagram));
-  L.push('', '## High-level design (10M users)', '', d.hld.summary, '', fence('mermaid', d.hld.mermaid), '', '| Component | Tech | Responsibility | Budget |', '|---|---|---|---|');
+  L.push('', '## High-level design (10M users)', '', d.hld.summary, '', `**Topology (${d.topology.stance}).** ${d.topology.summary}`, '', `- *Inference plane:* ${d.topology.inferencePlane}`, `- *State plane:* ${d.topology.statePlane}`);
+  d.topology.notes.forEach((n) => L.push(`- ${n}`));
+  L.push('', fence('mermaid', d.hld.mermaid), '', '| Component | Tech | Responsibility | Budget |', '|---|---|---|---|');
   d.hld.components.forEach((c) => L.push(`| ${esc(c.name)} | ${esc(c.tech)} | ${esc(c.responsibility)} | ${c.latencyBudgetMs === null ? '—' : `${c.latencyBudgetMs} ms`} |`));
   L.push('', '## Sequence diagram', '', fence('mermaid', d.sequence.mermaid), '');
   d.sequence.notes.forEach((n) => L.push(`- ${n}`));
@@ -59,6 +63,20 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   u.evaluationAndMetrics.offlineOnlineGapTraps.forEach((x) => L.push(`- ${x}`));
   L.push('', '## Production edge cases', '', '| Scenario | Failure mode | Mitigation |', '|---|---|---|');
   u.productionEdgeCases.forEach((e) => L.push(`| ${esc(e.scenario)} | ${esc(e.failureMode)} | ${esc(e.mitigationStrategy)} |`));
+  L.push('', '## Role lenses: production gaps by persona', '');
+  u.roleLenses.forEach((r) => {
+    L.push(`### ${ROLE_META[r.role].label}`, '', `*${r.focus}*`, '');
+    r.items.forEach((i) => {
+      const p = i.primitive ? PRIMITIVE_BY_ID[i.primitive] : undefined;
+      L.push(`- **${i.title}.** ${i.detail}${p ? ` See [${p.title}](${origin}/patterns/primitives/${p.id}).` : ''}`);
+    });
+    L.push('');
+  });
+  L.push('### Reference primitives', '');
+  u.primitives.forEach((id) => {
+    const p = PRIMITIVE_BY_ID[id];
+    if (p) L.push(`- [${p.title}](${origin}/patterns/primitives/${p.id}): ${p.summary}`);
+  });
   agenticMarkdown(u.agentic, L);
   if (u.playbook) playbookMarkdown(u.playbook, L);
   return `${L.join('\n')}\n`;

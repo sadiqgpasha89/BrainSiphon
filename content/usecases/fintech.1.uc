@@ -2,16 +2,20 @@
 == real-time-card-upi-fraud-detection | Real-Time Card & UPI Fraud Detection | tabular,graph | sub-10ms | production-grade | a=8 k=2
 obj: Block fraudulent authorisations inside the payment auth path while keeping false declines under 0.3% of genuine volume.
 loss: \mathcal{L}=\sum_i w_i\,\mathrm{FL}(p_i)+\lambda\,\mathrm{ECE}(p)
-con: p99 under 8 ms inside the auth path ; PCI-DSS scope minimisation ; every decline needs a reason code ; 99.99% availability
+con: p99 under 8 ms inside the auth path ; PCI-DSS scope minimisation ; every decline needs a reason code ; 99.99% availability ; UPI collect and pay risk scoring inside a 15 to 25 ms switch budget ; Decision space is allow, step-up challenge or block, with the 0.3% false-decline ceiling measured across all three
 sn: Velocity | Rolling counts and sums per card, device and merchant over 1m/1h/24h | Lifetime averages and static account age | Lifetime aggregates dilute a burst that lasts 90 seconds
 sn: Metrics | PR-AUC at a fixed 0.5% false-positive rate | Accuracy and ROC-AUC on a 0.1% positive class | ROC-AUC reads 0.99 while the operating region is useless
 sn: Labels | Labels used only after the chargeback window closes, with unreported recent rows excluded | Treating every transaction not yet reported as fraud as a genuine one | Recent fraud trained as negative teaches the model to ignore this week's attacks
 sn: Takeover | Account takeover signals such as a new device, changed contact details and session behaviour | Velocity as the only fraud signal | Quiet takeovers make three ordinary purchases and never trip a velocity rule
+sn: Action space | Three actions: allow, step-up challenge (OTP, biometric, cool-off) and hard block | One binary allow or block threshold | Ambiguous high-value payments are either declined, breaching the false-decline ceiling, or approved with no label; a challenge protects both and returns verified ground truth
+sn: Graph | Mule-ring risk precomputed by an asynchronous streaming graph worker and read as scalar features | Multi-hop GNN inference inside the authorisation path | Graph traversal cannot fit the budget, so write component risk and seed distance to the online store every few seconds for an O(1) lookup
 sig: Card velocity 1m/1h/24h | count and sum of authorisations in sliding windows keyed by card token | Fraudsters cash out quickly | Windows must close strictly before decision time
 sig: Device-card fan-out | distinct cards seen on the device fingerprint in 24h | Mule devices touch many cards | Fingerprint must be hashed at event time, not retro-joined
 sig: Merchant risk drift | 7-day chargeback rate of the merchant versus its 90-day baseline | Compromised merchants shift abruptly | Chargebacks mature in 30-90 days so use matured labels only
 sig: New device for card | first time this card token is seen on this device fingerprint | Takeover and card testing start on unfamiliar devices | The first-seen table must be built from events before the decision, not from full history
 sig: Amount versus card baseline | amount divided by the card's trailing 90-day median ticket | A ten-times-normal basket is unusual for this card even if small in absolute terms | The baseline must exclude the scored transaction and any fraud already known
+sig: Mule-ring risk scalar | component risk and hop distance to known mule seeds, written to the online store every few seconds by a streaming graph worker (Flink with Neo4j or TigerGraph, or incremental connected components) | Rings share devices and beneficiaries and rotate accounts | Seed list and graph snapshot must be frozen at decision time
+sig: Payload-only score inputs | amount, payee MCC, device fingerprint and a local Bloom-filter blocklist hit, all present in the request | Keeps a usable score when the feature store times out | Must read nothing from the store or the fallback silently depends on it
 noise: Cardholder name length | no causal link to fraud, overfits to data-entry quirks
 noise: Raw merchant free-text | high cardinality, replaced by MCC and a learned merchant embedding
 noise: Issuer country alone | too coarse, mostly proxies for population and creates unfair declines for travellers
@@ -22,9 +26,11 @@ edge: Flash-sale traffic spike | velocity features flag genuine buyers en masse 
 edge: Issuer chargeback delay | labels mature 90 days later so recent data looks clean | Survival-aware label imputation and weekly refresh on matured windows
 edge: Genuine shopping session | four to nine purchases within minutes look like velocity | Per-card session baselines and step-up authentication between the review and block thresholds
 edge: Mule-device ring rotation | fraudsters rotate devices after a block so fan-out resets to zero | Cluster devices by shared payment tokens and IP ranges and carry risk across the cluster
+edge: UPI switch timeout with the feature store down | fail-closed breaches the false-decline ceiling immediately and fail-open invites burst attacks | Fall back to an in-memory L1 model on payload-resident features plus the Bloom-filter blocklist, and route mid-score cases to step-up
+edge: Split-leg UPI collect and pay | risk is scored on the collect leg but the pay leg arrives later with a changed device or amount | Carry a risk token with the transaction reference across legs and re-score on any material change
 off: PR-AUC at 0.5% FPR ; Recall at fixed review capacity
 on: Fraud basis points per volume ; False-decline rate on good customers
-gap: Training on confirmed fraud only hides review-queue selection bias ; Random split leaks cardholders across train and test
+gap: Training on confirmed fraud only hides review-queue selection bias ; Random split leaks cardholders across train and test ; Retraining only on outcomes the previous model allowed to happen, with no random holdout or step-up bucket
 
 == credit-default-survival-modeling | Credit Default Survival Modeling | tabular,time-series | batch | production-grade | a=1 k=4
 obj: Estimate time-to-default curves per borrower to set provisions, pricing and limits under IFRS 9 / CECL.

@@ -17,6 +17,18 @@ _signal_ that moves the metric, names the _noise_ that wastes your quarter, and 
   stage-by-stage account of why each part of its architecture exists, all assembled from that use case's own signals,
   constraints, edge cases and metrics. The end-to-end breakdown is gated so that under 3% of its steps may be identical
   between use cases (it was 47% before).
+- **Role lenses.** Press `1`–`6` inside a blueprint (or use the Lens bar) to keep only the sections one persona needs: AI architect,
+  solution architect, data engineer, data scientist, AI engineer, inference engineer. `0` shows everything. Each blueprint ends with a
+  per-role checklist of production gaps (`roleLenses`), generated from the use case's own stages, features and compute class
+  (`src/content/extras.ts`).
+- **Regions and state.** The HLD no longer says "three active-active regions" for everything. `systemDesign.topology` splits the
+  stateless inference plane (active-active) from the state plane: pinned by jurisdiction with a synchronous in-country standby for
+  fintech, BFSI and healthcare; tenant cells, quotas and BYOK for SaaS, cybersecurity and real estate.
+- **Primitives.** Mechanisms that repeat across blueprints (point-in-time joins, PID budget pacer, adaptive load shedding, outbox + CDC,
+  plan-preview-commit, ...) are written once in `src/content/primitives.ts`, shown at `/patterns/primitives/<id>`, and linked from every
+  blueprint that uses them. `validate:content` fails on a link to an unknown primitive.
+- **Live sizing calculator.** The capacity table is followed by sliders (users, DAU share, events per user, payload, peak ratio, p99 target)
+  that re-run the same model (`src/content/scale.ts`) in the browser; at the defaults it reproduces the table exactly (tested).
 - **Agentic solution.** Every blueprint has a section on where agents help, the typed tools they get, an autonomy ladder
   with promotion gates, guardrails and how to evaluate them. It is generated from the blueprint and not expert-reviewed.
 
@@ -26,10 +38,11 @@ _signal_ that moves the metric, names the _noise_ that wastes your quarter, and 
 npm ci
 npm run dev                       # content:build + next dev   → http://localhost:3000
 npm run validate:content          # strict gate (schema, ≥50/domain, KaTeX, Mermaid, slug history, staleness)
-npm test                          # 36 unit/integration tests
+npm test                          # unit/integration tests
 npm run build && npm run test:e2e # production build + Playwright smoke tests
 docker compose up --build         # app + pgvector + redis        → http://localhost:3200
-npm run build:static              # CDN / GitHub Pages export → ./out
+npm run build:static              # CDN / GitHub Pages export → ./out (also verifies llms.txt, every .md route and base-path links)
+npm run verify:static             # re-run that verification on an existing ./out (set NEXT_PUBLIC_BASE_PATH / NEXT_PUBLIC_SITE_URL as in CI)
 ```
 
 ## How 500 deep blueprints stay consistent
@@ -101,7 +114,7 @@ numbers come from *synthetic* data (far easier than production); the dataset lin
 - **Ops**: OpenTelemetry (`@vercel/otel`), Pino JSON logs with `x-request-id` correlation and redaction, `/api/health/liveness`, `/api/health/readiness` (2 s dependency timeouts, 200/503), strict CSP + HSTS + nosniff + Referrer/Permissions-Policy.
 - **SEO / agents**: `sitemap.xml`, `robots.txt`, dynamic OG images (`/api/og?slug=`), `/llms.txt`, and a clean `.md` for every blueprint (append `.md` to the URL).
 - **Slug evolution**: `content/slug-history.json` → 308 redirects in middleware (client-side equivalent in static export).
-- **Keyboard**: `⌘/Ctrl+K` search, `/` search, `[` Pure Signal Mode, `]` full detail.
+- **Keyboard**: `⌘/Ctrl+K` search, `/` search, `[` Pure Signal Mode, `]` full detail, `1`–`6` role lens, `0` all roles.
 
 ## Deviations from the original spec (deliberate)
 

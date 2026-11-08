@@ -15,6 +15,7 @@ import { generateAgentic } from './agentic-gen';
 import { buildE2E, buildNarrative } from './narrative';
 import { loadAuthoredNarrative } from './narrative-authored';
 import { generatePlaybook, pickKit } from './playbook-gen';
+import { buildRoleLenses, buildTopology, pickPrimitives, stanceOf } from './extras';
 import { explainLoss } from './lossvars';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -99,15 +100,17 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   const seq = sequenceDiagram(stages, scale.mode, latency, paradigms, steps);
 
   const sync = stages.filter((s) => !s.async);
+  const stance = stanceOf(domain, raw);
+  const topology = buildTopology(domain, stance, raw, scale);
   const hld = {
-    summary: `${scale.mode === 'batch' ? 'Orchestrated batch pipeline' : scale.mode === 'interactive' ? 'Streaming, budget-capped serving plane' : 'Stateless, deadline-propagating serving plane'} for ${raw.title}: ${sync.map((s) => s.label).join(' → ')}${stages.some((s) => s.async) ? `, with ${stages.filter((s) => s.async).map((s) => s.label).join(' and ')} off the critical path` : ''}. Three active-active regions, shared data/ML plane, signed model artifacts.`,
+    summary: `${scale.mode === 'batch' ? 'Orchestrated batch pipeline' : scale.mode === 'interactive' ? 'Streaming, budget-capped serving plane' : 'Stateless, deadline-propagating serving plane'} for ${raw.title}: ${sync.map((s) => s.label).join(' → ')}${stages.some((s) => s.async) ? `, with ${stages.filter((s) => s.async).map((s) => s.label).join(' and ')} off the critical path` : ''}. ${stance === 'residency-pinned' ? 'Stateless inference is active-active; regulated state is pinned per jurisdiction.' : stance === 'tenant-isolated' ? 'Stateless inference is active-active; tenant state lives in isolated cells.' : 'Three active-active regions.'} Shared data/ML plane, signed model artifacts.`,
     components: [
       { name: 'Edge and API gateway', tech: 'CDN/WAF + Envoy', responsibility: 'TLS, authN, per-key rate limits, idempotency, deadline propagation, load shedding.', latencyBudgetMs: scale.mode === 'batch' ? null : 0.5 },
       ...stages.map((s) => ({ name: s.label, tech: s.tech, responsibility: stageResponsibility(s.kind, s.label), latencyBudgetMs: s.budgetMs })),
       { name: 'Event bus', tech: 'Kafka (partitioned by entity)', responsibility: 'Durable decision/outcome log; replay for backfills and training sets.', latencyBudgetMs: null },
       { name: 'Training and registry', tech: 'Spark/Ray + MLflow-style registry', responsibility: 'Point-in-time datasets, challenger training, signed artifacts, shadow/canary promotion.', latencyBudgetMs: null },
     ],
-    mermaid: hldDiagram(stages, scale.mode, paradigms),
+    mermaid: hldDiagram(stages, scale.mode, paradigms, stance),
   };
 
   const pattern = pickKit(raw, paradigms);
@@ -117,6 +120,9 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     ? { problemStatement: authored.problemStatement, solutionApproach: authored.solutionApproach, architectureRationale: authored.architectureRationale }
     : buildNarrative(raw, domain, paradigms, latency, stages, scale, explained);
   const playbook = root ? (loadPlaybook(root, domain, raw, latency, scale) ?? generatePlaybook(root, raw, domain, paradigms, latency, difficulty, scale, stages)) : undefined;
+
+  const roleLenses = buildRoleLenses(raw, domain, paradigms, latency, pattern, stance, scale, stages, features);
+  const primitives = pickPrimitives(raw, domain, paradigms, pattern, stance, scale, roleLenses);
 
   const candidate = {
     id: uuidFor(slug),
@@ -142,17 +148,21 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     productionEdgeCases: raw.edge.map(([scenario, failureMode, mitigationStrategy]) => ({ scenario, failureMode, mitigationStrategy })),
     systemDesign: {
       mode: scale.mode,
+      topology,
       hld,
       sequence: seq,
       lld,
       e2e,
       scale: {
+        inputs: { a: raw.opts.a, k: raw.opts.k, ...(raw.opts.s ? { steps: raw.opts.s } : {}), ...(raw.opts.t ? { tokensPerStep: raw.opts.t } : {}) },
         assumptions: scale.assumptions,
         table: scale.rows,
         bottlenecks: bottlenecksFor(scale.computeClass, scale.mode),
-        resilience: resilienceFor(scale.mode),
+        resilience: resilienceFor(scale.mode, stance),
       },
     },
+    roleLenses,
+    primitives,
     agentic: generateAgentic(raw, domain, paradigms, latency, difficulty, stages),
     ...(playbook ? { playbook } : {}),
   };

@@ -2,19 +2,24 @@
 == personalized-search-ranking | Personalised Product Search Ranking | recommender,nlp | sub-100ms | production-grade | a=10 k=6
 obj: Rank search results to maximise purchases per search session while preserving relevance and catalogue fairness to sellers.
 loss: \mathcal{L}=\sum_{q}\sum_{(i,j):y_i>y_j}\log\left(1+e^{-(s_i-s_j)}\right)\left|\Delta\mathrm{NDCG}_{ij}\right|
-con: p99 under 80 ms including retrieval ; 100M-item catalogue ; Position-bias-aware training ; Query-level explainability for merchandisers
+con: p99 under 80 ms including retrieval ; 100M-item catalogue ; Position-bias-aware training ; Query-level explainability for merchandisers ; Serviceability by pincode or dark store applied before ranking ; Sellers keep a guaranteed exposure floor
 sn: Position bias | Inverse-propensity-weighted clicks from randomised swaps | Raw click logs | Top positions get clicks regardless of relevance
 sn: Objective | Purchase-weighted graded relevance (view, cart, buy) | Click-through rate alone | CTR rewards clickbait images and hurts conversion
+sn: Utility | Multi-task utility: click, cart given click, purchase given cart weighted by margin, plus a seller-exposure term | Click probability alone | Cheap impulse items win clicks while high-consideration products lose, and exposure concentrates on already-popular sellers
+sn: Serviceability | Roaring-bitmap availability masks inside the retrieval shard before any ranking | Scoring 1,000 candidates and then dropping the 700 not deliverable to the pincode | The ranker burns CPU or GPU on items that can never be shown and the shortlist comes back short
 sig: Query-item semantic score | cosine of query and item embeddings from a dual encoder | Relevance backbone | Embeddings must be trained on pre-period logs
 sig: Item price-rank within query | percentile of price among retrieved results | Price sensitivity cue | Compute over the retrieved set not the catalogue
 sig: User-category affinity | decayed purchase and click share by category | Personalisation | Exclude events in the current session after the query
+sig: Slot position (training only) | position-bias tower input that is dropped or fixed to slot 1 at inference (PAL) | Separates exposure from relevance | If position leaks into serving features the ranker reproduces the page layout
+sig: Deliverable at pincode | bitmap membership for the shopper pincode or dark store | Hard eligibility | Inventory stream lag shows sold-out items, so version the bitmaps and log staleness
 noise: Raw impressions count | rich-get-richer feedback loop
 noise: Item title length | spurious correlation with conversions
 base: BM25 with business-rule boosts.
-prod: Two-stage: ANN plus BM25 hybrid retrieval, then a LambdaMART/transformer ranker with propensity correction, served with embedding and feature caches.
+prod: Two-stage: ANN plus BM25 hybrid retrieval, then a LambdaMART/transformer ranker with propensity correction, served with embedding and feature caches. Final score is w1 times P(click) plus w2 times P(cart given click) plus w3 times P(purchase given cart) times log(1+GMV) plus a seller exposure boost, with a position tower used in training only and Roaring-bitmap availability masks applied inside the retrieval shard.
 pipe: Query service @ gateway ; Query understanding @ spell and intent model ; Hybrid retrieval @ ANN plus BM25 ; Feature fetch @ Redis and item store ; Ranker @ LambdaMART on CPU ; Business re-rank @ merchandising rules ; Click logger @ Kafka
 edge: New seller floods catalogue with keyword-stuffed items | rankings polluted | Quality score features and seller-trust priors
 edge: Embedding model update changes neighbour sets | sudden relevance shifts | Dual-write shadow indexes and ranking-diff alarms before swap
+edge: Hyperlocal stock flips mid-session | items vanish after the click and the shopper abandons | Versioned bitmaps with sub-second updates, a staleness metric and a re-check at add to cart
 off: NDCG@10 with propensity weighting ; Recall@200 of retrieval
 on: Search conversion rate ; Revenue per search
 gap: Training on clicks from the current ranker ; Evaluating only on head queries

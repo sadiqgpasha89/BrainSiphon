@@ -4,6 +4,9 @@ import { CodeBlock } from '../Code';
 import { MathBlock } from '../Math';
 import { MermaidDiagram } from '../Mermaid';
 import { SymbolText } from './SymbolText';
+import { CapacityCalculator } from './CapacityCalculator';
+import { ROLE_META, rolesForSection } from '../../lib/roles';
+import { PRIMITIVE_BY_ID } from '../../content/primitives';
 
 export function Section({
   id,
@@ -23,6 +26,7 @@ export function Section({
       id={id}
       aria-labelledby={`${id}-h`}
       className="scroll-mt-28 border-t border-line py-10 first:border-t-0 first:pt-0"
+      data-roles={rolesForSection(id).join(' ')}
       {...(prose ? { 'data-prose-section': true } : {})}
     >
       {kicker && <p className="font-mono text-[11px] uppercase tracking-wider text-dim">{kicker}</p>}
@@ -63,6 +67,7 @@ export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?
   { id: 'scale', label: 'Scale & capacity' },
   { id: 'evaluation', label: 'Evaluation' },
   { id: 'edge-cases', label: 'Edge cases' },
+  { id: 'role-lenses', label: 'Role lenses' },
   { id: 'agentic', label: 'Agentic solution' },
   ...(hasPlaybook ? [{ id: 'playbook', label: 'Build playbook' }] : []),
 ];
@@ -272,6 +277,27 @@ export async function Sections({ uc }: { uc: UseCase }) {
         <p data-prose className="prose-bs max-w-3xl">
           {d.hld.summary}
         </p>
+        <div className="card border-signal-line p-4" data-testid="topology">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-signal">
+            Regions and state · {d.topology.stance.replace(/-/g, ' ')}
+          </p>
+          <p data-prose className="prose-bs mt-2 max-w-3xl text-sm">
+            {d.topology.summary}
+          </p>
+          <dl className="mt-3 grid gap-3 text-sm md:grid-cols-2">
+            <div>
+              <dt className="font-mono text-[11px] uppercase tracking-wider text-dim">Inference plane</dt>
+              <dd className="mt-1 text-ink/90">{d.topology.inferencePlane}</dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[11px] uppercase tracking-wider text-dim">State plane</dt>
+              <dd className="mt-1 text-ink/90">{d.topology.statePlane}</dd>
+            </div>
+          </dl>
+          <div className="mt-3">
+            <List items={d.topology.notes} />
+          </div>
+        </div>
         <MermaidDiagram code={d.hld.mermaid} label="Deployment topology" />
         <TableWrap>
           <table className="bs-table">
@@ -450,6 +476,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
             </tbody>
           </table>
         </TableWrap>
+        <CapacityCalculator paradigms={uc.mlParadigms} latency={uc.latencySLA} inputs={d.scale.inputs} />
         <div data-prose className="grid gap-6 md:grid-cols-3">
           <div>
             <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Assumptions</p>
@@ -510,6 +537,67 @@ export async function Sections({ uc }: { uc: UseCase }) {
             </tbody>
           </table>
         </TableWrap>
+      </Section>
+
+      <Section
+        id="role-lenses"
+        title="Role lenses: production gaps by persona"
+        kicker="What each of the six roles must additionally check, specialised to this system. Press 1 to 6 to filter the page."
+      >
+        <div className="grid gap-4 lg:grid-cols-2">
+          {uc.roleLenses.map((r) => (
+            <div key={r.role} className="card p-4" data-role-card={r.role} data-testid={`lens-${r.role}`}>
+              <h3 className="text-base font-semibold text-ink">
+                <span className="mr-2 font-mono text-xs text-dim">{ROLE_META[r.role].key}</span>
+                {ROLE_META[r.role].label}
+              </h3>
+              <p className="mt-1 text-xs text-mute">{r.focus}</p>
+              <ul className="mt-3 space-y-3 text-sm">
+                {r.items.map((i) => {
+                  const p = i.primitive ? PRIMITIVE_BY_ID[i.primitive] : undefined;
+                  return (
+                    <li key={i.title}>
+                      <strong className="text-ink">{i.title}.</strong>{' '}
+                      <span className="text-ink/90">{i.detail}</span>
+                      {p && (
+                        <>
+                          {' '}
+                          <Link
+                            href={`/patterns/primitives/${p.id}`}
+                            className="chip chip-signal no-underline"
+                          >
+                            {p.title} →
+                          </Link>
+                        </>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div data-testid="primitives">
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">
+            Reference primitives this system leans on (one canonical write-up each)
+          </p>
+          <ul className="flex flex-wrap gap-2">
+            {uc.primitives.map((id) => {
+              const p = PRIMITIVE_BY_ID[id];
+              return p ? (
+                <li key={id}>
+                  <Link
+                    href={`/patterns/primitives/${id}`}
+                    className="chip no-underline hover:border-signal"
+                    title={p.summary}
+                  >
+                    {p.title}
+                  </Link>
+                </li>
+              ) : null;
+            })}
+          </ul>
+        </div>
       </Section>
     </div>
   );

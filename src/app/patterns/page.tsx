@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getIndex, getPatterns } from '../../lib/content';
+import { PRIMITIVES } from '../../content/primitives';
 import { DOMAIN_META } from '../../schemas/usecase.schema';
 
 export const revalidate = 86400;
@@ -45,6 +46,33 @@ export default async function PatternsPage() {
           );
         })}
       </ul>
+
+      <section aria-labelledby="primitives" className="mt-14">
+        <h2 id="primitives" className="h-section">
+          {PRIMITIVES.length} architectural primitives
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-mute">
+          Mechanisms that repeat across blueprints (point-in-time joins, budget pacers, load shedding, outbox
+          + CDC) are written up once here. Blueprints link to them instead of repeating the detail.
+        </p>
+        <ul className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3" data-testid="primitive-list">
+          {PRIMITIVES.map((p) => {
+            const n = index.filter((e) => e.primitives?.includes(p.id)).length;
+            return (
+              <li key={p.id}>
+                <Link
+                  href={`/patterns/primitives/${p.id}`}
+                  className="card block h-full p-4 no-underline transition hover:border-signal"
+                >
+                  <h3 className="font-semibold text-ink">{p.title}</h3>
+                  <p className="mt-1 line-clamp-3 text-sm text-mute">{p.summary}</p>
+                  <p className="mt-2 font-mono text-xs text-signal">{n} blueprints</p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
     </div>
   );
 }

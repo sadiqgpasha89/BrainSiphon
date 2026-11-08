@@ -42,6 +42,7 @@ export function toIndexEntry(u: UseCase): UseCaseIndexEntry {
     lastVerifiedAt: u.lastVerifiedAt,
     keywords,
     pattern: u.pattern,
+    primitives: u.primitives,
     ...(u.playbook ? { playbook: u.playbook.provenance } : {}),
   };
 }

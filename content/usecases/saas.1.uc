@@ -282,19 +282,25 @@ gap: Mention counts as importance ; Evaluating topics without human review
 == in-app-ai-copilot | In-App AI Copilot for SaaS Products | llm-agents | seconds | staff-principal | a=3 k=10 s=5 t=300
 obj: Let users accomplish tasks in the product through natural language, with the copilot calling product APIs safely on their behalf.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{context,tools})+\lambda\,\mathrm{UnsafeAction}
-con: Respect user permissions ; Confirm destructive actions ; Tenant isolation ; Cost per user per month
+con: Respect user permissions ; Confirm destructive actions ; Tenant isolation ; Cost per user per month ; User short-lived OAuth2 or OIDC token (RFC 8693 exchange) passed through to every product API ; Mutations follow plan, preview, commit with idempotency keys
 sn: Authority | Execute with the user's scoped permissions | Service-account superuser | A hijacked copilot must not exceed the user's rights
 sn: Reliability | Typed tools with validation and dry-run | Free-form API calls | Free-form calls produce invalid or dangerous requests
+sn: Credentials | User-scoped short-lived tokens via RFC 8693 token exchange passed through the orchestrator to product APIs | A super-admin or service token inside the agent | A jailbroken agent holding a service token bypasses tenant isolation and row-level security
+sn: Mutations | Plan, preview, commit: a dry-run diff rendered as a UI card and a signed user confirmation bound to the plan hash | Executing the model tool call directly | A prompt injection or a misread request becomes an irreversible write
 sig: Tool-call validity rate | calls passing schema validation | Reliability | Schemas
 sig: Task success rate | tasks completed as intended | Value | Instrumentation
 sig: Confirmation acceptance | user approvals of previews | Safety | UI
+sig: Plan-hash confirmation match | share of executed mutations whose signed confirmation matches the previewed plan hash | Integrity of the commit step | Record the hash at preview time, not at execution
+sig: Idempotency replay rate | retries or double clicks absorbed without a second effect | Safety under retries | Keys must be scoped to user, plan and step
 noise: Chat turns | not success
 noise: Response length | weak
 base: Help articles and static onboarding tours.
-prod: Planner agent over typed product tools with permission-scoped tokens, dry-run previews, confirmations for state changes and cost-aware model routing.
+prod: Planner agent over typed product tools with permission-scoped tokens, dry-run previews, confirmations for state changes and cost-aware model routing. User tokens are exchanged (RFC 8693) and passed through the orchestrator to product APIs, and mutations use plan-preview-commit with signed confirmations and idempotency keys.
 pipe: User request @ in-app chat ; Context builder @ page and entity context ; Planner LLM @ tool-calling ; Tool gateway @ typed APIs with scopes ; Preview and confirm @ UI ; Execution @ product API ; Audit and feedback @ logs
 edge: Ambiguous request deletes the wrong object | an ambiguous request makes the copilot delete the wrong object and cause data loss | Dry-run previews, confirmations and soft-delete
 edge: Tenant data leaks via retrieval | cross-customer exposure | Tenant-scoped indexes and ACL-aware retrieval
+edge: Double click or retry on confirm | the mutation runs twice | Idempotency key bound to the plan hash and confirmation nonce so the second call returns the first result
+edge: Token expires mid-plan | later saga steps run with stale or elevated credentials | Re-exchange tokens per step and abort with compensation if the user session is gone
 off: Task success on golden tasks ; Tool-call validity
 on: Feature adoption via copilot ; Support tickets avoided
 gap: Golden tasks too easy ; Ignoring permission edge cases

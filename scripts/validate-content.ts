@@ -10,6 +10,7 @@ import { JSDOM } from 'jsdom';
 import katex from 'katex';
 import { loadAllUseCases } from '../src/content/load';
 import { DOMAINS, type UseCase } from '../src/schemas/usecase.schema';
+import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
 
 const MIN_PER_DOMAIN = Number(process.env.MIN_PER_DOMAIN ?? 50);
@@ -64,6 +65,14 @@ async function main() {
       u.problemFormulation.lossVariables.length
     )
       errors.push(`${u.slug}: duplicate loss symbols`);
+
+    // role lenses and primitive links must resolve to a real canonical write-up
+    for (const id of [
+      ...u.primitives,
+      ...u.roleLenses.flatMap((l) => l.items.flatMap((i) => (i.primitive ? [i.primitive] : []))),
+    ])
+      if (!PRIMITIVE_BY_ID[id])
+        errors.push(`${u.slug}: unknown primitive "${id}" (add it to src/content/primitives.ts)`);
 
     const blocks: [string, string][] = [
       ['pipeline', u.architectureBlueprint.mermaidDiagram],

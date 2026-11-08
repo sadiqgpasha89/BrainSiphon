@@ -175,8 +175,39 @@ export const ScaleRowSchema = z.object({
   how: nonEmpty,
 });
 
+export const TopologySchema = z.object({
+  /** which part of the system is active-active and which state is pinned: not every blueprint is "three active-active regions" */
+  stance: z.enum(['stateless-active-active', 'residency-pinned', 'tenant-isolated']),
+  summary: nonEmpty,
+  inferencePlane: nonEmpty,
+  statePlane: nonEmpty,
+  notes: z.array(nonEmpty).min(2),
+});
+
+export const RoleLensSchema = z.object({
+  role: z.enum([
+    'ai-architect',
+    'solution-architect',
+    'data-engineer',
+    'data-scientist',
+    'ai-engineer',
+    'inference-engineer',
+  ]),
+  focus: nonEmpty,
+  items: z
+    .array(
+      z.object({
+        title: nonEmpty,
+        detail: nonEmpty,
+        /** id of a canonical primitive at /patterns/primitives/<id> */ primitive: z.string().optional(),
+      }),
+    )
+    .min(3),
+});
+
 export const SystemDesignSchema = z.object({
   mode: z.enum(['online', 'interactive', 'batch']),
+  topology: TopologySchema,
   hld: z.object({
     summary: nonEmpty,
     components: z.array(ComponentSchema).min(4),
@@ -201,6 +232,13 @@ export const SystemDesignSchema = z.object({
   }),
   e2e: z.array(E2EPhaseSchema).min(8),
   scale: z.object({
+    /** the traffic profile behind the table, so the page can re-run the model with what-if sliders */
+    inputs: z.object({
+      a: z.number().positive(),
+      k: z.number().positive(),
+      steps: z.number().positive().optional(),
+      tokensPerStep: z.number().positive().optional(),
+    }),
     assumptions: z.array(nonEmpty).min(3),
     table: z.array(ScaleRowSchema).min(8),
     bottlenecks: z.array(nonEmpty).min(3),
@@ -433,6 +471,10 @@ export const UseCaseSchema = z
     }),
     productionEdgeCases: z.array(EdgeCaseSchema).min(2),
     systemDesign: SystemDesignSchema,
+    /** what each of the six personas must additionally check, specialised to this use case */
+    roleLenses: z.array(RoleLensSchema).length(6),
+    /** canonical mechanisms this system leans on, explained once at /patterns/primitives/<id> */
+    primitives: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1),
     agentic: AgenticSchema,
     playbook: PlaybookSchema.optional(),
   })
@@ -456,6 +498,8 @@ export interface UseCaseIndexEntry {
   lastVerifiedAt: string;
   keywords: string;
   pattern: PatternId;
+  /** canonical primitives this blueprint leans on (ids under /patterns/primitives/) */
+  primitives?: string[];
   /** the sub-area of the domain this use case belongs to, and its position in the domain's authored order */
   trackId?: string;
   trackName?: string;

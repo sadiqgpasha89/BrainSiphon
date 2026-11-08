@@ -127,3 +127,46 @@ a {
     animation: none !important;
   }
 }
+
+/* Role lens: show only the sections a persona reads, and only that persona's card in the role-lens section. */
+[data-testid='reader']:not([data-role='all']) section[data-roles] {
+  display: none;
+}
+[data-testid='reader'][data-role='ai-architect'] section[data-roles~='ai-architect'] {
+  display: block;
+}
+[data-testid='reader'][data-role='ai-architect'] [data-role-card]:not([data-role-card='ai-architect']) {
+  display: none;
+}
+[data-testid='reader'][data-role='solution-architect'] section[data-roles~='solution-architect'] {
+  display: block;
+}
+[data-testid='reader'][data-role='solution-architect']
+  [data-role-card]:not([data-role-card='solution-architect']) {
+  display: none;
+}
+[data-testid='reader'][data-role='data-engineer'] section[data-roles~='data-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-role='data-engineer'] [data-role-card]:not([data-role-card='data-engineer']) {
+  display: none;
+}
+[data-testid='reader'][data-role='data-scientist'] section[data-roles~='data-scientist'] {
+  display: block;
+}
+[data-testid='reader'][data-role='data-scientist'] [data-role-card]:not([data-role-card='data-scientist']) {
+  display: none;
+}
+[data-testid='reader'][data-role='ai-engineer'] section[data-roles~='ai-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-role='ai-engineer'] [data-role-card]:not([data-role-card='ai-engineer']) {
+  display: none;
+}
+[data-testid='reader'][data-role='inference-engineer'] section[data-roles~='inference-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-role='inference-engineer']
+  [data-role-card]:not([data-role-card='inference-engineer']) {
+  display: none;
+}

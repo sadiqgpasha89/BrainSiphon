@@ -8,6 +8,7 @@ import { dirname, join } from 'node:path';
 import { loadAllUseCases, toIndexEntry } from '../src/content/load';
 import { toMarkdown } from '../src/content/markdown';
 import { DOMAIN_META, DOMAINS, PATTERN_IDS } from '../src/schemas/usecase.schema';
+import { PRIMITIVES } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks, type ResolvedDomainTracks } from '../src/content/tracks';
 import { readFileSync } from 'node:fs';
 
@@ -73,7 +74,8 @@ const patternsOut = PATTERN_IDS.map((id) => {
 });
 write(join(gen, 'patterns.json'), JSON.stringify(patternsOut));
 write(join(gen, 'index.json'), JSON.stringify(index));
-write(join(pub, 'search-index.json'), JSON.stringify(index));
+// the search index is shipped to browsers: keep it slim (primitive links are only needed by the pattern pages)
+write(join(pub, 'search-index.json'), JSON.stringify(index.map((e) => ({ ...e, primitives: undefined }))));
 
 const llms: string[] = [
   '# BrainSiphon',
@@ -87,6 +89,14 @@ for (const d of DOMAINS) {
     llms.push(`- [${u.title}](${origin}/${u.slug}.md): ${u.summary}`);
   llms.push('');
 }
+llms.push(
+  '## Architectural primitives',
+  '',
+  'Canonical write-ups of mechanisms that repeat across blueprints; blueprints link here instead of repeating them.',
+  '',
+);
+for (const p of PRIMITIVES) llms.push(`- [${p.title}](${origin}/patterns/primitives/${p.id}): ${p.summary}`);
+llms.push('');
 write(join(pub, 'llms.txt'), `${llms.join('\n')}\n`);
 
 if (!existsSync(join(root, 'content', 'slug-history.json')))

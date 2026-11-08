@@ -168,3 +168,41 @@ test('a pilot use case shows hand-written narrative sections with its own stage 
   await expect(page.getByTestId('solution-approach')).toContainText('Precompute the graph, never query it');
   await expect(page.getByTestId('architecture-rationale')).toContainText('mule-device rotation');
 });
+
+test('role lens keys 1-6 filter sections, 0 resets, and the role-lens section lists primitives', async ({
+  page,
+}) => {
+  await page.goto('/healthcare/sepsis-early-warning');
+  const reader = page.getByTestId('reader');
+  await expect(reader).toHaveAttribute('data-role', 'all');
+  await page.keyboard.press('6');
+  await expect(reader).toHaveAttribute('data-role', 'inference-engineer');
+  await expect(page.locator('#signal-noise')).toBeHidden();
+  await expect(page.locator('#scale')).toBeVisible();
+  await expect(page.getByTestId('lens-inference-engineer')).toBeVisible();
+  await expect(page.getByTestId('lens-data-scientist')).toBeHidden();
+  await page.keyboard.press('0');
+  await expect(reader).toHaveAttribute('data-role', 'all');
+  await expect(page.locator('#signal-noise')).toBeVisible();
+  await expect(page.getByTestId('primitives').getByRole('link').first()).toBeVisible();
+});
+
+test('capacity calculator re-runs the model and resets to the published numbers', async ({ page }) => {
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  const calc = page.getByTestId('capacity-calculator');
+  await calc.scrollIntoViewIfNeeded();
+  const cost = calc.locator('dl > div', { hasText: 'Monthly run cost' }).locator('dd').first();
+  const before = await cost.textContent();
+  await calc.getByLabel('Daily active share').fill('60');
+  await expect(cost).not.toHaveText(before ?? '');
+  await page.getByTestId('calc-reset').click();
+  await expect(cost).toHaveText(before ?? '');
+});
+
+test('primitive pages exist and list the blueprints that use them', async ({ page }) => {
+  await page.goto('/patterns');
+  await expect(page.getByTestId('primitive-list').getByRole('link').first()).toBeVisible();
+  await page.goto('/patterns/primitives/pid-budget-pacer');
+  await expect(page.getByTestId('primitive-title')).toHaveText('PID budget pacer');
+  await expect(page.getByTestId('primitive-uses').getByRole('link').first()).toBeVisible();
+});

@@ -25,7 +25,21 @@ export interface ScaleInput {
   k: number;
   steps?: number;
   tokensPerStep?: number;
+  /** Optional what-if overrides (used by the interactive calculator). Omitted = the published 10M-user defaults. */
+  registeredUsers?: number;
+  dauRatio?: number;
+  peakFactor?: number;
+  /** p99 target in ms. Tighter than the baseline SLA derates per-node utilisation; looser raises it. */
+  slaMs?: number;
 }
+
+/** The p99 the published table is sized for, per latency class. */
+export const BASELINE_SLA_MS: Record<LatencySLA, number | null> = {
+  'sub-10ms': 8,
+  'sub-100ms': 80,
+  seconds: 2500,
+  batch: null,
+};
 
 export interface ScaleResult {
   mode: 'online' | 'interactive' | 'batch';
@@ -75,12 +89,18 @@ export const usd = (n: number) => (n >= 1e6 ? `$${(n / 1e6).toFixed(2)}M` : n >=
 export function computeScale(i: ScaleInput): ScaleResult {
   const mode = modeOf(i.latency);
   const computeClass = computeClassOf(i.paradigms, i.latency);
-  const dau = REGISTERED_USERS * DAU_RATIO;
+  const registered = i.registeredUsers ?? REGISTERED_USERS;
+  const dauRatio = i.dauRatio ?? DAU_RATIO;
+  const dau = registered * dauRatio;
   const eventsPerDay = dau * i.a;
   const avgQps = eventsPerDay / SECONDS_PER_DAY;
-  const peakFactor = mode === 'batch' ? 1 : i.latency === 'sub-10ms' ? 8 : 6;
+  const peakFactor = mode === 'batch' ? 1 : (i.peakFactor ?? (i.latency === 'sub-10ms' ? 8 : 6));
   const peakQps = avgQps * peakFactor;
-  const provisionedQps = peakQps * 1.5; // N+1 across three regions (lose one, serve peak)
+  // Utilisation derating: a tighter p99 than the baseline needs more headroom per node (queueing delay grows
+  // non-linearly near saturation); a looser one lets nodes run hotter. Exactly 1 at the baseline SLA.
+  const baseSla = BASELINE_SLA_MS[i.latency];
+  const slaDerate = mode === 'batch' || !i.slaMs || !baseSla ? 1 : Math.min(1.5, Math.max(0.6, 1 + 0.25 * Math.log2(baseSla / i.slaMs)));
+  const provisionedQps = peakQps * 1.5 * slaDerate; // N+1 across three regions (lose one, serve peak)
 
   let nodes = 0;
   let nodeUnit = '8-vCPU pods';
@@ -155,7 +175,7 @@ export function computeScale(i: ScaleInput): ScaleResult {
   const costPer1kUSD = monthlyTotalUSD / ((eventsPerDay * 30) / 1000);
 
   const rows: ScaleResult['rows'] = [
-    { metric: 'Registered / daily active users', value: `${fmt(REGISTERED_USERS)} / ${fmt(dau)}`, how: `${DAU_RATIO * 100}% DAU of 10M registered` },
+    { metric: 'Registered / daily active users', value: `${fmt(registered)} / ${fmt(dau)}`, how: `${Math.round(dauRatio * 1000) / 10}% DAU of ${fmt(registered)} registered` },
     { metric: 'Model-touching events per day', value: fmt(eventsPerDay), how: `${fmt(dau)} DAU × ${i.a} events/user/day` },
     { metric: 'Average throughput', value: `${fmt(avgQps, 1)} req/s`, how: 'events/day ÷ 86,400' },
     { metric: mode === 'batch' ? 'Rows per run (daily)' : 'Peak throughput', value: mode === 'batch' ? fmt(eventsPerDay) : `${fmt(peakQps, 0)} req/s`, how: mode === 'batch' ? 'one partition per day' : `average × ${peakFactor} (diurnal + event spikes)` },
@@ -171,11 +191,11 @@ export function computeScale(i: ScaleInput): ScaleResult {
   ];
 
   const assumptions = [
-    `${fmt(REGISTERED_USERS)} registered users, ${DAU_RATIO * 100}% daily active; each active user triggers ${i.a} model-touching events per day.`,
+    `${fmt(registered)} registered users, ${Math.round(dauRatio * 1000) / 10}% daily active; each active user triggers ${i.a} model-touching events per day.`,
     `Average payload ${i.k} KB per event across request, features and decision log.`,
     mode === 'batch'
       ? 'One daily partition; runs must finish inside a 2-hour window so downstream consumers are never blocked.'
-      : `Peak = ${peakFactor}× average; three active-active regions sized so losing one still serves peak (×1.5).`,
+      : `Peak = ${peakFactor}× average; the stateless inference plane runs in three active-active regions sized so losing one still serves peak (×1.5).`,
     'Unit prices are indicative on-demand list prices; committed-use or spot discounts typically cut compute 30–60%.',
   ];
 

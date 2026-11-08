@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getIndex } from '../lib/content';
 import { DOMAINS, PATTERN_IDS } from '../schemas/usecase.schema';
+import { PRIMITIVE_IDS } from '../content/primitives';
 import { SITE_URL } from '../lib/site';
 
 export const dynamic = 'force-static';
@@ -15,6 +16,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}/patterns/${k}`,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
+    })),
+    ...PRIMITIVE_IDS.map((k) => ({
+      url: `${SITE_URL}/patterns/primitives/${k}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
     })),
     ...entries.map((e) => ({
       url: `${SITE_URL}/${e.slug}`,

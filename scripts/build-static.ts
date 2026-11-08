@@ -6,6 +6,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, renameSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
+import { verifyStatic } from './verify-static';
 
 const root = process.cwd();
 const stash = join(root, '.static-stash');
@@ -42,6 +43,9 @@ try {
     NEXT_PUBLIC_SITE_URL: `${siteUrl}${basePath}`,
   });
   writeFileSync(join(root, 'out', '.nojekyll'), '');
+  const problems = verifyStatic(root, basePath, siteUrl);
+  if (problems.length)
+    throw new Error(`static export verification failed:\n  - ${problems.slice(0, 20).join('\n  - ')}`);
   console.log('build:static ✔ output in ./out');
 } finally {
   for (const [src, name] of moved) renameSync(join(stash, name), join(root, src));

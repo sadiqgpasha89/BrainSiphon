@@ -422,19 +422,25 @@ gap: Non-adaptive attacks only ; Unrealistic perturbation budgets
 == llm-prompt-injection-detection | LLM Prompt-Injection & Jailbreak Detection | nlp,llm-agents | sub-100ms | staff-principal | a=10 k=4
 obj: Detect direct and indirect prompt injection and jailbreaks in LLM application inputs and retrieved content before they reach the model or tools.
 loss: \mathcal{L}=\mathrm{FL}(y,p)+\lambda\,\mathrm{Calibration}
-con: Added latency under 30 ms ; Multilingual and encoded attacks ; Low false positives on legitimate prompts ; Defence in depth
+con: Added latency under 30 ms ; Multilingual and encoded attacks ; Low false positives on legitimate prompts ; Defence in depth ; Covers indirect injection in retrieved documents, emails, web pages and MCP tool responses ; Classifier paired with structural isolation because no single layer is trusted
 sn: Layers | Layered defences: input classifier, privilege separation, output checks | Prompt-only defences | Classifiers alone are routinely bypassed
 sn: Indirect | Treat retrieved and tool content as untrusted | Filtering user input only | Most severe attacks arrive in documents and web pages
+sn: Isolation | Spotlighting untrusted context with random delimiters and a deterministic policy engine on every outbound tool call | A better classifier as the only defence | Adversarial suffixes, base64 and homoglyph encodings and multi-turn crescendo attacks keep bypassing standalone classifiers
+sn: Exfiltration | Blocking markdown image and link exfiltration and unauthorised API arguments in outbound calls | Scanning only the final text reply | An injected instruction can leak data through a rendered image URL or a tool argument with no visibly malicious text
 sig: Instruction-likeness of untrusted content | classifier on imperative text in data | Indirect injection | Segmentation
 sig: Policy violation attempt score | jailbreak taxonomy classifier | Direct attack | Red-team data
 sig: Tool-call privilege anomaly | call outside user's intent | Exploitation | Intent model
+sig: Untrusted-source provenance | per-chunk tag: user, retrieved document, email, web page or tool output | Indirect injection | Provenance must be attached at retrieval, not inferred later
+sig: Outbound-call policy violations | tool calls whose arguments or destinations fall outside the allow-list for the user intent | Exploitation after a successful injection | Allow-lists must derive from the user request, never from model output
 noise: Prompt length | weak
 noise: Language | weak
 base: Keyword and regex filters for known jailbreak phrases.
-prod: Small fine-tuned encoder classifier on user and retrieved text, with privilege separation, output validators and canary tokens for exfiltration.
+prod: Small fine-tuned encoder classifier on user and retrieved text, with privilege separation, output validators and canary tokens for exfiltration. Quantised DeBERTa-v3 or Llama-Guard class model on the ingress path, spotlighting of untrusted context with random delimiters or datamarking, and a deterministic policy engine on every outbound tool call.
 pipe: Input and retrieved content @ app ; Normaliser @ decode and strip ; Injection classifier @ small encoder ; Privilege-separation layer @ tool permissions ; Output validator @ policy check ; Security logging @ SIEM ; Red-team feedback @ retraining
 edge: Attack encoded in base64 or another language | classifier misses | Decode and translate pipeline with multilingual training data
 edge: Benign prompts that discuss security flagged | harmless prompts discussing security topics are flagged and legitimate users get blocked | Context-aware thresholds and appeal-free allow with logging
+edge: Payload hidden in a retrieved document or MCP tool response | the classifier only saw the user prompt and the model follows the embedded instruction | Classify retrieved and tool content on the ingress path, spotlight it and enforce the outbound policy engine
+edge: Multi-turn crescendo attack | each turn looks benign on its own | Score the conversation trajectory and restrict tool privileges as risk accumulates
 off: Attack detection rate at 0.1% FPR ; Robustness to encoded variants
 on: Successful injection incidents ; False block rate
 gap: Static public jailbreak datasets ; Ignoring indirect injection

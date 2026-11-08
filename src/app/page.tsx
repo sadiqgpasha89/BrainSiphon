@@ -1,5 +1,6 @@
 import {
   ArrowRight,
+  Blocks,
   Boxes,
   Gauge,
   GitBranch,
@@ -8,13 +9,16 @@ import {
   Network,
   Sigma,
   Table2,
+  Users,
   TriangleAlert,
   Workflow,
 } from 'lucide-react';
 import Link from 'next/link';
 import { SearchTrigger } from '../components/SearchTrigger';
 import { getIndex } from '../lib/content';
-import { DOMAINS, DOMAIN_META, ML_PARADIGMS, PARADIGM_LABEL } from '../schemas/usecase.schema';
+import { DOMAINS, DOMAIN_META, ML_PARADIGMS, PARADIGM_LABEL, type Paradigm } from '../schemas/usecase.schema';
+import { ROLE_IDS, ROLE_META } from '../lib/roles';
+import { PRIMITIVES } from '../content/primitives';
 
 export const revalidate = 86400;
 
@@ -42,7 +46,7 @@ const SECTIONS = [
   {
     icon: Network,
     title: 'HLD for 10M users',
-    body: 'Three active-active regions, serving plane, data plane, budgets per hop.',
+    body: 'Stateless inference active-active; regulated or tenant state pinned. Budgets per hop.',
   },
   {
     icon: GitBranch,
@@ -62,12 +66,22 @@ const SECTIONS = [
   {
     icon: Gauge,
     title: 'Capacity model',
-    body: 'QPS, nodes, Kafka partitions, storage and cost per 1,000 decisions.',
+    body: 'QPS, nodes, partitions, storage and cost per 1,000 decisions, with a live what-if calculator.',
   },
   {
     icon: TriangleAlert,
     title: 'Edge cases',
     body: 'Scenario → failure mode → mitigation, from real production incidents.',
+  },
+  {
+    icon: Users,
+    title: 'Role lenses',
+    body: 'Production gaps for six personas, from AI architect to inference engineer.',
+  },
+  {
+    icon: Blocks,
+    title: 'Reference primitives',
+    body: `${PRIMITIVES.length} canonical mechanisms (pacers, PIT joins, shedding) linked, not repeated.`,
   },
 ];
 
@@ -107,7 +121,8 @@ export default async function Home() {
           <SearchTrigger />
           <span className="text-sm text-dim">
             Inside a blueprint press <span className="kbd">[</span> for Pure Signal ·{' '}
-            <span className="kbd">]</span> for full detail
+            <span className="kbd">]</span> for full detail · <span className="kbd">1</span>–
+            <span className="kbd">6</span> to read as your role
           </span>
         </div>
         <dl className="mt-12 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
@@ -132,7 +147,10 @@ export default async function Home() {
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {DOMAINS.map((d) => {
             const items = all.filter((e) => e.domain === d);
-            const para = [...new Set(items.flatMap((e) => e.mlParadigms))].slice(0, 3);
+            // the paradigms this domain actually uses most, not the first three that happen to appear
+            const counts = new Map<Paradigm, number>();
+            for (const e of items) for (const p of e.mlParadigms) counts.set(p, (counts.get(p) ?? 0) + 1);
+            const para = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
             return (
               <Link
                 key={d}
@@ -145,8 +163,8 @@ export default async function Home() {
                 </div>
                 <p className="mt-2 flex-1 text-sm text-mute">{DOMAIN_META[d].blurb}</p>
                 <div className="mt-4 flex flex-wrap gap-1.5">
-                  {para.map((p) => (
-                    <span key={p} className="chip">
+                  {para.map(([p, n]) => (
+                    <span key={p} className="chip" title={`${n} of ${items.length} blueprints`}>
                       {PARADIGM_LABEL[p]}
                     </span>
                   ))}
@@ -161,12 +179,33 @@ export default async function Home() {
         <h2 id="inside" className="h-section">
           What every blueprint contains
         </h2>
-        <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           {SECTIONS.map(({ icon: Icon, title, body }) => (
             <li key={title} className="card p-4">
               <Icon size={18} className="text-signal" aria-hidden />
               <h3 className="mt-3 text-sm font-semibold">{title}</h3>
               <p className="mt-1 text-xs leading-relaxed text-mute">{body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="roles" className="py-8">
+        <h2 id="roles" className="h-section">
+          Read it as your role
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-mute">
+          Inside any blueprint, press the number key (or use the Lens bar) to keep only the sections that role
+          needs, and read the role&apos;s checklist of production gaps at the end.
+        </p>
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="role-cards">
+          {ROLE_IDS.map((r) => (
+            <li key={r} className="card p-4">
+              <p className="text-sm font-semibold text-ink">
+                <span className="kbd mr-2">{ROLE_META[r].key}</span>
+                {ROLE_META[r].label}
+              </p>
+              <p className="mt-2 text-sm text-mute">{ROLE_META[r].focus}</p>
             </li>
           ))}
         </ul>

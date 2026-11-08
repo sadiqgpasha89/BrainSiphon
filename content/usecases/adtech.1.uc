@@ -2,19 +2,25 @@
 == real-time-bidding-bid-optimization | Real-Time Bidding Bid Optimisation | reinforcement-learning,tabular | sub-10ms | staff-principal | a=40 k=1
 obj: Compute the bid for every impression opportunity that maximises campaign value under budget and KPI constraints within the auction deadline.
 loss: \max_b\;\mathbb{E}\!\left[(v\cdot p_{\text{conv}}-\text{price})\cdot \mathbb{1}[\text{win}(b)]\right]\ \text{s.t. spend}\le B
-con: Response under 8 ms of a 100 ms exchange timeout ; 1M bid requests per second peak ; Calibrated probabilities ; Budget never exceeded
+con: Response under 8 ms of a 100 ms exchange timeout ; 1M bid requests per second peak ; Calibrated probabilities ; Budget never exceeded ; Campaign budgets paced by a primal-dual or PID controller updated every few seconds ; First-price auctions with bid shading ; In-flight spend reserved across the 50 to 500 ms win-notice delay
 sn: Calibration | Calibrated pCTR and pCVR used in the bid formula | Ranking-only models | Bid = value times probability so miscalibration directly loses money
 sn: Landscape | Model the win-price distribution per segment | Fixed bid multipliers | The market clearing price moves by hour and publisher
+sn: Pacing | Primal-dual or PID controller updating a per-campaign shadow-price multiplier every few seconds from live spend streams | Predicting pCTR and pCVR well while the budget burns out by mid-morning | An accurate bid on a campaign with no budget left is worth nothing and spend must follow the traffic curve
+sn: Auction type | First-price bid shading from a censored clearing-price model | Bidding true value in a first-price auction | You overpay by the whole gap between your value and the clearing price
 sig: Calibrated pCVR | predicted conversion probability after isotonic calibration | Value estimate | Calibrate on delayed-feedback-corrected labels
 sig: Win-rate curve | win probability as a function of bid for the segment | Bid landscape | Censored data below the observed bids
 sig: Pacing multiplier | budget remaining relative to the ideal pacing curve | Spend control | Real-time state
+sig: Clearing-price density | survival regression on won and lost bids per exchange and segment | Shading target between the second-highest expected bid and the advertiser valuation | Lost bids are right-censored, so fitting on won bids only makes the price look too high
+sig: In-flight spend reserve | sum of submitted bids whose win notice (burl) has not arrived | Stops overspend during the notice delay | Counting only billed wins lets a traffic spike overspend the budget
 noise: Raw user-agent string | high cardinality, sparse and unstable
 noise: Bid request ID | random identifier
 base: Linear bidding: bid = base value times pCTR times a pacing factor.
-prod: Calibrated GBDT or DCN pCVR, a learned win-price model and a Lagrangian bid optimiser with a feedback pacing controller.
+prod: Calibrated GBDT or DCN pCVR, a learned win-price model and a Lagrangian bid optimiser with a feedback pacing controller. Bids are shaded from a censored clearing-price model and scaled by a campaign multiplier that the pacer updates every few seconds, with in-flight spend reserved until the win notice arrives.
 pipe: Bid request listener @ Envoy gRPC ; Feature assembly @ in-process cache ; pCTR pCVR model @ ONNX CPU ; Bid optimiser @ Lagrangian formula ; Pacing controller @ budget service ; Bid responder @ OpenRTB ; Win and loss logs @ Kafka
 edge: Exchange changes auction type from second to first price | bids systematically overpay for weeks | Detect clearing-price shift and retrain win-price model with bid shading
 edge: Delayed conversions arrive days after the impression | recent traffic looks worse than it is | Delayed-feedback model with elapsed-time features
+edge: Win notices delayed or dropped | budget accounting lags and the campaign overspends | Reserve in-flight spend per bid, expire unreconciled reservations and reconcile against exchange billing daily
+edge: Pacer integral wind-up after an outage | the multiplier saturates and floods or starves spend after recovery | Clamp and reset the integrator, rate-limit multiplier changes and fall back to a flat conservative multiplier
 off: Log-loss and calibration error ; Offline simulated value under budget
 on: Cost per acquisition ; Return on ad spend
 gap: Training only on won impressions ignores the censored losing bids ; Offline replay cannot reproduce the market response to new bids

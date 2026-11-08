@@ -1,9 +1,10 @@
 'use client';
 
 import { Eye, EyeOff, FileText } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CopyButton } from '../CopyButton';
 import { withBase } from '../../lib/site';
+import { ROLE_IDS, ROLE_META, ROLE_SECTIONS, isRoleId, type RoleId } from '../../lib/roles';
 
 export interface TocItem {
   id: string;
@@ -12,6 +13,7 @@ export interface TocItem {
 }
 
 const STORAGE_KEY = 'bs:pure-signal';
+const ROLE_KEY = 'bs:role';
 
 export function ReaderShell({
   toc,
@@ -26,10 +28,15 @@ export function ReaderShell({
 }) {
   const [pure, setPure] = useState(false);
   const [active, setActive] = useState(toc[0]?.id ?? '');
+  const [role, setRoleState] = useState<RoleId | null>(null);
+  const roleRef = useRef<RoleId | null>(null);
+  roleRef.current = role;
 
   useEffect(() => {
     try {
       setPure(localStorage.getItem(STORAGE_KEY) === '1');
+      const r = localStorage.getItem(ROLE_KEY);
+      if (isRoleId(r)) setRoleState(r);
     } catch {
       /* storage unavailable */
     }
@@ -44,6 +51,20 @@ export function ReaderShell({
     }
   }, []);
 
+  const setRole = useCallback((r: RoleId | null) => {
+    setRoleState(r);
+    try {
+      localStorage.setItem(ROLE_KEY, r ?? 'all');
+    } catch {
+      /* storage unavailable */
+    }
+    // the layout just changed: bring the first section this role cares about back into view
+    if (r)
+      requestAnimationFrame(() =>
+        document.getElementById(ROLE_SECTIONS[r][0]!)?.scrollIntoView({ block: 'start' }),
+      );
+  }, []);
+
   // "[" → Pure Signal (collapse to tables, diagrams, math, code); "]" → full detail.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -56,10 +77,14 @@ export function ReaderShell({
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === '[') set(true);
       else if (e.key === ']') set(false);
+      else if (e.key >= '1' && e.key <= '6') {
+        const r = ROLE_IDS[Number(e.key) - 1]!;
+        setRole(roleRef.current === r ? null : r);
+      } else if (e.key === '0') setRole(null);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [set]);
+  }, [set, setRole]);
 
   // Which section is current: the last one whose top has passed the sticky header. Scroll-driven (and re-queried
   // on every event) rather than an IntersectionObserver set up at mount, because streamed sections may not exist yet then.
@@ -70,7 +95,7 @@ export function ReaderShell({
       let current = toc[0]?.id ?? '';
       for (const t of toc) {
         const el = document.getElementById(t.id);
-        if (el && el.getBoundingClientRect().top <= 230) current = t.id;
+        if (el && el.offsetParent !== null && el.getBoundingClientRect().top <= 230) current = t.id;
       }
       setActive(current);
     };
@@ -125,23 +150,26 @@ export function ReaderShell({
     <div
       className={`mx-auto grid max-w-7xl gap-10 px-4 pt-8 lg:grid-cols-[14rem_minmax(0,1fr)] ${pure ? 'pure-signal' : ''}`}
       data-pure={pure ? 'true' : 'false'}
+      data-role={role ?? 'all'}
       data-testid="reader"
     >
       <aside className="hidden lg:block">
         <nav aria-label="On this page" className="sticky top-20">
           <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-dim">On this page</p>
           <ul className="space-y-0.5 border-l border-line">
-            {toc.map((t) => (
-              <li key={t.id} {...(t.prose ? { 'data-prose-section': true } : {})}>
-                <a
-                  href={`#${t.id}`}
-                  aria-current={active === t.id ? 'location' : undefined}
-                  className={`-ml-px block border-l px-3 py-1.5 text-sm no-underline transition ${active === t.id ? 'border-signal text-signal' : 'border-transparent text-mute hover:border-mute hover:text-ink'}`}
-                >
-                  {t.label}
-                </a>
-              </li>
-            ))}
+            {toc
+              .filter((t) => !role || ROLE_SECTIONS[role].includes(t.id))
+              .map((t) => (
+                <li key={t.id} {...(t.prose ? { 'data-prose-section': true } : {})}>
+                  <a
+                    href={`#${t.id}`}
+                    aria-current={active === t.id ? 'location' : undefined}
+                    className={`-ml-px block border-l px-3 py-1.5 text-sm no-underline transition ${active === t.id ? 'border-signal text-signal' : 'border-transparent text-mute hover:border-mute hover:text-ink'}`}
+                  >
+                    {t.label}
+                  </a>
+                </li>
+              ))}
           </ul>
           <div className="mt-6 space-y-2 text-xs text-dim">
             <p>
@@ -149,6 +177,10 @@ export function ReaderShell({
             </p>
             <p>
               <span className="kbd">]</span> full detail
+            </p>
+            <p>
+              <span className="kbd">1</span>–<span className="kbd">6</span> role lens ·{' '}
+              <span className="kbd">0</span> all
             </p>
             <p>
               <span className="kbd">⌘K</span> search
@@ -179,6 +211,42 @@ export function ReaderShell({
           <span className="ml-auto hidden text-xs text-dim sm:inline">
             {pure ? 'Prose hidden — tables, diagrams, math and code only' : 'Full blueprint'}
           </span>
+          <div
+            className="flex w-full flex-wrap items-center gap-1.5"
+            role="group"
+            aria-label="Role lens"
+            data-testid="role-lens"
+          >
+            <span className="mr-1 font-mono text-[11px] uppercase tracking-wider text-dim">Lens</span>
+            <button
+              type="button"
+              className={`chip cursor-pointer ${role === null ? 'chip-signal' : ''}`}
+              aria-pressed={role === null}
+              onClick={() => setRole(null)}
+              data-testid="role-all"
+            >
+              <span className="text-dim">0</span> All
+            </button>
+            {ROLE_IDS.map((r) => (
+              <button
+                key={r}
+                type="button"
+                className={`chip cursor-pointer ${role === r ? 'chip-signal' : ''}`}
+                aria-pressed={role === r}
+                onClick={() => setRole(role === r ? null : r)}
+                title={ROLE_META[r].focus}
+                data-testid={`role-${r}`}
+              >
+                <span className="text-dim">{ROLE_META[r].key}</span> {ROLE_META[r].label}
+              </button>
+            ))}
+            {role && (
+              <span className="ml-2 text-xs text-dim">
+                {ROLE_SECTIONS[role].filter((id) => toc.some((t) => t.id === id)).length} of {toc.length}{' '}
+                sections
+              </span>
+            )}
+          </div>
         </div>
         {children}
       </div>

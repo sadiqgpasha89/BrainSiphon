@@ -37,6 +37,12 @@ export function SiteFooter() {
             <li>
               Append <code className="kbd">.md</code> to any blueprint URL for clean markdown
             </li>
+            <li>
+              <Link href="/patterns" className="hover:text-ink">
+                Patterns &amp; primitives
+              </Link>{' '}
+              — canonical mechanisms, written once
+            </li>
           </ul>
         </div>
       </div>

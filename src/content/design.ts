@@ -115,7 +115,7 @@ export function pipelineDiagram(stages: Stage[], mode: ScaleResult['mode']): str
 
 /* --------------------------------------------------------------------- HLD */
 
-export function hldDiagram(stages: Stage[], mode: ScaleResult['mode'], paradigms: Paradigm[]): string {
+export function hldDiagram(stages: Stage[], mode: ScaleResult['mode'], paradigms: Paradigm[], stance: 'stateless-active-active' | 'residency-pinned' | 'tenant-isolated' = 'stateless-active-active'): string {
   const sync = stages.filter((s) => !s.async);
   const feat = sync.find((s) => s.kind === 'feature') ?? sync[0]!;
   const last = sync[sync.length - 1]!;
@@ -141,7 +141,7 @@ export function hldDiagram(stages: Stage[], mode: ScaleResult['mode'], paradigms
 
   L.push('  U(["10M users / upstream systems"]) --> EDGE["CDN, WAF, GeoDNS<br/>TLS termination"]');
   L.push('  EDGE --> GW');
-  L.push('  subgraph R["Region 1..3 - active-active, each sized N+1"]');
+  L.push(`  subgraph R["Inference plane - Region 1..3 active-active, each sized N+1"]`);
   L.push(`    GW["API gateway<br/>authN, rate limit, ${mode === 'interactive' ? 'streaming, ' : ''}deadline propagation"]`);
   L.push('    subgraph SP["Serving plane - stateless, autoscaled"]');
   sync.forEach((s, i) => L.push(`      ${i === 0 ? 'GW' : sync[i - 1]!.id} --> ${node(s)}`));
@@ -161,6 +161,19 @@ export function hldDiagram(stages: Stage[], mode: ScaleResult['mode'], paradigms
   L.push('    MON["Monitoring<br/>drift, quality, cost, SLO burn"]');
   L.push('    LAKE --> TRN --> REG');
   L.push('  end');
+  if (stance === 'residency-pinned') {
+    L.push('  subgraph STP["State plane - pinned to data-subject jurisdiction"]');
+    L.push('    LEDGER[("Ledger and counters<br/>single writer per key, sync standby RPO 0")]');
+    L.push('    WORM[("Decision ledger<br/>WORM, hash-chained")]');
+    L.push('  end');
+    L.push('  FS -. owner shard only .-> LEDGER');
+    L.push('  BUS --> WORM');
+  } else if (stance === 'tenant-isolated') {
+    L.push('  subgraph TEN["Tenant cells - quotas, BYOK keys, adapters"]');
+    L.push('    TCELL[("Per-tenant state<br/>row-level security, KMS key per tenant")]');
+    L.push('  end');
+    L.push('  FS -. tenant-scoped .-> TCELL');
+  }
   L.push('  BUS --> LAKE');
   L.push('  LAKE -. backfill .-> FS');
   L.push('  REG -. signed artifacts .-> SP');
@@ -504,9 +517,13 @@ export function bottlenecksFor(cc: ScaleResult['computeClass'], mode: ScaleResul
   return out.slice(0, 5);
 }
 
-export function resilienceFor(mode: ScaleResult['mode']): string[] {
+export function resilienceFor(mode: ScaleResult['mode'], stance: 'stateless-active-active' | 'residency-pinned' | 'tenant-isolated' = 'stateless-active-active'): string[] {
   const common = [
-    'Three active-active regions; the global load balancer shifts traffic on health and SLO burn, and each region is sized to absorb one failure.',
+    stance === 'residency-pinned'
+      ? 'The stateless inference plane is active-active across three regions and each is sized to absorb one failure; the state plane is pinned per jurisdiction with a synchronous in-country standby and fenced failover.'
+      : stance === 'tenant-isolated'
+        ? 'The inference plane is active-active across three regions, each sized to absorb one failure; tenant cells fail over independently so one tenant\'s incident is not everyone\'s.'
+        : 'Three active-active regions; the global load balancer shifts traffic on health and SLO burn, and each region is sized to absorb one failure.',
     'Every model and feature set is versioned and signed; rollback is a pointer flip that finishes in under a minute.',
     'Per-tenant and per-key quotas plus load shedding (reject early, cheap) protect the SLO of well-behaved callers.',
   ];
