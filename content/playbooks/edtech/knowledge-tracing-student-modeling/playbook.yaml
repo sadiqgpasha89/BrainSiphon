@@ -14,6 +14,93 @@ prerequisites:
     - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
     - "An answer-event stream and a key-value store for learner state (Kafka and Redis) for M5"
     - "A review workflow with teachers or learning scientists for M6"
+domainKnowledge:
+  overview: >-
+    A learning app presents questions, records whether each answer is right and decides what to show next. Knowledge tracing
+    estimates, after every answer, how well the learner knows each skill, so the app can practise what they are weak at and
+    stop when they have mastered it. The people who depend on the estimate are learners, teachers and parents, so it has to
+    be understandable, calibrated and handled with the care owed to student data.
+  concepts:
+    - name: "Skills, items and the Q-matrix"
+      explanation: >-
+        Curricula are broken into knowledge components, or skills, such as adding fractions. Each question (item) is tagged with
+        one or more skills; the table of those tags is the Q-matrix. Mastery is tracked per skill, not per question.
+      whyItMatters: "Everything depends on the skill map. When the curriculum changes it, historical mastery can become wrong, so version it."
+    - name: "Mastery is hidden; answers are noisy evidence"
+      explanation: >-
+        A learner may guess correctly without knowing, or slip and answer wrongly despite knowing. Models such as Bayesian
+        Knowledge Tracing treat mastery as a hidden state with parameters for the chance of learning on each attempt, guessing and
+        slipping. Performance Factors Analysis instead predicts the next answer from counts of earlier successes and failures.
+      whyItMatters: "A correct answer is not learning. The model must reason about evidence, and a single success should not declare mastery."
+    - name: "Item difficulty and ability: IRT"
+      explanation: >-
+        Item response theory describes the chance of a correct answer as a function of a learner's ability and the item's
+        difficulty (and sometimes discrimination and guessing). The same learner is less likely to answer a hard item correctly.
+      whyItMatters: "Predictions must account for how hard the next question is, and difficulty should be learned from other students."
+    - name: "Forgetting and spacing"
+      explanation: >-
+        Memory decays without practice, following a forgetting curve, and reviewing at spaced intervals makes learning last.
+        Long breaks, holidays and exam periods change what a learner can do.
+      whyItMatters: "Time since practice is a feature, and mastery shown to learners after a long break should decay."
+    - name: "Adaptive practice shapes the data"
+      explanation: >-
+        Mastery learning keeps assigning practice on a skill until the estimate crosses a threshold, and tutors choose questions
+        near the learner's level. Learners who struggle get more attempts, so the data are not a random sample of questions, and
+        some learners get stuck practising without progress, called wheel spinning.
+      whyItMatters: "Naive comparisons across skills or learners are biased by the system's own choices, and you must detect stuck learners rather than assigning more of the same."
+    - name: "Children's data, fairness and accountability"
+      explanation: >-
+        Learner data is sensitive, and children's data has special protection (COPPA and FERPA in the United States, the GDPR with
+        special rules for minors in Europe). Mastery estimates can affect grades, tracks or perception, so they should be explainable,
+        checked for differences between groups and never the only basis for a high-stakes decision.
+      whyItMatters: "Consent, retention limits and explanations are product requirements, and they favour interpretable models alongside predictive ones."
+  glossary:
+    - term: "Knowledge component (skill)"
+      definition: "A unit of knowledge or skill that can be practised and assessed, the level at which mastery is tracked."
+    - term: "Q-matrix"
+      definition: "The mapping that says which skills each question item exercises."
+    - term: "Item"
+      definition: "One question or exercise a learner can answer."
+    - term: "Mastery"
+      definition: "A learner's hidden state of knowing a skill well enough, usually represented as a probability."
+    - term: "BKT"
+      definition: "Bayesian Knowledge Tracing: a hidden Markov model of mastery with learn, guess and slip parameters per skill."
+    - term: "Guess / slip"
+      definition: "The chance of answering correctly without mastery (guess) or incorrectly despite mastery (slip)."
+    - term: "PFA"
+      definition: "Performance Factors Analysis: logistic regression predicting correctness from prior successes and failures on the skill."
+    - term: "IRT"
+      definition: "Item response theory: models correctness as a function of learner ability and item difficulty."
+    - term: "Difficulty / discrimination"
+      definition: "How hard an item is, and how sharply it separates stronger from weaker learners."
+    - term: "Ability (theta)"
+      definition: "A learner's latent proficiency in item response theory."
+    - term: "Rasch model"
+      definition: "The simplest IRT model, with one difficulty parameter per item and equal discrimination."
+    - term: "Forgetting curve"
+      definition: "The decline of retention over time without review."
+    - term: "Spaced repetition"
+      definition: "Scheduling reviews at increasing intervals to make learning last."
+    - term: "Opportunity count"
+      definition: "How many times a learner has practised a skill so far."
+    - term: "Wheel spinning"
+      definition: "A learner repeatedly practising a skill without reaching mastery, a sign the practice is not working."
+    - term: "Mastery learning"
+      definition: "An instructional approach in which learners move on only after demonstrating mastery of a skill."
+    - term: "Formative / summative assessment"
+      definition: "Assessment used to guide learning along the way, versus a final judgement of what was learned."
+    - term: "Learning gain"
+      definition: "The improvement in a learner's measured knowledge between two points, the outcome the system exists to increase."
+    - term: "Zone of proximal development"
+      definition: "The range of tasks a learner can do with some support but not yet alone, where practice helps most."
+    - term: "COPPA / FERPA"
+      definition: "US laws protecting children's online data and education records."
+  askTheExperts:
+    - "Who owns the skill map, how often does it change, and how are historical records migrated when it does?"
+    - "What do teachers and learners mean by mastered, and what threshold would they accept for moving on?"
+    - "How are practice questions chosen today, and is any part of it randomised so we can learn unbiased difficulty?"
+    - "What learner data are we allowed to use for training: consent, age limits, retention periods and school agreements?"
+    - "How will mastery estimates be shown to learners, teachers and parents, and what decisions may depend on them?"
 data:
   strategy: >-
     Start on the synthetic learners, where the true answer probability is stored, so you can see how close the models
