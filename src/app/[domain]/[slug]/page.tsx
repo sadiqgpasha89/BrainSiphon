@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { DifficultyChip, LatencyChip, ParadigmChips } from '../../../components/Badges';
 import { ReaderShell } from '../../../components/reader/ReaderShell';
 import { PlaybookSection } from '../../../components/reader/Playbook';
+import { AgenticSection } from '../../../components/reader/Agentic';
 import { Pager, Sections, tocFor } from '../../../components/reader/Sections';
 import { getIndex, getNeighbours, getUseCase } from '../../../lib/content';
 import { toMarkdown } from '../../../content/markdown';
@@ -110,6 +111,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
       </header>
       <article>
         <Sections uc={uc} />
+        <AgenticSection ag={uc.agentic} />
         {uc.playbook && <PlaybookSection pb={uc.playbook} />}
       </article>
       <Pager prev={prev} next={next} related={related} />

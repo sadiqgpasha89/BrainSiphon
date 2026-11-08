@@ -63,6 +63,7 @@ export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?
   { id: 'scale', label: 'Scale & capacity' },
   { id: 'evaluation', label: 'Evaluation' },
   { id: 'edge-cases', label: 'Edge cases' },
+  { id: 'agentic', label: 'Agentic solution' },
   ...(hasPlaybook ? [{ id: 'playbook', label: 'Build playbook' }] : []),
 ];
 

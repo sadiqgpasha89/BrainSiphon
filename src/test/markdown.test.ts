@@ -16,9 +16,10 @@ describe('markdown export', () => {
       '## End-to-end breakdown',
       '## Scale to 10M users',
       '## Production edge cases',
+      '## Agentic solution',
     ])
       expect(md).toContain(h);
-    expect((md.match(/```mermaid/g) ?? []).length).toBe(4);
+    expect((md.match(/```mermaid/g) ?? []).length).toBe(6);
     expect((md.match(/```/g) ?? []).length % 2).toBe(0);
   });
 

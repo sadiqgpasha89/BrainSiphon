@@ -12,6 +12,7 @@ import type { RawUseCase } from './parse';
 import { bottlenecksFor, buildLLD, buildStages, hldDiagram, pipelineDiagram, resilienceFor, sequenceDiagram, snake, TOTAL_BUDGET_MS } from './design';
 import { computeScale, usd } from './scale';
 import { loadPlaybook } from './playbook';
+import { generateAgentic } from './agentic-gen';
 import { generatePlaybook } from './playbook-gen';
 import { explainLoss } from './lossvars';
 import { existsSync, readFileSync } from 'node:fs';
@@ -143,6 +144,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
         resilience: resilienceFor(scale.mode),
       },
     },
+    agentic: generateAgentic(raw, domain, paradigms, latency, difficulty, stages),
     ...(playbook ? { playbook } : {}),
   };
 

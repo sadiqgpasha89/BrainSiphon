@@ -272,14 +272,64 @@ export const PlaybookSchema = z.object({
 });
 export type Playbook = z.infer<typeof PlaybookSchema>;
 
+/**
+ * Agentic solutioning: where agents belong in this use case, which agents, with which typed tools and permissions, how autonomy is
+ * earned, what stops them going wrong and how they are evaluated. Generated from the blueprint's own stages, constraints, edge cases
+ * and metrics plus a role pattern per kind of system.
+ */
+export const AgenticSchema = z.object({
+  fit: z.enum(['core', 'strong', 'supporting']),
+  role: nonEmpty,
+  rationale: nonEmpty,
+  pattern: nonEmpty,
+  agents: z
+    .array(
+      z.object({
+        name: nonEmpty,
+        responsibility: nonEmpty,
+        trigger: nonEmpty,
+        tools: z.array(nonEmpty).min(2),
+        autonomy: z.enum(['L0', 'L1', 'L2', 'L3']),
+        handoff: nonEmpty,
+      }),
+    )
+    .min(3),
+  tools: z
+    .array(
+      z.object({
+        name: nonEmpty,
+        access: z.enum(['read', 'write']),
+        backedBy: nonEmpty,
+        permission: nonEmpty,
+      }),
+    )
+    .min(4),
+  autonomy: z
+    .array(
+      z.object({
+        level: z.enum(['L0', 'L1', 'L2', 'L3']),
+        name: nonEmpty,
+        behaviour: nonEmpty,
+        gate: nonEmpty,
+      }),
+    )
+    .length(4),
+  architecture: MermaidSchema,
+  sequence: MermaidSchema,
+  context: z.array(z.object({ kind: nonEmpty, detail: nonEmpty })).min(3),
+  guardrails: z.array(z.object({ risk: nonEmpty, control: nonEmpty })).min(5),
+  evaluation: z.array(z.object({ what: nonEmpty, metric: nonEmpty, target: nonEmpty, how: nonEmpty })).min(5),
+  failureModes: z.array(z.object({ scenario: nonEmpty, response: nonEmpty })).min(4),
+  budget: z.array(z.object({ item: nonEmpty, value: nonEmpty })).min(4),
+  buildSteps: z.array(z.object({ step: nonEmpty, deliverable: nonEmpty })).min(6),
+  whenNotToUse: z.array(nonEmpty).min(3),
+});
+export type Agentic = z.infer<typeof AgenticSchema>;
+
 export const UseCaseSchema = z
   .object({
     id: z.string().uuid(),
-    slug: z
-      .string()
-      .regex(
-        /^(fintech|retail|healthcare|supply-chain|adtech|cybersecurity|edtech|saas)\/[a-z0-9]+(-[a-z0-9]+)*$/,
-      ),
+    slug: z.string().regex(new RegExp(`^(${DOMAINS.join('|')})/[a-z0-9]+(-[a-z0-9]+)*$`)),
     title: nonEmpty,
     domain: DomainEnum,
     mlParadigms: z.array(ParadigmEnum).min(1),
@@ -320,6 +370,7 @@ export const UseCaseSchema = z
     }),
     productionEdgeCases: z.array(EdgeCaseSchema).min(2),
     systemDesign: SystemDesignSchema,
+    agentic: AgenticSchema,
     playbook: PlaybookSchema.optional(),
   })
   .strict();

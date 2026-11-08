@@ -69,6 +69,8 @@ async function main() {
       ['hld', u.systemDesign.hld.mermaid],
       ['sequence', u.systemDesign.sequence.mermaid],
       ['classes', u.systemDesign.lld.classDiagram],
+      ['agent-architecture', u.agentic.architecture],
+      ['agent-sequence', u.agentic.sequence],
     ];
     for (const [name, code] of blocks) {
       try {
@@ -131,6 +133,21 @@ async function main() {
           errors.push(`${u.slug}: starter file ${f.path} contains a stub marker`);
     }
 
+    if (/\b(undefined|NaN|Infinity)\b|\[object|\$\{|\{\{/.test(JSON.stringify(u.agentic)))
+      errors.push(`${u.slug}: agentic section contains an unresolved placeholder`);
+    {
+      const toolSet = new Set(u.agentic.tools.map((t) => t.name));
+      if (toolSet.size !== u.agentic.tools.length) errors.push(`${u.slug}: duplicate agent tool names`);
+      if (!u.agentic.tools.some((t) => t.access === 'write'))
+        errors.push(`${u.slug}: agentic section has no write tool, so no approval path is described`);
+      if (new Set(u.agentic.agents.map((a) => a.name)).size !== u.agentic.agents.length)
+        errors.push(`${u.slug}: duplicate agent names`);
+      if (u.agentic.rationale.trim().split(/\s+/).length < 40)
+        errors.push(`${u.slug}: agentic rationale is too thin`);
+      if ((u.latencySLA === 'sub-10ms' || u.latencySLA === 'sub-100ms') && u.agentic.fit === 'core')
+        errors.push(`${u.slug}: an agent cannot be the core of a ${u.latencySLA} decision path`);
+    }
+
     if (/\b(Infinity|NaN|undefined)\b/.test(JSON.stringify(u.systemDesign)))
       errors.push(`${u.slug}: generated design contains Infinity, NaN or undefined`);
 
@@ -178,7 +195,7 @@ async function main() {
   }
   const withPlaybook = all.filter((u) => u.playbook).length;
   console.log(
-    `validate:content ✔ ${all.length} use cases, ${all.length * 4} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks`,
+    `validate:content ✔ ${all.length} use cases, ${all.length * 6} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections`,
   );
 }
 

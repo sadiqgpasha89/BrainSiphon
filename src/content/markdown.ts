@@ -1,4 +1,4 @@
-import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Playbook, type UseCase } from '../schemas/usecase.schema';
+import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook, type UseCase } from '../schemas/usecase.schema';
 
 const fence = (lang: string, body: string) => `\`\`\`${lang}\n${body.trim()}\n\`\`\``;
 const esc = (s: string) => s.replace(/\|/g, '\\|');
@@ -50,8 +50,33 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   u.evaluationAndMetrics.offlineOnlineGapTraps.forEach((x) => L.push(`- ${x}`));
   L.push('', '## Production edge cases', '', '| Scenario | Failure mode | Mitigation |', '|---|---|---|');
   u.productionEdgeCases.forEach((e) => L.push(`| ${esc(e.scenario)} | ${esc(e.failureMode)} | ${esc(e.mitigationStrategy)} |`));
+  agenticMarkdown(u.agentic, L);
   if (u.playbook) playbookMarkdown(u.playbook, L);
   return `${L.join('\n')}\n`;
+}
+
+function agenticMarkdown(a: Agentic, L: string[]) {
+  L.push('', '## Agentic solution', '', `**Fit:** ${a.fit} · **Role:** ${a.role} · **Pattern:** ${a.pattern}`, '', a.rationale, '', '### Agents', '');
+  L.push('| Agent | Responsibility | Trigger | Tools | Starts at | Hands off to |', '|---|---|---|---|---|---|');
+  a.agents.forEach((x) => L.push(`| ${esc(x.name)} | ${esc(x.responsibility)} | ${esc(x.trigger)} | ${esc(x.tools.join(', '))} | ${x.autonomy} | ${esc(x.handoff)} |`));
+  L.push('', '```mermaid', a.architecture, '```', '', '```mermaid', a.sequence, '```', '', '### Typed tools', '', '| Tool | Access | Backed by | Permission |', '|---|---|---|---|');
+  a.tools.forEach((t) => L.push(`| ${esc(t.name)} | ${t.access} | ${esc(t.backedBy)} | ${esc(t.permission)} |`));
+  L.push('', '### Autonomy ladder', '');
+  a.autonomy.forEach((l) => L.push(`- **${l.level} ${l.name}.** ${l.behaviour}. *Gate:* ${l.gate}`));
+  L.push('', '### Context and memory', '');
+  a.context.forEach((c) => L.push(`- **${c.kind}.** ${c.detail}`));
+  L.push('', '### Guardrails', '', '| Risk | Control |', '|---|---|');
+  a.guardrails.forEach((g) => L.push(`| ${esc(g.risk)} | ${esc(g.control)} |`));
+  L.push('', '### Evaluation', '', '| What | Metric | Target | How |', '|---|---|---|---|');
+  a.evaluation.forEach((e) => L.push(`| ${esc(e.what)} | ${esc(e.metric)} | ${esc(e.target)} | ${esc(e.how)} |`));
+  L.push('', '### Failure modes', '', '| Scenario | Response |', '|---|---|');
+  a.failureModes.forEach((f) => L.push(`| ${esc(f.scenario)} | ${esc(f.response)} |`));
+  L.push('', '### Budgets', '');
+  a.budget.forEach((b) => L.push(`- **${b.item}.** ${b.value}`));
+  L.push('', '### Build order', '');
+  a.buildSteps.forEach((s, i) => L.push(`${i + 1}. **${s.step}.** ${s.deliverable}`));
+  L.push('', '### When not to use an agent', '');
+  a.whenNotToUse.forEach((x) => L.push(`- ${x}`));
 }
 
 function playbookMarkdown(pb: Playbook, L: string[]) {
