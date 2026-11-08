@@ -26,7 +26,9 @@ RUN npm run validate:content && npm run build
 # ---- runner: minimal, non-root, PID 1 handled by dumb-init so SIGTERM drains gracefully
 FROM base AS runner
 ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0
-RUN addgroup -S -g 1001 nodejs && adduser -S -u 1001 -G nodejs nextjs
+RUN addgroup -S -g 1001 nodejs && adduser -S -u 1001 -G nodejs nextjs \
+ # the runtime only runs `node server.js`; drop npm/yarn and their bundled deps from the attack surface
+ && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx /opt/yarn* /usr/local/bin/yarn*
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
