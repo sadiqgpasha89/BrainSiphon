@@ -14,6 +14,95 @@ prerequisites:
     - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
     - "POS and order feeds into a warehouse; a scheduler such as Airflow for the nightly run in M5"
     - "A planning system with an API or table for publishing forecasts (M5)"
+domainKnowledge:
+  overview: >-
+    Companies forecast demand to decide how much to make, hold and ship. Long-range planning looks months ahead on
+    statistical models; demand sensing looks 1 to 14 days ahead and tries to react to what is happening this week: sales
+    at the till, orders in the pipeline, promotions and weather. Planners own the numbers and the decisions that follow, so
+    the forecast has to be trusted, add up to the plan and say how sure it is.
+  concepts:
+    - name: "Horizons, lag and who uses the forecast"
+      explanation: >-
+        Demand planning produces forecasts for months or weeks ahead for budgeting and capacity; demand sensing produces
+        1 to 14 day forecasts that drive replenishment, expediting and allocation. Accuracy is measured at a lag: how far in
+        advance the forecast was frozen before the day it predicts.
+      whyItMatters: "A model that wins at 14 days can be useless at 2 days. Report accuracy per horizon and judge it against the decision that horizon supports."
+    - name: "Demand is not sales"
+      explanation: >-
+        Recorded sales are capped by what was available. A stock-out, a supplier allocation limit or a late truck means
+        customers who wanted the product did not get it. The demand that would have occurred without the limit is called
+        unconstrained demand; sales are constrained demand.
+      whyItMatters: "Training on capped sales teaches the model that demand fell when supply was rationed, which then under-orders and creates the next stock-out."
+    - name: "Signals and when you can know them"
+      explanation: >-
+        Point-of-sale data shows what consumers bought (sell-out), shipments to customers are sell-in, and the order book holds
+        confirmed orders not yet shipped. Promotions, holidays and weather are published in advance with different lock dates.
+        Each signal has a freshness and a cut-off time.
+      whyItMatters: "A feature that is only known after the forecast time is leakage. The origin snapshot must contain exactly what planners would have had."
+    - name: "Hierarchies and reconciliation"
+      explanation: >-
+        Items roll up into categories and brands, and locations into regions and the network. Forecasts made at different
+        levels disagree, so planners need them reconciled to add up. Accuracy is much better at the top than at SKU-location
+        level, and decisions are made at the bottom.
+      whyItMatters: "Aggregate accuracy flatters the model. Evaluate at the level where orders are placed."
+    - name: "From forecast error to inventory"
+      explanation: >-
+        Safety stock buffers against forecast error and supplier variability: roughly a service-level factor times the
+        standard deviation of forecast error times the square root of lead time. Better forecasts therefore directly cut the
+        inventory needed for the same service level, and biased forecasts create systematic over- or under-stocking.
+      whyItMatters: "Business value is measured in stock, stock-outs and expediting, not in MAPE, so tie accuracy gains back to those."
+    - name: "Planner overrides and forecast value added"
+      explanation: >-
+        Experienced planners change statistical forecasts when they know about deals, disruptions or launches. Forecast value
+        added (FVA) measures whether each step, including the model and the human override, improved on a naive baseline.
+      whyItMatters: "Adoption depends on respecting overrides, recording them and showing, with data, when they help and when they hurt."
+  glossary:
+    - term: "SKU"
+      definition: "Stock-keeping unit: one distinct product variant, such as a size and colour, tracked in inventory."
+    - term: "POS"
+      definition: "Point of sale: the till or checkout system that records what consumers actually bought."
+    - term: "Sell-in / sell-out"
+      definition: "Sell-in is what a manufacturer ships to retailers; sell-out is what retailers sell to consumers."
+    - term: "Open order / order book"
+      definition: "Confirmed customer orders that have not yet been shipped, a leading indicator of near-term demand."
+    - term: "Lead time"
+      definition: "The time between placing an order or replenishment and receiving it."
+    - term: "Safety stock"
+      definition: "Extra inventory held to cover forecast error and supply variability."
+    - term: "Service level / fill rate"
+      definition: "The probability of not stocking out in a cycle, or the share of demand met from stock."
+    - term: "Stock-out"
+      definition: "A period when an item is unavailable, so sales are lost or delayed."
+    - term: "Allocation"
+      definition: "A supplier limiting how much of a scarce product each customer can receive."
+    - term: "Constrained / unconstrained demand"
+      definition: "Sales as limited by supply, versus the demand that would have occurred with unlimited stock."
+    - term: "MAPE / WMAPE"
+      definition: "Mean absolute percentage error, and its volume-weighted version that stops tiny items dominating the average."
+    - term: "Bias"
+      definition: "The tendency to forecast systematically too high or too low, measured separately from absolute error."
+    - term: "FVA"
+      definition: "Forecast value added: improvement in accuracy over a naive baseline attributable to a model or a human step."
+    - term: "Hierarchy"
+      definition: "The nesting of items, categories, locations and regions at which forecasts and decisions are made."
+    - term: "Reconciliation"
+      definition: "Adjusting forecasts at different levels so they sum consistently, for example with the MinT method."
+    - term: "S&OP"
+      definition: "Sales and operations planning: the recurring process that aligns demand, supply and finance."
+    - term: "Replenishment"
+      definition: "Ordering or moving stock to restore inventory to target levels."
+    - term: "Intermittent demand"
+      definition: "Series with many zero-sales days and occasional spikes, common for slow-moving items and hard to forecast."
+    - term: "Promotion uplift"
+      definition: "The additional demand caused by a promotion relative to the baseline without it."
+    - term: "Cannibalisation"
+      definition: "A promotion on one item stealing sales from a similar item rather than adding total demand."
+  askTheExperts:
+    - "Which decisions use this forecast (replenishment, expediting, allocation) and at which horizon and level of the hierarchy?"
+    - "How are stock-outs and supplier allocation limits flagged in the data, and can we recover constrained days?"
+    - "For each signal, how fresh is it at forecast time: POS delay, order cut-off, promotion calendar lock date?"
+    - "How do planners override forecasts today, are overrides recorded, and which ones have historically added accuracy?"
+    - "How does forecast error translate into safety stock and service level in the current inventory policy?"
 data:
   strategy: >-
     Start on the synthetic series, which contain every signal and every trap and let you check each lesson in
