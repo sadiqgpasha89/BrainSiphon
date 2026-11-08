@@ -193,6 +193,12 @@ export const PlaybookSchema = z.object({
     tools: z.array(nonEmpty).min(2),
     effort: nonEmpty,
   }),
+  domainKnowledge: z.object({
+    overview: nonEmpty,
+    concepts: z.array(z.object({ name: nonEmpty, explanation: nonEmpty, whyItMatters: nonEmpty })).min(4),
+    glossary: z.array(z.object({ term: nonEmpty, definition: nonEmpty })).min(12),
+    askTheExperts: z.array(nonEmpty).min(3),
+  }),
   data: z.object({
     strategy: nonEmpty,
     datasets: z

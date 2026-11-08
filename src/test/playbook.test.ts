@@ -50,6 +50,23 @@ describe('build playbooks (pilot)', () => {
     },
   );
 
+  it.each(withPlaybook.map((u) => [u.slug, u] as const))(
+    '%s teaches the domain before the data: concepts, glossary, expert questions',
+    (_slug, u) => {
+      const dk = u.playbook!.domainKnowledge;
+      expect(dk.concepts.length).toBeGreaterThanOrEqual(5);
+      expect(dk.glossary.length).toBeGreaterThanOrEqual(15);
+      expect(new Set(dk.glossary.map((g) => g.term.toLowerCase())).size).toBe(dk.glossary.length);
+      expect(dk.askTheExperts.every((q) => q.endsWith('?'))).toBe(true);
+    },
+  );
+
+  it('rejects a playbook without domain knowledge', () => {
+    const pb = structuredClone(withPlaybook[0]!.playbook!) as Record<string, unknown>;
+    delete pb.domainKnowledge;
+    expect(PlaybookSchema.safeParse(pb).success).toBe(false);
+  });
+
   it('rejects a milestone without an exit gate and an unlisted pitfall milestone', () => {
     const pb = structuredClone(withPlaybook[0]!.playbook!);
     const noGate = {
@@ -68,6 +85,8 @@ describe('build playbooks (pilot)', () => {
     const md = toMarkdown(u);
     expect(md).toContain('## Build playbook');
     expect(md).toContain('#### M0 ·');
+    expect(md).toContain('### 1. Domain knowledge and terminology');
+    expect(md).toContain(u.playbook!.domainKnowledge.glossary[0]!.term);
     expect(md).toContain(u.playbook!.starter.files[0]!.code.split('\n')[0]!);
   });
 });

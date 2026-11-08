@@ -101,6 +101,8 @@ test('a pilot use case opens straight to its build playbook, with gates and runn
   await expect(page.getByRole('heading', { name: 'Build playbook' })).toBeVisible();
   // the "On this page" highlight follows the scroll position
   await expect(page.locator('nav[aria-label="On this page"] a[aria-current]')).toHaveText('Build playbook');
+  await expect(page.getByTestId('concept').first()).toBeVisible();
+  expect(await page.getByTestId('glossary').locator('tr').count()).toBeGreaterThanOrEqual(15);
   await expect(page.getByTestId('milestone')).toHaveCount(7);
   await expect(page.getByTestId('milestone').nth(3)).toContainText('Exit gate');
   const file = page.getByTestId('starter-file').first();

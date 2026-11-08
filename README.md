@@ -40,7 +40,7 @@ against the strict Zod schema (`src/schemas/usecase.schema.ts`) — **a missing 
 ## Build playbooks (pilot: 8 of 400)
 
 A blueprint explains *what a good system looks like*. A **Build playbook** is what an intermediate engineer needs to
-*build it*: where the data comes from, ordered milestones with numeric exit gates, a starter kit that runs on synthetic
+*build it*: the domain knowledge and terminology to learn first, where the data comes from, ordered milestones with numeric exit gates, a starter kit that runs on synthetic
 data, a worked example, an executable test plan, decisions and pitfalls, and a 30-day launch checklist.
 
 | Domain | Pilot use case | Starter kit |

@@ -42,7 +42,49 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
         </div>
       </Sub>
 
-      <Sub id="pb-data" title="1 · Data: where it comes from and what a row looks like">
+      <Sub id="pb-domain" title="1 · Domain knowledge and terminology you need first">
+        <p data-prose className="prose-bs max-w-3xl text-base">
+          {pb.domainKnowledge.overview}
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {pb.domainKnowledge.concepts.map((c) => (
+            <div key={c.name} className="card p-4" data-testid="concept">
+              <p className="text-sm font-semibold text-ink">{c.name}</p>
+              <p className="mt-1 text-sm text-ink/90" data-prose>
+                {c.explanation}
+              </p>
+              <p className="mt-2 text-sm text-signal/95" data-prose>
+                <strong>Why it matters here. </strong>
+                {c.whyItMatters}
+              </p>
+            </div>
+          ))}
+        </div>
+        <TableWrap>
+          <table className="bs-table">
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>What it means in this domain</th>
+              </tr>
+            </thead>
+            <tbody data-testid="glossary">
+              {pb.domainKnowledge.glossary.map((g) => (
+                <tr key={g.term}>
+                  <td className="whitespace-nowrap font-medium text-ink">{g.term}</td>
+                  <td>{g.definition}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableWrap>
+        <div className="card p-4">
+          <Label>Questions to ask the domain experts before you build</Label>
+          <List items={pb.domainKnowledge.askTheExperts} />
+        </div>
+      </Sub>
+
+      <Sub id="pb-data" title="2 · Data: where it comes from and what a row looks like">
         <p data-prose className="prose-bs max-w-3xl text-sm">
           {pb.data.strategy}
         </p>
@@ -114,7 +156,7 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
         </p>
       </Sub>
 
-      <Sub id="pb-milestones" title="2 · Milestones with exit gates">
+      <Sub id="pb-milestones" title="3 · Milestones with exit gates">
         <ol className="space-y-4">
           {pb.milestones.map((m) => (
             <li key={m.id} className="card p-4" data-testid="milestone">
@@ -143,7 +185,7 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
         </ol>
       </Sub>
 
-      <Sub id="pb-starter" title="3 · Starter kit you can run now">
+      <Sub id="pb-starter" title="4 · Starter kit you can run now">
         <p className="text-sm text-mute" data-prose>
           <strong className="text-ink">Runtime. </strong>
           {pb.starter.runtime}
@@ -168,7 +210,7 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
         </div>
       </Sub>
 
-      <Sub id="pb-example" title="4 · Worked example">
+      <Sub id="pb-example" title="5 · Worked example">
         <p className="text-sm text-mute" data-prose>
           {pb.workedExample.scenario}
         </p>
@@ -188,7 +230,7 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
         </p>
       </Sub>
 
-      <Sub id="pb-tests" title="5 · Test and acceptance plan">
+      <Sub id="pb-tests" title="6 · Test and acceptance plan">
         <TableWrap>
           <table className="bs-table">
             <thead>
@@ -211,7 +253,7 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
         </TableWrap>
       </Sub>
 
-      <Sub id="pb-decisions" title="6 · Decisions you will have to make">
+      <Sub id="pb-decisions" title="7 · Decisions you will have to make">
         <div className="space-y-4">
           {pb.decisions.map((d) => (
             <div key={d.question} className="card p-4">
@@ -243,7 +285,7 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
         </div>
       </Sub>
 
-      <Sub id="pb-pitfalls" title="7 · Pitfalls, by milestone">
+      <Sub id="pb-pitfalls" title="8 · Pitfalls, by milestone">
         <TableWrap>
           <table className="bs-table">
             <thead>
@@ -268,7 +310,7 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
         </TableWrap>
       </Sub>
 
-      <Sub id="pb-30" title="8 · The first 30 days after launch">
+      <Sub id="pb-30" title="9 · The first 30 days after launch">
         <div data-prose>
           <List items={pb.first30Days} />
         </div>

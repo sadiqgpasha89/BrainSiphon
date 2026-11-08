@@ -139,6 +139,7 @@ export function loadPlaybook(
   const out = {
     summary: a.summary,
     prerequisites: derivePrerequisites(raw, a),
+    domainKnowledge: a.domainKnowledge,
     data: a.data,
     milestones: a.milestones,
     starter: { runtime: a.starter.runtime, run: a.starter.run, expected: a.starter.expected, files },

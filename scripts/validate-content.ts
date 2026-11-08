@@ -84,6 +84,17 @@ async function main() {
       ];
       const thin = cells.filter((c) => c.trim().split(/\s+/).length < 3);
       if (thin.length) errors.push(`${u.slug}: ${thin.length} cell(s) are under 3 words, e.g. "${thin[0]}"`);
+      const dk = u.playbook.domainKnowledge;
+      const terms = dk.glossary.map((g) => g.term.toLowerCase());
+      if (new Set(terms).size !== terms.length) errors.push(`${u.slug}: duplicate glossary terms`);
+      for (const g of dk.glossary)
+        if (g.definition.trim().split(/\s+/).length < 6)
+          errors.push(`${u.slug}: glossary definition for "${g.term}" is under 6 words`);
+      for (const c of dk.concepts)
+        if (c.explanation.trim().split(/\s+/).length < 20 || c.whyItMatters.trim().split(/\s+/).length < 8)
+          errors.push(
+            `${u.slug}: domain concept "${c.name}" is too thin (explanation >= 20 words, why it matters >= 8)`,
+          );
       for (const f of u.playbook.starter.files)
         if (/\bTODO\b|FIXME|NotImplementedError/.test(f.code))
           errors.push(`${u.slug}: starter file ${f.path} contains a stub marker`);

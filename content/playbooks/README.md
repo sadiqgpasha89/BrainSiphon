@@ -23,6 +23,7 @@ high-signal features, >= 3 noisy features, >= 4 edge cases, and no cell under 3 
 |---|---|
 | `summary` | what the engineer will have built, and which milestones the starter covers vs which need their platform |
 | `prerequisites` | `skills` (3+), `tools` (2+); `effort` is derived from the milestone days unless you override it |
+| `domainKnowledge` | `overview` (why the domain shapes the solution); `concepts` (5+, each `explanation` and `whyItMatters` for this use case); `glossary` (15+ unique terms, each defined in plain words for a newcomer); `askTheExperts` (3+ questions to put to the people who know the domain). Accuracy matters more than volume: define only what you can state correctly, and prefer the terms a newcomer will hear in the first meeting |
 | `data` | `strategy`; `datasets` (1+, each with url, license/access, what it gives, a real caveat); `synthetic` (file, description, knobs); `sample` rows copied from the generator's real output; `label` definition incl. delay |
 | `milestones` | `M0..Mn` in order (6+), each with `days`, `tasks`, `deliverable`, and a `gate` of `{metric, threshold, how}` where the threshold is a number the starter's tests actually enforce |
 | `starter` | `runtime`, `run` commands, `expected` output (real numbers from a run), `files` (each with a purpose) |
