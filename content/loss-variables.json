@@ -1,0 +1,1486 @@
+{
+ "real-time-bidding-bid-optimization": {
+  "v": "The value to the advertiser of a conversion.",
+  "\\text{price}": "The price paid if the auction is won.",
+  "\\text{win}": "Whether the bid wins the auction; win(b) is 1 if bid b wins and 0 if it loses.",
+  "b": "The bid: the amount offered for this impression, the thing being optimised.",
+  "B": "The budget: total spend must stay at or below this limit.",
+  "p": "The predicted probability that the impression leads to a conversion.",
+  "\\text{conv}": "A conversion (purchase or sign-up); in p_conv it labels the probability of one occurring."
+ },
+ "budget-pacing-controller": {
+  "S": "Spend so far at time t: S_t is the actual cumulative spend and S*_t the planned (target) cumulative spend.",
+  "\\mathrm{ThrottleVariance}": "Penalty on how erratically the controller throttles bidding up and down; large when the throttle rate jumps around."
+ },
+ "first-price-bid-shading": {
+  "v": "The value of winning the impression to the advertiser.",
+  "b": "The bid actually submitted, shaded below value v to avoid overpaying in a first-price auction.",
+  "\\text{win}": "The event that the bid wins the auction; its probability given bid b and context x is what the model learns."
+ },
+ "floor-price-optimization-publisher": {
+  "\\text{bid}": "The bids received: bid_(1) is the highest and bid_(2) the second-highest.",
+  "f": "The floor price: the minimum price the publisher accepts, the thing being optimised."
+ },
+ "audience-lookalike-modeling": {
+  "\\text{seed vs non-seed}": "The label: 1 if a user belongs to the advertiser's seed audience of known good customers, 0 if not."
+ },
+ "identity-resolution-cookieless": {
+  "\\text{same person}": "The label: 1 if two device or identity records belong to the same person, 0 if not.",
+  "\\mathrm{TransitivityPenalty}": "Penalty when links contradict each other: if A matches B and B matches C, then A should match C."
+ },
+ "click-fraud-and-bot-detection-search": {
+  "\\text{CPC}": "Cost per click, the price an advertiser pays for a click; w(CPC) makes expensive clicks count more in the loss."
+ },
+ "creative-optimization-bandits": {
+  "\\text{regret}": "Regret: the total reward lost, up to round T, by not always showing the best creative.",
+  "T": "The number of rounds (impressions) over which regret is added up.",
+  "a": "The creative shown in a round: a_t is the one chosen at round t.",
+  "\\mu": "The expected reward (click rate) of a creative: mu_{a,x} for creative a in context x, and mu* for the best creative in that context."
+ },
+ "genai-creative-generation": {
+  "\\text{brief}": "The creative brief: the instructions and brand guidelines the model is conditioned on.",
+  "\\mathrm{PolicyViolation}": "Penalty when generated copy breaks advertising or brand policies.",
+  "y": "The tokens of the target ad copy: y_t is the token at position t."
+ },
+ "search-ads-keyword-generation-llm": {
+  "\\text{page}": "The landing page content the model reads to generate keywords.",
+  "\\mathrm{PolicyViolation}": "Penalty when generated keywords break search-ad policies (trademarks, prohibited terms).",
+  "y": "The tokens of the target keyword text: y_t is the token at position t."
+ },
+ "pre-launch-creative-performance-prediction": {
+  "\\text{CTR}": "The creative's true click-through rate measured after launch.",
+  "\\widehat{CTR}": "The model's predicted click-through rate before launch."
+ },
+ "multi-touch-attribution": {
+  "\\text{conversion}": "The label: 1 if the user converted after the sequence of ad touches, 0 if not.",
+  "\\text{path}": "The sequence of ad touchpoints the user saw before converting or not.",
+  "\\mathrm{ShapleyConsistency}": "Penalty when the credit given to each touchpoint disagrees with its Shapley value, its fair marginal contribution across all orderings."
+ },
+ "marketing-mix-modeling-bayesian": {
+  "z": "Control variables such as seasonality, price and holidays: z_t at time t.",
+  "y": "Sales (or another outcome) at time t.",
+  "x": "Spend in channel c at time t.",
+  "c": "Index over marketing channels.",
+  "\\gamma": "Coefficients on the control variables.",
+  "\\alpha": "Baseline sales when there is no marketing.",
+  "\\beta": "The effect of channel c: how strongly its transformed spend drives sales."
+ },
+ "uplift-modeling-campaign": {
+  "c": "The cost of treating one person: treat only if the estimated uplift exceeds it.",
+  "\\mu_1": "Predicted outcome if the person is treated.",
+  "\\mu_0": "Predicted outcome if the person is not treated."
+ },
+ "frequency-cap-optimization": {
+  "\\text{conv}": "Expected conversions for person i at frequency f_i.",
+  "f": "The frequency cap: the number of times a person may see the ad, the thing being optimised.",
+  "\\text{cost}": "Media cost of showing the ad f_i times.",
+  "\\text{annoyance}": "A penalty for ad fatigue: harm caused by showing too many ads.",
+  "\\mu": "Weight on the annoyance penalty: how strongly it counts against the main objective.",
+  "\\lambda": "Weight on the media cost: how strongly it counts against the main objective."
+ },
+ "cross-device-graph": {
+  "\\text{linked}": "The label: 1 if two devices belong to the same person or household, 0 if not."
+ },
+ "email-subject-line-optimization": {
+  "\\text{click}": "The label: 1 if the recipient clicked or opened, 0 if not."
+ },
+ "query-ad-relevance-matching": {
+  "f": "The matching model: its score for a query and ad pair, passed through the sigmoid to give a probability.",
+  "a": "The ad being matched to the query.",
+  "q": "The search query.",
+  "\\sigma": "Sigmoid function: squashes the score into a probability between 0 and 1.",
+  "\\mathrm{Distillation}": "Penalty for disagreeing with a larger teacher model, so the small fast model copies the teacher's behaviour."
+ },
+ "video-ad-placement-optimization": {
+  "\\text{revenue}": "Ad revenue earned by the placement.",
+  "\\text{abandonment cost}": "The cost of viewers leaving because of the ad break, weighted by lambda."
+ },
+ "feed-ad-load-and-yield-optimization": {
+  "\\text{ad revenue}": "Revenue from ads at step t.",
+  "\\text{engagement}": "User engagement at step t, protected so ads do not erode it.",
+  "\\pi": "The policy that decides how many ads to show.",
+  "\\gamma": "Discount factor for future rewards."
+ },
+ "app-install-prediction": {
+  "\\text{install}": "Label: 1 if the user installs the app after the ad.",
+  "\\text{day-1 purchase}": "Label: 1 if the user buys within the first day of installing."
+ },
+ "mobile-retention-roas-prediction": {
+  "r": "Actual return on ad spend (ROAS) at day t of a cohort: r_t.",
+  "\\hat r": "Predicted ROAS at day t.",
+  "\\mathrm{CurveMonotonicity}": "Penalty when the predicted cumulative return curve goes down, since cumulative revenue cannot decrease."
+ },
+ "ad-spend-forecasting-and-allocation": {
+  "R": "The response curve of channel c: expected return as a function of spend.",
+  "b": "The budget given to channel c.",
+  "B": "The total budget to split across channels.",
+  "c": "Index over channels."
+ },
+ "cross-channel-budget-allocation": {
+  "\\text{regret}": "Regret: total reward lost by not always picking the best channel.",
+  "\\mu": "Expected reward of a channel; mu_a for channel a and mu_{a_t} for the channel chosen at round t.",
+  "a": "A channel (arm); a_t is the channel chosen at round t."
+ },
+ "modeled-conversions-privacy": {
+  "\\mathrm{AggregateConsistency}": "Penalty when the modelled conversions do not add up to the aggregate totals reported by the platform."
+ },
+ "differential-privacy-measurement": {
+  "M": "The randomised measurement mechanism that adds noise to the result.",
+  "D": "A dataset; D' is the same dataset with one person's data changed or removed.",
+  "S": "Any set of possible outputs of the mechanism.",
+  "\\delta": "A small probability that the privacy guarantee fails.",
+  "\\varepsilon": "The privacy budget: the smaller it is, the less any one person's data can change the output."
+ },
+ "clean-room-audience-matching": {
+  "\\text{match}": "The label: 1 if two records match between the partners, 0 if not.",
+  "\\mathrm{PrivacyLeakagePenalty}": "Penalty when the matching process reveals more about individuals than the clean-room rules allow."
+ },
+ "influencer-matching-and-fraud": {
+  "\\text{fake}": "The label: 1 if the account has fake followers or engagement, 0 if genuine.",
+  "\\text{brand}": "The brand's representation used for matching.",
+  "\\text{creator}": "The creator's representation used for matching."
+ },
+ "content-virality-prediction": {
+  "N": "The number of views or shares after T hours: N_T actual, and its hat the predicted value."
+ },
+ "retargeting-window-optimization": {
+  "\\text{convert}": "The label: 1 if the visitor converts after the ad, 0 if not.",
+  "h": "The hazard: the chance of converting at time t given that they have not converted yet, which determines how long to keep retargeting."
+ },
+ "viewability-and-attention-prediction": {
+  "\\text{viewable}": "The label: 1 if the ad was viewable (on screen long enough), 0 if not.",
+  "\\text{attention time}": "How many seconds the user actually looked at the ad, predicted as a number."
+ },
+ "ctv-audience-measurement": {
+  "P": "A distribution of audience over groups: P_panel from the measured panel and P_model from the model.",
+  "\\mathrm{ConsistencyCensus}": "Penalty when modelled audience totals disagree with census population totals."
+ },
+ "conversational-ads-assistant": {
+  "\\text{brand KB}": "The brand knowledge base of approved facts the assistant answers from.",
+  "\\mathrm{ClaimViolation}": "Penalty for statements that break advertising claim rules or contradict the knowledge base.",
+  "y": "The tokens of the target reply: y_t at position t."
+ },
+ "marketing-copilot-analyst-agent": {
+  "\\text{schema,results}": "The data schema and query results the assistant can see.",
+  "\\mathrm{WrongQuery}": "Penalty when generated queries are invalid or do not answer the question.",
+  "y": "The tokens of the target query or answer: y_t at position t."
+ },
+ "bid-traffic-shaping-and-qps-throttling": {
+  "v": "The value of processing bid request r.",
+  "\\text{process}": "Whether request r is processed (1) or dropped (0).",
+  "\\text{cost}": "Compute cost of processing the requests.",
+  "Q": "The maximum queries per second the system can handle.",
+  "\\pi": "The policy that decides which requests to process.",
+  "r": "Index over bid requests."
+ },
+ "network-intrusion-detection-flow-anomaly": {
+  "\\mathrm{SemiSupervisedBCE}": "Binary cross-entropy applied only to the few flows with known labels, which steers the unsupervised model toward real attacks."
+ },
+ "endpoint-malware-detection": {
+  "\\mathrm{AdversarialRobustness}": "Penalty when small deliberate changes to a file make the model change its verdict.",
+  "p": "The predicted probability for each class (benign, malware families)."
+ },
+ "business-email-compromise-detection": {
+  "\\text{amount at risk}": "The money that would be lost if the email were fraudulent; w makes high-value cases count more."
+ },
+ "soc-copilot-llm-investigation": {
+  "\\text{tool results}": "The output of the security tools the agent has queried, which is what its answer must be based on.",
+  "\\mathrm{UnsupportedClaim}": "Penalty for statements in the verdict that no tool result supports.",
+  "y": "The tokens of the target investigation write-up: y_t at position t."
+ },
+ "threat-hunting-hypothesis-agent": {
+  "\\text{CTI}": "Cyber threat intelligence: the reports on attacker behaviour the agent reads.",
+  "\\mathrm{InvalidQuery}": "Penalty when the agent writes hunting queries that are invalid or cannot run.",
+  "y": "The tokens of the target hypothesis or query: y_t at position t."
+ },
+ "vulnerability-prioritization-exploit-prediction": {
+  "\\text{exploited within 30 days}": "The label: 1 if the vulnerability was exploited in the wild within 30 days of disclosure, 0 if not."
+ },
+ "patch-risk-and-sequencing": {
+  "\\text{incident}": "The label: 1 if applying the patch caused an incident, 0 if not.",
+  "\\text{asset criticality}": "How important the asset is to the business; w makes mistakes on critical assets cost more."
+ },
+ "attack-path-analysis-graph": {
+  "S": "The set of controls or edges chosen to block attack paths; the objective is to make |S|, its size, as small as possible."
+ },
+ "ransomware-early-detection": {
+  "\\mathrm{DetectionDelay}": "Penalty that grows the longer after encryption starts the model takes to raise an alert."
+ },
+ "cloud-misconfiguration-and-drift": {
+  "\\text{exposure}": "How exposed the resource is (for example, public internet access); w makes errors on exposed resources cost more."
+ },
+ "llm-static-code-vulnerability-detection": {
+  "\\text{code}": "The source code the model reads and must analyse.",
+  "\\mathrm{FalsePositive}": "Penalty for reporting a vulnerability that is not real, which wastes developer time."
+ },
+ "ml-guided-fuzzing": {
+  "\\text{new coverage}": "The new code paths reached by the test input chosen at step t; the policy is rewarded for exploring more of the program.",
+  "\\pi": "The policy that chooses which inputs to try next.",
+  "\\gamma": "Discount factor: values coverage found sooner more than coverage found later."
+ },
+ "ddos-detection-and-mitigation": {
+  "\\mathrm{DetectionDelay}": "Penalty that grows the longer an attack runs before it is detected."
+ },
+ "threat-actor-attribution-clustering": {
+  "\\text{same campaign}": "The pairing label: 1 if two incidents belong to the same attacker campaign, 0 if not.",
+  "\\mathrm{ClusterCompactness}": "Penalty that keeps incidents of one campaign tightly grouped in embedding space."
+ },
+ "malware-family-clustering": {
+  "a": "The anchor: a sample whose family the triplet is built around.",
+  "p": "The positive: another sample from the same family as the anchor.",
+  "n": "The negative: a sample from a different family.",
+  "\\mathrm{ClusterEntropy}": "Penalty when a cluster mixes many families, since mixed clusters are less useful."
+ },
+ "binary-code-similarity": {
+  "f": "The embedding of a compiled function: f_a and f_b are two versions of the same function (for example, different architectures or optimisation levels) that should end up close together."
+ },
+ "email-attachment-sandbox-triage": {
+  "\\mathrm{CostAwareDetonation}": "Penalty that accounts for the time and money cost of running a file in the sandbox, so only files worth detonating are sent."
+ },
+ "zero-trust-adaptive-authentication": {
+  "\\mathrm{FrictionCost}": "Penalty for the inconvenience of extra authentication steps imposed on legitimate users."
+ },
+ "device-posture-risk-scoring": {
+  "\\text{compromise}": "The label: 1 if the device was later found to be compromised, 0 if not."
+ },
+ "ics-ot-intrusion-detection": {
+  "x": "The sensor reading at time t from the industrial process; the hat is the model's reconstruction of it.",
+  "\\mathrm{PhysicsResidual}": "Penalty when predicted readings violate known physical laws of the plant, such as conservation of mass."
+ },
+ "security-log-parsing-llm": {
+  "\\mathrm{CE}_{\\text{field mapping}}": "Cross-entropy on mapping each log field to the right schema field.",
+  "\\mathrm{SchemaViolation}": "Penalty when the parsed output does not follow the required event schema."
+ },
+ "detection-rule-generation-sigma-llm": {
+  "\\text{TTP}": "The attacker technique (tactic, technique or procedure) description the rule must detect.",
+  "\\mathrm{InvalidRule}": "Penalty when the generated Sigma rule is syntactically invalid or cannot run on the log source."
+ },
+ "alert-correlation-and-deduplication": {
+  "\\text{alert pairs}": "Pairs of alerts labelled as belonging to the same incident or not; triplet loss pulls related alerts together.",
+  "\\mathrm{ClusterPurity}": "Penalty when a cluster of alerts mixes alerts from different incidents."
+ },
+ "incident-response-playbook-agent": {
+  "\\text{case}": "The incident case details the agent reads to decide the next steps.",
+  "\\mathrm{UnsafeAction}": "Penalty when the agent proposes a response action that is disruptive or not permitted."
+ },
+ "red-team-attack-simulation-rl": {
+  "r": "Reward for attack progress: r_progress measures how far the simulated attacker advances.",
+  "\\mathrm{detection}": "Whether the simulated defender detects the attacker at step t.",
+  "\\pi": "The attacker's policy for choosing actions.",
+  "\\gamma": "Discount factor for later steps."
+ },
+ "adversarial-ml-robustness": {
+  "f": "The model: f_theta turns an input into a prediction.",
+  "\\delta": "A small adversarial perturbation added to the input to fool the model; its size is limited to epsilon.",
+  "\\epsilon": "The largest allowed size of the perturbation.",
+  "x": "The original input.",
+  "y": "The true label.",
+  "\\theta": "The model parameters being trained to resist the worst-case perturbation."
+ },
+ "ai-agent-tool-permission-guardrails": {
+  "\\text{unsafe}": "The label: 1 if a requested tool action is unsafe, 0 if safe.",
+  "\\mathrm{Latency}": "Penalty for the extra time the guardrail adds to each tool call."
+ },
+ "cyber-risk-quantification": {
+  "\\mathrm{ALE}": "Annualised loss expectancy: the expected yearly financial loss from cyber incidents.",
+  "\\lambda": "The expected number of incidents of type i per year (Poisson rate).",
+  "L": "The size of the loss in one incident of type i (log-normal).",
+  "\\mathbb{E}": "Expectation of the loss size.",
+  "\\sim": "Is distributed as."
+ },
+ "adaptive-learning-path-recommendation": {
+  "\\text{mastery}": "The learner's mastery of skills; Delta mastery_t is how much it improves at step t.",
+  "\\pi": "The policy that chooses the next exercise.",
+  "\\gamma": "Discount factor for later learning gains.",
+  "\\Delta": "The change in mastery at step t."
+ },
+ "irt-calibration-and-adaptive-testing": {
+  "P": "The probability that student i answers item j correctly under the item response model.",
+  "c": "The guessing parameter of item j: the chance of a correct answer by luck.",
+  "a": "The discrimination of item j: how sharply it separates strong from weak students.",
+  "b": "The difficulty of item j.",
+  "\\theta": "The ability of student i.",
+  "y": "The observed answer: 1 if student i got item j correct, 0 if not.",
+  "i": "Index over students.",
+  "j": "Index over items (questions).",
+  "e": "Euler's number, base of the logistic curve."
+ },
+ "automated-essay-scoring": {
+  "\\mathrm{OrdinalMSE}": "Squared error between predicted and true scores that respects the ordered scale of grades.",
+  "\\mathrm{RubricTraitLoss}": "Penalty for errors on individual rubric traits such as organisation or grammar, not just the overall score."
+ },
+ "short-answer-grading-llm": {
+  "\\text{rubric}": "The marking rubric the model is given.",
+  "\\text{answer}": "The student's answer being graded."
+ },
+ "programming-assignment-feedback-llm": {
+  "\\text{code,tests}": "The student's code and the test results the feedback is based on.",
+  "\\mathrm{SolutionLeak}": "Penalty when the feedback gives away the full solution instead of a hint."
+ },
+ "ai-tutor-socratic": {
+  "\\text{dialogue,curriculum}": "The conversation so far and the curriculum the tutor must stay within.",
+  "\\mathrm{AnswerLeak}": "Penalty when the tutor states the answer instead of guiding the student with questions."
+ },
+ "math-solution-step-verification": {
+  "\\mathrm{CE}_{\\text{step validity}}": "Cross-entropy on whether each solution step is valid.",
+  "\\mathrm{ErrorLocalisation}": "Penalty when the model points to the wrong step as the first error."
+ },
+ "pronunciation-assessment-speech": {
+  "\\mathcal{L}_{\\text{CTC}}": "Connectionist temporal classification loss: aligns the audio to the phonemes without needing frame-by-frame labels.",
+  "\\mathrm{GOP\\ regression}": "Loss for predicting the goodness-of-pronunciation score of each phoneme."
+ },
+ "conversational-language-practice-agent": {
+  "\\text{level,goal}": "The learner's proficiency level and learning goal, which the reply is conditioned on."
+ },
+ "reading-fluency-assessment-asr": {
+  "\\mathcal{L}_{\\text{CTC}}": "Connectionist temporal classification loss for speech recognition of the child's reading.",
+  "\\mathrm{Alignment}": "Penalty when the recognised words are not aligned correctly with the reference text."
+ },
+ "student-dropout-early-warning": {
+  "\\delta": "Event indicator: 1 if student i dropped out during observation, 0 if still enrolled (censored).",
+  "h": "The hazard: the chance of dropping out at time t given the student is still enrolled.",
+  "H": "The cumulative hazard: the accumulated risk of dropping out up to time t_i.",
+  "t": "The time at which student i dropped out or was last observed."
+ },
+ "course-recommendation-career-paths": {
+  "\\mathrm{GoalAlignment}": "Penalty when recommended courses do not move the learner toward their stated career goal."
+ },
+ "skill-graph-and-job-matching": {
+  "\\mathrm{CE}_{\\text{NER}}": "Cross-entropy for recognising skill names in text (named-entity recognition).",
+  "\\text{person}": "The embedding of a person's skills.",
+  "\\text{role}": "The embedding of a job role's required skills."
+ },
+ "content-difficulty-estimation": {
+  "b": "The difficulty of a piece of content; the hat is the model's estimate."
+ },
+ "question-generation-llm": {
+  "\\text{objective,context}": "The learning objective and source material the question is generated from.",
+  "\\mathrm{Unanswerable}": "Penalty when the generated question cannot be answered from the given context."
+ },
+ "mcq-distractor-generation": {
+  "d": "The tokens of the wrong answer option (distractor) being generated: d_t is the token at position t and d_{<t} are the earlier ones.",
+  "q": "The question.",
+  "a": "The correct answer.",
+  "\\mathrm{MisconceptionAlign}": "Penalty when a distractor does not correspond to a real student misconception.",
+  "d_{<t}": "The tokens of the distractor generated before position t."
+ },
+ "exam-timetabling-optimization": {
+  "\\text{clashes}": "Number of students with two exams at the same time in slot s.",
+  "\\text{consecutive exams}": "Number of students with back-to-back exams in slot s.",
+  "\\text{room cost}": "The cost of the rooms used.",
+  "\\lambda": "Weight on consecutive exams: how strongly it counts against the main objective.",
+  "\\mu": "Weight on room cost: how strongly it counts against the main objective.",
+  "s": "Index over exam slots."
+ },
+ "classroom-allocation-and-timetable": {
+  "\\text{preference violations}": "Count of teacher or student preferences that the timetable breaks.",
+  "\\text{room waste}": "Empty seats: room capacity minus class size.",
+  "\\text{gaps}": "Idle gaps in a timetable between classes.",
+  "\\lambda": "Weight on room waste: how strongly it counts against the main objective.",
+  "\\mu": "Weight on gaps: how strongly it counts against the main objective."
+ },
+ "teacher-copilot-lesson-planning": {
+  "\\text{standards,context}": "The curriculum standards and class context the lesson plan must follow.",
+  "\\mathrm{StandardMisalign}": "Penalty when the generated plan does not address the required standard."
+ },
+ "curriculum-alignment-tagging": {
+  "\\mathrm{HierarchyConsistency}": "Penalty when a child standard is tagged without its parent in the curriculum hierarchy.",
+  "y": "The label for tag k: 1 if the content matches standard k.",
+  "p": "The predicted probability for tag k."
+ },
+ "engagement-prediction-notifications": {
+  "\\text{practice}": "Practice done by the learner at step t.",
+  "\\text{optout}": "Whether the learner opted out of notifications at step t.",
+  "\\kappa": "How heavily an opt-out is penalised compared with practice.",
+  "\\pi": "The notification policy.",
+  "\\gamma": "Discount factor for later steps."
+ },
+ "spaced-repetition-scheduling": {
+  "R": "The probability that the learner recalls the item at time t: R_t = exp(-Delta t / S_t).",
+  "S": "Memory stability: how slowly this item is forgotten; higher means longer intervals.",
+  "y": "The review outcome: 1 if recalled, 0 if forgotten.",
+  "\\Delta": "The time since the last review.",
+  "t": "Review number."
+ },
+ "admissions-and-student-support-chatbot": {
+  "\\text{KB}": "The knowledge base of approved admissions and support information the chatbot answers from.",
+  "\\mathrm{PolicyError}": "Penalty when the answer contradicts institutional policy."
+ },
+ "scholarship-matching": {
+  "\\mathrm{EligibilityPenalty}": "Penalty for recommending scholarships the student is not eligible for."
+ },
+ "peer-grouping-collaborative-learning": {
+  "\\text{group value}": "How good group g is for learning, for example the balance of skills and compatible schedules.",
+  "g": "Index over the groups of students."
+ },
+ "discussion-forum-qa-and-moderation": {
+  "\\text{toxic}": "The label: 1 if a post is toxic or abusive, 0 if not.",
+  "\\text{question}": "The embedding of a question post.",
+  "\\text{answer}": "The embedding of an answer post that matches the question."
+ },
+ "doubt-ticket-routing": {
+  "\\mathrm{CE}_{\\text{topic}}": "Cross-entropy for classifying the topic of a student's question.",
+  "\\mathrm{Assignment\\ cost}": "Penalty for assigning a ticket to a tutor who is overloaded or not suited to it."
+ },
+ "gamification-reward-optimization": {
+  "\\text{learning minutes}": "Minutes the learner spends learning at step t.",
+  "\\text{anxiety signals}": "Signs that rewards are making the learner anxious, such as rushed or abandoned sessions.",
+  "\\kappa": "How heavily anxiety signals are penalised compared with learning time.",
+  "\\pi": "The reward policy.",
+  "\\gamma": "Discount factor for later steps."
+ },
+ "mastery-curriculum-sequencing-rl": {
+  "\\mathrm{mastery}": "The learner's mastery of skills; Delta mastery_t is the improvement at step t.",
+  "\\pi": "The policy that picks the next lesson.",
+  "\\gamma": "Discount factor for later improvements.",
+  "\\Delta": "The change in mastery at step t."
+ },
+ "learning-outcome-uplift-modeling": {
+  "Y": "The learning outcome: Y(1) if the learner receives the intervention and Y(0) if not.",
+  "\\hat{\\tau}": "The estimated causal effect of the intervention for a learner with features x.",
+  "x": "The learner's features."
+ },
+ "accessibility-alt-text-and-captioning": {
+  "\\text{image,context}": "The image and surrounding page text the description is generated from.",
+  "\\mathrm{Hallucination}": "Penalty for describing things that are not in the image."
+ },
+ "student-pii-redaction-learning-data": {
+  "\\mathrm{CE}_{\\text{NER}}": "Cross-entropy for recognising personal information (names, ids) in text.",
+  "\\mathrm{RecallBoost}": "Penalty for missing a personal detail, set so that recall is favoured over precision."
+ },
+ "grading-triage-for-teacher-workload": {
+  "\\text{manual hours}": "Hours teachers spend grading by hand, which the system tries to minimise.",
+  "\\epsilon": "The maximum acceptable grading error."
+ },
+ "oral-exam-viva-llm": {
+  "\\text{rubric,dialogue}": "The marking rubric and the conversation so far.",
+  "\\mathrm{RubricMisalign}": "Penalty when questions or judgements stray from the rubric."
+ },
+ "code-plagiarism-detection": {
+  "\\text{same logic}": "The pairing label: 1 if two programs implement the same logic, even with renamed variables or reordered code.",
+  "\\mathrm{BCE}": "Binary cross-entropy on whether a pair is plagiarised."
+ },
+ "classroom-vision-engagement-analytics": {
+  "\\text{activity}": "The classroom activity label, such as writing, listening or group work.",
+  "p": "The predicted probability of each activity."
+ },
+ "adaptive-reading-text-simplification": {
+  "x": "The original text.",
+  "\\text{level}": "The target reading level the text is simplified to.",
+  "\\mathrm{MeaningDrift}": "Penalty when the simplified text changes the meaning of the original."
+ },
+ "vocabulary-level-estimation": {
+  "w": "Index over words.",
+  "k": "Whether the learner knows word w: 1 if known.",
+  "\\hat{p}": "The predicted probability that the learner knows word w.",
+  "\\sigma": "Sigmoid function: squashes the difference of ability and difficulty into a probability.",
+  "b": "The difficulty of word w.",
+  "\\theta": "The learner's vocabulary ability."
+ },
+ "learning-analytics-teacher-insights": {
+  "\\text{insights by teacher action}": "Insights ranked by whether teachers acted on them, so the model learns which insights are useful."
+ },
+ "credit-default-survival-modeling": {
+  "\\delta": "Event indicator: 1 if borrower i defaulted, 0 if still performing at the end of observation (censored).",
+  "h": "The hazard: the chance of default at time u given the borrower has not defaulted yet.",
+  "u": "The time variable of integration.",
+  "t": "The time at which borrower i defaulted or was last observed.",
+  "x": "The borrower's features.",
+  "d": "The integration variable du: a tiny step in time."
+ },
+ "aml-graph-anomaly-detection": {
+  "z": "The latent representation of the transaction graph learned by the model.",
+  "G": "The transaction graph (accounts and transfers).",
+  "\\beta": "Weight on the KL regularisation term: how strongly it counts against the main objective.",
+  "\\mathcal{L}_{\\text{BCE}}": "Binary cross-entropy on whether an account or transaction is suspicious.",
+  "q": "The encoder's distribution over z given the graph; p(z) is the prior it is pushed towards."
+ },
+ "transaction-monitoring-alert-triage-llm": {
+  "\\text{evidence}": "The transactions and customer facts the narrative must be based on.",
+  "\\mathrm{CitationMiss}": "Penalty for sentences in the narrative that do not cite a transaction or record.",
+  "\\gamma": "Weight on the citation penalty: how strongly it counts against the main objective."
+ },
+ "synthetic-identity-fraud-detection": {
+  "z": "The learned embedding of a node (identity): z_u for identity u.",
+  "E": "The set of edges (links) between identities.",
+  "\\mathcal{L}_{\\text{focal}}": "Focal loss on whether an identity is synthetic.",
+  "u": "An identity in the graph.",
+  "v": "Another identity linked to u."
+ },
+ "credit-scoring-thin-file-alt-data": {
+  "\\mathrm{MonotonicityPenalty}": "Penalty when predicted risk moves in the wrong direction as a feature improves (for example, risk rising as income rises).",
+  "\\lambda": "Weights on the penalties: lambda_1 for monotonicity and lambda_2 for demographic parity."
+ },
+ "loan-underwriting-copilot": {
+  "\\text{docs}": "The applicant's documents the assistant reads.",
+  "\\mathrm{NumericMismatch}": "Penalty when a number in the output differs from the number in the source document."
+ },
+ "dynamic-credit-limit-optimization": {
+  "\\text{revenue}": "Interest and fee revenue earned at step t.",
+  "\\text{loss}": "Credit losses at step t.",
+  "c": "The cost of capital charged per unit of capital held.",
+  "\\text{capital}": "Capital held against the credit line at step t.",
+  "\\pi": "The policy for setting limits.",
+  "\\gamma": "Discount factor for later steps."
+ },
+ "collections-propensity-and-next-best-action": {
+  "a": "An action (such as call, text or offer) among those available.",
+  "\\mathrm{Cost}": "Cost of the actions the policy takes.",
+  "\\hat{\\tau}": "Estimated benefit of action a for customer i, relative to doing nothing.",
+  "\\pi": "The policy: the probability of choosing action a for customer x_i."
+ },
+ "payment-routing-optimization": {
+  "\\text{regret}": "The reward lost at round t by not choosing the best route.",
+  "\\mu": "Expected success rate of a route: mu*_x for the best route in context x and mu_{a_t,x_t} for the route chosen.",
+  "a": "The payment route (processor) chosen at round t."
+ },
+ "payment-authorization-rate-uplift": {
+  "\\text{order value}": "The value of the order; the weight w_i grows with it, so errors on large orders cost more.",
+  "\\hat{p}": "The model's predicted probability that the payment is authorised."
+ },
+ "chargeback-dispute-prediction-and-automation": {
+  "\\text{amount}": "The transaction amount, raised to the power 0.5 so that large amounts count more without dominating."
+ },
+ "merchant-risk-scoring-onboarding": {
+  "\\mathrm{ExpectedCostGap}": "Penalty for the difference between the expected cost of the model's decisions and the best achievable cost."
+ },
+ "sanctions-name-screening-fuzzy-matching": {
+  "a": "The anchor: a name from the customer or counterparty.",
+  "p": "The positive: a sanctions-list name that truly matches the anchor.",
+  "n": "The negative: a different name that does not match.",
+  "\\text{match}": "The label: 1 if two names refer to the same entity."
+ },
+ "customer-support-chatbot-banking": {
+  "\\text{KB}": "The knowledge base of approved banking information the chatbot answers from.",
+  "x": "The customer's question.",
+  "\\mathrm{PolicyViolation}": "Penalty for answers that break banking policy or give prohibited advice."
+ },
+ "financial-document-extraction-invoices": {
+  "\\mathrm{CE}_{\\text{token}}": "Cross-entropy on labelling each token with the right field (amount, date, vendor).",
+  "\\mathrm{ArithmeticConsistency}": "Penalty when extracted line items do not add up to the extracted total."
+ },
+ "personal-finance-categorisation": {
+  "\\mathrm{UserCorrectionConsistency}": "Penalty when the model ignores categories the user has previously corrected."
+ },
+ "spend-insights-and-nudges-recommender": {
+  "r": "Whether user u responded to nudge n: r_{un} is 1 if they acted on it.",
+  "s": "The model's score for showing nudge n to user u.",
+  "\\sigma": "Sigmoid function: turns the score into a probability.",
+  "\\mathrm{FatiguePenalty}": "Penalty for sending too many nudges to the same person.",
+  "u": "A user.",
+  "n": "A nudge (message) that could be shown."
+ },
+ "fraud-ring-detection-community": {
+  "z": "The embedding of an account: z_u for account u.",
+  "E": "The set of observed links between accounts.",
+  "u": "An account.",
+  "v": "An account linked to u.",
+  "w": "An account not linked to u (a negative sample).",
+  "\\mathrm{Modularity}": "Penalty that rewards dense groups of connected accounts, so rings form clusters.",
+  "\\sigma": "Sigmoid function: turns the similarity of two embeddings into a probability that the accounts are linked."
+ },
+ "mule-account-detection": {
+  "\\mathrm{GraphSmoothness}": "Penalty when connected accounts get very different mule scores.",
+  "G": "The graph of account transfers.",
+  "p": "The predicted mule probability of an account.",
+  "y": "The label: 1 if the account is a mule."
+ },
+ "sepsis-early-warning": {
+  "w": "A weight per time step that is larger in the 6 hours before sepsis onset, so early warnings count most.",
+  "t": "The hour of the patient's stay.",
+  "y": "The label at hour t: 1 if sepsis begins within the next 6 hours.",
+  "p": "The predicted probability of sepsis onset within 6 hours."
+ },
+ "insider-trading-surveillance": {
+  "\\mathrm{AlertBudgetPenalty}": "Penalty when the model raises more alerts than the compliance team can review.",
+  "\\mathrm{BCE}": "Binary cross-entropy on whether a trading pattern is suspicious.",
+  "\\mu": "Weight on the alert-budget penalty: how strongly it counts against the main objective."
+ },
+ "algorithmic-trading-signal-research": {
+  "r": "The asset's return h steps ahead: r_{t+h} is the realised return and its hat the model's forecast.",
+  "h": "The forecast horizon.",
+  "\\mathrm{Turnover}": "Penalty on how much the portfolio trades, since trading costs eat returns."
+ },
+ "market-regime-detection": {
+  "s": "The hidden market regime (such as calm or turbulent) at time t.",
+  "x": "The observed market data at time t; x_{1:T} is the whole series.",
+  "p": "A probability: p(s_t | s_{t-1}) is the chance of switching regimes and p(x_t | s_t) is how likely the data is in each regime.",
+  "T": "The number of time steps.",
+  "t": "Time step."
+ },
+ "volatility-forecasting": {
+  "r": "The asset's return at time t.",
+  "\\hat{\\sigma}": "The model's forecast of volatility (standard deviation of returns); its square is the variance."
+ },
+ "order-execution-slippage-minimization": {
+  "\\text{impact}": "The market impact cost of trading q_t units at step t.",
+  "q": "The quantity traded at step t.",
+  "\\text{risk}": "The price risk of holding the unexecuted order at step t.",
+  "\\pi": "The execution policy that decides how much to trade each step."
+ },
+ "market-making-quote-optimization": {
+  "\\text{PnL}": "Profit and loss earned by time T.",
+  "\\phi": "Penalty strength on holding inventory.",
+  "q": "The inventory (net position) the market maker holds at time t.",
+  "T": "The end of the trading period.",
+  "\\pi": "The quoting policy.",
+  "d": "The integration variable dt: a tiny step in time."
+ },
+ "credit-card-offer-personalization": {
+  "c": "Whether user u accepted offer o: c_{uo} is 1 if accepted.",
+  "s": "The model's score for showing offer o to user u.",
+  "\\sigma": "Sigmoid function: turns the score into a probability.",
+  "u": "A customer.",
+  "o": "An offer."
+ },
+ "insurance-claims-fraud-detection": {
+  "v": "A weight that grows with the claim amount, so errors on large claims cost more.",
+  "\\text{claim amount}": "The value of the insurance claim."
+ },
+ "insurance-claim-damage-estimation-vision": {
+  "\\text{cost}": "The actual repair cost.",
+  "\\widehat{cost}": "The model's predicted repair cost.",
+  "\\mathcal{L}_{\\text{seg}}": "Segmentation loss: how well the damaged region of the vehicle is outlined.",
+  "\\mathcal{L}_{\\text{cls}}": "Classification loss: how well the type of damage is identified."
+ },
+ "telematics-usage-based-insurance-scoring": {
+  "\\text{claims}": "The number of claims a driver made.",
+  "\\hat{\\lambda}": "The predicted claim rate for the driver.",
+  "\\mathrm{Fairness}": "Penalty when predictions treat protected groups unequally."
+ },
+ "customer-lifetime-value-prediction": {
+  "\\mathcal{LN}": "The log-normal density: models how large the spend is when it is not zero.",
+  "\\pi": "The probability that the customer's value is exactly zero.",
+  "\\mu": "The mean of the logarithm of spend when it is positive.",
+  "\\sigma": "The standard deviation of the logarithm of spend when it is positive."
+ },
+ "reconciliation-matching-automation": {
+  "\\mathrm{ManyToManyConsistency}": "Penalty when matches are inconsistent in many-to-many cases, such as one payment covering several invoices that are not all matched."
+ },
+ "regulatory-reporting-rag-copilot": {
+  "\\text{retrieved}": "The regulatory passages retrieved for the question.",
+  "\\mathrm{CitationError}": "Penalty for citing a passage that does not support the sentence."
+ },
+ "earnings-call-sentiment-and-esg-signals": {
+  "\\mathrm{ConsistencyAcrossParaphrase}": "Penalty when rewording the same sentence changes the predicted sentiment."
+ },
+ "trade-surveillance-spoofing-detection": {
+  "\\mathrm{TemporalSmoothness}": "Penalty when scores for neighbouring moments in the order-book sequence jump around."
+ },
+ "cross-border-fx-pricing-optimization": {
+  "p": "The price (FX margin) offered to the customer.",
+  "c": "The cost to the bank of providing the transaction.",
+  "\\text{convert}": "Whether the customer accepts the price and completes the transfer; its probability depends on price p and context x."
+ },
+ "atm-cash-demand-forecasting": {
+  "c": "Cost per unit of error: c_u when cash runs out (under-forecast) and c_o when excess cash sits idle (over-forecast).",
+  "(\\cdot)^+": "Positive part: counts only errors in the stated direction."
+ },
+ "bnpl-risk-decisioning": {
+  "\\text{order value}": "The value of the order; w grows with it, so mistakes on large orders count more."
+ },
+ "fraud-investigator-copilot-agent": {
+  "\\text{tools}": "The outputs of the investigation tools the agent has called.",
+  "\\mathrm{UnsupportedClaim}": "Penalty for statements that no tool output supports."
+ },
+ "credit-model-drift-and-fairness-monitoring": {
+  "P": "The reference distribution of a score or feature: P_i is the share of customers in bin i at training time.",
+  "Q": "The current distribution: Q_i is the share in bin i today.",
+  "i": "Index over bins of the score or feature."
+ },
+ "readmission-risk-prediction": {
+  "\\mathrm{GroupCalibration}": "Penalty when predicted risk is miscalibrated for some patient groups, even if it is right overall."
+ },
+ "pathology-slide-cancer-detection": {
+  "\\mathrm{BCE}_{\\text{slide}}": "Binary cross-entropy on whether the whole slide contains cancer.",
+  "\\mathrm{MIL\\text{-}attention}": "Multiple-instance attention term: learns which small tiles of the slide to focus on, since only the slide label is known."
+ },
+ "radiology-report-generation-llm": {
+  "I": "The medical image the report describes.",
+  "\\mathrm{CheXbertMismatch}": "Penalty when findings in the generated report differ from those in the reference report, as extracted by the CheXbert labeller."
+ },
+ "clinical-note-summarization-ambient-scribe": {
+  "x": "The transcript of the clinical conversation.",
+  "\\mathrm{UnsupportedFact}": "Penalty for facts in the note that the conversation does not support."
+ },
+ "icd-cpt-medical-coding-automation": {
+  "c": "A medical code (ICD or CPT); y_c is 1 if the code applies to the document.",
+  "\\mathrm{HierarchyPenalty}": "Penalty when a child code is predicted without its parent in the coding hierarchy."
+ },
+ "prior-authorization-automation": {
+  "\\text{policy}": "The insurer's coverage policy.",
+  "\\text{chart}": "The patient's clinical record.",
+  "\\mathrm{PolicyViolation}": "Penalty when the generated decision or letter contradicts the policy."
+ },
+ "claims-denial-prediction": {
+  "\\text{claim value}": "The money value of the claim; w grows with it."
+ },
+ "emergency-department-triage-nlp": {
+  "\\mathrm{UnderTriagePenalty}": "Extra penalty for assigning a lower urgency than the patient needs, which is far more dangerous than assigning too high."
+ },
+ "drug-drug-interaction-and-adverse-event-prediction": {
+  "z": "The learned embedding of a drug: z_i for drug i and z_j for drug j.",
+  "R": "A relation matrix that turns a pair of drug embeddings into an interaction score.",
+  "\\mathrm{SeverityWeight}": "Weight that makes dangerous interactions count more than mild ones.",
+  "y": "Whether drugs i and j interact: y_{ij} is 1 if they do.",
+  "\\sigma": "Sigmoid function: turns the score into a probability.",
+  "i": "A drug.",
+  "j": "Another drug."
+ },
+ "medication-adherence-prediction-and-nudges": {
+  "\\text{adherence}": "Whether the patient takes the medication as prescribed.",
+  "B": "The maximum number of nudges (contacts) allowed per patient or period.",
+  "\\pi": "The nudge policy.",
+  "\\mathrm{BCE}": "Binary cross-entropy for predicting adherence."
+ },
+ "drug-discovery-molecular-property-prediction": {
+  "m": "A mask: m_{it} is 1 if molecule i has a measured value for property t and 0 if it is missing.",
+  "y": "The measured value of property t for molecule i; the hat is the prediction.",
+  "t": "Index over properties (assays).",
+  "i": "Index over molecules.",
+  "\\mathrm{Evidential}": "Penalty that trains the model to report its own uncertainty about each prediction."
+ },
+ "virtual-screening-docking-surrogate": {
+  "f": "The surrogate model that predicts a docking score quickly.",
+  "m": "A candidate molecule.",
+  "\\text{dock}": "The expensive physics-based docking score the surrogate learns to imitate."
+ },
+ "genomic-variant-pathogenicity-classification": {
+  "\\mathrm{EvidenceCalibration}": "Penalty when predicted pathogenicity probabilities do not match the strength of clinical evidence categories."
+ },
+ "single-cell-rna-cell-type-annotation": {
+  "Z": "The learned representation of cells from one experimental batch: Z_batch_a and Z_batch_b.",
+  "\\mathrm{MMD}": "Penalty for differences between the representations of two batches, which removes batch effects."
+ },
+ "mental-health-triage-chatbot-safety": {
+  "x": "The user's message and conversation context.",
+  "\\mathrm{SafetyViolation}": "Penalty when the reply is unsafe, for example missing a crisis signal or giving harmful advice."
+ },
+ "symptom-checker-and-care-navigation": {
+  "\\text{disposition}": "The recommended level of care, from self-care up to emergency, treated as ordered grades.",
+  "\\mathrm{UnderTriagePenalty}": "Extra penalty for recommending a lower level of care than needed."
+ },
+ "population-health-risk-stratification": {
+  "\\hat{\\mu}": "The predicted expected cost or utilisation for each patient.",
+  "\\mathrm{FairnessGap}": "Penalty when predictions differ systematically between demographic groups."
+ },
+ "ckd-progression-forecasting": {
+  "\\text{eGFR}": "Estimated glomerular filtration rate, a kidney function measure: eGFR_{i,1:T} is patient i's series over T visits.",
+  "p": "The model's probability of the observed series given the patient's features.",
+  "\\mathrm{Survival}": "Survival loss for kidney failure events, handling patients not yet failed at the end of follow-up."
+ },
+ "surgical-video-phase-recognition": {
+  "\\mathrm{CE}_{\\text{phase}}": "Cross-entropy for labelling each video frame with the surgical phase.",
+  "\\mathrm{TemporalSmoothness}": "Penalty for phase labels that flip back and forth between neighbouring frames."
+ },
+ "ultrasound-guidance-and-measurement": {
+  "\\mathcal{L}_{\\text{seg}}": "Segmentation loss: how well the anatomical structure is outlined.",
+  "\\text{measure}": "The clinical measurement taken from the image, such as a length or diameter."
+ },
+ "patient-similarity-cohort-search": {
+  "z": "The learned embedding of a patient: z_p for the query patient and z_{p+} for a similar patient.",
+  "p": "A patient; p+ is a clinically similar patient."
+ },
+ "clinical-decision-support-rag": {
+  "\\text{evidence}": "The guideline and literature passages retrieved for the question.",
+  "\\mathrm{CitationError}": "Penalty for citing a source that does not support the statement."
+ },
+ "patient-portal-message-triage": {
+  "\\text{urgency}": "The urgency level of the patient's message, treated as an ordered grade.",
+  "x": "The patient's message."
+ },
+ "hospital-supply-forecasting": {
+  "c": "Cost per unit of shortfall (c_s, a stockout) and per unit of excess (c_e, wasted stock).",
+  "\\hat{q}": "The forecast quantity to stock.",
+  "(\\cdot)^+": "Positive part: counts only errors in the stated direction."
+ },
+ "pharmacy-demand-and-expiry-forecasting": {
+  "\\mathrm{ExpiryRisk}": "Penalty for stock that will expire before it is sold."
+ },
+ "ambulance-dispatch-and-response-time-optimization": {
+  "\\text{priority}": "The urgency priority of call t.",
+  "\\text{response}": "The response time to call t.",
+  "w": "A weight that increases with call priority, so urgent calls matter most.",
+  "\\pi": "The dispatch policy."
+ },
+ "nurse-scheduling-optimization": {
+  "\\text{understaffing}": "The shortfall of nurses below the required level in shift s.",
+  "\\text{preference violations}": "Shifts that go against nurses' stated preferences.",
+  "\\text{overtime}": "Hours worked beyond contract.",
+  "\\lambda": "Weight on preference violations: how strongly it counts against the main objective.",
+  "\\mu": "Weight on overtime: how strongly it counts against the main objective.",
+  "s": "Index over shifts."
+ },
+ "risk-adjustment-hcc-coding": {
+  "\\mathrm{ComplianceRisk}": "Penalty for coding conditions that the record does not support, which would create audit risk."
+ },
+ "clinical-text-phi-redaction": {
+  "\\mathrm{CE}_{\\text{token}}": "Cross-entropy for labelling each token as personal health information or not.",
+  "\\mathrm{RecallBoost}": "Penalty for missing personal information, set so recall is favoured over precision."
+ },
+ "federated-learning-multi-hospital": {
+  "w": "The shared model weights being learned.",
+  "n": "The number of patients at hospital k, with n the total.",
+  "F": "The local loss at hospital k.",
+  "k": "Index over hospitals.",
+  "\\mu": "Strength of the proximal term that stops local models drifting too far from the global one.",
+  "w_t": "The global model weights at the start of the round."
+ },
+ "radiotherapy-autocontouring": {
+  "\\mathrm{SurfaceDistance}": "Penalty on the distance between predicted and true organ boundaries."
+ },
+ "sleep-staging-from-wearables": {
+  "\\mathrm{CE}_{\\text{stage}}": "Cross-entropy for classifying each epoch into a sleep stage.",
+  "\\mathrm{TemporalConsistency}": "Penalty for implausible stage changes between neighbouring epochs."
+ },
+ "patient-digital-twin-treatment-response": {
+  "a": "The treatment given: a=0 for control and a=1 for treated.",
+  "Y": "The outcome the patient would have under treatment a: Y^(a).",
+  "X": "The patient's features.",
+  "\\Phi": "The learned representation of the patient's features; the IPM term makes treated and control groups look alike in this space.",
+  "\\mathrm{IPM}": "A distance between the treated and control distributions, used to reduce selection bias."
+ },
+ "visual-search-shop-the-look": {
+  "f": "The embedding network: f(a), f(p), f(n) are the embeddings of anchor, positive and negative images.",
+  "a": "The anchor: the query image.",
+  "p": "The positive: an image of the same or a matching product.",
+  "n": "The negative: an image of a different product.",
+  "\\mathcal{L}_{\\text{det}}": "Detection loss: how well items in the image are found and boxed."
+ },
+ "dynamic-pricing-optimization": {
+  "c": "The unit cost of item i.",
+  "D": "The predicted demand for item i at price p_i in context x_i.",
+  "p": "The price chosen for item i, the thing being optimised; p^min and p^max are the lowest and highest allowed prices.",
+  "x": "Context features such as day, stock and competitor prices."
+ },
+ "markdown-clearance-optimization": {
+  "m": "The markdown (discount fraction) applied at time t.",
+  "c": "The unit cost of the item.",
+  "S": "The number of units that must be sold by the end of the clearance period.",
+  "p": "The original price: p_0 is the price before markdowns.",
+  "q": "Expected units sold at time t given markdown m_t.",
+  "T": "The number of time periods in the clearance window."
+ },
+ "promotion-uplift-and-coupon-targeting": {
+  "\\text{policy}": "The decision rule: give the coupon (1) only when estimated uplift exceeds its cost.",
+  "c": "The cost of giving the coupon.",
+  "Y": "The observed outcome for customer i.",
+  "W": "Treatment indicator: 1 if the customer got the coupon.",
+  "\\mu": "The model of the outcome for group W (T-learner)."
+ },
+ "new-product-cold-start-forecasting": {
+  "\\mathrm{Analogue}": "A comparable existing product used to guess a new product's sales.",
+  "\\mathrm{Consistency}": "Penalty when the new product's forecast disagrees with its analogues' pattern."
+ },
+ "inventory-replenishment-optimization": {
+  "h": "Holding cost per unit of leftover stock per period.",
+  "I": "Inventory at time t: I^+ is stock on hand and I^- is unmet demand (backorders).",
+  "b": "Backorder (shortage) cost per unit.",
+  "K": "The fixed cost of placing an order.",
+  "q": "The quantity ordered at time t.",
+  "\\pi": "The replenishment policy."
+ },
+ "assortment-planning": {
+  "x": "Decision: x_i is 1 if item i is stocked, 0 if not.",
+  "m": "The profit margin of item i.",
+  "D": "The expected demand for item i given the chosen assortment.",
+  "s": "The shelf space item i needs.",
+  "S": "The total shelf space available.",
+  "N": "The number of candidate items."
+ },
+ "customer-churn-and-repurchase-prediction": {
+  "\\delta": "Event indicator: 1 if customer i churned, 0 if still active at the end of observation.",
+  "h": "The hazard: the chance of churning at time t given still active.",
+  "H": "The cumulative hazard: the accumulated churn risk up to time t_i.",
+  "t": "The time customer i churned or was last observed."
+ },
+ "customer-segmentation-embeddings": {
+  "z": "The learned embedding of a customer: z_u for customer u and z_u+ for a similar view of the same customer.",
+  "\\mathrm{KMeans}": "Clustering penalty that pulls each embedding towards its cluster centre so segments are compact."
+ },
+ "conversational-shopping-assistant": {
+  "\\text{catalogue}": "The product catalogue the assistant may recommend from.",
+  "\\mathrm{OutOfCatalogue}": "Penalty for recommending products that are not in the catalogue."
+ },
+ "product-catalog-attribute-extraction-llm": {
+  "\\mathrm{CE}_{\\text{token}}": "Cross-entropy for labelling each token with the attribute it belongs to.",
+  "\\mathrm{SchemaViolation}": "Penalty when the extracted values do not fit the catalogue schema (wrong type or an invalid unit)."
+ },
+ "product-matching-and-deduplication": {
+  "\\mathrm{TransitiveClosurePenalty}": "Penalty when matches are not consistent: if A matches B and B matches C, A should match C."
+ },
+ "return-fraud-and-abuse-detection": {
+  "\\text{item value}": "The value of the returned item; w grows with it."
+ },
+ "checkout-payment-risk-ecommerce": {
+  "c": "The cost of a mistake: c_FN for letting a fraudulent order through and c_FP for blocking a genuine one.",
+  "y": "The label: 1 if the order is fraudulent.",
+  "p": "The calibrated probability that the order is fraudulent.",
+  "i": "Index over orders."
+ },
+ "counterfeit-product-detection": {
+  "\\text{genuine}": "An embedding of a genuine product listing.",
+  "\\text{fake}": "An embedding of a counterfeit listing, pushed away from genuine ones.",
+  "\\mathrm{BCE}": "Binary cross-entropy on whether a listing is counterfeit."
+ },
+ "size-and-fit-recommendation": {
+  "\\text{fit class}": "The fit outcome reported by the customer: too small, true to size or too large.",
+  "\\mathrm{OrdinalPenalty}": "Extra penalty when the predicted fit is far from the true fit on the small-to-large scale."
+ },
+ "review-summarization-and-q-and-a": {
+  "\\mathrm{AspectCoverage}": "Penalty when the summary leaves out important aspects mentioned in the reviews (battery life, fit, price).",
+  "x": "The reviews the summary is based on."
+ },
+ "send-time-optimization": {
+  "r": "Reward for engagement at step t, for example an open or click.",
+  "\\mathbb{1}": "Indicator that the customer opted out at step t.",
+  "\\kappa": "How heavily an opt-out is penalised compared with engagement.",
+  "\\pi": "The policy that chooses when to send.",
+  "\\gamma": "Discount factor for later steps."
+ },
+ "loyalty-offer-optimization": {
+  "\\text{margin}": "Profit margin earned at step t.",
+  "\\text{cost}": "The cost of the offer at step t.",
+  "B": "The loyalty budget: total offer cost must stay below it.",
+  "\\pi": "The offer policy.",
+  "\\gamma": "Discount factor."
+ },
+ "store-traffic-and-staffing-forecast": {
+  "\\mathrm{ScheduleChurn}": "Penalty for changing staff schedules that were already published."
+ },
+ "competitor-price-intelligence": {
+  "\\mathrm{AttributeConflict}": "Penalty when matched products disagree on key attributes such as size or pack count."
+ },
+ "search-relevance-llm-judge-evaluation": {
+  "r": "The relevance grade for result i: the hat is the judge's grade and r_human the human grade.",
+  "d": "The document (product) shown for the query.",
+  "q": "The search query.",
+  "\\mathrm{Calibration}": "Penalty when the LLM judge's grades disagree with human grades on average."
+ },
+ "sponsored-products-ads-ranking": {
+  "b": "The advertiser's bid per click.",
+  "v": "The value of a conversion to the advertiser.",
+  "q": "The predicted probability of a purchase given a click.",
+  "p": "The predicted click probability.",
+  "y_{\\text{click}}": "The label: 1 if the ad was clicked.",
+  "y_{\\text{conv}}": "The label: 1 if the click led to a purchase."
+ },
+ "out-of-stock-substitution": {
+  "u": "A shopper.",
+  "i": "The substitute the shopper accepted.",
+  "j": "A substitute the shopper did not accept.",
+  "\\mathrm{AcceptanceCalibration}": "Penalty when predicted acceptance rates do not match how often shoppers accept substitutes."
+ },
+ "fresh-produce-waste-forecasting": {
+  "c": "Cost per unit of waste (c_w) or shortage (c_s).",
+  "\\hat{q}": "The forecast quantity to order or stock.",
+  "\\mathrm{ShelfLifePenalty}": "Penalty for ordering more than can be sold before the produce spoils."
+ },
+ "gift-recommendations-llm": {
+  "\\mathrm{GroundingMiss}": "Penalty when the recommended gift is not grounded in the real catalogue and the stated preferences.",
+  "x": "The shopper's request and context."
+ },
+ "category-page-ranking": {
+  "\\mathrm{ListwisePenalty}": "Penalty on the quality of the whole ordered list, for example diversity or position-weighted relevance."
+ },
+ "buy-box-seller-ranking": {
+  "\\text{conversion}": "The label: 1 if the shopper bought from the offer.",
+  "\\mathrm{FairnessPenalty}": "Penalty for unfairly favouring some sellers when offers are otherwise similar."
+ },
+ "order-routing-fulfilment-selection": {
+  "a": "The fulfilment option chosen, such as which warehouse or store ships the order.",
+  "\\text{ship cost}": "The cost of shipping from option a.",
+  "\\text{delay}": "The expected delivery delay of option a.",
+  "\\text{opportunity cost of stock}": "The value of the stock if it were kept for other orders instead.",
+  "\\lambda": "Weight on delay: how strongly it counts against the main objective.",
+  "\\mu": "Weight on stock opportunity cost: how strongly it counts against the main objective."
+ },
+ "pre-purchase-return-risk": {
+  "\\text{return cost}": "The cost of a return including shipping and handling; w grows with it."
+ },
+ "b2b-saas-churn-prediction": {
+  "\\delta": "Event indicator: 1 if the account churned, 0 if still active at the end of observation.",
+  "h": "The hazard: the chance of churn at time t given the account is still active.",
+  "H": "The cumulative hazard up to time t_i.",
+  "t": "The time the account churned or was last observed."
+ },
+ "account-health-scoring": {
+  "\\text{retain}": "The label: 1 if the account renewed.",
+  "\\mathrm{MonotonicityPenalty}": "Penalty when the health score falls even though a positive signal, such as more usage, increased."
+ },
+ "expansion-and-upsell-propensity": {
+  "\\text{ARR potential}": "The annual recurring revenue an expansion could add; w grows with it."
+ },
+ "lead-to-account-matching": {
+  "\\text{same entity}": "The label: 1 if a lead and an account are the same company.",
+  "\\mathrm{TransitivityPenalty}": "Penalty when matches are inconsistent across a group of records."
+ },
+ "pricing-and-packaging-optimization": {
+  "\\text{buy}": "Whether a customer in segment s buys at price p.",
+  "p": "The price chosen, the thing being optimised.",
+  "c": "The unit cost of serving a customer.",
+  "x": "Segment features: x_s for segment s.",
+  "s": "Index over customer segments."
+ },
+ "revenue-and-pipeline-forecasting": {
+  "\\text{deal win}": "The label: 1 if a sales opportunity is won."
+ },
+ "sales-call-summarization-and-coaching": {
+  "\\text{transcript}": "The transcript of the sales call.",
+  "\\mathrm{UnsupportedFact}": "Penalty for statements in the summary that the call does not support."
+ },
+ "customer-support-copilot": {
+  "\\text{ticket,KB}": "The customer's ticket and the knowledge-base articles.",
+  "\\mathrm{PolicyViolation}": "Penalty when a suggested reply breaks support policy."
+ },
+ "help-center-deflection-rag": {
+  "\\text{docs}": "The help-centre articles retrieved for the question.",
+  "\\mathrm{Hallucination}": "Penalty for statements not supported by the retrieved articles."
+ },
+ "in-app-ai-copilot": {
+  "\\text{context,tools}": "The state of the app and the tools the copilot may use.",
+  "\\mathrm{UnsafeAction}": "Penalty when the copilot proposes an action that is destructive or not permitted."
+ },
+ "natural-language-to-sql": {
+  "\\text{schema}": "The database schema (tables and columns).",
+  "\\mathrm{ExecutionMismatch}": "Penalty when the generated SQL returns different results from the reference query."
+ },
+ "code-completion-assistant": {
+  "\\text{context}": "The code around the cursor (before and after) that the model completes."
+ },
+ "automated-code-review-assistant": {
+  "\\text{diff,context}": "The code change and the surrounding repository context.",
+  "\\mathrm{FalsePositive}": "Penalty for review comments that are wrong or noisy."
+ },
+ "test-generation-and-pr-description": {
+  "\\text{code}": "The code change the tests and description are written for.",
+  "\\mathrm{TestFailure}": "Penalty when the generated tests do not run or fail on correct code."
+ },
+ "microservice-root-cause-analysis": {
+  "\\text{root cause}": "The label: which service or component caused the incident."
+ },
+ "log-anomaly-detection": {
+  "\\text{template sequence}": "The sequence of log message templates (the message pattern with variable parts removed); a rare or unlikely sequence is flagged as an anomaly."
+ },
+ "alert-noise-reduction": {
+  "\\text{actionable}": "The label: 1 if an alert led to action by an engineer, 0 if it was noise.",
+  "\\mathrm{ClusterPurity}": "Penalty when a cluster of grouped alerts mixes unrelated alerts."
+ },
+ "capacity-forecasting-and-autoscaling": {
+  "\\text{cost}": "The infrastructure cost of the capacity provisioned.",
+  "\\text{capacity}": "The amount of compute provisioned in advance for the forecast load."
+ },
+ "flaky-test-detection": {
+  "\\text{flaky}": "The label: 1 if a test passes and fails without a code change."
+ },
+ "predictive-test-selection": {
+  "\\text{test fails}": "Whether the test fails on this change.",
+  "\\text{change,test}": "The code change and the test being considered."
+ },
+ "deployment-risk-prediction": {
+  "\\text{incident}": "The label: 1 if the deployment caused an incident.",
+  "\\text{blast radius}": "How many users or services a failure would affect; w grows with it."
+ },
+ "feature-flag-rollout-safety": {
+  "\\text{ramp speed}": "How quickly the feature is rolled out to more users, which the policy tries to maximise.",
+  "\\text{harm}": "The measured harm of the new feature, such as higher errors.",
+  "\\delta": "The largest harm that is acceptable.",
+  "\\alpha": "The acceptable probability of exceeding that harm."
+ },
+ "enterprise-search-relevance": {
+  "s": "The model's relevance scores for the candidate documents.",
+  "d": "A document: d+ is a relevant document for query q.",
+  "q": "The search query.",
+  "y": "The relevance labels.",
+  "\\mathrm{InfoNCE}": "Contrastive loss that pulls queries towards their relevant documents."
+ },
+ "email-assistant-auto-reply": {
+  "\\text{thread,style}": "The email thread and the user's writing style the reply is conditioned on."
+ },
+ "meeting-notes-and-action-items": {
+  "\\text{transcript}": "The meeting transcript.",
+  "\\mathrm{OwnerError}": "Penalty for assigning an action item to the wrong person."
+ },
+ "behavioral-cohort-segmentation": {
+  "\\mathrm{ReconstructionLoss}": "How well an autoencoder rebuilds user behaviour from its compressed embedding.",
+  "z": "The compressed embedding of a user's behaviour.",
+  "\\mathrm{ClusterLoss}": "Penalty that pulls embeddings towards their cluster centres so cohorts are distinct."
+ },
+ "data-quality-anomaly-detection": {
+  "m": "The data quality metric at time t, such as row count or null rate.",
+  "\\mu": "The predicted normal value of the metric.",
+  "\\sigma": "The predicted normal spread of the metric."
+ },
+ "llm-schema-matching-data-integration": {
+  "\\text{column}": "The embedding of a source column.",
+  "\\text{target field}": "The embedding of the matching field in the target schema.",
+  "\\mathrm{ValidationFailure}": "Penalty when mapped data fails validation checks such as type or range."
+ },
+ "learned-trace-sampling": {
+  "v": "The value of keeping trace r, for example how informative it is.",
+  "\\text{keep}": "Whether trace r is kept (1) or dropped (0).",
+  "r": "Index over traces."
+ },
+ "sre-runbook-automation-agent": {
+  "\\text{incident}": "The incident description and telemetry the agent reads.",
+  "\\mathrm{UnsafeAction}": "Penalty when the agent proposes a remediation that is risky or not allowed."
+ },
+ "ml-platform-drift-monitoring": {
+  "P": "The reference distribution: P_i is the share in bin i at training time.",
+  "Q": "The current distribution: Q_i is the share in bin i now.",
+  "i": "Index over bins."
+ },
+ "llm-gateway-routing-and-cost-optimization": {
+  "\\text{cost}": "The cost of calling the chosen model.",
+  "m": "The model chosen for the request.",
+  "\\text{quality}": "The quality of the response.",
+  "\\tau": "The minimum acceptable quality.",
+  "\\pi": "The routing policy.",
+  "\\lambda": "Penalty for answers below the quality threshold."
+ },
+ "llm-app-eval-and-regression-testing": {
+  "\\text{score}": "The overall quality score of the application on the test set.",
+  "N": "The number of test cases.",
+  "\\mathrm{Judge}": "The judge's grade for an answer to input x_i, calibrated against human labels.",
+  "x": "A test input.",
+  "y": "The application's answer."
+ },
+ "rag-quality-monitoring": {
+  "\\text{grounded}": "The label: 1 if the answer is supported by the retrieved sources."
+ },
+ "cdp-identity-resolution-saas": {
+  "\\text{same person}": "The label: 1 if two customer records belong to the same person.",
+  "\\mathrm{TransitivityPenalty}": "Penalty when matches contradict each other: if A matches B and B matches C, then A should match C."
+ },
+ "developer-docs-assistant": {
+  "\\text{docs}": "The documentation passages retrieved for the question.",
+  "\\mathrm{NonExistentAPI}": "Penalty when the answer mentions an endpoint or function that does not exist."
+ },
+ "personalized-onboarding-paths": {
+  "\\text{activation}": "Whether the new user reaches the activation milestone.",
+  "\\pi": "The onboarding policy.",
+  "\\gamma": "Discount factor: earlier activation is worth more."
+ },
+ "customer-success-qbr-agent": {
+  "\\text{data}": "The account usage and health data the report must be based on.",
+  "\\mathrm{NumericError}": "Penalty when a number in the report differs from the source data."
+ },
+ "last-mile-route-optimization": {
+  "R": "The set of routes for all vehicles; each route r is a list of stops.",
+  "c": "Cost coefficients: c_dist per unit distance and c_late per unit of lateness.",
+  "r": "One route.",
+  "\\text{lateness}": "How late the vehicle arrives at stops, in expectation over uncertain travel times."
+ },
+ "vehicle-routing-with-time-windows": {
+  "c": "The fixed cost of using vehicle k.",
+  "k": "A vehicle.",
+  "\\text{used}": "Whether the vehicle is used.",
+  "d": "The distance between stops i and j.",
+  "x": "Decision: x_{ijk} is 1 if vehicle k drives from stop i to stop j.",
+  "\\mathrm{Lateness}": "Penalty for arriving after a customer's time window."
+ },
+ "dynamic-dispatch-for-ride-gig-couriers": {
+  "\\text{wait}": "The customer's waiting time at step t.",
+  "\\text{detour}": "The extra distance the courier drives at step t.",
+  "\\text{fairness}": "A fairness measure, such as an even spread of jobs among couriers, at step t.",
+  "\\lambda": "Weight on detour: how strongly it counts against the main objective.",
+  "\\mu": "Weight on fairness: how strongly it counts against the main objective.",
+  "\\pi": "The dispatch policy.",
+  "\\gamma": "Discount factor."
+ },
+ "warehouse-slotting-optimization": {
+  "f": "How often SKU s is picked.",
+  "d": "The distance of location l from the dispatch point.",
+  "a": "How often SKUs s and s' are ordered together.",
+  "\\mathrm{dist}": "The distance between the locations of two SKUs.",
+  "x": "Decision: x_{sl} is 1 if SKU s is placed in location l.",
+  "s": "A SKU.",
+  "l": "A storage location."
+ },
+ "pick-path-and-wave-planning": {
+  "\\mathrm{PathLength}": "The distance pickers walk to complete wave w.",
+  "\\mathrm{Lateness}": "Penalty for orders completed after their cut-off.",
+  "\\mathrm{Congestion}": "Penalty for too many pickers in the same aisle.",
+  "w": "A wave: a batch of orders released together.",
+  "\\lambda": "Weight on lateness: how strongly it counts against the main objective.",
+  "\\mu": "Weight on congestion: how strongly it counts against the main objective."
+ },
+ "warehouse-robot-fleet-orchestration": {
+  "\\text{throughput}": "Tasks completed at step t.",
+  "\\text{conflicts}": "Collisions or deadlocks between robots at step t.",
+  "\\pi": "The orchestration policy."
+ },
+ "pallet-and-load-dimensioning-vision": {
+  "\\text{dims}": "The true length, width and height of the pallet.",
+  "\\widehat{dims}": "The model's estimate of the dimensions.",
+  "\\mathrm{ShapeConsistency}": "Penalty when the estimated dimensions describe an impossible shape."
+ },
+ "container-port-yard-planning": {
+  "\\text{rehandles}": "The number of extra container moves needed to reach container c.",
+  "\\text{turnaround}": "How long ships and trucks wait in port.",
+  "c": "A container."
+ },
+ "container-dwell-time-prediction": {
+  "\\delta": "Event indicator: 1 if the container left the yard, 0 if still there at the end of observation.",
+  "h": "The hazard: the chance the container leaves at time t given it is still in the yard.",
+  "H": "The cumulative hazard up to time t_i.",
+  "t": "The time the container left or was last observed."
+ },
+ "freight-rate-prediction-and-pricing": {
+  "r": "The freight rate; the hat is the model's predicted rate.",
+  "\\mathrm{WinProbCalibration}": "Penalty when predicted win probabilities at a given price do not match how often bids win."
+ },
+ "carrier-selection-and-tendering": {
+  "c": "The cost of carrier a: c_a and c^fail the cost if the shipment fails.",
+  "a": "The carrier chosen.",
+  "p": "The probability that carrier a accepts the load.",
+  "\\text{service risk}": "The risk of poor service by carrier a.",
+  "\\lambda": "Weight on the risk of rejection: how strongly it counts against the main objective.",
+  "\\mu": "Weight on service risk: how strongly it counts against the main objective."
+ },
+ "supply-chain-news-event-monitoring-llm": {
+  "\\text{articles}": "The news articles the system reads.",
+  "\\mathrm{Unsupported}": "Penalty for statements the articles do not support."
+ },
+ "inventory-optimization-multi-echelon": {
+  "h": "The holding cost per unit at node n of the supply network.",
+  "I": "Inventory at node n: I^+ is the stock on hand.",
+  "\\text{stockout}": "The event that node n runs out of stock; its probability must stay below alpha_n.",
+  "\\alpha": "The maximum acceptable stock-out probability at node n.",
+  "n": "A node (warehouse or store) in the multi-echelon network."
+ },
+ "safety-stock-and-service-level-optimization": {
+  "\\mathrm{SL}": "Service level of item i as a function of its safety stock: the probability of not running out.",
+  "s": "The safety stock held for item i, the thing being optimised.",
+  "c": "The cost of holding one unit of item i.",
+  "B": "The total inventory budget.",
+  "w": "The importance weight of item i."
+ },
+ "production-planning-and-scheduling": {
+  "T": "The tardiness of job j: how late it finishes beyond its due date.",
+  "\\text{setup}": "The setup (changeover) time or cost on machine m.",
+  "w": "The importance weight of job j.",
+  "j": "A job.",
+  "m": "A machine."
+ },
+ "predictive-maintenance-fleet": {
+  "\\mathrm{BCE}": "Binary cross-entropy on whether the vehicle fails within the horizon.",
+  "\\mathrm{CostWeighting}": "Weight that makes missed failures on costly or critical vehicles count more."
+ },
+ "cold-chain-temperature-excursion-prediction": {
+  "T": "The temperature at time t+h: the hat is the model's predicted temperature.",
+  "y": "The label: 1 if the temperature goes out of range at t+h.",
+  "h": "The forecast horizon."
+ },
+ "fuel-consumption-and-eco-routing": {
+  "F": "Fuel consumed on a trip; the hat is the model's prediction."
+ },
+ "driver-behaviour-and-safety-scoring": {
+  "\\text{incidents}": "The number of safety incidents a driver had.",
+  "\\hat{\\lambda}": "The predicted incident rate for the driver."
+ },
+ "customs-hs-code-classification": {
+  "\\mathrm{CE}_{\\ell}": "Cross-entropy for predicting the code at hierarchy level l (chapter, heading, subheading).",
+  "\\ell": "Index over levels of the code hierarchy.",
+  "\\mathrm{HierarchyConsistency}": "Penalty when a predicted detailed code does not belong under the predicted higher-level code."
+ },
+ "freight-invoice-audit": {
+  "\\text{amount}": "The invoice amount; w grows with it."
+ },
+ "reverse-logistics-returns-flow-optimization": {
+  "\\text{recovery}": "The value recovered from the returned item, for example resale value.",
+  "a": "The disposition chosen: resell, refurbish, liquidate or recycle.",
+  "\\text{cost}": "The cost of handling the return with option a.",
+  "x": "The returned item's features."
+ },
+ "delivery-time-slot-optimization": {
+  "\\text{conv}": "The probability the customer completes the purchase given the slots and prices shown.",
+  "\\text{margin}": "The margin earned on the order.",
+  "\\text{cost}": "The delivery cost of the chosen slot.",
+  "\\text{slot}": "A delivery time slot.",
+  "p": "The slot price or offer shown to the customer."
+ },
+ "first-attempt-delivery-failure-prediction": {
+  "c": "The cost of a redelivery attempt; the loss weights failures by it."
+ },
+ "drone-and-av-delivery-path-planning": {
+  "c": "Cost per step: c_energy for energy used, c_risk for risk and c_time for delay.",
+  "\\lambda": "Weights lambda_1 on risk and lambda_2 on time.",
+  "\\pi": "The path planning policy."
+ },
+ "supply-chain-digital-twin-simulation": {
+  "\\mathrm{Distance}": "A measure of how far the simulation's behaviour is from the real system's.",
+  "S": "A summary of system behaviour: S_theta from the simulator with parameters theta and S_observed from real data.",
+  "\\theta": "The simulator's parameters to calibrate."
+ },
+ "order-promising-atp-optimization": {
+  "v": "The value of promising order o.",
+  "\\text{promise}": "Whether order o is promised (1) or not (0).",
+  "o": "An order."
+ },
+ "cross-dock-scheduling": {
+  "\\text{dwell}": "How long freight waits at the dock in period t.",
+  "\\text{walking}": "The distance workers walk moving freight.",
+  "\\text{lateness}": "How late outbound trucks depart.",
+  "\\lambda": "Weight on walking distance: how strongly it counts against the main objective.",
+  "\\mu": "Weight on lateness: how strongly it counts against the main objective."
+ },
+ "load-consolidation-and-bin-packing": {
+  "\\text{containers}": "The number of containers or trucks used, which the plan tries to minimise.",
+  "\\text{unload penalties}": "Extra cost when loads are packed so that unloading order is awkward."
+ },
+ "supplier-quality-defect-prediction": {
+  "\\text{impact}": "The business impact of a defect from the supplier; w grows with it."
+ },
+ "bom-and-part-matching-llm": {
+  "\\text{part}": "The embedding of a part description from the bill of materials.",
+  "\\text{catalogue part}": "The embedding of the matching catalogue part.",
+  "\\mathrm{SchemaViolation}": "Penalty when the matched part fails catalogue rules such as unit or category."
+ },
+ "contract-intelligence-llm": {
+  "\\text{clauses}": "The contract clauses the model reads.",
+  "\\mathrm{ClauseMiss}": "Penalty for failing to report a relevant clause."
+ },
+ "demand-shaping-supply-aligned": {
+  "\\text{margin}": "Margin earned at step t.",
+  "\\text{unmet}": "Demand that could not be served at step t.",
+  "\\text{excess}": "Excess supply left over at step t.",
+  "\\lambda": "Weight on unmet demand: how strongly it counts against the main objective.",
+  "\\mu": "Weight on excess supply: how strongly it counts against the main objective.",
+  "\\pi": "The pricing and promotion policy."
+ },
+ "carbon-footprint-estimation-logistics": {
+  "E": "The emissions of a shipment; the hat is the model's estimate."
+ },
+ "cvr-prediction-delayed-feedback": {
+  "p": "The probability that the click eventually converts.",
+  "\\lambda": "The rate of the conversion-delay distribution: a larger value means conversions usually happen sooner after the click.",
+  "d": "The time elapsed since the click.",
+  "y": "The label so far: 1 if a conversion has already been observed, 0 if not yet (it may still come).",
+  "e": "Euler's number, base of the exponential delay model."
+ },
+ "ltv-based-bidding": {
+  "\\pi": "The probability that the customer's lifetime value is exactly zero.",
+  "\\mu": "The mean of the logarithm of value for customers who do spend.",
+  "\\sigma": "The standard deviation of the logarithm of value for customers who do spend."
+ },
+ "admissions-application-scoring-fairness": {
+  "\\mu": "Weight on the equalised-odds fairness penalty: how strongly it counts against the main objective.",
+  "\\lambda": "Weight on the demographic-parity fairness penalty: how strongly it counts against the main objective."
+ },
+ "account-takeover-detection": {
+  "\\mu": "Weight on the Brier (calibration) term: how strongly it counts against the main objective.",
+  "w": "A class weight: w_{y_i} is larger for the rare takeover class so it is not ignored.",
+  "\\mathrm{Brier}": "Brier score: the mean squared difference between predicted probability and the 0/1 outcome."
+ },
+ "ledger-journal-entry-anomaly-audit": {
+  "\\beta": "Weight on the KL term that keeps the learned code close to a standard normal distribution: how strongly it counts against the main objective.",
+  "\\mathrm{KL}": "Kullback-Leibler divergence: how far the learned code distribution is from the standard normal prior."
+ },
+ "predictive-maintenance-warehouse-equipment": {
+  "\\beta": "Weight on the KL term that keeps the learned code close to a standard normal distribution: how strongly it counts against the main objective.",
+  "\\mathrm{KL}": "Kullback-Leibler divergence: how far the learned code distribution is from the standard normal prior."
+ },
+ "polygenic-risk-scoring": {
+  "\\beta": "The effect size of genetic variant j on the trait; the model learns one per variant.",
+  "\\tau": "The prior spread of the effect of variant j: a small value shrinks that variant's effect towards zero.",
+  "X": "The genotype matrix: each person's variants.",
+  "y": "The measured trait or disease status.",
+  "j": "Index over genetic variants.",
+  "\\lambda": "Strength of the shrinkage penalty."
+ },
+ "portfolio-optimization-risk-parity": {
+  "w": "The portfolio weights: the share of capital held in each asset, the thing being optimised; w_0 is the current portfolio.",
+  "\\Sigma": "The covariance matrix of asset returns, which measures risk.",
+  "\\mu": "The vector of expected asset returns.",
+  "\\lambda": "How much expected return is valued against risk.",
+  "\\kappa": "Penalty on trading away from the current portfolio, which limits turnover.",
+  "\\|": "Norm: the sum of absolute changes in weights (turnover)."
+ },
+ "retail-banking-churn-prediction": {
+  "\\tau": "Uplift: the causal effect of the retention offer on whether the customer stays, for a customer with features x.",
+  "Y": "The outcome: Y(1) if the customer gets the offer and Y(0) if not.",
+  "x": "The customer's features."
+ },
+ "digital-onboarding-dropoff-prediction": {
+  "\\tau": "Uplift: the causal effect of an intervention on completing onboarding, for a user with features x.",
+  "Y": "The outcome: Y(1) with the intervention and Y(0) without.",
+  "x": "The user's features."
+ },
+ "cart-abandonment-and-basket-completion": {
+  "\\tau": "Uplift: the causal effect of the reminder or offer on completing the purchase.",
+  "Y": "The outcome: Y(1) with the intervention and Y(0) without.",
+  "x": "The shopper's features."
+ },
+ "plg-activation-prediction": {
+  "\\tau": "Uplift: the causal effect of an intervention on activation for a user with features x.",
+  "x": "The user's features."
+ },
+ "incrementality-geo-experiments": {
+  "w": "The weight given to control region j in the synthetic control, chosen so the blend matches the treated region before the test.",
+  "y": "The outcome in a region at time t: y_treat for the treated region and y_j for control region j.",
+  "j": "Index over control regions."
+ },
+ "delivery-promise-estimation": {
+  "\\alpha": "The quantile level (0.9): errors that make the promise too early are weighted 0.9 and too late 0.1, so the model learns the 90th percentile.",
+  "\\hat{q}": "The predicted delivery time at that quantile.",
+  "(\\cdot)^+": "Positive part: counts only errors in the stated direction."
+ },
+ "procurement-price-forecasting": {
+  "p": "The price at time t+h: the hat is the forecast at quantile q.",
+  "\\rho": "Pinball (quantile) loss at level q.",
+  "h": "The forecast horizon."
+ },
+ "placement-test-and-cold-start-onboarding": {
+  "\\theta": "The learner's true ability; the hat is the estimate, which should be accurate with as few questions as possible."
+ },
+ "price-elasticity-causal-estimation": {
+  "\\theta": "The price elasticity: how much demand changes when price changes, allowed to depend on features X_i.",
+  "\\tilde{Y}": "Demand with the part explained by other features removed.",
+  "\\tilde{T}": "Price with the part explained by other features removed."
+ },
+ "experimentation-cuped-sequential-testing": {
+  "\\theta": "The CUPED coefficient: how much of the outcome's variation is explained by the pre-experiment covariate, computed as Cov(Y,X)/Var(X).",
+  "\\hat{\\tau}_{\\text{CUPED}}": "The variance-reduced estimate of the treatment effect.",
+  "X": "The pre-experiment covariate (for example last month's spend) used to reduce noise.",
+  "Y": "The outcome during the experiment."
+ },
+ "dynamic-product-ads-feed-recs": {
+  "s": "The model's score for showing item i to user u.",
+  "j": "Index over all candidate items the item is compared with."
+ },
+ "handwritten-exam-ocr-grading": {
+  "\\mathcal{L}_{\\text{layout}}": "Layout loss: how well the page regions (answer boxes, question numbers) are found."
+ },
+ "multilingual-lecture-captioning": {
+  "\\mathcal{L}_{\\text{translation}}": "Translation loss: how well the caption is translated into the target language."
+ },
+ "kyc-document-verification-vision": {
+  "\\mathcal{L}_{\\text{CE}}^{\\text{doc type}}": "Cross-entropy for recognising the type of identity document.",
+  "\\mathcal{L}_{\\text{BCE}}^{\\text{tamper}}": "Binary cross-entropy for whether the document has been tampered with.",
+  "\\mathcal{L}_{\\text{OCR-CTC}}": "CTC loss for reading the text on the document."
+ },
+ "liveness-and-deepfake-selfie-detection": {
+  "\\mathcal{L}_{\\text{SupCon}}": "Supervised contrastive loss: pulls real selfies together and pushes spoof or deepfake selfies away from them."
+ },
+ "dicom-image-deidentification": {
+  "\\mathcal{L}_{\\text{OCR-det}}": "Text-detection loss: how well burned-in text regions (names, dates) are located in the image."
+ },
+ "shelf-monitoring-vision": {
+  "\\mathcal{L}_{\\text{planogram}}": "Planogram loss: penalty when detected shelf contents disagree with the planned layout."
+ },
+ "checkout-free-store-vision": {
+  "\\mathcal{L}_{\\text{reid}}": "Re-identification loss: how well the same shopper is recognised across cameras.",
+  "\\mathcal{L}_{\\text{action}}": "Action loss: how well picking up or putting back items is recognised.",
+  "\\mathcal{L}_{\\text{basket-consistency}}": "Penalty when the inferred basket is inconsistent with the sequence of actions."
+ },
+ "virtual-try-on": {
+  "\\mathcal{L}_{\\text{identity}}": "Identity loss: penalty when the generated image changes the person's face or body."
+ },
+ "visual-quality-inspection-line": {
+  "\\mathcal{L}_{\\text{feature-distance}}": "Feature-distance loss: keeps the representation of normal parts close together so that defects stand out."
+ },
+ "spend-classification-taxonomy": {
+  "\\mathrm{CE}": "Cross-entropy for classifying a spend line into the category at one level of the taxonomy: L1 is the top level, L2 the middle level and L3 the most detailed."
+ }
+}
