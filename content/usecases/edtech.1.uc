@@ -5,16 +5,23 @@ loss: \mathcal{L}=-\sum_t\left[y_t\log \hat p_t+(1-y_t)\log(1-\hat p_t)\right]
 con: Update after every answer in under 30 ms ; Millions of learners ; Interpretable mastery per skill ; Cold-start for new skills
 sn: Model | Interpretable BKT/PFA or attention-based KT with skill mapping | Deep model without skill structure | Opaque models predict next answers but can't explain mastery
 sn: Leakage | Split by student and by time | Random interaction splits | Random splits leak a student's own future answers
-sig: Recent correctness with recency weighting | exponentially weighted correct rate per skill | Current mastery | Order by timestamp not insertion
+sn: Calibration | Mastery probabilities calibrated per skill | Raw model scores shown to learners as mastery | An overconfident 95% that is really 70% makes the tutor stop practice too early
+sn: Practice selection | Treating practice choice as depending on the model itself | Assuming answers come from random exercises | The tutor gives weak skills more practice, so naive accuracy comparisons across skills mislead
+sig: Recent correctness with recency weighting | exponentially weighted correct rate per skill | Estimates how well the learner knows the skill right now | Order by timestamp not insertion
 sig: Item difficulty parameter | IRT difficulty of the question | Separates easy from hard | Calibrate on other students
-sig: Time-since-last-practice | gap since skill practice | Forgetting | Server timestamps
+sig: Time-since-last-practice | gap since skill practice | Captures forgetting, so mastery decays between sessions | Use server-side timestamps because device clocks drift
+sig: Prior failures on the skill | count of earlier wrong answers on the same skill | Persistent difficulty is among the strongest predictors of the next miss | Count only answers given before the current one
+sig: Question difficulty from other learners | smoothed correct rate of the question among training students | Separates hard questions from weak learners | Compute on training students only, never including the learner being scored
 noise: Student ID embedding | memorises individuals, fails for new students
 noise: Total questions answered | confounded with engagement
+noise: Session length in minutes | reflects when the learner logged in rather than what they know
 base: Bayesian Knowledge Tracing per skill with fitted guess and slip.
 prod: Attentive knowledge tracing (SAKT/AKT) with IRT-style item embeddings and forgetting, distilled to a small online model with state cached per learner.
 pipe: Answer event stream @ Kafka ; Learner state cache @ Redis ; KT model @ attention model on CPU ; Mastery calibrator @ isotonic ; Practice selector @ downstream service ; Progress API @ app ; Interaction logs @ lakehouse
 edge: New curriculum remaps skills | historical mastery becomes mislabelled | Skill-mapping versioning and mastery migration jobs
 edge: Shared device with multiple siblings | one learner's mastery polluted by another | Profile switching UI and anomaly detection on response patterns
+edge: Learner returns after a long break | mastery estimates are stale and overconfident | Decay mastery by time since practice and ask a short diagnostic before assigning new work
+edge: Guessing on multiple-choice questions | correct answers overstate mastery | Model guess and slip rates per item type and require consistent success before declaring mastery
 off: AUC and RMSE on next-response prediction (student-split) ; Calibration by skill
 on: Learning gain per hour ; Practice efficiency
 gap: Predicting next answers with student leakage ; Ignoring that practice choice depends on the model

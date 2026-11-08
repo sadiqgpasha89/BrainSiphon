@@ -1,0 +1,263 @@
+summary: >-
+  A knowledge tracer that estimates the chance a learner answers the next question correctly, per skill, after every
+  answer: a replayable learner-state object shared by training and serving, question difficulty learned from other
+  students, a PFA-style logistic baseline and a gradient-boosted tracer, evaluated on held-out students with AUC,
+  RMSE and calibration. The starter runs M1-M4 on synthetic learners; M5-M6 (a 30 ms online update and live
+  validation with teachers) need your app and learner data.
+prerequisites:
+  skills:
+    - "Logistic regression and gradient boosting, and probability calibration (reliability tables, expected calibration error)"
+    - "Sequence data handling: ordering by timestamp, event replay and per-user state"
+    - "Educational measurement basics: skills, item difficulty (IRT), guessing and slipping, forgetting"
+    - "Evaluation on new users: splitting by student and why a random row split leaks"
+  tools:
+    - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
+    - "An answer-event stream and a key-value store for learner state (Kafka and Redis) for M5"
+    - "A review workflow with teachers or learning scientists for M6"
+data:
+  strategy: >-
+    Start on the synthetic learners, where the true answer probability is stored, so you can see how close the models
+    get to the ceiling. Then run the same replay on a public tutoring log. Public logs have real skill mappings, noisy
+    timestamps and adaptive practice; compare student-split AUC with published numbers for the same dataset before you
+    trust your pipeline.
+  datasets:
+    - name: "Riiid Answer Correctness Prediction (EdNet-based)"
+      url: "https://www.kaggle.com/c/riiid-test-answer-prediction"
+      license: "Kaggle competition rules; free Kaggle login"
+      gives: "About 100 million answers from roughly 400,000 students on TOEIC preparation questions with timestamps, question tags and elapsed time, the largest public knowledge-tracing benchmark"
+      caveat: "The competition data is anonymised and large; subsample students, split by student and keep rows in timestamp order"
+    - name: "EdNet (Santa tutoring service)"
+      url: "https://github.com/riiid/ednet"
+      license: "CC BY-NC 4.0 per the repository; check it before commercial use"
+      gives: "Interaction logs from more than 780,000 users over two years, with several levels of detail from question answers to lecture views"
+      caveat: "Non-commercial licence, and the full set is hundreds of gigabytes; start with the smallest KT1 files"
+    - name: "ASSISTments public datasets"
+      url: "https://sites.google.com/site/assistmentsdata/"
+      license: "Research terms stated on each dataset page"
+      gives: "Skill-builder and other maths tutoring logs with skill ids, correctness and attempt counts, the classic benchmark for BKT and PFA"
+      caveat: "Several known duplicates and ordering issues in older releases; deduplicate and order by timestamp before modelling"
+  synthetic:
+    file: "make_data.py"
+    description: >-
+      About 350,000 answers from 2,500 students on 15 skills and 240 questions. Each student has a general-ability
+      trait and a starting ability per skill, learns with practice, forgets toward the starting level during breaks
+      (with occasional gaps of 100-400 hours) and is given more of the skills they are currently weak at, so practice
+      depends on the model's own view of the learner. Questions have IRT-style difficulties.
+    knobs:
+      - "n_students, n_skills, n_questions, mean_len: size of the log (defaults 2,500, 15, 240 and 140 answers per student)"
+      - "constants in the file: learning speed, forgetting time constant, guess and slip rates, adaptivity of practice"
+      - "seed: identical seed gives an identical log"
+  sample:
+    columns: [student, ts_h, skill, question, correct, true_p]
+    rows:
+      - [0, 3.81, 9, 135, 0, 0.22]
+      - [0, 4.94, 6, 145, 0, 0.29]
+      - [0, 17.99, 13, 20, 0, 0.31]
+  label: >-
+    correct = 1 when the learner answers the question right at first attempt. The prediction target is the correctness of
+    the next answer given everything the learner did before it; `true_p` exists only in synthetic data and is the
+    ceiling for any model.
+milestones:
+  - id: M0
+    title: "Decide what mastery is for"
+    days: "2-3"
+    tasks:
+      - "Name the decisions mastery drives (which question next, when to stop practising a skill, what the progress report says)"
+      - "Choose the target and metrics: next-answer AUC and RMSE on held-out students, plus calibration per skill"
+      - "Agree the budget: updating after every answer in under 30 ms for millions of learners"
+    deliverable: "Spec of decisions, metrics, calibration requirement and latency budget"
+    gate:
+      metric: "Spec exists"
+      threshold: "Signed by the learning-science lead and product owner, with a number for AUC, calibration error and p99 update latency"
+      how: "Review meeting"
+  - id: M1
+    title: "Interaction table and a student-level split"
+    days: "3-4"
+    tasks:
+      - "Build one row per answer ordered by student and timestamp; run python make_data.py or load a public log"
+      - "Split students, not rows: 75% of students for training, 25% held out entirely"
+      - "Deduplicate and verify timestamps are monotone per student"
+    deliverable: "Ordered interaction table and a student split manifest"
+    gate:
+      metric: "Generator and split tests"
+      threshold: "pytest -k 'deterministic or disjoint' passes: no student appears on both sides"
+      how: "Run pytest in the starter directory"
+  - id: M2
+    title: "Learner state and point-in-time features"
+    days: "4-5"
+    tasks:
+      - "Implement LearnerState so features are read before an answer is applied, and reuse it unchanged in the online service"
+      - "Add per-skill counts, a recency-weighted accuracy, time since practice and a recent overall accuracy"
+      - "Learn question difficulty from training students only and apply it to everyone"
+    deliverable: "features.py with order-invariance and read-before-update tests"
+    gate:
+      metric: "State and ordering tests"
+      threshold: "Features are identical whether rows arrive shuffled or in order, and the first read of a new skill shows no history"
+      how: "pytest -k 'read_before or timestamps'"
+  - id: M3
+    title: "Baselines: running accuracy and PFA"
+    days: "2-3"
+    tasks:
+      - "Report the per-skill running accuracy as a predictor to show why raw scores are not mastery probabilities"
+      - "Fit a PFA-style logistic regression on prior correct, prior wrong and question difficulty"
+      - "Record AUC, RMSE and calibration error on held-out students"
+    deliverable: "Baseline table and the number to beat"
+    gate:
+      metric: "Calibrated baseline"
+      threshold: "PFA calibration error at most 0.03 and AUC at least 0.03 above the raw running accuracy (starter: ECE 0.0097 and AUC 0.626 against 0.580)"
+      how: "python baseline.py; pytest -k raw_running_accuracy"
+  - id: M4
+    title: "Gradient-boosted tracer and the student-leak check"
+    days: "4-5"
+    tasks:
+      - "Train a gradient-boosted model on all state features with skill as a categorical feature"
+      - "Add a student-id encoding on purpose and measure it under a random row split and a student split, to see the leak in numbers"
+      - "Plot calibration per skill and fix any skill whose error is high"
+    deliverable: "Tracer artifact, comparison table and a leak demonstration"
+    gate:
+      metric: "AUC lift and calibration"
+      threshold: "Tracer AUC at least 0.01 above PFA and at least 0.60, ECE at most 0.03, still below the oracle (starter: 0.650, 0.0063 and 0.725)"
+      how: "python baseline.py; pytest -k 'beats_the_pfa or student_id_encoding'"
+  - id: M5
+    title: "Online update and mastery API"
+    days: "6-8"
+    tasks:
+      - "Keep LearnerState per learner in the cache; on each answer read features, predict, then apply the update, under 30 ms"
+      - "Expose mastery per skill as a calibrated probability and a decayed value after a break"
+      - "Version the skill map so a curriculum change migrates state instead of corrupting it"
+    deliverable: "Service, load-test report, skill-map migration job and runbook"
+    gate:
+      metric: "Latency and consistency"
+      threshold: "p99 under 30 ms per answer at 1.5 times provisioned peak, and online features equal the training replay on a shadow log"
+      how: "Load test and replay comparison"
+  - id: M6
+    title: "Validate with learners and teachers"
+    days: "4-6"
+    tasks:
+      - "Run an A/B test on learning gain per hour and practice efficiency using mastery-driven practice selection"
+      - "Review a sample of learners with teachers: do the mastery estimates match what they observe"
+      - "Monitor calibration per skill weekly and alert when it drifts after a curriculum change"
+    deliverable: "Experiment readout, teacher review notes and monitoring"
+    gate:
+      metric: "Learning outcomes"
+      threshold: "Learning gain per hour up with no drop in completion, and per-skill calibration error within the M0 target"
+      how: "Experiment platform and weekly calibration dashboard"
+starter:
+  runtime: "Python 3.11+ with numpy, pandas, scikit-learn and pytest (about 25 seconds per run)"
+  run:
+    - "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+    - "python make_data.py"
+    - "python baseline.py"
+    - "pytest"
+  expected: >-
+    make_data.py prints 2,500 students and about 350,000 answers. baseline.py reports on 625 held-out students: running
+    accuracy AUC 0.580 (calibration error 0.114), PFA logistic AUC 0.626 (0.0097), gradient-boosted tracer AUC 0.650
+    (0.0063) and an oracle ceiling of 0.725. A student-id encoding scores AUC 0.671 on a random row split and 0.587 on a
+    student split. pytest reports 7 passed.
+  files:
+    - path: "make_data.py"
+      purpose: "Synthetic learners with learning, forgetting, IRT-style difficulty and adaptive practice selection"
+    - path: "features.py"
+      purpose: "LearnerState shared by training replay and online serving, plus training-only question difficulty"
+    - path: "baseline.py"
+      purpose: "Student split, running-accuracy and PFA baselines, gradient-boosted tracer and the student-id leak demonstration"
+    - path: "test_starter.py"
+      purpose: "Executable gates for determinism, read-before-update, ordering, split, model comparison and the leak"
+    - path: "requirements.txt"
+      purpose: "Python dependencies"
+workedExample:
+  scenario: >-
+    One held-out student (207) practising one skill (8), predicted by the gradient-boosted tracer after each answer.
+    The model has never seen this student in training.
+  steps:
+    - stage: "1. First answer: almost no information"
+      detail: "No history, an easy question (difficulty logit 0.50), predicted chance of a correct answer 0.67. The student gets it wrong."
+    - stage: "2. A run of misses"
+      detail: "After one wrong answer the prediction drops to 0.42 and stays at 0.38-0.42 through four misses in a row. The recency-weighted accuracy falls from 0.50 to 0.12. The model is saying this skill is weak right now."
+    - stage: "3. The turn"
+      detail: "The fifth answer is right on an easier item (difficulty logit 0.28; predicted 0.45). The next prediction rises to 0.66, because recency weighting reacts to the success and the next question is easy (0.50)."
+    - stage: "4. Difficulty matters as much as history"
+      detail: "After three correct answers in a row the model still predicts only 0.42 for the next item, because its difficulty logit is -0.44 (a hard item). Mastery depends on the question as well as the learner, which is why item difficulty is learned from other students."
+    - stage: "5. Why the leak check matters"
+      detail: "A student-id encoding reaches AUC 0.671 on a random row split, better than the honest tracer's 0.650. On held-out students it falls to 0.587, below the simple PFA baseline's 0.626, because the encoding cannot say anything about a student it has never seen."
+  outcome: >-
+    The tracer sits between the baseline and the oracle (0.650 between 0.626 and 0.725), and its predictions move for
+    sensible reasons. The most dangerous number in the table is the one from the random split.
+tests:
+  - test: "Determinism and plausibility"
+    tool: "pytest test_generator_is_deterministic_and_correctness_is_plausible"
+    pass: "Same seed gives the same log and overall correctness between 40% and 85%"
+  - test: "Read before update"
+    tool: "pytest test_state_is_read_before_the_answer_is_applied"
+    pass: "The first read of a skill shows zero history and the second shows exactly one right answer and the right time gap"
+  - test: "Order invariance"
+    tool: "pytest test_features_depend_on_timestamps_not_on_row_order"
+    pass: "Shuffling input rows changes no feature, because replay sorts by timestamp"
+  - test: "Student split"
+    tool: "pytest test_train_and_test_students_are_disjoint"
+    pass: "No student id appears in both sets and together they cover everyone"
+  - test: "Tracer beats baseline and is calibrated"
+    tool: "pytest test_tracer_beats_the_pfa_baseline_and_is_calibrated"
+    pass: "Tracer AUC at least 0.01 above PFA and at least 0.60, calibration error at most 0.03, below the oracle"
+  - test: "Raw accuracy is not mastery"
+    tool: "pytest test_a_raw_running_accuracy_is_not_a_calibrated_mastery_estimate"
+    pass: "Running accuracy has calibration error above 0.08 and PFA beats it by at least 0.03 AUC"
+  - test: "Student-id leak"
+    tool: "pytest test_student_id_encoding_wins_on_random_splits_and_fails_on_new_students"
+    pass: "The encoding gains at least 0.05 AUC on a random split relative to a student split and falls below PFA on new students"
+  - test: "Online and replay parity"
+    tool: "Replay 10,000 logged answers through the service and through features.replay"
+    pass: "Identical features and predictions within floating-point tolerance"
+decisions:
+  - question: "Which tracing model family?"
+    options:
+      - option: "Bayesian Knowledge Tracing or PFA"
+        chooseWhen: "You need mastery per skill that teachers and regulators can read; start here and keep it as the explanation layer"
+      - option: "Gradient-boosted tracer on state features"
+        chooseWhen: "You want better prediction with a small online model and calibrated outputs; it is the practical middle step"
+      - option: "Attention-based tracing (SAKT or AKT)"
+        chooseWhen: "You have hundreds of millions of answers, need to model long interaction dependencies and can distil the model for CPU serving"
+    default: "PFA or BKT as the explainable baseline, the gradient-boosted tracer for prediction, attention models only after the headroom is measured"
+  - question: "How is question difficulty obtained?"
+    options:
+      - option: "Smoothed correct rate from training students"
+        chooseWhen: "You have many answers per question; simple and robust"
+      - option: "Fitted IRT difficulty"
+        chooseWhen: "Questions are answered by different mixes of students and you need ability-adjusted difficulty"
+    default: "Smoothed rate on training students, IRT when the mix of students per question is uneven"
+  - question: "How do you handle practice chosen by the model itself?"
+    options:
+      - option: "Accept it and evaluate on next-answer prediction only"
+        chooseWhen: "The goal is prediction on the same policy you deploy"
+      - option: "Add randomised practice for a small share of items"
+        chooseWhen: "You need unbiased estimates of skill difficulty or want to test a new practice policy"
+    default: "Keep a small randomised practice slice so offline conclusions are not self-fulfilling"
+pitfalls:
+  - at: M1
+    mistake: "Splitting rows at random"
+    symptom: "AUC looks great offline and the model disappoints on new students"
+    fix: "Split by student and keep the disjoint-students test in CI"
+  - at: M2
+    mistake: "Ordering by insertion rather than timestamp"
+    symptom: "Features describe the future of a learner whose rows arrived late"
+    fix: "Sort by server timestamp during replay and test with shuffled rows"
+  - at: M2
+    mistake: "Computing question difficulty on all students including the one being scored"
+    symptom: "Held-out AUC is inflated because the learner's own answers define the difficulty"
+    fix: "Compute difficulty from training students only"
+  - at: M3
+    mistake: "Showing raw accuracy as mastery"
+    symptom: "In the starter the running accuracy has calibration error 0.114, so a displayed 90% is really far lower"
+    fix: "Calibrate and report calibration error per skill"
+  - at: M4
+    mistake: "Adding a student-id encoding"
+    symptom: "AUC 0.671 on a random split and 0.587 on held-out students, below the baseline"
+    fix: "Evaluate on held-out students and drop features that cannot exist for a new learner"
+  - at: M5
+    mistake: "Computing features differently online and in training"
+    symptom: "Live predictions are systematically off and nobody can say why"
+    fix: "Reuse LearnerState in both paths and run a replay comparison in CI"
+  - at: M6
+    mistake: "Ignoring long breaks"
+    symptom: "A learner returns after weeks and is assigned work far above their level"
+    fix: "Decay mastery with time since practice and use a short diagnostic after a long gap"
