@@ -7,7 +7,7 @@ const all = loadAllUseCases();
 const withPlaybook = all.filter((u) => u.playbook?.provenance === 'authored');
 const generated = all.filter((u) => u.playbook?.provenance === 'generated');
 
-describe('generated playbooks (the other 392)', () => {
+describe('generated playbooks (the other 492)', () => {
   it('covers every use case without a hand-written playbook', () => {
     expect(withPlaybook.length + generated.length).toBe(all.length);
     expect(generated.length).toBe(all.length - 8);
@@ -20,7 +20,7 @@ describe('generated playbooks (the other 392)', () => {
   });
 
   it('is specific to the use case: its own objective, signals, constraints, baseline and edge case appear in the plan', () => {
-    for (const u of generated.slice(0, 400)) {
+    for (const u of generated.slice(0, 500)) {
       const pb = u.playbook!;
       const text = JSON.stringify(pb);
       expect(text).toContain(u.dataAndFeatures.highSignalFeatures[0]!.name);

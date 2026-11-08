@@ -2,7 +2,7 @@
 
 URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
-Zero-noise engineering blueprints for AI/ML systems — **400 use cases, 8 domains × 50**. Every blueprint teaches the
+Zero-noise engineering blueprints for AI/ML systems — **500 use cases, 10 domains × 50**. Every blueprint teaches the
 _signal_ that moves the metric, names the _noise_ that wastes your quarter, and designs the whole system for
 **10 million users**: HLD, sequence diagram, LLD, 10-phase end-to-end breakdown, capacity/cost model, evaluation and edge cases.
 
@@ -18,7 +18,7 @@ docker compose up --build         # app + pgvector + redis        → http://loc
 npm run build:static              # CDN / GitHub Pages export → ./out
 ```
 
-## How 400 deep blueprints stay consistent
+## How 500 deep blueprints stay consistent
 
 Authoring is a compact, strongly-typed text format in `content/usecases/<domain>.N.uc` (see `src/content/parse.ts`).
 One use case is ~25 lines: objective, loss (LaTeX), constraints, signal-vs-noise rows, high-signal features with leakage risk,
@@ -37,7 +37,7 @@ against the strict Zod schema (`src/schemas/usecase.schema.ts`) — **a missing 
 
 > The capacity table is a transparent back-of-envelope model (assumptions are printed on every page), **not** a quote.
 
-## Build playbooks (all 400: 8 hand-written, 392 generated)
+## Build playbooks (all 500: 8 hand-written, 492 generated)
 
 A blueprint explains *what a good system looks like*. A **Build playbook** is what an intermediate engineer needs to
 *build it*: the domain knowledge and terminology to learn first, where the data comes from, ordered milestones with numeric
@@ -46,10 +46,10 @@ and a 30-day launch checklist.
 
 **Two tiers, labelled on every page.**
 
-- **Hand-written (8 pilots, one per domain).** Each has its own starter kit and numbers measured from its runs:
+- **Hand-written (8 pilots, one in each of the original eight domains).** Each has its own starter kit and numbers measured from its runs:
   card fraud, sepsis early warning, CTR prediction, demand sensing, session recommendation, knowledge tracing, SOC investigation
   agent and a developer docs assistant.
-- **Generated (the other 392).** Assembled from the use case's *own* authored fields (objective, constraints, signals,
+- **Generated (the other 492).** Assembled from the use case's *own* authored fields (objective, constraints, signals,
   noise, baseline and production model, pipeline, edge cases, metrics and traps), shared domain and method knowledge
   (`content/domain-knowledge`), a curated and link-checked dataset registry (`content/dataset-registry.json`) and one of **11
   reference starter kits** (`content/kits`: tabular, forecast, anomaly, recommender, graph, nlp, cv, bandit, optimize, llm-rag,
@@ -83,6 +83,6 @@ numbers come from *synthetic* data (far easier than production); the dataset lin
 
 ## Deviations from the original spec (deliberate)
 
-- Content is authored in a compact `.uc` DSL rather than MDX: 400 × ~25 lines is reviewable and diffable, and every file is still validated at build time.
+- Content is authored in a compact `.uc` DSL rather than MDX: 500 × ~25 lines is reviewable and diffable, and every file is still validated at build time.
 - Search embeddings are feature-hashing vectors, not a neural model, so the project runs offline with no API keys.
 - The GitHub Pages deployment is a static export (no Postgres/Redis/middleware); search uses the static index there. The Docker/compose deployment runs the full stack.

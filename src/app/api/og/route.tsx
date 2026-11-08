@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
       : undefined;
   const title = entry?.title ?? 'BrainSiphon';
   const domain = entry ? DOMAIN_META[entry.domain].name : 'Signal in. Noise out.';
-  const latency = entry ? LATENCY_LABEL[entry.latencySLA] : '400 AI/ML blueprints';
+  const latency = entry ? LATENCY_LABEL[entry.latencySLA] : '500 AI/ML blueprints';
 
   return new ImageResponse(
     <div

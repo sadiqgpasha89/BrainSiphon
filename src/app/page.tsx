@@ -114,7 +114,7 @@ export default async function Home() {
           {[
             [String(all.length), 'blueprints'],
             [String(DOMAINS.length), 'domains × 50 each'],
-            [String(all.length * 4), 'system diagrams'],
+            [String(all.length * 6), 'system diagrams'],
             [String(ML_PARADIGMS.length), 'ML paradigms'],
           ].map(([n, l]) => (
             <div key={l}>

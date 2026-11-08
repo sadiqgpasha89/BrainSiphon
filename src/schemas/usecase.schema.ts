@@ -9,6 +9,8 @@ export const DOMAINS = [
   'cybersecurity',
   'edtech',
   'saas',
+  'bfsi',
+  'real-estate',
 ] as const;
 export const ML_PARADIGMS = [
   'tabular',
@@ -75,6 +77,18 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; blurb: s
     name: 'SaaS & Developer Platforms',
     short: 'SaaS',
     blurb: 'Churn, copilots, support automation, AIOps and product intelligence for B2B/B2C platforms.',
+  },
+  bfsi: {
+    name: 'BFSI: Banking, Financial Services & Insurance',
+    short: 'BFSI',
+    blurb:
+      'How incumbent banks, insurers, asset managers and custodians run: lending, treasury, settlement, wealth, claims and compliance, where a regulator reads the model.',
+  },
+  'real-estate': {
+    name: 'Real Estate & PropTech',
+    short: 'Real Estate',
+    blurb:
+      'Valuation, listings, leasing, property operations, construction and smart buildings: slow, local, high-value assets with sparse data.',
   },
 };
 
