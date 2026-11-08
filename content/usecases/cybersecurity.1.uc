@@ -144,17 +144,24 @@ obj: Accelerate investigations by letting an agent gather evidence from SIEM, ED
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{tool results})+\lambda\,\mathrm{UnsupportedClaim}
 con: Read-only tools by default ; Response actions need approval ; Full audit trail ; Prompt-injection resistance
 sn: Tools | Typed, least-privilege query tools | Free-form shell access | Free-form access enables injection-driven damage
-sn: Evidence | Every claim linked to a log line | Narrative explanations | Analysts need to verify quickly
-sig: Evidence link rate | share of claims with log references | Trust | Link verification
-sig: Query success and retry count | tool failures per case | Reliability | Telemetry
-sig: Verdict agreement with senior analysts | agreement rate | Quality | Blind review
+sn: Evidence | Every claim linked to a log line | Narrative explanations with no linked evidence | Analysts need to verify quickly
+sn: Escalation | Escalating to a human when evidence is missing or a tool fails | Writing a fluent guess to fill the gap | A confident wrong benign verdict lets a live attack continue unnoticed
+sn: Evaluation | Replay of held-out cases with known ground truth and planted attacks on the agent | Analyst satisfaction and demo cases | Cases used for prompt tuning flatter every metric
+sig: Evidence link rate | share of claims with log references | Lets an analyst verify a verdict in seconds instead of re-investigating | Check that each link points at a line that really contains the indicator
+sig: Query success and retry count | tool failures per case | Shows whether the agent can be relied on when backends misbehave | Log every call, failure and retry with the case id
+sig: Verdict agreement with senior analysts | share of verdicts that match senior analysts reviewing blind | Measures whether verdicts match what experienced analysts would conclude | Reviewers must not see the agent's verdict before deciding
+sig: Injection success rate | share of poisoned cases where the agent changes its verdict or acts | Tests the defence directly instead of assuming it works | Build the attack set from real log fields and file names, and keep it out of tuning
+sig: Unsupported escalation rate | cases escalated because evidence was missing, split by cause | Separates honest uncertainty from tool outages and noisy data | Track whether the share rises after a log pipeline change
 noise: Narrative length | not quality
 noise: Model confidence phrasing | uncalibrated
+noise: Count of tools called per case | rewards activity rather than correct, well-supported verdicts
 base: SOAR playbooks with static enrichment steps.
 prod: Planner–executor agent over typed security tools with evidence verification, step budgets and approval gates for containment actions.
 pipe: Alert context loader @ SIEM ; Planner agent @ LLM ; SIEM and EDR query tools @ read-only APIs ; Identity and threat-intel tools @ APIs ; Evidence verifier @ log-line check ; Analyst workspace @ human ; Audit log @ immutable
 edge: Attacker plants instructions in log fields or file names | agent runs unintended tool calls | Treat logs as untrusted data and enforce tool allow-lists
 edge: Tool returns huge result sets | context overflows and the agent drops key facts | Result summarisation tools with pagination
+edge: Log backend outage hides the deciding evidence | the agent writes a plausible benign verdict from the little it has | Escalate with the missing-evidence reason and never auto-close without a cited deciding line
+edge: Paraphrased injection that evades pattern matching | a rewording slips past a keyword filter | Rely on typed tools, allow-lists and approval gates as the defence, and use the filter only as an alarm
 off: Verdict accuracy on replayed cases ; Evidence link validity
 on: Investigation time per alert ; Escalation precision
 gap: Replay set includes cases used for prompt tuning ; Judging by analyst satisfaction not correctness
