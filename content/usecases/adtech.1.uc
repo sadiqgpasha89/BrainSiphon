@@ -25,16 +25,23 @@ loss: \mathcal{L}=-\sum_i\left[y_i\log p_i+(1-y_i)\log(1-p_i)\right]
 con: 2 ms inference budget ; Sparse categorical features with billions of IDs ; Online learning for freshness ; Calibration by segment
 sn: Features | Feature crosses learned by DCN or DeepFM with hashed embeddings | Handcrafted crosses only | Manual crosses cannot cover billions of ID pairs
 sn: Freshness | Hourly incremental updates | Daily retrain only | New ads cold-start badly under daily retraining
-sig: Ad-user embedding interaction | dot product of ad and user embeddings | Relevance | Embedding versioning
-sig: Historical CTR with smoothing | Bayesian-smoothed CTR by ad and placement | Strong prior | Window before impression time
-sig: Context features | placement, device, hour | Position effect | Known at request time
+sn: Position | Position-aware training and a randomised exploration slice | Learning click rates from logs ranked by the old model | The model learns the old ranking and punishes ads that were never shown on top
+sn: Calibration | Calibrated probabilities per placement because the auction multiplies them by bids | Optimising AUC only | A well-ranked but miscalibrated score misprices every auction
+sig: Ad-user embedding interaction | dot product of ad and user embeddings | Captures personal relevance that ids alone cannot | Embedding versions must match between training and serving
+sig: Historical CTR with smoothing | Bayesian-smoothed CTR by ad and placement | A strong prior for ads with some history | Count only impressions before the scored one
+sig: Context features | placement, device, hour | Placement and time change click propensity a lot | All known at request time
+sig: Position at display | slot number where the ad was shown, used in training and set to the top slot at serving | Separates how good the ad is from how visible it was | Forgetting to neutralise it at serving time double-counts the position
+sig: Ad age and impression count | hours since first impression and log of impressions so far | Tells the model how far to trust the ad's own history | Computed from impressions strictly before the scored one
 noise: Impression ID | random
 noise: Advertiser name text | high cardinality duplicate of advertiser ID
+noise: Raw user agent string | thousands of rare variants that hash into noise, device class already carries the signal
 base: Logistic regression with hashed feature crosses.
 prod: DCN-v2 with embedding tables sharded across hosts, FTRL-style online updates for the head and quantised CPU serving.
 pipe: Ad request @ ad server ; Feature hashing @ in-process ; Embedding lookup @ sharded tables ; DCN-v2 scorer @ ONNX INT8 ; Calibration layer @ per-segment isotonic ; Candidate ranking @ auction ; Click logs @ Kafka
 edge: Embedding table updates mid-serving cause version skew | scores jump for a fraction of traffic | Versioned atomic embedding swaps with canary traffic
 edge: New creative format with no history | CTR underestimated and never gets exposure | Exploration budget and content-based priors
+edge: Accidental taps counted as clicks | mobile banner mis-taps inflate CTR and reward misleading creatives | Filter clicks with very short dwell time from labels and history
+edge: Traffic shift after a site redesign | placement mix changes and calibration drifts for a segment | Per-placement calibration refreshed hourly with an alarm on expected versus observed clicks
 off: AUC, log-loss and normalised cross-entropy ; Calibration by placement
 on: Revenue per mille ; Advertiser CTR satisfaction
 gap: Position bias unmodelled so the model learns the old ranking ; Training on clicks that include accidental taps

@@ -1,0 +1,263 @@
+summary: >-
+  A click-through-rate model that an ad auction can multiply by a bid: hashed sparse crosses with
+  position-aware training, point-in-time smoothed history, mis-tap filtering, per-placement calibration and
+  evaluation by normalised cross-entropy and bias by display slot. The starter runs M1-M4 on a synthetic
+  impression log; M5-M6 (a 2 ms serving path and online experiments) need your ad server.
+prerequisites:
+  skills:
+    - "Logistic regression and gradient boosting on sparse categorical data, including feature hashing and crosses"
+    - "Probability calibration: reliability tables, isotonic regression and expected calibration error"
+    - "Ad-auction basics: expected value is bid times predicted click probability, so a miscalibrated score misprices the auction"
+    - "Causal thinking about logged data: position bias, selection by the old ranker, and why a small randomised slice matters"
+  tools:
+    - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
+    - "A stream or log store for impressions (Kafka plus a warehouse) and a model server that can load ONNX or similar for M5"
+    - "An experimentation platform able to split traffic for M6"
+data:
+  strategy: >-
+    Start on the synthetic log, where the true click probability is stored so you can measure bias exactly.
+    Then run the same pipeline on a public CTR dataset to check the hashing and calibration code on real
+    sparsity. Public sets do not log display position or dwell time, so the position and mis-tap lessons only
+    exist in the synthetic data and in your own ad server's logs.
+  datasets:
+    - name: "Criteo Display Advertising Challenge"
+      url: "https://www.kaggle.com/c/criteo-display-ad-challenge"
+      license: "Kaggle competition rules; free Kaggle login"
+      gives: "About 45 million display-ad impressions over 7 days with 13 numeric and 26 hashed categorical features and a click label, the standard sparse CTR benchmark"
+      caveat: "Feature names are anonymised and there is no position, timestamp or user id, so you cannot do point-in-time history or position-aware training"
+    - name: "Avazu Click-Through Rate Prediction"
+      url: "https://www.kaggle.com/c/avazu-ctr-prediction"
+      license: "Kaggle competition rules; free Kaggle login"
+      gives: "About 40 million mobile ad impressions over 10 days with hourly timestamps, site and app ids and device fields; allows a proper chronological split"
+      caveat: "No display position or dwell time, and ids are hashed, so history features are possible but position bias is not observable"
+    - name: "Criteo AI Lab datasets (1 TB click logs)"
+      url: "https://ailab.criteo.com/ressources/"
+      license: "Research-use terms on the Criteo AI Lab page; read them before any commercial use"
+      gives: "The large-scale version of the Criteo click logs for testing how your hashing, embeddings and training loop scale"
+      caveat: "Terabyte scale needs a cluster or heavy subsampling; if you downsample negatives you must correct the predicted probabilities or calibration is lost"
+  synthetic:
+    file: "make_data.py"
+    description: >-
+      300,000 impressions over 30 days for 700 ads and 20,000 users with a true click probability that depends on
+      ad quality, a user-segment by category affinity, placement, device and hour, multiplied by a position
+      examination factor. The old ranker puts good ads on top, 3% of traffic is randomised, new ads launch
+      throughout the month and about 2% of clicks are sub-half-second mobile mis-taps.
+    knobs:
+      - "n_impressions, n_ads, n_users: scale and sparsity (defaults 300,000, 700, 20,000)"
+      - "explore_share: share of traffic with randomised positions (default 3%)"
+      - "seed: identical seed gives an identical log"
+  sample:
+    columns: [ts_h, user, ad, advertiser, category, placement, device, hour, position, click, dwell_ms]
+    rows:
+      - [0.04, 8371, 100, 52, 6, 1, 1, 0, 5, 0, 0]
+      - [0.34, 7884, 561, 53, 1, 2, 1, 0, 2, 1, 6967]
+      - [1.64, 4846, 542, 38, 0, 2, 1, 1, 2, 1, 156]
+  label: >-
+    click = 1 when the user clicked the ad. Clicks with a dwell time under 500 ms are treated as accidental taps
+    and set to 0 in the training label and in the history features (the third sample row is one). The label is
+    observed at impression time plus a few seconds, so there is little label delay, but conversions that follow a
+    click can arrive days later; model them separately.
+milestones:
+  - id: M0
+    title: "Fix the objective, the calibration target and the latency budget"
+    days: "1-2"
+    tasks:
+      - "Write down how the auction uses the score (expected revenue is bid times predicted CTR) so everyone agrees calibration is a requirement, not a nicety"
+      - "Agree the evaluation metrics: normalised cross-entropy, calibration error per placement and bias by display position"
+      - "Set the serving budget (about 2 ms for inference inside an 8 ms request) and the data-freshness target"
+    deliverable: "One-page spec: auction use of the score, metrics, budgets and the traffic share reserved for randomisation"
+    gate:
+      metric: "Spec exists"
+      threshold: "Signed by ads-product and ranking leads, with a number for NE, per-placement calibration error and p99 latency"
+      how: "Design review"
+  - id: M1
+    title: "Impression log, labels and chronological split"
+    days: "3-4"
+    tasks:
+      - "Make sure each impression is logged with its display position, placement, device, dwell time and an exploration flag"
+      - "Split by time into 70% train, 15% validation and 15% test and never shuffle across the boundary"
+      - "Define the label rules: clicks under 500 ms dwell become 0, and note how many that removes"
+    deliverable: "Reproducible impression table and split definition"
+    gate:
+      metric: "Generator and split tests"
+      threshold: "pytest -k 'deterministic or chronological' passes; CTR between 2% and 9%"
+      how: "Run pytest in the starter directory"
+  - id: M2
+    title: "Hashed crosses and point-in-time history"
+    days: "4-5"
+    tasks:
+      - "Hash ids and crosses (ad by placement, segment by category, advertiser by device) into a fixed-size sparse vector"
+      - "Compute smoothed CTR by ad, ad and placement, and advertiser from impressions strictly before the scored one"
+      - "Add ad age and log impression count so the model knows how much history to trust"
+    deliverable: "features.py with a future-truncation test for history features"
+    gate:
+      metric: "History leakage test"
+      threshold: "Deleting impressions after the 60th percentile of time changes no history feature of earlier rows"
+      how: "pytest -k history_uses_only"
+  - id: M3
+    title: "Position-aware baseline"
+    days: "2-3"
+    tasks:
+      - "Train a hashed logistic regression with position as a feature and serve it with position set to the top slot"
+      - "Also train it without position, to measure how wrong the naive model is by slot"
+      - "Report NE, calibration error and predicted-over-true click rate at positions 1 and 5"
+    deliverable: "Baseline model and a bias-by-position table"
+    gate:
+      metric: "NE and position bias"
+      threshold: "NE below 0.95 and predicted over true CTR between 0.9 and 1.1 at positions 1 and 5 (starter: NE 0.911, 0.97 and 1.03; the no-position model shows 0.75 and 1.79)"
+      how: "python baseline.py, then pytest -k ignoring_position"
+  - id: M4
+    title: "Challenger plus per-placement calibration"
+    days: "4-5"
+    tasks:
+      - "Train a gradient-boosted model on the dense history features and fit isotonic regression per placement on the validation slice"
+      - "Compare on NE, calibration error, cold-start ads and bias by position, with an interval from resampling users"
+      - "If the challenger does not win on NE, ask whether its calibration or cold-start behaviour justify the extra complexity"
+    deliverable: "Challenger artifact, calibration layer and a comparison report"
+    gate:
+      metric: "NE and calibration versus baseline"
+      threshold: "Challenger NE no worse than baseline by more than 0.005 and expected calibration error lower than the baseline's (starter: NE 0.911 against 0.911, ECE 0.0040 against 0.0077)"
+      how: "python baseline.py; pytest -k challenger_earns"
+  - id: M5
+    title: "Serving path under a 2 ms budget"
+    days: "6-8"
+    tasks:
+      - "Hash features in-process, look up sharded embedding tables with a bounded timeout and score with a quantised model on CPU"
+      - "Make embedding and model swaps atomic and versioned so no request sees a half-updated table"
+      - "Degrade in steps: stale history, then the baseline model, then a static prior per placement"
+    deliverable: "Scoring service, load-test report and swap runbook"
+    gate:
+      metric: "Latency and version safety"
+      threshold: "p99 inference at most 2 ms at 1.5 times provisioned peak, and a table swap under load produces no score discontinuity beyond the agreed tolerance"
+      how: "Load test plus a canary swap during the test"
+  - id: M6
+    title: "Randomised slice, online test and monitoring"
+    days: "3-4"
+    tasks:
+      - "Keep a 2-5% randomised-position slice as the permanent unbiased evaluation set"
+      - "Run an A/B test on revenue per thousand impressions with advertiser CTR satisfaction as a guardrail"
+      - "Alert hourly when expected clicks and observed clicks diverge for any placement"
+    deliverable: "Experiment readout, monitoring dashboards and a retraining cadence"
+    gate:
+      metric: "Revenue and calibration online"
+      threshold: "Revenue per thousand impressions up with advertiser CTR satisfaction not down, and live expected-over-observed clicks within 5% for every placement"
+      how: "Experiment platform and the hourly calibration dashboard"
+starter:
+  runtime: "Python 3.11+ with numpy, pandas, scikit-learn and pytest (about 20 seconds on a laptop CPU)"
+  run:
+    - "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+    - "python make_data.py"
+    - "python baseline.py"
+    - "pytest"
+  expected: >-
+    make_data.py prints 300,000 impressions with a CTR near 4.3%. baseline.py reports NE 0.911 for the position-aware
+    hashed model and 0.923 for the model that ignores position; predicted over true click rate at position 5 is
+    1.03 against 1.79. The gradient-boosted model reports NE 0.911 and ECE 0.0040 against 0.0077 for the baseline.
+    pytest reports 7 passed. On real data NE gains are small and every thousandth matters, so repeat with several
+    seeds before believing a difference.
+  files:
+    - path: "make_data.py"
+      purpose: "Synthetic impression log with position bias, a randomised slice, cold-start ads and accidental taps"
+    - path: "features.py"
+      purpose: "Hashed sparse crosses and point-in-time smoothed history features"
+    - path: "baseline.py"
+      purpose: "Chronological split, position-aware and naive baselines, gradient-boosted challenger with per-placement isotonic calibration"
+    - path: "test_starter.py"
+      purpose: "Executable gates: determinism, chronology, history leakage, smoothing arithmetic, position bias and model thresholds"
+    - path: "requirements.txt"
+      purpose: "Python dependencies"
+workedExample:
+  scenario: >-
+    The synthetic log of 300,000 impressions, read the way an ads engineer would read a real one before
+    training anything.
+  steps:
+    - stage: "1. Read the log by position"
+      detail: "Observed CTR is 9.5% at position 1, 5.4%, 3.3%, 2.1% and 1.2% at position 5, an 8-fold gap. 77% of the impressions at position 1 are for above-average ads, against 6% at position 5, because the old ranker put them there. Quality and visibility are tangled together."
+    - stage: "2. Train the naive model and look only at overall calibration"
+      detail: "The model without position scores an expected calibration error of 0.0075, which looks fine. Split by slot, it predicts 0.75 times the true click rate at position 1 and 1.79 times at position 5. Overall calibration hid a 79% over-prediction at the bottom slot."
+    - stage: "3. See what that does to the auction"
+      detail: "With a 0.50 dollar bid per click, the true expected revenue per thousand impressions at position 5 is 1000 x 0.011 x 0.50 = 5.50 dollars, but the naive model reports 1.79 times that, about 9.85 dollars. Ads in low slots look more valuable than they are and the auction misprices them."
+    - stage: "4. Fix it with position as a training feature"
+      detail: "Add position to training and score with position set to 1. Bias at positions 1 and 5 becomes 0.97 and 1.03, and NE improves from 0.923 to 0.911."
+    - stage: "5. Cold start and mis-taps"
+      detail: "The test window contains 74 ads that never appeared in training (4,826 impressions, 5.0% CTR). They start from the prior of 2% with the weight of 60 impressions, and the tree model scores them at NE 0.929 against 0.933 for the hashed model. Separately, 252 of 12,960 clicks (1.9%) have dwell time under 500 ms and are removed from labels and history."
+  outcome: >-
+    The two biggest wins are not model choice. They are training with position and filtering mis-taps. The
+    gradient-boosted challenger ties the baseline on NE and wins only on calibration and slightly on cold start, so
+    the decision to ship it rests on calibration and operations, not accuracy.
+tests:
+  - test: "Chronological split"
+    tool: "pytest test_time_split_is_chronological"
+    pass: "Train ends before validation starts and validation ends before test starts"
+  - test: "History future-truncation test"
+    tool: "pytest test_history_uses_only_impressions_before_the_row"
+    pass: "Smoothed CTR and impression counts of earlier rows are identical with and without later rows"
+  - test: "Smoothing and mis-tap arithmetic"
+    tool: "pytest test_smoothed_history_excludes_the_current_click_and_mis_taps"
+    pass: "The first impression equals the prior, later values follow (clicks + prior) / (impressions + 60), and a 100 ms click never enters history"
+  - test: "Normalised cross-entropy definition"
+    tool: "pytest test_ne_of_the_base_rate_predictor_is_one"
+    pass: "A predictor that always outputs the base rate scores exactly 1.0"
+  - test: "Position bias demonstration and fix"
+    tool: "pytest test_ignoring_position_biases_every_slot_and_position_awareness_fixes_it"
+    pass: "No-position model over-predicts position 5 by more than 40% and under-predicts position 1 by more than 15%; the position-aware model is within 10% at both"
+  - test: "Model gate"
+    tool: "pytest test_baseline_beats_the_base_rate_and_challenger_earns_its_place"
+    pass: "Baseline NE below 0.95; challenger NE within 0.005 of baseline and ECE no higher"
+  - test: "Train and serve hashing parity"
+    tool: "Replay 1,000 logged impressions through the serving hasher and hashed_matrix"
+    pass: "Identical non-zero indices and values for every impression"
+  - test: "Live calibration monitor"
+    tool: "Hourly expected versus observed clicks per placement on production traffic"
+    pass: "Within 5% for every placement with at least 10,000 impressions in the hour; otherwise page"
+decisions:
+  - question: "Linear model with crosses, or a deep model such as DCN-v2 or DeepFM?"
+    options:
+      - option: "Hashed logistic regression with hand-picked crosses"
+        chooseWhen: "You are launching, latency is tight and you need a baseline whose behaviour you can explain; it is the right first release"
+      - option: "Deep cross network with learned embeddings"
+        chooseWhen: "The baseline plateaus on NE, you have billions of impressions and many high-cardinality ids, and you can afford embedding-table serving and the extra monitoring"
+    default: "Ship the position-aware linear model first; only move to deep models when a held-out NE gain survives several seeds"
+  - question: "How do you correct position bias?"
+    options:
+      - option: "Position as a training feature, set to the top slot at serving"
+        chooseWhen: "You have a reasonable amount of position variation in the logs; simplest and works well"
+      - option: "Inverse-propensity weights from a randomised slice"
+        chooseWhen: "Position is nearly deterministic in your logs, so the model cannot separate it from quality"
+    default: "Position as a feature, with a 2-5% randomised slice to check the result and to calibrate"
+  - question: "Do you downsample negatives to train faster?"
+    options:
+      - option: "No, train on all impressions or a random sample with known weights"
+        chooseWhen: "You can afford it; calibration stays correct automatically"
+      - option: "Yes, then correct the probabilities back"
+        chooseWhen: "Data volume forces it; apply the standard correction p / (p + (1 - p) / w) with w the sampling rate, and recheck calibration by placement"
+    default: "Sample with explicit weights and verify calibration on an unsampled validation slice"
+pitfalls:
+  - at: M1
+    mistake: "Shuffling impressions across time before splitting"
+    symptom: "Offline NE is better than any live experiment will ever show, especially for new ads"
+    fix: "Split chronologically and keep cold-start ads in the test window"
+  - at: M1
+    mistake: "Counting accidental taps as clicks"
+    symptom: "Mobile banners look better than they are and misleading creatives win auctions"
+    fix: "Drop clicks with very short dwell time from labels and history, and report how many were removed"
+  - at: M2
+    mistake: "Computing an ad's CTR over its whole history including the scored impression"
+    symptom: "Offline AUC jumps while live CTR does not; the feature memorises the label"
+    fix: "Use only impressions strictly before the scored one and keep the truncation test in CI"
+  - at: M3
+    mistake: "Ignoring display position because overall calibration looks fine"
+    symptom: "In the starter, predictions are 25% low at the top slot and 79% high at the bottom slot while overall ECE is 0.0075"
+    fix: "Train with position, serve at the top slot, and always report bias by slot"
+  - at: M4
+    mistake: "Promoting a deep model for a gain inside the noise"
+    symptom: "The challenger ties NE, costs ten times more to serve and adds a new failure mode"
+    fix: "Require a gain that survives several seeds and an interval from resampling users, or a clear calibration or cold-start benefit"
+  - at: M5
+    mistake: "Swapping embedding tables in place"
+    symptom: "A fraction of requests are scored with half-old, half-new embeddings and CTR jumps for minutes"
+    fix: "Version tables and models together and switch atomically behind a canary"
+  - at: M6
+    mistake: "Never exploring"
+    symptom: "New creatives get no impressions, so their CTR is never learned and revenue stagnates"
+    fix: "Keep an exploration budget and content-based priors, and track new-ad exposure as a metric"
