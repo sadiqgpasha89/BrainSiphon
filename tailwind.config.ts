@@ -4,18 +4,31 @@ const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      // Colours are CSS variables (space-separated RGB) so that Tailwind opacity modifiers keep working and a
+      // theme is just a different set of values: see :root and [data-theme='light'] in globals.css.
       colors: {
-        bg: '#0a0d12',
-        panel: '#10151d',
-        raised: '#161c27',
-        line: '#222b3a',
-        ink: '#e6edf6',
-        mute: '#93a1b5',
-        dim: '#64748b',
-        signal: { DEFAULT: '#34d399', soft: '#0b2e25', line: '#14584a' },
-        noise: { DEFAULT: '#fb7185', soft: '#33121a', line: '#6b2432' },
-        accent: { DEFAULT: '#818cf8', soft: '#1e1b3a' },
-        warn: '#fbbf24',
+        bg: 'rgb(var(--c-bg) / <alpha-value>)',
+        panel: 'rgb(var(--c-panel) / <alpha-value>)',
+        raised: 'rgb(var(--c-raised) / <alpha-value>)',
+        line: 'rgb(var(--c-line) / <alpha-value>)',
+        ink: 'rgb(var(--c-ink) / <alpha-value>)',
+        mute: 'rgb(var(--c-mute) / <alpha-value>)',
+        dim: 'rgb(var(--c-dim) / <alpha-value>)',
+        signal: {
+          DEFAULT: 'rgb(var(--c-signal) / <alpha-value>)',
+          soft: 'rgb(var(--c-signal-soft) / <alpha-value>)',
+          line: 'rgb(var(--c-signal-line) / <alpha-value>)',
+        },
+        noise: {
+          DEFAULT: 'rgb(var(--c-noise) / <alpha-value>)',
+          soft: 'rgb(var(--c-noise-soft) / <alpha-value>)',
+          line: 'rgb(var(--c-noise-line) / <alpha-value>)',
+        },
+        accent: {
+          DEFAULT: 'rgb(var(--c-accent) / <alpha-value>)',
+          soft: 'rgb(var(--c-accent-soft) / <alpha-value>)',
+        },
+        warn: 'rgb(var(--c-warn) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],

@@ -4,9 +4,50 @@
 
 :root {
   color-scheme: dark;
+  /* dark is the default (and what you get without JavaScript); the pre-paint script in layout.tsx sets data-theme */
+  --c-bg: 10 13 18;
+  --c-panel: 16 21 29;
+  --c-raised: 22 28 39;
+  --c-line: 34 43 58;
+  --c-ink: 230 237 246;
+  --c-mute: 147 161 181;
+  --c-dim: 100 116 139;
+  --c-signal: 52 211 153;
+  --c-signal-soft: 11 46 37;
+  --c-signal-line: 20 88 74;
+  --c-noise: 251 113 133;
+  --c-noise-soft: 51 18 26;
+  --c-noise-line: 107 36 50;
+  --c-accent: 129 140 248;
+  --c-accent-soft: 30 27 58;
+  --c-warn: 251 191 36;
+  --code-bg: #0d1117;
+  --selection: #1f4d43;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --c-bg: 248 250 252;
+  --c-panel: 255 255 255;
+  --c-raised: 241 245 249;
+  --c-line: 210 219 230;
+  --c-ink: 15 23 42;
+  --c-mute: 71 85 105;
+  --c-dim: 100 116 139;
+  --c-signal: 4 120 87;
+  --c-signal-soft: 209 250 229;
+  --c-signal-line: 110 200 165;
+  --c-noise: 190 18 60;
+  --c-noise-soft: 255 228 230;
+  --c-noise-line: 251 160 175;
+  --c-accent: 67 56 202;
+  --c-accent-soft: 224 231 255;
+  --c-warn: 161 98 7;
+  --code-bg: #f6f8fa;
+  --selection: #a7f3d0;
 }
 
 html {
@@ -17,7 +58,7 @@ body {
   @apply bg-bg font-sans text-ink antialiased;
 }
 ::selection {
-  background: #1f4d43;
+  background: var(--selection);
 }
 a {
   @apply underline-offset-4;
@@ -103,7 +144,16 @@ a {
 /* Shiki */
 .shiki-host pre {
   @apply overflow-x-auto rounded-lg border border-line p-4 font-mono text-[12.5px] leading-relaxed;
-  background: #0d1117 !important;
+  background: var(--code-bg) !important;
+}
+/* Shiki dual themes: every token carries --shiki-dark and --shiki-light; the page theme picks one. */
+.shiki-host .shiki,
+.shiki-host .shiki span {
+  color: var(--shiki-dark);
+}
+:root[data-theme='light'] .shiki-host .shiki,
+:root[data-theme='light'] .shiki-host .shiki span {
+  color: var(--shiki-light);
 }
 .shiki-host code {
   font-family: var(--font-mono);
@@ -115,7 +165,7 @@ a {
   padding: 0.25rem 0;
 }
 .katex {
-  color: #e6edf6;
+  color: rgb(var(--c-ink));
 }
 
 @media (prefers-reduced-motion: reduce) {

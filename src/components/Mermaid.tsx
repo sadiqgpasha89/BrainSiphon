@@ -7,51 +7,92 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { RenderBoundary } from './ErrorBoundary';
 
 type MermaidApi = typeof mermaidType;
-let initPromise: Promise<MermaidApi> | null = null;
+type Mode = 'light' | 'dark';
 
-function loadMermaid() {
-  initPromise ??= import('mermaid').then((m) => {
-    m.default.initialize({
-      startOnLoad: false,
-      securityLevel: 'strict',
-      theme: 'base',
-      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-      flowchart: { curve: 'basis', htmlLabels: true, useMaxWidth: false },
-      sequence: {
-        useMaxWidth: false,
-        mirrorActors: false,
-        showSequenceNumbers: false,
-        actorMargin: 60,
-        width: 150,
-      },
-      class: { useMaxWidth: false },
-      themeVariables: {
-        darkMode: true,
-        background: '#10151d',
-        primaryColor: '#161c27',
-        primaryTextColor: '#e6edf6',
-        primaryBorderColor: '#3b4a63',
-        lineColor: '#7c8aa0',
-        secondaryColor: '#1e1b3a',
-        tertiaryColor: '#10151d',
-        noteBkgColor: '#1e1b3a',
-        noteTextColor: '#e0e7ff',
-        actorBkg: '#161c27',
-        actorBorder: '#3b4a63',
-        actorTextColor: '#e6edf6',
-        signalColor: '#93a1b5',
-        signalTextColor: '#e6edf6',
-        labelBoxBkgColor: '#161c27',
-        labelTextColor: '#e6edf6',
-        loopTextColor: '#e6edf6',
-        activationBkgColor: '#0b2e25',
-        classText: '#e6edf6',
-        fontSize: '14px',
-      },
-    });
-    return m.default;
+const PALETTE: Record<Mode, Record<string, string | boolean>> = {
+  dark: {
+    darkMode: true,
+    background: '#10151d',
+    primaryColor: '#161c27',
+    primaryTextColor: '#e6edf6',
+    primaryBorderColor: '#3b4a63',
+    lineColor: '#7c8aa0',
+    secondaryColor: '#1e1b3a',
+    tertiaryColor: '#10151d',
+    noteBkgColor: '#1e1b3a',
+    noteTextColor: '#e0e7ff',
+    actorBkg: '#161c27',
+    actorBorder: '#3b4a63',
+    actorTextColor: '#e6edf6',
+    signalColor: '#93a1b5',
+    signalTextColor: '#e6edf6',
+    labelBoxBkgColor: '#161c27',
+    labelTextColor: '#e6edf6',
+    loopTextColor: '#e6edf6',
+    activationBkgColor: '#0b2e25',
+    classText: '#e6edf6',
+  },
+  light: {
+    darkMode: false,
+    background: '#ffffff',
+    primaryColor: '#f1f5f9',
+    primaryTextColor: '#0f172a',
+    primaryBorderColor: '#94a3b8',
+    lineColor: '#64748b',
+    secondaryColor: '#e0e7ff',
+    tertiaryColor: '#ffffff',
+    noteBkgColor: '#e0e7ff',
+    noteTextColor: '#312e81',
+    actorBkg: '#f1f5f9',
+    actorBorder: '#94a3b8',
+    actorTextColor: '#0f172a',
+    signalColor: '#475569',
+    signalTextColor: '#0f172a',
+    labelBoxBkgColor: '#f1f5f9',
+    labelTextColor: '#0f172a',
+    loopTextColor: '#0f172a',
+    activationBkgColor: '#d1fae5',
+    classText: '#0f172a',
+  },
+};
+
+let mermaidMod: Promise<MermaidApi> | null = null;
+
+/** Mermaid keeps one global config, so (re)apply the palette for the current theme before each render. */
+async function loadMermaid(mode: Mode) {
+  mermaidMod ??= import('mermaid').then((m) => m.default);
+  const m = await mermaidMod;
+  m.initialize({
+    startOnLoad: false,
+    securityLevel: 'strict',
+    theme: 'base',
+    fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+    flowchart: { curve: 'basis', htmlLabels: true, useMaxWidth: false },
+    sequence: {
+      useMaxWidth: false,
+      mirrorActors: false,
+      showSequenceNumbers: false,
+      actorMargin: 60,
+      width: 150,
+    },
+    class: { useMaxWidth: false },
+    themeVariables: { ...PALETTE[mode], fontSize: '14px' },
   });
-  return initPromise;
+  return m;
+}
+
+const currentMode = (): Mode => (document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+
+/** The resolved page theme, kept in sync with the toggle (and the OS while on "system"). */
+function useThemeMode(): Mode {
+  const [mode, setMode] = useState<Mode>('dark');
+  useEffect(() => {
+    setMode(currentMode());
+    const mo = new MutationObserver(() => setMode(currentMode()));
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => mo.disconnect();
+  }, []);
+  return mode;
 }
 
 function MermaidInner({ code, label }: { code: string; label: string }) {
@@ -60,6 +101,7 @@ function MermaidInner({ code, label }: { code: string; label: string }) {
   const [showSource, setShowSource] = useState(false);
   const hostRef = useRef<HTMLDivElement>(null);
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
+  const mode = useThemeMode();
 
   useEffect(() => {
     const el = hostRef.current;
@@ -67,8 +109,8 @@ function MermaidInner({ code, label }: { code: string; label: string }) {
     let cancelled = false;
     const render = async () => {
       try {
-        const mermaid = await loadMermaid();
-        const out = await mermaid.render(`mmd${uid}`, code);
+        const mermaid = await loadMermaid(mode);
+        const out = await mermaid.render(`mmd${uid}${mode}`, code);
         if (!cancelled) setSvg(out.svg);
       } catch (e) {
         if (!cancelled) setFailed(e as Error);
@@ -88,7 +130,7 @@ function MermaidInner({ code, label }: { code: string; label: string }) {
       cancelled = true;
       io.disconnect();
     };
-  }, [code, uid]);
+  }, [code, uid, mode]);
 
   if (failed) throw failed; // handled by the surrounding RenderBoundary → raw source fallback
 

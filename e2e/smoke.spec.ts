@@ -206,3 +206,27 @@ test('primitive pages exist and list the blueprints that use them', async ({ pag
   await expect(page.getByTestId('primitive-title')).toHaveText('PID budget pacer');
   await expect(page.getByTestId('primitive-uses').getByRole('link').first()).toBeVisible();
 });
+
+test('theme toggle switches light/dark/system, persists across reloads and re-themes diagrams and code', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  const html = page.locator('html');
+  await expect(html).toHaveAttribute('data-theme', 'dark');
+
+  const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  const dark = await bg();
+  await page.getByTestId('theme-light').click();
+  await expect(html).toHaveAttribute('data-theme', 'light');
+  await expect(page.getByTestId('theme-light')).toHaveAttribute('aria-pressed', 'true');
+  expect(await bg()).not.toBe(dark);
+
+  await page.reload();
+  await expect(html).toHaveAttribute('data-theme', 'light'); // remembered, no flash back to dark
+
+  await page.getByTestId('theme-system').click(); // follows the OS: dark here
+  await expect(html).toHaveAttribute('data-theme', 'dark');
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expect(html).toHaveAttribute('data-theme', 'light');
+});

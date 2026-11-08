@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { DOMAINS, DOMAIN_META } from '../schemas/usecase.schema';
 import { SearchTrigger } from './SearchTrigger';
+import { ThemeToggle } from './ThemeToggle';
 
 export function SiteHeader() {
   return (
@@ -39,6 +40,7 @@ export function SiteHeader() {
             </li>
           </ul>
         </nav>
+        <ThemeToggle />
         <SearchTrigger />
       </div>
     </header>

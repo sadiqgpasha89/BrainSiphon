@@ -59,7 +59,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="mt-1 w-full accent-[var(--signal,#34d399)]"
+        className="mt-1 w-full accent-signal"
       />
     </div>
   );

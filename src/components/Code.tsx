@@ -6,14 +6,21 @@ let hl: Promise<Highlighter> | null = null;
 
 const getHighlighter = () =>
   (hl ??= createHighlighter({
-    themes: ['github-dark-default'],
+    themes: ['github-dark-default', 'github-light'],
     langs: ['sql', 'python', 'yaml', 'json', 'typescript'],
   }));
 
 /** Server-side Shiki highlighting: zero highlighter JavaScript ships to the browser. */
 export async function CodeBlock({ code, lang, title }: { code: string; lang: Lang; title?: string }) {
   const h = await getHighlighter();
-  const html = lang === 'text' ? null : h.codeToHtml(code.trim(), { lang, theme: 'github-dark-default' });
+  const html =
+    lang === 'text'
+      ? null
+      : h.codeToHtml(code.trim(), {
+          lang,
+          themes: { dark: 'github-dark-default', light: 'github-light' },
+          defaultColor: false,
+        });
   return (
     <div className="shiki-host">
       <div className="mb-1 flex items-center justify-between">
