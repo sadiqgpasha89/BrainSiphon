@@ -13,6 +13,97 @@ prerequisites:
     - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
     - "Access to de-identified ICU data (PhysioNet credentialed access) for the real-data run"
     - "An HL7 FHIR or EHR feed and a stream processor (Flink or similar) for M5"
+domainKnowledge:
+  overview: >-
+    Sepsis is a life-threatening organ dysfunction caused by the body's response to an infection, and every hour of delay
+    in treatment matters. An early-warning model sits inside the electronic health record and tries to alert a nurse or
+    physician hours before a patient deteriorates. The hard parts are clinical, not statistical: what counts as onset,
+    which timestamp in the chart is real, and how many alerts a ward will tolerate before it stops reading them.
+  concepts:
+    - name: "Definitions: Sepsis-3, SIRS and qSOFA"
+      explanation: >-
+        Sepsis-3 defines sepsis as suspected infection plus an acute rise of 2 or more points in the SOFA organ-failure score,
+        and septic shock as sepsis that needs vasopressors to keep blood pressure up and has lactate above 2 mmol/L despite
+        fluids. Older screening tools are still used: SIRS (two of abnormal temperature, heart rate, breathing rate or white
+        cell count) and qSOFA (fast breathing, low systolic pressure, altered mentation).
+      whyItMatters: "Which definition you label with changes prevalence, onset time and what the model learns, so pick it with clinicians and write it down."
+    - name: "Onset is a constructed label, not an event"
+      explanation: >-
+        There is no clock that records when sepsis starts. Researchers reconstruct onset from the time infection was suspected
+        (antibiotics ordered and cultures taken within a window) and the time organ dysfunction appeared. Different rules give
+        onset times hours apart, and billing codes are later and noisier still.
+      whyItMatters: "Lead time is measured against this label. A sloppy onset definition makes lead time and sensitivity numbers meaningless."
+    - name: "Chart time, draw time and result time"
+      explanation: >-
+        A lab has an order time, a collection (draw) time and a result time, often an hour or more apart; vitals have a
+        measurement time and a charting time. A feature may use a value only once clinicians could have seen it.
+      whyItMatters: "Using draw time instead of result time gives the model information the ward never had, so offline lead time looks better than real life."
+    - name: "Treatment leaks the label"
+      explanation: >-
+        Clinicians order antibiotics, cultures, fluids and lactate because they already suspect sepsis. Those orders are
+        consequences of suspicion, and patients who are treated early may never reach the textbook definition.
+      whyItMatters: "Orders and diagnoses must stay out of the features, and treated patients need careful handling in the label, or you learn clinician behaviour instead of physiology."
+    - name: "Alert fatigue and the response workflow"
+      explanation: >-
+        Nurses and physicians see many alerts per shift. Alerts that fire too often are ignored or disabled, and an alert is
+        only useful if a named person knows what to do within a set time. Hospital quality programmes, such as the SEP-1
+        bundle in the United States, define the care steps that should follow suspected sepsis.
+      whyItMatters: "The right metric is sensitivity and lead time at an agreed alert burden, agreed with ward leadership before modelling."
+    - name: "Regulation and data protection"
+      explanation: >-
+        Software that drives clinical decisions can count as a medical device (software as a medical device), with change
+        control for each model update. Patient data is protected by laws such as HIPAA in the United States and the GDPR in
+        Europe, and research datasets are de-identified.
+      whyItMatters: "You cannot retrain and redeploy freely; plan validation evidence, monitoring and a change-control record from the start."
+  glossary:
+    - term: "Sepsis"
+      definition: "Life-threatening organ dysfunction caused by a dysregulated response to infection."
+    - term: "SOFA"
+      definition: "Sequential Organ Failure Assessment, a score from 0 to 24 summarising the function of six organ systems; a rise of 2 or more signals sepsis."
+    - term: "qSOFA"
+      definition: "A bedside screen scoring breathing rate of 22 or more, systolic pressure of 100 or less and altered mentation."
+    - term: "SIRS"
+      definition: "Systemic inflammatory response syndrome: two or more of abnormal temperature, heart rate above 90, breathing rate above 20 or abnormal white cell count."
+    - term: "MAP"
+      definition: "Mean arterial pressure, the average blood pressure during a heartbeat cycle; below 65 mmHg suggests poor organ perfusion."
+    - term: "Lactate"
+      definition: "A blood marker of tissue oxygen shortage; above 2 mmol/L is abnormal and above 4 mmol/L is serious."
+    - term: "Vasopressor"
+      definition: "A drug such as norepinephrine that raises blood pressure, used in septic shock."
+    - term: "Septic shock"
+      definition: "Sepsis with persistent low blood pressure needing vasopressors and raised lactate despite fluids, with high mortality."
+    - term: "Blood culture"
+      definition: "A lab test that grows bacteria from a blood sample; taken when infection is suspected and results take days."
+    - term: "Bundle (SEP-1)"
+      definition: "A checklist of timed care steps for suspected sepsis, such as lactate, cultures, antibiotics and fluids."
+    - term: "GCS"
+      definition: "Glasgow Coma Scale, a 3 to 15 score for level of consciousness used in SOFA and qSOFA."
+    - term: "Vital signs"
+      definition: "Routine measurements of heart rate, blood pressure, breathing rate, temperature and oxygen saturation."
+    - term: "EHR"
+      definition: "Electronic health record, the hospital system that stores charts, orders, results and where alerts are shown."
+    - term: "FHIR / HL7"
+      definition: "Standards for exchanging health data between systems; the alert pipeline typically consumes FHIR or HL7 messages."
+    - term: "Patient-day"
+      definition: "One patient present for one day, the denominator for alert burden such as alerts per 100 patient-days."
+    - term: "Alert burden"
+      definition: "How many alerts clinicians receive per unit of care, which has to stay low enough that they keep responding."
+    - term: "PPV"
+      definition: "Positive predictive value: the share of alerts that turn out to be true cases."
+    - term: "Lead time"
+      definition: "How many hours before onset an alert fires, the quantity that makes an early-warning system clinically useful."
+    - term: "Censoring"
+      definition: "Excluding or stopping observation of a patient after an event, here the hours at or after onset, so the model does not learn from treated patients."
+    - term: "MIMIC"
+      definition: "A de-identified intensive-care database from one US hospital used widely for research, available after credentialing."
+    - term: "SaMD"
+      definition: "Software as a medical device: software with a medical purpose that regulators may require to be validated and change-controlled."
+  askTheExperts:
+    - "How does this hospital define sepsis onset for quality reporting, and which definition should the model's label follow?"
+    - "Who receives the alert, what must they do within what time, and how is their response recorded?"
+    - "What alert burden per unit would clinical leadership accept, and what override rate has made past alerts fail?"
+    - "Which vitals and labs are charted at what cadence, and how long do results typically take to appear in the record?"
+    - "What validation, change-control and privacy approvals do we need before a model can run on live patients?"
 data:
   strategy: >-
     Run the synthetic ICU first so every trap is present and every milestone has a green or red answer in
