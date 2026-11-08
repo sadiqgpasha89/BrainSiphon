@@ -15,6 +15,103 @@ prerequisites:
     - "Python 3.11+ (the starter uses only the standard library plus pytest)"
     - "An LLM API or a self-hosted model for the generator, and an embedding model for dense retrieval"
     - "A sandbox for running generated code (a container or a service such as a code interpreter) for M5"
+domainKnowledge:
+  overview: >-
+    Developers use documentation to build against an API or SDK, and wrong guidance costs them hours: a made-up endpoint, an
+    outdated limit or code for the wrong version. A docs assistant answers questions from the documentation, so its value
+    depends on how the docs are organised, how versions and deprecations work and what developers do with the answer.
+    Understanding these makes the difference between a helpful assistant and a confident liar.
+  concepts:
+    - name: "The anatomy of API documentation"
+      explanation: >-
+        Docs usually combine an API reference (often generated from an OpenAPI specification), guides and tutorials, a changelog
+        or release notes, and migration guides. Each answers a different kind of question, and they can disagree: a changelog
+        legitimately mentions old values.
+      whyItMatters: "Retrieval should know which kind of page it is reading. Factual answers come from the reference for the right version, not from the changelog."
+    - name: "Versions and deprecation"
+      explanation: >-
+        APIs have versions (v1, v2), SDKs have their own semantic versions (major.minor.patch) per language, and features are
+        deprecated with a sunset date before being removed. A breaking change is one that makes existing code stop working.
+      whyItMatters: "The right answer depends on which version the developer is using, so version must come from context and be shown in the answer."
+    - name: "OpenAPI as ground truth"
+      explanation: >-
+        An OpenAPI specification describes endpoints, parameters, request and response schemas and authentication in machine-readable
+        form. Because it is precise, it can validate that every endpoint or field in a generated answer exists.
+      whyItMatters: "It turns hallucination checking from opinion into a lookup, and it is the cheapest strong guard you can add."
+    - name: "How retrieval-augmented answering fails"
+      explanation: >-
+        The assistant splits docs into chunks, retrieves the most relevant ones (keyword search, embeddings or both) and has a
+        language model answer from them with citations. Failures include retrieving the wrong version, quoting a stale value
+        from a changelog, inventing an endpoint, answering a question the docs never cover and a citation that exists but does
+        not support the claim.
+      whyItMatters: "Each failure needs its own test. Measure them separately, not as one accuracy number."
+    - name: "Evaluating a docs assistant"
+      explanation: >-
+        A golden set of real questions with known answers, including unanswerable and version-specific ones, is scored for correctness,
+        faithfulness to the cited source, abstention when the docs are silent and, for code, whether the snippet compiles and
+        runs. Questions written from page headings are too easy.
+      whyItMatters: "Abstaining is a feature. A refusal that is right is better than an answer that is plausible and wrong."
+    - name: "What success means for the business"
+      explanation: >-
+        Docs teams track time to first successful API call, support tickets caused by documentation and search success. An
+        assistant that deflects tickets but sends developers wrong limits or versions moves cost from the support team to the
+        developer's incident.
+      whyItMatters: "Measure outcomes for developers, not only answer quality, and decide upfront what the assistant must never answer (billing, security advice, legal terms)."
+  glossary:
+    - term: "API"
+      definition: "Application programming interface: the way one program calls another, often over HTTP."
+    - term: "Endpoint"
+      definition: "A specific URL and method of an API, such as POST /v2/payments."
+    - term: "SDK"
+      definition: "Software development kit: a language-specific library that wraps an API."
+    - term: "OpenAPI / Swagger"
+      definition: "A standard machine-readable description of a REST API's endpoints, parameters and schemas."
+    - term: "REST"
+      definition: "A common style of web API built around resources and HTTP methods."
+    - term: "Webhook"
+      definition: "An HTTP callback in which a service notifies your server when an event happens."
+    - term: "Rate limit"
+      definition: "The maximum number of requests allowed in a time window, with errors returned when exceeded."
+    - term: "Pagination"
+      definition: "Returning large result sets in pages, using cursors or offsets."
+    - term: "Idempotency key"
+      definition: "A unique value that makes a repeated request safe, so retries do not create duplicates."
+    - term: "Auth scope / OAuth"
+      definition: "A permission granted to a token, and the standard protocol for delegated access."
+    - term: "Deprecation"
+      definition: "Announcing that a feature will be removed, with a sunset date, while it still works."
+    - term: "Breaking change"
+      definition: "A change that makes existing client code fail, which normally requires a new major version."
+    - term: "Semantic versioning"
+      definition: "A version number scheme (major.minor.patch) in which the major number changes for breaking changes."
+    - term: "Changelog"
+      definition: "A dated list of what changed in each release, which quotes both old and new behaviour."
+    - term: "RAG"
+      definition: "Retrieval-augmented generation: a model answers using passages retrieved from a document collection."
+    - term: "Chunk"
+      definition: "A piece of a document, such as a section, that is indexed and retrieved as a unit."
+    - term: "BM25"
+      definition: "A classic keyword-ranking function that scores documents by term frequency and rarity."
+    - term: "Embedding"
+      definition: "A vector representing the meaning of text, used for similarity search that tolerates different wording."
+    - term: "Reranking"
+      definition: "A second-stage model that reorders retrieved passages by relevance to the question."
+    - term: "Grounding / citation"
+      definition: "Basing an answer on retrieved text and pointing to the passage that supports it."
+    - term: "Hallucination"
+      definition: "Output that sounds plausible but is not supported by the sources, such as an endpoint that does not exist."
+    - term: "Abstention"
+      definition: "Declining to answer because the sources do not contain the answer."
+    - term: "Golden set"
+      definition: "A fixed set of questions with verified answers used to score and compare versions of the system."
+    - term: "Time to first successful call"
+      definition: "How long a new developer takes to make a working API request, a common docs-quality metric."
+  askTheExperts:
+    - "Which API and SDK versions are supported, how will the assistant learn which one a developer is using, and what is the deprecation policy?"
+    - "When two pages disagree, which source is authoritative, and who owns the OpenAPI specification?"
+    - "What are the most common support tickets and wrong-answer complaints about the docs today?"
+    - "Which topics must the assistant refuse or hand off, such as billing, security advice or legal terms?"
+    - "Which languages and SDKs must generated code run in, and can we run it safely in a sandbox against a test account?"
 data:
   strategy: >-
     Start with the synthetic docs and questions, where every answer, version and unanswerable case is known. Then build
