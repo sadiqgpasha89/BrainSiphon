@@ -219,7 +219,7 @@ off: KPI reproduction error ; Back-test of disruption responses
 on: Policy decisions informed ; Realised vs simulated improvements
 gap: Calibration and validation on same period ; Ignoring behavioural responses
 
-== control-tower-anomaly-detection | Supply-Chain Control Tower Anomaly Detection | time-series,graph | sub-100ms | production-grade | a=0 k=2
+== control-tower-anomaly-detection | Supply-Chain Control Tower Anomaly Detection | time-series,graph | sub-100ms | production-grade | a=1 k=2
 obj: Detect abnormal events across orders, shipments and inventory in real time and prioritise by business impact.
 loss: \mathcal{L}=\sum_t\left[\log\hat\sigma_t+\frac{(y_t-\hat\mu_t)^2}{2\hat\sigma_t^2}\right]
 con: Millions of entities ; Alert dedup ; Impact ranking ; Self-serve rules for planners

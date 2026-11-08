@@ -139,7 +139,7 @@ off: Reach error vs panel ; Quantile loss
 on: Delivery vs guarantee ; Reach forecast accuracy
 gap: Evaluating impressions not reach ; Panel bias ignored
 
-== campaign-performance-anomaly-detection | Campaign Performance Anomaly Detection | time-series | sub-100ms | foundational | a=0 k=1
+== campaign-performance-anomaly-detection | Campaign Performance Anomaly Detection | time-series | sub-100ms | foundational | a=1 k=1
 obj: Detect sudden changes in spend, CPA, CTR or delivery per campaign within minutes and alert owners with probable causes.
 loss: \mathcal{L}=\sum_t\left[\log\sigma_t+\frac{(y_t-\mu_t)^2}{2\sigma_t^2}\right]
 con: Hundreds of thousands of campaigns ; Seasonality ; Low noise alerts ; Root-cause hints

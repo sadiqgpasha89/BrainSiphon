@@ -259,7 +259,7 @@ off: Normalised Gini of value ranking ; Cohort-level calibration error
 on: Marketing ROI by channel ; Value captured in top decile
 gap: Using full-history features for young customers ; Evaluating without censoring-aware metrics
 
-== payment-ops-anomaly-detection | Payments Operations Anomaly Detection | time-series | sub-100ms | production-grade | a=0 k=1
+== payment-ops-anomaly-detection | Payments Operations Anomaly Detection | time-series | sub-100ms | production-grade | a=1 k=1
 obj: Detect abnormal drops in success rate, latency or volume across thousands of payment dimensions within minutes of onset.
 loss: \mathcal{L}=\sum_t\left[\log\hat\sigma_t+\frac{(y_t-\hat\mu_t)^2}{2\hat\sigma_t^2}\right]
 con: Alert latency under 3 minutes ; 50k dimension combinations ; False alerts under 1 per day per team ; Root-cause hints
