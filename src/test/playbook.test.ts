@@ -4,12 +4,65 @@ import { toMarkdown } from '../content/markdown';
 import { PlaybookSchema } from '../schemas/usecase.schema';
 
 const all = loadAllUseCases();
-const withPlaybook = all.filter((u) => u.playbook);
+const withPlaybook = all.filter((u) => u.playbook?.provenance === 'authored');
+const generated = all.filter((u) => u.playbook?.provenance === 'generated');
+
+describe('generated playbooks (the other 392)', () => {
+  it('covers every use case without a hand-written playbook', () => {
+    expect(withPlaybook.length + generated.length).toBe(all.length);
+    expect(generated.length).toBe(all.length - 8);
+  });
+
+  it('uses all eleven reference kits and records which one each playbook uses', () => {
+    const kits = new Set(generated.map((u) => u.playbook!.starter.kitId));
+    expect(kits.size).toBe(11);
+    expect([...kits].every(Boolean)).toBe(true);
+  });
+
+  it('is specific to the use case: its own objective, signals, constraints, baseline and edge case appear in the plan', () => {
+    for (const u of generated.slice(0, 400)) {
+      const pb = u.playbook!;
+      const text = JSON.stringify(pb);
+      expect(text).toContain(u.dataAndFeatures.highSignalFeatures[0]!.name);
+      expect(text).toContain(u.productionEdgeCases[0]!.scenario);
+      expect(pb.milestones[0]!.tasks.join(' ')).toContain(u.problemFormulation.constraints[0]!);
+      expect(pb.milestones[3]!.tasks.join(' ')).toContain(
+        u.architectureBlueprint.baselineModel.replace(/\.$/, ''),
+      );
+    }
+  });
+
+  it('shares no more than half of its text with any other playbook of the same kit (the filler check)', () => {
+    const lines = (u: (typeof generated)[number]) =>
+      new Set(JSON.stringify(u.playbook!.milestones.map((m) => m.tasks)).split('","'));
+    const byKit = new Map<string, typeof generated>();
+    for (const u of generated)
+      byKit.set(u.playbook!.starter.kitId!, [...(byKit.get(u.playbook!.starter.kitId!) ?? []), u]);
+    for (const group of byKit.values()) {
+      const a = lines(group[0]!),
+        b = lines(group[1]!);
+      const shared = [...a].filter((x) => b.has(x)).length;
+      expect(shared / a.size).toBeLessThan(0.5);
+    }
+  });
+
+  it('is labelled as generated and carries a domain-knowledge section, datasets over https and at least six tests', () => {
+    for (const u of generated) {
+      const pb = u.playbook!;
+      expect(pb.provenance).toBe('generated');
+      expect(pb.domainKnowledge.glossary.length).toBeGreaterThanOrEqual(15);
+      expect(pb.data.datasets.length).toBeGreaterThanOrEqual(1);
+      for (const d of pb.data.datasets)
+        expect(d.url.startsWith('https://') || d.url.startsWith('http://')).toBe(true);
+      expect(pb.tests.length).toBeGreaterThanOrEqual(8);
+    }
+  });
+});
 
 describe('build playbooks (pilot)', () => {
   it('ships one playbook per domain for the pilot', () => {
     expect(new Set(withPlaybook.map((u) => u.domain)).size).toBe(8);
-    expect(withPlaybook.length).toBeGreaterThanOrEqual(8);
+    expect(withPlaybook.length).toBe(8);
   });
 
   it.each(withPlaybook.map((u) => [u.slug, u] as const))(
@@ -112,5 +165,36 @@ describe('generated text defects found in review (regression)', () => {
     const emb = fraud.systemDesign.hld.components.find((c) => /embedding/i.test(c.name))!;
     const scorer = fraud.systemDesign.hld.components.find((c) => /scorer/i.test(c.name))!;
     expect(emb.responsibility).not.toEqual(scorer.responsibility);
+  });
+});
+
+describe('loss formula legend', () => {
+  it('explains every symbol: at least two, no duplicates, and each meaning is a real sentence fragment', () => {
+    for (const u of all) {
+      const v = u.problemFormulation.lossVariables;
+      expect(v.length).toBeGreaterThanOrEqual(2);
+      expect(new Set(v.map((x) => x.symbol)).size).toBe(v.length);
+      for (const x of v) expect(x.meaning.trim().split(/\s+/).length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it('lists lambda with the penalty-weight meaning whenever the formula uses it as a weight', () => {
+    const u = all.find((x) => x.slug === 'adtech/ctr-prediction-ads')!;
+    expect(u.problemFormulation.lossVariables.map((x) => x.symbol)).toContain('\\mathcal{L}');
+    const sepsis = all.find((x) => x.slug === 'healthcare/sepsis-early-warning')!;
+    expect(sepsis.problemFormulation.lossVariables.find((x) => x.symbol.startsWith('w'))!.meaning).toMatch(
+      /6 hours before sepsis onset/,
+    );
+  });
+
+  it('keeps context-dependent symbols context-specific (sigmoid versus standard deviation, uplift versus temperature)', () => {
+    const ring = all.find((x) => x.slug === 'fintech/fraud-ring-detection-community')!;
+    expect(
+      ring.problemFormulation.lossVariables.find((x) => x.symbol.startsWith('\\sigma'))!.meaning,
+    ).toMatch(/Sigmoid/);
+    const uplift = all.find((x) => x.slug === 'retail/cart-abandonment-and-basket-completion')!;
+    expect(
+      uplift.problemFormulation.lossVariables.find((x) => x.symbol.startsWith('\\tau'))!.meaning,
+    ).toMatch(/Uplift/);
   });
 });

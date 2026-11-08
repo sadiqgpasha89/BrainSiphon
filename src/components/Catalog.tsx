@@ -283,9 +283,13 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
                         {e.playbook && (
                           <span
                             className="chip !border-signal/50 !bg-signal-soft !text-signal"
-                            title="Includes a Build Playbook with a runnable starter kit"
+                            title={
+                              e.playbook === 'authored'
+                                ? 'Hand-written Build Playbook with its own runnable starter kit'
+                                : 'Generated Build Playbook with a tested reference starter kit'
+                            }
                           >
-                            Playbook
+                            {e.playbook === 'authored' ? 'Playbook · hand-written' : 'Playbook'}
                           </span>
                         )}
                         <span className="chip chip-signal ml-auto">{e.signalCount} signals</span>

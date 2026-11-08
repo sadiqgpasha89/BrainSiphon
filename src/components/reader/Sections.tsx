@@ -3,6 +3,7 @@ import { DOMAIN_META, type UseCase, type UseCaseIndexEntry } from '../../schemas
 import { CodeBlock } from '../Code';
 import { MathBlock } from '../Math';
 import { MermaidDiagram } from '../Mermaid';
+import { SymbolText } from './SymbolText';
 
 export function Section({
   id,
@@ -111,6 +112,31 @@ export async function Sections({ uc }: { uc: UseCase }) {
         <div className="card p-4">
           <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">ML objective / loss</p>
           <MathBlock tex={uc.problemFormulation.mlObjectiveAndLoss} />
+        </div>
+        <div>
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">
+            What each symbol stands for
+          </p>
+          <TableWrap>
+            <table className="bs-table" data-testid="loss-variables">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Meaning in this use case</th>
+                </tr>
+              </thead>
+              <tbody>
+                {uc.problemFormulation.lossVariables.map((v) => (
+                  <tr key={v.symbol}>
+                    <td className="whitespace-nowrap">
+                      <SymbolText tex={v.symbol} />
+                    </td>
+                    <td>{v.meaning}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
         </div>
         <div>
           <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Constraints</p>

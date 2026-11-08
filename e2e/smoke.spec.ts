@@ -108,9 +108,14 @@ test('a pilot use case opens straight to its build playbook, with gates and runn
   const file = page.getByTestId('starter-file').first();
   await file.locator('summary').click();
   await expect(file.locator('pre').first()).toContainText('def generate');
-  // the catalog advertises it, and a use case without a playbook does not show the link
+  // every other use case gets a generated playbook that says so, plus a legend for its loss formula
   await page.goto('/fintech');
   await expect(page.getByText('Playbook', { exact: true }).first()).toBeVisible();
   await page.goto('/fintech/credit-default-survival-modeling');
-  await expect(page.getByTestId('playbook-link')).toHaveCount(0);
+  await expect(page.getByTestId('playbook-link')).toHaveCount(1);
+  await expect(page.getByTestId('playbook-provenance')).toContainText('Generated playbook');
+  expect(await page.getByTestId('loss-variables').locator('tbody tr').count()).toBeGreaterThanOrEqual(4);
+  await expect(page.getByTestId('loss-variables')).toContainText('hazard');
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  await expect(page.getByTestId('playbook-provenance')).toContainText('Hand-written playbook');
 });

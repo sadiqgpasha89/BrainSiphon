@@ -49,6 +49,21 @@ async function main() {
       errors.push(`${u.slug}: KaTeX error — ${(e as Error).message}`);
     }
 
+    for (const v of u.problemFormulation.lossVariables) {
+      try {
+        katex.renderToString(v.symbol, { throwOnError: true, strict: 'ignore' });
+      } catch (e) {
+        errors.push(`${u.slug}: loss symbol ${v.symbol} does not render — ${(e as Error).message}`);
+      }
+      if (v.meaning.trim().split(/\s+/).length < 2)
+        errors.push(`${u.slug}: meaning of ${v.symbol} is a single word`);
+    }
+    if (
+      new Set(u.problemFormulation.lossVariables.map((v) => v.symbol)).size !==
+      u.problemFormulation.lossVariables.length
+    )
+      errors.push(`${u.slug}: duplicate loss symbols`);
+
     const blocks: [string, string][] = [
       ['pipeline', u.architectureBlueprint.mermaidDiagram],
       ['hld', u.systemDesign.hld.mermaid],
@@ -63,8 +78,24 @@ async function main() {
       }
     }
 
-    if (u.playbook) {
-      // Playbook use cases must also be deep: the shallow 2/3/2 shape is only acceptable without a playbook.
+    if (u.playbook?.provenance === 'generated') {
+      const pb = u.playbook;
+      const text = JSON.stringify({ ...pb, starter: { ...pb.starter, files: [] } });
+      if (/\b(undefined|NaN|Infinity)\b|\[object|\$\{|\{\{/.test(text))
+        errors.push(`${u.slug}: generated playbook contains an unresolved placeholder`);
+      if (!pb.starter.kitId) errors.push(`${u.slug}: generated playbook has no reference kit`);
+      if (pb.milestones.filter((m) => /\d/.test(m.gate.threshold)).length < 5)
+        errors.push(`${u.slug}: fewer than 5 generated milestone gates carry a number`);
+      if (pb.domainKnowledge.glossary.length < 15 || pb.domainKnowledge.concepts.length < 5)
+        errors.push(`${u.slug}: generated domain knowledge is too thin`);
+      if (
+        new Set(pb.domainKnowledge.glossary.map((g) => g.term.toLowerCase())).size !==
+        pb.domainKnowledge.glossary.length
+      )
+        errors.push(`${u.slug}: duplicate glossary terms`);
+    }
+    if (u.playbook?.provenance === 'authored') {
+      // Hand-written playbooks must also be deep: the shallow 2/3/2 shape is only acceptable without a playbook.
       const depth: [string, number, number][] = [
         ['signal-vs-noise rows', u.signalVsNoiseMatrix.length, 4],
         ['high-signal features', u.dataAndFeatures.highSignalFeatures.length, 5],

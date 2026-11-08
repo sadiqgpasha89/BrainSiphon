@@ -13,6 +13,8 @@ const Sub = ({ id, title, children }: { id: string; title: string; children: Rea
   </div>
 );
 
+const KIT_BASE = 'https://github.com/sadiqgpasha89/BrainSiphon/tree/main/content/kits';
+
 /** The "Build playbook": everything an intermediate engineer needs to go from blueprint to a shipped system. */
 export async function PlaybookSection({ pb }: { pb: Playbook }) {
   return (
@@ -21,6 +23,32 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
       title="Build playbook"
       kicker="From empty repo to shadow-ready: data, ordered milestones with numeric gates, a starter kit that runs"
     >
+      <div
+        className={`rounded-md border p-3 text-sm ${pb.provenance === 'generated' ? 'border-warn/40 bg-warn/5 text-ink/90' : 'border-signal/40 bg-signal-soft/20 text-ink/90'}`}
+        data-testid="playbook-provenance"
+        data-prose
+      >
+        {pb.provenance === 'generated' ? (
+          <>
+            <strong className="text-warn">Generated playbook.</strong> Assembled from this blueprint&apos;s
+            own signals, constraints and traps, shared domain and method knowledge, and the{' '}
+            {pb.starter.kitId ? (
+              <a href={`${KIT_BASE}/${pb.starter.kitId}`} target="_blank" rel="noopener noreferrer">
+                {pb.starter.kitId} reference kit
+              </a>
+            ) : (
+              'reference kit'
+            )}{' '}
+            (tested in CI on synthetic data). It has not been reviewed by a domain expert; 8 pilot use cases
+            have hand-written playbooks. Read each section against your own data and decision.
+          </>
+        ) : (
+          <>
+            <strong className="text-signal">Hand-written playbook</strong> with its own starter kit, numbers
+            measured from its runs.
+          </>
+        )}
+      </div>
       <p data-prose className="prose-bs max-w-3xl text-base">
         {pb.summary}
       </p>

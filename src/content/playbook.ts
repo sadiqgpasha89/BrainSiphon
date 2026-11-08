@@ -17,7 +17,7 @@ import { TOTAL_BUDGET_MS } from './design';
 const nonEmpty = z.string().trim().min(2);
 
 /** What authors write: the shared schema minus derived fields, with starter files referenced by path. */
-const AuthoredSchema = PlaybookSchema.omit({ prerequisites: true, starter: true, tests: true, first30Days: true })
+const AuthoredSchema = PlaybookSchema.omit({ provenance: true, prerequisites: true, starter: true, tests: true, first30Days: true })
   .extend({
     prerequisites: PlaybookSchema.shape.prerequisites.partial({ effort: true }),
     starter: z.object({
@@ -53,7 +53,7 @@ const SKILLS: Record<Paradigm, string> = {
   'reinforcement-learning': 'Off-policy evaluation and safe exploration for bandit or RL policies',
 };
 
-function derivePrerequisites(raw: RawUseCase, authored: z.infer<typeof AuthoredSchema>) {
+export function derivePrerequisites(raw: RawUseCase, authored: z.infer<typeof AuthoredSchema>) {
   const [lo, hi] = authored.milestones.reduce<[number, number]>(
     (a, m) => {
       const [l, h] = range(m.days);
@@ -69,7 +69,7 @@ function derivePrerequisites(raw: RawUseCase, authored: z.infer<typeof AuthoredS
   };
 }
 
-function deriveTests(raw: RawUseCase, latency: LatencySLA, scale: ScaleResult) {
+export function deriveTests(raw: RawUseCase, latency: LatencySLA, scale: ScaleResult) {
   const budget = TOTAL_BUDGET_MS[latency];
   return [
     {
@@ -88,7 +88,7 @@ function deriveTests(raw: RawUseCase, latency: LatencySLA, scale: ScaleResult) {
   ];
 }
 
-function deriveFirst30Days(raw: RawUseCase) {
+export function deriveFirst30Days(raw: RawUseCase) {
   const north = raw.on[0] ?? 'the north-star metric';
   const guard = raw.on[1] ?? 'the guardrail metric';
   const edge = raw.edge[0]?.[0] ?? 'the first documented edge case';
@@ -137,6 +137,7 @@ export function loadPlaybook(
     if (row.length !== a.data.sample.columns.length) throw new Error(`${where}: every data.sample row needs ${a.data.sample.columns.length} cells`);
 
   const out = {
+    provenance: 'authored' as const,
     summary: a.summary,
     prerequisites: derivePrerequisites(raw, a),
     domainKnowledge: a.domainKnowledge,

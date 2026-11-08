@@ -187,6 +187,8 @@ const Cell = z.union([z.string(), z.number(), z.boolean(), z.null()]);
  * on synthetic data, a worked example, an executable test plan, decisions and pitfalls.
  */
 export const PlaybookSchema = z.object({
+  /** `authored`: written by hand with its own starter kit. `generated`: assembled from the blueprint's own fields, shared domain and paradigm knowledge, and a reference starter kit. */
+  provenance: z.enum(['authored', 'generated']),
   summary: nonEmpty,
   prerequisites: z.object({
     skills: z.array(nonEmpty).min(3),
@@ -232,6 +234,8 @@ export const PlaybookSchema = z.object({
     )
     .min(6),
   starter: z.object({
+    /** reference kit id (content/kits/<id>) when the starter is shared across use cases */
+    kitId: z.string().optional(),
     runtime: nonEmpty,
     run: z.array(nonEmpty).min(2),
     expected: nonEmpty,
@@ -287,6 +291,8 @@ export const UseCaseSchema = z
     problemFormulation: z.object({
       businessObjective: nonEmpty,
       mlObjectiveAndLoss: nonEmpty,
+      /** every symbol in the formula, in order of first appearance, with what it stands for in this use case */
+      lossVariables: z.array(z.object({ symbol: z.string().trim().min(1), meaning: nonEmpty })).min(2),
       constraints: z.array(nonEmpty).min(2),
     }),
     dataAndFeatures: z.object({
@@ -335,8 +341,8 @@ export interface UseCaseIndexEntry {
   noiseCount: number;
   lastVerifiedAt: string;
   keywords: string;
-  /** true when a Build Playbook is published for this use case */
-  playbook?: boolean;
+  /** how the Build Playbook was made: written by hand with its own kit, or generated from the blueprint and a reference kit */
+  playbook?: 'authored' | 'generated';
 }
 
 /** URL query validation shared by /api/search and the catalog. */

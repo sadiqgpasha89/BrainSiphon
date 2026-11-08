@@ -1,5 +1,7 @@
 # Authoring a Build Playbook
 
+> Only 8 use cases have a hand-written playbook (this directory). The other 392 get a *generated* playbook from `src/content/playbook-gen.ts`, built from the blueprint's own fields, the pools in `content/domain-knowledge`, `content/dataset-registry.json` and the reference kits in `content/kits`. To improve a generated playbook, improve its blueprint entry in `content/usecases/*.uc` or the shared pools; to replace it, add a directory here and it takes over.
+
 A playbook turns a blueprint into something an intermediate engineer can execute. One directory per use case:
 
 ```

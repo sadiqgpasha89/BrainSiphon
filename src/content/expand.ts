@@ -12,6 +12,10 @@ import type { RawUseCase } from './parse';
 import { bottlenecksFor, buildLLD, buildStages, hldDiagram, pipelineDiagram, resilienceFor, sequenceDiagram, snake, TOTAL_BUDGET_MS } from './design';
 import { computeScale, usd } from './scale';
 import { loadPlaybook } from './playbook';
+import { generatePlaybook } from './playbook-gen';
+import { explainLoss } from './lossvars';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 export const VERIFIED_AT = '2026-11-07';
 
@@ -44,6 +48,17 @@ const sentence = (s: string, max = 190) => {
   return first.length <= max ? first : `${first.slice(0, max - 1).trimEnd()}…`;
 };
 
+const lossFiles = new Map<string, { lexicon: Record<string, string>; overrides: Record<string, Record<string, string>> }>();
+function lossData(root: string) {
+  let d = lossFiles.get(root);
+  if (!d) {
+    const read = (f: string) => (existsSync(join(root, 'content', f)) ? JSON.parse(readFileSync(join(root, 'content', f), 'utf8')) : {});
+    d = { lexicon: read('loss-lexicon.json'), overrides: read('loss-variables.json') };
+    lossFiles.set(root, d);
+  }
+  return d;
+}
+
 export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT, root?: string): UseCase {
   const where = `${raw.file}:${raw.line} (${raw.key})`;
   if (!REQUIRED_ENUMS.latency.includes(raw.latency)) throw new Error(`${where}: bad latency "${raw.latency}"`);
@@ -60,6 +75,10 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   const scale = computeScale({ paradigms, latency, a: raw.opts.a, k: raw.opts.k, steps: raw.opts.s, tokensPerStep: raw.opts.t });
   const steps = raw.opts.s ?? 3;
   const loss = raw.loss ?? DEFAULT_LOSS[paradigms[0]!];
+  const lossData_ = lossData(root ?? process.cwd());
+  const explained = explainLoss(raw.key, loss, lossData_.lexicon, lossData_.overrides);
+  if (explained.unresolved.length)
+    throw new Error(`${where}: the loss formula uses symbols with no explanation: ${explained.unresolved.join(', ')}. Add them to content/loss-lexicon.json (shared) or content/loss-variables.json["${raw.key}"] (this use case).`);
 
   const features = raw.sig.map(([name]) => name as string);
   const lld = buildLLD({
@@ -90,7 +109,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   };
 
   const e2e = buildE2E(raw, stages, scale, loss, features, latency, paradigms);
-  const playbook = root ? loadPlaybook(root, domain, raw, latency, scale) : undefined;
+  const playbook = root ? (loadPlaybook(root, domain, raw, latency, scale) ?? generatePlaybook(root, raw, domain, paradigms, latency, difficulty, scale, stages)) : undefined;
 
   const candidate = {
     id: uuidFor(slug),
@@ -103,7 +122,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     lastVerifiedAt: verifiedAt,
     summary: sentence(raw.obj),
     signalVsNoiseMatrix: raw.sn.map(([concept, trueSignal, commonNoise, whyEngineersFail]) => ({ concept, trueSignal, commonNoise, whyEngineersFail })),
-    problemFormulation: { businessObjective: raw.obj, mlObjectiveAndLoss: loss, constraints: raw.con },
+    problemFormulation: { businessObjective: raw.obj, mlObjectiveAndLoss: loss, lossVariables: explained.variables, constraints: raw.con },
     dataAndFeatures: {
       highSignalFeatures: raw.sig.map(([name, formulaOrLogic, intuition, leakageRisk]) => ({ name, formulaOrLogic, intuition, leakageRisk })),
       noisyFeaturesToDrop: raw.noise.map(([name, whyItIsNoise]) => ({ name, whyItIsNoise })),

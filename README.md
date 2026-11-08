@@ -37,35 +37,39 @@ against the strict Zod schema (`src/schemas/usecase.schema.ts`) — **a missing 
 
 > The capacity table is a transparent back-of-envelope model (assumptions are printed on every page), **not** a quote.
 
-## Build playbooks (pilot: 8 of 400)
+## Build playbooks (all 400: 8 hand-written, 392 generated)
 
 A blueprint explains *what a good system looks like*. A **Build playbook** is what an intermediate engineer needs to
-*build it*: the domain knowledge and terminology to learn first, where the data comes from, ordered milestones with numeric exit gates, a starter kit that runs on synthetic
-data, a worked example, an executable test plan, decisions and pitfalls, and a 30-day launch checklist.
+*build it*: the domain knowledge and terminology to learn first, where the data comes from, ordered milestones with numeric
+exit gates, a starter kit that runs on synthetic data, a worked example, an executable test plan, decisions and pitfalls,
+and a 30-day launch checklist.
 
-| Domain | Pilot use case | Starter kit |
-|---|---|---|
-| FinTech | Real-Time Card & UPI Fraud Detection | point-in-time velocity features, delayed labels, calibrated baseline vs boosted model |
-| Retail | Session-Based Next-Item Recommendation | ordered transitions, crawler bots, time split vs random split |
-| Healthcare | Sepsis Early-Warning System | result-time-correct features, alert-burden-matched evaluation |
-| Supply Chain | Short-Term Demand Sensing | forecast-origin features, censored demand, late feeds, FVA |
-| AdTech | Ad Click-Through Rate Prediction | hashed crosses, position bias, calibration, mis-taps |
-| Cybersecurity | SOC Investigation Copilot | typed tools, approval gate, prompt-injection guard, evidence verifier |
-| EdTech | Knowledge Tracing & Student Modelling | replayable learner state, student-split evaluation, id-encoding leak |
-| SaaS | Developer Documentation Assistant | version-aware RAG, abstention, citation verifier, held-out products |
+**Two tiers, labelled on every page.**
+
+- **Hand-written (8 pilots, one per domain).** Each has its own starter kit and numbers measured from its runs:
+  card fraud, sepsis early warning, CTR prediction, demand sensing, session recommendation, knowledge tracing, SOC investigation
+  agent and a developer docs assistant.
+- **Generated (the other 392).** Assembled from the use case's *own* authored fields (objective, constraints, signals,
+  noise, baseline and production model, pipeline, edge cases, metrics and traps), shared domain and method knowledge
+  (`content/domain-knowledge`), a curated and link-checked dataset registry (`content/dataset-registry.json`) and one of **11
+  reference starter kits** (`content/kits`: tabular, forecast, anomaly, recommender, graph, nlp, cv, bandit, optimize, llm-rag,
+  llm-agent), each run on synthetic data and tested in CI. Generated playbooks are specific to the use case where the
+  blueprint is, and generic where it is not; they have not been reviewed by a domain expert, and the kit numbers are
+  the reference kit's, not the use case's.
 
 ```bash
-npm run test:playbooks            # run every starter kit's pytest suite (needs Python 3.11+ and content/playbooks/requirements.txt)
+npm run test:playbooks            # run every kit and pilot starter's pytest suite (needs Python 3.11+ and content/playbooks/requirements.txt)
 npm run check:links               # verify every dataset URL (network)
 ```
 
-The playbook content lives in `content/playbooks/<domain>/<use-case>/playbook.yaml` next to a `starter/` directory.
-`content/playbooks/README.md` is the authoring template; `npm run validate:content` enforces its depth rules
-(at least 4 signal-vs-noise rows, 5 features and 4 edge cases, no one-word cells) for every use case that has a playbook.
+Hand-written playbooks live in `content/playbooks/<domain>/<use-case>/` and `content/playbooks/README.md` is the authoring
+template; `npm run validate:content` enforces its depth rules for them. Every loss formula also has a per-symbol legend
+(`content/loss-lexicon.json` for shared symbols, `content/loss-variables.json` for use-case-specific ones); the build fails if any
+symbol in any formula is unexplained.
 
-Two caveats worth knowing: the LLM-based kits (SOC copilot, docs assistant) use a deterministic stand-in for the model so
-the harness, guardrails and evaluation are real and testable offline, and every starter's numbers come from *synthetic*
-data (far easier than production); the dataset links are for the real-data run.
+Caveats worth knowing: the LLM-based kits (SOC copilot, docs assistant, and the `llm-agent` and `llm-rag` reference kits) use a
+deterministic stand-in for the model, so the harness, guardrails and evaluation are real and testable offline; every kit's
+numbers come from *synthetic* data (far easier than production); the dataset links are for the real-data run.
 
 ## Architecture
 

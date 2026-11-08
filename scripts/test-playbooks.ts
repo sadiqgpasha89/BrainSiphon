@@ -13,6 +13,10 @@ const python = process.env.PYTHON ?? 'python3';
 const only = process.argv[2];
 
 const kits: string[] = [];
+const kitRoot = join(process.cwd(), 'content', 'kits');
+if (existsSync(kitRoot) && (!only || only === 'kits'))
+  for (const k of readdirSync(kitRoot, { withFileTypes: true }).filter((x) => x.isDirectory()))
+    if (existsSync(join(kitRoot, k.name, 'test_starter.py'))) kits.push(join(kitRoot, k.name));
 for (const d of readdirSync(root, { withFileTypes: true }).filter((x) => x.isDirectory())) {
   if (only && d.name !== only) continue;
   for (const k of readdirSync(join(root, d.name), { withFileTypes: true }).filter((x) => x.isDirectory())) {
@@ -27,7 +31,9 @@ if (!kits.length) {
 
 let failed = 0;
 for (const dir of kits) {
-  const name = dir.slice(root.length + 1).replace('/starter', '');
+  const name = dir.startsWith(kitRoot)
+    ? `kits/${dir.slice(kitRoot.length + 1)}`
+    : dir.slice(root.length + 1).replace('/starter', '');
   const t0 = Date.now();
   const r = spawnSync(python, ['-m', 'pytest', '-q', '-p', 'no:cacheprovider'], {
     cwd: dir,
