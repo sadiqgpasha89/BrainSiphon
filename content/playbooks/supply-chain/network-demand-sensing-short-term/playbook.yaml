@@ -1,0 +1,262 @@
+summary: >-
+  A 1-14 day demand-sensing forecaster: forecast-origin features that know only what was known that day
+  (recent sales, momentum, the open order book, planned promotions and external signals), quantile gradient
+  boosting for a P50 and a P90, and an evaluation by weighted MAPE and forecast value added at SKU level.
+  The starter runs M1-M4 on synthetic daily demand; M5-M6 (the nightly pipeline, reconciliation with the plan
+  and planner workflow) need your planning system.
+prerequisites:
+  skills:
+    - "Time-series validation by forecast origin: rolling-origin splits and why a random split leaks"
+    - "Quantile regression and checking that a P90 band really covers 90% of outcomes"
+    - "Forecast accuracy metrics (WMAPE, bias, forecast value added) and why aggregate accuracy flatters you"
+    - "Supply-chain vocabulary: open order book, allocation, stock-out censoring, planning hierarchy and planner overrides"
+  tools:
+    - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
+    - "POS and order feeds into a warehouse; a scheduler such as Airflow for the nightly run in M5"
+    - "A planning system with an API or table for publishing forecasts (M5)"
+data:
+  strategy: >-
+    Start on the synthetic series, which contain every signal and every trap and let you check each lesson in
+    about 15 seconds. Then run the same origin-based pipeline on a public retail demand set to see real
+    intermittency and promotions. Public sets rarely include an open order book, so that leading indicator
+    only exists in the synthetic data and in your own order system.
+  datasets:
+    - name: "M5 Forecasting - Accuracy (Walmart)"
+      url: "https://www.kaggle.com/c/m5-forecasting-accuracy"
+      license: "Kaggle competition rules; free Kaggle login"
+      gives: "Five years of daily unit sales for about 30,000 item-store series with prices, promotions (SNAP and events) and calendar features, plus a hierarchy for reconciliation exercises"
+      caveat: "Many series are intermittent (lots of zeros) and there are no order-book or weather signals; use it to test the pipeline and metrics, not the sensing features"
+    - name: "Corporación Favorita Grocery Sales Forecasting"
+      url: "https://www.kaggle.com/c/favorita-grocery-sales-forecasting"
+      license: "Kaggle competition rules; free Kaggle login"
+      gives: "Daily sales for thousands of items across 54 Ecuadorian stores with promotion flags, oil price and holidays, a good test of promotion handling"
+      caveat: "Includes some missing days that are real stock-outs, which is exactly the censoring problem, but they are not labelled"
+    - name: "Rossmann Store Sales"
+      url: "https://www.kaggle.com/c/rossmann-store-sales"
+      license: "Kaggle competition rules; free Kaggle login"
+      gives: "Daily sales for 1,115 drugstores with promotion, school holiday and competitor features; small enough to run in minutes"
+      caveat: "Store-level totals, not SKU level, so it will understate how hard the SKU-level problem is"
+  synthetic:
+    file: "make_data.py"
+    description: >-
+      300 SKU series over 730 days with weekly and annual seasonality, trend, planned promotions, shared external
+      shocks, 14 days of open-order-book bookings, noise with about 18% variation and allocation limits that
+      cap sales for 3-9 days at a time (2.5% of days) so demand is censored.
+    knobs:
+      - "n_series, days: number of SKUs and history length (defaults 300 and 730)"
+      - "seed: identical seed gives an identical table"
+      - "constants in the file: promotion uplift, external-signal sensitivity, order-book share by horizon, censoring depth"
+  sample:
+    columns: [sid, day, sales, promo, ext_signal, prebooked_1, prebooked_7, constrained]
+    rows:
+      - [3, 598, 12, 0, 0, 8, 3, 0]
+      - [3, 599, 17, 0, 0, 5, 3, 0]
+      - [3, 600, 9, 0, 0, 6, 3, 0]
+  label: >-
+    The target is units sold on day t+h for h of 1, 3, 7 and 14, divided by the series' 28-day average at the
+    forecast origin t so one model serves every series. Days where allocation limits capped sales are excluded
+    from training and scoring, because sales on those days are not demand.
+milestones:
+  - id: M0
+    title: "Agree horizons, hierarchy and what accuracy is for"
+    days: "2-3"
+    tasks:
+      - "Decide which decisions consume the forecast (expedite, reallocate, replenish) and therefore which horizons and levels matter"
+      - "Pick the metric that planners already trust, usually weighted MAPE at SKU-location level, and the forecast-value-added target against today's statistical forecast"
+      - "Agree the planning hierarchy and how forecasts must add up, and how planner overrides will be recorded"
+    deliverable: "Spec naming horizons, level of evaluation, hierarchy rule and the FVA target"
+    gate:
+      metric: "Evaluation contract"
+      threshold: "A written metric, level and baseline signed by the demand-planning lead before modelling"
+      how: "Review with planning and supply"
+  - id: M1
+    title: "Data, origins and rolling split"
+    days: "3-4"
+    tasks:
+      - "Build a table with one row per series, forecast origin and horizon; run python make_data.py or load a public set"
+      - "Split by origin so every training target day lies before the first validation origin"
+      - "Flag allocation-limited days and decide how they are excluded from training and scoring"
+    deliverable: "Origin-based dataset and split definition"
+    gate:
+      metric: "Generator and split tests"
+      threshold: "pytest -k 'deterministic or precede' passes; the order book correlates above 0.5 with next-day demand"
+      how: "Run pytest in the starter directory"
+  - id: M2
+    title: "Origin-safe sensing features"
+    days: "4-5"
+    tasks:
+      - "Compute recent means, 7-over-28 momentum and same-weekday history using only days up to the origin"
+      - "Add the open order book snapshot, planned promotion flag and external signal for the target day"
+      - "Handle a late feed: leave missing days missing and count them, never read them as zero"
+    deliverable: "features.py with tests for the future and for late feeds"
+    gate:
+      metric: "Origin and late-feed tests"
+      threshold: "Corrupting every sales value after the origin changes no feature; a late day is missing_7 = 1 and lowers nothing"
+      how: "pytest -k 'ignore_everything or late_pos'"
+  - id: M3
+    title: "Seasonal baseline and the number to beat"
+    days: "2-3"
+    tasks:
+      - "Forecast each day as the mean of the last same weekdays before the origin"
+      - "Report WMAPE at horizons 1, 3, 7 and 14 on the test origins, at SKU level and in aggregate"
+      - "Write the baseline numbers down; every later claim is forecast value added against them"
+    deliverable: "Baseline report at SKU level"
+    gate:
+      metric: "Baseline WMAPE"
+      threshold: "Recorded per horizon (starter: 0.20-0.22) with both SKU-level and aggregate views"
+      how: "python baseline.py"
+  - id: M4
+    title: "Quantile gradient boosting with calibrated bands"
+    days: "4-5"
+    tasks:
+      - "Train a median model and a 90th-percentile model on scaled targets, excluding constrained days"
+      - "Check that the P90 covers about 90% of outcomes and that FVA holds at every horizon"
+      - "Show the aggregate-versus-SKU gap to planners so nobody is misled by a headline number"
+    deliverable: "P50 and P90 models, FVA table and coverage check"
+    gate:
+      metric: "Forecast value added and coverage"
+      threshold: "FVA of at least 0.25 at every horizon and P90 coverage between 85% and 95% (starter: FVA 0.36-0.43, coverage 89%)"
+      how: "python baseline.py; pytest -k adds_value"
+  - id: M5
+    title: "Nightly pipeline and reconciliation"
+    days: "7-9"
+    tasks:
+      - "Schedule the nightly job so it waits for feed-completeness checks per partner and flags incomplete feeds instead of imputing zeros"
+      - "Reconcile SKU forecasts to the planning hierarchy (top-down, bottom-up or MinT) and publish P50, P90 and a confidence flag"
+      - "Record every planner override with the forecast it replaced so its value can be measured"
+    deliverable: "Nightly pipeline, reconciliation step, publication contract and runbook"
+    gate:
+      metric: "Run time and consistency"
+      threshold: "Nightly refresh finishes inside the agreed window at the full series count, and reconciled forecasts add up to the plan at every level within rounding"
+      how: "Full-scale dry run plus an automated hierarchy-sum check"
+  - id: M6
+    title: "Shadow period and planner adoption"
+    days: "3-4"
+    tasks:
+      - "Publish forecasts beside the current forecast for four weeks without changing any order"
+      - "Track forecast accuracy at lag 2 and the value of planner overrides (did they add or remove accuracy)"
+      - "Switch on for one category, measuring expedites avoided and stock-outs, then widen"
+    deliverable: "Shadow report and a category-by-category rollout plan"
+    gate:
+      metric: "Accuracy and decisions"
+      threshold: "Lag-2 WMAPE better than the incumbent for the pilot category by the M0 target, and no rise in stock-outs"
+      how: "KPI dashboard comparing incumbent and new forecasts on actuals"
+starter:
+  runtime: "Python 3.11+ with numpy, pandas, scikit-learn and pytest (about 15 seconds on a laptop CPU)"
+  run:
+    - "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+    - "python make_data.py"
+    - "python baseline.py"
+    - "pytest"
+  expected: >-
+    make_data.py prints 300 series by 730 days with about 2.5% constrained days. baseline.py reports WMAPE of about
+    0.12 for the model against 0.20-0.22 for the baseline (FVA 0.43 at horizons 1, 3 and 7 and 0.36 at 14), P90
+    coverage near 0.89, aggregate WMAPE of 0.026 against 0.123 at SKU level, and 0.198 against 0.141 when a late
+    feed is read as zero instead of missing. pytest reports 8 passed.
+  files:
+    - path: "make_data.py"
+      purpose: "Synthetic SKU demand with promotions, shocks, an open order book and allocation-limited (censored) days"
+    - path: "features.py"
+      purpose: "Origin-safe features for each series, origin and horizon, including late-feed handling"
+    - path: "baseline.py"
+      purpose: "Origin-based split, seasonal baseline, P50 and P90 gradient boosting, FVA, coverage and the late-feed experiment"
+    - path: "test_starter.py"
+      purpose: "Executable gates: determinism, origin safety, late feeds, split order, FVA, coverage and the aggregate trap"
+    - path: "requirements.txt"
+      purpose: "Python dependencies"
+workedExample:
+  scenario: >-
+    Real rows from the test window of the starter data, forecasting 7 days ahead, comparing the seasonal
+    baseline, the sensing model and what actually sold.
+  steps:
+    - stage: "1. A planned promotion"
+      detail: "Series 1, origin day 669, target day 676 inside a planned promotion. Its recent average is 22.75 units a day and the open order book already holds 75% of that for the target day. The seasonal baseline says 21 units; the model says 48.1 with a P90 of 54.0; 47 units sold. The baseline cannot know about the promotion; the model reads it from the flag and the order book."
+    - stage: "2. An external shock"
+      detail: "Series 8, origin day 571, target day 578 with an external event index of 0.35. The order book is 76% of the daily average, the baseline gives 48.3 units, the model 69.4 and 67 sold. Same pattern: the signals tell the model about this week, the history only about last month."
+    - stage: "3. Allocation-limited days are not demand"
+      detail: "In the test window 631 of 27,900 series-days (2.3%) had supply capped. On those days sales were only 44% of what the model expected. They are excluded from training and scoring: training on them would teach the model that demand collapsed when stock was merely rationed."
+    - stage: "4. A late POS feed"
+      detail: "If the newest day is missing for every series at forecast time, reading the gap as zero gives a WMAPE of 0.198. Leaving it missing and letting the model use the other days gives 0.141, against 0.123 with a complete feed. A feed-completeness check and a missing-day flag are worth more than any tuning."
+    - stage: "5. Why the headline number misleads"
+      detail: "Summed over all series, the same forecasts have a WMAPE of 0.026, about a fifth of the 0.123 at SKU level, because over- and under-forecasts cancel. Planners order SKUs, not the total, so the SKU number is the one to report."
+  outcome: >-
+    The model beats the seasonal baseline by 36-43% at every horizon, but the real work is in the data handling:
+    excluding censored days, never zero-filling a late feed and evaluating where decisions are made.
+tests:
+  - test: "Origin safety"
+    tool: "pytest test_features_ignore_everything_after_the_origin"
+    pass: "Setting every sales value after the origin to 1,000,000 changes no feature"
+  - test: "Late feed handling"
+    tool: "pytest test_a_late_pos_day_is_missing_not_zero"
+    pass: "A missing latest day is counted in missing_7 and does not pull the 7-day mean down"
+  - test: "Split order"
+    tool: "pytest test_training_targets_precede_validation_origins"
+    pass: "The last training target day is before the first validation origin"
+  - test: "Metric definition"
+    tool: "pytest test_wmape_definition"
+    pass: "Weighted MAPE of [10, 10] against [8, 12] equals 0.2"
+  - test: "Forecast value added and band coverage"
+    tool: "pytest test_model_adds_value_over_the_seasonal_baseline_at_every_horizon"
+    pass: "FVA at least 0.25 at horizons 1, 3, 7 and 14, and P90 coverage between 85% and 95%"
+  - test: "Aggregate versus SKU error"
+    tool: "pytest test_aggregate_accuracy_hides_sku_level_error"
+    pass: "Aggregate WMAPE is below half the SKU-level WMAPE, proving the headline number is not the one to ship on"
+  - test: "Late feed experiment"
+    tool: "pytest test_zero_filling_a_late_feed_hurts_more_than_leaving_it_missing"
+    pass: "WMAPE with the day left missing is below 85% of WMAPE with the day zero-filled"
+  - test: "Hierarchy consistency"
+    tool: "Automated sum check of reconciled forecasts against plan totals at every level"
+    pass: "Differences within rounding for every node on every run"
+decisions:
+  - question: "One global model or a model per series?"
+    options:
+      - option: "One global model on scaled targets"
+        chooseWhen: "You have thousands of series with short histories; it shares strength across SKUs and is cheap to retrain nightly"
+      - option: "Per-series statistical models (ETS or similar)"
+        chooseWhen: "You have few, long, stable series and need to explain every forecast term by term"
+    default: "Global boosted model against a per-series seasonal baseline"
+  - question: "How do you make forecasts add up to the plan?"
+    options:
+      - option: "Bottom-up from SKU forecasts"
+        chooseWhen: "SKU-level accuracy is good and the plan can be regenerated from it"
+      - option: "Top-down proportional split of an aggregate forecast"
+        chooseWhen: "The aggregate forecast is far more accurate and SKU shares are stable"
+      - option: "Optimal reconciliation (MinT)"
+        chooseWhen: "You have a deep hierarchy and can estimate forecast-error covariances; it usually improves every level"
+    default: "Bottom-up first, then MinT once the hierarchy and error estimates are stable"
+  - question: "How do you treat planner overrides?"
+    options:
+      - option: "Record every override and score it against actuals"
+        chooseWhen: "Always; it shows which overrides add accuracy and builds trust"
+      - option: "Block overrides"
+        chooseWhen: "Never as a starting point; planners know about deals and disruptions the model has not seen"
+    default: "Allow, record and report override value monthly"
+pitfalls:
+  - at: M1
+    mistake: "Splitting rows at random"
+    symptom: "Excellent offline error that disappears live, because training rows share origins with test rows"
+    fix: "Split by forecast origin and keep every training target before the first validation origin"
+  - at: M2
+    mistake: "Using signals that arrive after the forecast time"
+    symptom: "Accuracy jumps by half and the live model cannot reproduce it"
+    fix: "Build features from an origin snapshot and corrupt the future in a test to prove it"
+  - at: M2
+    mistake: "Reading a late POS feed as zero demand"
+    symptom: "In the starter, WMAPE rises from 0.14 to 0.20 on the days a feed is late and orders are cut for no reason"
+    fix: "Leave missing days missing, flag them and alert on feed completeness"
+  - at: M2
+    mistake: "Training on allocation-capped sales"
+    symptom: "The model under-forecasts after supply restrictions end because it learned that demand had fallen"
+    fix: "Flag constrained days and exclude them from training and scoring, or model them as censored"
+  - at: M3
+    mistake: "Judging the model against nothing"
+    symptom: "A WMAPE of 0.12 sounds good until the seasonal baseline turns out to be 0.20 on the same data"
+    fix: "Always report forecast value added against the incumbent baseline"
+  - at: M4
+    mistake: "Reporting aggregate accuracy"
+    symptom: "In the starter the network total is wrong by 2.6% while individual SKUs are wrong by 12.3%, and planners distrust the numbers"
+    fix: "Report at the level decisions are made, with the aggregate as a secondary view"
+  - at: M5
+    mistake: "Publishing only a point forecast"
+    symptom: "Planners cannot tell a confident forecast from a guess and override the good ones"
+    fix: "Publish P50 and P90 with a confidence flag and track override value"

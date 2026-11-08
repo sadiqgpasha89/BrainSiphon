@@ -5,16 +5,23 @@ loss: \mathcal{L}=\sum_{h=1}^{14}\sum_q\rho_q\!\left(y_{t+h}-\hat y_{t+h}^{(q)}\
 con: Nightly refresh for 5M series ; Latency of POS feeds ; Hierarchical consistency ; Planner overrides audited
 sn: Horizon | Short-horizon model on recent sell-through and open orders | Reusing the monthly statistical forecast | Monthly models ignore this week's signals
 sn: Reconciliation | Reconcile sensing output with the plan hierarchy | Independent SKU forecasts | Totals disagree with plan and planners distrust it
-sig: Open order book | confirmed orders not yet shipped by SKU | Leading indicator | Snapshot at forecast time
-sig: Sell-through momentum | 7-day vs 28-day velocity ratio | Trend change | Align calendar days
-sig: External event signal | weather, strikes, promotions known in advance | Demand shock | Forecast values only
+sn: Censoring | Constrained demand flags so allocation-capped sales are not read as demand | Training on raw sales during supply restrictions | The model learns that demand collapsed when stock was simply rationed
+sn: Evaluation | Error measured at SKU and location level with forecast value added | Aggregate accuracy across the whole network | Aggregate error can be a fifth of SKU error because mistakes cancel out
+sig: Open order book | confirmed orders not yet shipped by SKU | A leading indicator that exists only for the next two weeks | Take the snapshot as it stood at forecast time
+sig: Sell-through momentum | 7-day vs 28-day velocity ratio | Shows a trend change before monthly averages do | Align calendar days across the two windows
+sig: External event signal | weather, strikes, promotions known in advance | Explains demand shocks the history cannot | Use the forecast published at the origin, not the observed value
+sig: Planned promotion flag | whether the target day sits inside a scheduled promotion | Promotions multiply demand and are known weeks ahead | The flag must be the plan as of the origin, not the promotion as finally run
+sig: Same-weekday history | mean of the last two or three same-weekday sales before the origin | Weekly rhythm dominates short-term demand | Only same weekdays that fall on or before the origin day may be used
 noise: Year-over-year growth rate | stale for fast-changing items
-noise: Planner ID | none
+noise: Planner ID | carries no demand information and only records who last edited the plan
+noise: Annual growth of the whole category | too slow to matter inside a 14-day horizon and already in the level
 base: Statistical baseline forecast with a seasonal factor.
 prod: Gradient-boosted sensing model on recent signals with quantile outputs, reconciled to the demand plan via MinT.
 pipe: POS and order feeds @ Kafka ; Signal feature builder @ Spark ; Sensing forecaster @ LightGBM quantile ; Hierarchical reconciler @ MinT ; Plan publisher @ planning system ; Planner override @ demand planner ; Actuals tracking @ KPI
 edge: POS feed arrives late for a region | the model reads a missing day as zero demand | Feed-completeness check per partner and imputation with confidence flags
 edge: Sudden supplier allocation limits shipments | observed sales understate demand | Censoring flags and constrained-demand adjustment
+edge: Promotion planned but cancelled late | the model forecasts an uplift that never happens and stock is overbuilt | Treat promo flags as probabilistic until a week out and publish the P90 band beside the point forecast
+edge: A new SKU with under four weeks of history | same-weekday features are missing and the level is unknown | Fall back to a category prior with wide quantile bands and flag the forecast as low confidence
 off: Weighted MAPE at 1-14 day horizons ; Forecast value added vs baseline
 on: Forecast accuracy at lag 2 ; Expedite shipments avoided
 gap: Training with signals that arrive after the forecast time ; Evaluating at aggregate level only
