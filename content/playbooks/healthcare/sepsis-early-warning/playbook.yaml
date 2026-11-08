@@ -1,0 +1,261 @@
+summary: >-
+  An hourly early-warning pipeline for sepsis: result-time-correct features, a fixed-threshold early-warning
+  baseline, a gradient-boosted model, and an evaluation that judges them by lead time and sensitivity at a
+  fixed alert burden with whole patients held out. The starter runs M1-M4 on a synthetic ICU; M5-M6 cover
+  integration with an EHR and the clinical rollout, which need hospital access and governance.
+prerequisites:
+  skills:
+    - "Time-series feature engineering on irregularly sampled data: forward-fill, slopes, counts and time since last measurement"
+    - "Clinical vocabulary: Sepsis-3, SOFA and qSOFA, SIRS, lactate, and the difference between order time, draw time and result time"
+    - "Patient-grouped evaluation and why a random row split leaks, plus alert-burden metrics such as alerts per 100 patient-days"
+    - "Working with clinicians: agreeing an alert budget, reviewing missed cases with them, and the basics of medical-device change control"
+  tools:
+    - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
+    - "Access to de-identified ICU data (PhysioNet credentialed access) for the real-data run"
+    - "An HL7 FHIR or EHR feed and a stream processor (Flink or similar) for M5"
+data:
+  strategy: >-
+    Run the synthetic ICU first so every trap is present and every milestone has a green or red answer in
+    minutes. Then repeat on the open PhysioNet 2019 challenge data, which has hourly vitals and labs with
+    a labelled onset, and finally on credentialed MIMIC-IV or eICU if you need richer fields. Always split
+    by patient and keep the alert policy identical across datasets so numbers are comparable.
+  datasets:
+    - name: "PhysioNet / Computing in Cardiology Challenge 2019: Early Prediction of Sepsis"
+      url: "https://physionet.org/content/challenge-2019/1.0.0/"
+      license: "Open access under the Creative Commons Attribution 4.0 licence"
+      gives: "Hourly vitals, labs and a sepsis label for about 40,000 ICU patients from two hospital systems, built for exactly this task, with the official utility score for comparison"
+      caveat: "Labels are derived with Sepsis-3 rules on charted data, not clinician-adjudicated, and the two hospital systems differ in sampling; test on a different system than you train on"
+    - name: "MIMIC-IV"
+      url: "https://physionet.org/content/mimiciv/3.1/"
+      license: "PhysioNet Credentialed Health Data License; requires CITI training and a signed data use agreement"
+      gives: "De-identified records of hospital and ICU stays at one US medical centre, with chart times, lab draw and result times and medication orders"
+      caveat: "Single-centre data; antibiotic orders and diagnoses carry the label, so build features from raw vitals and labs and keep the order-time columns out"
+    - name: "eICU Collaborative Research Database"
+      url: "https://physionet.org/content/eicu-crd/2.0/"
+      license: "PhysioNet Credentialed Health Data License; credentialed access required"
+      gives: "ICU stays from many US hospitals, which is what you need to test across sites rather than within one"
+      caveat: "Hospital coding and charting differ widely between sites; check feature distributions per hospital before pooling"
+  synthetic:
+    file: "make_data.py"
+    description: >-
+      About 220,000 patient-hours for 2,400 ICU stays, 10% of which develop sepsis. Vitals drift for 5-10 hours
+      before onset (some slowly), benign episodes of tachycardia and fever mimic early sepsis, clinicians
+      chart more often when worried, lactate results arrive 1-2 hours after the draw, and an antibiotic-order
+      column that leaks the label is kept in the table so you can prove it is excluded.
+    knobs:
+      - "sepsis_rate: share of stays that develop sepsis (default 9%)"
+      - "n_patients: number of stays (default 2,400)"
+      - "seed: identical seed gives an identical table"
+  sample:
+    columns: [pid, hour, hr, sbp, rr, temp, lactate_value, lactate_result_hour, abx_ordered, onset_hour, y_next6h]
+    rows:
+      - [2363, 39, null, 106.99, 15.89, null, null, null, 0, 45, 1]
+      - [2363, 40, 98.79, 103.7, 18.94, null, 2.2, 41, 0, 45, 1]
+      - [2363, 41, null, null, 15.36, null, null, null, 0, 45, 1]
+  label: >-
+    onset_hour is the adjudicated Sepsis-3 onset. The learning label y_next6h is 1 for the 6 hours strictly
+    before onset and 0 otherwise; hours at or after onset are censored and never used, because a model that
+    scores a patient already being treated learns nothing useful. Missing readings are real: null means
+    nothing was charted that hour.
+milestones:
+  - id: M0
+    title: "Agree the clinical question and the alert budget"
+    days: "2-3"
+    tasks:
+      - "Define onset (Sepsis-3 with adjudicated times), the prediction horizon (alert 1-24 hours ahead) and what counts as a useful alert"
+      - "Agree an alert budget with nursing leadership, for example no more than 10 alerts per 100 patient-days, and a refractory period after each alert"
+      - "Write down who receives an alert, what they do with it and how they record the response, because that response is your future label"
+    deliverable: "Clinical decision spec: onset definition, horizon, alert budget, recipient and response workflow"
+    gate:
+      metric: "Alert budget and onset definition"
+      threshold: "Signed by a named clinical owner before any modelling; the budget is a number, not 'low'"
+      how: "Review meeting with the unit's physician and nurse leads"
+  - id: M1
+    title: "Data, labels and a patient-level split"
+    days: "4-5"
+    tasks:
+      - "Build the hourly table from vitals, labs (with result time) and onset; run python make_data.py or load the PhysioNet 2019 files"
+      - "Split by patient into 60% train, 20% validation and 20% test and assert no patient appears twice"
+      - "Check prevalence per hour and per stay, and that the censoring rule removes every hour at or after onset"
+    deliverable: "Reproducible hourly dataset and a patient-level split manifest"
+    gate:
+      metric: "Generator, prevalence and split tests"
+      threshold: "pytest -k 'deterministic or share_no_patient' passes; 5-14% of stays septic"
+      how: "Run pytest in the starter directory"
+  - id: M2
+    title: "Features that respect result time"
+    days: "5-6"
+    tasks:
+      - "Forward-fill charted vitals from past readings only and place each lab at its result hour, not its draw hour"
+      - "Add 3-hour slopes, 6-hour lactate trend, measurement counts and composite SIRS and qSOFA scores"
+      - "Write the future-truncation test and a result-time test, and run them in CI"
+    deliverable: "features.py with tests that fail if any feature sees the future"
+    gate:
+      metric: "Leakage tests"
+      threshold: "Features for hours up to H are identical whether or not later hours exist, and a lab is invisible before its result hour"
+      how: "pytest -k 'only_the_past or result_hour'"
+  - id: M3
+    title: "Baseline: fixed-threshold early-warning score"
+    days: "2-3"
+    tasks:
+      - "Implement the points-based score from heart rate, respiratory rate, systolic pressure and temperature"
+      - "Choose the alert threshold on the validation patients so the burden stays within the agreed budget"
+      - "Report sensitivity, median lead time and alerts per 100 patient-days on the test patients"
+    deliverable: "Baseline report: the number the learned model has to beat at the same burden"
+    gate:
+      metric: "Baseline at the agreed burden"
+      threshold: "At most 11 alerts per 100 patient-days on the test patients (starter baseline: 10.0 alerts, 62% sensitivity, 2 h median lead)"
+      how: "python baseline.py"
+  - id: M4
+    title: "Gradient-boosted model at the same burden"
+    days: "4-5"
+    tasks:
+      - "Train a regularised gradient-boosted model on hours before onset only, with the threshold again chosen on validation patients"
+      - "Compare at equal burden with an interval from bootstrapping patients, because a test set of about 50 septic patients is small"
+      - "Review every missed septic patient and every false alert with a clinician and write down the pattern"
+    deliverable: "Model artifact, comparison at equal burden with intervals and a missed-case review"
+    gate:
+      metric: "Sensitivity and lead time versus baseline at equal burden"
+      threshold: "Starter: burden within 11 per 100 patient-days, sensitivity at least 10 points above the baseline and median lead time at least equal (it reaches 98% and 3 h at 6.1 alerts). Real data: patient-level bootstrap lower bound of the sensitivity gain above 0"
+      how: "python baseline.py; pytest -k beats_the_fixed_threshold"
+  - id: M5
+    title: "Streaming integration and alert delivery"
+    days: "8-10"
+    tasks:
+      - "Consume the FHIR or HL7 stream, normalise units at ingest with range checks, and compute the same features with the same code in the stream job"
+      - "Score hourly or on each new observation within the latency budget and deliver the alert to the EHR in-basket with the top contributing signals"
+      - "Log every score with the model version and the feature snapshot, and record the clinician's response as the feedback label"
+    deliverable: "Streaming scorer, alert integration, runbook and a replay test against historical data"
+    gate:
+      metric: "Replay parity and latency"
+      threshold: "Replaying a month of historical data through the stream job reproduces the batch scores within rounding, with p99 scoring latency inside the budget"
+      how: "Replay harness plus the load test in the test plan"
+  - id: M6
+    title: "Silent mode, then staged go-live"
+    days: "4-6"
+    tasks:
+      - "Run silently for at least 4 weeks: score live patients, show nobody, and measure burden and lead time against adjudicated cases"
+      - "Go live on one unit with a burden dashboard and a cap per shift, and change thresholds only in staged steps"
+      - "File the change-control record (intended use, validation evidence, monitoring plan) for the regulator if the system is a medical device"
+    deliverable: "Silent-mode report, unit go-live decision and change-control file"
+    gate:
+      metric: "Silent-mode burden and sensitivity"
+      threshold: "Alerts per 100 patient-days within the agreed budget on live data and adjudicated sensitivity not below the baseline's at that burden"
+      how: "Burden dashboard and case adjudication with the clinical owner"
+starter:
+  runtime: "Python 3.11+ with numpy, pandas, scikit-learn and pytest (about 40 seconds on a laptop CPU)"
+  run:
+    - "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+    - "python make_data.py"
+    - "python baseline.py"
+    - "pytest"
+  expected: >-
+    make_data.py prints 2,400 patients, about 223,000 patient-hours and sepsis in about 10% of stays.
+    baseline.py reports the fixed-threshold score at 10.0 alerts per 100 patient-days with 62% sensitivity
+    and a 2-hour median lead, and the gradient-boosted model at 6.1 alerts with 98% sensitivity and a 3-hour
+    median lead on 52 septic test patients. pytest reports 6 passed. Synthetic data is far easier than a
+    real ward; treat the gaps between the two models as the point, not the absolute numbers.
+  files:
+    - path: "make_data.py"
+      purpose: "Synthetic ICU: drifting vitals, benign confounders, delayed lab results and a leaky antibiotic column"
+    - path: "features.py"
+      purpose: "Result-time-correct hourly features and the fixed-threshold early-warning score"
+    - path: "baseline.py"
+      purpose: "Patient-level split, alert policy with refractory period, burden-matched threshold selection and the comparison report"
+    - path: "test_starter.py"
+      purpose: "Executable gates: determinism, no shared patients, leakage, result-time and burden-matched model comparison"
+    - path: "requirements.txt"
+      purpose: "Python dependencies"
+workedExample:
+  scenario: >-
+    Test-set patient 2363, a synthetic septic stay with onset at hour 45, scored hourly by the gradient-boosted
+    model with an alert threshold of 0.092 (chosen on validation patients for the 10 alerts per 100
+    patient-days budget) and by the fixed-threshold score with its threshold of 3.
+  steps:
+    - stage: "Hours 36-39: nothing to see"
+      detail: "Heart rate is 82-94, respiratory rate 15.7-15.9 and lactate 1.37. The model scores 0.01-0.05. The fixed-threshold score is 1."
+    - stage: "Hour 40: the first alert"
+      detail: "Heart rate rises to 98.8, respiratory rate to 18.9, systolic pressure falls to 103.7 and the number of readings charted in four hours rises from 9 to 11 (clinicians are looking more closely). The model scores 0.31, above 0.092, and sends an alert 5 hours before onset."
+    - stage: "Hour 41: the lactate result lands"
+      detail: "The lactate drawn at hour 40 reaches 2.2 only at hour 41 because results are placed at their result time. A system that used the draw time would have seen it one hour earlier than a real ward could, which is exactly the leak the result-time test catches."
+    - stage: "Hours 42-45: the baseline never fires"
+      detail: "The fixed-threshold score reaches 2 and no higher, below its threshold of 3, so the baseline gives no alert at all for this patient. Across the 52 septic test patients it alerted in time for 62% against the model's 98% at a lower burden."
+    - stage: "What the misses and false alerts look like"
+      detail: "Patient 419 drifted slowly, with a respiratory rate of 22.8 appearing only in the last two hours, so the model's score was only 0.04 the hour before onset and no alert fired inside 24 hours. Patient 12, who never developed sepsis, triggered an alert at hour 6 when systolic pressure dipped to 110 and the score hit 0.18. Review both with a clinician before touching the threshold."
+  outcome: >-
+    The learned model finds more cases earlier than the fixed score at the same alert budget, but slow
+    drifters are still missed and benign episodes still fire. The next iteration is longer-horizon trend
+    features and per-patient baselines, not a bigger model.
+tests:
+  - test: "Patient-level split"
+    tool: "pytest test_train_valid_test_share_no_patient"
+    pass: "No patient id appears in more than one of train, validation and test"
+  - test: "Leaky columns excluded"
+    tool: "pytest test_leaky_columns_are_not_features"
+    pass: "abx_ordered, onset_hour, the labels and the raw lab columns are not in the feature list"
+  - test: "Future-truncation leakage test"
+    tool: "pytest test_features_use_only_the_past"
+    pass: "Features for hours up to H are identical with and without later hours for five sampled stays"
+  - test: "Lab result-time test"
+    tool: "pytest test_lactate_appears_only_after_its_result_hour"
+    pass: "A lactate drawn at hour 5 and resulted at hour 7 is invisible at hour 6 and visible from hour 7"
+  - test: "Burden-matched model comparison"
+    tool: "pytest test_model_beats_the_fixed_threshold_score_at_the_same_alert_burden"
+    pass: "Both policies within 11 alerts per 100 patient-days; the model is at least 10 points more sensitive with equal or longer median lead time"
+  - test: "Unit and range checks at ingest"
+    tool: "Schema validation on the FHIR feed with per-unit physical ranges"
+    pass: "A lactate reported in mg/dL instead of mmol/L is rejected or converted, and out-of-range values never reach the model"
+  - test: "Silent-mode shadow comparison"
+    tool: "Live scoring with alerts suppressed, joined to adjudicated cases weekly"
+    pass: "Burden and sensitivity match the offline report within the interval agreed in M0"
+decisions:
+  - question: "How should you handle missing and irregularly sampled vitals?"
+    options:
+      - option: "Forward-fill with an age feature and a count of recent readings"
+        chooseWhen: "You want a simple model that is easy to audit and a fast streaming implementation; cap how stale a value may be"
+      - option: "A sequence model that takes values, masks and time gaps (GRU-D style)"
+        chooseWhen: "Forward-fill features plateau and error analysis shows the irregular timing itself carries signal; budget for the harder validation"
+    default: "Forward-fill with age and counts; try a sequence model only after reviewing the missed cases"
+  - question: "Which metric do you optimise and report?"
+    options:
+      - option: "Sensitivity and lead time at a fixed alert burden"
+        chooseWhen: "A ward has a finite attention budget, which is almost always"
+      - option: "AUROC or AUPRC over all hours"
+        chooseWhen: "Only as a secondary view during model development; it rewards late and easy alerts"
+    default: "Lead time and sensitivity at the M0 burden, reported with patient-level intervals"
+  - question: "One global threshold or per-unit thresholds?"
+    options:
+      - option: "One global threshold"
+        chooseWhen: "A single hospital with similar wards and a small number of septic cases per unit"
+      - option: "Per-unit thresholds calibrated to each unit's burden"
+        chooseWhen: "Units differ in acuity and charting habits and you have enough alerts per unit to calibrate"
+    default: "Global threshold first; move to per-unit only when burden dashboards show persistent imbalance"
+pitfalls:
+  - at: M1
+    mistake: "Splitting rows at random instead of patients"
+    symptom: "Excellent offline metrics from a model that has memorised each patient's baseline"
+    fix: "Split by patient id and keep the no-shared-patient test in CI"
+  - at: M1
+    mistake: "Training on hours after onset"
+    symptom: "The model learns that treated patients look sick; it scores well offline and adds no early warning"
+    fix: "Censor every hour at or after onset"
+  - at: M2
+    mistake: "Using lab draw time instead of result time"
+    symptom: "Lead time looks 1-2 hours better offline than the ward can ever achieve"
+    fix: "Place each lab at its result hour and keep the result-time test"
+  - at: M2
+    mistake: "Using antibiotic orders or diagnosis text as features"
+    symptom: "Near-perfect scores that vanish when the feature is removed, because clinicians ordered after suspecting sepsis"
+    fix: "Keep order-time and free-text fields out of the feature list; the leaky-column test enforces it"
+  - at: M3
+    mistake: "Comparing models at different alert burdens"
+    symptom: "A model looks better only because it alerts more often"
+    fix: "Choose each threshold on validation patients to hit the same burden, then compare on the test patients"
+  - at: M4
+    mistake: "Trusting a metric from about 50 septic test patients"
+    symptom: "98% sensitivity swings by several points with a different split seed"
+    fix: "Bootstrap patients for intervals, repeat over seeds and report the interval, not the point estimate"
+  - at: M6
+    mistake: "Changing the threshold quickly after complaints"
+    symptom: "Alert volume oscillates and clinicians start ignoring alerts"
+    fix: "Change thresholds in staged steps with a burden dashboard and a cap per shift"

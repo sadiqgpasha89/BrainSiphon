@@ -5,16 +5,23 @@ loss: \mathcal{L}=\sum_t w_t\,\mathrm{BCE}(y_t,p_t)\quad w_t\ \text{emphasises t
 con: Alert fatigue budget under 1 alert per 10 patient-days ; Works on EHR data with irregular sampling ; Clinical explainability ; FDA SaMD change control
 sn: Label | Onset defined by Sepsis-3 criteria with clinician-adjudicated times | Billing-code sepsis labels | Billing codes lag and misplace onset by hours
 sn: Metric | Lead time at fixed alert burden | AUROC over all hours | Late alerts carry no clinical value yet inflate AUROC
-sig: Lactate and trend | latest lactate and 6h slope | Hypoperfusion marker | Use result time not draw time
+sn: Split | Patient-level splits with whole stays held out | Random row splits across hours of the same stay | Hours from one patient land in both train and test and inflate every metric
+sn: Burden | Alerts per 100 patient-days agreed with nursing leadership | Optimising AUROC and shipping whatever threshold falls out | A model that fires every shift is switched off within a week
+sig: Lactate and trend | latest lactate and 6h slope | A marker of poor tissue perfusion that rises before blood pressure falls | Use result time not draw time
 sig: Missingness pattern | counts of vitals measured in last 4h | Clinicians measure more when worried | Treat as signal only if the process is stable across sites
-sig: SIRS and qSOFA drift | change in composite score over 3h | Deterioration trajectory | Compute from charted times
+sig: SIRS and qSOFA drift | change in composite score over 3h | Shows whether the patient is getting worse, not just whether they are abnormal | Compute from charted times
+sig: Vital-sign slope 3h | change in heart rate, respiratory rate and systolic pressure over 3 hours | Trajectory separates deterioration from a stable abnormal baseline | Use charted times and carry values forward only from past readings
+sig: Reading density 4h | number of vitals charted in the last 4 hours | Clinicians chart more often when they are worried | Charting habits differ between wards, so check stability per site before trusting it
 noise: Admission diagnosis text | encodes clinician suspicion that already knows the label
 noise: Antibiotic orders | order placed after suspicion leaks the label
+noise: Length of stay so far | longer stays correlate with sepsis only because sicker patients stay longer
 base: Modified early warning score with fixed thresholds.
 prod: Gradient-boosted model on irregularly sampled features with a GRU-D sequence branch, per-unit thresholds calibrated for alert burden.
 pipe: HL7 FHIR stream @ integration engine ; Feature aggregator @ Flink windows ; Sepsis scorer @ GRU-D plus GBDT ; Alert policy @ per-unit thresholds ; Clinician alert @ EHR in-basket ; Review and feedback @ clinician response ; Outcome labels @ adjudicated cases
 edge: New lab analyser changes units | lactate values shift tenfold for some wards | Unit-normalisation layer with range checks at ingest
 edge: Alert fatigue after threshold change | clinicians start ignoring alerts | Burden dashboard and caps per shift with staged threshold changes
+edge: Patient transfers between units | charting patterns change mid-stay and scores jump | Re-baseline on transfer and carry the last scores across the boundary
+edge: Sensor dropout | a pulse oximeter is unplugged and vitals go missing for hours | Carry forward with an age stamp and cap how stale a value the model may trust
 off: Lead time at 0.5 alerts per 100 patient-days ; Positive predictive value at fixed sensitivity
 on: Time to antibiotics after alert ; Sepsis mortality and alert override rate
 gap: Labels set after the intervention are partly caused by it ; Retrospective validation on a single hospital
