@@ -61,20 +61,65 @@ export function ReaderShell({
     return () => window.removeEventListener('keydown', onKey);
   }, [set]);
 
+  // Which section is current: the last one whose top has passed the sticky header. Scroll-driven (and re-queried
+  // on every event) rather than an IntersectionObserver set up at mount, because streamed sections may not exist yet then.
   useEffect(() => {
-    const targets = toc.map((t) => document.getElementById(t.id)).filter((x): x is HTMLElement => Boolean(x));
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-        if (visible) setActive(visible.target.id);
-      },
-      { rootMargin: '-90px 0px -65% 0px' },
-    );
-    targets.forEach((t) => io.observe(t));
-    return () => io.disconnect();
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      let current = toc[0]?.id ?? '';
+      for (const t of toc) {
+        const el = document.getElementById(t.id);
+        if (el && el.getBoundingClientRect().top <= 230) current = t.id;
+      }
+      setActive(current);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('hashchange', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('hashchange', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [toc]);
+
+  // Diagrams render lazily and push content down after the browser has already jumped to a #section.
+  // Keep the target aligned while the layout settles, until the reader scrolls or touches the page themselves.
+  useEffect(() => {
+    let cleanup = () => {};
+    const settle = () => {
+      cleanup();
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (!id) return;
+      let touched = false;
+      const stop = () => {
+        touched = true;
+      };
+      const events = ['wheel', 'touchstart', 'keydown', 'mousedown'] as const;
+      events.forEach((e) => window.addEventListener(e, stop, { passive: true, once: true }));
+      const align = () => {
+        if (!touched) document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+      };
+      const ro = new ResizeObserver(align);
+      ro.observe(document.body);
+      const timer = window.setTimeout(() => ro.disconnect(), 4000);
+      cleanup = () => {
+        ro.disconnect();
+        window.clearTimeout(timer);
+        events.forEach((e) => window.removeEventListener(e, stop));
+      };
+    };
+    settle();
+    window.addEventListener('hashchange', settle);
+    return () => {
+      window.removeEventListener('hashchange', settle);
+      cleanup();
+    };
+  }, []);
 
   return (
     <div

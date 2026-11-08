@@ -95,6 +95,11 @@ a {
   rx: 6;
 }
 
+/* Grid children may shrink below their content width, so wide code blocks scroll inside their own box instead of stretching the page on phones. */
+.grid > * {
+  min-width: 0;
+}
+
 /* Shiki */
 .shiki-host pre {
   @apply overflow-x-auto rounded-lg border border-line p-4 font-mono text-[12.5px] leading-relaxed;
