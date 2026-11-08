@@ -15,6 +15,99 @@ prerequisites:
     - "Python 3.11+ with pytest (the starter has no other dependencies)"
     - "Read-only access to a SIEM and an EDR API, an identity provider and threat-intelligence lookups for M2 and M5"
     - "An LLM with tool calling and an immutable audit log store"
+domainKnowledge:
+  overview: >-
+    A security operations centre (SOC) receives thousands of alerts a day from detection tools, and analysts decide which
+    are real attacks, which are harmless and which need action. An investigation agent helps by gathering evidence and
+    proposing a verdict. Because the agent reads logs that attackers can influence and may be allowed to act on systems, the
+    domain knowledge that matters most is how analysts judge evidence, what the tools can and cannot prove, and which actions
+    must never happen without a human.
+  concepts:
+    - name: "The SOC workflow and its tools"
+      explanation: >-
+        Detections come from a SIEM (collects and correlates logs), EDR (monitors endpoints) and other sensors. Analysts triage
+        the alert, investigate by querying logs and context, and escalate or close it; responders contain and remediate. SOAR
+        tools automate fixed playbooks. Teams measure mean time to detect and respond, and the queue never empties.
+      whyItMatters: "The agent has to fit this process, speak its vocabulary and leave an audit trail analysts and auditors can follow."
+    - name: "What an alert verdict means"
+      explanation: >-
+        A true positive is a real malicious event, a false positive is a mistaken detection and a benign true positive is a
+        correct detection of authorised activity, such as a pentest or an administrator's script. Closing an alert as benign
+        without evidence is the most dangerous mistake, because an active attack then goes unnoticed.
+      whyItMatters: "Define verdicts with the SOC. Ground truth for evaluation must come from analyst conclusions backed by cited log lines, not satisfaction scores."
+    - name: "Evidence and context"
+      explanation: >-
+        Decisions rest on logs (process, authentication, network, DNS), threat intelligence about addresses and files, asset
+        criticality, and identity context such as whether a user is travelling. Logs have retention limits, clock differences
+        and gaps, and the same behaviour can be malicious or benign depending on context, for example encoded PowerShell from
+        a document versus from a management agent.
+      whyItMatters: "An agent that cannot get the deciding evidence must say so and escalate, not infer."
+    - name: "ATT&CK and attacker behaviour"
+      explanation: >-
+        MITRE ATT&CK catalogues attacker tactics and techniques, such as PowerShell execution (T1059.001), valid accounts (T1078),
+        brute force (T1110), application-layer command and control (T1071) and exfiltration over alternative protocols (T1048).
+        Analysts reason about behaviour chains, not isolated indicators.
+      whyItMatters: "Use technique names so verdicts are comparable and testable, and build replay cases from real technique telemetry."
+    - name: "Untrusted data and prompt injection"
+      explanation: >-
+        Attackers control some fields that end up in logs, such as file names, user agents, command lines and email subjects. An
+        LLM reading them can be tricked into following instructions hidden in them. The defence is structural: least-privilege
+        typed tools, allow-lists, approval gates for any response action, and treating all tool output as data.
+      whyItMatters: "A filter for suspicious phrases is only an alarm. Safety must hold even when the model is fooled."
+    - name: "Accountability and governance"
+      explanation: >-
+        SOC decisions can trigger account lockouts, host isolation and breach notifications with legal deadlines. Humans stay
+        accountable, every tool call is logged immutably, and the data may be subject to residency and privacy rules.
+      whyItMatters: "Auto-containment is rarely acceptable, and regulators and customers will ask who decided and on what evidence."
+  glossary:
+    - term: "SIEM"
+      definition: "Security information and event management: a platform that collects, correlates and searches security logs."
+    - term: "EDR"
+      definition: "Endpoint detection and response: software on devices that records activity and can isolate a host."
+    - term: "SOAR"
+      definition: "Security orchestration, automation and response: tools that run scripted playbooks for alerts."
+    - term: "IOC"
+      definition: "Indicator of compromise: an observable such as an IP address, file hash or domain linked to malicious activity."
+    - term: "TTP"
+      definition: "Tactics, techniques and procedures: how an attacker operates, more durable than a single indicator."
+    - term: "MITRE ATT&CK"
+      definition: "A public knowledge base of adversary tactics and techniques used to describe and label detections."
+    - term: "C2 / beaconing"
+      definition: "Command and control traffic, often a compromised host contacting an attacker's server at regular intervals."
+    - term: "Lateral movement"
+      definition: "An attacker moving from one compromised system to others inside the network."
+    - term: "Exfiltration"
+      definition: "Stealing data out of the network, sometimes hidden inside DNS or web traffic."
+    - term: "True / false positive"
+      definition: "A real attack correctly detected, or a harmless event wrongly flagged."
+    - term: "Benign true positive"
+      definition: "A correct detection of activity that is authorised, such as a scheduled scan or administrator task."
+    - term: "Triage"
+      definition: "The first quick assessment of an alert to decide whether it needs investigation."
+    - term: "Escalation"
+      definition: "Passing a case to a more senior analyst or team because it needs deeper investigation or action."
+    - term: "Containment"
+      definition: "Actions that limit an attack's spread, such as isolating a host or disabling an account."
+    - term: "Threat intelligence"
+      definition: "Information about attackers, infrastructure and tools, including reputation of addresses and domains."
+    - term: "Impossible travel"
+      definition: "Logins for one account from places too far apart to travel between in the elapsed time."
+    - term: "Credential stuffing / brute force"
+      definition: "Trying many passwords or leaked credential pairs against accounts until one works."
+    - term: "DNS tunnelling"
+      definition: "Hiding data in DNS queries, often seen as long, random-looking subdomains."
+    - term: "MTTD / MTTR"
+      definition: "Mean time to detect and mean time to respond, the SOC's headline speed measures."
+    - term: "Prompt injection"
+      definition: "Text planted in data that an LLM reads which tries to make it follow the attacker's instructions."
+    - term: "Least privilege"
+      definition: "Giving a system only the access it needs, so a compromised or fooled agent can do little harm."
+  askTheExperts:
+    - "Which alert types take most analyst time, and what exact evidence do analysts use to close each one?"
+    - "Which response actions exist, which need approval and who can approve them?"
+    - "Which log sources, retention periods and clock-sync problems affect investigations, and where are the known blind spots?"
+    - "Which closed cases and near misses can form the replay set, and who can supply the analysts' verdicts and cited evidence?"
+    - "What may an AI system see and where may it run: personal data in logs, data residency and approved model providers?"
 data:
   strategy: >-
     Start on the synthetic cases, where the ground truth, the deciding log lines, the planted instructions and the tool
