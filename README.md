@@ -1,5 +1,7 @@
 # BrainSiphon
 
+URL: https://sadiqgpasha89.github.io/BrainSiphon/
+
 Zero-noise engineering blueprints for AI/ML systems — **400 use cases, 8 domains × 50**. Every blueprint teaches the
 _signal_ that moves the metric, names the _noise_ that wastes your quarter, and designs the whole system for
 **10 million users**: HLD, sequence diagram, LLD, 10-phase end-to-end breakdown, capacity/cost model, evaluation and edge cases.
