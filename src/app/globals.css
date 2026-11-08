@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+body {
+  @apply bg-bg font-sans text-ink antialiased;
+}
+::selection {
+  background: #1f4d43;
+}
+a {
+  @apply underline-offset-4;
+}
+:focus-visible {
+  @apply outline outline-2 outline-offset-2 outline-accent;
+}
+
+@layer components {
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-raised px-2.5 py-0.5 font-mono text-[11px] font-medium text-mute;
+  }
+  .chip-signal {
+    @apply border-signal-line bg-signal-soft text-signal;
+  }
+  .chip-noise {
+    @apply border-noise-line bg-noise-soft text-noise;
+  }
+  .chip-accent {
+    @apply border-accent/40 bg-accent-soft text-accent;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-lg border border-line bg-raised px-3 py-1.5 text-sm text-ink transition hover:border-mute hover:bg-line/60 disabled:opacity-50;
+  }
+  .card {
+    @apply rounded-xl border border-line bg-panel;
+  }
+  .h-section {
+    @apply scroll-mt-24 text-xl font-semibold tracking-tight text-ink;
+  }
+  .kbd {
+    @apply rounded border border-line bg-raised px-1.5 py-0.5 font-mono text-[11px] text-mute;
+  }
+
+  .bs-table {
+    @apply w-full border-collapse text-sm;
+  }
+  .bs-table th {
+    @apply border-b border-line bg-raised/60 px-3 py-2 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-mute;
+  }
+  .bs-table td {
+    @apply border-b border-line/70 px-3 py-2.5 align-top text-ink/90;
+  }
+  .bs-table tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .prose-bs p {
+    @apply leading-relaxed text-ink/90;
+  }
+  .prose-bs p + p {
+    @apply mt-3;
+  }
+}
+
+/* Pure Signal Mode: hide prose, keep tables, diagrams, loss functions, code and edge-case matrices. */
+.pure-signal [data-prose],
+.pure-signal [data-prose-section] {
+  display: none !important;
+}
+.pure-signal [data-signal-only-hint] {
+  display: block;
+}
+[data-signal-only-hint] {
+  display: none;
+}
+
+/* Mermaid output */
+.mermaid-host svg {
+  max-width: none;
+  height: auto;
+}
+.mermaid-host .node rect,
+.mermaid-host .node polygon {
+  rx: 6;
+}
+
+/* Shiki */
+.shiki-host pre {
+  @apply overflow-x-auto rounded-lg border border-line p-4 font-mono text-[12.5px] leading-relaxed;
+  background: #0d1117 !important;
+}
+.shiki-host code {
+  font-family: var(--font-mono);
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+.katex {
+  color: #e6edf6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,441 @@
+import Link from 'next/link';
+import { DOMAIN_META, type UseCase, type UseCaseIndexEntry } from '../../schemas/usecase.schema';
+import { CodeBlock } from '../Code';
+import { MathBlock } from '../Math';
+import { MermaidDiagram } from '../Mermaid';
+
+function Section({
+  id,
+  title,
+  kicker,
+  prose,
+  children,
+}: {
+  id: string;
+  title: string;
+  kicker?: string;
+  prose?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      aria-labelledby={`${id}-h`}
+      className="scroll-mt-28 border-t border-line py-10 first:border-t-0 first:pt-0"
+      {...(prose ? { 'data-prose-section': true } : {})}
+    >
+      {kicker && <p className="font-mono text-[11px] uppercase tracking-wider text-dim">{kicker}</p>}
+      <h2 id={`${id}-h`} className="h-section mb-5">
+        {title}
+      </h2>
+      <div className="space-y-6">{children}</div>
+    </section>
+  );
+}
+
+const TableWrap = ({ children }: { children: React.ReactNode }) => (
+  <div className="card overflow-x-auto">{children}</div>
+);
+const List = ({ items, tone }: { items: string[]; tone?: 'signal' | 'noise' }) => (
+  <ul className="space-y-2 text-sm text-ink/90">
+    {items.map((x) => (
+      <li key={x} className="flex gap-2">
+        <span
+          className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${tone === 'noise' ? 'bg-noise' : 'bg-signal'}`}
+          aria-hidden
+        />
+        <span>{x}</span>
+      </li>
+    ))}
+  </ul>
+);
+
+export const tocFor = (): { id: string; label: string; prose?: boolean }[] => [
+  { id: 'signal-noise', label: 'Signal vs. Noise' },
+  { id: 'problem', label: 'Problem & loss' },
+  { id: 'features', label: 'Features' },
+  { id: 'blueprint', label: 'Pipeline blueprint' },
+  { id: 'hld', label: 'HLD · 10M users' },
+  { id: 'sequence', label: 'Sequence diagram' },
+  { id: 'lld', label: 'Low-level design' },
+  { id: 'e2e', label: 'End-to-end breakdown', prose: true },
+  { id: 'scale', label: 'Scale & capacity' },
+  { id: 'evaluation', label: 'Evaluation' },
+  { id: 'edge-cases', label: 'Edge cases' },
+];
+
+export async function Sections({ uc }: { uc: UseCase }) {
+  const d = uc.systemDesign;
+  const ladderTone = ['text-signal', 'text-accent', 'text-warn', 'text-noise', 'text-noise'];
+  return (
+    <div>
+      <Section
+        id="signal-noise"
+        title="Signal vs. Noise"
+        kicker="The matrix that separates what moves the metric from what wastes your quarter"
+      >
+        <TableWrap>
+          <table className="bs-table">
+            <thead>
+              <tr>
+                <th>Concept</th>
+                <th className="!text-signal">True signal</th>
+                <th className="!text-noise">Common noise</th>
+                <th>Why engineers fail</th>
+              </tr>
+            </thead>
+            <tbody>
+              {uc.signalVsNoiseMatrix.map((r) => (
+                <tr key={r.concept}>
+                  <td className="font-medium text-ink">{r.concept}</td>
+                  <td className="bg-signal-soft/30 text-signal/95">{r.trueSignal}</td>
+                  <td className="bg-noise-soft/30 text-noise/95">{r.commonNoise}</td>
+                  <td className="text-mute">{r.whyEngineersFail}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableWrap>
+      </Section>
+
+      <Section
+        id="problem"
+        title="Problem formulation"
+        kicker="Business objective → ML objective → hard constraints"
+      >
+        <p data-prose className="prose-bs max-w-3xl text-base">
+          <strong className="text-ink">Objective. </strong>
+          {uc.problemFormulation.businessObjective}
+        </p>
+        <div className="card p-4">
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">ML objective / loss</p>
+          <MathBlock tex={uc.problemFormulation.mlObjectiveAndLoss} />
+        </div>
+        <div>
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Constraints</p>
+          <List items={uc.problemFormulation.constraints} />
+        </div>
+      </Section>
+
+      <Section
+        id="features"
+        title="Data & features"
+        kicker="High-signal features with their leakage risk, and what to delete"
+      >
+        <TableWrap>
+          <table className="bs-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Logic</th>
+                <th>Intuition</th>
+                <th className="!text-warn">Leakage risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              {uc.dataAndFeatures.highSignalFeatures.map((f) => (
+                <tr key={f.name}>
+                  <td className="font-medium text-signal">{f.name}</td>
+                  <td>{f.formulaOrLogic}</td>
+                  <td className="text-mute">{f.intuition}</td>
+                  <td className="text-warn/90">{f.leakageRisk}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableWrap>
+        <div className="card border-noise-line bg-noise-soft/20 p-4">
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-noise">Drop these — noise</p>
+          <ul className="space-y-2 text-sm">
+            {uc.dataAndFeatures.noisyFeaturesToDrop.map((n) => (
+              <li key={n.name}>
+                <span className="font-medium text-noise line-through decoration-noise/50">{n.name}</span>{' '}
+                <span className="text-mute">— {n.whyItIsNoise}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Section>
+
+      <Section
+        id="blueprint"
+        title="Architecture blueprint"
+        kicker="Baseline first, then the production model"
+      >
+        <div className="grid gap-4 md:grid-cols-2" data-prose>
+          <div className="card p-4">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-dim">Start here (baseline)</p>
+            <p className="mt-2 text-sm text-ink/90">{uc.architectureBlueprint.baselineModel}</p>
+          </div>
+          <div className="card border-signal-line p-4">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-signal">Production model</p>
+            <p className="mt-2 text-sm text-ink/90">{uc.architectureBlueprint.productionModel}</p>
+          </div>
+        </div>
+        <MermaidDiagram
+          code={uc.architectureBlueprint.mermaidDiagram}
+          label="Model pipeline & feedback loop"
+        />
+      </Section>
+
+      <Section id="hld" title="High-level design for 10M users" kicker={`HLD · ${d.mode} serving`}>
+        <p data-prose className="prose-bs max-w-3xl">
+          {d.hld.summary}
+        </p>
+        <MermaidDiagram code={d.hld.mermaid} label="Deployment topology" />
+        <TableWrap>
+          <table className="bs-table">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Tech</th>
+                <th>Responsibility</th>
+                <th className="text-right">Budget</th>
+              </tr>
+            </thead>
+            <tbody>
+              {d.hld.components.map((c) => (
+                <tr key={`${c.name}-${c.tech}`}>
+                  <td className="font-medium text-ink">{c.name}</td>
+                  <td className="font-mono text-xs text-mute">{c.tech}</td>
+                  <td className="text-mute">{c.responsibility}</td>
+                  <td className="text-right font-mono text-xs">
+                    {c.latencyBudgetMs === null ? '—' : `${c.latencyBudgetMs} ms`}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableWrap>
+      </Section>
+
+      <Section
+        id="sequence"
+        title="Sequence diagram"
+        kicker="Request path with deadline propagation and the degradation branch"
+      >
+        <MermaidDiagram code={d.sequence.mermaid} label="Request sequence" />
+        <div data-prose>
+          <List items={d.sequence.notes} />
+        </div>
+      </Section>
+
+      <Section
+        id="lld"
+        title="Low-level design"
+        kicker="API contract · data model · classes · hot path · config · fallbacks"
+      >
+        <div className="card p-4">
+          <p className="font-mono text-sm">
+            <span className="rounded bg-signal-soft px-2 py-0.5 text-signal">{d.lld.apiContract.method}</span>{' '}
+            <span className="ml-2 text-ink">{d.lld.apiContract.path}</span>
+          </p>
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <CodeBlock
+              code={d.lld.apiContract.request}
+              lang={d.lld.apiContract.request.trim().startsWith('{') ? 'json' : 'text'}
+              title="request"
+            />
+            <CodeBlock
+              code={d.lld.apiContract.response}
+              lang={d.lld.apiContract.response.trim().startsWith('{') ? 'json' : 'text'}
+              title="response"
+            />
+          </div>
+        </div>
+        <CodeBlock code={d.lld.dataModelDDL} lang="sql" title="Data model · DDL" />
+        <MermaidDiagram code={d.lld.classDiagram} label="Component classes" />
+        <CodeBlock
+          code={d.lld.algorithm.code}
+          lang={d.lld.algorithm.language}
+          title="Core algorithm · hot path"
+        />
+        <CodeBlock code={d.lld.config} lang="yaml" title="Runtime config" />
+        <div>
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Degradation ladder</p>
+          <TableWrap>
+            <table className="bs-table">
+              <thead>
+                <tr>
+                  <th>Level</th>
+                  <th>Trigger</th>
+                  <th>Behaviour</th>
+                </tr>
+              </thead>
+              <tbody>
+                {d.lld.degradationLadder.map((l) => (
+                  <tr key={l.level}>
+                    <td className={`font-mono font-semibold ${ladderTone[l.level] ?? ''}`}>L{l.level}</td>
+                    <td>{l.trigger}</td>
+                    <td className="text-mute">{l.behaviour}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        </div>
+      </Section>
+
+      <Section id="e2e" title="End-to-end breakdown" kicker="From decision framing to ROI — ten phases" prose>
+        <ol className="space-y-4">
+          {d.e2e.map((p) => (
+            <li key={p.phase} className="card p-5">
+              <div className="flex items-baseline gap-3">
+                <span className="font-mono text-2xl font-semibold text-signal">
+                  {String(p.phase).padStart(2, '0')}
+                </span>
+                <h3 className="text-base font-semibold">{p.title}</h3>
+              </div>
+              <ul className="mt-3 space-y-2 text-sm text-ink/90">
+                {p.steps.map((s) => (
+                  <li key={s} className="flex gap-2">
+                    <span className="mt-2 h-px w-3 shrink-0 bg-line" aria-hidden />
+                    <span>{s}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-xs text-mute">
+                <span className="font-mono uppercase tracking-wider text-dim">Deliverable · </span>
+                {p.deliverable}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      <Section
+        id="scale"
+        title="Scale & capacity at 10M users"
+        kicker="Back-of-envelope model derived from this use case's own traffic profile"
+      >
+        <TableWrap>
+          <table className="bs-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>How</th>
+              </tr>
+            </thead>
+            <tbody>
+              {d.scale.table.map((r) => (
+                <tr key={r.metric}>
+                  <td className="font-medium text-ink">{r.metric}</td>
+                  <td className="font-mono text-signal">{r.value}</td>
+                  <td className="text-mute">{r.how}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableWrap>
+        <div data-prose className="grid gap-6 md:grid-cols-3">
+          <div>
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Assumptions</p>
+            <List items={d.scale.assumptions} />
+          </div>
+          <div>
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-noise">Bottlenecks</p>
+            <List items={d.scale.bottlenecks} tone="noise" />
+          </div>
+          <div>
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-signal">Resilience</p>
+            <List items={d.scale.resilience} />
+          </div>
+        </div>
+      </Section>
+
+      <Section
+        id="evaluation"
+        title="Evaluation & metrics"
+        kicker="Offline, online, and the traps between them"
+      >
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="card p-4">
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Offline</p>
+            <List items={uc.evaluationAndMetrics.offlineMetrics} />
+          </div>
+          <div className="card p-4">
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Online business</p>
+            <List items={uc.evaluationAndMetrics.onlineBusinessMetrics} />
+          </div>
+          <div className="card border-noise-line p-4">
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-noise">
+              Offline→online gap traps
+            </p>
+            <List items={uc.evaluationAndMetrics.offlineOnlineGapTraps} tone="noise" />
+          </div>
+        </div>
+      </Section>
+
+      <Section id="edge-cases" title="Production edge cases" kicker="Scenario → failure mode → mitigation">
+        <TableWrap>
+          <table className="bs-table">
+            <thead>
+              <tr>
+                <th>Scenario</th>
+                <th className="!text-noise">Failure mode</th>
+                <th className="!text-signal">Mitigation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {uc.productionEdgeCases.map((e) => (
+                <tr key={e.scenario}>
+                  <td className="font-medium text-ink">{e.scenario}</td>
+                  <td className="text-noise/90">{e.failureMode}</td>
+                  <td className="text-signal/90">{e.mitigationStrategy}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableWrap>
+      </Section>
+    </div>
+  );
+}
+
+export function Pager({
+  prev,
+  next,
+  related,
+}: {
+  prev: UseCaseIndexEntry | null;
+  next: UseCaseIndexEntry | null;
+  related: UseCaseIndexEntry[];
+}) {
+  return (
+    <div className="mt-6 space-y-8 border-t border-line pt-8">
+      <nav aria-label="Previous and next" className="grid gap-3 sm:grid-cols-2">
+        {prev ? (
+          <Link href={`/${prev.slug}`} className="card block p-4 no-underline hover:border-mute">
+            <p className="font-mono text-[11px] uppercase text-dim">← Previous</p>
+            <p className="mt-1 font-medium text-ink">{prev.title}</p>
+          </Link>
+        ) : (
+          <span />
+        )}
+        {next && (
+          <Link href={`/${next.slug}`} className="card block p-4 text-right no-underline hover:border-mute">
+            <p className="font-mono text-[11px] uppercase text-dim">Next →</p>
+            <p className="mt-1 font-medium text-ink">{next.title}</p>
+          </Link>
+        )}
+      </nav>
+      <div>
+        <h2 className="mb-3 font-mono text-[11px] uppercase tracking-wider text-dim">Related blueprints</h2>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {related.map((r) => (
+            <li key={r.id}>
+              <Link
+                href={`/${r.slug}`}
+                className="card flex items-baseline justify-between gap-3 px-4 py-3 text-sm no-underline hover:border-mute"
+              >
+                <span className="text-ink">{r.title}</span>
+                <span className="shrink-0 font-mono text-[11px] text-dim">{DOMAIN_META[r.domain].short}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}

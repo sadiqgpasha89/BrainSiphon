@@ -1,0 +1,73 @@
+# Local production simulation: app + Postgres/pgvector + Redis, with health checks and persistent volumes.
+#   docker compose up --build        → http://localhost:${APP_PORT:-3200}
+name: brainsiphon
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: brainsiphon
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-brainsiphon-local}
+      POSTGRES_DB: brainsiphon
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U brainsiphon -d brainsiphon']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command:
+      ['redis-server', '--appendonly', 'yes', '--maxmemory', '128mb', '--maxmemory-policy', 'allkeys-lru']
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  db-sync:
+    build: { context: ., target: tools }
+    environment:
+      DATABASE_URL: postgres://brainsiphon:${POSTGRES_PASSWORD:-brainsiphon-local}@db:5432/brainsiphon
+    depends_on:
+      db: { condition: service_healthy }
+    restart: 'no'
+
+  app:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SEARCH_MODE: api
+        NEXT_PUBLIC_SITE_URL: ${SITE_URL:-http://localhost:3200}
+    ports:
+      - '${APP_PORT:-3200}:3000'
+    environment:
+      DATABASE_URL: postgres://brainsiphon:${POSTGRES_PASSWORD:-brainsiphon-local}@db:5432/brainsiphon
+      REDIS_URL: redis://redis:6379
+      REQUIRE_DEPS: '1'
+      LOG_LEVEL: info
+      SEARCH_RATE_LIMIT: '60'
+      OTEL_SERVICE_NAME: brainsiphon
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      db-sync: { condition: service_completed_successfully }
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/api/health/readiness']
+      interval: 10s
+      timeout: 4s
+      retries: 5
+      start_period: 15s
+    stop_grace_period: 20s
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:

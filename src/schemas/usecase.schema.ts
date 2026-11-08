@@ -1,0 +1,266 @@
+import { z } from 'zod';
+
+export const DOMAINS = [
+  'fintech',
+  'retail',
+  'healthcare',
+  'supply-chain',
+  'adtech',
+  'cybersecurity',
+  'edtech',
+  'saas',
+] as const;
+export const ML_PARADIGMS = [
+  'tabular',
+  'time-series',
+  'nlp',
+  'llm-agents',
+  'recommender',
+  'graph',
+  'computer-vision',
+  'reinforcement-learning',
+] as const;
+export const LATENCY_SLAS = ['sub-10ms', 'sub-100ms', 'seconds', 'batch'] as const;
+export const DIFFICULTIES = ['foundational', 'production-grade', 'staff-principal'] as const;
+
+export const DomainEnum = z.enum(DOMAINS);
+export const ParadigmEnum = z.enum(ML_PARADIGMS);
+export const LatencyEnum = z.enum(LATENCY_SLAS);
+export const DifficultyEnum = z.enum(DIFFICULTIES);
+
+export type Domain = z.infer<typeof DomainEnum>;
+export type Paradigm = z.infer<typeof ParadigmEnum>;
+export type LatencySLA = z.infer<typeof LatencyEnum>;
+export type Difficulty = z.infer<typeof DifficultyEnum>;
+
+export const DOMAIN_META: Record<Domain, { name: string; short: string; blurb: string }> = {
+  fintech: {
+    name: 'FinTech & Payments',
+    short: 'FinTech',
+    blurb:
+      'Fraud, credit, AML, trading, payments and insurance — where milliseconds and basis points are money.',
+  },
+  retail: {
+    name: 'Retail & E-Commerce',
+    short: 'Retail',
+    blurb: 'Search, recommendations, pricing, demand and trust & safety for marketplaces at scale.',
+  },
+  healthcare: {
+    name: 'Healthcare & Life Sciences',
+    short: 'Healthcare',
+    blurb: 'Clinical risk, imaging, operations, genomics and drug discovery under regulatory constraints.',
+  },
+  'supply-chain': {
+    name: 'Supply Chain & Logistics',
+    short: 'Supply Chain',
+    blurb: 'Forecasting, routing, warehouse automation, ETA and fleet intelligence across physical networks.',
+  },
+  adtech: {
+    name: 'AdTech & Marketing',
+    short: 'AdTech',
+    blurb: 'Auction bidding, CTR/CVR, attribution, creative and audience modelling in sub-100ms loops.',
+  },
+  cybersecurity: {
+    name: 'Cybersecurity',
+    short: 'Cybersecurity',
+    blurb:
+      'Detection, triage, identity and abuse prevention — adversarial settings with brutal class imbalance.',
+  },
+  edtech: {
+    name: 'EdTech',
+    short: 'EdTech',
+    blurb: 'Adaptive learning, assessment, tutoring and engagement for learners at national scale.',
+  },
+  saas: {
+    name: 'SaaS & Developer Platforms',
+    short: 'SaaS',
+    blurb: 'Churn, copilots, support automation, AIOps and product intelligence for B2B/B2C platforms.',
+  },
+};
+
+export const PARADIGM_LABEL: Record<Paradigm, string> = {
+  tabular: 'Tabular',
+  'time-series': 'Time-Series',
+  nlp: 'NLP',
+  'llm-agents': 'LLM / Agents',
+  recommender: 'Recommender',
+  graph: 'Graph',
+  'computer-vision': 'Computer Vision',
+  'reinforcement-learning': 'Reinforcement Learning',
+};
+
+export const LATENCY_LABEL: Record<LatencySLA, string> = {
+  'sub-10ms': 'Sub-10ms Real-Time',
+  'sub-100ms': 'Sub-100ms Near-Real-Time',
+  seconds: 'Seconds (Interactive)',
+  batch: 'Batch',
+};
+
+const nonEmpty = z.string().trim().min(2);
+
+export const SignalNoiseRowSchema = z.object({
+  concept: nonEmpty,
+  trueSignal: nonEmpty,
+  commonNoise: nonEmpty,
+  whyEngineersFail: nonEmpty,
+});
+
+export const MermaidSchema = z
+  .string()
+  .trim()
+  .min(20)
+  .regex(
+    /^(flowchart|graph|sequenceDiagram|classDiagram|erDiagram|stateDiagram-v2)\b/,
+    'Mermaid block must begin with a supported diagram keyword',
+  );
+
+export const EdgeCaseSchema = z.object({
+  scenario: nonEmpty,
+  failureMode: nonEmpty,
+  mitigationStrategy: nonEmpty,
+});
+
+export const ComponentSchema = z.object({
+  name: nonEmpty,
+  tech: z.string().trim().min(2),
+  responsibility: nonEmpty,
+  latencyBudgetMs: z.number().nonnegative().nullable(),
+});
+
+export const DegradationSchema = z.object({
+  level: z.number().int().min(0).max(5),
+  trigger: nonEmpty,
+  behaviour: nonEmpty,
+});
+
+export const E2EPhaseSchema = z.object({
+  phase: z.number().int().min(1),
+  title: nonEmpty,
+  steps: z.array(nonEmpty).min(2),
+  deliverable: nonEmpty,
+});
+
+export const ScaleRowSchema = z.object({
+  metric: nonEmpty,
+  value: z.string().trim().min(1),
+  how: nonEmpty,
+});
+
+export const SystemDesignSchema = z.object({
+  mode: z.enum(['online', 'interactive', 'batch']),
+  hld: z.object({
+    summary: nonEmpty,
+    components: z.array(ComponentSchema).min(4),
+    mermaid: MermaidSchema,
+  }),
+  sequence: z.object({
+    mermaid: MermaidSchema,
+    notes: z.array(nonEmpty).min(3),
+  }),
+  lld: z.object({
+    apiContract: z.object({
+      method: z.enum(['GET', 'POST']),
+      path: nonEmpty,
+      request: nonEmpty,
+      response: nonEmpty,
+    }),
+    dataModelDDL: nonEmpty,
+    classDiagram: MermaidSchema,
+    algorithm: z.object({ language: z.enum(['python', 'typescript']), code: nonEmpty }),
+    config: nonEmpty,
+    degradationLadder: z.array(DegradationSchema).min(3),
+  }),
+  e2e: z.array(E2EPhaseSchema).min(8),
+  scale: z.object({
+    assumptions: z.array(nonEmpty).min(3),
+    table: z.array(ScaleRowSchema).min(8),
+    bottlenecks: z.array(nonEmpty).min(3),
+    resilience: z.array(nonEmpty).min(4),
+  }),
+});
+
+export const UseCaseSchema = z
+  .object({
+    id: z.string().uuid(),
+    slug: z
+      .string()
+      .regex(
+        /^(fintech|retail|healthcare|supply-chain|adtech|cybersecurity|edtech|saas)\/[a-z0-9]+(-[a-z0-9]+)*$/,
+      ),
+    title: nonEmpty,
+    domain: DomainEnum,
+    mlParadigms: z.array(ParadigmEnum).min(1),
+    latencySLA: LatencyEnum,
+    difficulty: DifficultyEnum,
+    lastVerifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    summary: nonEmpty,
+    signalVsNoiseMatrix: z.array(SignalNoiseRowSchema).min(2),
+    problemFormulation: z.object({
+      businessObjective: nonEmpty,
+      mlObjectiveAndLoss: nonEmpty,
+      constraints: z.array(nonEmpty).min(2),
+    }),
+    dataAndFeatures: z.object({
+      highSignalFeatures: z
+        .array(
+          z.object({
+            name: nonEmpty,
+            formulaOrLogic: nonEmpty,
+            intuition: nonEmpty,
+            leakageRisk: nonEmpty,
+          }),
+        )
+        .min(3),
+      noisyFeaturesToDrop: z.array(z.object({ name: nonEmpty, whyItIsNoise: nonEmpty })).min(2),
+    }),
+    architectureBlueprint: z.object({
+      baselineModel: nonEmpty,
+      productionModel: nonEmpty,
+      mermaidDiagram: MermaidSchema,
+    }),
+    evaluationAndMetrics: z.object({
+      offlineMetrics: z.array(nonEmpty).min(2),
+      onlineBusinessMetrics: z.array(nonEmpty).min(2),
+      offlineOnlineGapTraps: z.array(nonEmpty).min(1),
+    }),
+    productionEdgeCases: z.array(EdgeCaseSchema).min(2),
+    systemDesign: SystemDesignSchema,
+  })
+  .strict();
+
+export type UseCase = z.infer<typeof UseCaseSchema>;
+export type SystemDesign = z.infer<typeof SystemDesignSchema>;
+
+/** Slim projection used for catalog grids, search indexes and sitemaps. */
+export interface UseCaseIndexEntry {
+  id: string;
+  slug: string;
+  title: string;
+  domain: Domain;
+  mlParadigms: Paradigm[];
+  latencySLA: LatencySLA;
+  difficulty: Difficulty;
+  summary: string;
+  signalCount: number;
+  noiseCount: number;
+  lastVerifiedAt: string;
+  keywords: string;
+}
+
+/** URL query validation shared by /api/search and the catalog. */
+export const SearchQuerySchema = z.object({
+  q: z
+    .string()
+    .trim()
+    .max(120)
+    .regex(/^[\p{L}\p{N}\s\-_.,:/&+#'()%$]*$/u, 'Unsupported characters in query')
+    .optional()
+    .default(''),
+  domain: DomainEnum.optional(),
+  paradigm: ParadigmEnum.optional(),
+  latency: LatencyEnum.optional(),
+  difficulty: DifficultyEnum.optional(),
+  cursor: z.coerce.number().int().min(0).max(100000).optional().default(0),
+  limit: z.coerce.number().int().min(1).max(100).optional().default(20),
+});
+export type SearchQuery = z.infer<typeof SearchQuerySchema>;
