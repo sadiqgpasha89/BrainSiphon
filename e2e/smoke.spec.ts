@@ -145,3 +145,15 @@ test('pattern hubs list blueprints across domains and a blueprint links back to 
   const n = await page.getByTestId('pattern-usecases').getByRole('link').count();
   expect(n).toBeGreaterThan(10);
 });
+
+test('each blueprint states its own problem, solution approach and stage-by-stage architecture', async ({
+  page,
+}) => {
+  await page.goto('/bfsi/settlement-fail-prediction');
+  await expect(page.getByTestId('problem-statement')).toContainText('Fails avoided per day');
+  await expect(page.getByTestId('solution-approach')).toContainText('Counterparty fail rate 30d');
+  await expect(page.getByTestId('architecture-rationale')).toContainText('Fail model');
+  await page.goto('/real-estate/automated-valuation-model');
+  await expect(page.getByTestId('problem-statement')).not.toContainText('Fails avoided per day');
+  await expect(page.getByTestId('solution-approach')).toContainText('Condition score from photos');
+});

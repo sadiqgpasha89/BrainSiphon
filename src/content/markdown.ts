@@ -12,6 +12,13 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   L.push(`> Last verified against production standards: ${u.lastVerifiedAt} · ${origin}/${u.slug}`, '');
   L.push('## Signal vs. Noise', '', '| Concept | True signal | Common noise | Why engineers fail |', '|---|---|---|---|');
   u.signalVsNoiseMatrix.forEach((r) => L.push(`| ${esc(r.concept)} | ${esc(r.trueSignal)} | ${esc(r.commonNoise)} | ${esc(r.whyEngineersFail)} |`));
+  L.push('', '## Problem statement', '', `**Situation.** ${u.problemStatement.situation}`, '', `**Why it is hard.** ${u.problemStatement.whyHard}`, '', `**Scale and stakes.** ${u.problemStatement.scaleAndStakes}`, '', `**Success looks like.** ${u.problemStatement.successLooksLike}`, '', '**What can go wrong.**', '');
+  u.problemStatement.risks.forEach((x) => L.push(`- ${x}`));
+  L.push('', '## Solution approach', '', u.solutionApproach.thesis, '');
+  u.solutionApproach.moves.forEach((m, i) => L.push(`${i + 1}. **${m.move}.** ${m.detail}`));
+  L.push('', '**Deliberately not doing.**', '');
+  u.solutionApproach.deliberatelyNot.forEach((x) => L.push(`- ${x}`));
+  L.push('', `**How it is proven.** ${u.solutionApproach.proof}`);
   L.push('', '## Problem formulation', '', `**Objective.** ${u.problemFormulation.businessObjective}`, '', '**Loss / ML objective.**', '', fence('latex', u.problemFormulation.mlObjectiveAndLoss), '', '**What each symbol stands for.**', '', '| Symbol | Meaning in this use case |', '|---|---|');
   u.problemFormulation.lossVariables.forEach((v) => L.push(`| \`${v.symbol.replace(/\|/g, '\\|')}\` | ${esc(v.meaning)} |`));
   L.push('', '**Constraints.**', '');
@@ -38,6 +45,8 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   d.scale.table.forEach((r) => L.push(`| ${esc(r.metric)} | ${esc(r.value)} | ${esc(r.how)} |`));
   L.push('', '**Assumptions**', '');
   d.scale.assumptions.forEach((a) => L.push(`- ${a}`));
+  L.push('', '**Why each stage exists here.**', '', '| Stage | Role here | What lands on it | Budget | If it fails |', '|---|---|---|---|---|');
+  u.architectureRationale.forEach((r) => L.push(`| ${esc(r.stage)} (${esc(r.tech)}) | ${esc(r.role)} | ${esc(r.carries)} | ${esc(r.budget)} | ${esc(r.onFailure)} |`));
   L.push('', '**Bottlenecks**', '');
   d.scale.bottlenecks.forEach((a) => L.push(`- ${a}`));
   L.push('', '**Resilience**', '');

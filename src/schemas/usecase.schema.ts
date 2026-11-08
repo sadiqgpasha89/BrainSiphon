@@ -355,6 +355,33 @@ export const AgenticSchema = z.object({
 });
 export type Agentic = z.infer<typeof AgenticSchema>;
 
+export const ProblemStatementSchema = z.object({
+  situation: nonEmpty,
+  whyHard: nonEmpty,
+  scaleAndStakes: nonEmpty,
+  successLooksLike: nonEmpty,
+  risks: z.array(nonEmpty).min(2),
+});
+export const SolutionApproachSchema = z.object({
+  thesis: nonEmpty,
+  moves: z.array(z.object({ move: nonEmpty, detail: nonEmpty })).min(4),
+  deliberatelyNot: z.array(nonEmpty).min(2),
+  proof: nonEmpty,
+});
+export const ArchitectureRationaleSchema = z
+  .array(
+    z.object({
+      stage: nonEmpty,
+      tech: nonEmpty,
+      role: nonEmpty,
+      /** the constraint, signal, edge case or trap of this use case that lands on this stage */
+      carries: nonEmpty,
+      budget: nonEmpty,
+      onFailure: nonEmpty,
+    }),
+  )
+  .min(4);
+
 export const UseCaseSchema = z
   .object({
     id: z.string().uuid(),
@@ -368,6 +395,9 @@ export const UseCaseSchema = z
     pattern: z.enum(PATTERN_IDS),
     lastVerifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     summary: nonEmpty,
+    problemStatement: ProblemStatementSchema,
+    solutionApproach: SolutionApproachSchema,
+    architectureRationale: ArchitectureRationaleSchema,
     signalVsNoiseMatrix: z.array(SignalNoiseRowSchema).min(2),
     problemFormulation: z.object({
       businessObjective: nonEmpty,

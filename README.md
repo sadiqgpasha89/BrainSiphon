@@ -13,6 +13,10 @@ _signal_ that moves the metric, names the _noise_ that wastes your quarter, and 
   Both live in `content/tracks.json`; the build fails unless the tracks of a domain cover every use case exactly once.
 - **Patterns.** `/patterns` lists the 11 reference patterns (the same eleven as the starter kits). Each hub shows what the
   pattern teaches, how to run its kit and every blueprint, in every domain, that is an instance of it.
+- **Problem, solution and architecture, per use case.** Each blueprint has its own problem statement, solution approach and a
+  stage-by-stage account of why each part of its architecture exists, all assembled from that use case's own signals,
+  constraints, edge cases and metrics. The end-to-end breakdown is gated so that under 3% of its steps may be identical
+  between use cases (it was 47% before).
 - **Agentic solution.** Every blueprint has a section on where agents help, the typed tools they get, an autonomy ladder
   with promotion gates, guardrails and how to evaluate them. It is generated from the blueprint and not expert-reviewed.
 

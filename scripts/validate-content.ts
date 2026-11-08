@@ -188,6 +188,41 @@ async function main() {
     if (slugs.has(from)) errors.push(`slug-history: ${from} is redirected but still exists`);
   }
 
+  // the end-to-end breakdown must be specific: almost none of its steps may be shared word for word between use cases
+  {
+    const seen = new Map<string, number>();
+    for (const u of all)
+      for (const s of new Set(u.systemDesign.e2e.flatMap((p) => p.steps)))
+        seen.set(s, (seen.get(s) ?? 0) + 1);
+    let total = 0;
+    let shared = 0;
+    for (const u of all) {
+      const steps = u.systemDesign.e2e.flatMap((p) => p.steps);
+      const own = steps.filter((s) => (seen.get(s) ?? 0) > 1).length;
+      total += steps.length;
+      shared += own;
+      if (own / steps.length > 0.12)
+        errors.push(
+          `${u.slug}: ${own} of ${steps.length} end-to-end steps are identical to another use case's`,
+        );
+    }
+    if (shared / total > 0.03)
+      errors.push(
+        `end-to-end steps shared word for word across use cases: ${((100 * shared) / total).toFixed(1)}% (limit 3%)`,
+      );
+    const deliverables = new Map<string, number>();
+    for (const u of all)
+      for (const p of u.systemDesign.e2e)
+        deliverables.set(p.deliverable, (deliverables.get(p.deliverable) ?? 0) + 1);
+    const generic = [...deliverables.values()].filter((n) => n > 1).length;
+    if (generic) errors.push(`${generic} end-to-end deliverables are shared between use cases`);
+    for (const u of all) {
+      const text = JSON.stringify([u.problemStatement, u.solutionApproach, u.architectureRationale]);
+      if (/\b(undefined|NaN|Infinity)\b|\[object|\$\{/.test(text))
+        errors.push(`${u.slug}: narrative contains an unresolved placeholder`);
+    }
+  }
+
   // tracks must partition each domain exactly and every start-here step must exist
   const tracksFile = loadTracksFile();
   for (const d of DOMAINS) {

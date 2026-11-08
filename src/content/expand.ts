@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
 import {
-  LATENCY_LABEL,
   UseCaseSchema,
   type Paradigm,
   type UseCase,
@@ -9,10 +8,11 @@ import {
   type Difficulty,
 } from '../schemas/usecase.schema';
 import type { RawUseCase } from './parse';
-import { bottlenecksFor, buildLLD, buildStages, hldDiagram, pipelineDiagram, resilienceFor, sequenceDiagram, snake, TOTAL_BUDGET_MS } from './design';
-import { computeScale, usd } from './scale';
+import { bottlenecksFor, buildLLD, buildStages, hldDiagram, pipelineDiagram, resilienceFor, sequenceDiagram, snake } from './design';
+import { computeScale } from './scale';
 import { loadPlaybook } from './playbook';
 import { generateAgentic } from './agentic-gen';
+import { buildE2E, buildNarrative } from './narrative';
 import { generatePlaybook, pickKit } from './playbook-gen';
 import { explainLoss } from './lossvars';
 import { existsSync, readFileSync } from 'node:fs';
@@ -109,7 +109,9 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     mermaid: hldDiagram(stages, scale.mode, paradigms),
   };
 
-  const e2e = buildE2E(raw, stages, scale, loss, features, latency, paradigms);
+  const pattern = pickKit(raw, paradigms);
+  const e2e = buildE2E(raw, domain, pattern, stages, scale, features, latency, explained);
+  const narrative = buildNarrative(raw, domain, paradigms, latency, stages, scale, explained);
   const playbook = root ? (loadPlaybook(root, domain, raw, latency, scale) ?? generatePlaybook(root, raw, domain, paradigms, latency, difficulty, scale, stages)) : undefined;
 
   const candidate = {
@@ -120,9 +122,10 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     mlParadigms: paradigms,
     latencySLA: latency,
     difficulty,
-    pattern: pickKit(raw, paradigms),
+    pattern,
     lastVerifiedAt: verifiedAt,
     summary: sentence(raw.obj),
+    ...narrative,
     signalVsNoiseMatrix: raw.sn.map(([concept, trueSignal, commonNoise, whyEngineersFail]) => ({ concept, trueSignal, commonNoise, whyEngineersFail })),
     problemFormulation: { businessObjective: raw.obj, mlObjectiveAndLoss: loss, lossVariables: explained.variables, constraints: raw.con },
     dataAndFeatures: {
@@ -180,127 +183,5 @@ function stageResponsibility(kind: string, label = ''): string {
   }
 }
 
-function buildE2E(raw: RawUseCase, stages: ReturnType<typeof buildStages>, scale: ReturnType<typeof computeScale>, loss: string, features: string[], latency: LatencySLA, paradigms: Paradigm[]) {
-  const sync = stages.filter((s) => !s.async);
-  const top3 = raw.sig.slice(0, 3);
-  const budget = TOTAL_BUDGET_MS[latency];
-  const monthly = usd(scale.monthlyTotalUSD);
-  const per1k = usd(scale.costPer1kUSD);
-  const reco = paradigms.includes('recommender');
-  const llm = paradigms.includes('llm-agents');
-  const fmtN = (n: number) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${(n / 1e3).toFixed(1)}K` : n.toFixed(0));
-  const rampMetric = raw.on[0] ?? 'north-star metric';
-  const guard = raw.on[1] ?? 'guardrail metric';
-
-  return [
-    {
-      phase: 1,
-      title: 'Frame the decision and the success contract',
-      steps: [
-        `Business objective: ${raw.obj}`,
-        `Name the actor and the action space — who or what consumes the output, what each wrong answer costs, and the envelope: ${LATENCY_LABEL[latency]}; ${raw.con.slice(0, 2).join('; ')}.`,
-        `Write the launch contract before modelling: north-star "${rampMetric}", guardrail "${guard}", and the kill criteria that auto-revert the launch.`,
-      ],
-      deliverable: 'One-page decision spec: owner, cost matrix, SLA, launch and kill criteria.',
-    },
-    {
-      phase: 2,
-      title: 'Data contracts, labels and point-in-time truth',
-      steps: [
-        `Inventory the sources that feed ${top3.map((s) => `“${s[0]}”`).join(', ')}; each gets an owner, schema contract and freshness SLO.`,
-        `Define the label exactly and measure its delay. The first trap to design around: ${raw.gap[0] ?? 'delayed and biased labels'}.`,
-        'Build training sets with as-of joins only (features strictly before decision time); store the feature snapshot used at decision time for later audit.',
-        'Minimise PII at the edge (tokenise or hash identifiers), set retention (400 days), and document lawful basis for each field.',
-      ],
-      deliverable: 'Versioned, reproducible dataset snapshot with automated data-quality tests.',
-    },
-    {
-      phase: 3,
-      title: 'Engineer signal, delete noise',
-      steps: [
-        ...top3.map((s) => `${s[0]} — ${s[1]} (${s[2]})`),
-        `Leakage review for each feature before it ships; highest-risk here: ${top3[0]?.[3] ?? 'target leakage via post-event fields'}.`,
-        `Delete on purpose: ${raw.noise.map((n) => n[0]).join(', ')}. Fewer, stronger features also shrink the feature-store bill.`,
-        `Register the ${features.length} feature definitions once; the same transform code runs in training and serving to eliminate skew.`,
-      ],
-      deliverable: 'Feature spec with owners, as-of semantics, backfill job and a skew test in CI.',
-    },
-    {
-      phase: 4,
-      title: 'Baseline first, then the production model',
-      steps: [
-        `Baseline: ${raw.base}`,
-        `Production: ${raw.prod}`,
-        'Optimise the objective written in Problem formulation — pick the loss that matches the decision cost, then calibrate so scores are usable as probabilities or costs.',
-        'Ship the baseline to shadow first; a complex model must beat it on the launch metric after variance, not on a leaderboard.',
-      ],
-      deliverable: 'Champion and challenger artifacts in the registry with model cards and reproducible training runs.',
-    },
-    {
-      phase: 5,
-      title: 'Offline evaluation that predicts online reality',
-      steps: [
-        `Primary offline metrics: ${raw.off.join('; ')}.`,
-        `Split by time (train → validate → test in chronological order), never random, so the model is judged on the future it will face.`,
-        `Known offline/online gaps to neutralise: ${raw.gap.join('; ')}.`,
-        'Slice results by cohort, geography, device, tenant and cold-start status; a model that wins on average and loses a protected or high-value slice does not ship.',
-      ],
-      deliverable: 'Evaluation report with confidence intervals, slice analysis and calibration plots.',
-    },
-    {
-      phase: 6,
-      title: 'Serving architecture and latency budget',
-      steps: [
-        ...sync.slice(0, 5).map((s) => `${s.id} ${s.label} on ${s.tech} — ${budget === null ? 'inside the run window' : `${s.budgetMs} ms of ${budget} ms`}.`),
-        ...(stages.some((s) => s.async) ? [`Off the critical path: ${stages.filter((s) => s.async).map((s) => `${s.label} (${s.tech})`).join('; ')}.`] : []),
-        'Define the degradation ladder and per-dependency breakers up front (see LLD); prove each rung in a game-day, not in an incident.',
-      ],
-      deliverable: 'Service design doc, load-test results at 1.5× provisioned peak, and runbooks per rung.',
-    },
-    {
-      phase: 7,
-      title: 'Shadow, canary, ramp',
-      steps: [
-        'Shadow for 7 days: score live traffic with the challenger, log side by side, compare distributions and disagreement cases.',
-        `Canary 1% → 5% → 25% → 100% with automatic rollback on guardrail "${guard}"; north-star "${rampMetric}" is read against a persistent holdout.`,
-        reco ? 'Use interleaving for fast ranking comparisons, then confirm with a full A/B on long-term retention.' : llm ? 'Gate every prompt/model/tool change on a frozen golden evaluation set plus an online A/B with cost guardrails.' : 'Hold back a small control cohort permanently so true incremental lift stays measurable after launch.',
-        'Keep a one-command kill switch that returns to the previous champion or to rules.',
-      ],
-      deliverable: 'Launch review with measured lift, guardrail status and sign-off from product, risk and SRE.',
-    },
-    {
-      phase: 8,
-      title: 'Monitoring, drift and the failure catalogue',
-      steps: [
-        ...raw.edge.slice(0, 3).map((e) => `${e[0]} → watch for ${e[1].toLowerCase()}; response: ${e[2]}`),
-        'Track input drift (PSI/KS per feature), prediction drift, and performance on matured labels — with label-delay-aware estimates so alerts are not an artefact of lag.',
-        'Page on SLO burn rate and cost per 1,000 decisions, not on raw error counts.',
-      ],
-      deliverable: 'Dashboards, alerts, on-call runbook and a quarterly game-day plan.',
-    },
-    {
-      phase: 9,
-      title: 'Scale to 10 million users',
-      steps: [
-        `Load: ${fmtN(scale.eventsPerDay)} model-touching events/day → ${fmtN(scale.avgQps)} req/s average, ${fmtN(scale.peakQps)} req/s peak, ${fmtN(scale.provisionedQps)} req/s provisioned.`,
-        `Compute: ${scale.nodes.toLocaleString('en-US')} ${scale.nodeUnit} (${scale.nodeCapacity}).`,
-        `Data plane: ${scale.kafkaPartitions} Kafka partitions at ${scale.peakMBps.toFixed(1)} MB/s peak, ${scale.redisShards} feature-store shards, ${scale.rawGBPerDay.toFixed(1)} GB/day raw growth.`,
-        `First bottleneck to attack: ${bottlenecksFor(scale.computeClass, scale.mode)[0]}`,
-      ],
-      deliverable: 'Capacity plan with load-test evidence, autoscaling policy and regional failover drill.',
-    },
-    {
-      phase: 10,
-      title: 'Run it: cost, ROI and the iteration loop',
-      steps: [
-        `Estimated run cost ${monthly}/month → ${per1k} per 1,000 decisions. The system pays for itself while (value per correct decision × lift) exceeds that unit cost.`,
-        `Retrain on a ${scale.mode === 'batch' ? 'per-window' : scale.mode === 'interactive' ? 'eval-gated release' : 'weekly champion/challenger'} cadence; automate promotion only when every guardrail is green.`,
-        'Own the whole loop: a named team owns data, model, serving and the business metric; postmortems feed new edge cases into the evaluation set.',
-        'Next upgrade trigger: invest in a bigger model only when error analysis shows the residual is model-limited rather than data- or label-limited.',
-      ],
-      deliverable: 'Quarterly business review: lift, cost per decision, incidents, and the next experiment backlog.',
-    },
-  ];
-}
 
 export { snake };

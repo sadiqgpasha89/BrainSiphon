@@ -106,6 +106,29 @@ export async function Sections({ uc }: { uc: UseCase }) {
         title="Problem formulation"
         kicker="Business objective → ML objective → hard constraints"
       >
+        <div className="card space-y-3 p-4" data-testid="problem-statement">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-signal">Problem statement</p>
+          <p data-prose className="prose-bs max-w-3xl text-base">
+            <strong className="text-ink">Situation. </strong>
+            {uc.problemStatement.situation}
+          </p>
+          <p data-prose className="prose-bs max-w-3xl text-base">
+            <strong className="text-ink">Why it is hard. </strong>
+            {uc.problemStatement.whyHard}
+          </p>
+          <p data-prose className="prose-bs max-w-3xl text-base">
+            <strong className="text-ink">Scale and stakes. </strong>
+            {uc.problemStatement.scaleAndStakes}
+          </p>
+          <p data-prose className="prose-bs max-w-3xl text-base">
+            <strong className="text-ink">Success looks like. </strong>
+            {uc.problemStatement.successLooksLike}
+          </p>
+          <div>
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">What can go wrong</p>
+            <List items={uc.problemStatement.risks} tone="noise" />
+          </div>
+        </div>
         <p data-prose className="prose-bs max-w-3xl text-base">
           <strong className="text-ink">Objective. </strong>
           {uc.problemFormulation.businessObjective}
@@ -190,6 +213,32 @@ export async function Sections({ uc }: { uc: UseCase }) {
         title="Architecture blueprint"
         kicker="Baseline first, then the production model"
       >
+        <div className="card space-y-3 p-4" data-testid="solution-approach">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-signal">Solution approach</p>
+          <p data-prose className="prose-bs max-w-3xl text-base">
+            {uc.solutionApproach.thesis}
+          </p>
+          <ol className="space-y-2 text-sm text-ink/90">
+            {uc.solutionApproach.moves.map((m, i) => (
+              <li key={m.move} className="flex gap-3">
+                <span className="font-mono text-dim">{i + 1}.</span>
+                <span>
+                  <strong className="text-ink">{m.move}.</strong> {m.detail}
+                </span>
+              </li>
+            ))}
+          </ol>
+          <div>
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">
+              Deliberately not doing
+            </p>
+            <List items={uc.solutionApproach.deliberatelyNot} tone="noise" />
+          </div>
+          <p data-prose className="prose-bs max-w-3xl text-sm text-mute">
+            <strong className="text-ink">How it is proven. </strong>
+            {uc.solutionApproach.proof}
+          </p>
+        </div>
         <div className="grid gap-4 md:grid-cols-2" data-prose>
           <div className="card p-4">
             <p className="font-mono text-[11px] uppercase tracking-wider text-dim">Start here (baseline)</p>
@@ -235,6 +284,38 @@ export async function Sections({ uc }: { uc: UseCase }) {
             </tbody>
           </table>
         </TableWrap>
+        <div data-testid="architecture-rationale">
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">
+            Why each stage exists in this system
+          </p>
+          <TableWrap>
+            <table className="bs-table">
+              <thead>
+                <tr>
+                  <th>Stage</th>
+                  <th>Role here</th>
+                  <th>What lands on it</th>
+                  <th>Budget</th>
+                  <th>If it fails</th>
+                </tr>
+              </thead>
+              <tbody>
+                {uc.architectureRationale.map((r) => (
+                  <tr key={`${r.stage}-${r.tech}`}>
+                    <td className="font-medium text-ink">
+                      {r.stage}
+                      <span className="block font-mono text-xs font-normal text-mute">{r.tech}</span>
+                    </td>
+                    <td className="text-mute">{r.role}</td>
+                    <td>{r.carries}</td>
+                    <td className="whitespace-nowrap font-mono text-xs">{r.budget}</td>
+                    <td className="text-mute">{r.onFailure}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        </div>
       </Section>
 
       <Section
