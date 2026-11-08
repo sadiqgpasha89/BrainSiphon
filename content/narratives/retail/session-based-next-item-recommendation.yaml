@@ -93,7 +93,7 @@ architectureRationale:
     carries: >-
       The bot defence lives here: sessions that walk the catalogue in id order or click at inhuman rates are flagged before
       they reach any statistic or training set.
-    budget: 6 ms of 80 ms
+    budget: 5 ms of 80 ms
     onFailure: >-
       Events are buffered and replayed; a stream outage leaves the shopper with the last cached list, not an error.
   - stage: Session state store
@@ -103,7 +103,7 @@ architectureRationale:
     carries: >-
       State is per session and holds no identity across sites, which satisfies the privacy constraint, and its cap on
       sequence length keeps encoder latency inside the budget.
-    budget: 12 ms of 80 ms
+    budget: 10 ms of 80 ms
     onFailure: >-
       A missing session is treated as a fresh anonymous session and served category-level transitions rather than failing.
   - stage: Sequence encoder
@@ -114,7 +114,7 @@ architectureRationale:
     carries: >-
       Order is the reason for a sequence model at all, since browsing and buying look the same to a bag-of-items model. The
       loss is a softmax over items with popularity-corrected negatives.
-    budget: 9 ms of 80 ms
+    budget: 8 ms of 80 ms
     onFailure: >-
       If GPU capacity is short, requests fall back to the co-visitation lookup on the last item, which is weaker but fast
       and explainable.
@@ -125,7 +125,7 @@ architectureRationale:
     carries: >-
       A sale's popularity change reaches shoppers through the index refresh and the popularity features, so the freshness
       of this index is a business requirement, not a tuning detail.
-    budget: 18 ms of 80 ms
+    budget: 16 ms of 80 ms
     onFailure: >-
       A stale index is served rather than none, and its age is monitored; a failed refresh alerts before shoppers notice.
   - stage: Re-ranker
@@ -136,7 +136,7 @@ architectureRationale:
     carries: >-
       The out-of-stock rule is enforced here with live inventory, because a perfect ranking of unavailable items is worth
       nothing.
-    budget: 24 ms of 80 ms
+    budget: 21 ms of 80 ms
     onFailure: >-
       If inventory lookups fail, the list is filtered by the last-known stock snapshot with a short expiry and flagged.
   - stage: Response cache
@@ -146,7 +146,7 @@ architectureRationale:
       page.
     carries: >-
       A short expiry keeps the cache from showing sold-out items for long, trading a little freshness for load.
-    budget: 12 ms of 80 ms
+    budget: 10 ms of 80 ms
     onFailure: >-
       A cache failure only increases load on the layers below, and capacity is sized so it still holds the peak.
   - stage: Click feedback

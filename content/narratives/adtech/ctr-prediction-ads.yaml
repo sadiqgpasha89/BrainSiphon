@@ -95,7 +95,7 @@ architectureRationale:
     carries: >-
       Context features such as placement, device and hour are known at request time and attached here, and the exploration
       slice assignment is made here so it is random and logged.
-    budget: 0.6 ms of 8 ms
+    budget: 0.5 ms of 8 ms
     onFailure: >-
       If scoring is late, the ad server falls back to a precomputed default price per placement, so a page always renders
       with an ad.
@@ -106,7 +106,7 @@ architectureRationale:
     carries: >-
       The same hashing must be used in training and in serving, and the position input is set to the top slot here, to
       avoid double counting the slot where the ad was previously shown.
-    budget: 0.8 ms of 8 ms
+    budget: 0.7 ms of 8 ms
     onFailure: >-
       A feature missing at request time is encoded as a missing value rather than zero, and the rate of missing values is
       alarmed because it signals a pipeline break.
@@ -117,7 +117,7 @@ architectureRationale:
     carries: >-
       Version skew is the key edge case: tables are swapped atomically as a single version, canaried on a share of traffic,
       and the version is stamped on the response.
-    budget: 1.6 ms of 8 ms
+    budget: 1.4 ms of 8 ms
     onFailure: >-
       A shard timeout returns the default embedding for that identifier family and increments a counter, and sustained
       misses switch the request to the baseline model.
@@ -129,7 +129,7 @@ architectureRationale:
     carries: >-
       The head is the part updated online, so it must be small enough to update hourly and validate before it takes
       traffic.
-    budget: 1.6 ms of 8 ms
+    budget: 1.4 ms of 8 ms
     onFailure: >-
       An over-budget batch drops to the logistic baseline for the remaining candidates, and the share of requests on the
       baseline is a service-level indicator.
@@ -140,7 +140,7 @@ architectureRationale:
     carries: >-
       This is where a site redesign is absorbed: the layer is refreshed hourly and an alarm compares expected and observed
       clicks, since the auction multiplies this output by the bid.
-    budget: 1.6 ms of 8 ms
+    budget: 1.4 ms of 8 ms
     onFailure: >-
       A stale or missing calibrator falls back to the last good one for that segment, and a segment drifting past tolerance
       is held to a conservative price.
@@ -151,7 +151,7 @@ architectureRationale:
     carries: >-
       The revenue per mille metric is produced here, and an exploration slice is honoured so a new ad can win a small share
       of auctions regardless of its estimated score.
-    budget: 1.2 ms of 8 ms
+    budget: 1 ms of 8 ms
     onFailure: >-
       If the auction cannot complete, a default winner from the precomputed fallback is returned, and the incident is
       logged against the advertiser to keep billing correct.
@@ -163,7 +163,7 @@ architectureRationale:
     carries: >-
       Short-dwell filtering of accidental taps happens in this stream, and the model version recorded here lets every
       later analysis separate old and new behaviour.
-    budget: 0.4 ms of 8 ms
+    budget: 0.3 ms of 8 ms
     onFailure: >-
       Logging is asynchronous and durable, and a gap in the stream pauses the online head updates rather than letting them
       train on partial data.

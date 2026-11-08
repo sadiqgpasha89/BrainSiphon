@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getIndex, getPatterns } from '../../lib/content';
 import { PRIMITIVES } from '../../content/primitives';
+import { ARCHITECTURE_PATTERNS } from '../../content/architecture-patterns';
 import { DOMAIN_META } from '../../schemas/usecase.schema';
 
 export const revalidate = 86400;
@@ -21,8 +22,15 @@ export default async function PatternsPage() {
           11 patterns, {index.length} blueprints
         </h1>
         <p className="mt-3 text-mute">
-          Every blueprint is an instance of one of eleven patterns. Each pattern has a runnable reference kit
-          that shows its traps on synthetic data. Learn a pattern once, then see it in every domain.
+          Patterns come in three levels. <strong className="text-ink">L1 archetypes</strong> say how the
+          intelligence is implemented (eleven, below).{' '}
+          <strong className="text-ink">L2 enterprise patterns</strong> say how the solution is assembled.{' '}
+          <strong className="text-ink">L3 primitives</strong> are the reusable mechanisms inside it. Pick the
+          L2 pattern first, then the archetype it serves, then the primitives it needs.
+        </p>
+        <p className="mt-3 text-mute">
+          Every blueprint is an instance of one of eleven L1 patterns. Each pattern has a runnable reference
+          kit that shows its traps on synthetic data. Learn a pattern once, then see it in every domain.
         </p>
       </header>
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-testid="pattern-list">
@@ -47,9 +55,49 @@ export default async function PatternsPage() {
         })}
       </ul>
 
+      <section aria-labelledby="enterprise-patterns-h" id="enterprise-patterns" className="mt-14">
+        <h2 id="enterprise-patterns-h" className="h-section">
+          {ARCHITECTURE_PATTERNS.length} enterprise architecture patterns (L2)
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-mute">
+          How a solution is assembled around the model: serving style, integration, state, tenancy and
+          coexistence with the systems already there.
+        </p>
+        <ul className="mt-5 grid gap-3 md:grid-cols-2" data-testid="enterprise-patterns">
+          {ARCHITECTURE_PATTERNS.map((p) => (
+            <li key={p.id} className="card p-4 text-sm">
+              <h3 className="font-semibold text-ink">{p.title}</h3>
+              <p className="mt-1 text-mute">{p.summary}</p>
+              <p className="mt-2">
+                <strong className="text-ink">Use when.</strong> {p.useWhen}
+              </p>
+              <p className="mt-1">
+                <strong className="text-ink">Trade-off.</strong> {p.tradeoff}
+              </p>
+              <p className="mt-2 flex flex-wrap gap-1.5">
+                {p.archetypes.map((a) => (
+                  <Link key={a} href={`/patterns/${a}`} className="chip no-underline hover:border-signal">
+                    L1 {a}
+                  </Link>
+                ))}
+                {p.primitives.map((id) => (
+                  <Link
+                    key={id}
+                    href={`/patterns/primitives/${id}`}
+                    className="chip chip-signal no-underline"
+                  >
+                    L3 {PRIMITIVES.find((x) => x.id === id)?.title ?? id}
+                  </Link>
+                ))}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section aria-labelledby="primitives" className="mt-14">
         <h2 id="primitives" className="h-section">
-          {PRIMITIVES.length} architectural primitives
+          {PRIMITIVES.length} engineering primitives (L3)
         </h2>
         <p className="mt-2 max-w-3xl text-sm text-mute">
           Mechanisms that repeat across blueprints (point-in-time joins, budget pacers, load shedding, outbox

@@ -31,6 +31,10 @@ export interface ScaleInput {
   peakFactor?: number;
   /** p99 target in ms. Tighter than the baseline SLA derates per-node utilisation; looser raises it. */
   slaMs?: number;
+  /** Workload-profile override: model-touching events per day taken directly from a profile's native units (TPS, assets, documents, rows) instead of users × DAU × a. */
+  eventsPerDay?: number;
+  /** Human-readable description of that driver, shown in the first row of the table (e.g. "1,200 TPS average"). */
+  driver?: string;
 }
 
 /** The p99 the published table is sized for, per latency class. */
@@ -64,6 +68,8 @@ export interface ScaleResult {
   costPer1kUSD: number;
   batchWindowHours: number | null;
   llmOutputTokPerSec: number | null;
+  /** demand ÷ (nodes × per-node rate) after the minimum-node clamp: must be ≤ 1, otherwise the table under-provisions */
+  utilisation: number;
   rows: { metric: string; value: string; how: string }[];
   assumptions: string[];
 }
@@ -92,7 +98,7 @@ export function computeScale(i: ScaleInput): ScaleResult {
   const registered = i.registeredUsers ?? REGISTERED_USERS;
   const dauRatio = i.dauRatio ?? DAU_RATIO;
   const dau = registered * dauRatio;
-  const eventsPerDay = dau * i.a;
+  const eventsPerDay = i.eventsPerDay ?? dau * i.a;
   const avgQps = eventsPerDay / SECONDS_PER_DAY;
   const peakFactor = mode === 'batch' ? 1 : (i.peakFactor ?? (i.latency === 'sub-10ms' ? 8 : 6));
   const peakQps = avgQps * peakFactor;
@@ -108,6 +114,8 @@ export function computeScale(i: ScaleInput): ScaleResult {
   let hourly = CPU_POD_HOURLY;
   let llmTok: number | null = null;
   let batchWindow: number | null = null;
+  let rate = 1; // capacity per node in the same unit as `demand`
+  let demand = 0;
 
   const steps = i.steps ?? 3;
   const tok = i.tokensPerStep ?? 350;
@@ -115,51 +123,66 @@ export function computeScale(i: ScaleInput): ScaleResult {
   switch (computeClass) {
     case 'cpu-scorer':
       nodeCapacity = '≈2,500 scores/s per pod (GBDT / small NN, features already in memory)';
-      nodes = Math.ceil(provisionedQps / 2500);
+      rate = 2500;
+      demand = provisionedQps;
+      nodes = Math.ceil(demand / rate);
       break;
     case 'cpu-graph':
       nodeCapacity = '≈800 scores/s per pod (cached neighbourhood embeddings + light head)';
-      nodes = Math.ceil(provisionedQps / 800);
+      rate = 800;
+      demand = provisionedQps;
+      nodes = Math.ceil(demand / rate);
       break;
     case 'gpu-ranker':
       nodeUnit = 'GPUs (L4/L40S class)';
       nodeCapacity = '≈600 ranked requests/s per GPU (1,500 candidates, batched, fp16)';
-      nodes = Math.ceil(provisionedQps / 600);
+      rate = 600;
+      demand = provisionedQps;
+      nodes = Math.ceil(demand / rate);
       hourly = GPU_HOURLY;
       break;
     case 'gpu-vision':
       nodeUnit = 'GPUs (L4/L40S class)';
       nodeCapacity = '≈80 inferences/s per GPU (detector + tracker, TensorRT fp16)';
-      nodes = Math.ceil(provisionedQps / 80);
+      rate = 80;
+      demand = provisionedQps;
+      nodes = Math.ceil(demand / rate);
       hourly = GPU_HOURLY;
       break;
     case 'gpu-encoder':
       nodeUnit = 'GPUs (L4/L40S class)';
       nodeCapacity = '≈350 inferences/s per GPU (encoder ≤ 512 tokens, dynamic batching)';
-      nodes = Math.ceil(provisionedQps / 350);
+      rate = 350;
+      demand = provisionedQps;
+      nodes = Math.ceil(demand / rate);
       hourly = GPU_HOURLY;
       break;
     case 'gpu-llm':
       nodeUnit = 'GPUs (H100 class)';
       llmTok = provisionedQps * steps * tok;
       nodeCapacity = `≈3,000 decoded tokens/s per GPU (8B-class, continuous batching); ${steps} steps × ${tok} output tokens per request`;
-      nodes = Math.ceil((llmTok * 1.2) / 3000); // +20% prefill overhead
+      rate = 3000;
+      demand = llmTok * 1.2; // +20% prefill overhead
+      nodes = Math.ceil(demand / rate);
       hourly = LLM_GPU_HOURLY;
       break;
     case 'cpu-batch':
     case 'gpu-batch': {
       const gpu = computeClass === 'gpu-batch';
-      const rate = gpu ? 400 : 40_000; // rows/s per node
+      const brate = gpu ? 400 : 40_000; // rows/s per node
       batchWindow = 2;
       nodeUnit = gpu ? 'GPU workers' : '8-vCPU Spark executors';
-      nodeCapacity = `≈${fmt(rate)} rows/s per node, target completion window ${batchWindow} h`;
-      nodes = Math.max(2, Math.ceil(eventsPerDay / (rate * batchWindow * 3600)));
+      nodeCapacity = `≈${fmt(brate)} rows/s per node, target completion window ${batchWindow} h`;
+      rate = brate * batchWindow * 3600;
+      demand = eventsPerDay;
+      nodes = Math.max(2, Math.ceil(demand / rate));
       hourly = gpu ? GPU_HOURLY : CPU_POD_HOURLY;
       break;
     }
   }
   nodes = Math.max(nodes, mode === 'batch' ? 2 : 6); // never fewer than 2 per region × 3 regions online
 
+  const utilisation = demand / (nodes * rate);
   const computeHours = mode === 'batch' ? batchWindow! * 30 : HOURS_PER_MONTH;
   const monthlyComputeUSD = nodes * hourly * computeHours * (mode === 'batch' ? 1 : 1);
 
@@ -175,8 +198,10 @@ export function computeScale(i: ScaleInput): ScaleResult {
   const costPer1kUSD = monthlyTotalUSD / ((eventsPerDay * 30) / 1000);
 
   const rows: ScaleResult['rows'] = [
-    { metric: 'Registered / daily active users', value: `${fmt(registered)} / ${fmt(dau)}`, how: `${Math.round(dauRatio * 1000) / 10}% DAU of ${fmt(registered)} registered` },
-    { metric: 'Model-touching events per day', value: fmt(eventsPerDay), how: `${fmt(dau)} DAU × ${i.a} events/user/day` },
+    i.eventsPerDay === undefined
+      ? { metric: 'Registered / daily active users', value: `${fmt(registered)} / ${fmt(dau)}`, how: `${Math.round(dauRatio * 1000) / 10}% DAU of ${fmt(registered)} registered` }
+      : { metric: 'Workload driver', value: i.driver ?? `${fmt(eventsPerDay)} events/day`, how: 'from the selected workload profile' },
+    { metric: 'Model-touching events per day', value: fmt(eventsPerDay), how: i.eventsPerDay === undefined ? `${fmt(dau)} DAU × ${i.a} events/user/day` : 'profile inputs converted to events per day' },
     { metric: 'Average throughput', value: `${fmt(avgQps, 1)} req/s`, how: 'events/day ÷ 86,400' },
     { metric: mode === 'batch' ? 'Rows per run (daily)' : 'Peak throughput', value: mode === 'batch' ? fmt(eventsPerDay) : `${fmt(peakQps, 0)} req/s`, how: mode === 'batch' ? 'one partition per day' : `average × ${peakFactor} (diurnal + event spikes)` },
     { metric: mode === 'batch' ? 'Capacity target' : 'Provisioned capacity', value: mode === 'batch' ? `${batchWindow} h window` : `${fmt(provisionedQps, 0)} req/s`, how: mode === 'batch' ? 'finish before downstream consumers start' : 'peak × 1.5 so any one of three regions can fail' },
@@ -191,7 +216,9 @@ export function computeScale(i: ScaleInput): ScaleResult {
   ];
 
   const assumptions = [
-    `${fmt(registered)} registered users, ${Math.round(dauRatio * 1000) / 10}% daily active; each active user triggers ${i.a} model-touching events per day.`,
+    i.eventsPerDay === undefined
+      ? `${fmt(registered)} registered users, ${Math.round(dauRatio * 1000) / 10}% daily active; each active user triggers ${i.a} model-touching events per day.`
+      : `Sized from the workload profile: ${i.driver ?? `${fmt(eventsPerDay)} events/day`}.`,
     `Average payload ${i.k} KB per event across request, features and decision log.`,
     mode === 'batch'
       ? 'One daily partition; runs must finish inside a 2-hour window so downstream consumers are never blocked.'
@@ -199,5 +226,5 @@ export function computeScale(i: ScaleInput): ScaleResult {
     'Unit prices are indicative on-demand list prices; committed-use or spot discounts typically cut compute 30–60%.',
   ];
 
-  return { mode, computeClass, dau, eventsPerDay, avgQps, peakQps, provisionedQps, peakFactor, nodes, nodeUnit, nodeCapacity, kafkaPartitions, peakMBps, featureLookupsPerSec: lookups, redisShards, rawGBPerDay, retainedTB, monthlyComputeUSD, monthlyTotalUSD, costPer1kUSD, batchWindowHours: batchWindow, llmOutputTokPerSec: llmTok, rows, assumptions };
+  return { mode, computeClass, dau, eventsPerDay, avgQps, peakQps, provisionedQps, peakFactor, nodes, nodeUnit, nodeCapacity, kafkaPartitions, peakMBps, featureLookupsPerSec: lookups, redisShards, rawGBPerDay, retainedTB, monthlyComputeUSD, monthlyTotalUSD, costPer1kUSD, batchWindowHours: batchWindow, llmOutputTokPerSec: llmTok, utilisation, rows, assumptions };
 }

@@ -100,7 +100,7 @@ architectureRationale:
     carries: >-
       Version awareness starts here. The question text rarely says which version is in use, so the client has to send it,
       and the assistant must never guess it from wording.
-    budget: 227 ms of 2500 ms
+    budget: 202 ms of 2500 ms
     onFailure: >-
       If context is missing the assistant asks which version, or uses the most commonly deployed version and states it, but
       never answers silently for an unknown version.
@@ -112,7 +112,7 @@ architectureRationale:
     carries: >-
       The changelog problem is handled here: changelog chunks are excluded unless the question asks about changes, since
       they quote both old and new values.
-    budget: 606 ms of 2500 ms
+    budget: 540 ms of 2500 ms
     onFailure: >-
       An unparseable version falls back to the latest stable with a visible note, and the mismatch is logged.
   - stage: Retriever
@@ -123,7 +123,7 @@ architectureRationale:
     carries: >-
       The vocabulary gap lives here: synonyms like throttle for rate limit are covered by dense retrieval and an intent
       vocabulary extended from the abstention log.
-    budget: 455 ms of 2500 ms
+    budget: 405 ms of 2500 ms
     onFailure: >-
       An empty or low-confidence result triggers abstention with the closest page rather than generation from nothing; a
       search outage falls back to keyword search.
@@ -134,7 +134,7 @@ architectureRationale:
     carries: >-
       The loss penalises references to nonexistent APIs, and the prompt forbids using knowledge outside the passages,
       which is what keeps the answer inside the documentation.
-    budget: 606 ms of 2500 ms
+    budget: 539 ms of 2500 ms
     onFailure: >-
       A model timeout returns the retrieved passages and the nearest page directly, which is worse than an answer but never
       wrong.
@@ -146,7 +146,7 @@ architectureRationale:
     carries: >-
       This is the guard against invented endpoints, and its deprecation metadata is the answer to the deprecated-API
       risk, so an old endpoint is flagged with its replacement.
-    budget: 152 ms of 2500 ms
+    budget: 135 ms of 2500 ms
     onFailure: >-
       If a symbol fails, the answer is regenerated once with the failure as feedback, and if it still fails the assistant
       abstains instead of showing the snippet.
@@ -158,7 +158,7 @@ architectureRationale:
     carries: >-
       Language differences are tested here, so a Python snippet adapted for Java that does not compile never reaches the
       developer, and the pass rate is the headline offline metric.
-    budget: 227 ms of 2500 ms
+    budget: 202 ms of 2500 ms
     onFailure: >-
       A sandbox timeout marks the snippet as unverified and says so on the answer; a pool outage degrades to showing the
       validated snippet with that label.
@@ -170,7 +170,7 @@ architectureRationale:
     carries: >-
       Time to first successful API call is measured from here, and a thumbs-down with a correction is the cheapest source
       of new golden questions.
-    budget: 227 ms of 2500 ms
+    budget: 202 ms of 2500 ms
     onFailure: >-
       Feedback is best-effort and never blocks the answer; missing feedback is treated as unknown, not as satisfaction.
 
@@ -240,8 +240,8 @@ e2e:
     title: Fit the 2.5 second budget and the GPU bill
     steps:
       - >-
-        Allocate the budget: 0.6 s version detection, 0.5 s retrieval, 0.6 s generation, 0.2 s existence check, 0.2 s
-        sandbox, and measure p95 at 625 requests per second.
+        Allocate the budget: 0.54 s version detection, 0.41 s retrieval, 0.54 s generation, 0.14 s existence check, 0.2 s
+        sandbox, with 25 ms for the edge and 250 ms held back for network hops, and measure p95 at 625 requests per second.
       - >-
         Control generation cost, which dominates at about 263 GPUs, by capping answer length, caching answers to common
         questions per version, and routing simple lookups to a smaller model.

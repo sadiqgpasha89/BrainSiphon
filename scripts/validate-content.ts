@@ -12,6 +12,8 @@ import { loadAllUseCases } from '../src/content/load';
 import { DOMAINS, type UseCase } from '../src/schemas/usecase.schema';
 import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
+import { TOTAL_BUDGET_MS } from '../src/content/design';
+import { ROLE_IDS } from '../src/lib/roles';
 
 const MIN_PER_DOMAIN = Number(process.env.MIN_PER_DOMAIN ?? 50);
 const STALE_DAYS = 180;
@@ -81,6 +83,8 @@ async function main() {
       ['classes', u.systemDesign.lld.classDiagram],
       ['agent-architecture', u.agentic.architecture],
       ['agent-sequence', u.agentic.sequence],
+      ['c4-context', u.enterpriseContext.c4Context],
+      ['c4-container', u.enterpriseContext.c4Container],
     ];
     for (const [name, code] of blocks) {
       try {
@@ -156,6 +160,48 @@ async function main() {
         errors.push(`${u.slug}: agentic rationale is too thin`);
       if ((u.latencySLA === 'sub-10ms' || u.latencySLA === 'sub-100ms') && u.agentic.fit === 'core')
         errors.push(`${u.slug}: an agent cannot be the core of a ${u.latencySLA} decision path`);
+    }
+
+    // Blueprint 2.0 enterprise layer: no unresolved placeholders, seven lenses, and architecture feasibility
+    {
+      const ent = JSON.stringify([
+        u.enterpriseContext,
+        u.decisionMatrix,
+        u.governance,
+        u.mlops,
+        u.operations,
+        u.validation,
+      ]);
+      if (/\b(undefined|NaN|Infinity)\b|\[object|\$\{|\{\{/.test(ent))
+        errors.push(`${u.slug}: enterprise layer contains an unresolved placeholder`);
+      if (u.roleLenses.length !== ROLE_IDS.length)
+        errors.push(`${u.slug}: expected ${ROLE_IDS.length} role lenses`);
+      if (u.decisionMatrix.alternatives.filter((a) => a.verdict === 'chosen').length !== 1)
+        errors.push(`${u.slug}: decision matrix must name exactly one chosen option`);
+      if (
+        (u.governance.riskTier === 'high' || u.governance.riskTier === 'critical') &&
+        u.decisionMatrix.humanOversight.mode === 'autonomous-with-audit'
+      )
+        errors.push(
+          `${u.slug}: ${u.governance.riskTier}-risk use case cannot be autonomous without human oversight`,
+        );
+      if (
+        u.mlops.llmops &&
+        !(u.pattern === 'llm-rag' || u.pattern === 'llm-agent' || u.mlParadigms.includes('llm-agents'))
+      )
+        errors.push(`${u.slug}: LLMOps section on a non-LLM use case`);
+      // Architecture Feasibility Validator: every stored check must not fail, and the latency sum is re-derived independently
+      for (const f of u.validation.feasibility)
+        if (f.status === 'fail') errors.push(`${u.slug}: feasibility — ${f.check}: ${f.detail}`);
+        else if (f.status === 'warn') warnings.push(`${u.slug}: feasibility — ${f.check}: ${f.detail}`);
+      const total = TOTAL_BUDGET_MS[u.latencySLA];
+      if (total !== null) {
+        const sum =
+          Math.round(u.systemDesign.hld.components.reduce((a, c) => a + (c.latencyBudgetMs ?? 0), 0) * 1000) /
+          1000;
+        if (sum > total + 1e-9)
+          errors.push(`${u.slug}: synchronous budgets sum to ${sum} ms against a ${total} ms p99`);
+      }
     }
 
     if (/\b(Infinity|NaN|undefined)\b/.test(JSON.stringify(u.systemDesign)))
@@ -254,7 +300,7 @@ async function main() {
   }
   const withPlaybook = all.filter((u) => u.playbook).length;
   console.log(
-    `validate:content ✔ ${all.length} use cases, ${all.length * 6} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections`,
+    `validate:content ✔ ${all.length} use cases, ${all.length * 8} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${all.length * 10} feasibility checks`,
   );
 }
 

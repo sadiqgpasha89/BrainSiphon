@@ -2,9 +2,51 @@
 
 URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
-Zero-noise engineering blueprints for AI/ML systems — **500 use cases, 10 domains × 50**. Every blueprint teaches the
-_signal_ that moves the metric, names the _noise_ that wastes your quarter, and designs the whole system for
-**10 million users**: HLD, sequence diagram, LLD, 10-phase end-to-end breakdown, capacity/cost model, evaluation and edge cases.
+Zero-noise **enterprise AI architecture and engineering playbook** — **500 use cases, 10 domains × 50**. Every blueprint
+teaches the _signal_ that moves the metric, names the _noise_ that wastes your quarter, and takes the solution from the
+enterprise context (business, applications, data, security, operating model) through HLD, sequence diagram, LLD, MLOps,
+governance and production operations to a capacity/cost model for **10 million users**, with evaluation and edge cases.
+
+> **Which deployment am I looking at?** The GitHub Pages site is a **static export**: it uses the build-time MiniSearch
+> index and has no Postgres, Redis, middleware or API routes. The **Docker deployment** (`docker compose up`) runs the full
+> stack: Postgres + pgvector hybrid search, Redis cache and rate limiting, health endpoints and telemetry.
+
+## Blueprint 2.0: what every use case now contains
+
+| #   | Section                          | Where it lives                                                  |
+| --- | -------------------------------- | --------------------------------------------------------------- |
+| 1   | Enterprise solution context      | `enterpriseContext`: business, application, data, technology, security, operating architecture; C4 context and container diagrams; integration matrix; data-quality SLA and a data-contract example; NFR matrix; ADRs; build / buy / integrate |
+| 2   | AI solution decision matrix      | `decisionMatrix`: why AI, why not rules, why this paradigm, alternatives, why chosen, what would change it, human oversight, economics |
+| 3   | AI/ML problem formulation, data, architecture, HLD, LLD, evaluation | the original sections |
+| 4   | Security, governance, responsible AI | `governance`: risk tier (low/medium/high/critical), approval path, data/model/responsible-AI controls with evidence, AI-security threats, obligation → control → evidence |
+| 5   | MLOps (and LLMOps where it applies) | `mlops`: nine lifecycle areas each with an artifact and a gate, retraining triggers, champion/challenger, rollback, toolchain |
+| 6   | Production operations and SRE    | `operations`: SLIs/SLOs/error budgets, telemetry, incident classes, support model, ten failure scenarios (detection → alert → owner → mitigation → recovery → learning), unit cost |
+| 7   | Validation and architecture review | `validation`: five separate validation levels plus the feasibility checks |
+
+The enterprise layer is generated deterministically from each use case's own fields plus per-domain enterprise facts
+(`src/content/enterprise.ts`, `src/content/enterprise-domains.ts`). It is **not** expert-reviewed (see below).
+
+### Validation levels (they are not the same thing)
+
+| Level                          | Meaning                                                              | Source                                   |
+| ------------------------------ | -------------------------------------------------------------------- | ---------------------------------------- |
+| Schema validated               | Required sections and types passed the strict Zod schema             | build                                    |
+| Technically validated          | Diagrams parse, equations compile, architecture-feasibility checks pass | `npm run validate:content`            |
+| Synthetic-data tested          | A starter kit ran end to end on synthetic data                       | `npm run test:playbooks`                 |
+| Domain-expert reviewed         | A domain specialist reviewed the technical content                   | `content/reviews.json` (empty by default) |
+| Production evidence validated  | Evidence from a real deployment or production dataset                | not claimed for any blueprint            |
+
+The blueprint badge says "Automated checks passed" and "not yet domain-expert reviewed" until a review is recorded. To record one,
+add `{"<domain>/<slug>": {"reviewer": "...", "date": "YYYY-MM-DD", "scope": "..."}}` to `content/reviews.json`.
+
+### Architecture Feasibility Validator
+
+A blueprint does not pass because every section exists; its numbers must agree (`src/content/feasibility.ts`, run at generation
+and again in `validate:content`). Checks: the synchronous stage budgets plus edge plus a network/serialisation reserve must sum
+to the p99 exactly (an earlier version summed to 8.6 ms against 8 ms); hand-written stage budgets must equal the HLD; a stated
+p99 must not be tighter than the envelope; demand must fit provisioned capacity; availability vs redundancy; storage vs a stated
+retention; cost sanity; RTO/RPO vs the replication strategy; and model memory vs GPU memory. A `fail` breaks the build, a `warn` is shown on the page.
+
 
 ## How to find your way
 
@@ -17,8 +59,9 @@ _signal_ that moves the metric, names the _noise_ that wastes your quarter, and 
   stage-by-stage account of why each part of its architecture exists, all assembled from that use case's own signals,
   constraints, edge cases and metrics. The end-to-end breakdown is gated so that under 3% of its steps may be identical
   between use cases (it was 47% before).
-- **Role lenses.** Press `1`–`6` inside a blueprint (or use the Lens bar) to keep only the sections one persona needs: AI architect,
-  solution architect, data engineer, data scientist, AI engineer, inference engineer. `0` shows everything. Each blueprint ends with a
+- **Role lenses.** Press `1`–`7` inside a blueprint (or use the Lens bar) to keep only the sections one persona needs: AI architect,
+  solution architect, data engineer, data scientist, AI engineer, inference engineer and **MLOps engineer** (a distinct lens: the inference
+  engineer optimises model execution; the MLOps engineer industrialises development, deployment and operation). `0` shows everything. Each blueprint ends with a
   per-role checklist of production gaps (`roleLenses`), generated from the use case's own stages, features and compute class
   (`src/content/extras.ts`).
 - **Regions and state.** The HLD no longer says "three active-active regions" for everything. `systemDesign.topology` splits the
@@ -27,8 +70,13 @@ _signal_ that moves the metric, names the _noise_ that wastes your quarter, and 
 - **Primitives.** Mechanisms that repeat across blueprints (point-in-time joins, PID budget pacer, adaptive load shedding, outbox + CDC,
   plan-preview-commit, ...) are written once in `src/content/primitives.ts`, shown at `/patterns/primitives/<id>`, and linked from every
   blueprint that uses them. `validate:content` fails on a link to an unknown primitive.
-- **Live sizing calculator.** The capacity table is followed by sliders (users, DAU share, events per user, payload, peak ratio, p99 target)
-  that re-run the same model (`src/content/scale.ts`) in the browser; at the defaults it reproduces the table exactly (tested).
+- **Live sizing calculator with workload profiles.** The capacity table is followed by a calculator that re-runs the same model
+  (`src/content/scale.ts`) in the browser. Choose the unit the workload is really sized in (`src/content/workload-profiles.ts`):
+  user/session, transaction (TPS), asset/equipment, document/image/video, LLM/agent (requests × steps × tokens) or batch (rows × runs).
+  Each industry opens in its natural profile (fintech in TPS, healthcare in assets); at the defaults every profile reproduces the table (tested).
+- **Pattern hierarchy.** `/patterns` now shows three levels: L1 AI/ML archetypes (the 11 kits), L2 enterprise architecture patterns
+  (`src/content/architecture-patterns.ts`: online inference, event-driven AI, batch scoring, human-in-the-loop, multi-tenant, LLM gateway,
+  jurisdiction-pinned state, strangler coexistence) and L3 engineering primitives (the mechanisms in `src/content/primitives.ts`).
 - **Agentic solution.** Every blueprint has a section on where agents help, the typed tools they get, an autonomy ladder
   with promotion gates, guardrails and how to evaluate them. It is generated from the blueprint and not expert-reviewed.
 
@@ -108,13 +156,13 @@ numbers come from *synthetic* data (far easier than production); the dataset lin
 
 ## Architecture
 
-- **Next.js 15 App Router**, RSC + `generateStaticParams` (416 statically generated pages) + ISR; Tailwind; Radix; `cmdk`; KaTeX; Shiki (server-side); Mermaid (lazy, client).
+- **Next.js 15 App Router**, RSC + `generateStaticParams` (556 statically generated pages in the static export: the 500 blueprints, 10 domain hubs, 11 pattern hubs, 27 primitive pages and a handful of site pages; every blueprint also has a static `.md` twin) + ISR; Tailwind; Radix; `cmdk`; KaTeX; Shiki (server-side); Mermaid (lazy, client).
 - **Search** (`/api/search`): Redis cache → Postgres hybrid (full-text `ts_rank_cd` + `pgvector` cosine, fused by **Reciprocal Rank Fusion**) behind an 800 ms **circuit breaker** → build-time **MiniSearch** fallback. Embeddings are deterministic feature-hashing vectors (`src/lib/search/embed.ts`), the single swap-in point for a learned encoder.
 - **Rate limiting**: Redis sliding-window (atomic Lua) with in-memory LRU fallback. **Validation**: Zod on every query parameter.
 - **Ops**: OpenTelemetry (`@vercel/otel`), Pino JSON logs with `x-request-id` correlation and redaction, `/api/health/liveness`, `/api/health/readiness` (2 s dependency timeouts, 200/503), strict CSP + HSTS + nosniff + Referrer/Permissions-Policy.
 - **SEO / agents**: `sitemap.xml`, `robots.txt`, dynamic OG images (`/api/og?slug=`), `/llms.txt`, and a clean `.md` for every blueprint (append `.md` to the URL).
 - **Slug evolution**: `content/slug-history.json` → 308 redirects in middleware (client-side equivalent in static export).
-- **Keyboard**: `⌘/Ctrl+K` search, `/` search, `[` Pure Signal Mode, `]` full detail, `1`–`6` role lens, `0` all roles.
+- **Keyboard**: `⌘/Ctrl+K` search, `/` search, `[` Pure Signal Mode, `]` full detail, `1`–`7` role lens, `0` all roles.
 
 ## Deviations from the original spec (deliberate)
 

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ROLE_IDS } from '../lib/roles';
 
 export const DOMAINS = [
   'fintech',
@@ -185,14 +186,7 @@ export const TopologySchema = z.object({
 });
 
 export const RoleLensSchema = z.object({
-  role: z.enum([
-    'ai-architect',
-    'solution-architect',
-    'data-engineer',
-    'data-scientist',
-    'ai-engineer',
-    'inference-engineer',
-  ]),
+  role: z.enum(ROLE_IDS),
   focus: nonEmpty,
   items: z
     .array(
@@ -420,6 +414,231 @@ export const ArchitectureRationaleSchema = z
   )
   .min(4);
 
+/* ------------------------------------------------------------------ enterprise layer (Blueprint 2.0) */
+
+export const RISK_TIERS = ['low', 'medium', 'high', 'critical'] as const;
+export type RiskTier = (typeof RISK_TIERS)[number];
+
+const list = (min = 2) => z.array(nonEmpty).min(min);
+
+/**
+ * Enterprise solution context: where this AI system sits in the business, the application landscape, the data estate, the
+ * technology stack, the security architecture and the operating model. Written before the AI/ML blueprint, because an
+ * architect needs the decision owner, the systems of record and the failure scenarios before choosing a model.
+ */
+export const EnterpriseContextSchema = z.object({
+  business: z.object({
+    capability: nonEmpty,
+    processes: list(),
+    stakeholders: z.array(z.object({ who: nonEmpty, needs: nonEmpty })).min(3),
+    currentState: nonEmpty,
+    futureState: nonEmpty,
+    decisionOwner: nonEmpty,
+    kpis: list(),
+  }),
+  application: z.object({
+    systemsOfRecord: list(),
+    upstream: list(),
+    downstream: list(),
+    integration: z
+      .array(z.object({ boundary: nonEmpty, style: nonEmpty, contract: nonEmpty, onFailure: nonEmpty }))
+      .min(4),
+    coexistence: nonEmpty,
+  }),
+  data: z.object({
+    sources: z
+      .array(
+        z.object({
+          source: nonEmpty,
+          owner: nonEmpty,
+          systemOfRecord: nonEmpty,
+          ingestion: nonEmpty,
+          quality: nonEmpty,
+        }),
+      )
+      .min(3),
+    contractExample: nonEmpty,
+    qualitySla: z.array(z.object({ dimension: nonEmpty, target: nonEmpty, check: nonEmpty })).min(5),
+    lineage: nonEmpty,
+    onSchemaChange: nonEmpty,
+    corrections: nonEmpty,
+    privacyDeletion: nonEmpty,
+  }),
+  technology: z.object({
+    hosting: nonEmpty,
+    compute: nonEmpty,
+    dataPlatform: nonEmpty,
+    aiPlatform: nonEmpty,
+    deployment: nonEmpty,
+    dr: z.object({ rto: nonEmpty, rpo: nonEmpty, strategy: nonEmpty }),
+  }),
+  security: z.object({
+    identity: nonEmpty,
+    classification: nonEmpty,
+    encryption: nonEmpty,
+    trustBoundaries: list(3),
+    privacy: nonEmpty,
+  }),
+  operating: z.object({
+    serviceOwner: nonEmpty,
+    supportModel: nonEmpty,
+    lifecycleOwners: z.array(z.object({ asset: nonEmpty, owner: nonEmpty })).min(4),
+  }),
+  c4Context: MermaidSchema,
+  c4Container: MermaidSchema,
+  nfr: z.array(z.object({ attribute: nonEmpty, requirement: nonEmpty, measuredBy: nonEmpty })).min(7),
+  adrs: z
+    .array(
+      z.object({
+        id: z.string().regex(/^ADR-\d{3}$/),
+        title: nonEmpty,
+        status: z.enum(['accepted', 'proposed']),
+        context: nonEmpty,
+        decision: nonEmpty,
+        alternatives: list(),
+        consequences: nonEmpty,
+      }),
+    )
+    .min(3),
+  buildBuy: z.object({
+    question: nonEmpty,
+    options: z.array(z.object({ option: nonEmpty, chooseWhen: nonEmpty, risk: nonEmpty })).min(3),
+    recommendation: nonEmpty,
+  }),
+});
+export type EnterpriseContext = z.infer<typeof EnterpriseContextSchema>;
+
+/** The AI Architect's decision record: why AI, why this paradigm, what else was considered and what would change the answer. */
+export const DecisionMatrixSchema = z.object({
+  whyAI: nonEmpty,
+  whyNotRules: nonEmpty,
+  whyThisParadigm: nonEmpty,
+  alternatives: z
+    .array(
+      z.object({
+        option: nonEmpty,
+        verdict: z.enum(['chosen', 'rejected', 'fallback', 'later']),
+        reason: nonEmpty,
+      }),
+    )
+    .min(4),
+  whyChosen: nonEmpty,
+  changeTriggers: list(3),
+  topology: nonEmpty,
+  sourcing: nonEmpty,
+  humanOversight: z.object({
+    mode: z.enum(['human-in-the-loop', 'human-on-the-loop', 'autonomous-with-audit']),
+    detail: nonEmpty,
+  }),
+  economics: nonEmpty,
+});
+export type DecisionMatrix = z.infer<typeof DecisionMatrixSchema>;
+
+const Control = z.object({ area: nonEmpty, control: nonEmpty, evidence: nonEmpty });
+export const GovernanceSchema = z.object({
+  riskTier: z.enum(RISK_TIERS),
+  rationale: nonEmpty,
+  treatment: nonEmpty,
+  approvalPath: list(2),
+  data: z.array(Control).min(3),
+  model: z.array(Control).min(4),
+  responsibleAI: z.array(Control).min(4),
+  aiSecurity: z.array(z.object({ threat: nonEmpty, control: nonEmpty })).min(5),
+  regulatory: z
+    .array(
+      z.object({
+        obligation: nonEmpty,
+        architecturalControl: nonEmpty,
+        evidence: nonEmpty,
+        owner: nonEmpty,
+        cadence: nonEmpty,
+      }),
+    )
+    .min(3),
+});
+export type Governance = z.infer<typeof GovernanceSchema>;
+
+export const OperationsSchema = z.object({
+  slos: z.array(z.object({ sli: nonEmpty, slo: nonEmpty, window: nonEmpty, errorBudget: nonEmpty })).min(5),
+  telemetry: z.array(z.object({ layer: nonEmpty, signals: nonEmpty })).min(4),
+  severities: z.array(z.object({ sev: nonEmpty, definition: nonEmpty, response: nonEmpty })).min(3),
+  support: z.array(z.object({ level: nonEmpty, owns: nonEmpty })).length(3),
+  release: z.object({ deploy: nonEmpty, rollback: nonEmpty }),
+  capacity: nonEmpty,
+  scenarios: z
+    .array(
+      z.object({
+        failure: nonEmpty,
+        detection: nonEmpty,
+        alert: nonEmpty,
+        owner: nonEmpty,
+        mitigation: nonEmpty,
+        recovery: nonEmpty,
+        learning: nonEmpty,
+      }),
+    )
+    .min(8),
+  unitCost: z.array(z.object({ unit: nonEmpty, value: nonEmpty, how: nonEmpty })).min(3),
+});
+export type Operations = z.infer<typeof OperationsSchema>;
+
+export const MlopsSchema = z.object({
+  lifecycle: z
+    .array(
+      z.object({
+        area: nonEmpty,
+        practice: nonEmpty,
+        artifact: nonEmpty,
+        gate: nonEmpty,
+      }),
+    )
+    .length(9),
+  retraining: z.object({
+    triggers: list(3),
+    dataMaturity: nonEmpty,
+    championChallenger: nonEmpty,
+  }),
+  rollback: list(3),
+  toolchain: z.array(z.object({ concern: nonEmpty, options: nonEmpty })).min(5),
+  /** LLMOps additions: only for systems whose behaviour depends on prompts, retrieval indexes or provider models */
+  llmops: z.array(z.object({ area: nonEmpty, practice: nonEmpty })).optional(),
+});
+export type Mlops = z.infer<typeof MlopsSchema>;
+
+export const VALIDATION_LEVELS = [
+  'schema-validated',
+  'technically-validated',
+  'synthetic-data-tested',
+  'domain-expert-reviewed',
+  'production-evidence',
+] as const;
+export type ValidationLevel = (typeof VALIDATION_LEVELS)[number];
+
+export const ValidationSchema = z.object({
+  levels: z
+    .array(
+      z.object({
+        level: z.enum(VALIDATION_LEVELS),
+        state: z.enum(['passed', 'not-yet']),
+        evidence: nonEmpty,
+      }),
+    )
+    .length(VALIDATION_LEVELS.length),
+  feasibility: z
+    .array(
+      z.object({
+        check: nonEmpty,
+        status: z.enum(['pass', 'warn', 'fail', 'n/a']),
+        detail: nonEmpty,
+      }),
+    )
+    .min(6),
+});
+export type Validation = z.infer<typeof ValidationSchema>;
+
+export const WORKLOAD_PROFILES = ['transaction', 'session', 'asset', 'media', 'llm', 'batch'] as const;
+export type WorkloadProfile = (typeof WORKLOAD_PROFILES)[number];
+
 export const UseCaseSchema = z
   .object({
     id: z.string().uuid(),
@@ -471,11 +690,17 @@ export const UseCaseSchema = z
     }),
     productionEdgeCases: z.array(EdgeCaseSchema).min(2),
     systemDesign: SystemDesignSchema,
-    /** what each of the six personas must additionally check, specialised to this use case */
-    roleLenses: z.array(RoleLensSchema).length(6),
+    /** what each of the seven personas must additionally check, specialised to this use case */
+    roleLenses: z.array(RoleLensSchema).length(ROLE_IDS.length),
     /** canonical mechanisms this system leans on, explained once at /patterns/primitives/<id> */
     primitives: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1),
     agentic: AgenticSchema,
+    enterpriseContext: EnterpriseContextSchema,
+    decisionMatrix: DecisionMatrixSchema,
+    governance: GovernanceSchema,
+    mlops: MlopsSchema,
+    operations: OperationsSchema,
+    validation: ValidationSchema,
     playbook: PlaybookSchema.optional(),
   })
   .strict();

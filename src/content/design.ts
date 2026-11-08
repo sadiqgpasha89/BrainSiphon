@@ -71,19 +71,42 @@ export const TOTAL_BUDGET_MS: Record<LatencySLA, number | null> = {
   batch: null,
 };
 
+/**
+ * The p99 envelope is a sum, not a wish: edge + every synchronous stage + a reserve for network hops and
+ * serialisation must equal the SLA exactly. (A review found a blueprint whose stage budgets added up to 8.6 ms
+ * against an 8 ms budget; `src/content/feasibility.ts` now fails the build on that.)
+ */
+export const EDGE_MS: Record<LatencySLA, number | null> = { 'sub-10ms': 0.5, 'sub-100ms': 2, seconds: 25, batch: null };
+export const RESERVE_MS: Record<LatencySLA, number | null> = { 'sub-10ms': 0.8, 'sub-100ms': 8, seconds: 250, batch: null };
+
+/** Pool left for synchronous stages once the edge and the network/serialisation reserve are paid. */
+export const stagePoolMs = (latency: LatencySLA): number | null => {
+  const t = TOTAL_BUDGET_MS[latency];
+  return t === null ? null : Math.round((t - EDGE_MS[latency]! - RESERVE_MS[latency]!) * 10) / 10;
+};
+
 export function buildStages(pipe: RawStage[], latency: LatencySLA): Stage[] {
-  const total = TOTAL_BUDGET_MS[latency];
+  const pool = stagePoolMs(latency);
   const base = pipe.map((p, i) => {
     const kind = classify(p.label, p.tech);
     return { id: `S${i + 1}`, label: p.label, tech: p.tech, kind, async: kind === 'human' || kind === 'sink', budgetMs: null as number | null };
   });
-  if (total !== null) {
+  if (pool !== null) {
     const sync = base.filter((s) => !s.async);
     const wsum = sync.reduce((a, s) => a + WEIGHT[s.kind], 0) || 1;
-    for (const s of sync) {
-      const raw = (total * WEIGHT[s.kind]) / wsum;
-      s.budgetMs = total <= 10 ? Math.max(0.1, Math.round(raw * 10) / 10) : Math.max(1, Math.round(raw));
-    }
+    // Largest-remainder allocation in whole units (0.1 ms below 10 ms, otherwise 1 ms) so the stages sum to the pool exactly.
+    const unit = TOTAL_BUDGET_MS[latency]! <= 10 ? 0.1 : 1;
+    const units = Math.round(pool / unit);
+    const exact = sync.map((s) => (units * WEIGHT[s.kind]) / wsum);
+    const floor = exact.map((x) => Math.max(1, Math.floor(x)));
+    let left = units - floor.reduce((a, b) => a + b, 0);
+    const order = exact.map((x, i) => [x - Math.floor(x), i] as const).sort((a, b) => b[0] - a[0]);
+    for (let n = 0; left > 0; n = (n + 1) % order.length, left--) floor[order[n]![1]]! += 1;
+    // never possible with sane pools, but keep the sum exact if the floor of 1 unit overshoots
+    for (let i = 0; left < 0; i = (i + 1) % floor.length) if (floor[i]! > 1) { floor[i]! -= 1; left++; }
+    sync.forEach((s, i) => {
+      s.budgetMs = Math.round(floor[i]! * unit * 10) / 10;
+    });
   }
   return base;
 }

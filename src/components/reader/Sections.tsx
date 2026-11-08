@@ -56,6 +56,7 @@ export const List = ({ items, tone }: { items: string[]; tone?: 'signal' | 'nois
 );
 
 export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?: boolean }[] => [
+  { id: 'enterprise', label: 'Enterprise context' },
   { id: 'signal-noise', label: 'Signal vs. Noise' },
   { id: 'problem', label: 'Problem & loss' },
   { id: 'features', label: 'Features' },
@@ -68,8 +69,12 @@ export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?
   { id: 'evaluation', label: 'Evaluation' },
   { id: 'edge-cases', label: 'Edge cases' },
   { id: 'role-lenses', label: 'Role lenses' },
+  { id: 'governance', label: 'Security & governance' },
+  { id: 'mlops', label: 'MLOps & LLMOps' },
+  { id: 'operations', label: 'Production operations' },
   { id: 'agentic', label: 'Agentic solution' },
   ...(hasPlaybook ? [{ id: 'playbook', label: 'Build playbook' }] : []),
+  { id: 'validation', label: 'Validation' },
 ];
 
 export async function Sections({ uc }: { uc: UseCase }) {
@@ -476,7 +481,12 @@ export async function Sections({ uc }: { uc: UseCase }) {
             </tbody>
           </table>
         </TableWrap>
-        <CapacityCalculator paradigms={uc.mlParadigms} latency={uc.latencySLA} inputs={d.scale.inputs} />
+        <CapacityCalculator
+          domain={uc.domain}
+          paradigms={uc.mlParadigms}
+          latency={uc.latencySLA}
+          inputs={d.scale.inputs}
+        />
         <div data-prose className="grid gap-6 md:grid-cols-3">
           <div>
             <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Assumptions</p>
@@ -542,7 +552,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
       <Section
         id="role-lenses"
         title="Role lenses: production gaps by persona"
-        kicker="What each of the six roles must additionally check, specialised to this system. Press 1 to 6 to filter the page."
+        kicker="What each of the seven roles must additionally check, specialised to this system. Press 1 to 7 to filter the page."
       >
         <div className="grid gap-4 lg:grid-cols-2">
           {uc.roleLenses.map((r) => (
