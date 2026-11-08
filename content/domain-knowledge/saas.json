@@ -1,0 +1,1035 @@
+{
+ "overview": "Developers use documentation to build against an API or SDK, and wrong guidance costs them hours: a made-up endpoint, an outdated limit or code for the wrong version. A docs assistant answers questions from the documentation, so its value depends on how the docs are organised, how versions and deprecations work and what developers do with the answer. Understanding these makes the difference between a helpful assistant and a confident liar.",
+ "concepts": [
+  {
+   "name": "The anatomy of API documentation",
+   "explanation": "Docs usually combine an API reference (often generated from an OpenAPI specification), guides and tutorials, a changelog or release notes, and migration guides. Each answers a different kind of question, and they can disagree: a changelog legitimately mentions old values.",
+   "whyItMatters": "Retrieval should know which kind of page it is reading. Factual answers come from the reference for the right version, not from the changelog.",
+   "tags": [
+    "anatomy",
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "name": "Versions and deprecation",
+   "explanation": "APIs have versions (v1, v2), SDKs have their own semantic versions (major.minor.patch) per language, and features are deprecated with a sunset date before being removed. A breaking change is one that makes existing code stop working.",
+   "whyItMatters": "The right answer depends on which version the developer is using, so version must come from context and be shown in the answer.",
+   "tags": [
+    "api",
+    "deprecation",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version",
+    "versions"
+   ]
+  },
+  {
+   "name": "OpenAPI as ground truth",
+   "explanation": "An OpenAPI specification describes endpoints, parameters, request and response schemas and authentication in machine-readable form. Because it is precise, it can validate that every endpoint or field in a generated answer exists.",
+   "whyItMatters": "It turns hallucination checking from opinion into a lookup, and it is the cheapest strong guard you can add.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "ground",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "truth",
+    "version"
+   ]
+  },
+  {
+   "name": "How retrieval-augmented answering fails",
+   "explanation": "The assistant splits docs into chunks, retrieves the most relevant ones (keyword search, embeddings or both) and has a language model answer from them with citations. Failures include retrieving the wrong version, quoting a stale value from a changelog, inventing an endpoint, answering a question the docs never cover and a citation that exists but does not support the claim.",
+   "whyItMatters": "Each failure needs its own test. Measure them separately, not as one accuracy number.",
+   "tags": [
+    "answering",
+    "api",
+    "augmented",
+    "docs",
+    "documentation",
+    "fails",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "name": "Evaluating a docs assistant",
+   "explanation": "A golden set of real questions with known answers, including unanswerable and version-specific ones, is scored for correctness, faithfulness to the cited source, abstention when the docs are silent and, for code, whether the snippet compiles and runs. Questions written from page headings are too easy.",
+   "whyItMatters": "Abstaining is a feature. A refusal that is right is better than an answer that is plausible and wrong.",
+   "tags": [
+    "api",
+    "assistant",
+    "docs",
+    "documentation",
+    "evaluating",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "name": "What success means for the business",
+   "explanation": "Docs teams track time to first successful API call, support tickets caused by documentation and search success. An assistant that deflects tickets but sends developers wrong limits or versions moves cost from the support team to the developer's incident.",
+   "whyItMatters": "Measure outcomes for developers, not only answer quality, and decide upfront what the assistant must never answer (billing, security advice, legal terms).",
+   "tags": [
+    "api",
+    "business",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "success",
+    "version"
+   ]
+  },
+  {
+   "name": "B2B SaaS metrics and the customer lifecycle",
+   "explanation": "Software-as-a-service companies sell subscriptions to businesses. Key quantities are annual recurring revenue (ARR), net revenue retention, churn, expansion and the sales pipeline. Customers move from lead to account, trial, activation, expansion and renewal, with product usage as the leading signal.",
+   "whyItMatters": "Targets like churn and expansion are slow and censored (many accounts have not renewed yet), so models need survival-style handling and care about leakage from billing events.",
+   "tags": [
+    "saas",
+    "churn",
+    "arr",
+    "renewal",
+    "expansion",
+    "upsell",
+    "pipeline",
+    "health",
+    "lead",
+    "account",
+    "plg",
+    "activation",
+    "revenue"
+   ]
+  },
+  {
+   "name": "Product-led growth, pricing and experimentation",
+   "explanation": "Many products grow by letting users try before they buy. Activation (reaching first value), usage depth and team spread predict conversion; pricing and packaging decide who pays for what. A/B tests with few accounts and long horizons need variance reduction and sequential methods.",
+   "whyItMatters": "Underpowered experiments and peeking produce false wins, so experimentation platforms enforce rules about duration and metrics.",
+   "tags": [
+    "plg",
+    "activation",
+    "pricing",
+    "packaging",
+    "experimentation",
+    "cuped",
+    "sequential",
+    "ab",
+    "trial",
+    "usage"
+   ]
+  },
+  {
+   "name": "Support, success and the copilots that help them",
+   "explanation": "Support teams answer tickets with help-centre articles and past replies; success managers prepare reviews for customers. Assistants draft replies, route tickets and summarise calls, with accuracy, tone and policy compliance as constraints.",
+   "whyItMatters": "Deflection that hides a wrong answer costs more than a ticket, so assistants must cite sources and escalate when unsure.",
+   "tags": [
+    "support",
+    "ticket",
+    "copilot",
+    "center",
+    "deflection",
+    "success",
+    "qbr",
+    "chatbot",
+    "summarization",
+    "call"
+   ]
+  },
+  {
+   "name": "Engineering productivity and developer tools",
+   "explanation": "Code completion, review, test selection, flaky test detection, deployment risk and pull-request summarisation reduce developer toil. Quality is measured by acceptance, correctness (do the tests pass) and trust; noisy tools get switched off.",
+   "whyItMatters": "Offline benchmarks like pass rates on toy problems do not predict real-world usefulness; measure acceptance and time saved in real repositories.",
+   "tags": [
+    "code",
+    "completion",
+    "review",
+    "flaky",
+    "deployment",
+    "pull-request",
+    "developer",
+    "ci",
+    "productivity",
+    "sql"
+   ]
+  },
+  {
+   "name": "Reliability engineering and AIOps",
+   "explanation": "Operations teams run services against reliability targets (SLOs). Monitoring produces metrics, logs and traces; models detect anomalies, forecast capacity, correlate alerts, find root causes and sample traces. Incidents are rare, labels are scarce and systems change constantly.",
+   "whyItMatters": "Alert noise and unexplained pages burn out on-call engineers, so precision, grouping and actionable context come first.",
+   "tags": [
+    "aiops",
+    "incident",
+    "anomaly",
+    "alert",
+    "capacity",
+    "autoscaling",
+    "root",
+    "cause",
+    "sre",
+    "trace",
+    "log",
+    "monitoring",
+    "slo"
+   ]
+  },
+  {
+   "name": "Data platforms, quality and ML operations",
+   "explanation": "Data pipelines move events into warehouses; data quality checks catch schema and volume problems; ML platforms track models, drift, evaluation of language-model applications and costs. Gateways route requests between models by cost and quality.",
+   "whyItMatters": "Many model failures are data failures; monitoring inputs and outputs is as important as the model.",
+   "tags": [
+    "quality",
+    "drift",
+    "platform",
+    "mlops",
+    "evaluation",
+    "gateway",
+    "routing",
+    "cost",
+    "schema",
+    "integration",
+    "lineage"
+   ]
+  },
+  {
+   "name": "Identity resolution and the customer data platform",
+   "explanation": "Customer data platforms merge records from many sources into one profile. Matching leads to accounts, cleaning duplicates and resolving identities are entity-resolution problems with strict privacy rules.",
+   "whyItMatters": "A wrong merge combines two real customers, with privacy consequences, so precision comes before recall.",
+   "tags": [
+    "cdp",
+    "identity",
+    "resolution",
+    "lead",
+    "account",
+    "matching",
+    "dedup",
+    "crm",
+    "customer"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "API",
+   "definition": "Application programming interface: the way one program calls another, often over HTTP.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Endpoint",
+   "definition": "A specific URL and method of an API, such as POST /v2/payments.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "endpoint",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "SDK",
+   "definition": "Software development kit: a language-specific library that wraps an API.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "OpenAPI / Swagger",
+   "definition": "A standard machine-readable description of a REST API's endpoints, parameters and schemas.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "swagger",
+    "version"
+   ]
+  },
+  {
+   "term": "REST",
+   "definition": "A common style of web API built around resources and HTTP methods.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "rest",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Webhook",
+   "definition": "An HTTP callback in which a service notifies your server when an event happens.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version",
+    "webhook"
+   ]
+  },
+  {
+   "term": "Rate limit",
+   "definition": "The maximum number of requests allowed in a time window, with errors returned when exceeded.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "limit",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Pagination",
+   "definition": "Returning large result sets in pages, using cursors or offsets.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "pagination",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Idempotency key",
+   "definition": "A unique value that makes a repeated request safe, so retries do not create duplicates.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "idempotency",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Auth scope / OAuth",
+   "definition": "A permission granted to a token, and the standard protocol for delegated access.",
+   "tags": [
+    "api",
+    "auth",
+    "docs",
+    "documentation",
+    "oauth",
+    "openapi",
+    "rag",
+    "retrieval",
+    "scope",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Deprecation",
+   "definition": "Announcing that a feature will be removed, with a sunset date, while it still works.",
+   "tags": [
+    "api",
+    "deprecation",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Breaking change",
+   "definition": "A change that makes existing client code fail, which normally requires a new major version.",
+   "tags": [
+    "api",
+    "breaking",
+    "change",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Semantic versioning",
+   "definition": "A version number scheme (major.minor.patch) in which the major number changes for breaking changes.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "semantic",
+    "version",
+    "versioning"
+   ]
+  },
+  {
+   "term": "Changelog",
+   "definition": "A dated list of what changed in each release, which quotes both old and new behaviour.",
+   "tags": [
+    "api",
+    "changelog",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "RAG",
+   "definition": "Retrieval-augmented generation: a model answers using passages retrieved from a document collection.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Chunk",
+   "definition": "A piece of a document, such as a section, that is indexed and retrieved as a unit.",
+   "tags": [
+    "api",
+    "chunk",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "BM25",
+   "definition": "A classic keyword-ranking function that scores documents by term frequency and rarity.",
+   "tags": [
+    "api",
+    "bm25",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Embedding",
+   "definition": "A vector representing the meaning of text, used for similarity search that tolerates different wording.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "embedding",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Reranking",
+   "definition": "A second-stage model that reorders retrieved passages by relevance to the question.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "reranking",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Grounding / citation",
+   "definition": "Basing an answer on retrieved text and pointing to the passage that supports it.",
+   "tags": [
+    "api",
+    "citation",
+    "docs",
+    "documentation",
+    "grounding",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Hallucination",
+   "definition": "Output that sounds plausible but is not supported by the sources, such as an endpoint that does not exist.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "hallucination",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Abstention",
+   "definition": "Declining to answer because the sources do not contain the answer.",
+   "tags": [
+    "abstention",
+    "api",
+    "docs",
+    "documentation",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Golden set",
+   "definition": "A fixed set of questions with verified answers used to score and compare versions of the system.",
+   "tags": [
+    "api",
+    "docs",
+    "documentation",
+    "golden",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "version"
+   ]
+  },
+  {
+   "term": "Time to first successful call",
+   "definition": "How long a new developer takes to make a working API request, a common docs-quality metric.",
+   "tags": [
+    "api",
+    "call",
+    "docs",
+    "documentation",
+    "first",
+    "openapi",
+    "rag",
+    "retrieval",
+    "sdk",
+    "successful",
+    "version"
+   ]
+  },
+  {
+   "term": "ARR / MRR",
+   "definition": "Annual or monthly recurring revenue: the value of active subscriptions normalised to a year or month.",
+   "tags": [
+    "arr",
+    "mrr",
+    "revenue",
+    "churn",
+    "expansion",
+    "pipeline"
+   ]
+  },
+  {
+   "term": "NRR / GRR",
+   "definition": "Net and gross revenue retention: how much of last period's revenue remains, with or without expansion.",
+   "tags": [
+    "retention",
+    "churn",
+    "expansion",
+    "health",
+    "renewal"
+   ]
+  },
+  {
+   "term": "Churn",
+   "definition": "Customers or revenue lost over a period; logo churn counts accounts, revenue churn counts money.",
+   "tags": [
+    "churn",
+    "renewal",
+    "health",
+    "retention",
+    "account"
+   ]
+  },
+  {
+   "term": "Renewal",
+   "definition": "The point at which a customer decides whether to continue a subscription.",
+   "tags": [
+    "renewal",
+    "churn",
+    "health",
+    "account"
+   ]
+  },
+  {
+   "term": "Expansion / upsell",
+   "definition": "Revenue growth from existing customers buying more seats, features or tiers.",
+   "tags": [
+    "expansion",
+    "upsell",
+    "propensity",
+    "account",
+    "pricing"
+   ]
+  },
+  {
+   "term": "PQL / MQL",
+   "definition": "Product-qualified and marketing-qualified leads: prospects identified from product usage or marketing activity.",
+   "tags": [
+    "lead",
+    "plg",
+    "pipeline",
+    "activation"
+   ]
+  },
+  {
+   "term": "Activation",
+   "definition": "A user reaching the first moment of real value in a product.",
+   "tags": [
+    "activation",
+    "plg",
+    "onboarding",
+    "trial"
+   ]
+  },
+  {
+   "term": "Pipeline",
+   "definition": "The set of open sales opportunities and their stages and expected values.",
+   "tags": [
+    "pipeline",
+    "forecast",
+    "revenue",
+    "deal",
+    "win"
+   ]
+  },
+  {
+   "term": "Seat-based pricing",
+   "definition": "Charging per user of the product.",
+   "tags": [
+    "pricing",
+    "packaging",
+    "plan",
+    "usage"
+   ]
+  },
+  {
+   "term": "Usage-based billing",
+   "definition": "Charging according to consumption, such as API calls or storage, which makes revenue less predictable.",
+   "tags": [
+    "usage",
+    "billing",
+    "pricing",
+    "anomaly"
+   ]
+  },
+  {
+   "term": "CUPED",
+   "definition": "A method that reduces experiment variance by adjusting for pre-experiment behaviour.",
+   "tags": [
+    "cuped",
+    "experimentation",
+    "ab",
+    "variance"
+   ]
+  },
+  {
+   "term": "Sequential testing",
+   "definition": "Statistical methods that allow results to be checked repeatedly without inflating false positives.",
+   "tags": [
+    "sequential",
+    "experimentation",
+    "feature",
+    "flag",
+    "rollout"
+   ]
+  },
+  {
+   "term": "Feature flag",
+   "definition": "A switch that turns a feature on for chosen users, used for gradual rollouts and experiments.",
+   "tags": [
+    "feature",
+    "flag",
+    "rollout",
+    "deployment",
+    "safety"
+   ]
+  },
+  {
+   "term": "Ticket deflection",
+   "definition": "Resolving a question through self-service so no support ticket is created.",
+   "tags": [
+    "deflection",
+    "support",
+    "center",
+    "chatbot"
+   ]
+  },
+  {
+   "term": "Knowledge base",
+   "definition": "The collection of help articles an assistant can retrieve and cite.",
+   "tags": [
+    "kb",
+    "support",
+    "rag",
+    "copilot"
+   ]
+  },
+  {
+   "term": "QBR",
+   "definition": "Quarterly business review: a meeting where a customer success manager reviews value delivered with a customer.",
+   "tags": [
+    "qbr",
+    "success",
+    "account",
+    "report"
+   ]
+  },
+  {
+   "term": "Pull request (PR)",
+   "definition": "A proposed code change submitted for review before merging.",
+   "tags": [
+    "pull-request",
+    "review",
+    "code",
+    "description"
+   ]
+  },
+  {
+   "term": "Flaky test",
+   "definition": "A test that sometimes passes and sometimes fails without any code change.",
+   "tags": [
+    "flaky",
+    "ci",
+    "selection"
+   ]
+  },
+  {
+   "term": "CI/CD",
+   "definition": "Continuous integration and delivery: automated building, testing and deployment of code.",
+   "tags": [
+    "ci",
+    "deployment",
+    "rollout"
+   ]
+  },
+  {
+   "term": "Blast radius",
+   "definition": "How many users or systems a failure or change can affect.",
+   "tags": [
+    "deployment",
+    "rollout",
+    "incident"
+   ]
+  },
+  {
+   "term": "SLO / SLA",
+   "definition": "A service level objective (internal target) and agreement (promised to customers) for reliability.",
+   "tags": [
+    "slo",
+    "sre",
+    "incident",
+    "alert",
+    "capacity"
+   ]
+  },
+  {
+   "term": "Incident",
+   "definition": "An event that degrades a service and needs a response.",
+   "tags": [
+    "incident",
+    "aiops",
+    "root",
+    "cause",
+    "runbook"
+   ]
+  },
+  {
+   "term": "Runbook",
+   "definition": "A documented procedure for handling a known operational situation.",
+   "tags": [
+    "runbook",
+    "incident",
+    "sre",
+    "agent",
+    "automation"
+   ]
+  },
+  {
+   "term": "Root-cause analysis",
+   "definition": "Finding the underlying cause of an incident rather than its visible symptoms.",
+   "tags": [
+    "root",
+    "cause",
+    "incident",
+    "microservice",
+    "aiops"
+   ]
+  },
+  {
+   "term": "Distributed trace",
+   "definition": "A record of one request's path through many services, with timings.",
+   "tags": [
+    "trace",
+    "sampling",
+    "microservice",
+    "observability"
+   ]
+  },
+  {
+   "term": "Observability",
+   "definition": "The ability to understand a system's state from its metrics, logs and traces.",
+   "tags": [
+    "observability",
+    "log",
+    "trace",
+    "monitoring",
+    "anomaly"
+   ]
+  },
+  {
+   "term": "Autoscaling",
+   "definition": "Automatically adding or removing compute resources as load changes.",
+   "tags": [
+    "autoscaling",
+    "capacity",
+    "forecast",
+    "cloud",
+    "cost"
+   ]
+  },
+  {
+   "term": "FinOps",
+   "definition": "Managing cloud spend by tracking, allocating and optimising costs.",
+   "tags": [
+    "finops",
+    "cloud",
+    "cost",
+    "anomaly",
+    "billing"
+   ]
+  },
+  {
+   "term": "Data drift",
+   "definition": "A change in the distribution of input data compared with what a model was trained on.",
+   "tags": [
+    "drift",
+    "monitoring",
+    "platform",
+    "psi"
+   ]
+  },
+  {
+   "term": "PSI",
+   "definition": "Population stability index: a score for how much a distribution has shifted.",
+   "tags": [
+    "drift",
+    "psi",
+    "monitoring",
+    "credit"
+   ]
+  },
+  {
+   "term": "Schema matching",
+   "definition": "Mapping the columns of one data source to the fields of another.",
+   "tags": [
+    "schema",
+    "integration",
+    "matching",
+    "llm"
+   ]
+  },
+  {
+   "term": "Data lineage",
+   "definition": "A record of where data came from and how it was transformed.",
+   "tags": [
+    "lineage",
+    "quality",
+    "platform"
+   ]
+  },
+  {
+   "term": "LLM gateway",
+   "definition": "A service that routes language-model requests between providers by cost, latency and quality.",
+   "tags": [
+    "gateway",
+    "routing",
+    "cost",
+    "llm",
+    "platform"
+   ]
+  },
+  {
+   "term": "LLM-as-judge",
+   "definition": "Using a language model to grade another model's outputs, calibrated against human labels.",
+   "tags": [
+    "evaluation",
+    "judge",
+    "llm",
+    "regression",
+    "rag"
+   ]
+  },
+  {
+   "term": "RAG monitoring",
+   "definition": "Checking that retrieval-augmented answers remain grounded in their sources over time.",
+   "tags": [
+    "rag",
+    "quality",
+    "monitoring",
+    "grounded"
+   ]
+  },
+  {
+   "term": "Text-to-SQL",
+   "definition": "Generating database queries from natural-language questions.",
+   "tags": [
+    "sql",
+    "analyst",
+    "query",
+    "schema",
+    "copilot"
+   ]
+  },
+  {
+   "term": "Fill-in-the-middle",
+   "definition": "A code-completion setup where the model fills a gap between the code before and after the cursor.",
+   "tags": [
+    "code",
+    "completion",
+    "assistant"
+   ]
+  },
+  {
+   "term": "CDP",
+   "definition": "Customer data platform: a system that unifies customer data from many sources into profiles.",
+   "tags": [
+    "cdp",
+    "identity",
+    "customer",
+    "resolution"
+   ]
+  },
+  {
+   "term": "Entity resolution",
+   "definition": "Deciding which records refer to the same real-world entity.",
+   "tags": [
+    "identity",
+    "resolution",
+    "matching",
+    "lead",
+    "account",
+    "cdp"
+   ]
+  },
+  {
+   "term": "Meeting notes and action items",
+   "definition": "Summaries and tasks extracted from meetings, where attributing owners correctly is the main failure.",
+   "tags": [
+    "meeting",
+    "notes",
+    "summarization",
+    "owner",
+    "email",
+    "assistant"
+   ]
+  },
+  {
+   "term": "Email assistant",
+   "definition": "A tool that drafts replies in the user's style from the thread.",
+   "tags": [
+    "email",
+    "assistant",
+    "reply",
+    "style"
+   ]
+  },
+  {
+   "term": "In-app copilot",
+   "definition": "An assistant inside a product that answers questions and can take actions on the user's behalf.",
+   "tags": [
+    "copilot",
+    "in-app",
+    "agent",
+    "action"
+   ]
+  }
+ ]
+}

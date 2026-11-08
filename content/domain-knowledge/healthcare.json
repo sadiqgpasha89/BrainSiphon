@@ -1,0 +1,854 @@
+{
+ "overview": "Sepsis is a life-threatening organ dysfunction caused by the body's response to an infection, and every hour of delay in treatment matters. An early-warning model sits inside the electronic health record and tries to alert a nurse or physician hours before a patient deteriorates. The hard parts are clinical, not statistical: what counts as onset, which timestamp in the chart is real, and how many alerts a ward will tolerate before it stops reading them.",
+ "concepts": [
+  {
+   "name": "Definitions: Sepsis-3, SIRS and qSOFA",
+   "explanation": "Sepsis-3 defines sepsis as suspected infection plus an acute rise of 2 or more points in the SOFA organ-failure score, and septic shock as sepsis that needs vasopressors to keep blood pressure up and has lactate above 2 mmol/L despite fluids. Older screening tools are still used: SIRS (two of abnormal temperature, heart rate, breathing rate or white cell count) and qSOFA (fast breathing, low systolic pressure, altered mentation).",
+   "whyItMatters": "Which definition you label with changes prevalence, onset time and what the model learns, so pick it with clinicians and write it down.",
+   "tags": [
+    "definitions",
+    "deterioration",
+    "early-warning",
+    "icu",
+    "qsofa",
+    "sepsis",
+    "sirs",
+    "vitals"
+   ]
+  },
+  {
+   "name": "Onset is a constructed label, not an event",
+   "explanation": "There is no clock that records when sepsis starts. Researchers reconstruct onset from the time infection was suspected (antibiotics ordered and cultures taken within a window) and the time organ dysfunction appeared. Different rules give onset times hours apart, and billing codes are later and noisier still.",
+   "whyItMatters": "Lead time is measured against this label. A sloppy onset definition makes lead time and sensitivity numbers meaningless.",
+   "tags": [
+    "constructed",
+    "deterioration",
+    "early-warning",
+    "event",
+    "icu",
+    "label",
+    "onset",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "name": "Chart time, draw time and result time",
+   "explanation": "A lab has an order time, a collection (draw) time and a result time, often an hour or more apart; vitals have a measurement time and a charting time. A feature may use a value only once clinicians could have seen it.",
+   "whyItMatters": "Using draw time instead of result time gives the model information the ward never had, so offline lead time looks better than real life.",
+   "tags": [
+    "chart",
+    "deterioration",
+    "draw",
+    "early-warning",
+    "icu",
+    "result",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "name": "Treatment leaks the label",
+   "explanation": "Clinicians order antibiotics, cultures, fluids and lactate because they already suspect sepsis. Those orders are consequences of suspicion, and patients who are treated early may never reach the textbook definition.",
+   "whyItMatters": "Orders and diagnoses must stay out of the features, and treated patients need careful handling in the label, or you learn clinician behaviour instead of physiology.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "label",
+    "leaks",
+    "sepsis",
+    "treatment",
+    "vitals"
+   ]
+  },
+  {
+   "name": "Alert fatigue and the response workflow",
+   "explanation": "Nurses and physicians see many alerts per shift. Alerts that fire too often are ignored or disabled, and an alert is only useful if a named person knows what to do within a set time. Hospital quality programmes, such as the SEP-1 bundle in the United States, define the care steps that should follow suspected sepsis.",
+   "whyItMatters": "The right metric is sensitivity and lead time at an agreed alert burden, agreed with ward leadership before modelling.",
+   "tags": [
+    "alert",
+    "deterioration",
+    "early-warning",
+    "fatigue",
+    "icu",
+    "response",
+    "sepsis",
+    "vitals",
+    "workflow"
+   ]
+  },
+  {
+   "name": "Regulation and data protection",
+   "explanation": "Software that drives clinical decisions can count as a medical device (software as a medical device), with change control for each model update. Patient data is protected by laws such as HIPAA in the United States and the GDPR in Europe, and research datasets are de-identified.",
+   "whyItMatters": "You cannot retrain and redeploy freely; plan validation evidence, monitoring and a change-control record from the start.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "protection",
+    "regulation",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "name": "Clinical data: what the record really contains",
+   "explanation": "The electronic health record holds structured data (vitals, labs, medications, orders, diagnosis codes) and free text (notes, reports). Timestamps differ for ordering, collection and result; documentation is written after the fact; billing codes reflect reimbursement as much as truth; missingness is informative because tests are ordered when clinicians are worried.",
+   "whyItMatters": "Features and labels built from the record encode clinical behaviour, so leakage and bias are the default, not the exception.",
+   "tags": [
+    "clinical",
+    "ehr",
+    "note",
+    "coding",
+    "icd",
+    "readmission",
+    "triage",
+    "summarization",
+    "patient"
+   ]
+  },
+  {
+   "name": "Medical imaging and diagnostics",
+   "explanation": "Models read radiographs, scans, slides, retinal and skin images. Labels come from radiologist reports, adjudicated reads or biopsy; devices, hospitals and populations differ, and a model's apparent accuracy can come from artefacts such as scanner markings rather than disease.",
+   "whyItMatters": "Evaluation must hold out whole sites or devices and report sensitivity at clinically agreed specificity, with subgroup performance.",
+   "tags": [
+    "imaging",
+    "radiology",
+    "xray",
+    "pathology",
+    "slide",
+    "dermatology",
+    "retina",
+    "ultrasound",
+    "segmentation",
+    "vision",
+    "screening"
+   ]
+  },
+  {
+   "name": "Hospital operations and capacity",
+   "explanation": "Hospitals schedule operating rooms, staff nurses, forecast emergency demand, manage beds and dispatch ambulances. Demand is lumpy, costs of waiting are asymmetric and safety limits on staffing are hard constraints.",
+   "whyItMatters": "Forecasts and schedules are judged by waiting time, overtime and safety margins, not average error.",
+   "tags": [
+    "bed",
+    "capacity",
+    "scheduling",
+    "nurse",
+    "emergency",
+    "ambulance",
+    "operating",
+    "demand",
+    "staff",
+    "dispatch"
+   ]
+  },
+  {
+   "name": "Regulation, privacy and trust in clinical AI",
+   "explanation": "Clinical software may be regulated as a medical device, patient data is protected by privacy law, models must be validated on the population where they will run, and clinicians need to understand and override outputs. Federated approaches let hospitals learn together without sharing records.",
+   "whyItMatters": "Plan for validation evidence, post-deployment monitoring and de-identification from the first design review.",
+   "tags": [
+    "regulatory",
+    "privacy",
+    "phi",
+    "redaction",
+    "federated",
+    "samd",
+    "validation",
+    "deidentification",
+    "consent"
+   ]
+  },
+  {
+   "name": "Drug discovery and genomics",
+   "explanation": "Early discovery predicts molecular properties, binding and toxicity; genomics predicts the effect of variants and risk from many small genetic effects. Data are small, assays noisy, and the cost of a wrong prediction is a failed experiment, so uncertainty estimates matter.",
+   "whyItMatters": "Random splits are overly optimistic; scaffold or lineage splits show how a model generalises to new chemistry or populations.",
+   "tags": [
+    "drug",
+    "molecule",
+    "genomic",
+    "variant",
+    "discovery",
+    "docking",
+    "single-cell",
+    "polygenic",
+    "adverse",
+    "interaction"
+   ]
+  },
+  {
+   "name": "Population health, risk and fairness",
+   "explanation": "Health systems stratify patients by risk to allocate care management, and predict readmissions, cost and chronic disease progression. Cost is not need: a model that predicts spending can underserve groups who historically had less access to care.",
+   "whyItMatters": "Choose targets that measure health need, and audit performance across demographic groups.",
+   "tags": [
+    "population",
+    "stratification",
+    "readmission",
+    "fairness",
+    "ckd",
+    "progression",
+    "cost",
+    "care",
+    "chronic"
+   ]
+  },
+  {
+   "name": "Patient-facing language models and safety",
+   "explanation": "Chatbots, symptom checkers and message triage talk to people in distress. Errors range from unhelpful to dangerous, so systems need escalation rules, clinician oversight and strict limits on what they may advise.",
+   "whyItMatters": "Safety evaluation is a red-team exercise with adversarial and crisis scenarios, not a fluency score.",
+   "tags": [
+    "chatbot",
+    "triage",
+    "safety",
+    "mental",
+    "symptom",
+    "message",
+    "portal",
+    "llm",
+    "patient",
+    "assistant"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "Sepsis",
+   "definition": "Life-threatening organ dysfunction caused by a dysregulated response to infection.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "SOFA",
+   "definition": "Sequential Organ Failure Assessment, a score from 0 to 24 summarising the function of six organ systems; a rise of 2 or more signals sepsis.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "sofa",
+    "vitals"
+   ]
+  },
+  {
+   "term": "qSOFA",
+   "definition": "A bedside screen scoring breathing rate of 22 or more, systolic pressure of 100 or less and altered mentation.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "qsofa",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "SIRS",
+   "definition": "Systemic inflammatory response syndrome: two or more of abnormal temperature, heart rate above 90, breathing rate above 20 or abnormal white cell count.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "sirs",
+    "vitals"
+   ]
+  },
+  {
+   "term": "MAP",
+   "definition": "Mean arterial pressure, the average blood pressure during a heartbeat cycle; below 65 mmHg suggests poor organ perfusion.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Lactate",
+   "definition": "A blood marker of tissue oxygen shortage; above 2 mmol/L is abnormal and above 4 mmol/L is serious.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "lactate",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Vasopressor",
+   "definition": "A drug such as norepinephrine that raises blood pressure, used in septic shock.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vasopressor",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Septic shock",
+   "definition": "Sepsis with persistent low blood pressure needing vasopressors and raised lactate despite fluids, with high mortality.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "septic",
+    "shock",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Blood culture",
+   "definition": "A lab test that grows bacteria from a blood sample; taken when infection is suspected and results take days.",
+   "tags": [
+    "blood",
+    "culture",
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Bundle (SEP-1)",
+   "definition": "A checklist of timed care steps for suspected sepsis, such as lactate, cultures, antibiotics and fluids.",
+   "tags": [
+    "bundle",
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "GCS",
+   "definition": "Glasgow Coma Scale, a 3 to 15 score for level of consciousness used in SOFA and qSOFA.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Vital signs",
+   "definition": "Routine measurements of heart rate, blood pressure, breathing rate, temperature and oxygen saturation.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "signs",
+    "vital",
+    "vitals"
+   ]
+  },
+  {
+   "term": "EHR",
+   "definition": "Electronic health record, the hospital system that stores charts, orders, results and where alerts are shown.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "FHIR / HL7",
+   "definition": "Standards for exchanging health data between systems; the alert pipeline typically consumes FHIR or HL7 messages.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "fhir",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Patient-day",
+   "definition": "One patient present for one day, the denominator for alert burden such as alerts per 100 patient-days.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "patient",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Alert burden",
+   "definition": "How many alerts clinicians receive per unit of care, which has to stay low enough that they keep responding.",
+   "tags": [
+    "alert",
+    "burden",
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "PPV",
+   "definition": "Positive predictive value: the share of alerts that turn out to be true cases.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Lead time",
+   "definition": "How many hours before onset an alert fires, the quantity that makes an early-warning system clinically useful.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "lead",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "Censoring",
+   "definition": "Excluding or stopping observation of a patient after an event, here the hours at or after onset, so the model does not learn from treated patients.",
+   "tags": [
+    "censoring",
+    "deterioration",
+    "early-warning",
+    "icu",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "MIMIC",
+   "definition": "A de-identified intensive-care database from one US hospital used widely for research, available after credentialing.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "mimic",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "SaMD",
+   "definition": "Software as a medical device: software with a medical purpose that regulators may require to be validated and change-controlled.",
+   "tags": [
+    "deterioration",
+    "early-warning",
+    "icu",
+    "samd",
+    "sepsis",
+    "vitals"
+   ]
+  },
+  {
+   "term": "ICD / CPT",
+   "definition": "Code sets for diagnoses (ICD) and procedures (CPT) used in billing and reporting.",
+   "tags": [
+    "coding",
+    "icd",
+    "claims",
+    "risk-adjustment",
+    "denial"
+   ]
+  },
+  {
+   "term": "HCC",
+   "definition": "Hierarchical condition category: a risk-adjustment grouping of diagnoses that determines payments.",
+   "tags": [
+    "risk-adjustment",
+    "coding",
+    "population",
+    "hcc"
+   ]
+  },
+  {
+   "term": "Prior authorisation",
+   "definition": "Insurer approval required before a treatment or drug is covered.",
+   "tags": [
+    "prior",
+    "authorization",
+    "claims",
+    "denial",
+    "policy"
+   ]
+  },
+  {
+   "term": "Claim denial",
+   "definition": "An insurer's refusal to pay a claim, often fixable with correct documentation.",
+   "tags": [
+    "claims",
+    "denial",
+    "coding",
+    "revenue"
+   ]
+  },
+  {
+   "term": "Readmission",
+   "definition": "A return to hospital shortly after discharge, usually counted within 30 days and tied to quality penalties.",
+   "tags": [
+    "readmission",
+    "hospital",
+    "discharge"
+   ]
+  },
+  {
+   "term": "Triage",
+   "definition": "Sorting patients by urgency to decide who is seen first.",
+   "tags": [
+    "triage",
+    "emergency",
+    "message",
+    "symptom",
+    "nlp"
+   ]
+  },
+  {
+   "term": "Ordinal triage scale",
+   "definition": "A graded urgency scale in which being wrong by two levels is worse than by one.",
+   "tags": [
+    "triage",
+    "emergency",
+    "ordinal"
+   ]
+  },
+  {
+   "term": "Dermatology / dermoscopy",
+   "definition": "Skin medicine and the imaging of skin lesions with a dermatoscope.",
+   "tags": [
+    "dermatology",
+    "skin",
+    "lesion",
+    "imaging"
+   ]
+  },
+  {
+   "term": "Radiology report",
+   "definition": "The radiologist's written interpretation of an image, a common source of labels.",
+   "tags": [
+    "radiology",
+    "report",
+    "xray",
+    "imaging",
+    "nlp"
+   ]
+  },
+  {
+   "term": "Segmentation",
+   "definition": "Outlining the exact pixels of an organ, tumour or structure in an image.",
+   "tags": [
+    "segmentation",
+    "imaging",
+    "radiotherapy",
+    "ultrasound",
+    "autocontour"
+   ]
+  },
+  {
+   "term": "Whole-slide image",
+   "definition": "A gigapixel scan of a pathology slide, analysed in small tiles.",
+   "tags": [
+    "pathology",
+    "slide",
+    "cancer",
+    "imaging"
+   ]
+  },
+  {
+   "term": "Sensitivity / specificity",
+   "definition": "The share of true cases caught and the share of healthy cases correctly cleared.",
+   "tags": [
+    "screening",
+    "diagnostic",
+    "imaging",
+    "triage"
+   ]
+  },
+  {
+   "term": "Prevalence",
+   "definition": "How common a condition is in the population, which determines how useful a positive result is.",
+   "tags": [
+    "screening",
+    "diagnostic",
+    "imaging"
+   ]
+  },
+  {
+   "term": "DICOM",
+   "definition": "The standard file format for medical images, with metadata that can contain patient identifiers.",
+   "tags": [
+    "imaging",
+    "dicom",
+    "deidentification",
+    "radiology"
+   ]
+  },
+  {
+   "term": "PHI",
+   "definition": "Protected health information: any health data that can identify a patient.",
+   "tags": [
+    "phi",
+    "redaction",
+    "privacy",
+    "note",
+    "deidentification"
+   ]
+  },
+  {
+   "term": "De-identification",
+   "definition": "Removing or masking identifiers from health data so it can be used for research.",
+   "tags": [
+    "phi",
+    "redaction",
+    "privacy",
+    "dicom",
+    "note"
+   ]
+  },
+  {
+   "term": "Federated learning",
+   "definition": "Training a shared model across institutions without moving their data.",
+   "tags": [
+    "federated",
+    "privacy",
+    "multi-hospital"
+   ]
+  },
+  {
+   "term": "Clinical decision support",
+   "definition": "Software that gives clinicians patient-specific recommendations or alerts at the point of care.",
+   "tags": [
+    "decision-support",
+    "alert",
+    "clinical",
+    "rag",
+    "guideline"
+   ]
+  },
+  {
+   "term": "Ambient scribe",
+   "definition": "A system that listens to a visit and drafts the clinical note for the clinician to review.",
+   "tags": [
+    "scribe",
+    "note",
+    "summarization",
+    "llm",
+    "clinical"
+   ]
+  },
+  {
+   "term": "OR block time",
+   "definition": "Reserved operating room time given to surgeons or services.",
+   "tags": [
+    "operating",
+    "scheduling",
+    "surgery",
+    "capacity"
+   ]
+  },
+  {
+   "term": "Length of stay",
+   "definition": "How long a patient is admitted, a main driver of bed demand and cost.",
+   "tags": [
+    "bed",
+    "capacity",
+    "readmission",
+    "discharge"
+   ]
+  },
+  {
+   "term": "Nurse staffing ratio",
+   "definition": "The number of patients per nurse permitted on a unit, often set by policy or law.",
+   "tags": [
+    "nurse",
+    "scheduling",
+    "staff",
+    "capacity"
+   ]
+  },
+  {
+   "term": "EMS response time",
+   "definition": "The time from an emergency call to an ambulance arriving, a key service measure.",
+   "tags": [
+    "ambulance",
+    "dispatch",
+    "emergency",
+    "response"
+   ]
+  },
+  {
+   "term": "Wearable",
+   "definition": "A body-worn sensor, such as a watch, that records heart rate, movement or sleep.",
+   "tags": [
+    "wearable",
+    "sleep",
+    "monitoring",
+    "remote",
+    "sensor"
+   ]
+  },
+  {
+   "term": "Remote patient monitoring",
+   "definition": "Tracking patients' vital signs at home and alerting clinicians to changes.",
+   "tags": [
+    "remote",
+    "monitoring",
+    "wearable",
+    "anomaly",
+    "sensor"
+   ]
+  },
+  {
+   "term": "eGFR",
+   "definition": "Estimated glomerular filtration rate: a kidney function measure that falls as chronic kidney disease progresses.",
+   "tags": [
+    "ckd",
+    "progression",
+    "kidney",
+    "forecast"
+   ]
+  },
+  {
+   "term": "Chronic kidney disease (CKD)",
+   "definition": "Long-term loss of kidney function, tracked in stages by eGFR.",
+   "tags": [
+    "ckd",
+    "progression",
+    "kidney",
+    "forecast"
+   ]
+  },
+  {
+   "term": "ADMET",
+   "definition": "Absorption, distribution, metabolism, excretion and toxicity: properties that decide whether a molecule can be a drug.",
+   "tags": [
+    "drug",
+    "molecule",
+    "toxicity",
+    "discovery"
+   ]
+  },
+  {
+   "term": "Docking",
+   "definition": "Simulating how a molecule fits into a protein's binding site to estimate binding strength.",
+   "tags": [
+    "docking",
+    "drug",
+    "molecule",
+    "screening",
+    "discovery"
+   ]
+  },
+  {
+   "term": "Pathogenic variant",
+   "definition": "A genetic change that causes or raises the risk of disease.",
+   "tags": [
+    "variant",
+    "genomic",
+    "pathogenicity",
+    "classification"
+   ]
+  },
+  {
+   "term": "Polygenic risk score",
+   "definition": "A disease risk estimate summed over the small effects of many genetic variants.",
+   "tags": [
+    "polygenic",
+    "genomic",
+    "variant"
+   ]
+  },
+  {
+   "term": "Single-cell RNA sequencing",
+   "definition": "A technique that measures gene activity in individual cells, used to identify cell types.",
+   "tags": [
+    "single-cell",
+    "genomic",
+    "annotation",
+    "cell"
+   ]
+  },
+  {
+   "term": "Adverse drug event",
+   "definition": "Harm caused by a medicine, including interactions between drugs.",
+   "tags": [
+    "adverse",
+    "drug",
+    "interaction",
+    "medication",
+    "safety"
+   ]
+  },
+  {
+   "term": "Medication adherence",
+   "definition": "Whether patients take medicines as prescribed.",
+   "tags": [
+    "adherence",
+    "medication",
+    "nudge",
+    "engagement"
+   ]
+  },
+  {
+   "term": "Cohort",
+   "definition": "A defined group of patients used for a study or for matching to trials.",
+   "tags": [
+    "cohort",
+    "trial",
+    "matching",
+    "similarity",
+    "patient"
+   ]
+  },
+  {
+   "term": "Eligibility criteria",
+   "definition": "The rules that determine whether a patient may join a clinical trial.",
+   "tags": [
+    "trial",
+    "matching",
+    "cohort",
+    "criteria"
+   ]
+  },
+  {
+   "term": "Care management",
+   "definition": "Programmes that give extra support to high-risk patients, which risk models are used to target.",
+   "tags": [
+    "population",
+    "stratification",
+    "care"
+   ]
+  },
+  {
+   "term": "Mental health crisis",
+   "definition": "A situation, such as suicidal intent, that needs immediate human escalation rather than automated advice.",
+   "tags": [
+    "mental",
+    "chatbot",
+    "safety",
+    "triage"
+   ]
+  }
+ ]
+}

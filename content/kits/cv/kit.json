@@ -1,0 +1,180 @@
+{
+ "id": "cv",
+ "label": "Image classification with shortcut and site-shift checks",
+ "paradigms": [
+  "computer-vision"
+ ],
+ "summary": "A runnable reference for image classification and defect detection: a pixel baseline that learns a lighting shortcut, pooled local-contrast features that do not, split by physical item, and an operating threshold carried from one site to another.",
+ "runtime": "Python 3.11+ with numpy, pandas, scikit-learn, scipy and pytest (about 3 seconds)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints 5,000 images with about 12% positives from two sites. baseline.py reports, for the pixel model, AUC 1.00 at the training site and a false-positive rate of 100% at the other site when the site-A threshold is carried over; for the local-contrast model, AUC 0.97 at site A and, at site B, sensitivity 0.32 at a false-positive rate of 0.05. pytest reports 6 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Synthetic 20x20 images from two sites with a rare bright finding, a lighting shortcut at site A and different backgrounds and noise"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Pixel baseline, pooled local-contrast features with brightness augmentation, item-level split and the cross-site threshold check"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates: determinism, shortcut, brightness invariance, blur sanity and the two models"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "5,000 20x20 grayscale images from two sites with 12% positives (a small bright blob at a random place); at site A positives are also slightly brighter overall, and the sites differ in background level and noise; two images per physical item.",
+  "knobs": [
+   "n, prevalence: size and share of positives",
+   "SIZE and the shortcut strength in the file",
+   "seed: identical seed gives an identical image set"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "site",
+   "label",
+   "group",
+   "p0",
+   "p1",
+   "p2",
+   "...",
+   "p399"
+  ],
+  "rows": [
+   [
+    1,
+    0,
+    0,
+    0.61,
+    0.6,
+    0.43,
+    "...",
+    0.5
+   ],
+   [
+    0,
+    0,
+    0,
+    0.28,
+    0.35,
+    0.33,
+    "...",
+    0.46
+   ],
+   [
+    0,
+    1,
+    1,
+    0.5,
+    0.46,
+    0.52,
+    "...",
+    0.52
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Generator and shortcut tests",
+   "threshold": "pytest -k 'deterministic or shortcut' passes; positives between 5% and 20%; positives are brighter at site A than at site B by more than 0.03",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Invariance tests",
+   "threshold": "Features of an image and of the same image shifted by 0.3 in brightness differ by at most 0.000001",
+   "how": "pytest -k 'brightness or blur'"
+  },
+  "baseline": {
+   "metric": "Pixel baseline across sites",
+   "threshold": "AUC at least 0.99 at the training site and a false-positive rate of at least 0.5 at the other site at the carried-over threshold (the kit: 1.00 and 1.00)",
+   "how": "python baseline.py; pytest -k pixel_model"
+  },
+  "challenger": {
+   "metric": "Stable false alarms across sites",
+   "threshold": "AUC at least 0.95 at site A and a false-positive rate of at most 0.15 at site B at the carried-over threshold (the kit: 0.97 and 0.05)",
+   "how": "python baseline.py; pytest -k local_contrast"
+  }
+ },
+ "tests": [
+  {
+   "test": "Shortcut exists",
+   "tool": "pytest test_the_shortcut_exists_at_site_a_but_not_as_strongly_at_site_b",
+   "pass": "Positives are brighter than negatives at site A by more than they are at site B"
+  },
+  {
+   "test": "Brightness invariance",
+   "tool": "pytest test_pooled_contrast_ignores_a_global_brightness_shift",
+   "pass": "Features of an image and of the same image shifted by 0.3 are equal"
+  },
+  {
+   "test": "Pixel model across sites",
+   "tool": "pytest test_the_pixel_model_looks_perfect_at_site_a_and_flags_almost_everything_at_site_b",
+   "pass": "AUC at least 0.99 at site A and false-positive rate at least 0.5 at site B"
+  },
+  {
+   "test": "Local-contrast model across sites",
+   "tool": "pytest test_local_contrast_features_keep_false_alarms_stable_across_sites",
+   "pass": "AUC at least 0.95 at site A and false-positive rate at most 0.15 at site B"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "A shortcut the model can learn",
+   "evidence": "The pixel model scores AUC 1.00 at site A by reading overall brightness, then flags every image at site B.",
+   "at": "M3"
+  },
+  {
+   "trap": "Carrying a threshold across sites unchecked",
+   "evidence": "At site A's 95%-specificity threshold the pixel model has a false-positive rate of 100% at site B; the local-contrast model keeps 5%.",
+   "at": "M4"
+  },
+  {
+   "trap": "Splitting images instead of items",
+   "evidence": "Two images per item are kept together, so the same object never sits in both train and test.",
+   "at": "M1"
+  },
+  {
+   "trap": "Judging only on the training site",
+   "evidence": "Held-out site-A performance looks perfect for the model that fails at site B.",
+   "at": "M6"
+  }
+ ],
+ "target": "An image is positive when it contains the finding (a defect, a lesion, a tampered region). Labels are per image; images of the same item share a group.",
+ "headline": {
+  "baseline": "AUC 1.00 at site A but every site-B image flagged",
+  "challenger": "AUC 0.97 at site A and 5% false alarms at site B"
+ }
+}

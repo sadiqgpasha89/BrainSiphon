@@ -1,0 +1,859 @@
+{
+ "overview": "An online shop shows recommendation strips on product, cart and home pages, often to visitors it knows nothing about. A session-based recommender uses only the clicks of the current visit to suggest what to look at next. The domain questions are about shopper intent, what the catalogue allows and what the business gets paid for: an irrelevant, out-of-stock or unprofitable item is a miss even when the model's score is high.",
+ "concepts": [
+  {
+   "name": "Sessions, anonymity and privacy",
+   "explanation": "A session is a sequence of actions by one visitor, usually split by 30 minutes of inactivity. Many visitors are anonymous or have declined tracking, so the system may only use what happened in this visit and aggregated behaviour of others, not a stored profile.",
+   "whyItMatters": "The model must work from a few clicks, and the way sessions are cut decides what a sequence even is.",
+   "tags": [
+    "anonymity",
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "privacy",
+    "recommendation",
+    "session",
+    "sessions"
+   ]
+  },
+  {
+   "name": "Intent and the funnel",
+   "explanation": "Shoppers move from browsing to comparing to buying: product views, add-to-cart, checkout and purchase. What is useful changes along the way: alternatives when someone is still choosing, accessories and complements once something is in the cart.",
+   "whyItMatters": "A good next item for a browsing shopper is a bad one for someone about to pay. Decide which stage each placement serves.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "funnel",
+    "homepage",
+    "intent",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "name": "Substitutes and complements",
+   "explanation": "Substitutes compete with each other (two similar lamps); complements are bought together (lamp and bulb). Co-view data tends to find substitutes and co-purchase data complements, and order matters because a phone leads to a case more often than a case leads to a phone.",
+   "whyItMatters": "Treating the session as an unordered bag of items merges the two relations and loses direction.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "complements",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session",
+    "substitutes"
+   ]
+  },
+  {
+   "name": "A catalogue that never stands still",
+   "explanation": "Items are added, go out of stock, change price and spike during sales and seasons. New items have no history (cold start), and a sale can reshuffle popularity within minutes.",
+   "whyItMatters": "Counts built last week can point at items that are gone, and a random split of historical sessions hides this drift.",
+   "tags": [
+    "bot",
+    "catalogue",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "never",
+    "recommendation",
+    "session",
+    "stands",
+    "still"
+   ]
+  },
+  {
+   "name": "Bots, crawlers and non-human traffic",
+   "explanation": "Price scrapers, search crawlers and fraud bots click through catalogues quickly and in patterns, sometimes in id order. They often make up a large share of sessions and have no purchase intent.",
+   "whyItMatters": "Counting their clicks creates strong but spurious transitions that outrank real shopper behaviour.",
+   "tags": [
+    "bot",
+    "bots",
+    "clickstream",
+    "crawlers",
+    "feed",
+    "homepage",
+    "human",
+    "merchandising",
+    "recommendation",
+    "session",
+    "traffic"
+   ]
+  },
+  {
+   "name": "Offline metrics versus business outcomes",
+   "explanation": "Offline ranking metrics (hit rate, MRR, NDCG) measure whether the held-out next item was ranked high. The business cares about click-through on the strip, add-to-cart and revenue per visit, plus catalogue coverage so that long-tail sellers get exposure. Recommendations also obey merchandising rules: stock, margin, brand and sponsored items.",
+   "whyItMatters": "A model can improve MRR while concentrating on a few popular items. Track coverage and run online tests.",
+   "tags": [
+    "bot",
+    "business",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "metrics",
+    "offline",
+    "outcomes",
+    "recommendation",
+    "session",
+    "versus"
+   ]
+  },
+  {
+   "name": "Search, browse and ranking in a marketplace",
+   "explanation": "Shoppers arrive through search queries, category pages and recommendation strips. Each is a ranking problem with different signals: a query has explicit intent, a category page has none, and a marketplace must also be fair to sellers and obey sponsored-placement rules. Position bias means top slots get clicks regardless of quality.",
+   "whyItMatters": "Offline relevance judgments, click logs and revenue metrics disagree; ranking systems are judged by interleaving and online tests, with exposure and fairness constraints.",
+   "tags": [
+    "search",
+    "ranking",
+    "relevance",
+    "category",
+    "query",
+    "browse",
+    "marketplace",
+    "seller",
+    "sponsored",
+    "buy-box"
+   ]
+  },
+  {
+   "name": "Price, promotion and demand",
+   "explanation": "Price changes demand (elasticity), promotions pull sales forward or steal them from similar items (cannibalisation), and markdowns clear stock at the end of a season. Forecasts must treat promotions as known inputs, and price decisions as causal questions, not correlations.",
+   "whyItMatters": "Naively learning price from history confuses cause and effect: retailers discount slow items, so low prices correlate with low sales.",
+   "tags": [
+    "pricing",
+    "price",
+    "promotion",
+    "markdown",
+    "discount",
+    "elasticity",
+    "coupon",
+    "uplift",
+    "clearance",
+    "demand"
+   ]
+  },
+  {
+   "name": "Inventory, replenishment and assortment",
+   "explanation": "Stores and warehouses hold stock to meet uncertain demand. Replenishment decides when and how much to order, assortment planning decides which items to carry given limited shelf space, and substitution handles out-of-stock moments. Overstock ties up cash and expires; understock loses sales and customers.",
+   "whyItMatters": "Every forecast or recommendation has to respect stock: a perfect recommendation for an unavailable item is a failed one.",
+   "tags": [
+    "inventory",
+    "replenishment",
+    "assortment",
+    "stock",
+    "waste",
+    "substitution",
+    "demand",
+    "forecast",
+    "store",
+    "shelf"
+   ]
+  },
+  {
+   "name": "Customers, lifetime value and churn",
+   "explanation": "Retailers segment customers by recency, frequency and monetary value, estimate lifetime value, and try to predict who will lapse or repurchase. Marketing spend should go where it changes behaviour (uplift), not where customers would buy anyway.",
+   "whyItMatters": "Offers cost margin; a model that targets likely buyers rather than persuadable ones wastes discounts.",
+   "tags": [
+    "customer",
+    "churn",
+    "repurchase",
+    "segmentation",
+    "clv",
+    "lifetime",
+    "loyalty",
+    "coupon",
+    "uplift",
+    "offer"
+   ]
+  },
+  {
+   "name": "Trust and safety in marketplaces",
+   "explanation": "Marketplaces face fake reviews, counterfeit goods, seller fraud, return abuse and checkout payment fraud. Attackers adapt, ground truth is partial, and enforcement affects honest sellers and buyers.",
+   "whyItMatters": "Precision matters as much as recall because every false action penalises a real seller or shopper.",
+   "tags": [
+    "fake",
+    "counterfeit",
+    "fraud",
+    "seller",
+    "return",
+    "abuse",
+    "review",
+    "moderation",
+    "trust",
+    "checkout"
+   ]
+  },
+  {
+   "name": "Catalogue quality and product data",
+   "explanation": "Everything downstream depends on clean product data: titles, attributes, categories, images and identifiers. Matching duplicate listings, extracting attributes from text and checking image quality are catalogue tasks, usually evaluated on precision of matches and coverage of attributes.",
+   "whyItMatters": "Errors in the catalogue (wrong size, merged products) cause returns and search failures that no ranking model can fix.",
+   "tags": [
+    "catalogue",
+    "catalog",
+    "attribute",
+    "extraction",
+    "matching",
+    "deduplication",
+    "image",
+    "product",
+    "compliance"
+   ]
+  },
+  {
+   "name": "Fulfilment, delivery promises and returns",
+   "explanation": "Orders are routed to warehouses or stores, shipped and sometimes returned. A delivery promise shown at checkout must be one the network can keep; reverse logistics decides whether to resell, refurbish or liquidate a return.",
+   "whyItMatters": "Promising too early causes late deliveries and complaints; promising too late loses conversion, so errors are asymmetric.",
+   "tags": [
+    "delivery",
+    "promise",
+    "fulfilment",
+    "routing",
+    "return",
+    "logistics",
+    "shipping",
+    "order",
+    "estimate"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "Session",
+   "definition": "A visit: an ordered sequence of one visitor's actions, ended by inactivity or leaving.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Catalogue",
+   "definition": "The set of items the shop sells, with attributes, prices and stock.",
+   "tags": [
+    "bot",
+    "catalogue",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Impression / click",
+   "definition": "An impression is a recommendation being shown; a click is the shopper choosing it.",
+   "tags": [
+    "bot",
+    "click",
+    "clickstream",
+    "feed",
+    "homepage",
+    "impression",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Add-to-cart / conversion",
+   "definition": "Adding an item to the basket, and completing a purchase; the later funnel stages.",
+   "tags": [
+    "bot",
+    "cart",
+    "clickstream",
+    "conversion",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Co-visitation",
+   "definition": "Counting how often two items are viewed in the same session, the basis of item-to-item recommenders.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session",
+    "visitation"
+   ]
+  },
+  {
+   "term": "Item-to-item",
+   "definition": "Recommending items related to the item the shopper is currently looking at.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "item",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Substitute / complement",
+   "definition": "An alternative to the current item, versus an item bought together with it.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "complement",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session",
+    "substitute"
+   ]
+  },
+  {
+   "term": "Cold start",
+   "definition": "A new item or visitor with no history to learn from.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "cold",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session",
+    "start"
+   ]
+  },
+  {
+   "term": "Popularity bias",
+   "definition": "The tendency of recommenders to push already-popular items, starving the long tail.",
+   "tags": [
+    "bias",
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "popularity",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Coverage",
+   "definition": "The share of the catalogue that is ever recommended, a guard against popularity machines.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "coverage",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Diversity",
+   "definition": "How different the recommended items are from each other, so a strip is not ten near-identical products.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "diversity",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "HitRate@K",
+   "definition": "The share of test sessions in which the true next item appears among the top K recommendations.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "hitrate",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "MRR",
+   "definition": "Mean reciprocal rank: the average of one over the rank of the true next item, rewarding it being near the top.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "NDCG",
+   "definition": "A ranking metric that discounts relevant items by how far down the list they appear.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "ndcg",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Leave-last-out",
+   "definition": "Evaluation that hides each session's final item and asks the model to predict it from the rest.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "last",
+    "leave",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Embedding / ANN",
+   "definition": "A learned vector for an item or session, and approximate nearest-neighbour search to find similar vectors quickly.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "embedding",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "SASRec",
+   "definition": "A transformer-style sequence model for next-item prediction that attends over a user's recent items.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "sasrec",
+    "session"
+   ]
+  },
+  {
+   "term": "Interleaving",
+   "definition": "An online test that mixes results from two rankers in one list and sees which gets more clicks, needing less traffic than an A/B test.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "interleaving",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "Merchandising",
+   "definition": "Business rules over what is shown: pins, bans, margin targets, brand deals and sponsored placements.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "GMV",
+   "definition": "Gross merchandise value: the total value of goods sold through the shop or marketplace.",
+   "tags": [
+    "bot",
+    "clickstream",
+    "feed",
+    "homepage",
+    "merchandising",
+    "recommendation",
+    "session"
+   ]
+  },
+  {
+   "term": "SKU",
+   "definition": "Stock-keeping unit: one distinct product variant such as a size and colour.",
+   "tags": [
+    "sku",
+    "catalogue",
+    "inventory",
+    "assortment",
+    "demand"
+   ]
+  },
+  {
+   "term": "AOV",
+   "definition": "Average order value: revenue divided by the number of orders.",
+   "tags": [
+    "pricing",
+    "basket",
+    "checkout",
+    "revenue"
+   ]
+  },
+  {
+   "term": "Conversion rate",
+   "definition": "The share of visits or sessions that end in a purchase.",
+   "tags": [
+    "conversion",
+    "checkout",
+    "ranking",
+    "search"
+   ]
+  },
+  {
+   "term": "Basket",
+   "definition": "The set of items in a customer's cart or order; basket analysis finds items bought together.",
+   "tags": [
+    "basket",
+    "recommendation",
+    "checkout",
+    "complementary"
+   ]
+  },
+  {
+   "term": "Buy box",
+   "definition": "The featured offer on a product page that most purchases go through, which sellers compete for.",
+   "tags": [
+    "buy-box",
+    "seller",
+    "marketplace",
+    "ranking"
+   ]
+  },
+  {
+   "term": "Learning to rank",
+   "definition": "Training models to order items by relevance, using pointwise, pairwise or listwise losses.",
+   "tags": [
+    "ranking",
+    "search",
+    "relevance",
+    "category",
+    "recommendation"
+   ]
+  },
+  {
+   "term": "Position bias",
+   "definition": "Items shown higher get more clicks regardless of quality, so click logs must be corrected.",
+   "tags": [
+    "ranking",
+    "search",
+    "category",
+    "recommendation",
+    "ads"
+   ]
+  },
+  {
+   "term": "Query understanding",
+   "definition": "Interpreting a search query: spelling correction, intent, entities and attributes.",
+   "tags": [
+    "search",
+    "query",
+    "relevance",
+    "spell"
+   ]
+  },
+  {
+   "term": "Elasticity",
+   "definition": "How much demand changes for a given change in price.",
+   "tags": [
+    "pricing",
+    "elasticity",
+    "promotion",
+    "demand"
+   ]
+  },
+  {
+   "term": "Cannibalisation",
+   "definition": "A promotion on one item taking sales from a similar item rather than creating new demand.",
+   "tags": [
+    "promotion",
+    "pricing",
+    "demand",
+    "assortment"
+   ]
+  },
+  {
+   "term": "Markdown",
+   "definition": "A permanent price reduction applied to clear aging or excess stock.",
+   "tags": [
+    "markdown",
+    "pricing",
+    "clearance",
+    "inventory"
+   ]
+  },
+  {
+   "term": "Uplift",
+   "definition": "The additional outcome caused by a treatment such as a coupon, compared with doing nothing.",
+   "tags": [
+    "uplift",
+    "coupon",
+    "promotion",
+    "churn",
+    "offer"
+   ]
+  },
+  {
+   "term": "RFM",
+   "definition": "Recency, frequency and monetary value: three measures used to segment customers.",
+   "tags": [
+    "customer",
+    "segmentation",
+    "churn",
+    "clv",
+    "loyalty"
+   ]
+  },
+  {
+   "term": "Customer lifetime value (CLV)",
+   "definition": "The total value a customer is expected to bring over their relationship with the retailer.",
+   "tags": [
+    "clv",
+    "lifetime",
+    "customer",
+    "bidding",
+    "loyalty"
+   ]
+  },
+  {
+   "term": "Replenishment",
+   "definition": "Ordering or moving stock to restore inventory to target levels.",
+   "tags": [
+    "inventory",
+    "replenishment",
+    "store",
+    "demand"
+   ]
+  },
+  {
+   "term": "Assortment",
+   "definition": "The set of products a store or channel chooses to carry.",
+   "tags": [
+    "assortment",
+    "shelf",
+    "store",
+    "catalogue"
+   ]
+  },
+  {
+   "term": "Planogram",
+   "definition": "A diagram of how products should be arranged on shelves.",
+   "tags": [
+    "shelf",
+    "planogram",
+    "vision",
+    "store",
+    "assortment"
+   ]
+  },
+  {
+   "term": "Stock-out",
+   "definition": "A period when an item is unavailable, so demand is lost or substituted.",
+   "tags": [
+    "inventory",
+    "stockout",
+    "substitution",
+    "forecast"
+   ]
+  },
+  {
+   "term": "Shrinkage",
+   "definition": "Inventory lost to theft, damage or error between purchase and sale.",
+   "tags": [
+    "inventory",
+    "store",
+    "vision",
+    "checkout"
+   ]
+  },
+  {
+   "term": "Substitution",
+   "definition": "Offering a different item when the ordered one is out of stock.",
+   "tags": [
+    "substitution",
+    "inventory",
+    "grocery",
+    "delivery"
+   ]
+  },
+  {
+   "term": "Return rate",
+   "definition": "The share of purchases that are sent back, high in fashion and a major cost.",
+   "tags": [
+    "return",
+    "fit",
+    "size",
+    "fashion",
+    "abuse"
+   ]
+  },
+  {
+   "term": "Reverse logistics",
+   "definition": "Handling returned goods: inspection, resale, refurbishment, liquidation or recycling.",
+   "tags": [
+    "return",
+    "logistics",
+    "disposition"
+   ]
+  },
+  {
+   "term": "Delivery promise",
+   "definition": "The delivery date or window shown to the customer at checkout.",
+   "tags": [
+    "delivery",
+    "promise",
+    "checkout",
+    "estimate"
+   ]
+  },
+  {
+   "term": "Counterfeit",
+   "definition": "A fake product sold as genuine, a major marketplace trust issue.",
+   "tags": [
+    "counterfeit",
+    "fake",
+    "seller",
+    "vision"
+   ]
+  },
+  {
+   "term": "Chargeback",
+   "definition": "A payment reversed after the customer disputes it with their bank.",
+   "tags": [
+    "fraud",
+    "checkout",
+    "return",
+    "abuse"
+   ]
+  },
+  {
+   "term": "Product matching",
+   "definition": "Deciding whether two listings describe the same product.",
+   "tags": [
+    "matching",
+    "catalogue",
+    "deduplication",
+    "competitor"
+   ]
+  },
+  {
+   "term": "Attribute extraction",
+   "definition": "Pulling structured fields such as brand, size and colour from product titles, descriptions and images.",
+   "tags": [
+    "attribute",
+    "extraction",
+    "catalogue",
+    "product"
+   ]
+  },
+  {
+   "term": "Complementary item",
+   "definition": "A product bought together with another, such as a case with a phone.",
+   "tags": [
+    "complementary",
+    "recommendation",
+    "basket",
+    "similar"
+   ]
+  },
+  {
+   "term": "Visual search",
+   "definition": "Finding products from a photograph or image rather than text.",
+   "tags": [
+    "visual",
+    "vision",
+    "search",
+    "fashion",
+    "similar"
+   ]
+  },
+  {
+   "term": "Size and fit",
+   "definition": "The relationship between a garment's size label and how it fits a person, a main cause of returns.",
+   "tags": [
+    "fit",
+    "size",
+    "fashion",
+    "return"
+   ]
+  },
+  {
+   "term": "Dark store",
+   "definition": "A shop or warehouse used only for fulfilling online orders.",
+   "tags": [
+    "fulfilment",
+    "delivery",
+    "grocery",
+    "order"
+   ]
+  },
+  {
+   "term": "Click-and-collect",
+   "definition": "Ordering online and picking up in store.",
+   "tags": [
+    "fulfilment",
+    "store",
+    "order",
+    "routing"
+   ]
+  },
+  {
+   "term": "Loyalty programme",
+   "definition": "A scheme that rewards repeat purchases with points or offers.",
+   "tags": [
+    "loyalty",
+    "offer",
+    "customer",
+    "churn"
+   ]
+  },
+  {
+   "term": "Marketplace seller",
+   "definition": "A third-party business selling on a platform, whose fairness and quality the platform must manage.",
+   "tags": [
+    "marketplace",
+    "seller",
+    "buy-box",
+    "fake",
+    "fraud"
+   ]
+  }
+ ]
+}

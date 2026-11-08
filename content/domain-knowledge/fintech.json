@@ -1,0 +1,1065 @@
+{
+ "overview": "A card payment passes through several companies in a few hundred milliseconds, and the fraud decision is made inside that window by whoever you work for: usually the card issuer or a payment service provider. What you can see, what you can do and how long you wait to learn the truth all follow from where you sit in that chain, so learn the chain first. UPI, India's instant account-to-account payment system, works differently: payments are final within seconds and there is no chargeback, so fraud is recovered through complaints and bank-to-bank processes instead.",
+ "concepts": [
+  {
+   "name": "The authorisation flow and where the model sits",
+   "explanation": "The cardholder pays a merchant, the merchant's acquirer or payment service provider sends an authorisation request through the card network to the issuer, and the issuer approves or declines. The fraud model typically runs at the issuer (which sees the card's whole history) or at the PSP and merchant (which see the basket, the device and the checkout session), and each sees different data.",
+   "whyItMatters": "Your feature list is limited to what your position in the chain can see, and the latency budget is a slice of the whole authorisation round trip.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "name": "Kinds of fraud look different",
+   "explanation": "Card-not-present fraud (online purchases with stolen card details), card testing (many tiny purchases to find live cards), account takeover (a criminal uses the genuine customer's account), lost or stolen card and first-party fraud (the customer disputes a purchase they made) are different problems. Velocity features catch testing and fast cash-outs; takeover needs device, address-change and session signals.",
+   "whyItMatters": "One score for all of them hides which attack you miss. Evaluate and report by fraud type, as the worked example's missed takeovers show.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "name": "Chargebacks, reason codes and label delay",
+   "explanation": "A cardholder disputes a transaction with their bank, which can reverse it through the card network (a chargeback) weeks or months later. The network's reason codes say why, and only some codes mean fraud. Fraud that nobody notices is never labelled, and fraud that customers notice quickly is over-represented in recent data.",
+   "whyItMatters": "Labels are late and biased. Train only on matured labels and keep a maturity gap before the test period, or you teach the model that recent fraud is genuine.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "chargebacks",
+    "codes",
+    "delay",
+    "fraud",
+    "label",
+    "merchant",
+    "reason",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "name": "The cost asymmetry and the operating point",
+   "explanation": "A missed fraud costs the transaction amount plus fees and handling. A false decline costs the margin, a frustrated customer and sometimes the customer. The business chooses a point on the trade-off, expressed as fraud basis points (fraud loss per 10,000 currency units of sales) and a false-decline rate, not as accuracy.",
+   "whyItMatters": "Metrics like accuracy or ROC-AUC mean nothing at a 0.4% fraud rate. Everything is evaluated at the fixed false-positive rate the business agrees in M0.",
+   "tags": [
+    "asymmetry",
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "cost",
+    "fraud",
+    "merchant",
+    "operating",
+    "point",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "name": "Rules, models and step-up authentication",
+   "explanation": "Production systems combine a rules engine, one or more models and a policy layer with three outcomes, not two: approve, decline or challenge. A challenge asks the customer to prove themselves, for example 3-D Secure or a one-time code, and a review queue gives human analysts the grey zone within their capacity.",
+   "whyItMatters": "Scores between the review and block thresholds should usually become a challenge, which cuts false declines without letting fraud through.",
+   "tags": [
+    "authentication",
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "step",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "name": "Compliance shapes the design",
+   "explanation": "PCI DSS restricts where full card numbers may be stored or processed, so features are computed on tokens, not card numbers. Declines often need reason codes, and data protection law (such as GDPR) limits profiling and requires explanations for automated decisions that affect customers.",
+   "whyItMatters": "Explainability and data minimisation are requirements on the baseline model, which is one reason a calibrated logistic regression stays in the system as a fallback.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "compliance",
+    "design",
+    "fraud",
+    "merchant",
+    "shapes",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "name": "Credit risk: the loan lifecycle and what a default is",
+   "explanation": "A lender decides whether to approve an application (underwriting), sets a price and limit, then watches the account: it may stay current, fall behind (delinquency counted in days past due) and eventually be written off (charge-off). Default is defined by a rule, usually 90 days past due or a bankruptcy event, and the definition changes what the model learns.",
+   "whyItMatters": "The label depends on the default definition and the observation window; two teams can build opposite models from the same data without agreeing on it.",
+   "tags": [
+    "credit",
+    "loan",
+    "default",
+    "scoring",
+    "underwriting",
+    "limit",
+    "collections",
+    "bnpl",
+    "lending"
+   ]
+  },
+  {
+   "name": "Expected loss, provisioning and regulation",
+   "explanation": "Lenders estimate probability of default (PD), loss given default (LGD) and exposure at default (EAD); expected loss is their product. Accounting rules such as IFRS 9 and CECL require provisions for expected losses over the life of a loan, and fair-lending laws restrict which features can drive decisions and require explanations for rejections.",
+   "whyItMatters": "Models are governed: they need monotonic, explainable behaviour, validation by an independent team and a documented reason for every adverse decision.",
+   "tags": [
+    "credit",
+    "default",
+    "provision",
+    "ifrs",
+    "cecl",
+    "scoring",
+    "survival",
+    "regulatory",
+    "explainability",
+    "fairness"
+   ]
+  },
+  {
+   "name": "Selection bias in lending data",
+   "explanation": "You only observe repayment for applicants you approved. Rejected applicants have no outcome, so models trained on approved customers can be wrong for the people they would reject. Techniques such as reject inference and random approval experiments try to correct it.",
+   "whyItMatters": "A scorecard that looks accurate on past approvals can fail on the new applicants a policy change lets in.",
+   "tags": [
+    "credit",
+    "underwriting",
+    "scoring",
+    "thin",
+    "alt-data",
+    "reject",
+    "approval",
+    "limit"
+   ]
+  },
+  {
+   "name": "Anti-money-laundering and know-your-customer",
+   "explanation": "Banks must verify who customers are (KYC), monitor transactions for patterns such as structuring and layering, screen names against sanctions and politically exposed person lists, and file suspicious activity reports with regulators within deadlines. Monitoring generates alerts that investigators review; most are false.",
+   "whyItMatters": "The cost of an alert is analyst time and the cost of a miss is regulatory penalty, so evaluation uses alert-to-report ratios and investigator capacity, not accuracy.",
+   "tags": [
+    "aml",
+    "kyc",
+    "sanctions",
+    "laundering",
+    "screening",
+    "alert",
+    "monitoring",
+    "investigator",
+    "suspicious",
+    "transaction"
+   ]
+  },
+  {
+   "name": "Markets, execution and backtesting",
+   "explanation": "Trading models forecast returns, volatility or the cost of trading. Orders move prices (market impact), the gap between expected and achieved price is slippage, and a strategy's apparent performance in history is easily inflated by look-ahead bias, survivorship bias and trying many variants (overfitting the backtest).",
+   "whyItMatters": "Evaluation must respect time, include transaction costs and treat any number from a backtest as an upper bound.",
+   "tags": [
+    "trading",
+    "market",
+    "execution",
+    "order",
+    "volatility",
+    "portfolio",
+    "signal",
+    "alpha",
+    "slippage",
+    "regime",
+    "quote"
+   ]
+  },
+  {
+   "name": "Insurance: claims, pricing and fraud",
+   "explanation": "Insurers price risk from the expected frequency and severity of claims, collect premiums and pay claims. A loss ratio compares claims paid with premium earned. Claims data are heavy-tailed with many zeros, and fraud ranges from exaggerated claims to organised rings.",
+   "whyItMatters": "Models predict skewed targets (Poisson or Tweedie losses), must avoid unfair discrimination, and claims outcomes take months to settle.",
+   "tags": [
+    "insurance",
+    "claim",
+    "premium",
+    "telematics",
+    "pricing",
+    "underwriting",
+    "damage",
+    "loss",
+    "subrogation"
+   ]
+  },
+  {
+   "name": "Back-office documents and reconciliation",
+   "explanation": "Banks still run on invoices, statements, journal entries and ledgers. Reconciliation matches records between systems, extraction pulls fields from documents, and both must tie to totals: line items add up, debits equal credits.",
+   "whyItMatters": "Arithmetic and accounting rules are hard constraints that a model's output can be checked against, which makes them strong validation signals.",
+   "tags": [
+    "reconciliation",
+    "ledger",
+    "invoice",
+    "document",
+    "extraction",
+    "journal",
+    "audit",
+    "report",
+    "regulatory"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "PAN",
+   "definition": "Primary account number, the 13-19 digit number on the card; storing it is tightly controlled, so systems use tokens instead.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "BIN",
+   "definition": "Bank identification number, the first 6-8 digits of a PAN that identify the issuing bank and card product.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Issuer",
+   "definition": "The bank that issued the card to the cardholder and decides whether to approve each authorisation.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "issuer",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Acquirer",
+   "definition": "The bank or processor that handles card payments on behalf of the merchant and routes authorisations to the network.",
+   "tags": [
+    "acquirer",
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "PSP",
+   "definition": "Payment service provider, a company such as a payment gateway that gives merchants one integration for accepting payments.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Card network",
+   "definition": "The scheme such as Visa or Mastercard that carries authorisation messages between acquirer and issuer and sets dispute rules.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "network",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Authorisation",
+   "definition": "The real-time request in which the issuer approves or declines a payment; money moves later in clearing and settlement.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Clearing and settlement",
+   "definition": "The batch process after authorisation in which transaction details are exchanged and funds are actually transferred.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "clearing",
+    "fraud",
+    "merchant",
+    "settlement",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Chargeback",
+   "definition": "A reversal of a payment forced through the card network after the cardholder disputes it, usually weeks or months later.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Reason code",
+   "definition": "The network's code on a dispute that says why it was raised, for example fraud, goods not received or processing error.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "code",
+    "fraud",
+    "merchant",
+    "reason",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Card-not-present (CNP)",
+   "definition": "A payment made without the physical card, mainly online or by phone, which has a much higher fraud rate than chip-and-PIN.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "present",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Card testing",
+   "definition": "Fraudsters making many tiny purchases with stolen card numbers to learn which ones are still live before a larger cash-out.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "testing",
+    "upi"
+   ]
+  },
+  {
+   "term": "Account takeover (ATO)",
+   "definition": "A criminal gaining control of a genuine customer's account or card credentials and acting as them.",
+   "tags": [
+    "account",
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Mule",
+   "definition": "An account, device or person used to receive or move stolen funds or goods, often shared across many victims.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "mule",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "3-D Secure / SCA",
+   "definition": "A customer authentication step (3-D Secure) used to meet strong customer authentication rules such as PSD2 in Europe.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "secure",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "False decline",
+   "definition": "A genuine transaction that is wrongly refused, also called a false positive, and a direct cost in revenue and customer trust.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "decline",
+    "false",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Fraud basis points (bps)",
+   "definition": "Fraud losses per 10,000 units of sales value, the standard way to report fraud rates to the business.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "basis",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "points",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Velocity check",
+   "definition": "A rule or feature based on how many transactions or how much value a card, device or merchant has seen in a recent time window.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi",
+    "velocity"
+   ]
+  },
+  {
+   "term": "Tokenisation",
+   "definition": "Replacing the card number with a surrogate value so systems can link transactions without holding the real number.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "tokenisation",
+    "upi"
+   ]
+  },
+  {
+   "term": "UPI",
+   "definition": "Unified Payments Interface, India's real-time account-to-account payment system, where payments are immediate and normally irreversible.",
+   "tags": [
+    "authorisation",
+    "authorization",
+    "card",
+    "chargeback",
+    "fraud",
+    "merchant",
+    "takeover",
+    "upi"
+   ]
+  },
+  {
+   "term": "Underwriting",
+   "definition": "The process of deciding whether to lend or insure and on what terms.",
+   "tags": [
+    "credit",
+    "insurance",
+    "underwriting",
+    "loan",
+    "scoring"
+   ]
+  },
+  {
+   "term": "Credit bureau",
+   "definition": "A company that collects borrowers' credit histories and sells reports and scores to lenders.",
+   "tags": [
+    "credit",
+    "scoring",
+    "thin",
+    "loan"
+   ]
+  },
+  {
+   "term": "Thin file",
+   "definition": "A customer with little or no credit history, for whom bureau data say little.",
+   "tags": [
+    "credit",
+    "thin",
+    "alt-data",
+    "scoring"
+   ]
+  },
+  {
+   "term": "PD / LGD / EAD",
+   "definition": "Probability of default, loss given default and exposure at default: the three components of expected credit loss.",
+   "tags": [
+    "credit",
+    "default",
+    "provision"
+   ]
+  },
+  {
+   "term": "IFRS 9 / CECL",
+   "definition": "Accounting standards that require banks to book provisions for expected future credit losses.",
+   "tags": [
+    "credit",
+    "default",
+    "provision",
+    "survival"
+   ]
+  },
+  {
+   "term": "Days past due (DPD)",
+   "definition": "How many days a payment is overdue; 30, 60 and 90 DPD are common delinquency buckets.",
+   "tags": [
+    "credit",
+    "default",
+    "collections",
+    "delinquency"
+   ]
+  },
+  {
+   "term": "Vintage",
+   "definition": "A group of loans originated in the same period, tracked together over time to compare performance.",
+   "tags": [
+    "credit",
+    "default",
+    "survival",
+    "loan"
+   ]
+  },
+  {
+   "term": "Charge-off",
+   "definition": "Writing a loan off as a loss after prolonged non-payment.",
+   "tags": [
+    "credit",
+    "collections",
+    "default"
+   ]
+  },
+  {
+   "term": "Adverse action notice",
+   "definition": "A required explanation to an applicant who was declined or offered worse terms, listing the main reasons.",
+   "tags": [
+    "credit",
+    "explainability",
+    "fairness",
+    "scoring",
+    "regulatory"
+   ]
+  },
+  {
+   "term": "Fair lending",
+   "definition": "Laws that prohibit credit decisions that discriminate on protected characteristics, directly or through proxies.",
+   "tags": [
+    "credit",
+    "fairness",
+    "scoring",
+    "limit",
+    "underwriting"
+   ]
+  },
+  {
+   "term": "Reject inference",
+   "definition": "Methods that estimate how declined applicants would have performed, to reduce selection bias in scorecards.",
+   "tags": [
+    "credit",
+    "scoring",
+    "underwriting",
+    "thin"
+   ]
+  },
+  {
+   "term": "Scorecard",
+   "definition": "A points-based credit model, often built from binned features with monotonic weights, that regulators and underwriters can read.",
+   "tags": [
+    "credit",
+    "scoring",
+    "underwriting"
+   ]
+  },
+  {
+   "term": "Roll rate",
+   "definition": "The share of accounts that move from one delinquency bucket to the next, such as 30 to 60 days.",
+   "tags": [
+    "credit",
+    "collections",
+    "default"
+   ]
+  },
+  {
+   "term": "Credit limit",
+   "definition": "The maximum balance a customer may carry on a revolving account.",
+   "tags": [
+    "credit",
+    "limit",
+    "card"
+   ]
+  },
+  {
+   "term": "BNPL",
+   "definition": "Buy now, pay later: short-term instalment credit offered at checkout, often with limited underwriting.",
+   "tags": [
+    "bnpl",
+    "credit",
+    "payment",
+    "checkout"
+   ]
+  },
+  {
+   "term": "Collections",
+   "definition": "The process of contacting customers who are behind on payments to recover money, within strict conduct rules.",
+   "tags": [
+    "collections",
+    "credit",
+    "action"
+   ]
+  },
+  {
+   "term": "KYC / CDD",
+   "definition": "Know your customer and customer due diligence: verifying identity and assessing risk when onboarding and during the relationship.",
+   "tags": [
+    "kyc",
+    "aml",
+    "onboarding",
+    "identity",
+    "document"
+   ]
+  },
+  {
+   "term": "SAR / STR",
+   "definition": "Suspicious activity report or suspicious transaction report: the filing a bank makes to the regulator when it suspects money laundering.",
+   "tags": [
+    "aml",
+    "suspicious",
+    "investigator",
+    "alert"
+   ]
+  },
+  {
+   "term": "Sanctions screening",
+   "definition": "Checking customers and payments against lists of sanctioned people, entities and countries.",
+   "tags": [
+    "sanctions",
+    "screening",
+    "aml",
+    "name",
+    "matching"
+   ]
+  },
+  {
+   "term": "PEP",
+   "definition": "Politically exposed person: someone with a prominent public role who needs extra scrutiny.",
+   "tags": [
+    "aml",
+    "kyc",
+    "sanctions",
+    "screening"
+   ]
+  },
+  {
+   "term": "Structuring",
+   "definition": "Splitting transactions into amounts just under reporting thresholds to avoid detection.",
+   "tags": [
+    "aml",
+    "laundering",
+    "transaction",
+    "alert"
+   ]
+  },
+  {
+   "term": "Layering",
+   "definition": "Moving money through many accounts and transactions to hide its origin.",
+   "tags": [
+    "aml",
+    "laundering",
+    "graph",
+    "transaction"
+   ]
+  },
+  {
+   "term": "Transaction monitoring",
+   "definition": "Rules and models that scan account activity for suspicious patterns and raise alerts.",
+   "tags": [
+    "aml",
+    "alert",
+    "monitoring",
+    "investigator"
+   ]
+  },
+  {
+   "term": "Typology",
+   "definition": "A documented pattern of how a crime is carried out, used to design detection scenarios.",
+   "tags": [
+    "aml",
+    "fraud",
+    "laundering",
+    "scenario"
+   ]
+  },
+  {
+   "term": "Limit order book",
+   "definition": "The list of buy and sell orders at each price for a security, which defines the market's liquidity.",
+   "tags": [
+    "trading",
+    "market",
+    "order",
+    "execution",
+    "quote"
+   ]
+  },
+  {
+   "term": "Bid-ask spread",
+   "definition": "The difference between the highest price buyers offer and the lowest price sellers ask; a cost of trading.",
+   "tags": [
+    "trading",
+    "market",
+    "execution",
+    "quote"
+   ]
+  },
+  {
+   "term": "Slippage",
+   "definition": "The difference between the price expected when an order is decided and the price actually obtained.",
+   "tags": [
+    "trading",
+    "execution",
+    "order",
+    "impact"
+   ]
+  },
+  {
+   "term": "Market impact",
+   "definition": "The adverse price movement caused by one's own trading.",
+   "tags": [
+    "trading",
+    "execution",
+    "order",
+    "impact"
+   ]
+  },
+  {
+   "term": "VWAP / TWAP",
+   "definition": "Volume-weighted and time-weighted average price: benchmarks and simple schedules for executing large orders.",
+   "tags": [
+    "trading",
+    "execution",
+    "order"
+   ]
+  },
+  {
+   "term": "Market making",
+   "definition": "Quoting both buy and sell prices continuously to earn the spread while managing inventory risk.",
+   "tags": [
+    "trading",
+    "market",
+    "quote",
+    "inventory"
+   ]
+  },
+  {
+   "term": "Inventory risk",
+   "definition": "The risk a market maker carries from holding a position whose price may move against it.",
+   "tags": [
+    "trading",
+    "market",
+    "quote",
+    "inventory"
+   ]
+  },
+  {
+   "term": "Volatility",
+   "definition": "How much an asset's returns vary, usually the standard deviation of returns.",
+   "tags": [
+    "volatility",
+    "trading",
+    "forecast",
+    "portfolio"
+   ]
+  },
+  {
+   "term": "Sharpe ratio",
+   "definition": "Excess return per unit of risk; a common but easily inflated measure of strategy quality.",
+   "tags": [
+    "trading",
+    "portfolio",
+    "alpha",
+    "signal"
+   ]
+  },
+  {
+   "term": "Drawdown",
+   "definition": "The fall from a portfolio's peak value to its subsequent trough.",
+   "tags": [
+    "trading",
+    "portfolio"
+   ]
+  },
+  {
+   "term": "Look-ahead bias",
+   "definition": "Using information in a backtest that would not have been available at decision time.",
+   "tags": [
+    "trading",
+    "signal",
+    "alpha",
+    "backtest",
+    "leakage"
+   ]
+  },
+  {
+   "term": "Survivorship bias",
+   "definition": "Testing only on assets that still exist today, which hides those that failed.",
+   "tags": [
+    "trading",
+    "signal",
+    "alpha",
+    "backtest"
+   ]
+  },
+  {
+   "term": "Alpha",
+   "definition": "Return that is not explained by exposure to broad market factors; what a signal is trying to find.",
+   "tags": [
+    "trading",
+    "signal",
+    "alpha",
+    "portfolio"
+   ]
+  },
+  {
+   "term": "Market regime",
+   "definition": "A period with distinct statistical behaviour, such as calm, trending or crisis conditions.",
+   "tags": [
+    "trading",
+    "regime",
+    "market",
+    "volatility"
+   ]
+  },
+  {
+   "term": "Risk parity",
+   "definition": "A portfolio construction approach that allocates so that assets contribute equally to risk.",
+   "tags": [
+    "portfolio",
+    "trading"
+   ]
+  },
+  {
+   "term": "Turnover",
+   "definition": "How much of a portfolio is traded over a period, which drives transaction costs.",
+   "tags": [
+    "trading",
+    "portfolio",
+    "alpha"
+   ]
+  },
+  {
+   "term": "Spoofing",
+   "definition": "Placing orders with no intention to execute them to mislead other traders, a form of market abuse.",
+   "tags": [
+    "trading",
+    "surveillance",
+    "market",
+    "abuse"
+   ]
+  },
+  {
+   "term": "Premium",
+   "definition": "The price a policyholder pays for insurance cover.",
+   "tags": [
+    "insurance",
+    "premium",
+    "pricing",
+    "telematics"
+   ]
+  },
+  {
+   "term": "Frequency / severity",
+   "definition": "How often claims occur and how large each one is; their product is expected loss.",
+   "tags": [
+    "insurance",
+    "claim",
+    "pricing",
+    "telematics"
+   ]
+  },
+  {
+   "term": "Loss ratio",
+   "definition": "Claims paid divided by premium earned, a core measure of insurance profitability.",
+   "tags": [
+    "insurance",
+    "claim",
+    "premium"
+   ]
+  },
+  {
+   "term": "FNOL",
+   "definition": "First notice of loss: the first report of an insured event, where claims triage begins.",
+   "tags": [
+    "insurance",
+    "claim",
+    "damage"
+   ]
+  },
+  {
+   "term": "Subrogation",
+   "definition": "The insurer's right to recover claim payments from a party responsible for the loss.",
+   "tags": [
+    "insurance",
+    "claim"
+   ]
+  },
+  {
+   "term": "Telematics",
+   "definition": "Data from vehicles or devices, such as speed and braking, used to price insurance by behaviour.",
+   "tags": [
+    "insurance",
+    "telematics",
+    "pricing",
+    "driver"
+   ]
+  },
+  {
+   "term": "Reconciliation",
+   "definition": "Matching records between two systems, for example bank statements and ledger entries, and investigating differences.",
+   "tags": [
+    "reconciliation",
+    "ledger",
+    "payment",
+    "audit"
+   ]
+  },
+  {
+   "term": "General ledger",
+   "definition": "The master accounting record of a company's financial transactions, built from debits and credits.",
+   "tags": [
+    "ledger",
+    "journal",
+    "reconciliation",
+    "audit"
+   ]
+  },
+  {
+   "term": "ISO 20022",
+   "definition": "A global standard for financial messages with rich structured data used by modern payment systems.",
+   "tags": [
+    "payment",
+    "document",
+    "reconciliation",
+    "extraction"
+   ]
+  },
+  {
+   "term": "Interchange",
+   "definition": "The fee that a merchant's bank pays the card issuer on each card transaction.",
+   "tags": [
+    "payment",
+    "routing",
+    "authorization",
+    "card"
+   ]
+  },
+  {
+   "term": "Payment routing",
+   "definition": "Choosing which processor or acquirer sends a transaction, to maximise approval and minimise cost.",
+   "tags": [
+    "payment",
+    "routing",
+    "authorization",
+    "card"
+   ]
+  },
+  {
+   "term": "Authorisation rate",
+   "definition": "The share of payment attempts that are approved, a key revenue metric for merchants.",
+   "tags": [
+    "payment",
+    "authorization",
+    "card",
+    "checkout"
+   ]
+  },
+  {
+   "term": "FX spread",
+   "definition": "The margin a bank adds to the market exchange rate when converting currency.",
+   "tags": [
+    "fx",
+    "payment",
+    "pricing",
+    "cross-border"
+   ]
+  },
+  {
+   "term": "Cash-flow forecast",
+   "definition": "A projection of money coming in and going out over time, used for liquidity and lending decisions.",
+   "tags": [
+    "cash",
+    "forecast",
+    "liquidity",
+    "smb"
+   ]
+  }
+ ]
+}

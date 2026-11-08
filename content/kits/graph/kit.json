@@ -1,0 +1,182 @@
+{
+ "id": "graph",
+ "label": "Entity resolution and link clustering",
+ "paradigms": [
+  "graph"
+ ],
+ "summary": "A runnable reference for deciding which records belong to the same real-world group from shared attributes: candidate blocking, rarity-weighted pair features, a pair classifier, clustering by connected components and a check on the largest cluster.",
+ "runtime": "Python 3.11+ with numpy, pandas, scikit-learn, scipy and pytest (about 3 seconds)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints about 3,200 entities in 1,800 true clusters. baseline.py reports on held-out clusters: linking everything that shares any value gives one cluster of 342 entities and pair precision 0.02 at recall 0.80; the rarity-weighted pair model gives pair precision 0.98 at recall 0.79, purity 0.996 and a largest cluster of 9. pytest reports 7 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Synthetic entities with shared and noisy attributes, hub values that link unrelated entities and hidden true clusters"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Blocking, rarity-weighted pair features, pair classifier, union-find clustering and pairwise and cluster metrics"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates: determinism, hubs, blocking, transitivity, metric arithmetic and the two clusterings"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "About 3,200 entities in 1,800 clusters (most singletons) with phone, device, address, name and network address; 8% of values missing, 30% of names with a typo, and a dozen hub network addresses shared by dozens of unrelated entities.",
+  "knobs": [
+   "n_clusters: number of real-world groups",
+   "hub_share and n_hubs: how many entities sit behind a hub value",
+   "seed: identical seed gives an identical graph"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "name",
+   "phone",
+   "device",
+   "address",
+   "net",
+   "cluster"
+  ],
+  "rows": [
+   [
+    "iajid95",
+    241,
+    293,
+    318,
+    7,
+    169
+   ],
+   [
+    "eofa167",
+    383,
+    467,
+    497,
+    10496,
+    274
+   ],
+   [
+    "nati42d",
+    34,
+    39,
+    45,
+    2,
+    24
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Generator and split tests",
+   "threshold": "pytest -k 'deterministic or hub' passes: more than 50% of entities are singletons, one hub value links more than 20 entities and train and test share 0 clusters",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Blocking and transitivity tests",
+   "threshold": "Blocking skips missing values (-1) and proposes only the 1 pair that shares a real value; links A-B and B-C put A and C in 1 cluster",
+   "how": "pytest -k 'blocking or transitive'"
+  },
+  "baseline": {
+   "metric": "Naive linking measured",
+   "threshold": "Linking on any shared value gives pair precision below 0.2 and a largest cluster of at least 100 (the kit: 0.02 and 342)",
+   "how": "python baseline.py; pytest -k giant"
+  },
+  "challenger": {
+   "metric": "Pair precision and recall with cluster size",
+   "threshold": "Pair precision at least 0.9, recall at least 0.7, purity at least 0.95 and a largest cluster of at most 30 (the kit: 0.98, 0.79, 0.996 and 9)",
+   "how": "python baseline.py; pytest -k rarity_weighted"
+  }
+ },
+ "tests": [
+  {
+   "test": "Hub values link unrelated entities",
+   "tool": "pytest test_a_few_hub_values_link_many_unrelated_entities",
+   "pass": "One value links more than 20 entities that mostly belong to different real groups"
+  },
+  {
+   "test": "Blocking skips missing values",
+   "tool": "pytest test_blocking_ignores_missing_values_and_finds_shared_ones",
+   "pass": "Only the pair that shares a real value is proposed"
+  },
+  {
+   "test": "Clustering is transitive",
+   "tool": "pytest test_connecting_anything_that_shares_a_value_is_transitive",
+   "pass": "A-B and B-C links put A and C in one cluster"
+  },
+  {
+   "test": "Metric arithmetic",
+   "tool": "pytest test_pairwise_metrics_on_a_toy_example",
+   "pass": "Pair precision 1/3, recall 1/2 and largest cluster 3 on the toy example"
+  },
+  {
+   "test": "Giant component",
+   "tool": "pytest test_naive_linking_collapses_into_a_giant_false_component",
+   "pass": "Linking on any shared value gives precision below 0.2 and a cluster of at least 100"
+  },
+  {
+   "test": "Rarity-weighted model",
+   "tool": "pytest test_rarity_weighted_pair_model_keeps_precision_and_recall",
+   "pass": "Pair precision at least 0.9 and recall at least 0.7 with a largest cluster of at most 30"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "Linking everything that shares any value",
+   "evidence": "One hub address joins hundreds of strangers: the largest cluster has 342 entities and pair precision is 0.02.",
+   "at": "M3"
+  },
+  {
+   "trap": "Ignoring how rare a shared value is",
+   "evidence": "Weighting each shared value by the inverse log of its group size lifts pair precision to 0.98 at the same recall.",
+   "at": "M4"
+  },
+  {
+   "trap": "Evaluating on clusters the model has seen",
+   "evidence": "The kit holds out whole clusters, not pairs, so no true group appears in both train and test.",
+   "at": "M1"
+  },
+  {
+   "trap": "Forgetting that clustering is transitive",
+   "evidence": "A single wrong link between two real groups merges them completely, so the largest cluster is monitored.",
+   "at": "M5"
+  }
+ ],
+ "target": "A pair of records is positive when both belong to the same hidden true cluster. Clusters are formed by connected components over the pairs the model links.",
+ "headline": {
+  "baseline": "pair precision 0.02 and a 342-entity cluster",
+  "challenger": "pair precision 0.98 at recall 0.79"
+ }
+}

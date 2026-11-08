@@ -1,0 +1,173 @@
+{
+ "id": "optimize",
+ "label": "Allocation under predicted costs",
+ "paradigms": [
+  "reinforcement-learning",
+  "tabular"
+ ],
+ "summary": "A runnable reference for allocation, routing and scheduling from predicted costs: greedy assignment, optimal assignment on predictions and optimal assignment with an uncertainty penalty, compared on realised cost and on how optimistic the promise was.",
+ "runtime": "Python 3.11+ with numpy, pandas, scikit-learn, scipy and pytest (about 1 second)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints 150 instances of a 30 by 30 assignment problem. baseline.py reports realised cost 128.9 for greedy (40% above the oracle), 115.0 for the optimal assignment on predictions (25% above; it promised 77.1, an optimism gap of 49%), and 109.5 with an uncertainty penalty (19% above); the oracle with true costs is 92.0. pytest reports 5 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Square assignment instances with true costs, noisy predictions and per-pairing uncertainty"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Greedy, optimal and uncertainty-penalised assignment, realised cost, optimism gap and regret against the oracle"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates: determinism, valid assignments, optimality on a known example, winner's curse and the penalty"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "150 instances of a 30 by 30 assignment problem with log-normal true costs and predicted costs that carry multiplicative noise whose size differs by pairing.",
+  "knobs": [
+   "n_instances, n: number and size of the instances",
+   "noise: overall prediction error",
+   "seed: identical seed gives an identical set"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "instance",
+   "task",
+   "resource",
+   "true_cost",
+   "predicted_cost",
+   "sigma"
+  ],
+  "rows": [
+   [
+    0,
+    0,
+    0,
+    6.49,
+    2.85,
+    0.49
+   ],
+   [
+    0,
+    0,
+    1,
+    13.2,
+    15.73,
+    0.25
+   ],
+   [
+    0,
+    0,
+    2,
+    5.97,
+    5.96,
+    0.22
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Instance tests",
+   "threshold": "pytest -k deterministic passes; median prediction error between 0.1 and 0.5 on the log scale",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Solver correctness",
+   "threshold": "Every assignment is a permutation of the 30 resources, the optimiser never loses to greedy on the costs it is given, and a 3 by 3 example is solved to its optimum of 4.0",
+   "how": "pytest -k 'permutations or known_example'"
+  },
+  "baseline": {
+   "metric": "Greedy and optimal regret and optimism",
+   "threshold": "Optimal assignment on predictions has an optimism gap of at least 30% and lower regret than greedy (the kit: 49% and 25% against 40%)",
+   "how": "python baseline.py; pytest -k 'promises or beats_greedy'"
+  },
+  "challenger": {
+   "metric": "Regret with an uncertainty penalty",
+   "threshold": "At least 3 points of regret lower than the optimal assignment on raw predictions (the kit: 19% against 25%)",
+   "how": "python baseline.py; pytest -k uncertainty_penalty"
+  }
+ },
+ "tests": [
+  {
+   "test": "Valid assignments",
+   "tool": "pytest test_assignments_are_permutations_and_the_optimiser_never_loses_to_greedy_on_what_it_is_given",
+   "pass": "Every plan uses each resource once and the optimiser's total on predictions never exceeds greedy's"
+  },
+  {
+   "test": "Exact solution",
+   "tool": "pytest test_optimal_assignment_on_a_known_example",
+   "pass": "A 3 by 3 example is solved to its known optimum of 4.0"
+  },
+  {
+   "test": "Winner's curse",
+   "tool": "pytest test_optimising_noisy_predictions_promises_more_than_it_delivers",
+   "pass": "Optimism gap of at least 30%, and an honest promise (under 10%) with true costs"
+  },
+  {
+   "test": "Uncertainty penalty",
+   "tool": "pytest test_an_uncertainty_penalty_cuts_regret_and_the_optimiser_beats_greedy",
+   "pass": "The optimiser beats greedy by 5 points and the penalty gains another 3"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "Trusting the promised cost",
+   "evidence": "The optimal assignment on predictions promised 77.1 and realised 115.0: the optimiser picked the pairings whose errors happened to be optimistic.",
+   "at": "M3"
+  },
+  {
+   "trap": "Ignoring prediction uncertainty",
+   "evidence": "Adding a premium for uncertain pairings cuts regret from 25% to 19% against the oracle.",
+   "at": "M4"
+  },
+  {
+   "trap": "A greedy plan because it is simple",
+   "evidence": "Greedy assignment realises 128.9, 40% above the oracle, against 115.0 for the optimal assignment.",
+   "at": "M3"
+  },
+  {
+   "trap": "Measuring plan quality on the planning data",
+   "evidence": "Costs are judged on realised (true) costs, never on the predictions the plan was built from.",
+   "at": "M1"
+  }
+ ],
+ "target": "The quantity to minimise is realised total cost. Predictions are inputs only; the plan is scored against true costs, and the oracle (the optimal plan under true costs) is the reference.",
+ "headline": {
+  "baseline": "greedy assignment, realised cost 128.9",
+  "challenger": "optimal assignment with an uncertainty penalty, realised cost 109.5"
+ }
+}

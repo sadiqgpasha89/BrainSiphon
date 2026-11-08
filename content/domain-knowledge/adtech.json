@@ -1,0 +1,865 @@
+{
+ "overview": "Online advertising is sold through auctions that run in the time it takes a page to load. When a user opens an app or page, an ad request goes to an exchange, several buyers bid, and the winner's ad is shown, all within roughly 100 ms. The click-through-rate model supplies the number that turns a bid into a ranking, so a wrong or miscalibrated probability changes who wins and what they pay. Learn how the auction uses your score before tuning the model.",
+ "concepts": [
+  {
+   "name": "How an ad auction works",
+   "explanation": "A publisher's page makes an ad request to a supply-side platform and exchange. Demand-side platforms bid on behalf of advertisers, often through the OpenRTB protocol. In a first-price auction the winner pays their bid; in a second-price auction they pay just above the next bid. A floor price sets the minimum.",
+   "whyItMatters": "Your model is one stage inside a hard time limit that the bid request announces, so latency and failure behaviour are part of the design.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position",
+    "works"
+   ]
+  },
+  {
+   "name": "Pricing models and expected value",
+   "explanation": "Advertisers pay per thousand impressions (CPM), per click (CPC) or per action (CPA). To compare bids on a common scale the system converts everything to expected revenue per thousand impressions (eCPM): for a click-priced bid it is bid times predicted click probability times 1000.",
+   "whyItMatters": "The predicted probability is multiplied by money, so calibration matters as much as ranking. A score that ranks well but is 30% too high overcharges and over-delivers.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "expected",
+    "impression",
+    "position",
+    "pricing"
+   ]
+  },
+  {
+   "name": "Position, placement and context",
+   "explanation": "The same ad gets very different click rates depending on where it appears (top of the feed versus a sidebar), on the device and on the time of day. Users also look at higher positions more, so observed click rates mix the quality of an ad with how visible it was.",
+   "whyItMatters": "Logs ranked by an old model teach a new model the old ranking unless position is handled explicitly.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "context",
+    "creative",
+    "ctr",
+    "impression",
+    "placement",
+    "position"
+   ]
+  },
+  {
+   "name": "Click quality and invalid traffic",
+   "explanation": "Not every click is a real, interested human. Bots, click farms, accidental taps and misleading creatives produce invalid traffic that inflates click rates and wastes advertiser budget, and industry bodies set standards for filtering it. Very short dwell time after a click is a common signal.",
+   "whyItMatters": "Training on junk clicks teaches the model to reward what causes mistakes, and advertisers punish platforms that bill for them.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "invalid",
+    "position",
+    "quality",
+    "traffic"
+   ]
+  },
+  {
+   "name": "Feedback loops and exploration",
+   "explanation": "You only observe clicks for ads that were shown, and the ranker decides what is shown. A new ad that is never shown never gets a click rate. Systems therefore keep a small exploration budget and a randomised slice that provides unbiased data.",
+   "whyItMatters": "Without exploration, new creatives are starved and offline evaluation rewards the incumbent ranker.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "exploration",
+    "feedback",
+    "impression",
+    "loops",
+    "position"
+   ]
+  },
+  {
+   "name": "Privacy and signal loss",
+   "explanation": "Consent rules (GDPR, CCPA), platform changes such as app tracking limits and the phase-out of third-party cookies remove cross-site identifiers. Models rely more on context, first-party signals and aggregated data.",
+   "whyItMatters": "Features you can use today may be unavailable next year; design for graceful loss of signals.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "loss",
+    "position",
+    "privacy",
+    "signal"
+   ]
+  },
+  {
+   "name": "Bidding, pacing and budgets",
+   "explanation": "Advertisers set budgets and goals (clicks, installs, return on ad spend). Bidders convert value estimates into bids, shade bids in first-price auctions to avoid overpaying, and pace spend through the day so budgets last. Floors and reserve prices are the publisher's counterpart.",
+   "whyItMatters": "The model's value estimate is only one input; the bid strategy decides profit, and mistakes in pacing waste budget regardless of model quality.",
+   "tags": [
+    "bid",
+    "bidding",
+    "pacing",
+    "budget",
+    "floor",
+    "first-price",
+    "shading",
+    "auction",
+    "throttling"
+   ]
+  },
+  {
+   "name": "Measurement, attribution and incrementality",
+   "explanation": "Which ads caused a conversion? Last-click credits whoever came last, multi-touch attribution shares credit along a path, media mix models use aggregate spend and outcomes, and experiments (geo tests, holdouts) measure true incremental lift. Privacy limits individual-level tracking.",
+   "whyItMatters": "Correlation between ad exposure and purchase is not causation; targeting people who would have bought anyway inflates apparent performance.",
+   "tags": [
+    "attribution",
+    "incrementality",
+    "mix",
+    "experiment",
+    "geo",
+    "uplift",
+    "lift",
+    "measurement",
+    "conversion",
+    "touch"
+   ]
+  },
+  {
+   "name": "Audiences, identity and privacy",
+   "explanation": "Targeting uses audience segments, lookalikes built from seed customers, and identity graphs that link devices and cookies. Consent laws, platform rules and cookie deprecation push the industry to context, first-party data, clean rooms and aggregated or privacy-preserving measurement.",
+   "whyItMatters": "Features and joins that were routine are becoming unavailable; designs must tolerate missing identifiers and prove privacy properties.",
+   "tags": [
+    "audience",
+    "lookalike",
+    "identity",
+    "cookie",
+    "privacy",
+    "clean",
+    "room",
+    "differential",
+    "cross-device",
+    "consent"
+   ]
+  },
+  {
+   "name": "Creative, brand safety and ad quality",
+   "explanation": "The ad itself (image, video, copy) affects performance, and unsafe or non-compliant placements harm brands. Generative tools produce variants, and moderation checks copy against policy and context.",
+   "whyItMatters": "Optimising click rate alone rewards clickbait; guardrails for quality, compliance and brand suitability are part of the objective.",
+   "tags": [
+    "creative",
+    "brand",
+    "safety",
+    "moderation",
+    "compliance",
+    "generation",
+    "copy",
+    "landing",
+    "quality",
+    "video"
+   ]
+  },
+  {
+   "name": "Forecasting inventory and spend",
+   "explanation": "Publishers forecast available impressions for guaranteed deals; advertisers forecast spend and returns across channels; delivery systems must neither over- nor under-deliver. Seasonality, events and policy changes dominate.",
+   "whyItMatters": "Guaranteed contracts create penalties for under-delivery, so forecasts are used at conservative quantiles.",
+   "tags": [
+    "forecast",
+    "inventory",
+    "guaranteed",
+    "avails",
+    "spend",
+    "allocation",
+    "budget",
+    "ctv"
+   ]
+  },
+  {
+   "name": "Fraud, bots and invalid traffic",
+   "explanation": "Click farms, bots and fake installs consume budget and distort models. Detection mixes device and network signals, behavioural patterns and downstream quality signals such as retention or conversion.",
+   "whyItMatters": "Filtering must happen before billing and before model training, or the system learns to pay for fraud.",
+   "tags": [
+    "fraud",
+    "bot",
+    "invalid",
+    "traffic",
+    "click-fraud",
+    "install",
+    "detection",
+    "quality"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "Impression",
+   "definition": "One instance of an ad being shown to a user; the denominator of click-through rate.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "CTR",
+   "definition": "Click-through rate: clicks divided by impressions, typically a few percent or much less.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "CPM / CPC / CPA",
+   "definition": "Pricing per thousand impressions, per click or per action such as a purchase or install.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "eCPM",
+   "definition": "Effective cost per mille: expected revenue per thousand impressions, used to rank bids of different pricing types.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "ecpm",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "RTB",
+   "definition": "Real-time bidding: ads sold one impression at a time in an auction that runs while the page loads.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "SSP",
+   "definition": "Supply-side platform, the system publishers use to sell their ad space.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "DSP",
+   "definition": "Demand-side platform, the system advertisers use to buy impressions and where a CTR model usually lives.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "Ad exchange",
+   "definition": "A marketplace that connects sellers and buyers and runs the auction.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "exchange",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "OpenRTB",
+   "definition": "A widely used protocol for bid requests and responses, which includes a maximum response time.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "openrtb",
+    "position"
+   ]
+  },
+  {
+   "term": "First-price / second-price auction",
+   "definition": "Auction rules in which the winner pays their own bid or just above the runner-up's bid.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "first",
+    "impression",
+    "position",
+    "price",
+    "second"
+   ]
+  },
+  {
+   "term": "Floor price",
+   "definition": "The lowest price a publisher will accept for an impression.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "floor",
+    "impression",
+    "position",
+    "price"
+   ]
+  },
+  {
+   "term": "Pacing",
+   "definition": "Spreading an advertiser's budget over the day so it is neither spent in minutes nor left unspent.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "pacing",
+    "position"
+   ]
+  },
+  {
+   "term": "Creative",
+   "definition": "The ad itself: image, video or text, in a given size and format.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "Placement",
+   "definition": "The slot where an ad appears, such as feed, sidebar or banner; position is the rank within it.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "placement",
+    "position"
+   ]
+  },
+  {
+   "term": "Viewability",
+   "definition": "Whether an ad was actually on screen long enough to be seen, a quality measure advertisers care about.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position",
+    "viewability"
+   ]
+  },
+  {
+   "term": "Invalid traffic (IVT)",
+   "definition": "Clicks and impressions from bots or accidental taps that should not be billed.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "invalid",
+    "position",
+    "traffic"
+   ]
+  },
+  {
+   "term": "Attribution",
+   "definition": "Assigning credit for a conversion, such as a purchase, to the ads that preceded it.",
+   "tags": [
+    "attribution",
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "Log loss",
+   "definition": "The negative log-likelihood of the observed clicks under the predicted probabilities, the standard training loss.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "loss",
+    "position"
+   ]
+  },
+  {
+   "term": "Normalised cross-entropy (NE)",
+   "definition": "Log loss divided by the log loss of always predicting the average click rate; below 1 means better than the base rate.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "cross",
+    "ctr",
+    "entropy",
+    "impression",
+    "normalised",
+    "position"
+   ]
+  },
+  {
+   "term": "Calibration",
+   "definition": "Predicted probabilities matching observed frequencies, so that ads scored at 3% really are clicked about 3% of the time.",
+   "tags": [
+    "auction",
+    "bid",
+    "calibration",
+    "click",
+    "creative",
+    "ctr",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "Feature hashing",
+   "definition": "Mapping categorical values to a fixed-size vector with a hash function, so memory stays flat however many ids exist.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "creative",
+    "ctr",
+    "feature",
+    "hashing",
+    "impression",
+    "position"
+   ]
+  },
+  {
+   "term": "Cold start",
+   "definition": "A new ad, user or placement with no history, whose click rate must be guessed from priors and similar items.",
+   "tags": [
+    "auction",
+    "bid",
+    "click",
+    "cold",
+    "creative",
+    "ctr",
+    "impression",
+    "position",
+    "start"
+   ]
+  },
+  {
+   "term": "Bid request / response",
+   "definition": "The message that offers an impression for sale and the bid that answers it.",
+   "tags": [
+    "bid",
+    "rtb",
+    "auction",
+    "exchange"
+   ]
+  },
+  {
+   "term": "Reserve price",
+   "definition": "The minimum price at which a publisher will sell an impression.",
+   "tags": [
+    "floor",
+    "publisher",
+    "auction",
+    "price"
+   ]
+  },
+  {
+   "term": "Bid shading",
+   "definition": "Bidding below one's true value in a first-price auction to keep profit.",
+   "tags": [
+    "shading",
+    "first-price",
+    "bid",
+    "auction"
+   ]
+  },
+  {
+   "term": "ROAS",
+   "definition": "Return on ad spend: revenue generated per currency unit of advertising.",
+   "tags": [
+    "roas",
+    "budget",
+    "allocation",
+    "retention",
+    "spend"
+   ]
+  },
+  {
+   "term": "CPI",
+   "definition": "Cost per install: the price paid for each new app install.",
+   "tags": [
+    "install",
+    "mobile",
+    "acquisition",
+    "cpi"
+   ]
+  },
+  {
+   "term": "Frequency cap",
+   "definition": "A limit on how many times one person sees the same ad.",
+   "tags": [
+    "frequency",
+    "cap",
+    "annoyance",
+    "retargeting"
+   ]
+  },
+  {
+   "term": "Retargeting",
+   "definition": "Showing ads to people who have already visited a site or product.",
+   "tags": [
+    "retargeting",
+    "window",
+    "conversion",
+    "audience"
+   ]
+  },
+  {
+   "term": "Lookalike audience",
+   "definition": "A group of people who resemble an advertiser's existing customers.",
+   "tags": [
+    "lookalike",
+    "audience",
+    "seed"
+   ]
+  },
+  {
+   "term": "Seed audience",
+   "definition": "The known customers used as the starting point for building a lookalike audience.",
+   "tags": [
+    "lookalike",
+    "audience",
+    "seed"
+   ]
+  },
+  {
+   "term": "Identity graph",
+   "definition": "A mapping that links devices, browsers and accounts that belong to the same person or household.",
+   "tags": [
+    "identity",
+    "cross-device",
+    "graph",
+    "cookie"
+   ]
+  },
+  {
+   "term": "Clean room",
+   "definition": "A secure environment where two parties combine data for analysis without exposing individual records.",
+   "tags": [
+    "clean",
+    "room",
+    "privacy",
+    "audience",
+    "matching"
+   ]
+  },
+  {
+   "term": "Differential privacy",
+   "definition": "A mathematical guarantee that adding noise limits what any output reveals about one person.",
+   "tags": [
+    "differential",
+    "privacy",
+    "measurement"
+   ]
+  },
+  {
+   "term": "Multi-touch attribution (MTA)",
+   "definition": "Assigning conversion credit across all the ad exposures along a customer's path.",
+   "tags": [
+    "attribution",
+    "touch",
+    "conversion",
+    "path"
+   ]
+  },
+  {
+   "term": "Media mix model (MMM)",
+   "definition": "A statistical model of sales as a function of channel spend, seasonality and controls.",
+   "tags": [
+    "mix",
+    "mmm",
+    "budget",
+    "allocation",
+    "channel"
+   ]
+  },
+  {
+   "term": "Adstock",
+   "definition": "The lagged, decaying effect of advertising that continues after the ad is seen.",
+   "tags": [
+    "mix",
+    "mmm",
+    "brand",
+    "tv"
+   ]
+  },
+  {
+   "term": "Saturation curve",
+   "definition": "The diminishing return from additional spend in a channel.",
+   "tags": [
+    "mix",
+    "mmm",
+    "budget",
+    "allocation"
+   ]
+  },
+  {
+   "term": "Incrementality",
+   "definition": "The extra outcome that exists because of advertising, compared with what would have happened anyway.",
+   "tags": [
+    "incrementality",
+    "uplift",
+    "geo",
+    "lift",
+    "experiment"
+   ]
+  },
+  {
+   "term": "Geo experiment",
+   "definition": "A test that varies advertising across regions to measure lift without user-level tracking.",
+   "tags": [
+    "geo",
+    "incrementality",
+    "measurement",
+    "experiment"
+   ]
+  },
+  {
+   "term": "Synthetic control",
+   "definition": "A weighted blend of untreated regions that mimics a treated region before the test.",
+   "tags": [
+    "geo",
+    "incrementality",
+    "experiment",
+    "lift"
+   ]
+  },
+  {
+   "term": "Brand lift",
+   "definition": "The change in awareness, favourability or purchase intent caused by a campaign, measured by surveys.",
+   "tags": [
+    "brand",
+    "lift",
+    "sentiment",
+    "tracking"
+   ]
+  },
+  {
+   "term": "Attention metrics",
+   "definition": "Measures of how long and how much people look at an ad.",
+   "tags": [
+    "attention",
+    "viewable",
+    "video",
+    "prediction"
+   ]
+  },
+  {
+   "term": "Brand safety",
+   "definition": "Keeping ads away from content that could harm the advertiser's reputation.",
+   "tags": [
+    "brand",
+    "safety",
+    "content",
+    "moderation",
+    "classification"
+   ]
+  },
+  {
+   "term": "Contextual targeting",
+   "definition": "Choosing ads by the page or content being viewed rather than by the user.",
+   "tags": [
+    "contextual",
+    "page",
+    "targeting",
+    "classification",
+    "cookie"
+   ]
+  },
+  {
+   "term": "Landing page",
+   "definition": "The page a user reaches after clicking an ad, whose quality affects conversion and cost.",
+   "tags": [
+    "landing",
+    "quality",
+    "search"
+   ]
+  },
+  {
+   "term": "Quality score",
+   "definition": "A platform's estimate of an ad's relevance and landing-page quality that affects its price and rank.",
+   "tags": [
+    "quality",
+    "search",
+    "relevance",
+    "landing"
+   ]
+  },
+  {
+   "term": "Delayed conversion",
+   "definition": "A purchase or install that happens hours or days after the click, so recent labels are incomplete.",
+   "tags": [
+    "delayed",
+    "conversion",
+    "feedback",
+    "cvr",
+    "label"
+   ]
+  },
+  {
+   "term": "Guaranteed delivery",
+   "definition": "A deal in which the publisher promises a number of impressions to an advertiser.",
+   "tags": [
+    "guaranteed",
+    "inventory",
+    "forecast",
+    "avails"
+   ]
+  },
+  {
+   "term": "Avails",
+   "definition": "Available ad impressions a publisher can sell in a period.",
+   "tags": [
+    "avails",
+    "inventory",
+    "forecast",
+    "ctv"
+   ]
+  },
+  {
+   "term": "CTV",
+   "definition": "Connected TV: streaming video on internet-connected television sets.",
+   "tags": [
+    "ctv",
+    "video",
+    "audience",
+    "measurement",
+    "avails"
+   ]
+  },
+  {
+   "term": "Uplift model",
+   "definition": "A model of the causal effect of showing an ad or offer on a person's behaviour.",
+   "tags": [
+    "uplift",
+    "campaign",
+    "incrementality",
+    "treatment"
+   ]
+  },
+  {
+   "term": "Lifetime value (LTV) bidding",
+   "definition": "Bidding based on a customer's predicted long-term value rather than first purchase.",
+   "tags": [
+    "ltv",
+    "bidding",
+    "lifetime"
+   ]
+  },
+  {
+   "term": "Throttling",
+   "definition": "Dropping or ignoring a share of bid requests to stay within capacity or budget.",
+   "tags": [
+    "throttling",
+    "qps",
+    "traffic",
+    "pacing"
+   ]
+  },
+  {
+   "term": "SKAN / ATT",
+   "definition": "Apple's privacy frameworks for app tracking and install attribution that limit user-level data.",
+   "tags": [
+    "mobile",
+    "privacy",
+    "install",
+    "attribution",
+    "conversion"
+   ]
+  },
+  {
+   "term": "Influencer marketing",
+   "definition": "Paying content creators to promote products, where audience authenticity matters.",
+   "tags": [
+    "influencer",
+    "creator",
+    "fraud",
+    "brand"
+   ]
+  },
+  {
+   "term": "Out-of-home (OOH)",
+   "definition": "Advertising in physical places such as billboards and transit, measured with location data.",
+   "tags": [
+    "ooh",
+    "footfall",
+    "attribution",
+    "measurement"
+   ]
+  }
+ ]
+}

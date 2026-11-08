@@ -1,0 +1,883 @@
+{
+ "overview": "Companies forecast demand to decide how much to make, hold and ship. Long-range planning looks months ahead on statistical models; demand sensing looks 1 to 14 days ahead and tries to react to what is happening this week: sales at the till, orders in the pipeline, promotions and weather. Planners own the numbers and the decisions that follow, so the forecast has to be trusted, add up to the plan and say how sure it is.",
+ "concepts": [
+  {
+   "name": "Horizons, lag and who uses the forecast",
+   "explanation": "Demand planning produces forecasts for months or weeks ahead for budgeting and capacity; demand sensing produces 1 to 14 day forecasts that drive replenishment, expediting and allocation. Accuracy is measured at a lag: how far in advance the forecast was frozen before the day it predicts.",
+   "whyItMatters": "A model that wins at 14 days can be useless at 2 days. Report accuracy per horizon and judge it against the decision that horizon supports.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "horizons",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "name": "Demand is not sales",
+   "explanation": "Recorded sales are capped by what was available. A stock-out, a supplier allocation limit or a late truck means customers who wanted the product did not get it. The demand that would have occurred without the limit is called unconstrained demand; sales are constrained demand.",
+   "whyItMatters": "Training on capped sales teaches the model that demand fell when supply was rationed, which then under-orders and creates the next stock-out.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sales",
+    "sensing"
+   ]
+  },
+  {
+   "name": "Signals and when you can know them",
+   "explanation": "Point-of-sale data shows what consumers bought (sell-out), shipments to customers are sell-in, and the order book holds confirmed orders not yet shipped. Promotions, holidays and weather are published in advance with different lock dates. Each signal has a freshness and a cut-off time.",
+   "whyItMatters": "A feature that is only known after the forecast time is leakage. The origin snapshot must contain exactly what planners would have had.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "know",
+    "order",
+    "promotion",
+    "safety",
+    "sensing",
+    "signals"
+   ]
+  },
+  {
+   "name": "Hierarchies and reconciliation",
+   "explanation": "Items roll up into categories and brands, and locations into regions and the network. Forecasts made at different levels disagree, so planners need them reconciled to add up. Accuracy is much better at the top than at SKU-location level, and decisions are made at the bottom.",
+   "whyItMatters": "Aggregate accuracy flatters the model. Evaluate at the level where orders are placed.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchies",
+    "hierarchy",
+    "order",
+    "promotion",
+    "reconciliation",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "name": "From forecast error to inventory",
+   "explanation": "Safety stock buffers against forecast error and supplier variability: roughly a service-level factor times the standard deviation of forecast error times the square root of lead time. Better forecasts therefore directly cut the inventory needed for the same service level, and biased forecasts create systematic over- or under-stocking.",
+   "whyItMatters": "Business value is measured in stock, stock-outs and expediting, not in MAPE, so tie accuracy gains back to those.",
+   "tags": [
+    "demand",
+    "error",
+    "forecast",
+    "hierarchy",
+    "inventory",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "name": "Planner overrides and forecast value added",
+   "explanation": "Experienced planners change statistical forecasts when they know about deals, disruptions or launches. Forecast value added (FVA) measures whether each step, including the model and the human override, improved on a naive baseline.",
+   "whyItMatters": "Adoption depends on respecting overrides, recording them and showing, with data, when they help and when they hurt.",
+   "tags": [
+    "added",
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "overrides",
+    "planner",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "name": "Logistics networks: nodes, lanes and the physical flow",
+   "explanation": "Goods move through suppliers, factories, ports, distribution centres, cross-docks and last-mile hubs. Each link has a lead time, a capacity and a cost, and disruptions (weather, strikes, congestion) propagate. Visibility data come from scans, telematics and partner feeds with delays and gaps.",
+   "whyItMatters": "Models sit on top of a physical network with hard constraints; plans must be feasible, not just predicted well.",
+   "tags": [
+    "logistics",
+    "network",
+    "route",
+    "port",
+    "dock",
+    "warehouse",
+    "shipment",
+    "carrier",
+    "visibility",
+    "control-tower"
+   ]
+  },
+  {
+   "name": "Routing, scheduling and optimisation under uncertainty",
+   "explanation": "Vehicle routing, dispatch, slotting, wave planning, yard planning and timetabling are combinatorial optimisation problems. Travel times, demand and service times are uncertain, so plans built on point predictions are optimistic and fragile.",
+   "whyItMatters": "Optimising predictions systematically picks options whose errors are favourable; robust methods add margins and re-plan as reality unfolds.",
+   "tags": [
+    "routing",
+    "vrp",
+    "dispatch",
+    "scheduling",
+    "optimization",
+    "last-mile",
+    "vehicle",
+    "slotting",
+    "wave",
+    "yard",
+    "timetab",
+    "assignment"
+   ]
+  },
+  {
+   "name": "Estimated time of arrival and delivery promises",
+   "explanation": "ETAs combine routes, traffic, dwell times at stops and historical behaviour. Customers and planners act on them, so under- and over-estimates have different costs, and quantile predictions (a promise at the 90th percentile) are more useful than averages.",
+   "whyItMatters": "A good ETA is calibrated and updates as the shipment moves, not a single early number.",
+   "tags": [
+    "eta",
+    "arrival",
+    "delivery",
+    "promise",
+    "transit",
+    "delay",
+    "dwell",
+    "railway",
+    "shipment",
+    "estimate"
+   ]
+  },
+  {
+   "name": "Warehouse and fulfilment operations",
+   "explanation": "Warehouses receive, store, pick, pack and ship. Layout and slotting set walking distance, wave planning groups orders, robots and humans share space, and labour is the main cost. Computer vision reads barcodes, dimensions and damage.",
+   "whyItMatters": "Throughput and labour per order are the business metrics; model accuracy is only useful insofar as it shortens a pick path or avoids a rehandle.",
+   "tags": [
+    "warehouse",
+    "picking",
+    "slotting",
+    "wave",
+    "robot",
+    "labour",
+    "parcel",
+    "pallet",
+    "sorting",
+    "cross-dock",
+    "fulfilment"
+   ]
+  },
+  {
+   "name": "Procurement, suppliers and trade compliance",
+   "explanation": "Buyers choose suppliers, forecast commodity prices, classify spend and negotiate contracts; importers classify goods under customs codes, screen parties against denied lists and audit freight invoices. Supplier failures and sanctions have large downstream cost.",
+   "whyItMatters": "Evidence trails and explainability matter because decisions are audited, and errors can mean fines or shipment holds.",
+   "tags": [
+    "supplier",
+    "procurement",
+    "contract",
+    "customs",
+    "compliance",
+    "denied",
+    "invoice",
+    "audit",
+    "spend",
+    "trade",
+    "hs-code"
+   ]
+  },
+  {
+   "name": "Asset health and predictive maintenance",
+   "explanation": "Vehicles, warehouse equipment and cold-chain units generate sensor data. Failures are rare and costly, the cost of a false alarm is a wasted inspection, and the data are right-censored (assets still running).",
+   "whyItMatters": "Value comes from lead time to act and avoided downtime, so evaluation uses cost-weighted decisions and time-to-failure, not accuracy.",
+   "tags": [
+    "maintenance",
+    "failure",
+    "equipment",
+    "fleet",
+    "cold-chain",
+    "temperature",
+    "sensor",
+    "predictive",
+    "driver",
+    "fuel"
+   ]
+  },
+  {
+   "name": "Sustainability and emissions",
+   "explanation": "Shippers estimate and report carbon emissions per shipment from mode, distance, load factor and fuel. Estimates have wide uncertainty, and routing, mode choice and consolidation can reduce emissions.",
+   "whyItMatters": "Reporting standards require traceable methods, so an estimate must be reproducible from its inputs.",
+   "tags": [
+    "carbon",
+    "emissions",
+    "fuel",
+    "eco",
+    "sustainability",
+    "consolidation",
+    "mode"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "SKU",
+   "definition": "Stock-keeping unit: one distinct product variant, such as a size and colour, tracked in inventory.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "POS",
+   "definition": "Point of sale: the till or checkout system that records what consumers actually bought.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Sell-in / sell-out",
+   "definition": "Sell-in is what a manufacturer ships to retailers; sell-out is what retailers sell to consumers.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sell",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Open order / order book",
+   "definition": "Confirmed customer orders that have not yet been shipped, a leading indicator of near-term demand.",
+   "tags": [
+    "book",
+    "demand",
+    "forecast",
+    "hierarchy",
+    "open",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Lead time",
+   "definition": "The time between placing an order or replenishment and receiving it.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "lead",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Safety stock",
+   "definition": "Extra inventory held to cover forecast error and supply variability.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing",
+    "stock"
+   ]
+  },
+  {
+   "term": "Service level / fill rate",
+   "definition": "The probability of not stocking out in a cycle, or the share of demand met from stock.",
+   "tags": [
+    "demand",
+    "fill",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing",
+    "service"
+   ]
+  },
+  {
+   "term": "Stock-out",
+   "definition": "A period when an item is unavailable, so sales are lost or delayed.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing",
+    "stock"
+   ]
+  },
+  {
+   "term": "Allocation",
+   "definition": "A supplier limiting how much of a scarce product each customer can receive.",
+   "tags": [
+    "allocation",
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Constrained / unconstrained demand",
+   "definition": "Sales as limited by supply, versus the demand that would have occurred with unlimited stock.",
+   "tags": [
+    "constrained",
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing",
+    "unconstrained"
+   ]
+  },
+  {
+   "term": "MAPE / WMAPE",
+   "definition": "Mean absolute percentage error, and its volume-weighted version that stops tiny items dominating the average.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "mape",
+    "order",
+    "promotion",
+    "safety",
+    "sensing",
+    "wmape"
+   ]
+  },
+  {
+   "term": "Bias",
+   "definition": "The tendency to forecast systematically too high or too low, measured separately from absolute error.",
+   "tags": [
+    "bias",
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "FVA",
+   "definition": "Forecast value added: improvement in accuracy over a naive baseline attributable to a model or a human step.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Hierarchy",
+   "definition": "The nesting of items, categories, locations and regions at which forecasts and decisions are made.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Reconciliation",
+   "definition": "Adjusting forecasts at different levels so they sum consistently, for example with the MinT method.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "reconciliation",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "S&OP",
+   "definition": "Sales and operations planning: the recurring process that aligns demand, supply and finance.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Replenishment",
+   "definition": "Ordering or moving stock to restore inventory to target levels.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "replenishment",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Intermittent demand",
+   "definition": "Series with many zero-sales days and occasional spikes, common for slow-moving items and hard to forecast.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "intermittent",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "Promotion uplift",
+   "definition": "The additional demand caused by a promotion relative to the baseline without it.",
+   "tags": [
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing",
+    "uplift"
+   ]
+  },
+  {
+   "term": "Cannibalisation",
+   "definition": "A promotion on one item stealing sales from a similar item rather than adding total demand.",
+   "tags": [
+    "cannibalisation",
+    "demand",
+    "forecast",
+    "hierarchy",
+    "order",
+    "promotion",
+    "safety",
+    "sensing"
+   ]
+  },
+  {
+   "term": "DC (distribution centre)",
+   "definition": "A warehouse that receives goods from suppliers and ships to stores or customers.",
+   "tags": [
+    "warehouse",
+    "network",
+    "fulfilment",
+    "inventory"
+   ]
+  },
+  {
+   "term": "Cross-docking",
+   "definition": "Moving goods directly from inbound to outbound vehicles with little or no storage.",
+   "tags": [
+    "cross-dock",
+    "warehouse",
+    "scheduling"
+   ]
+  },
+  {
+   "term": "Last mile",
+   "definition": "The final leg of delivery from a local hub to the customer's door, the most expensive part.",
+   "tags": [
+    "last-mile",
+    "delivery",
+    "routing",
+    "dispatch"
+   ]
+  },
+  {
+   "term": "VRP / VRPTW",
+   "definition": "Vehicle routing problem and its version with customer time windows.",
+   "tags": [
+    "vrp",
+    "routing",
+    "vehicle",
+    "time-window",
+    "last-mile"
+   ]
+  },
+  {
+   "term": "Time window",
+   "definition": "The interval in which a customer or dock must be served.",
+   "tags": [
+    "vrp",
+    "routing",
+    "scheduling",
+    "delivery"
+   ]
+  },
+  {
+   "term": "Slotting",
+   "definition": "Deciding where in a warehouse each SKU is stored.",
+   "tags": [
+    "slotting",
+    "warehouse",
+    "picking"
+   ]
+  },
+  {
+   "term": "Wave picking",
+   "definition": "Releasing batches of orders to pickers together to balance workload and deadlines.",
+   "tags": [
+    "wave",
+    "picking",
+    "warehouse",
+    "scheduling"
+   ]
+  },
+  {
+   "term": "Pick path",
+   "definition": "The route a picker walks to collect items in an order.",
+   "tags": [
+    "picking",
+    "wave",
+    "warehouse"
+   ]
+  },
+  {
+   "term": "AMR / AGV",
+   "definition": "Autonomous mobile robot and automated guided vehicle used to move goods in warehouses.",
+   "tags": [
+    "robot",
+    "warehouse",
+    "orchestration"
+   ]
+  },
+  {
+   "term": "Dwell time",
+   "definition": "How long a container, truck or parcel waits at a location.",
+   "tags": [
+    "dwell",
+    "port",
+    "container",
+    "yard",
+    "eta"
+   ]
+  },
+  {
+   "term": "Container yard",
+   "definition": "The area of a port or terminal where containers are stacked and moved.",
+   "tags": [
+    "yard",
+    "port",
+    "container",
+    "rehandle"
+   ]
+  },
+  {
+   "term": "Rehandle",
+   "definition": "An extra move of a container or pallet needed to reach the one underneath.",
+   "tags": [
+    "yard",
+    "port",
+    "container",
+    "warehouse"
+   ]
+  },
+  {
+   "term": "ETA",
+   "definition": "Estimated time of arrival of a shipment or vehicle.",
+   "tags": [
+    "eta",
+    "arrival",
+    "delivery",
+    "shipment",
+    "railway"
+   ]
+  },
+  {
+   "term": "Telematics",
+   "definition": "Vehicle sensor and GPS data used to track location, driving and engine health.",
+   "tags": [
+    "telematics",
+    "fleet",
+    "driver",
+    "fuel",
+    "eta"
+   ]
+  },
+  {
+   "term": "Control tower",
+   "definition": "A central view of a supply chain's events and exceptions, used to react to disruptions.",
+   "tags": [
+    "control-tower",
+    "visibility",
+    "anomaly",
+    "disruption"
+   ]
+  },
+  {
+   "term": "Bill of materials (BOM)",
+   "definition": "The list of parts and quantities needed to make a product.",
+   "tags": [
+    "bom",
+    "procurement",
+    "matching",
+    "production"
+   ]
+  },
+  {
+   "term": "Tender",
+   "definition": "Offering a shipment to carriers, who accept or reject at a quoted rate.",
+   "tags": [
+    "carrier",
+    "tender",
+    "freight",
+    "selection"
+   ]
+  },
+  {
+   "term": "Freight rate",
+   "definition": "The price of moving goods between two points, varying with market and lane.",
+   "tags": [
+    "freight",
+    "carrier",
+    "pricing"
+   ]
+  },
+  {
+   "term": "Spot vs contract rate",
+   "definition": "A one-off market price for a shipment versus a pre-agreed price over a period.",
+   "tags": [
+    "freight",
+    "carrier",
+    "pricing"
+   ]
+  },
+  {
+   "term": "HS code",
+   "definition": "Harmonised System code that classifies traded goods for customs duties and rules.",
+   "tags": [
+    "customs",
+    "hs-code",
+    "classification",
+    "trade",
+    "compliance"
+   ]
+  },
+  {
+   "term": "Denied-party screening",
+   "definition": "Checking trading partners against lists of restricted or sanctioned parties.",
+   "tags": [
+    "denied",
+    "screening",
+    "compliance",
+    "trade",
+    "sanctions"
+   ]
+  },
+  {
+   "term": "Freight invoice audit",
+   "definition": "Checking carrier invoices against contracted rates and actual shipments.",
+   "tags": [
+    "invoice",
+    "audit",
+    "freight",
+    "carrier"
+   ]
+  },
+  {
+   "term": "ATP (available to promise)",
+   "definition": "The quantity of stock that can still be promised to new orders.",
+   "tags": [
+    "atp",
+    "promise",
+    "order",
+    "inventory"
+   ]
+  },
+  {
+   "term": "Multi-echelon inventory",
+   "definition": "Inventory held at several levels of a network, such as factory, regional DC and store.",
+   "tags": [
+    "inventory",
+    "echelon",
+    "safety",
+    "network"
+   ]
+  },
+  {
+   "term": "Service level",
+   "definition": "The probability of not stocking out, or the share of demand met from stock.",
+   "tags": [
+    "inventory",
+    "safety",
+    "service",
+    "replenishment"
+   ]
+  },
+  {
+   "term": "Lead-time variability",
+   "definition": "How much the time to receive goods varies, which drives safety stock.",
+   "tags": [
+    "lead",
+    "supplier",
+    "inventory",
+    "safety",
+    "vendor"
+   ]
+  },
+  {
+   "term": "Digital twin",
+   "definition": "A simulation of a real system calibrated to its data, used to test decisions.",
+   "tags": [
+    "digital",
+    "twin",
+    "simulation",
+    "network"
+   ]
+  },
+  {
+   "term": "Capacity constraint",
+   "definition": "A limit on how much can be processed, stored or moved in a period.",
+   "tags": [
+    "scheduling",
+    "planning",
+    "production",
+    "warehouse"
+   ]
+  },
+  {
+   "term": "Changeover / setup",
+   "definition": "The time and cost of switching a machine from one product to another.",
+   "tags": [
+    "production",
+    "scheduling",
+    "planning",
+    "setup"
+   ]
+  },
+  {
+   "term": "Bin packing",
+   "definition": "Fitting items into the fewest containers or trucks subject to size and weight.",
+   "tags": [
+    "load",
+    "packing",
+    "consolidation",
+    "container",
+    "pallet"
+   ]
+  },
+  {
+   "term": "Cold chain",
+   "definition": "A temperature-controlled supply chain for perishables and medicines.",
+   "tags": [
+    "cold-chain",
+    "temperature",
+    "excursion",
+    "perishable"
+   ]
+  },
+  {
+   "term": "Temperature excursion",
+   "definition": "A period when a temperature-sensitive product leaves its allowed range.",
+   "tags": [
+    "cold-chain",
+    "temperature",
+    "excursion"
+   ]
+  },
+  {
+   "term": "Predictive maintenance",
+   "definition": "Servicing equipment when data show failure is likely rather than on a fixed schedule.",
+   "tags": [
+    "maintenance",
+    "predictive",
+    "equipment",
+    "fleet",
+    "failure"
+   ]
+  },
+  {
+   "term": "Remaining useful life",
+   "definition": "The estimated time before a component fails.",
+   "tags": [
+    "maintenance",
+    "predictive",
+    "failure",
+    "sensor"
+   ]
+  },
+  {
+   "term": "Proof of delivery",
+   "definition": "Evidence, often a photo or signature, that a parcel reached the customer.",
+   "tags": [
+    "proof",
+    "delivery",
+    "vision",
+    "last-mile"
+   ]
+  },
+  {
+   "term": "First-attempt delivery rate",
+   "definition": "The share of parcels delivered successfully on the first try.",
+   "tags": [
+    "delivery",
+    "failure",
+    "last-mile",
+    "redelivery"
+   ]
+  },
+  {
+   "term": "Emission factor",
+   "definition": "The amount of greenhouse gas emitted per unit of activity, such as per tonne-kilometre.",
+   "tags": [
+    "carbon",
+    "emissions",
+    "logistics"
+   ]
+  },
+  {
+   "term": "Barcode / OCR",
+   "definition": "Reading identifiers and printed text from parcels so they can be sorted.",
+   "tags": [
+    "parcel",
+    "sorting",
+    "ocr",
+    "barcode",
+    "vision"
+   ]
+  }
+ ]
+}

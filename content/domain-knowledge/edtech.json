@@ -1,0 +1,902 @@
+{
+ "overview": "A learning app presents questions, records whether each answer is right and decides what to show next. Knowledge tracing estimates, after every answer, how well the learner knows each skill, so the app can practise what they are weak at and stop when they have mastered it. The people who depend on the estimate are learners, teachers and parents, so it has to be understandable, calibrated and handled with the care owed to student data.",
+ "concepts": [
+  {
+   "name": "Skills, items and the Q-matrix",
+   "explanation": "Curricula are broken into knowledge components, or skills, such as adding fractions. Each question (item) is tagged with one or more skills; the table of those tags is the Q-matrix. Mastery is tracked per skill, not per question.",
+   "whyItMatters": "Everything depends on the skill map. When the curriculum changes it, historical mastery can become wrong, so version it.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "items",
+    "knowledge",
+    "mastery",
+    "matrix",
+    "skill",
+    "skills",
+    "tracing"
+   ]
+  },
+  {
+   "name": "Mastery is hidden; answers are noisy evidence",
+   "explanation": "A learner may guess correctly without knowing, or slip and answer wrongly despite knowing. Models such as Bayesian Knowledge Tracing treat mastery as a hidden state with parameters for the chance of learning on each attempt, guessing and slipping. Performance Factors Analysis instead predicts the next answer from counts of earlier successes and failures.",
+   "whyItMatters": "A correct answer is not learning. The model must reason about evidence, and a single success should not declare mastery.",
+   "tags": [
+    "adaptive",
+    "answers",
+    "evidence",
+    "forgetting",
+    "hidden",
+    "irt",
+    "knowledge",
+    "mastery",
+    "noisy",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "name": "Item difficulty and ability: IRT",
+   "explanation": "Item response theory describes the chance of a correct answer as a function of a learner's ability and the item's difficulty (and sometimes discrimination and guessing). The same learner is less likely to answer a hard item correctly.",
+   "whyItMatters": "Predictions must account for how hard the next question is, and difficulty should be learned from other students.",
+   "tags": [
+    "ability",
+    "adaptive",
+    "difficulty",
+    "forgetting",
+    "irt",
+    "item",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "name": "Forgetting and spacing",
+   "explanation": "Memory decays without practice, following a forgetting curve, and reviewing at spaced intervals makes learning last. Long breaks, holidays and exam periods change what a learner can do.",
+   "whyItMatters": "Time since practice is a feature, and mastery shown to learners after a long break should decay.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "spacing",
+    "tracing"
+   ]
+  },
+  {
+   "name": "Adaptive practice shapes the data",
+   "explanation": "Mastery learning keeps assigning practice on a skill until the estimate crosses a threshold, and tutors choose questions near the learner's level. Learners who struggle get more attempts, so the data are not a random sample of questions, and some learners get stuck practising without progress, called wheel spinning.",
+   "whyItMatters": "Naive comparisons across skills or learners are biased by the system's own choices, and you must detect stuck learners rather than assigning more of the same.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "practice",
+    "shapes",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "name": "Children's data, fairness and accountability",
+   "explanation": "Learner data is sensitive, and children's data has special protection (COPPA and FERPA in the United States, the GDPR with special rules for minors in Europe). Mastery estimates can affect grades, tracks or perception, so they should be explainable, checked for differences between groups and never the only basis for a high-stakes decision.",
+   "whyItMatters": "Consent, retention limits and explanations are product requirements, and they favour interpretable models alongside predictive ones.",
+   "tags": [
+    "accountability",
+    "adaptive",
+    "children",
+    "fairness",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "name": "Assessment: items, scoring and psychometrics",
+   "explanation": "Tests and quizzes are built from items with known difficulty and discrimination, calibrated with item response theory so scores are comparable across forms. Adaptive tests choose the next question to pin down ability quickly. Automated scoring of essays and short answers must agree with trained human raters and be audited for bias.",
+   "whyItMatters": "Scores affect grades and opportunities, so reliability, fairness and agreement with human scoring are formal requirements, not nice-to-haves.",
+   "tags": [
+    "assessment",
+    "irt",
+    "adaptive",
+    "testing",
+    "essay",
+    "scoring",
+    "grading",
+    "rubric",
+    "placement",
+    "calibration"
+   ]
+  },
+  {
+   "name": "Recommending learning content and paths",
+   "explanation": "Learners choose courses, exercises and next steps. Prerequisite structures (a graph of skills), goals, time available and motivation shape what is useful; the aim is learning gain, not clicks.",
+   "whyItMatters": "Engagement and learning can diverge: the most clicked content may not be the most effective.",
+   "tags": [
+    "recommendation",
+    "course",
+    "path",
+    "curriculum",
+    "prerequisite",
+    "sequencing",
+    "career",
+    "scholarship",
+    "content",
+    "difficulty"
+   ]
+  },
+  {
+   "name": "Engagement, retention and early warning",
+   "explanation": "Students and learners drop out for reasons visible in activity data weeks earlier. Models flag risk so teachers or support staff can reach out; notifications and gamification aim to sustain habits but can create anxiety or fatigue.",
+   "whyItMatters": "Interventions must be tested for causal benefit, because predicting dropout is not the same as preventing it.",
+   "tags": [
+    "dropout",
+    "engagement",
+    "retention",
+    "notification",
+    "gamification",
+    "early-warning",
+    "attendance",
+    "motivation",
+    "habit"
+   ]
+  },
+  {
+   "name": "Language, speech and reading",
+   "explanation": "Language learning and literacy tools assess pronunciation, reading fluency and conversation using speech recognition and language models. Accents, age and background noise affect accuracy, and feedback must be pedagogically sound, not just correct.",
+   "whyItMatters": "Speech models evaluated on adult native speakers can fail for children and learners, so test on the real population.",
+   "tags": [
+    "pronunciation",
+    "speech",
+    "reading",
+    "fluency",
+    "language",
+    "conversation",
+    "captioning",
+    "vocabulary",
+    "asr"
+   ]
+  },
+  {
+   "name": "AI tutors and teacher copilots",
+   "explanation": "Tutoring assistants guide students with hints and questions; teacher copilots draft lessons, questions and feedback. Good tutoring avoids giving away answers, stays within the curriculum and flags misconceptions; safety rules for minors apply.",
+   "whyItMatters": "Evaluate on learning outcomes and teacher time saved, and test explicitly for answer leakage and off-curriculum content.",
+   "tags": [
+    "tutor",
+    "teacher",
+    "copilot",
+    "lesson",
+    "feedback",
+    "question",
+    "generation",
+    "socratic",
+    "chatbot",
+    "plan"
+   ]
+  },
+  {
+   "name": "Academic integrity, proctoring and privacy",
+   "explanation": "Plagiarism and cheating detection compare code and text, and proctoring uses video and behaviour signals. These systems can wrongly accuse students and raise privacy concerns, especially for minors and remote exams.",
+   "whyItMatters": "The cost of a false accusation is high, so outputs support a human decision and need appeal paths.",
+   "tags": [
+    "plagiarism",
+    "cheating",
+    "proctoring",
+    "integrity",
+    "privacy",
+    "code",
+    "exam",
+    "fairness"
+   ]
+  },
+  {
+   "name": "Operations: timetabling, admissions and support",
+   "explanation": "Institutions schedule exams and classrooms, match students to scholarships and programmes, answer admissions questions and triage support tickets. Constraints are hard (no clashes), fairness is audited, and stakeholders contest decisions.",
+   "whyItMatters": "Optimisation and scoring systems here are judged on feasibility and fairness, and every decision needs an explanation.",
+   "tags": [
+    "timetabling",
+    "schedule",
+    "classroom",
+    "admissions",
+    "scholarship",
+    "support",
+    "ticket",
+    "allocation",
+    "fairness",
+    "routing"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "Knowledge component (skill)",
+   "definition": "A unit of knowledge or skill that can be practised and assessed, the level at which mastery is tracked.",
+   "tags": [
+    "adaptive",
+    "component",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Q-matrix",
+   "definition": "The mapping that says which skills each question item exercises.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "matrix",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Item",
+   "definition": "One question or exercise a learner can answer.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "item",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Mastery",
+   "definition": "A learner's hidden state of knowing a skill well enough, usually represented as a probability.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "BKT",
+   "definition": "Bayesian Knowledge Tracing: a hidden Markov model of mastery with learn, guess and slip parameters per skill.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Guess / slip",
+   "definition": "The chance of answering correctly without mastery (guess) or incorrectly despite mastery (slip).",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "guess",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "slip",
+    "tracing"
+   ]
+  },
+  {
+   "term": "PFA",
+   "definition": "Performance Factors Analysis: logistic regression predicting correctness from prior successes and failures on the skill.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "IRT",
+   "definition": "Item response theory: models correctness as a function of learner ability and item difficulty.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Difficulty / discrimination",
+   "definition": "How hard an item is, and how sharply it separates stronger from weaker learners.",
+   "tags": [
+    "adaptive",
+    "difficulty",
+    "discrimination",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Ability (theta)",
+   "definition": "A learner's latent proficiency in item response theory.",
+   "tags": [
+    "ability",
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "theta",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Rasch model",
+   "definition": "The simplest IRT model, with one difficulty parameter per item and equal discrimination.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "rasch",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Forgetting curve",
+   "definition": "The decline of retention over time without review.",
+   "tags": [
+    "adaptive",
+    "curve",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Spaced repetition",
+   "definition": "Scheduling reviews at increasing intervals to make learning last.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "repetition",
+    "skill",
+    "spaced",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Opportunity count",
+   "definition": "How many times a learner has practised a skill so far.",
+   "tags": [
+    "adaptive",
+    "count",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "opportunity",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Wheel spinning",
+   "definition": "A learner repeatedly practising a skill without reaching mastery, a sign the practice is not working.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "spinning",
+    "tracing",
+    "wheel"
+   ]
+  },
+  {
+   "term": "Mastery learning",
+   "definition": "An instructional approach in which learners move on only after demonstrating mastery of a skill.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "learning",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Formative / summative assessment",
+   "definition": "Assessment used to guide learning along the way, versus a final judgement of what was learned.",
+   "tags": [
+    "adaptive",
+    "assessment",
+    "forgetting",
+    "formative",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "summative",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Learning gain",
+   "definition": "The improvement in a learner's measured knowledge between two points, the outcome the system exists to increase.",
+   "tags": [
+    "adaptive",
+    "forgetting",
+    "gain",
+    "irt",
+    "knowledge",
+    "learning",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Zone of proximal development",
+   "definition": "The range of tasks a learner can do with some support but not yet alone, where practice helps most.",
+   "tags": [
+    "adaptive",
+    "development",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "proximal",
+    "skill",
+    "tracing",
+    "zone"
+   ]
+  },
+  {
+   "term": "COPPA / FERPA",
+   "definition": "US laws protecting children's online data and education records.",
+   "tags": [
+    "adaptive",
+    "coppa",
+    "ferpa",
+    "forgetting",
+    "irt",
+    "knowledge",
+    "mastery",
+    "skill",
+    "tracing"
+   ]
+  },
+  {
+   "term": "Item response theory (IRT)",
+   "definition": "A family of models relating the chance of a correct answer to a learner's ability and an item's parameters.",
+   "tags": [
+    "irt",
+    "assessment",
+    "difficulty",
+    "adaptive",
+    "calibration"
+   ]
+  },
+  {
+   "term": "Computerised adaptive test (CAT)",
+   "definition": "A test that selects each question based on the learner's previous answers.",
+   "tags": [
+    "adaptive",
+    "testing",
+    "placement",
+    "irt"
+   ]
+  },
+  {
+   "term": "Placement test",
+   "definition": "A short assessment that places a learner at the right starting level.",
+   "tags": [
+    "placement",
+    "cold",
+    "start",
+    "adaptive"
+   ]
+  },
+  {
+   "term": "Rubric",
+   "definition": "A scoring guide that defines criteria and performance levels for graded work.",
+   "tags": [
+    "rubric",
+    "essay",
+    "grading",
+    "short-answer",
+    "scoring"
+   ]
+  },
+  {
+   "term": "Inter-rater agreement",
+   "definition": "How closely two raters, human or automated, agree, often measured with quadratic weighted kappa.",
+   "tags": [
+    "essay",
+    "scoring",
+    "grading",
+    "agreement",
+    "rubric"
+   ]
+  },
+  {
+   "term": "Automated essay scoring (AES)",
+   "definition": "Software that predicts the score a human rater would give an essay.",
+   "tags": [
+    "essay",
+    "scoring",
+    "grading",
+    "rubric"
+   ]
+  },
+  {
+   "term": "Distractor",
+   "definition": "A plausible wrong answer in a multiple-choice question, ideally reflecting a common misconception.",
+   "tags": [
+    "mcq",
+    "distractor",
+    "question",
+    "generation",
+    "misconception"
+   ]
+  },
+  {
+   "term": "Misconception",
+   "definition": "A systematic wrong idea a learner holds, which wrong answers can reveal.",
+   "tags": [
+    "misconception",
+    "distractor",
+    "feedback",
+    "tutor"
+   ]
+  },
+  {
+   "term": "Learning path",
+   "definition": "An ordered sequence of content or skills tailored to a learner's goal.",
+   "tags": [
+    "path",
+    "curriculum",
+    "recommendation",
+    "sequencing",
+    "adaptive"
+   ]
+  },
+  {
+   "term": "Prerequisite graph",
+   "definition": "A directed graph of which skills must be learned before others.",
+   "tags": [
+    "prerequisite",
+    "curriculum",
+    "sequencing",
+    "path",
+    "skill"
+   ]
+  },
+  {
+   "term": "Curriculum standard",
+   "definition": "A published statement of what learners should know, such as a national standard, to which content is tagged.",
+   "tags": [
+    "curriculum",
+    "standard",
+    "alignment",
+    "tagging",
+    "lesson"
+   ]
+  },
+  {
+   "term": "Socratic tutoring",
+   "definition": "Guiding a learner to the answer with questions and hints instead of telling them.",
+   "tags": [
+    "tutor",
+    "socratic",
+    "dialogue",
+    "answer",
+    "leak"
+   ]
+  },
+  {
+   "term": "Scaffolding",
+   "definition": "Temporary support that is gradually removed as a learner becomes capable.",
+   "tags": [
+    "tutor",
+    "feedback",
+    "hint",
+    "lesson"
+   ]
+  },
+  {
+   "term": "Formative feedback",
+   "definition": "Comments that help a learner improve while they are still learning.",
+   "tags": [
+    "feedback",
+    "assessment",
+    "tutor",
+    "programming"
+   ]
+  },
+  {
+   "term": "Dropout / attrition",
+   "definition": "A learner leaving a course or programme before completing it.",
+   "tags": [
+    "dropout",
+    "retention",
+    "early-warning",
+    "survival"
+   ]
+  },
+  {
+   "term": "Learning management system (LMS)",
+   "definition": "The platform where courses, materials, submissions and grades are managed.",
+   "tags": [
+    "lms",
+    "engagement",
+    "analytics",
+    "dropout",
+    "teacher"
+   ]
+  },
+  {
+   "term": "Learning analytics",
+   "definition": "Using learner data to understand and improve learning and teaching.",
+   "tags": [
+    "analytics",
+    "teacher",
+    "insights",
+    "dropout",
+    "engagement"
+   ]
+  },
+  {
+   "term": "Gamification",
+   "definition": "Using points, streaks and badges to motivate learning.",
+   "tags": [
+    "gamification",
+    "engagement",
+    "reward",
+    "notification"
+   ]
+  },
+  {
+   "term": "Streak",
+   "definition": "Consecutive days of practice, a common habit-forming mechanic.",
+   "tags": [
+    "gamification",
+    "engagement",
+    "notification",
+    "retention"
+   ]
+  },
+  {
+   "term": "Pronunciation assessment",
+   "definition": "Scoring how closely spoken sounds match a target pronunciation.",
+   "tags": [
+    "pronunciation",
+    "speech",
+    "assessment",
+    "language"
+   ]
+  },
+  {
+   "term": "Goodness of pronunciation (GOP)",
+   "definition": "A score for how well each phoneme was pronounced, derived from a speech recogniser.",
+   "tags": [
+    "pronunciation",
+    "speech",
+    "gop"
+   ]
+  },
+  {
+   "term": "Oral reading fluency",
+   "definition": "Speed, accuracy and expression when reading aloud.",
+   "tags": [
+    "reading",
+    "fluency",
+    "asr",
+    "assessment"
+   ]
+  },
+  {
+   "term": "Word error rate (WER)",
+   "definition": "Errors in recognised text divided by the number of words in the reference.",
+   "tags": [
+    "asr",
+    "captioning",
+    "reading",
+    "speech"
+   ]
+  },
+  {
+   "term": "CEFR",
+   "definition": "The European scale of language proficiency from A1 to C2.",
+   "tags": [
+    "language",
+    "vocabulary",
+    "reading",
+    "conversation"
+   ]
+  },
+  {
+   "term": "Text simplification",
+   "definition": "Rewriting text at a lower reading level while keeping its meaning.",
+   "tags": [
+    "reading",
+    "simplification",
+    "adaptive"
+   ]
+  },
+  {
+   "term": "Proctoring",
+   "definition": "Monitoring an exam, in person or remotely, to prevent cheating.",
+   "tags": [
+    "proctoring",
+    "cheating",
+    "exam",
+    "vision",
+    "integrity"
+   ]
+  },
+  {
+   "term": "Code plagiarism",
+   "definition": "Submitting another's program, often disguised by renaming variables or reordering code.",
+   "tags": [
+    "plagiarism",
+    "code",
+    "integrity",
+    "similarity"
+   ]
+  },
+  {
+   "term": "Timetabling",
+   "definition": "Assigning courses, exams and rooms to time slots without clashes.",
+   "tags": [
+    "timetable",
+    "schedule",
+    "exam",
+    "classroom",
+    "allocation"
+   ]
+  },
+  {
+   "term": "Hard / soft constraint",
+   "definition": "A rule that must not be broken versus a preference to be satisfied as far as possible.",
+   "tags": [
+    "timetable",
+    "schedule",
+    "allocation",
+    "nurse",
+    "optimization"
+   ]
+  },
+  {
+   "term": "Admissions",
+   "definition": "The process of selecting applicants for a programme, subject to fairness and legal rules.",
+   "tags": [
+    "admissions",
+    "scoring",
+    "fairness",
+    "chatbot"
+   ]
+  },
+  {
+   "term": "Equity audit",
+   "definition": "Checking whether outcomes differ systematically between groups of students.",
+   "tags": [
+    "fairness",
+    "admissions",
+    "scholarship",
+    "dropout"
+   ]
+  },
+  {
+   "term": "Accessibility",
+   "definition": "Making content usable by people with disabilities, for example with alt text and captions.",
+   "tags": [
+    "accessibility",
+    "captioning",
+    "alt-text",
+    "vision",
+    "speech"
+   ]
+  },
+  {
+   "term": "Alt text",
+   "definition": "A text description of an image for people who cannot see it.",
+   "tags": [
+    "accessibility",
+    "alt-text",
+    "image",
+    "captioning"
+   ]
+  },
+  {
+   "term": "PII in learner data",
+   "definition": "Personal information such as names and IDs inside student text and logs that must be protected.",
+   "tags": [
+    "pii",
+    "redaction",
+    "privacy",
+    "student"
+   ]
+  },
+  {
+   "term": "Uplift (learning)",
+   "definition": "The extra learning gain caused by an intervention compared with none.",
+   "tags": [
+    "uplift",
+    "outcome",
+    "intervention",
+    "causal"
+   ]
+  },
+  {
+   "term": "Peer learning",
+   "definition": "Students learning together in groups, where group composition affects outcomes.",
+   "tags": [
+    "peer",
+    "group",
+    "collaborative",
+    "learning"
+   ]
+  },
+  {
+   "term": "Viva voce",
+   "definition": "An oral examination in which a student answers questions from examiners.",
+   "tags": [
+    "oral",
+    "exam",
+    "viva",
+    "assessment"
+   ]
+  },
+  {
+   "term": "Notification fatigue",
+   "definition": "Learners ignoring or disabling reminders because there are too many.",
+   "tags": [
+    "notification",
+    "engagement",
+    "optout",
+    "gamification"
+   ]
+  }
+ ]
+}

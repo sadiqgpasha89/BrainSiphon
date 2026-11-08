@@ -1,0 +1,969 @@
+{
+ "overview": "A security operations centre (SOC) receives thousands of alerts a day from detection tools, and analysts decide which are real attacks, which are harmless and which need action. An investigation agent helps by gathering evidence and proposing a verdict. Because the agent reads logs that attackers can influence and may be allowed to act on systems, the domain knowledge that matters most is how analysts judge evidence, what the tools can and cannot prove, and which actions must never happen without a human.",
+ "concepts": [
+  {
+   "name": "The SOC workflow and its tools",
+   "explanation": "Detections come from a SIEM (collects and correlates logs), EDR (monitors endpoints) and other sensors. Analysts triage the alert, investigate by querying logs and context, and escalate or close it; responders contain and remediate. SOAR tools automate fixed playbooks. Teams measure mean time to detect and respond, and the queue never empties.",
+   "whyItMatters": "The agent has to fit this process, speak its vocabulary and leave an audit trail analysts and auditors can follow.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage",
+    "workflow"
+   ]
+  },
+  {
+   "name": "What an alert verdict means",
+   "explanation": "A true positive is a real malicious event, a false positive is a mistaken detection and a benign true positive is a correct detection of authorised activity, such as a pentest or an administrator's script. Closing an alert as benign without evidence is the most dangerous mistake, because an active attack then goes unnoticed.",
+   "whyItMatters": "Define verdicts with the SOC. Ground truth for evaluation must come from analyst conclusions backed by cited log lines, not satisfaction scores.",
+   "tags": [
+    "alert",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage",
+    "verdict"
+   ]
+  },
+  {
+   "name": "Evidence and context",
+   "explanation": "Decisions rest on logs (process, authentication, network, DNS), threat intelligence about addresses and files, asset criticality, and identity context such as whether a user is travelling. Logs have retention limits, clock differences and gaps, and the same behaviour can be malicious or benign depending on context, for example encoded PowerShell from a document versus from a management agent.",
+   "whyItMatters": "An agent that cannot get the deciding evidence must say so and escalate, not infer.",
+   "tags": [
+    "context",
+    "evidence",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "name": "ATT&CK and attacker behaviour",
+   "explanation": "MITRE ATT&CK catalogues attacker tactics and techniques, such as PowerShell execution (T1059.001), valid accounts (T1078), brute force (T1110), application-layer command and control (T1071) and exfiltration over alternative protocols (T1048). Analysts reason about behaviour chains, not isolated indicators.",
+   "whyItMatters": "Use technique names so verdicts are comparable and testable, and build replay cases from real technique telemetry.",
+   "tags": [
+    "attacker",
+    "behaviour",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "name": "Untrusted data and prompt injection",
+   "explanation": "Attackers control some fields that end up in logs, such as file names, user agents, command lines and email subjects. An LLM reading them can be tricked into following instructions hidden in them. The defence is structural: least-privilege typed tools, allow-lists, approval gates for any response action, and treating all tool output as data.",
+   "whyItMatters": "A filter for suspicious phrases is only an alarm. Safety must hold even when the model is fooled.",
+   "tags": [
+    "hunting",
+    "incident",
+    "injection",
+    "investigation",
+    "prompt",
+    "siem",
+    "soc",
+    "threat",
+    "triage",
+    "untrusted"
+   ]
+  },
+  {
+   "name": "Accountability and governance",
+   "explanation": "SOC decisions can trigger account lockouts, host isolation and breach notifications with legal deadlines. Humans stay accountable, every tool call is logged immutably, and the data may be subject to residency and privacy rules.",
+   "whyItMatters": "Auto-containment is rarely acceptable, and regulators and customers will ask who decided and on what evidence.",
+   "tags": [
+    "accountability",
+    "governance",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "name": "Network and endpoint detection",
+   "explanation": "Network detectors inspect flows, DNS and protocol behaviour for intrusions, scanning, tunnelling and denial of service; endpoint detectors watch processes, files, registry and memory for malware and ransomware. Training data come from labs and public captures, while production traffic is mostly benign and constantly changing.",
+   "whyItMatters": "Class imbalance, distribution shift and adversaries who adapt make detection rates on public datasets a poor guide to production performance.",
+   "tags": [
+    "intrusion",
+    "network",
+    "dns",
+    "tunnel",
+    "ddos",
+    "endpoint",
+    "malware",
+    "ransomware",
+    "container",
+    "runtime"
+   ]
+  },
+  {
+   "name": "Identity and access threats",
+   "explanation": "Most breaches involve stolen or abused credentials: credential stuffing, account takeover, impossible travel, privilege escalation, over-permissioned cloud roles, and insiders. Detection reasons about behaviour over time and context rather than single events.",
+   "whyItMatters": "False positives hit real employees, so risk-based responses (step-up authentication) are preferred over hard blocks.",
+   "tags": [
+    "identity",
+    "credential",
+    "takeover",
+    "sso",
+    "iam",
+    "privilege",
+    "insider",
+    "authentication",
+    "access",
+    "session",
+    "zero-trust"
+   ]
+  },
+  {
+   "name": "Email, phishing and social engineering",
+   "explanation": "Phishing and business email compromise exploit people, not software: lookalike domains, urgent payment requests, impersonation. Detection combines URL and content analysis, sender reputation and relationship graphs, and voice or video deepfakes extend the problem.",
+   "whyItMatters": "The highest-cost attacks are rare and well-crafted, so evaluation weights loss amount, not email count.",
+   "tags": [
+    "phishing",
+    "email",
+    "bec",
+    "social",
+    "impersonation",
+    "deepfake",
+    "vishing",
+    "url",
+    "attachment",
+    "sandbox"
+   ]
+  },
+  {
+   "name": "Vulnerability and risk management",
+   "explanation": "Organisations track thousands of software vulnerabilities (CVEs), score their severity, and decide what to patch first. Few are ever exploited; exploit likelihood, asset criticality, exposure and compensating controls decide priority. Attack-path analysis shows how weaknesses chain together.",
+   "whyItMatters": "Prioritising by severity alone creates unmanageable lists; prioritising by exploit evidence and asset value cuts work and risk.",
+   "tags": [
+    "vulnerability",
+    "patch",
+    "cve",
+    "exploit",
+    "prioritization",
+    "attack",
+    "path",
+    "misconfiguration",
+    "cloud",
+    "secret"
+   ]
+  },
+  {
+   "name": "Software supply chain and code security",
+   "explanation": "Malicious packages, leaked secrets, vulnerable code and insecure configurations enter through dependencies and developer workflows. Static analysis, package metadata and language models scan code, with the usual problem of many false positives.",
+   "whyItMatters": "A tool developers ignore protects nothing, so triage accuracy and fix guidance matter as much as detection.",
+   "tags": [
+    "package",
+    "supply",
+    "secret",
+    "code",
+    "vulnerability",
+    "static",
+    "fuzzing",
+    "dependency",
+    "malicious"
+   ]
+  },
+  {
+   "name": "Threat intelligence and attribution",
+   "explanation": "Analysts collect indicators and reports about attackers, extract entities from text, cluster malware families and link incidents to actors. Evidence is partial, attackers imitate each other and attribution is probabilistic.",
+   "whyItMatters": "Clustering and attribution outputs need confidence and evidence, not a single confident label.",
+   "tags": [
+    "threat",
+    "intelligence",
+    "attribution",
+    "cluster",
+    "malware",
+    "family",
+    "ioc",
+    "dark",
+    "web",
+    "actor"
+   ]
+  },
+  {
+   "name": "Securing AI systems themselves",
+   "explanation": "Machine-learning models can be attacked: adversarial inputs, data poisoning, model extraction, prompt injection and over-permissioned agents. Defences include robustness training, rate limits and monitoring, input and output filters, and strict tool permissions.",
+   "whyItMatters": "Any model that reads untrusted input or can take actions needs its own threat model and tests.",
+   "tags": [
+    "adversarial",
+    "prompt",
+    "injection",
+    "guardrail",
+    "agent",
+    "permission",
+    "extraction",
+    "robustness",
+    "llm",
+    "red-team"
+   ]
+  },
+  {
+   "name": "Operational technology and IoT security",
+   "explanation": "Industrial control systems and IoT devices run physical processes with strict safety and availability requirements and little room for active probing. Detection relies on knowing normal process behaviour and physics.",
+   "whyItMatters": "False alarms or interference can halt a plant, so detection is passive and conservative.",
+   "tags": [
+    "ics",
+    "ot",
+    "iot",
+    "industrial",
+    "sensor",
+    "scada",
+    "anomaly",
+    "physics"
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "SIEM",
+   "definition": "Security information and event management: a platform that collects, correlates and searches security logs.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "EDR",
+   "definition": "Endpoint detection and response: software on devices that records activity and can isolate a host.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "SOAR",
+   "definition": "Security orchestration, automation and response: tools that run scripted playbooks for alerts.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soar",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "IOC",
+   "definition": "Indicator of compromise: an observable such as an IP address, file hash or domain linked to malicious activity.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "TTP",
+   "definition": "Tactics, techniques and procedures: how an attacker operates, more durable than a single indicator.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "MITRE ATT&CK",
+   "definition": "A public knowledge base of adversary tactics and techniques used to describe and label detections.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "mitre",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "C2 / beaconing",
+   "definition": "Command and control traffic, often a compromised host contacting an attacker's server at regular intervals.",
+   "tags": [
+    "beaconing",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "Lateral movement",
+   "definition": "An attacker moving from one compromised system to others inside the network.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "lateral",
+    "movement",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "Exfiltration",
+   "definition": "Stealing data out of the network, sometimes hidden inside DNS or web traffic.",
+   "tags": [
+    "exfiltration",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "True / false positive",
+   "definition": "A real attack correctly detected, or a harmless event wrongly flagged.",
+   "tags": [
+    "false",
+    "hunting",
+    "incident",
+    "investigation",
+    "positive",
+    "siem",
+    "soc",
+    "threat",
+    "triage",
+    "true"
+   ]
+  },
+  {
+   "term": "Benign true positive",
+   "definition": "A correct detection of activity that is authorised, such as a scheduled scan or administrator task.",
+   "tags": [
+    "benign",
+    "hunting",
+    "incident",
+    "investigation",
+    "positive",
+    "siem",
+    "soc",
+    "threat",
+    "triage",
+    "true"
+   ]
+  },
+  {
+   "term": "Triage",
+   "definition": "The first quick assessment of an alert to decide whether it needs investigation.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "Escalation",
+   "definition": "Passing a case to a more senior analyst or team because it needs deeper investigation or action.",
+   "tags": [
+    "escalation",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "Containment",
+   "definition": "Actions that limit an attack's spread, such as isolating a host or disabling an account.",
+   "tags": [
+    "containment",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "Threat intelligence",
+   "definition": "Information about attackers, infrastructure and tools, including reputation of addresses and domains.",
+   "tags": [
+    "hunting",
+    "incident",
+    "intelligence",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "Impossible travel",
+   "definition": "Logins for one account from places too far apart to travel between in the elapsed time.",
+   "tags": [
+    "hunting",
+    "impossible",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "travel",
+    "triage"
+   ]
+  },
+  {
+   "term": "Credential stuffing / brute force",
+   "definition": "Trying many passwords or leaked credential pairs against accounts until one works.",
+   "tags": [
+    "brute",
+    "credential",
+    "force",
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "stuffing",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "DNS tunnelling",
+   "definition": "Hiding data in DNS queries, often seen as long, random-looking subdomains.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "siem",
+    "soc",
+    "threat",
+    "triage",
+    "tunnelling"
+   ]
+  },
+  {
+   "term": "MTTD / MTTR",
+   "definition": "Mean time to detect and mean time to respond, the SOC's headline speed measures.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "mttd",
+    "mttr",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "Prompt injection",
+   "definition": "Text planted in data that an LLM reads which tries to make it follow the attacker's instructions.",
+   "tags": [
+    "hunting",
+    "incident",
+    "injection",
+    "investigation",
+    "prompt",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "Least privilege",
+   "definition": "Giving a system only the access it needs, so a compromised or fooled agent can do little harm.",
+   "tags": [
+    "hunting",
+    "incident",
+    "investigation",
+    "least",
+    "privilege",
+    "siem",
+    "soc",
+    "threat",
+    "triage"
+   ]
+  },
+  {
+   "term": "NIDS / IDS",
+   "definition": "Network intrusion detection system: monitors traffic for attacks and policy violations.",
+   "tags": [
+    "intrusion",
+    "network",
+    "detection"
+   ]
+  },
+  {
+   "term": "NetFlow",
+   "definition": "A summary record of a network conversation (addresses, ports, bytes) rather than the full packets.",
+   "tags": [
+    "network",
+    "intrusion",
+    "dns"
+   ]
+  },
+  {
+   "term": "DGA",
+   "definition": "Domain generation algorithm: malware that generates many pseudo-random domain names to reach its controller.",
+   "tags": [
+    "dns",
+    "dga",
+    "tunnel",
+    "malware"
+   ]
+  },
+  {
+   "term": "DDoS",
+   "definition": "Distributed denial of service: flooding a service with traffic from many sources to make it unavailable.",
+   "tags": [
+    "ddos",
+    "network",
+    "mitigation",
+    "traffic"
+   ]
+  },
+  {
+   "term": "Ransomware",
+   "definition": "Malware that encrypts files and demands payment for the key.",
+   "tags": [
+    "ransomware",
+    "endpoint",
+    "detection",
+    "file"
+   ]
+  },
+  {
+   "term": "Sandbox / detonation",
+   "definition": "Running a suspicious file in an isolated environment to observe what it does.",
+   "tags": [
+    "sandbox",
+    "attachment",
+    "malware",
+    "email",
+    "triage"
+   ]
+  },
+  {
+   "term": "EDR telemetry",
+   "definition": "Process, file, registry and network events recorded by endpoint agents.",
+   "tags": [
+    "endpoint",
+    "edr",
+    "malware",
+    "container",
+    "runtime"
+   ]
+  },
+  {
+   "term": "YARA / Sigma",
+   "definition": "Rule languages for describing malware patterns (YARA) and log-based detections (Sigma).",
+   "tags": [
+    "sigma",
+    "detection",
+    "generation",
+    "malware"
+   ]
+  },
+  {
+   "term": "UEBA",
+   "definition": "User and entity behaviour analytics: detecting deviations from a person's or device's normal behaviour.",
+   "tags": [
+    "ueba",
+    "insider",
+    "behaviour",
+    "anomaly",
+    "identity"
+   ]
+  },
+  {
+   "term": "SSO",
+   "definition": "Single sign-on: one login that grants access to many applications.",
+   "tags": [
+    "sso",
+    "identity",
+    "authentication",
+    "access"
+   ]
+  },
+  {
+   "term": "MFA / step-up",
+   "definition": "Multi-factor authentication, and asking for an extra factor only when risk is high.",
+   "tags": [
+    "zero-trust",
+    "authentication",
+    "adaptive",
+    "identity",
+    "friction"
+   ]
+  },
+  {
+   "term": "Credential stuffing",
+   "definition": "Trying username and password pairs leaked elsewhere against many sites.",
+   "tags": [
+    "credential",
+    "stuffing",
+    "bot",
+    "login",
+    "abuse"
+   ]
+  },
+  {
+   "term": "Account takeover",
+   "definition": "An attacker gaining control of a legitimate user's account.",
+   "tags": [
+    "takeover",
+    "identity",
+    "credential",
+    "session"
+   ]
+  },
+  {
+   "term": "Privilege escalation",
+   "definition": "Gaining higher access rights than intended.",
+   "tags": [
+    "privilege",
+    "iam",
+    "cloud",
+    "insider",
+    "access"
+   ]
+  },
+  {
+   "term": "IAM",
+   "definition": "Identity and access management: the systems that decide who can do what.",
+   "tags": [
+    "iam",
+    "cloud",
+    "privilege",
+    "access",
+    "identity"
+   ]
+  },
+  {
+   "term": "Zero trust",
+   "definition": "A security model that verifies every request and grants least privilege rather than trusting the network.",
+   "tags": [
+    "zero-trust",
+    "authentication",
+    "device",
+    "posture",
+    "access"
+   ]
+  },
+  {
+   "term": "Device posture",
+   "definition": "The security state of a device, such as patch level, encryption and malware status.",
+   "tags": [
+    "device",
+    "posture",
+    "zero-trust"
+   ]
+  },
+  {
+   "term": "BEC",
+   "definition": "Business email compromise: fraud in which attackers impersonate executives or suppliers to redirect payments.",
+   "tags": [
+    "bec",
+    "email",
+    "impersonation",
+    "payment",
+    "phishing"
+   ]
+  },
+  {
+   "term": "Lookalike domain",
+   "definition": "A domain that resembles a trusted one, such as a swapped or added character.",
+   "tags": [
+    "phishing",
+    "url",
+    "domain",
+    "impersonation"
+   ]
+  },
+  {
+   "term": "CVE",
+   "definition": "A public identifier for a disclosed software vulnerability.",
+   "tags": [
+    "cve",
+    "vulnerability",
+    "patch",
+    "exploit",
+    "prioritization"
+   ]
+  },
+  {
+   "term": "CVSS",
+   "definition": "Common Vulnerability Scoring System: a severity score from 0 to 10 that does not measure likelihood of exploitation.",
+   "tags": [
+    "cvss",
+    "vulnerability",
+    "severity",
+    "patch"
+   ]
+  },
+  {
+   "term": "EPSS",
+   "definition": "Exploit Prediction Scoring System: a probability that a vulnerability will be exploited in the wild.",
+   "tags": [
+    "epss",
+    "exploit",
+    "vulnerability",
+    "prediction",
+    "prioritization"
+   ]
+  },
+  {
+   "term": "Known exploited vulnerability",
+   "definition": "A vulnerability with evidence of active exploitation, which should be fixed first.",
+   "tags": [
+    "exploit",
+    "vulnerability",
+    "patch",
+    "prioritization"
+   ]
+  },
+  {
+   "term": "Attack path",
+   "definition": "A chain of weaknesses and permissions that lets an attacker move from an entry point to a valuable asset.",
+   "tags": [
+    "attack",
+    "path",
+    "graph",
+    "cloud"
+   ]
+  },
+  {
+   "term": "Crown jewels",
+   "definition": "The assets whose loss would most harm the organisation.",
+   "tags": [
+    "attack",
+    "path",
+    "asset",
+    "critical"
+   ]
+  },
+  {
+   "term": "Misconfiguration",
+   "definition": "A security setting that is wrong or drifts from the intended baseline, especially in the cloud.",
+   "tags": [
+    "misconfiguration",
+    "cloud",
+    "drift",
+    "exposure"
+   ]
+  },
+  {
+   "term": "Secret leakage",
+   "definition": "Credentials or keys committed into code repositories or logs.",
+   "tags": [
+    "secret",
+    "code",
+    "leak",
+    "repository"
+   ]
+  },
+  {
+   "term": "SBOM",
+   "definition": "Software bill of materials: the list of components inside a software product.",
+   "tags": [
+    "package",
+    "supply",
+    "vulnerability",
+    "dependency"
+   ]
+  },
+  {
+   "term": "Typosquatting",
+   "definition": "Publishing a malicious package with a name close to a popular one.",
+   "tags": [
+    "package",
+    "malicious",
+    "supply",
+    "npm",
+    "pypi"
+   ]
+  },
+  {
+   "term": "Fuzzing",
+   "definition": "Feeding a program many unusual inputs to find crashes and vulnerabilities.",
+   "tags": [
+    "fuzzing",
+    "vulnerability",
+    "code",
+    "coverage"
+   ]
+  },
+  {
+   "term": "Honeypot",
+   "definition": "A decoy system built to attract and study attackers.",
+   "tags": [
+    "threat",
+    "intelligence",
+    "deception",
+    "detection"
+   ]
+  },
+  {
+   "term": "Indicator extraction",
+   "definition": "Pulling IPs, domains, hashes and technique names out of reports and text.",
+   "tags": [
+    "ioc",
+    "extraction",
+    "threat",
+    "intelligence",
+    "nlp"
+   ]
+  },
+  {
+   "term": "Threat actor",
+   "definition": "A person or group that carries out cyber attacks.",
+   "tags": [
+    "threat",
+    "actor",
+    "attribution",
+    "cluster"
+   ]
+  },
+  {
+   "term": "Kill chain",
+   "definition": "A model of attack stages from reconnaissance to action on objectives.",
+   "tags": [
+    "attack",
+    "kill",
+    "siem",
+    "detection"
+   ]
+  },
+  {
+   "term": "DLP",
+   "definition": "Data loss prevention: tools that detect and block sensitive data leaving the organisation.",
+   "tags": [
+    "dlp",
+    "exfiltration",
+    "classification",
+    "leak"
+   ]
+  },
+  {
+   "term": "Adversarial example",
+   "definition": "An input altered slightly on purpose to make a model misclassify it.",
+   "tags": [
+    "adversarial",
+    "robustness",
+    "malware",
+    "vision"
+   ]
+  },
+  {
+   "term": "Model extraction",
+   "definition": "Stealing a model's behaviour by querying it many times.",
+   "tags": [
+    "extraction",
+    "api",
+    "abuse"
+   ]
+  },
+  {
+   "term": "Tool permission",
+   "definition": "What an AI agent is allowed to call and change, which must be minimal and reviewed.",
+   "tags": [
+    "agent",
+    "permission",
+    "guardrail"
+   ]
+  },
+  {
+   "term": "SCADA / ICS",
+   "definition": "Supervisory control systems and industrial control systems that run physical processes.",
+   "tags": [
+    "ics",
+    "ot",
+    "scada",
+    "industrial"
+   ]
+  },
+  {
+   "term": "Alert fatigue",
+   "definition": "Analysts ignoring alerts because too many are false or low value.",
+   "tags": [
+    "alert",
+    "siem",
+    "triage",
+    "correlation",
+    "deduplication"
+   ]
+  },
+  {
+   "term": "Alert correlation",
+   "definition": "Grouping related alerts into one incident so analysts see the whole story.",
+   "tags": [
+    "alert",
+    "correlation",
+    "deduplication",
+    "incident",
+    "cluster"
+   ]
+  },
+  {
+   "term": "Playbook (SOAR)",
+   "definition": "A scripted sequence of response steps that a SOAR platform can run.",
+   "tags": [
+    "playbook",
+    "incident",
+    "response",
+    "automation",
+    "agent"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,2285 @@
+{
+ "general": {
+  "concepts": [
+   {
+    "name": "Offline evaluation versus the real world",
+    "explanation": "Offline metrics are computed on historical data; the business cares about outcomes after deployment. The two differ because of leakage, selection bias, delayed labels, distribution shift and feedback loops, which is why launches go through shadow mode and controlled experiments.",
+    "whyItMatters": "Treat every offline number as an estimate with a known direction of bias, and plan the online test before you trust it.",
+    "tags": [
+     "evaluation",
+     "offline",
+     "online",
+     "shadow",
+     "canary",
+     "experiment",
+     "launch",
+     "metric"
+    ]
+   },
+   {
+    "name": "Baselines, ablations and the cost of complexity",
+    "explanation": "A simple model sets the cost floor and explains itself; a complex model has to beat it by more than its noise, serving cost and maintenance burden. Report gains with intervals, over several seeds and on the metric the business uses.",
+    "whyItMatters": "A model that wins by a tenth of a point on a leaderboard metric and doubles latency is usually a loss.",
+    "tags": [
+     "baseline",
+     "ablation",
+     "complexity",
+     "challenger",
+     "champion",
+     "production"
+    ]
+   },
+   {
+    "name": "Latency, cost and graceful degradation",
+    "explanation": "Production systems have a time budget per request and a cost per decision. Each stage gets a share of the budget; when a dependency is slow or down the system falls back to staler features, a smaller model, rules or a safe default.",
+    "whyItMatters": "Design the fallback ladder before launch and test each rung, so an outage is a worse answer rather than no answer.",
+    "tags": [
+     "latency",
+     "budget",
+     "cost",
+     "degradation",
+     "fallback",
+     "serving",
+     "slo",
+     "capacity"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Data leakage",
+    "definition": "Information in the training data that would not be available at prediction time, making offline results unrealistically good.",
+    "tags": [
+     "leakage",
+     "split",
+     "feature",
+     "evaluation"
+    ]
+   },
+   {
+    "term": "Point-in-time correctness",
+    "definition": "Building each training example only from data that existed at the moment of the decision.",
+    "tags": [
+     "leakage",
+     "feature",
+     "point-in-time",
+     "join",
+     "history"
+    ]
+   },
+   {
+    "term": "Train-serve skew",
+    "definition": "A difference between how features are computed in training and in production.",
+    "tags": [
+     "skew",
+     "feature",
+     "serving",
+     "parity",
+     "store"
+    ]
+   },
+   {
+    "term": "Distribution shift",
+    "definition": "A change in the data a model sees compared with training.",
+    "tags": [
+     "drift",
+     "shift",
+     "monitoring",
+     "cold",
+     "regime"
+    ]
+   },
+   {
+    "term": "Concept drift",
+    "definition": "A change in the relationship between inputs and the outcome over time.",
+    "tags": [
+     "drift",
+     "monitoring",
+     "retraining",
+     "fraud"
+    ]
+   },
+   {
+    "term": "Shadow mode",
+    "definition": "Running a new model on live traffic without acting on its output, to compare it with the current system.",
+    "tags": [
+     "shadow",
+     "launch",
+     "canary",
+     "rollout"
+    ]
+   },
+   {
+    "term": "Canary release",
+    "definition": "Exposing a new model to a small share of traffic first, with automatic rollback on guardrail metrics.",
+    "tags": [
+     "canary",
+     "rollout",
+     "launch",
+     "guardrail"
+    ]
+   },
+   {
+    "term": "Guardrail metric",
+    "definition": "A metric that must not get worse when optimising the main objective.",
+    "tags": [
+     "guardrail",
+     "launch",
+     "experiment",
+     "north-star"
+    ]
+   },
+   {
+    "term": "Holdout / control group",
+    "definition": "A group deliberately not treated, used to measure the true effect of a system.",
+    "tags": [
+     "holdout",
+     "control",
+     "experiment",
+     "incrementality",
+     "uplift"
+    ]
+   },
+   {
+    "term": "Feature store",
+    "definition": "A system that serves the same feature definitions for training and for low-latency prediction.",
+    "tags": [
+     "feature",
+     "store",
+     "serving",
+     "skew",
+     "point-in-time"
+    ]
+   },
+   {
+    "term": "Model registry",
+    "definition": "A versioned store of models with metadata, used for promotion and rollback.",
+    "tags": [
+     "registry",
+     "rollback",
+     "versioning",
+     "champion"
+    ]
+   },
+   {
+    "term": "Champion / challenger",
+    "definition": "The model in production and a candidate that must beat it before promotion.",
+    "tags": [
+     "champion",
+     "challenger",
+     "baseline",
+     "promotion"
+    ]
+   },
+   {
+    "term": "Degradation ladder",
+    "definition": "An ordered list of fallbacks the service uses as dependencies fail.",
+    "tags": [
+     "degradation",
+     "fallback",
+     "latency",
+     "serving"
+    ]
+   },
+   {
+    "term": "p99 latency",
+    "definition": "The time within which 99% of requests complete.",
+    "tags": [
+     "latency",
+     "serving",
+     "slo",
+     "budget"
+    ]
+   },
+   {
+    "term": "Calibration",
+    "definition": "Predicted probabilities matching observed frequencies, so a score of 30% means about 30%.",
+    "tags": [
+     "calibration",
+     "ece",
+     "probability",
+     "brier",
+     "isotonic"
+    ]
+   },
+   {
+    "term": "Expected calibration error (ECE)",
+    "definition": "The average gap between predicted probability and observed frequency across probability bins.",
+    "tags": [
+     "ece",
+     "calibration",
+     "probability"
+    ]
+   },
+   {
+    "term": "Brier score",
+    "definition": "The mean squared difference between predicted probability and the 0/1 outcome.",
+    "tags": [
+     "brier",
+     "calibration",
+     "probability"
+    ]
+   },
+   {
+    "term": "Bootstrap confidence interval",
+    "definition": "An uncertainty range for a metric obtained by resampling the evaluation data.",
+    "tags": [
+     "bootstrap",
+     "interval",
+     "variance",
+     "evaluation"
+    ]
+   },
+   {
+    "term": "Cost matrix",
+    "definition": "The money value of each kind of decision error, used to choose thresholds.",
+    "tags": [
+     "cost",
+     "threshold",
+     "fraud",
+     "churn",
+     "decision"
+    ]
+   },
+   {
+    "term": "Threshold / operating point",
+    "definition": "The score cut-off at which the system acts, chosen from the cost of errors and capacity.",
+    "tags": [
+     "threshold",
+     "operating",
+     "alert",
+     "review",
+     "decision"
+    ]
+   },
+   {
+    "term": "A/B test",
+    "definition": "A randomised experiment comparing two versions on a business metric.",
+    "tags": [
+     "experiment",
+     "ab",
+     "online",
+     "uplift"
+    ]
+   },
+   {
+    "term": "Explainability",
+    "definition": "Giving reasons for a prediction in terms the user or regulator can follow.",
+    "tags": [
+     "explainability",
+     "reason",
+     "codes",
+     "regulatory",
+     "scoring"
+    ]
+   },
+   {
+    "term": "Fairness metrics",
+    "definition": "Measures of whether a model's errors or outcomes differ between groups, such as demographic parity or equalised odds.",
+    "tags": [
+     "fairness",
+     "parity",
+     "odds",
+     "bias",
+     "group"
+    ]
+   }
+  ]
+ },
+ "tabular": {
+  "concepts": [
+   {
+    "name": "Imbalanced classification and the metrics that survive it",
+    "explanation": "When positives are 1% or fewer, accuracy and ROC-AUC mislead. Precision, recall, PR-AUC and recall at a fixed false-positive rate describe the operating region that matters, and class weighting or resampling changes calibration, so probabilities must be recalibrated.",
+    "whyItMatters": "A model that never flags anything looks 99% accurate; the business metric is cost at a capacity limit.",
+    "tags": [
+     "imbalanced",
+     "imbalance",
+     "pr-auc",
+     "recall",
+     "precision",
+     "rare",
+     "detection",
+     "fraud",
+     "churn",
+     "threshold",
+     "default"
+    ]
+   },
+   {
+    "name": "Gradient boosting and calibration on tabular data",
+    "explanation": "Boosted trees are the workhorse for tabular problems because they handle mixed types, missing values and interactions. They overfit small positive sets without regularisation and produce scores that need calibration (Platt or isotonic) before use as probabilities.",
+    "whyItMatters": "Tune on a chronological validation set and calibrate on held-out data from the same period.",
+    "tags": [
+     "tabular",
+     "boosting",
+     "xgboost",
+     "lightgbm",
+     "calibration",
+     "isotonic",
+     "features",
+     "scoring",
+     "propensity",
+     "classification"
+    ]
+   },
+   {
+    "name": "Survival, censoring and time-to-event",
+    "explanation": "When outcomes happen over time and many units have not yet had the event, ignoring the censoring biases rates downward. Survival and hazard models use the partial information of censored cases.",
+    "whyItMatters": "Dropping open accounts or treating them as non-events is the most common source of optimistic risk estimates.",
+    "tags": [
+     "survival",
+     "censoring",
+     "hazard",
+     "churn",
+     "default",
+     "time-to-event",
+     "retention",
+     "dropout",
+     "lifetime"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "PR-AUC",
+    "definition": "Area under the precision-recall curve; informative when positives are rare.",
+    "tags": [
+     "pr-auc",
+     "precision",
+     "recall",
+     "imbalanced",
+     "fraud",
+     "detection"
+    ]
+   },
+   {
+    "term": "ROC-AUC",
+    "definition": "Area under the receiver operating characteristic curve: the chance a random positive is scored above a random negative.",
+    "tags": [
+     "auc",
+     "roc",
+     "ranking",
+     "classification"
+    ]
+   },
+   {
+    "term": "Precision / recall",
+    "definition": "The share of flagged cases that are real, and the share of real cases that are flagged.",
+    "tags": [
+     "precision",
+     "recall",
+     "detection",
+     "alert",
+     "threshold"
+    ]
+   },
+   {
+    "term": "F1 score",
+    "definition": "The harmonic mean of precision and recall.",
+    "tags": [
+     "f1",
+     "precision",
+     "recall",
+     "classification"
+    ]
+   },
+   {
+    "term": "Log loss",
+    "definition": "The negative log-likelihood of the observed labels; punishes confident mistakes.",
+    "tags": [
+     "log-loss",
+     "bce",
+     "probability",
+     "calibration",
+     "ctr"
+    ]
+   },
+   {
+    "term": "Focal loss",
+    "definition": "A loss that down-weights easy examples so rare, hard positives matter more.",
+    "tags": [
+     "focal",
+     "fl",
+     "imbalanced",
+     "detection"
+    ]
+   },
+   {
+    "term": "Class weighting",
+    "definition": "Giving rare positives more weight in the loss, which shifts predicted probabilities upward.",
+    "tags": [
+     "imbalanced",
+     "weight",
+     "cost",
+     "calibration"
+    ]
+   },
+   {
+    "term": "Isotonic regression",
+    "definition": "A monotone, non-parametric mapping used to calibrate scores.",
+    "tags": [
+     "isotonic",
+     "calibration",
+     "probability",
+     "scoring"
+    ]
+   },
+   {
+    "term": "Platt scaling",
+    "definition": "Calibrating scores with a logistic curve.",
+    "tags": [
+     "platt",
+     "calibration",
+     "probability"
+    ]
+   },
+   {
+    "term": "Monotonic constraint",
+    "definition": "A rule that the prediction may only rise (or fall) as a feature increases, used for explainability.",
+    "tags": [
+     "monotone",
+     "monotonic",
+     "scoring",
+     "credit",
+     "regulatory"
+    ]
+   },
+   {
+    "term": "Target encoding",
+    "definition": "Replacing a category by the average outcome for that category, which leaks unless done carefully.",
+    "tags": [
+     "target",
+     "encoding",
+     "leakage",
+     "categorical"
+    ]
+   },
+   {
+    "term": "Hazard function",
+    "definition": "The instantaneous risk of the event at time t given it has not yet occurred.",
+    "tags": [
+     "hazard",
+     "survival",
+     "churn",
+     "default",
+     "dropout"
+    ]
+   },
+   {
+    "term": "Right-censoring",
+    "definition": "Observation ending before the event happens, so only a lower bound on the time is known.",
+    "tags": [
+     "censoring",
+     "survival",
+     "churn",
+     "dropout",
+     "default"
+    ]
+   },
+   {
+    "term": "Concordance index",
+    "definition": "A ranking measure for survival models: the chance the unit that fails first is ranked as riskier.",
+    "tags": [
+     "survival",
+     "concordance",
+     "churn",
+     "default"
+    ]
+   },
+   {
+    "term": "Propensity score",
+    "definition": "The predicted probability that a unit receives a treatment or takes an action.",
+    "tags": [
+     "propensity",
+     "uplift",
+     "causal",
+     "targeting"
+    ]
+   },
+   {
+    "term": "Uplift / CATE",
+    "definition": "The causal effect of a treatment for a unit with given features.",
+    "tags": [
+     "uplift",
+     "cate",
+     "causal",
+     "treatment",
+     "campaign"
+    ]
+   },
+   {
+    "term": "SHAP",
+    "definition": "A method for attributing a prediction to its features, based on Shapley values.",
+    "tags": [
+     "shap",
+     "explainability",
+     "features",
+     "reason"
+    ]
+   },
+   {
+    "term": "Quantile regression",
+    "definition": "Predicting a chosen percentile of the outcome rather than the average.",
+    "tags": [
+     "quantile",
+     "pinball",
+     "regression",
+     "forecast"
+    ]
+   },
+   {
+    "term": "Tweedie / Poisson loss",
+    "definition": "Losses for non-negative outcomes with many zeros or counts, such as claims.",
+    "tags": [
+     "tweedie",
+     "poisson",
+     "insurance",
+     "claims",
+     "count"
+    ]
+   },
+   {
+    "term": "Huber loss",
+    "definition": "A regression loss that is gentle on large errors, limiting the effect of outliers.",
+    "tags": [
+     "huber",
+     "regression",
+     "outlier"
+    ]
+   }
+  ]
+ },
+ "time-series": {
+  "concepts": [
+   {
+    "name": "Forecasting: horizons, origins and leakage",
+    "explanation": "A forecast is made at an origin for one or more horizons ahead. Evaluation must replay origins in time order and use only information available at each origin; random splits leak the future. Probabilistic forecasts give quantiles, not just a point.",
+    "whyItMatters": "Report accuracy per horizon and against a seasonal or naive baseline, and judge probabilistic forecasts by coverage and pinball loss.",
+    "tags": [
+     "forecast",
+     "horizon",
+     "origin",
+     "quantile",
+     "demand",
+     "time-series",
+     "prediction",
+     "backtest",
+     "rolling"
+    ]
+   },
+   {
+    "name": "Anomaly detection in streams",
+    "explanation": "An anomaly is a deviation from what is expected given seasonality, trend and context. Detectors learn expected behaviour and score deviations; the hard parts are shifting baselines, known events that move the level, sparse labels and the cost of false alerts.",
+    "whyItMatters": "Evaluate at event level with detection delay and a fixed alert budget, not point-wise accuracy.",
+    "tags": [
+     "anomaly",
+     "detection",
+     "monitoring",
+     "alert",
+     "spike",
+     "drift",
+     "sensor",
+     "stream",
+     "metric",
+     "outlier",
+     "vitals"
+    ]
+   },
+   {
+    "name": "Seasonality, trend and calendar effects",
+    "explanation": "Most business series repeat daily, weekly and annually, with holidays, promotions and outages on top. Models must separate these from real change, and know which calendar effects are known in advance.",
+    "whyItMatters": "Ignoring seasonality makes a normal Monday look like an incident and hides slow-moving real changes.",
+    "tags": [
+     "seasonality",
+     "trend",
+     "calendar",
+     "holiday",
+     "promotion",
+     "weekly",
+     "daily",
+     "seasonal"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Forecast horizon",
+    "definition": "How many steps ahead a forecast looks.",
+    "tags": [
+     "forecast",
+     "horizon",
+     "lag",
+     "demand"
+    ]
+   },
+   {
+    "term": "Rolling-origin evaluation",
+    "definition": "Testing a forecaster at many successive origins, each using only earlier data.",
+    "tags": [
+     "rolling",
+     "origin",
+     "backtest",
+     "forecast",
+     "evaluation"
+    ]
+   },
+   {
+    "term": "MAPE / WMAPE / sMAPE",
+    "definition": "Percentage error measures; WMAPE weights by volume and sMAPE is symmetric.",
+    "tags": [
+     "mape",
+     "wmape",
+     "smape",
+     "forecast",
+     "error"
+    ]
+   },
+   {
+    "term": "MASE",
+    "definition": "Mean absolute scaled error: error relative to a naive forecast, comparable across series.",
+    "tags": [
+     "mase",
+     "forecast",
+     "error",
+     "baseline"
+    ]
+   },
+   {
+    "term": "Pinball (quantile) loss",
+    "definition": "A loss that rewards predicting a chosen percentile, used for quantile forecasts.",
+    "tags": [
+     "pinball",
+     "quantile",
+     "forecast",
+     "rho"
+    ]
+   },
+   {
+    "term": "Prediction interval coverage",
+    "definition": "The share of outcomes that fall inside the forecast's stated interval.",
+    "tags": [
+     "coverage",
+     "interval",
+     "quantile",
+     "forecast"
+    ]
+   },
+   {
+    "term": "Seasonal naive forecast",
+    "definition": "Predicting the value from the same period one season ago.",
+    "tags": [
+     "seasonal",
+     "baseline",
+     "forecast"
+    ]
+   },
+   {
+    "term": "Intermittent demand",
+    "definition": "A series with many zeros and occasional spikes, such as slow-moving items.",
+    "tags": [
+     "intermittent",
+     "demand",
+     "forecast",
+     "sku"
+    ]
+   },
+   {
+    "term": "Hierarchical forecasting",
+    "definition": "Forecasting at several levels (item, category, total) that must add up.",
+    "tags": [
+     "hierarchy",
+     "reconciliation",
+     "forecast",
+     "sku"
+    ]
+   },
+   {
+    "term": "Stationarity",
+    "definition": "A series whose statistical properties do not change over time.",
+    "tags": [
+     "stationary",
+     "trend",
+     "forecast",
+     "anomaly"
+    ]
+   },
+   {
+    "term": "Changepoint",
+    "definition": "A moment when the behaviour of a series changes, such as a level shift.",
+    "tags": [
+     "changepoint",
+     "anomaly",
+     "regime",
+     "drift"
+    ]
+   },
+   {
+    "term": "Level shift",
+    "definition": "An abrupt, lasting change in a series' average.",
+    "tags": [
+     "shift",
+     "anomaly",
+     "changepoint"
+    ]
+   },
+   {
+    "term": "Detection delay",
+    "definition": "The time between an anomaly starting and the alert being raised.",
+    "tags": [
+     "delay",
+     "anomaly",
+     "detection",
+     "alert",
+     "ransomware"
+    ]
+   },
+   {
+    "term": "Alert budget",
+    "definition": "The number of alerts a team can handle per period, which sets the detection threshold.",
+    "tags": [
+     "alert",
+     "budget",
+     "anomaly",
+     "threshold"
+    ]
+   },
+   {
+    "term": "Robust z-score",
+    "definition": "A deviation measure using the median and median absolute deviation, which outliers do not distort.",
+    "tags": [
+     "z-score",
+     "robust",
+     "mad",
+     "anomaly",
+     "seasonal"
+    ]
+   },
+   {
+    "term": "Exogenous variable",
+    "definition": "An input from outside the series, such as price or weather, used to explain it.",
+    "tags": [
+     "exogenous",
+     "promotion",
+     "weather",
+     "forecast"
+    ]
+   },
+   {
+    "term": "Lag feature",
+    "definition": "A past value of the series used as a predictor.",
+    "tags": [
+     "lag",
+     "feature",
+     "forecast",
+     "autoregressive"
+    ]
+   },
+   {
+    "term": "Survival time series (hazard)",
+    "definition": "Modelling when an event will occur in a sequence of observations.",
+    "tags": [
+     "hazard",
+     "survival",
+     "failure",
+     "maintenance"
+    ]
+   },
+   {
+    "term": "Remaining useful life",
+    "definition": "The estimated time before a machine or component fails.",
+    "tags": [
+     "maintenance",
+     "failure",
+     "sensor",
+     "rul"
+    ]
+   },
+   {
+    "term": "State-space / Kalman filter",
+    "definition": "A model that tracks a hidden state through noisy observations and updates it over time.",
+    "tags": [
+     "kalman",
+     "state",
+     "tracking",
+     "sensor"
+    ]
+   },
+   {
+    "term": "Hidden Markov model",
+    "definition": "A model in which a hidden state switches over time and generates the observations.",
+    "tags": [
+     "hmm",
+     "regime",
+     "markov",
+     "state"
+    ]
+   }
+  ]
+ },
+ "nlp": {
+  "concepts": [
+   {
+    "name": "Text classification and extraction in practice",
+    "explanation": "Classification assigns labels to documents; extraction finds spans (names, amounts, codes) and fills fields. Labels are expensive and noisy, classes overlap, and text changes with vocabulary, products and seasons.",
+    "whyItMatters": "Hold out by conversation or document family and by time, and monitor vocabulary drift, or offline scores will not survive deployment.",
+    "tags": [
+     "classification",
+     "extraction",
+     "tagging",
+     "ner",
+     "text",
+     "intent",
+     "routing",
+     "moderation",
+     "sentiment",
+     "topic",
+     "labels"
+    ]
+   },
+   {
+    "name": "Retrieval and semantic matching",
+    "explanation": "Search and matching combine keyword retrieval (BM25) with embeddings that match meaning, then a re-ranker orders candidates. Entity and record matching use similar tools to decide whether two texts describe the same thing.",
+    "whyItMatters": "Evaluate retrieval on real query phrasing and measure recall of the right passage separately from the quality of the final answer.",
+    "tags": [
+     "retrieval",
+     "search",
+     "matching",
+     "embedding",
+     "semantic",
+     "relevance",
+     "bm25",
+     "rerank",
+     "similarity",
+     "dedup"
+    ]
+   },
+   {
+    "name": "Speech and multimodal text",
+    "explanation": "Speech systems turn audio into text and back, and document systems read scans with OCR and layout models. Errors cascade: a misheard word becomes a wrong field downstream.",
+    "whyItMatters": "Measure the whole pipeline end to end, with the accents, noise and scan quality of the real population.",
+    "tags": [
+     "speech",
+     "asr",
+     "ocr",
+     "document",
+     "captioning",
+     "transcript",
+     "layout",
+     "audio",
+     "handwriting",
+     "invoice"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Tokenisation",
+    "definition": "Splitting text into the units a model processes: words, sub-words or characters.",
+    "tags": [
+     "token",
+     "text",
+     "nlp",
+     "classification"
+    ]
+   },
+   {
+    "term": "TF-IDF",
+    "definition": "A word weighting that scales by how often a word appears in a document and how rare it is overall.",
+    "tags": [
+     "tfidf",
+     "text",
+     "classification",
+     "retrieval",
+     "baseline"
+    ]
+   },
+   {
+    "term": "Embedding",
+    "definition": "A vector that represents the meaning of a word, sentence or item, so similar things lie close together.",
+    "tags": [
+     "embedding",
+     "semantic",
+     "retrieval",
+     "recommendation",
+     "similarity"
+    ]
+   },
+   {
+    "term": "BM25",
+    "definition": "A classic keyword-ranking function that scores documents by term frequency and rarity.",
+    "tags": [
+     "bm25",
+     "retrieval",
+     "search",
+     "keyword"
+    ]
+   },
+   {
+    "term": "Named-entity recognition (NER)",
+    "definition": "Finding and labelling names of people, organisations, places and other entities in text.",
+    "tags": [
+     "ner",
+     "extraction",
+     "entity",
+     "redaction",
+     "pii"
+    ]
+   },
+   {
+    "term": "Macro-F1",
+    "definition": "The F1 score averaged over classes, treating rare classes as equally important.",
+    "tags": [
+     "f1",
+     "macro",
+     "classification",
+     "multi-class"
+    ]
+   },
+   {
+    "term": "Intent classification",
+    "definition": "Deciding what a user wants from their message, such as 'reset password'.",
+    "tags": [
+     "intent",
+     "routing",
+     "chatbot",
+     "ticket",
+     "support"
+    ]
+   },
+   {
+    "term": "Annotation guideline",
+    "definition": "Written rules that tell labellers how to apply each label consistently.",
+    "tags": [
+     "annotation",
+     "label",
+     "guideline",
+     "agreement"
+    ]
+   },
+   {
+    "term": "Inter-annotator agreement",
+    "definition": "How often independent labellers give the same label, a ceiling for model accuracy.",
+    "tags": [
+     "agreement",
+     "annotation",
+     "kappa",
+     "label",
+     "grading"
+    ]
+   },
+   {
+    "term": "Near-duplicate",
+    "definition": "A text that is almost identical to another, such as a forwarded email, which leaks across random splits.",
+    "tags": [
+     "duplicate",
+     "leakage",
+     "split",
+     "thread",
+     "dedup"
+    ]
+   },
+   {
+    "term": "Word error rate (WER)",
+    "definition": "Errors in recognised speech divided by the number of reference words.",
+    "tags": [
+     "wer",
+     "asr",
+     "speech",
+     "captioning",
+     "reading"
+    ]
+   },
+   {
+    "term": "CTC loss",
+    "definition": "A loss that aligns a signal such as audio or a line image to its text without frame labels.",
+    "tags": [
+     "ctc",
+     "asr",
+     "ocr",
+     "speech",
+     "handwriting"
+    ]
+   },
+   {
+    "term": "OCR",
+    "definition": "Optical character recognition: reading printed or handwritten text from images.",
+    "tags": [
+     "ocr",
+     "document",
+     "invoice",
+     "handwriting",
+     "parcel"
+    ]
+   },
+   {
+    "term": "Layout analysis",
+    "definition": "Finding the structure of a page: columns, tables, headings and fields.",
+    "tags": [
+     "layout",
+     "document",
+     "invoice",
+     "ocr",
+     "form"
+    ]
+   },
+   {
+    "term": "Sentiment analysis",
+    "definition": "Classifying the attitude expressed in text, such as positive, neutral or negative.",
+    "tags": [
+     "sentiment",
+     "review",
+     "feedback",
+     "earnings"
+    ]
+   },
+   {
+    "term": "Toxicity classification",
+    "definition": "Detecting abusive, hateful or harassing language.",
+    "tags": [
+     "toxic",
+     "moderation",
+     "safety",
+     "content"
+    ]
+   },
+   {
+    "term": "Cross-encoder / re-ranker",
+    "definition": "A model that reads a query and a candidate together to score their relevance more precisely.",
+    "tags": [
+     "rerank",
+     "retrieval",
+     "search",
+     "relevance"
+    ]
+   },
+   {
+    "term": "Paraphrase robustness",
+    "definition": "A model giving the same answer to differently worded versions of the same text.",
+    "tags": [
+     "paraphrase",
+     "consistency",
+     "robustness",
+     "sentiment"
+    ]
+   },
+   {
+    "term": "Summarisation",
+    "definition": "Condensing text while keeping the key facts; evaluated for faithfulness, not just fluency.",
+    "tags": [
+     "summarization",
+     "summary",
+     "notes",
+     "review",
+     "meeting"
+    ]
+   }
+  ]
+ },
+ "llm-agents": {
+  "concepts": [
+   {
+    "name": "Grounding, citation and abstention",
+    "explanation": "A language model's fluent answer can be wrong. Grounded systems answer only from retrieved or tool-provided evidence, cite it, check that the citation supports the claim and abstain when the evidence is missing.",
+    "whyItMatters": "A valid-looking citation does not prove correctness; verify that the cited passage supports the statement for the right version, and measure abstention separately.",
+    "tags": [
+     "grounding",
+     "citation",
+     "rag",
+     "abstention",
+     "hallucination",
+     "evidence",
+     "retrieval",
+     "answer",
+     "assistant",
+     "copilot",
+     "knowledge"
+    ]
+   },
+   {
+    "name": "Agents, tools and permissions",
+    "explanation": "An agent plans, calls tools and observes results. Safety comes from structure around the model: typed tools with narrow permissions, an allow-list, approval for any action that changes something, step and cost budgets, and an audit log.",
+    "whyItMatters": "Assume the model can be fooled; make the worst thing it can do harmless by design.",
+    "tags": [
+     "agent",
+     "permission",
+     "approval",
+     "audit",
+     "planner",
+     "action",
+     "guardrail",
+     "copilot",
+     "automation"
+    ]
+   },
+   {
+    "name": "Evaluating language-model systems",
+    "explanation": "Evaluation uses a held-out golden set that includes adversarial, unanswerable and edge cases, automatic checks (does the code run, does the number match the source), calibrated model judges and human review. Prompts and models change often, so evaluation runs as regression tests.",
+    "whyItMatters": "Cases used to tune prompts cannot be used to report quality; keep a frozen test set and add every production failure to the tuning set.",
+    "tags": [
+     "evaluation",
+     "golden",
+     "regression",
+     "judge",
+     "prompt",
+     "quality",
+     "eval",
+     "benchmark"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "RAG",
+    "definition": "Retrieval-augmented generation: a model answers using passages retrieved from a document collection.",
+    "tags": [
+     "rag",
+     "retrieval",
+     "grounding",
+     "assistant",
+     "knowledge"
+    ]
+   },
+   {
+    "term": "Hallucination",
+    "definition": "A fluent statement not supported by the sources or by reality.",
+    "tags": [
+     "hallucination",
+     "grounding",
+     "citation",
+     "assistant"
+    ]
+   },
+   {
+    "term": "Abstention",
+    "definition": "Declining to answer because the evidence is missing.",
+    "tags": [
+     "abstention",
+     "grounding",
+     "rag",
+     "safety"
+    ]
+   },
+   {
+    "term": "Faithfulness",
+    "definition": "Whether an answer is supported by the cited sources.",
+    "tags": [
+     "faithfulness",
+     "grounding",
+     "citation",
+     "rag",
+     "summarization"
+    ]
+   },
+   {
+    "term": "Prompt injection",
+    "definition": "Instructions hidden in input data that try to take control of the model.",
+    "tags": [
+     "injection",
+     "agent",
+     "guardrail",
+     "security"
+    ]
+   },
+   {
+    "term": "Tool calling",
+    "definition": "A model's ability to request that an external function be run with chosen arguments.",
+    "tags": [
+     "agent",
+     "function",
+     "action"
+    ]
+   },
+   {
+    "term": "Planner / executor",
+    "definition": "An agent design in which one component decides the next step and another runs it.",
+    "tags": [
+     "agent",
+     "planner",
+     "executor"
+    ]
+   },
+   {
+    "term": "Step budget",
+    "definition": "A cap on how many tool calls or reasoning steps an agent may take.",
+    "tags": [
+     "agent",
+     "budget",
+     "cost",
+     "latency"
+    ]
+   },
+   {
+    "term": "Approval gate",
+    "definition": "A required human sign-off before an agent performs a consequential action.",
+    "tags": [
+     "approval",
+     "agent",
+     "action",
+     "guardrail"
+    ]
+   },
+   {
+    "term": "Golden set",
+    "definition": "A fixed set of questions with verified answers used to score versions of a system.",
+    "tags": [
+     "golden",
+     "evaluation",
+     "regression"
+    ]
+   },
+   {
+    "term": "LLM-as-judge",
+    "definition": "Using a language model to grade outputs, which must itself be calibrated against humans.",
+    "tags": [
+     "judge",
+     "evaluation",
+     "llm"
+    ]
+   },
+   {
+    "term": "Context window",
+    "definition": "The maximum amount of text a model can read at once.",
+    "tags": [
+     "context",
+     "window",
+     "retrieval",
+     "long"
+    ]
+   },
+   {
+    "term": "Chunking",
+    "definition": "Splitting documents into pieces for indexing and retrieval.",
+    "tags": [
+     "chunk",
+     "rag",
+     "retrieval",
+     "documents"
+    ]
+   },
+   {
+    "term": "Reranking",
+    "definition": "Reordering retrieved passages with a more precise model.",
+    "tags": [
+     "rerank",
+     "retrieval",
+     "rag"
+    ]
+   },
+   {
+    "term": "Fine-tuning / SFT",
+    "definition": "Further training a language model on examples of the desired behaviour.",
+    "tags": [
+     "fine-tuning",
+     "sft",
+     "generation",
+     "llm"
+    ]
+   },
+   {
+    "term": "Guardrail",
+    "definition": "A check on a model's input or output, or a limit on its actions, that enforces a policy.",
+    "tags": [
+     "guardrail",
+     "policy",
+     "safety",
+     "agent",
+     "moderation"
+    ]
+   },
+   {
+    "term": "Structured output",
+    "definition": "Constraining a model to produce valid JSON or SQL against a schema.",
+    "tags": [
+     "schema",
+     "sql",
+     "extraction",
+     "structured"
+    ]
+   },
+   {
+    "term": "Token cost",
+    "definition": "The price of a model call, proportional to input and output tokens.",
+    "tags": [
+     "cost",
+     "token",
+     "gateway",
+     "routing"
+    ]
+   },
+   {
+    "term": "Latency budget",
+    "definition": "The time allowed for a response, split across retrieval, generation and checks.",
+    "tags": [
+     "latency",
+     "budget",
+     "serving",
+     "streaming"
+    ]
+   },
+   {
+    "term": "Audit trail",
+    "definition": "A tamper-evident record of what the system saw, decided and did.",
+    "tags": [
+     "audit",
+     "agent",
+     "compliance",
+     "log"
+    ]
+   }
+  ]
+ },
+ "recommender": {
+  "concepts": [
+   {
+    "name": "Retrieval, ranking and re-ranking",
+    "explanation": "Recommenders usually work in stages: fast candidate retrieval from millions of items, a ranker that scores the shortlist with richer features, and a re-ranker that applies business rules, diversity and stock. Each stage has its own latency budget and metrics.",
+    "whyItMatters": "Optimise the whole pipeline: a better ranker cannot recover an item the retrieval stage never returned.",
+    "tags": [
+     "retrieval",
+     "ranking",
+     "rerank",
+     "candidate",
+     "recommendation",
+     "two-tower",
+     "feed",
+     "search",
+     "stage"
+    ]
+   },
+   {
+    "name": "Implicit feedback, exposure and bias",
+    "explanation": "Clicks and purchases are implicit feedback: only shown items can be clicked, higher positions get more attention and popular items are shown more. Logs therefore reflect the old system as much as user taste; corrections include position features, propensity weighting, exploration and randomised data.",
+    "whyItMatters": "Training and evaluating on logs of the incumbent ranker rewards imitating it.",
+    "tags": [
+     "implicit",
+     "exposure",
+     "bias",
+     "position",
+     "propensity",
+     "exploration",
+     "feedback",
+     "click",
+     "popularity"
+    ]
+   },
+   {
+    "name": "Exploration, cold start and diversity",
+    "explanation": "New items and users have no history and are never shown without deliberate exploration; recommenders also need diversity and fairness constraints so long-tail items and sellers get exposure. Bandit methods manage the explore-exploit trade-off.",
+    "whyItMatters": "Coverage and new-item exposure are product metrics, not afterthoughts.",
+    "tags": [
+     "exploration",
+     "cold",
+     "start",
+     "diversity",
+     "coverage",
+     "bandit",
+     "new",
+     "fairness",
+     "long-tail",
+     "creative"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Collaborative filtering",
+    "definition": "Recommending items liked by users similar to you.",
+    "tags": [
+     "collaborative",
+     "recommendation",
+     "matrix",
+     "factorization"
+    ]
+   },
+   {
+    "term": "Two-tower model",
+    "definition": "A retrieval model with separate networks for user and item whose embeddings are compared by dot product.",
+    "tags": [
+     "two-tower",
+     "retrieval",
+     "embedding",
+     "feed"
+    ]
+   },
+   {
+    "term": "Candidate generation",
+    "definition": "The first stage that selects a few hundred items from the full catalogue.",
+    "tags": [
+     "candidate",
+     "retrieval",
+     "recommendation",
+     "stage"
+    ]
+   },
+   {
+    "term": "NDCG",
+    "definition": "Normalised discounted cumulative gain: a ranking score that rewards relevant items near the top.",
+    "tags": [
+     "ndcg",
+     "ranking",
+     "search",
+     "recommendation"
+    ]
+   },
+   {
+    "term": "MRR",
+    "definition": "Mean reciprocal rank: the average of one over the rank of the first relevant item.",
+    "tags": [
+     "mrr",
+     "ranking",
+     "next-item",
+     "recommendation"
+    ]
+   },
+   {
+    "term": "Hit rate@K",
+    "definition": "The share of cases in which the true item appears in the top K.",
+    "tags": [
+     "hit",
+     "recall",
+     "next-item",
+     "recommendation"
+    ]
+   },
+   {
+    "term": "Coverage",
+    "definition": "The share of the catalogue that is ever recommended.",
+    "tags": [
+     "coverage",
+     "diversity",
+     "long-tail",
+     "recommendation"
+    ]
+   },
+   {
+    "term": "Popularity bias",
+    "definition": "The tendency to recommend already-popular items.",
+    "tags": [
+     "popularity",
+     "bias",
+     "coverage",
+     "recommendation"
+    ]
+   },
+   {
+    "term": "Position bias",
+    "definition": "Higher slots get more attention regardless of relevance.",
+    "tags": [
+     "position",
+     "bias",
+     "ranking",
+     "ads",
+     "search"
+    ]
+   },
+   {
+    "term": "Inverse propensity weighting",
+    "definition": "Weighting logged examples by the inverse of how likely they were to be shown, to correct exposure bias.",
+    "tags": [
+     "propensity",
+     "ipw",
+     "bias",
+     "counterfactual"
+    ]
+   },
+   {
+    "term": "Interleaving",
+    "definition": "An online test mixing two rankers' results in one list to see which gets more clicks.",
+    "tags": [
+     "interleaving",
+     "ranking",
+     "online"
+    ]
+   },
+   {
+    "term": "Negative sampling",
+    "definition": "Choosing non-chosen items as negatives for training; easy negatives inflate offline metrics.",
+    "tags": [
+     "negative",
+     "sampling",
+     "training",
+     "recommendation"
+    ]
+   },
+   {
+    "term": "Sequence model (SASRec)",
+    "definition": "A transformer that predicts the next item from a user's recent history.",
+    "tags": [
+     "sequence",
+     "sasrec",
+     "session",
+     "transformer",
+     "next-item"
+    ]
+   },
+   {
+    "term": "Matrix factorisation",
+    "definition": "Learning user and item vectors whose dot product predicts the rating or interaction.",
+    "tags": [
+     "matrix",
+     "factorization",
+     "collaborative",
+     "embedding"
+    ]
+   },
+   {
+    "term": "ANN search",
+    "definition": "Approximate nearest-neighbour search that finds similar vectors quickly.",
+    "tags": [
+     "ann",
+     "embedding",
+     "retrieval",
+     "hnsw",
+     "search"
+    ]
+   },
+   {
+    "term": "Slate / list-wise optimisation",
+    "definition": "Choosing a whole list of items together rather than scoring each independently.",
+    "tags": [
+     "slate",
+     "listwise",
+     "ranking",
+     "feed",
+     "diversity"
+    ]
+   },
+   {
+    "term": "Multi-armed bandit",
+    "definition": "A decision setting that balances trying options to learn and using the best known option.",
+    "tags": [
+     "bandit",
+     "exploration",
+     "creative",
+     "arm",
+     "regret"
+    ]
+   },
+   {
+    "term": "Counterfactual evaluation",
+    "definition": "Estimating how a new policy would have performed from logs of a different policy.",
+    "tags": [
+     "counterfactual",
+     "off-policy",
+     "evaluation",
+     "ope"
+    ]
+   }
+  ]
+ },
+ "graph": {
+  "concepts": [
+   {
+    "name": "Graphs: nodes, edges and what they mean",
+    "explanation": "A graph represents entities (accounts, devices, people, products) as nodes and relationships (transfers, shared devices, co-purchases) as edges. Structure carries signal that no single record shows: rings, hubs, bridges and communities.",
+    "whyItMatters": "Define edges carefully: an edge from a shared public Wi-Fi address means much less than one from a shared phone number.",
+    "tags": [
+     "graph",
+     "network",
+     "node",
+     "edge",
+     "ring",
+     "community",
+     "link",
+     "relationship",
+     "entity",
+     "hub"
+    ]
+   },
+   {
+    "name": "Entity resolution and transitivity",
+    "explanation": "Resolving duplicates means deciding which records refer to the same real-world entity. Because 'same as' is transitive, one wrong link can merge two large groups, so precision on links matters more than recall and clusters are monitored for abnormal size.",
+    "whyItMatters": "Weight shared attributes by their rarity and cap hubs before clustering.",
+    "tags": [
+     "entity",
+     "resolution",
+     "matching",
+     "deduplication",
+     "identity",
+     "transitive",
+     "cluster",
+     "link",
+     "cross-device"
+    ]
+   },
+   {
+    "name": "Graph learning and its pitfalls",
+    "explanation": "Graph neural networks and graph features (degree, centrality, personalised PageRank, motifs) propagate information along edges. Leakage hides in the split: random edge splits put future or neighbouring information into training; time-based and node-based splits are safer.",
+    "whyItMatters": "Evaluate on whole communities or later periods, and compare with simple hand-built graph features before adding a GNN.",
+    "tags": [
+     "gnn",
+     "embedding",
+     "pagerank",
+     "motif",
+     "centrality",
+     "propagation",
+     "graph",
+     "neural",
+     "node2vec"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Node / edge",
+    "definition": "The entities in a graph and the relationships between them.",
+    "tags": [
+     "graph",
+     "node",
+     "edge"
+    ]
+   },
+   {
+    "term": "Degree",
+    "definition": "The number of edges attached to a node; very high degree marks a hub.",
+    "tags": [
+     "degree",
+     "hub",
+     "graph",
+     "centrality"
+    ]
+   },
+   {
+    "term": "Connected component",
+    "definition": "A set of nodes in which each can reach every other through edges.",
+    "tags": [
+     "component",
+     "cluster",
+     "resolution",
+     "graph"
+    ]
+   },
+   {
+    "term": "Community detection",
+    "definition": "Finding groups of nodes more densely connected to each other than to the rest.",
+    "tags": [
+     "community",
+     "modularity",
+     "ring",
+     "cluster"
+    ]
+   },
+   {
+    "term": "Modularity",
+    "definition": "A score for how well a division of the graph into groups separates dense communities.",
+    "tags": [
+     "modularity",
+     "community",
+     "ring"
+    ]
+   },
+   {
+    "term": "PageRank",
+    "definition": "A measure of a node's importance based on the importance of the nodes that link to it.",
+    "tags": [
+     "pagerank",
+     "centrality",
+     "propagation"
+    ]
+   },
+   {
+    "term": "Personalised PageRank",
+    "definition": "PageRank that restarts from chosen seed nodes, used to spread risk from known bad nodes.",
+    "tags": [
+     "pagerank",
+     "propagation",
+     "seed",
+     "aml"
+    ]
+   },
+   {
+    "term": "Motif",
+    "definition": "A small recurring subgraph pattern such as a cycle or a fan-out.",
+    "tags": [
+     "motif",
+     "ring",
+     "aml",
+     "pattern"
+    ]
+   },
+   {
+    "term": "Node embedding",
+    "definition": "A vector that represents a node's position and neighbourhood in the graph.",
+    "tags": [
+     "embedding",
+     "node2vec",
+     "gnn",
+     "link"
+    ]
+   },
+   {
+    "term": "GNN",
+    "definition": "Graph neural network: a model that updates each node from its neighbours' features.",
+    "tags": [
+     "gnn",
+     "graph",
+     "neural",
+     "node",
+     "link"
+    ]
+   },
+   {
+    "term": "GraphSAGE",
+    "definition": "A GNN that samples and aggregates a node's neighbours so it scales to large graphs.",
+    "tags": [
+     "graphsage",
+     "gnn",
+     "scale",
+     "inductive"
+    ]
+   },
+   {
+    "term": "Link prediction",
+    "definition": "Predicting whether an edge exists or will form between two nodes.",
+    "tags": [
+     "link",
+     "prediction",
+     "identity",
+     "recommendation"
+    ]
+   },
+   {
+    "term": "Blocking",
+    "definition": "Cheaply selecting candidate pairs for comparison so not all pairs are compared.",
+    "tags": [
+     "blocking",
+     "entity",
+     "resolution",
+     "matching",
+     "dedup"
+    ]
+   },
+   {
+    "term": "Transitive closure",
+    "definition": "Adding links implied by chains of links; in clustering it merges groups that share one wrong edge.",
+    "tags": [
+     "transitive",
+     "closure",
+     "cluster",
+     "resolution"
+    ]
+   },
+   {
+    "term": "Hub node",
+    "definition": "A node connected to a very large number of others, such as a shared public address.",
+    "tags": [
+     "hub",
+     "degree",
+     "false",
+     "link",
+     "resolution"
+    ]
+   },
+   {
+    "term": "Cluster purity",
+    "definition": "The share of a cluster that belongs to its majority true group.",
+    "tags": [
+     "purity",
+     "cluster",
+     "resolution",
+     "evaluation"
+    ]
+   },
+   {
+    "term": "Pairwise precision / recall",
+    "definition": "Precision and recall computed over pairs of records that are put in the same cluster.",
+    "tags": [
+     "pairwise",
+     "precision",
+     "recall",
+     "resolution"
+    ]
+   },
+   {
+    "term": "Heterogeneous graph",
+    "definition": "A graph with several kinds of nodes and edges, such as users, devices and merchants.",
+    "tags": [
+     "heterogeneous",
+     "graph",
+     "gnn",
+     "fraud"
+    ]
+   }
+  ]
+ },
+ "computer-vision": {
+  "concepts": [
+   {
+    "name": "Labels, annotators and ground truth in images",
+    "explanation": "Image labels come from expert reads, reports or biopsies and carry noise; annotators disagree, and the boundary of a lesion or defect is a judgment. Class imbalance is extreme: most images are normal.",
+    "whyItMatters": "Measure inter-reader agreement, adjudicate disagreements and report performance against the quality of ground truth, not just a single label.",
+    "tags": [
+     "label",
+     "annotation",
+     "ground",
+     "truth",
+     "reader",
+     "imaging",
+     "inspection",
+     "defect",
+     "segmentation",
+     "detection"
+    ]
+   },
+   {
+    "name": "Shortcuts, domain shift and evaluation across sites",
+    "explanation": "Vision models readily learn cues unrelated to the task: scanner markings, backgrounds, lighting, text overlays. Performance then collapses on a new device or site. Evaluation must hold out entire sites or cameras, and operating thresholds must be re-validated where they are deployed.",
+    "whyItMatters": "Split by physical item or patient, and always test on a site the model has not seen.",
+    "tags": [
+     "shortcut",
+     "shift",
+     "domain",
+     "site",
+     "device",
+     "scanner",
+     "camera",
+     "generalisation",
+     "robustness",
+     "validation"
+    ]
+   },
+   {
+    "name": "Detection, segmentation and measurement",
+    "explanation": "Classification says whether something is present; detection says where; segmentation outlines it pixel by pixel; measurement turns outlines into numbers such as lengths and volumes. Each has its own metrics and tolerances, and real-time use adds latency limits on edge hardware.",
+    "whyItMatters": "Choose the task and metric from the decision: a triage flag needs sensitivity, a surgical plan needs boundary accuracy.",
+    "tags": [
+     "detection",
+     "segmentation",
+     "measurement",
+     "boxes",
+     "mask",
+     "dimension",
+     "ultrasound",
+     "shelf",
+     "video",
+     "tracking"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Convolutional network (CNN)",
+    "definition": "A neural network that learns local image filters shared across the image.",
+    "tags": [
+     "cnn",
+     "vision",
+     "classification",
+     "detection"
+    ]
+   },
+   {
+    "term": "Vision transformer",
+    "definition": "An image model that splits an image into patches and processes them with attention.",
+    "tags": [
+     "transformer",
+     "vision",
+     "classification"
+    ]
+   },
+   {
+    "term": "Transfer learning",
+    "definition": "Starting from a model pretrained on a large image set and adapting it to a small task dataset.",
+    "tags": [
+     "pretrained",
+     "transfer",
+     "fine-tuning",
+     "imaging",
+     "small"
+    ]
+   },
+   {
+    "term": "Data augmentation",
+    "definition": "Creating altered copies of training images (flips, brightness) so the model becomes robust.",
+    "tags": [
+     "augmentation",
+     "robustness",
+     "shortcut"
+    ]
+   },
+   {
+    "term": "IoU",
+    "definition": "Intersection over union: the overlap between a predicted and a true region divided by their union.",
+    "tags": [
+     "iou",
+     "detection",
+     "segmentation",
+     "boxes"
+    ]
+   },
+   {
+    "term": "mAP",
+    "definition": "Mean average precision: a detection score averaged over classes and overlap thresholds.",
+    "tags": [
+     "map",
+     "detection",
+     "shelf",
+     "objects"
+    ]
+   },
+   {
+    "term": "Dice coefficient",
+    "definition": "An overlap score between two regions, widely used for segmentation.",
+    "tags": [
+     "dice",
+     "segmentation",
+     "overlap",
+     "radiotherapy"
+    ]
+   },
+   {
+    "term": "Sensitivity at fixed specificity",
+    "definition": "The share of true findings caught when false alarms are held to an agreed level.",
+    "tags": [
+     "sensitivity",
+     "specificity",
+     "screening",
+     "triage",
+     "imaging"
+    ]
+   },
+   {
+    "term": "Shortcut learning",
+    "definition": "A model using an easy but irrelevant cue that happens to correlate with the label.",
+    "tags": [
+     "shortcut",
+     "bias",
+     "shift",
+     "robustness"
+    ]
+   },
+   {
+    "term": "Domain shift",
+    "definition": "A change in the images the model sees, such as a new camera or hospital.",
+    "tags": [
+     "shift",
+     "domain",
+     "site",
+     "device",
+     "generalisation"
+    ]
+   },
+   {
+    "term": "Grad-CAM / saliency",
+    "definition": "Heat maps showing which image regions most influenced a prediction.",
+    "tags": [
+     "saliency",
+     "explainability",
+     "heatmap",
+     "imaging"
+    ]
+   },
+   {
+    "term": "Multiple-instance learning",
+    "definition": "Learning from a bag of patches with only a bag-level label, as in whole-slide pathology.",
+    "tags": [
+     "mil",
+     "pathology",
+     "slide",
+     "weak"
+    ]
+   },
+   {
+    "term": "OCR / text detection",
+    "definition": "Finding and reading text in images.",
+    "tags": [
+     "ocr",
+     "text",
+     "document",
+     "parcel",
+     "dicom"
+    ]
+   },
+   {
+    "term": "Re-identification",
+    "definition": "Recognising the same person or object across different camera views.",
+    "tags": [
+     "reid",
+     "tracking",
+     "store",
+     "checkout",
+     "video"
+    ]
+   },
+   {
+    "term": "Perceptual loss",
+    "definition": "A loss that compares images using the features of a pretrained network instead of raw pixels.",
+    "tags": [
+     "perceptual",
+     "generation",
+     "try-on"
+    ]
+   },
+   {
+    "term": "Self-supervised learning",
+    "definition": "Learning image representations from unlabelled data by solving a pretext task.",
+    "tags": [
+     "self-supervised",
+     "contrastive",
+     "pretraining"
+    ]
+   },
+   {
+    "term": "Anomaly detection (visual)",
+    "definition": "Finding defects as deviations from a model of normal images, useful when defects are rare.",
+    "tags": [
+     "anomaly",
+     "defect",
+     "inspection",
+     "quality",
+     "industrial"
+    ]
+   },
+   {
+    "term": "Test-time augmentation",
+    "definition": "Averaging predictions over several altered versions of the input.",
+    "tags": [
+     "augmentation",
+     "robustness",
+     "inference"
+    ]
+   }
+  ]
+ },
+ "reinforcement-learning": {
+  "concepts": [
+   {
+    "name": "Decisions, policies and rewards",
+    "explanation": "A policy chooses an action in each situation to maximise long-run reward (revenue, learning gain, safety). The reward is a modelling choice: optimising a proxy (clicks, time spent) can damage the real goal, and delayed rewards make credit assignment hard.",
+    "whyItMatters": "Write the reward with the business owner, include costs and constraints, and track the metrics the reward does not capture.",
+    "tags": [
+     "policy",
+     "reward",
+     "bandit",
+     "decision",
+     "optimization",
+     "rl",
+     "action",
+     "objective",
+     "proxy"
+    ]
+   },
+   {
+    "name": "Learning from logs: off-policy evaluation",
+    "explanation": "Most business data were generated by an earlier policy. To judge a new policy offline you need the probability with which each logged action was chosen; estimators such as inverse propensity weighting, self-normalised weighting and doubly robust methods correct for the difference, with a bias-variance trade-off.",
+    "whyItMatters": "Never evaluate a new policy only on the rows where it agrees with the old one; log propensities from day one.",
+    "tags": [
+     "off-policy",
+     "ope",
+     "propensity",
+     "logging",
+     "counterfactual",
+     "ips",
+     "doubly",
+     "robust",
+     "policy",
+     "evaluation"
+    ]
+   },
+   {
+    "name": "Optimisation under uncertainty",
+    "explanation": "Routing, scheduling, allocation and pricing are optimisation problems solved on predicted costs or demands. Optimising noisy predictions selects options whose errors are favourable (the optimiser's curse), so plans are optimistic. Remedies: uncertainty penalties, robust or stochastic optimisation, re-planning and safe exploration.",
+    "whyItMatters": "Judge a plan on realised outcomes, and track the gap between promised and realised cost.",
+    "tags": [
+     "routing",
+     "scheduling",
+     "allocation",
+     "assignment",
+     "vrp",
+     "optimization",
+     "pricing",
+     "inventory",
+     "constraint",
+     "plan",
+     "packing",
+     "timetabling"
+    ]
+   }
+  ],
+  "glossary": [
+   {
+    "term": "Policy",
+    "definition": "The rule that maps a situation to an action.",
+    "tags": [
+     "policy",
+     "rl",
+     "bandit",
+     "decision"
+    ]
+   },
+   {
+    "term": "Reward",
+    "definition": "The number the system tries to maximise over time.",
+    "tags": [
+     "reward",
+     "rl",
+     "bandit",
+     "objective"
+    ]
+   },
+   {
+    "term": "Discount factor",
+    "definition": "How much a future reward is worth compared with the same reward now.",
+    "tags": [
+     "discount",
+     "gamma",
+     "rl",
+     "long-term"
+    ]
+   },
+   {
+    "term": "Contextual bandit",
+    "definition": "A decision problem where each round has a context, an action is chosen and only its reward is seen.",
+    "tags": [
+     "bandit",
+     "contextual",
+     "creative",
+     "offer",
+     "routing"
+    ]
+   },
+   {
+    "term": "Regret",
+    "definition": "The reward lost by not always choosing the best action.",
+    "tags": [
+     "regret",
+     "bandit",
+     "exploration",
+     "creative"
+    ]
+   },
+   {
+    "term": "Exploration / exploitation",
+    "definition": "Trying new actions to learn versus using the best known one.",
+    "tags": [
+     "exploration",
+     "exploitation",
+     "bandit",
+     "cold"
+    ]
+   },
+   {
+    "term": "Thompson sampling / UCB",
+    "definition": "Bandit methods that explore in proportion to uncertainty.",
+    "tags": [
+     "thompson",
+     "ucb",
+     "bandit",
+     "exploration"
+    ]
+   },
+   {
+    "term": "Off-policy evaluation (OPE)",
+    "definition": "Estimating how a new policy would perform from data logged under another policy.",
+    "tags": [
+     "ope",
+     "off-policy",
+     "evaluation",
+     "counterfactual"
+    ]
+   },
+   {
+    "term": "Propensity",
+    "definition": "The probability with which the logging policy chose the logged action.",
+    "tags": [
+     "propensity",
+     "ope",
+     "ipw",
+     "logging"
+    ]
+   },
+   {
+    "term": "Doubly robust estimator",
+    "definition": "An off-policy estimator that combines a reward model with propensity weighting.",
+    "tags": [
+     "doubly",
+     "robust",
+     "ope",
+     "estimator"
+    ]
+   },
+   {
+    "term": "Safe exploration",
+    "definition": "Trying new actions within limits that prevent harmful outcomes.",
+    "tags": [
+     "safe",
+     "exploration",
+     "guardrail",
+     "constraint"
+    ]
+   },
+   {
+    "term": "Constraint programming / MIP",
+    "definition": "Solvers that find the best plan satisfying hard constraints.",
+    "tags": [
+     "mip",
+     "constraint",
+     "optimization",
+     "scheduling",
+     "packing"
+    ]
+   },
+   {
+    "term": "Heuristic / local search",
+    "definition": "Fast methods that find good but not provably optimal solutions.",
+    "tags": [
+     "heuristic",
+     "local",
+     "search",
+     "routing",
+     "scheduling"
+    ]
+   },
+   {
+    "term": "Winner's curse",
+    "definition": "The tendency of an optimiser to pick options whose prediction errors are favourable.",
+    "tags": [
+     "optimizer",
+     "curse",
+     "prediction",
+     "plan",
+     "uncertainty"
+    ]
+   },
+   {
+    "term": "Robust optimisation",
+    "definition": "Planning for the worst plausible case within an uncertainty set.",
+    "tags": [
+     "robust",
+     "optimization",
+     "uncertainty",
+     "plan"
+    ]
+   },
+   {
+    "term": "Simulation / digital twin",
+    "definition": "A model of the environment used to test policies safely before deployment.",
+    "tags": [
+     "simulation",
+     "twin",
+     "policy"
+    ]
+   },
+   {
+    "term": "Markov decision process",
+    "definition": "A mathematical model of sequential decisions with states, actions, rewards and transitions.",
+    "tags": [
+     "mdp",
+     "rl",
+     "policy",
+     "sequential"
+    ]
+   },
+   {
+    "term": "Reward shaping",
+    "definition": "Adding extra reward terms to guide learning, which can cause unintended behaviour.",
+    "tags": [
+     "reward",
+     "shaping",
+     "proxy",
+     "policy"
+    ]
+   }
+  ]
+ }
+}

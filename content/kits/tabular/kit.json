@@ -1,0 +1,185 @@
+{
+ "id": "tabular",
+ "label": "Event-level detection with delayed labels",
+ "paradigms": [
+  "tabular"
+ ],
+ "summary": "A runnable reference for scoring individual events (fraud, abuse, default, churn, risk) with point-in-time features, labels that arrive late, a chronological split and a calibrated baseline against a regularised boosted model.",
+ "runtime": "Python 3.11+ with numpy, pandas, scikit-learn, scipy and pytest (about 10 seconds)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints about 188,000 events with a positive rate near 0.36%. baseline.py reports the calibrated logistic baseline at recall 0.74 and PR-AUC 0.69 at a 0.5% false-positive rate, and the boosted challenger at 0.76 and 0.75. pytest reports 5 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Synthetic event stream with genuine bursts, shared-group attacks, quiet takeovers and delayed labels"
+  },
+  {
+   "path": "features.py",
+   "purpose": "Point-in-time window counts, shared-group fan-out and matured counterparty rates"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Chronological split, calibrated baseline, boosted challenger and the metric report"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates: determinism, leakage, window boundaries, matured labels and thresholds"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "About 190,000 events over 120 days for 2,500 entities with genuine bursts, flash events at a counterparty, fast attacks through a shared group, quiet takeovers on the entity's own group, and labels that only arrive 7-21 days late.",
+  "knobs": [
+   "positive_entity_rate: share of entities that are compromised (default 3%)",
+   "n_flash_sales: genuine counterparty-level spikes that stress false positives",
+   "n_entities, days, n_counterparties: scale and history length",
+   "seed: identical seed gives an identical stream"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "txn_id",
+   "ts_s",
+   "entity",
+   "group",
+   "counterparty",
+   "amount",
+   "label",
+   "label_ts_s"
+  ],
+  "rows": [
+   [
+    5000,
+    297007,
+    843,
+    2354,
+    16,
+    30.4,
+    0,
+    2111407
+   ],
+   [
+    38461,
+    2153265,
+    1078,
+    2671,
+    50,
+    31.3,
+    1,
+    2798507
+   ],
+   [
+    38469,
+    2153586,
+    1078,
+    2671,
+    110,
+    34.0,
+    1,
+    3939795
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Generator, split and maturity tests",
+   "threshold": "pytest -k 'deterministic or matured' passes; positive rate between 0.2% and 1.2%",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Leakage test",
+   "threshold": "Deleting all rows after day 60 changes no feature of any earlier row (maximum absolute difference 0)",
+   "how": "pytest -k only_the_past"
+  },
+  "baseline": {
+   "metric": "Recall at a 0.5% false-positive rate and PR-AUC",
+   "threshold": "Recall at least 0.60 and PR-AUC at least 0.55 (the kit reaches 0.74 and 0.69)",
+   "how": "python baseline.py; pytest -k clears_the_gate"
+  },
+  "challenger": {
+   "metric": "PR-AUC of the challenger against the baseline",
+   "threshold": "At least 0.95 times the baseline's PR-AUC (the kit reaches 1.08 times); on real data the lower bound of a 95% entity-level bootstrap interval of the lift is above zero",
+   "how": "python baseline.py"
+  }
+ },
+ "tests": [
+  {
+   "test": "Future-truncation leakage test",
+   "tool": "pytest test_features_use_only_the_past",
+   "pass": "No feature of any past row changes when all later rows are deleted"
+  },
+  {
+   "test": "Window boundary test",
+   "tool": "pytest test_velocity_windows_exclude_the_current_event",
+   "pass": "A 61-second-old event is outside a 1-minute window and the current event is never counted"
+  },
+  {
+   "test": "Label maturity guard",
+   "tool": "pytest test_training_rows_have_matured_labels",
+   "pass": "Every training label arrived before the first test row"
+  },
+  {
+   "test": "Model gate",
+   "tool": "pytest test_baseline_clears_the_gate_and_challenger_earns_its_complexity",
+   "pass": "Baseline recall at 0.5% FPR at least 0.60 and PR-AUC at least 0.55; challenger PR-AUC at least 0.95 times baseline"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "Training on labels that had not matured",
+   "evidence": "Labels arrive 7-21 days late, so the kit trains only on rows whose label arrived before the cut-off and leaves a maturity gap before the test period.",
+   "at": "M1"
+  },
+  {
+   "trap": "A window that includes the future",
+   "evidence": "The future-truncation test fails if any feature of an earlier row changes when later rows are deleted.",
+   "at": "M2"
+  },
+  {
+   "trap": "Reporting accuracy on rare positives",
+   "evidence": "With a 0.36% positive rate a model that always says no is 99.6% accurate; the kit reports recall at a fixed false-positive rate and PR-AUC instead.",
+   "at": "M3"
+  },
+  {
+   "trap": "An unregularised boosted model on a few hundred positives",
+   "evidence": "An unregularised depth-4 boosted model scored PR-AUC 0.33 against 0.69 for the baseline; strong regularisation brought it to 0.75.",
+   "at": "M4"
+  }
+ ],
+ "target": "A row is positive when the outcome is later confirmed (a confirmed fraud, a default, a churn). A positive's label arrives 7 to 21 days after the event; a negative is only confirmed after the full maturity window.",
+ "headline": {
+  "baseline": "recall 0.74 and PR-AUC 0.69 at a 0.5% false-positive rate",
+  "challenger": "recall 0.76 and PR-AUC 0.75"
+ }
+}

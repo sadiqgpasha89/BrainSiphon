@@ -1,0 +1,168 @@
+{
+ "id": "nlp",
+ "label": "Text classification with leakage and drift checks",
+ "paradigms": [
+  "nlp"
+ ],
+ "summary": "A runnable reference for classifying text (tickets, documents, messages, reviews): TF-IDF with logistic regression evaluated optimistically and honestly, with duplicate threads, a post-hoc leak token and vocabulary drift built in.",
+ "runtime": "Python 3.11+ with numpy, pandas, scikit-learn, scipy and pytest (about 7 seconds)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints 6,000 documents with about 25% near-duplicates and a leak token in 18%. baseline.py reports macro-F1 0.91 on a random split with the leak token present, 0.44 on later months with the leak removed and whole threads held out, and a frozen model falling from 0.78 on the month after training to 0.44 in months 6-7 when new words appear. pytest reports 6 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Synthetic documents with duplicate threads, a post-hoc leak token, confusable classes and vocabulary drift"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "TF-IDF with logistic regression, the leak filter, expected calibration error and the optimistic, honest and drift evaluations"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates: determinism, leak removal, calibration arithmetic, thread-safe split and the leakage and drift checks"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "6,000 documents over 8 months and 8 classes: 25% are copies of earlier documents, 18% contain a token written only after the label exists, each class borrows 30% of its topic words from a neighbour, and from month 5 documents use mostly new vocabulary.",
+  "knobs": [
+   "n_docs, n_classes, months: size of the corpus",
+   "seed: identical seed gives an identical corpus"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "text",
+   "label",
+   "thread",
+   "month"
+  ],
+  "rows": [
+   [
+    "tufape minozi mivi xoro sasage zibutu saro sazi sazi pedami ...",
+    1,
+    0,
+    0
+   ],
+   [
+    "pevi robuxo misape ledavi mibuka dazimi vixoda rokale fano x...",
+    2,
+    1,
+    0
+   ],
+   [
+    "miro dakale buburo xoda letufa noda xogele samimi miromi buf...",
+    6,
+    2,
+    0
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Corpus tests",
+   "threshold": "pytest -k 'deterministic or thread' passes; 15-35% near-duplicates; threads never straddle the split",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Leak filter",
+   "threshold": "A resolution token written after labelling is stripped from 100% of training texts",
+   "how": "pytest -k post_hoc"
+  },
+  "baseline": {
+   "metric": "Honest macro-F1",
+   "threshold": "Recorded on later months with leaks removed and threads held out (the kit: 0.44 against 0.91 on the optimistic split)",
+   "how": "python baseline.py"
+  },
+  "challenger": {
+   "metric": "Gap to the optimistic number and drift",
+   "threshold": "The optimistic split overstates macro-F1 by at least 0.25 and the frozen model loses at least 0.15 between the first and later test months (the kit: 0.47 and 0.34)",
+   "how": "python baseline.py; pytest -k 'overstates or frozen'"
+  }
+ },
+ "tests": [
+  {
+   "test": "Leak removal",
+   "tool": "pytest test_the_post_hoc_token_is_removed_before_training",
+   "pass": "A resolution token written after labelling never reaches the model"
+  },
+  {
+   "test": "Calibration arithmetic",
+   "tool": "pytest test_confidence_calibration_error_is_zero_when_confidence_matches_accuracy",
+   "pass": "A classifier that is always right at 90% confidence has calibration error 0.1"
+  },
+  {
+   "test": "Thread-safe time split",
+   "tool": "pytest test_a_time_split_keeps_every_thread_on_one_side",
+   "pass": "No thread appears in both training and test"
+  },
+  {
+   "test": "Optimistic evaluation",
+   "tool": "pytest test_a_random_split_with_the_leak_token_overstates_quality",
+   "pass": "Random-split macro-F1 is at least 0.25 above the honest figure"
+  },
+  {
+   "test": "Drift",
+   "tool": "pytest test_a_frozen_model_degrades_when_new_vocabulary_appears",
+   "pass": "Macro-F1 drops by at least 0.15 between the month after training and months 6-7"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "A random split with the leak token present",
+   "evidence": "Macro-F1 looks like 0.91; on later months with leaks removed and threads held out it is 0.44.",
+   "at": "M1"
+  },
+  {
+   "trap": "Copies of the same text on both sides of the split",
+   "evidence": "About 25% of documents are copies; the kit keeps whole threads together.",
+   "at": "M1"
+  },
+  {
+   "trap": "Using a field written after the label",
+   "evidence": "A resolution token appears in 18% of documents only after the case is closed; it is stripped before training.",
+   "at": "M2"
+  },
+  {
+   "trap": "Freezing a model and not watching vocabulary",
+   "evidence": "A model trained on months 0-3 scores 0.78 on month 4 and 0.44 in months 6-7 when new words appear.",
+   "at": "M6"
+  }
+ ],
+ "target": "The label is the class of the document, assigned by the person who handled it; documents in the same thread share a label.",
+ "headline": {
+  "baseline": "macro-F1 0.44 on later months, leak removed and threads held out",
+  "challenger": "honest evaluation plus a drift alarm; the optimistic number was 0.91"
+ }
+}
