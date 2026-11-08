@@ -37,6 +37,36 @@ against the strict Zod schema (`src/schemas/usecase.schema.ts`) — **a missing 
 
 > The capacity table is a transparent back-of-envelope model (assumptions are printed on every page), **not** a quote.
 
+## Build playbooks (pilot: 8 of 400)
+
+A blueprint explains *what a good system looks like*. A **Build playbook** is what an intermediate engineer needs to
+*build it*: where the data comes from, ordered milestones with numeric exit gates, a starter kit that runs on synthetic
+data, a worked example, an executable test plan, decisions and pitfalls, and a 30-day launch checklist.
+
+| Domain | Pilot use case | Starter kit |
+|---|---|---|
+| FinTech | Real-Time Card & UPI Fraud Detection | point-in-time velocity features, delayed labels, calibrated baseline vs boosted model |
+| Retail | Session-Based Next-Item Recommendation | ordered transitions, crawler bots, time split vs random split |
+| Healthcare | Sepsis Early-Warning System | result-time-correct features, alert-burden-matched evaluation |
+| Supply Chain | Short-Term Demand Sensing | forecast-origin features, censored demand, late feeds, FVA |
+| AdTech | Ad Click-Through Rate Prediction | hashed crosses, position bias, calibration, mis-taps |
+| Cybersecurity | SOC Investigation Copilot | typed tools, approval gate, prompt-injection guard, evidence verifier |
+| EdTech | Knowledge Tracing & Student Modelling | replayable learner state, student-split evaluation, id-encoding leak |
+| SaaS | Developer Documentation Assistant | version-aware RAG, abstention, citation verifier, held-out products |
+
+```bash
+npm run test:playbooks            # run every starter kit's pytest suite (needs Python 3.11+ and content/playbooks/requirements.txt)
+npm run check:links               # verify every dataset URL (network)
+```
+
+The playbook content lives in `content/playbooks/<domain>/<use-case>/playbook.yaml` next to a `starter/` directory.
+`content/playbooks/README.md` is the authoring template; `npm run validate:content` enforces its depth rules
+(at least 4 signal-vs-noise rows, 5 features and 4 edge cases, no one-word cells) for every use case that has a playbook.
+
+Two caveats worth knowing: the LLM-based kits (SOC copilot, docs assistant) use a deterministic stand-in for the model so
+the harness, guardrails and evaluation are real and testable offline, and every starter's numbers come from *synthetic*
+data (far easier than production); the dataset links are for the real-data run.
+
 ## Architecture
 
 - **Next.js 15 App Router**, RSC + `generateStaticParams` (416 statically generated pages) + ISR; Tailwind; Radix; `cmdk`; KaTeX; Shiki (server-side); Mermaid (lazy, client).

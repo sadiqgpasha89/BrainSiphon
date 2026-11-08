@@ -1,0 +1,21 @@
+name: dataset-links
+
+# External sites change on their own schedule, so dataset links are checked weekly (and on demand),
+# not on every push: a third party being down must not block a deploy.
+on:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - run: npm run check:links

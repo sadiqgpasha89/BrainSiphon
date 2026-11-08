@@ -91,3 +91,24 @@ test('sitemap, robots, llms.txt and OG image', async ({ request }) => {
   expect(og.status()).toBe(200);
   expect(og.headers()['content-type']).toContain('image/png');
 });
+
+test('a pilot use case opens straight to its build playbook, with gates and runnable starter code', async ({
+  page,
+}) => {
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  await page.getByTestId('playbook-link').click();
+  await expect(page).toHaveURL(/#playbook$/);
+  await expect(page.getByRole('heading', { name: 'Build playbook' })).toBeVisible();
+  // the "On this page" highlight follows the scroll position
+  await expect(page.locator('nav[aria-label="On this page"] a[aria-current]')).toHaveText('Build playbook');
+  await expect(page.getByTestId('milestone')).toHaveCount(7);
+  await expect(page.getByTestId('milestone').nth(3)).toContainText('Exit gate');
+  const file = page.getByTestId('starter-file').first();
+  await file.locator('summary').click();
+  await expect(file.locator('pre').first()).toContainText('def generate');
+  // the catalog advertises it, and a use case without a playbook does not show the link
+  await page.goto('/fintech');
+  await expect(page.getByText('Playbook', { exact: true }).first()).toBeVisible();
+  await page.goto('/fintech/credit-default-survival-modeling');
+  await expect(page.getByTestId('playbook-link')).toHaveCount(0);
+});
