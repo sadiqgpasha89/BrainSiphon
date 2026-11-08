@@ -13,6 +13,99 @@ prerequisites:
     - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
     - "A feature store or Redis for M5 (Feast, Tecton or plain Redis hashes with TTLs)"
     - "k6 or Locust for the M5 load test"
+domainKnowledge:
+  overview: >-
+    A card payment passes through several companies in a few hundred milliseconds, and the fraud decision is made
+    inside that window by whoever you work for: usually the card issuer or a payment service provider. What you can see,
+    what you can do and how long you wait to learn the truth all follow from where you sit in that chain, so learn the
+    chain first. UPI, India's instant account-to-account payment system, works differently: payments are final within
+    seconds and there is no chargeback, so fraud is recovered through complaints and bank-to-bank processes instead.
+  concepts:
+    - name: "The authorisation flow and where the model sits"
+      explanation: >-
+        The cardholder pays a merchant, the merchant's acquirer or payment service provider sends an authorisation request
+        through the card network to the issuer, and the issuer approves or declines. The fraud model typically runs at the
+        issuer (which sees the card's whole history) or at the PSP and merchant (which see the basket, the device and the
+        checkout session), and each sees different data.
+      whyItMatters: "Your feature list is limited to what your position in the chain can see, and the latency budget is a slice of the whole authorisation round trip."
+    - name: "Kinds of fraud look different"
+      explanation: >-
+        Card-not-present fraud (online purchases with stolen card details), card testing (many tiny purchases to find live
+        cards), account takeover (a criminal uses the genuine customer's account), lost or stolen card and first-party fraud
+        (the customer disputes a purchase they made) are different problems. Velocity features catch testing and fast
+        cash-outs; takeover needs device, address-change and session signals.
+      whyItMatters: "One score for all of them hides which attack you miss. Evaluate and report by fraud type, as the worked example's missed takeovers show."
+    - name: "Chargebacks, reason codes and label delay"
+      explanation: >-
+        A cardholder disputes a transaction with their bank, which can reverse it through the card network (a chargeback)
+        weeks or months later. The network's reason codes say why, and only some codes mean fraud. Fraud that nobody notices
+        is never labelled, and fraud that customers notice quickly is over-represented in recent data.
+      whyItMatters: "Labels are late and biased. Train only on matured labels and keep a maturity gap before the test period, or you teach the model that recent fraud is genuine."
+    - name: "The cost asymmetry and the operating point"
+      explanation: >-
+        A missed fraud costs the transaction amount plus fees and handling. A false decline costs the margin, a frustrated
+        customer and sometimes the customer. The business chooses a point on the trade-off, expressed as fraud basis points
+        (fraud loss per 10,000 currency units of sales) and a false-decline rate, not as accuracy.
+      whyItMatters: "Metrics like accuracy or ROC-AUC mean nothing at a 0.4% fraud rate. Everything is evaluated at the fixed false-positive rate the business agrees in M0."
+    - name: "Rules, models and step-up authentication"
+      explanation: >-
+        Production systems combine a rules engine, one or more models and a policy layer with three outcomes, not two:
+        approve, decline or challenge. A challenge asks the customer to prove themselves, for example 3-D Secure or a
+        one-time code, and a review queue gives human analysts the grey zone within their capacity.
+      whyItMatters: "Scores between the review and block thresholds should usually become a challenge, which cuts false declines without letting fraud through."
+    - name: "Compliance shapes the design"
+      explanation: >-
+        PCI DSS restricts where full card numbers may be stored or processed, so features are computed on tokens, not card
+        numbers. Declines often need reason codes, and data protection law (such as GDPR) limits profiling and requires
+        explanations for automated decisions that affect customers.
+      whyItMatters: "Explainability and data minimisation are requirements on the baseline model, which is one reason a calibrated logistic regression stays in the system as a fallback."
+  glossary:
+    - term: "PAN"
+      definition: "Primary account number, the 13-19 digit number on the card; storing it is tightly controlled, so systems use tokens instead."
+    - term: "BIN"
+      definition: "Bank identification number, the first 6-8 digits of a PAN that identify the issuing bank and card product."
+    - term: "Issuer"
+      definition: "The bank that issued the card to the cardholder and decides whether to approve each authorisation."
+    - term: "Acquirer"
+      definition: "The bank or processor that handles card payments on behalf of the merchant and routes authorisations to the network."
+    - term: "PSP"
+      definition: "Payment service provider, a company such as a payment gateway that gives merchants one integration for accepting payments."
+    - term: "Card network"
+      definition: "The scheme such as Visa or Mastercard that carries authorisation messages between acquirer and issuer and sets dispute rules."
+    - term: "Authorisation"
+      definition: "The real-time request in which the issuer approves or declines a payment; money moves later in clearing and settlement."
+    - term: "Clearing and settlement"
+      definition: "The batch process after authorisation in which transaction details are exchanged and funds are actually transferred."
+    - term: "Chargeback"
+      definition: "A reversal of a payment forced through the card network after the cardholder disputes it, usually weeks or months later."
+    - term: "Reason code"
+      definition: "The network's code on a dispute that says why it was raised, for example fraud, goods not received or processing error."
+    - term: "Card-not-present (CNP)"
+      definition: "A payment made without the physical card, mainly online or by phone, which has a much higher fraud rate than chip-and-PIN."
+    - term: "Card testing"
+      definition: "Fraudsters making many tiny purchases with stolen card numbers to learn which ones are still live before a larger cash-out."
+    - term: "Account takeover (ATO)"
+      definition: "A criminal gaining control of a genuine customer's account or card credentials and acting as them."
+    - term: "Mule"
+      definition: "An account, device or person used to receive or move stolen funds or goods, often shared across many victims."
+    - term: "3-D Secure / SCA"
+      definition: "A customer authentication step (3-D Secure) used to meet strong customer authentication rules such as PSD2 in Europe."
+    - term: "False decline"
+      definition: "A genuine transaction that is wrongly refused, also called a false positive, and a direct cost in revenue and customer trust."
+    - term: "Fraud basis points (bps)"
+      definition: "Fraud losses per 10,000 units of sales value, the standard way to report fraud rates to the business."
+    - term: "Velocity check"
+      definition: "A rule or feature based on how many transactions or how much value a card, device or merchant has seen in a recent time window."
+    - term: "Tokenisation"
+      definition: "Replacing the card number with a surrogate value so systems can link transactions without holding the real number."
+    - term: "UPI"
+      definition: "Unified Payments Interface, India's real-time account-to-account payment system, where payments are immediate and normally irreversible."
+  askTheExperts:
+    - "What are today's fraud basis points and false-decline rate, and what targets has the business set for each?"
+    - "Which dispute reason codes count as fraud for labelling, and how long until a transaction's label is final?"
+    - "What can the policy do between approve and decline (challenge, hold, review), and how many review cases can analysts handle per day?"
+    - "Which fields are allowed inside the authorisation path under our PCI scope, and which cannot be used as features?"
+    - "For UPI, how are fraudulent transfers reported and recovered, and how quickly are they flagged?"
 data:
   strategy: >-
     Start on the synthetic generator so every milestone is runnable on day one and the traps are known
