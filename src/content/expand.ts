@@ -13,6 +13,7 @@ import { computeScale } from './scale';
 import { loadPlaybook } from './playbook';
 import { generateAgentic } from './agentic-gen';
 import { buildE2E, buildNarrative } from './narrative';
+import { loadAuthoredNarrative } from './narrative-authored';
 import { generatePlaybook, pickKit } from './playbook-gen';
 import { explainLoss } from './lossvars';
 import { existsSync, readFileSync } from 'node:fs';
@@ -110,8 +111,11 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   };
 
   const pattern = pickKit(raw, paradigms);
-  const e2e = buildE2E(raw, domain, pattern, stages, scale, features, latency, explained);
-  const narrative = buildNarrative(raw, domain, paradigms, latency, stages, scale, explained);
+  const authored = root ? loadAuthoredNarrative(root, domain, raw.key, stages.map((s) => s.label)) : undefined;
+  const e2e = authored ? authored.e2e : buildE2E(raw, domain, pattern, stages, scale, features, latency, explained);
+  const narrative = authored
+    ? { problemStatement: authored.problemStatement, solutionApproach: authored.solutionApproach, architectureRationale: authored.architectureRationale }
+    : buildNarrative(raw, domain, paradigms, latency, stages, scale, explained);
   const playbook = root ? (loadPlaybook(root, domain, raw, latency, scale) ?? generatePlaybook(root, raw, domain, paradigms, latency, difficulty, scale, stages)) : undefined;
 
   const candidate = {
@@ -125,6 +129,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     pattern,
     lastVerifiedAt: verifiedAt,
     summary: sentence(raw.obj),
+    narrativeProvenance: authored ? ('authored' as const) : ('generated' as const),
     ...narrative,
     signalVsNoiseMatrix: raw.sn.map(([concept, trueSignal, commonNoise, whyEngineersFail]) => ({ concept, trueSignal, commonNoise, whyEngineersFail })),
     problemFormulation: { businessObjective: raw.obj, mlObjectiveAndLoss: loss, lossVariables: explained.variables, constraints: raw.con },

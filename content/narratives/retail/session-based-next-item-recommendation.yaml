@@ -1,0 +1,275 @@
+problemStatement:
+  situation: >-
+    A shopper opens a product page and clicks through four or five items. They may be logged out, on a first visit, or
+    unwilling to be tracked across sites, so the only information is what they have done in the last few minutes. The
+    shelf below the product should show what they are likely to want next, and it should change after every click: a
+    browser looking at three sofas wants a fourth sofa or a cushion, a buyer who just added a charger wants a cable. The
+    system keeps a small state per session, scores it within 50 milliseconds and returns a ranked list that has already
+    been filtered for stock and business rules.
+  whyHard: >-
+    Order matters, and a bag-of-items method throws it away, so it cannot tell browsing from buying. Offline evaluation is
+    easy to fool: a random session split lets one day's sale popularity sit on both sides, uniform random negatives make
+    ranking look easier than it is, and a hit rate alone ignores whether the whole catalogue is ever shown. The click data
+    are polluted by crawlers that walk the catalogue in id order and produce transitions that look as strong as real
+    shoppers. And the recommendation is only worth anything if the item can be bought: a top-ranked product that is out of
+    stock sends the shopper away.
+  scaleAndStakes: >-
+    With 10 million registered and 3 million daily active users the system handles about 36 million recommendation
+    requests a day, 417 per second on average and 2,500 at peak, provisioned for 3,750 with seven L4 or L40S class GPUs. It
+    costs roughly $15.4K a month, or $0.014 per thousand requests. The money is on the other side: click-through and
+    add-to-cart on this shelf are a meaningful share of revenue on a large catalogue, and a worse list quietly lowers
+    both without ever raising an error.
+  successLooksLike: >-
+    Offline, hit rate at 20 and mean reciprocal rank on a time-split, leave-last-out evaluation, with catalogue coverage
+    reported next to them so a popularity-only model does not win. Online, the launch is judged on click-through on the
+    recommendations, with add-to-cart rate as the guardrail that shows the clicks are real interest. The response comes
+    back inside 50 ms, works with a single click of history, and respects the privacy constraint of no cross-site tracking.
+  risks:
+    - >-
+      Bot traffic generates random or sequential-id sessions that pollute transition statistics and degrade
+      recommendations for everyone.
+    - >-
+      A sale changes item popularity within minutes, and candidate sets built from yesterday's data become stale.
+    - >-
+      A session with a single click has no prefix to learn from, so a sequence model produces confident nonsense.
+    - >-
+      The top candidate is out of stock when displayed, shoppers bounce, and the model is blamed for it.
+
+solutionApproach:
+  thesis: >-
+    Begin with item-to-item co-visitation counts, which are fast, explainable and strong on short sessions, and make the
+    sequence model earn its place. A causal transformer encodes the last 20 interactions into a vector, an approximate
+    nearest-neighbour index retrieves candidates, and a business re-ranker applies stock, margin and diversity before the
+    shopper sees anything. The whole thing is judged on a time-split that preserves what the system could have known, with
+    coverage reported beside accuracy.
+  moves:
+    - move: Clean the clicks before counting them
+      detail: >-
+        Filter bots and crawlers first, using request patterns and sequential-id walks, because every statistic below is
+        built from the same events and a crawler can create transitions as strong as real behaviour.
+    - move: Encode order, not just membership
+      detail: >-
+        Encode the last 20 interactions with a causal transformer, add dwell time and scroll depth after bot filtering, a
+        session-theme share computed from the prefix only, and transition recency decayed by event time.
+    - move: Train against hard negatives
+      detail: >-
+        Use sampled softmax with popularity-corrected negatives, since uniform negatives are too easy, and evaluate on
+        leave-last-out with the training cut-off before the test window.
+    - move: Retrieve fast, re-rank for business
+      detail: >-
+        Look up candidates with an HNSW index on the session vector, then re-rank by live stock, margin, diversity and
+        any promotions, backfilling from the next candidates whenever an item is filtered out.
+    - move: Handle the short and the cold session on purpose
+      detail: >-
+        With one click, fall back to category-level transitions plus popularity within the category, and switch to the
+        sequence model as soon as there are enough interactions to carry a signal.
+    - move: Keep popularity fresh
+      detail: >-
+        Feed near-real-time popularity features and an index refresh from the click stream so a flash sale appears in
+        candidates within minutes.
+  deliberatelyNot:
+    - >-
+      Use the session identifier or the total clicks in a session: the identifier is arbitrary and the click total is
+      confounded with browsing style.
+    - >-
+      Use raw click counts per item as a signal: they are dominated by crawlers and promotions, not genuine interest.
+    - >-
+      Evaluate with random session splits or uniform random negatives: both flatter the model and hide the popularity
+      shift that real traffic brings.
+    - >-
+      Track shoppers across sites: the privacy constraint rules it out, and in-session behaviour is enough for this
+      problem.
+  proof: >-
+    Offline, beat co-visitation counts on hit rate at 20 and mean reciprocal rank on a time-split, with catalogue coverage
+    at least as good, and read the worst-performing categories by hand. Online, run an experiment with sessions randomly
+    assigned and measure click-through on recommendations and add-to-cart rate, plus a stock-bounce check on the displayed
+    list, widening only while add-to-cart moves with click-through.
+
+architectureRationale:
+  - stage: Event stream
+    tech: Kafka
+    role: >-
+      Carries each click with an anonymous session key, item, dwell time and scroll depth, after a first-pass bot filter.
+    carries: >-
+      The bot defence lives here: sessions that walk the catalogue in id order or click at inhuman rates are flagged before
+      they reach any statistic or training set.
+    budget: 6 ms of 80 ms
+    onFailure: >-
+      Events are buffered and replayed; a stream outage leaves the shopper with the last cached list, not an error.
+  - stage: Session state store
+    tech: Redis
+    role: >-
+      Keeps the last 20 interactions and the derived theme and goal features per session, with a short expiry.
+    carries: >-
+      State is per session and holds no identity across sites, which satisfies the privacy constraint, and its cap on
+      sequence length keeps encoder latency inside the budget.
+    budget: 12 ms of 80 ms
+    onFailure: >-
+      A missing session is treated as a fresh anonymous session and served category-level transitions rather than failing.
+  - stage: Sequence encoder
+    tech: SASRec on GPU
+    role: >-
+      Encodes the session prefix into one vector that represents what the shopper wants next, handling intent shifts from
+      browsing to comparing to buying.
+    carries: >-
+      Order is the reason for a sequence model at all, since browsing and buying look the same to a bag-of-items model. The
+      loss is a softmax over items with popularity-corrected negatives.
+    budget: 9 ms of 80 ms
+    onFailure: >-
+      If GPU capacity is short, requests fall back to the co-visitation lookup on the last item, which is weaker but fast
+      and explainable.
+  - stage: ANN retrieval
+    tech: HNSW
+    role: >-
+      Returns a few hundred nearest items to the session vector from an in-memory index of the live catalogue.
+    carries: >-
+      A sale's popularity change reaches shoppers through the index refresh and the popularity features, so the freshness
+      of this index is a business requirement, not a tuning detail.
+    budget: 18 ms of 80 ms
+    onFailure: >-
+      A stale index is served rather than none, and its age is monitored; a failed refresh alerts before shoppers notice.
+  - stage: Re-ranker
+    tech: business rules
+    role: >-
+      Orders the retrieved items by relevance, then applies live stock, margin, diversity and promotion rules and fills
+      gaps from the next candidates.
+    carries: >-
+      The out-of-stock rule is enforced here with live inventory, because a perfect ranking of unavailable items is worth
+      nothing.
+    budget: 24 ms of 80 ms
+    onFailure: >-
+      If inventory lookups fail, the list is filtered by the last-known stock snapshot with a short expiry and flagged.
+  - stage: Response cache
+    tech: short TTL
+    role: >-
+      Caches the final list for identical session states for a few seconds, which absorbs bursts such as a sale landing
+      page.
+    carries: >-
+      A short expiry keeps the cache from showing sold-out items for long, trading a little freshness for load.
+    budget: 12 ms of 80 ms
+    onFailure: >-
+      A cache failure only increases load on the layers below, and capacity is sized so it still holds the peak.
+  - stage: Click feedback
+    tech: stream
+    role: >-
+      Records impressions, clicks, add-to-cart and purchases, joined with the list that was shown.
+    carries: >-
+      Training examples need the impressions as well as the clicks, otherwise the model learns from its own earlier
+      choices without knowing what the shopper never saw.
+    budget: off the critical path
+    onFailure: >-
+      Feedback is buffered durably and never blocks serving; gaps are reported so a training set with holes is not used
+      silently.
+
+e2e:
+  - phase: 1
+    title: Decide what the shelf is for
+    steps:
+      - >-
+        Meet merchandising, search and growth to agree what the recommendation shelf optimises: click-through and
+        add-to-cart on the displayed list, with margin and stock as constraints.
+      - >-
+        Agree the privacy line with legal, in-session state only and no cross-site identifiers, and write it down as a
+        requirement for the whole pipeline.
+      - >-
+        Choose the baseline everyone will compare against: item-to-item co-visitation counts.
+    deliverable: A shelf specification with objective, constraints and the privacy rules.
+  - phase: 2
+    title: Collect and clean the click history
+    steps:
+      - >-
+        Gather session logs with item, event time, dwell and scroll depth, plus impressions where available.
+      - >-
+        Detect and remove bots and crawlers, and count how many events and sessions they account for.
+      - >-
+        Define a session boundary and a minimum length, and record how many sessions have only one click.
+    deliverable: A cleaned session dataset with a documented bot filter and session definition.
+  - phase: 3
+    title: Build session features without leakage
+    steps:
+      - >-
+        Build the last 20 item embeddings, dwell and scroll depth, session theme share and transition recency, each
+        computed from the prefix before the item to predict.
+      - >-
+        Infer the session goal with a classifier and check that its label, derived from the eventual purchase, does not
+        leak into features.
+      - >-
+        Drop the session identifier, total clicks and raw click counts per item.
+    deliverable: A feature set verified by prefix-only recomputation.
+  - phase: 4
+    title: Beat co-visitation counts
+    steps:
+      - >-
+        Compute the co-visitation baseline and score it with a time-split leave-last-out on hit rate at 20, mean reciprocal
+        rank and catalogue coverage.
+      - >-
+        Train the causal transformer with sampled softmax and popularity-corrected negatives, and compare on the same
+        split.
+      - >-
+        Check the results for short sessions separately, since the sequence model has little to work with there.
+    deliverable: A comparison of baseline and sequence model, including results for one-click sessions.
+  - phase: 5
+    title: Evaluate honestly
+    steps:
+      - >-
+        Rebuild the evaluation so the training cut-off is strictly before the test window, ending the leakage that random
+        session splits cause.
+      - >-
+        Add hard negatives to the ranking test and report coverage, to catch a model that only learned popularity.
+      - >-
+        Read recommendations for a sample of sessions in each major category and note recurring bad suggestions.
+    deliverable: An evaluation harness with time-split, hard negatives and coverage reporting.
+  - phase: 6
+    title: Make 50 ms real
+    steps:
+      - >-
+        Budget the path: 12 ms for session state, 9 ms for encoding, 18 ms for retrieval, 24 ms for re-ranking, and measure
+        p99 at 3,750 requests per second.
+      - >-
+        Test the fallbacks: GPU shortage to co-visitation, stale index, failed inventory lookup and an empty session.
+      - >-
+        Add live stock to the re-ranker and verify the top ten list never includes an unavailable item.
+    deliverable: A load-tested serving path with fallbacks and a stock-correctness test.
+  - phase: 7
+    title: Experiment on live traffic
+    steps:
+      - >-
+        Randomise sessions into control and treatment, and compare click-through on recommendations and add-to-cart rate.
+      - >-
+        Check segments that stress the model: one-click sessions, mobile, new visitors, and sale days.
+      - >-
+        Widen the treatment only while add-to-cart rises with click-through, which shows the clicks are real interest.
+    deliverable: An experiment readout with click-through, add-to-cart and segment results.
+  - phase: 8
+    title: Keep popularity and bots under control
+    steps:
+      - >-
+        Monitor index age, popularity-feature freshness, share of traffic flagged as bots and the stock-bounce rate.
+      - >-
+        Prepare runbooks for the known cases: bot sequences, sale-driven popularity change, one-click sessions and
+        out-of-stock items.
+      - >-
+        Retrain daily and compare against the previous model on a rolling time-split before promotion.
+    deliverable: A freshness and bot dashboard with a daily retrain gate.
+  - phase: 9
+    title: Scale to 36 million requests a day
+    steps:
+      - >-
+        Provision for 3,750 requests per second with about seven L4 or L40S class GPUs, three session-store shards at
+        about 10,000 lookups per second and 12 event partitions.
+      - >-
+        Hold the item index in memory per region and refresh it from the catalogue stream, with sale pushes taking priority.
+      - >-
+        Plan 155 GB a day of click logs and 60 TB over 400 days, kept free of cross-site identifiers.
+    deliverable: A capacity plan, a regional index refresh design and a retention policy without cross-site identifiers.
+  - phase: 10
+    title: Operate and decide when to stop
+    steps:
+      - >-
+        Track cost at about $0.014 per thousand requests against revenue from clicks and add-to-cart on the shelf.
+      - >-
+        Extend the model with new signals only after checking whether an extra point of hit rate shows up in add-to-cart.
+      - >-
+        Stop tuning the model when the gains disappear in the experiment, and invest in catalogue data, stock accuracy and
+        merchandising rules.
+    deliverable: A cost-versus-revenue review and a rule for when to stop model work.

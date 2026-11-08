@@ -1,0 +1,290 @@
+problemStatement:
+  situation: >-
+    A learning app asks a student one question at a time, and after every answer it has to decide what the student
+    now knows, per skill, and what to ask next. Mastery is not observable. All the system sees is a stream of right and
+    wrong answers, with timestamps, against questions tagged to skills. From that stream it must keep a running estimate
+    of mastery for each skill for each learner, update it within 30 milliseconds of an answer, explain it to a teacher
+    and a parent as a progress report, and feed it to the practice selector so a learner is not given work that is too
+    easy, too hard or already mastered.
+  whyHard: >-
+    The thing being estimated is never labelled; the next answer is only a proxy, and predicting it well does not mean the
+    mastery number is right. Practice is not random: the tutor gives weak skills more practice, so comparing accuracy
+    across skills confuses what the learner knows with what the model chose to ask. Random train-test splits leak a
+    student's own future answers into training, which makes every metric look excellent. Guessing on multiple choice makes
+    correct answers overstate mastery, long breaks make old estimates stale, and a calibration error is not cosmetic: an
+    overconfident 95 percent that is really 70 stops practice too early and the learner leaves the skill unlearned.
+  scaleAndStakes: >-
+    With 10 million registered and 3 million daily active learners the system processes about 75 million answers a day,
+    868 per second on average and 5,200 at peak, with capacity for 7,800, all inside an 80 ms path that leaves 27 ms for the
+    model. Cost is small, roughly $4.5K a month or $0.002 per thousand updates, because the heavy attention model is
+    distilled and its state cached per learner. The stakes are educational and human: a wrong mastery estimate wastes a
+    child's time or tells a parent their child is ready when they are not.
+  successLooksLike: >-
+    Offline, AUC and RMSE on next-response prediction with a student-level split, and calibration by skill that holds
+    across the probability range, since calibrated mastery is the product. Online, the launch is judged on learning gain per
+    hour, with practice efficiency, the amount of practice needed to reach a stable skill, as the guardrail. An update
+    finishes in under 30 ms, the progress report gives a teacher a number they can interpret per skill, and a new skill
+    gets a sensible estimate on day one.
+  risks:
+    - >-
+      A curriculum change remaps skills, and years of history become mislabelled against the new skill identifiers.
+    - >-
+      Siblings share a device, and one learner's answers pollute another's mastery, which the model would otherwise
+      interpret as erratic learning.
+    - >-
+      A learner returns after a long break and the cached estimate is stale and overconfident, so the tutor skips the
+      review the learner needs.
+    - >-
+      Correct guesses on multiple-choice items overstate mastery unless guess and slip rates are modelled per item type.
+
+solutionApproach:
+  thesis: >-
+    Begin with Bayesian knowledge tracing per skill, with fitted guess and slip, because it is interpretable, runs in
+    microseconds and gives teachers a number they understand. Then move to an attentive model with item-difficulty
+    embeddings and forgetting only if it improves student-level held-out AUC and per-skill calibration, and serve it as a
+    distilled small model with the learner's state cached, so each answer costs one cache read, one inference and one
+    calibration. The learner-facing mastery is the calibrated output, never the raw model score.
+  moves:
+    - move: Fix the unit of mastery and the skill map first
+      detail: >-
+        Agree with curriculum designers on skills and on the mapping from every question to its skills, version that map,
+        and write down what mastered means in terms of a probability and a run of consistent successes.
+    - move: Build the sequence the model will see
+      detail: >-
+        Order interactions by server-side timestamp, never by insertion or device clock, and create recency-weighted
+        correctness, time since last practice and prior failures on the skill using only answers given before the
+        current one.
+    - move: Use difficulty from other learners
+      detail: >-
+        Question difficulty comes from a smoothed correct rate among training students, never including the learner being
+        scored, so a hard question does not look like a weak learner.
+    - move: Model the way learners forget and guess
+      detail: >-
+        Decay mastery with time since practice, and model guess and slip rates per item type so a multiple-choice success
+        counts for less than a free-response one.
+    - move: Distil for the 30 ms path
+      detail: >-
+        Train the attentive model offline, distil it into a small online model, keep the learner's recent sequence and
+        skill state in a cache keyed by learner, and update it after every answer.
+    - move: Calibrate per skill before showing anything
+      detail: >-
+        Fit an isotonic calibrator per skill on held-out students, check reliability by skill, and show learners and
+        teachers only the calibrated mastery.
+  deliberatelyNot:
+    - >-
+      Use the student identifier as an embedding: it memorises individuals and fails for every new student, which is the
+      main growth case.
+    - >-
+      Use total questions answered or session length: both measure engagement and login timing, not knowledge.
+    - >-
+      Split interactions randomly: a student's own future answers would sit in training and every metric would look
+      better than it is.
+    - >-
+      Compare accuracy across skills as if practice were random: the tutor assigns more practice to weak skills, so the
+      comparison reflects the tutor's choices.
+  proof: >-
+    Offline, split by student and by time and report AUC and RMSE on next response against the Bayesian baseline, plus
+    reliability curves per skill. Online, run an experiment on learners where the practice selector uses the new mastery
+    against one using the baseline, and measure learning gain per hour with practice efficiency as a guardrail, because
+    the only evidence that mastery is right is that learners who are told they have mastered a skill retain it.
+
+architectureRationale:
+  - stage: Answer event stream
+    tech: Kafka
+    role: >-
+      Carries every answer with learner, question, skill list, correctness, response time and a server timestamp, in
+      order per learner.
+    carries: >-
+      Ordering by server time is what protects against device clock drift, and partitioning by learner keeps each
+      learner's updates sequential so the state cache never sees answers out of order.
+    budget: 7 ms of 80 ms
+    onFailure: >-
+      Events are durable and replayable, so a consumer outage delays mastery by seconds but loses nothing, and late events
+      are applied in timestamp order on replay.
+  - stage: Learner state cache
+    tech: Redis
+    role: >-
+      Holds each learner's recent answer sequence and per-skill state, so the model reads context in one lookup and writes
+      the new state back.
+    carries: >-
+      Cold start for new skills and the long-break case both show here: a missing state is initialised from a prior for
+      the skill, and an old timestamp triggers decay and a short diagnostic.
+    budget: 13 ms of 80 ms
+    onFailure: >-
+      On a cache miss the state is rebuilt from the last few hundred events in the log, and if that is too slow the
+      Bayesian baseline answers from its tiny per-skill state.
+  - stage: KT model
+    tech: attention model on CPU
+    role: >-
+      Predicts the probability of a correct answer on each relevant skill and updates the state from the new answer, using
+      difficulty embeddings and forgetting.
+    carries: >-
+      Skill structure keeps the model interpretable, and the item difficulty embedding keeps a hard question from being
+      read as a weak learner, which is the leakage and confounding risk named in the signals.
+    budget: 27 ms of 80 ms
+    onFailure: >-
+      An over-budget inference falls back to the baseline Bayesian update and the response is tagged, with a catch-up job
+      applying the full model later.
+  - stage: Mastery calibrator
+    tech: isotonic
+    role: >-
+      Maps the raw probability to a calibrated mastery per skill and applies the consecutive-success rule before a skill
+      can be called mastered.
+    carries: >-
+      This is where the overconfidence risk is contained: a 95 percent that is really 70 would stop practice early, so
+      calibration is checked per skill and recalibrated on every model release.
+    budget: 10 ms of 80 ms
+    onFailure: >-
+      A missing calibrator for a new skill uses a pooled one for its skill family and flags the skill as provisional in the
+      report.
+  - stage: Practice selector
+    tech: downstream service
+    role: >-
+      Chooses the next question using calibrated mastery, time since practice and difficulty, aiming at a challenge level
+      where success is likely but not certain.
+    carries: >-
+      The selector's choices are logged with their probabilities, so later analysis can correct for the fact that practice
+      depends on the model.
+    budget: 7 ms of 80 ms
+    onFailure: >-
+      If mastery is unavailable the selector falls back to curriculum order, which is slower learning but never a broken
+      session.
+  - stage: Progress API
+    tech: app
+    role: >-
+      Serves per-skill mastery, trend and what changed to the learner, parent and teacher interfaces.
+    carries: >-
+      Interpretability is a constraint, so the API returns the per-skill number with its uncertainty and the evidence
+      behind it, and handles curriculum remaps by reading the versioned skill map.
+    budget: 7 ms of 80 ms
+    onFailure: >-
+      The last stored mastery is served with its age, and progress reports are never recomputed on the read path.
+  - stage: Interaction logs
+    tech: lakehouse
+    role: >-
+      Stores every answer, the model version, the prediction and the selector's choice for training, calibration and
+      analysis.
+    carries: >-
+      The migration job after a curriculum remap runs here, replaying history under the new skill map, and student-level
+      splits are built from these logs.
+    budget: 10 ms of 80 ms
+    onFailure: >-
+      Writes are buffered and replayed; a lakehouse outage pauses training data collection, not learning.
+
+e2e:
+  - phase: 1
+    title: Decide what mastery means and who reads it
+    steps:
+      - >-
+        Meet curriculum designers, teachers and the product lead to define a skill, a mastered skill and what a progress
+        report should say to a parent.
+      - >-
+        Choose the learning outcome to optimise: learning gain per hour, with practice efficiency as a guardrail.
+      - >-
+        Agree what happens to history when the curriculum changes, since that decision shapes the data model.
+    deliverable: A mastery definition, a report specification and an outcome metric.
+  - phase: 2
+    title: Fix the skill map and the interaction history
+    steps:
+      - >-
+        Build a versioned map from every question to one or more skills, reviewed by curriculum staff.
+      - >-
+        Collect interaction history with server timestamps, and measure how many learners and skills have enough answers
+        to model.
+      - >-
+        Identify shared-device accounts and remove or flag them from training.
+    deliverable: A versioned skill map and a cleaned interaction history with shared-device flags.
+  - phase: 3
+    title: Create sequence features that respect time
+    steps:
+      - >-
+        Order by server timestamp and build recency-weighted correctness, time since last practice and prior failure
+        counts, each using only earlier answers.
+      - >-
+        Compute question difficulty from other learners with a smoothed rate on training students only.
+      - >-
+        Drop the student identifier, total questions answered and session length from the feature set.
+    deliverable: A feature set tested by replay for no future information.
+  - phase: 4
+    title: Fit the interpretable baseline
+    steps:
+      - >-
+        Fit Bayesian knowledge tracing per skill with guess and slip, and examine skills where fitted values are
+        implausible.
+      - >-
+        Evaluate with a student-level and time-ordered split on AUC, RMSE and calibration by skill.
+      - >-
+        Record the baseline numbers as the bar for the attentive model, and keep it as the fallback.
+    deliverable: A fitted baseline with per-skill calibration and recorded reference scores.
+  - phase: 5
+    title: Train and compare the attentive model
+    steps:
+      - >-
+        Train an attentive model with difficulty embeddings and forgetting on the same split, and compare AUC and per-skill
+        calibration against the baseline.
+      - >-
+        Check performance on new students, cold-start skills and returning learners separately, since averages hide
+        them.
+      - >-
+        Distil the model into a small online version and verify the distilled model keeps most of the AUC gain.
+    deliverable: A distilled model with a recorded accuracy-versus-size trade-off and cold-start results.
+  - phase: 6
+    title: Make the update fit in 30 ms
+    steps:
+      - >-
+        Budget the path: 7 ms for the event, 13 ms for state, 27 ms for inference, 10 ms for calibration, and measure
+        p99 at 7,800 requests per second.
+      - >-
+        Test the cache-miss path, the over-budget fallback to the baseline and the replay of out-of-order events.
+      - >-
+        Verify ordering per learner under partition rebalancing, since a lost update corrupts that learner's state.
+    deliverable: A load-tested update path with tested fallbacks and ordering guarantees.
+  - phase: 7
+    title: Run it beside the existing tutor
+    steps:
+      - >-
+        Run the new mastery in shadow, comparing it to the current estimate and checking cases where they diverge by
+        reading actual answer histories.
+      - >-
+        Run a learner-level experiment where the practice selector uses the new mastery, measuring learning gain per
+        hour.
+      - >-
+        Watch the guardrail: if practice efficiency falls, stop and review the calibrator before widening.
+    deliverable: An experiment readout with learning gain per hour and the practice efficiency guardrail.
+  - phase: 8
+    title: Monitor calibration and the skill map
+    steps:
+      - >-
+        Track calibration by skill weekly, since drift appears first in the skills with the least data.
+      - >-
+        Prepare runbooks for the known cases: curriculum remap with migration jobs, siblings on one device with profile
+        switching and anomaly detection, long breaks with decay and a short diagnostic, and guessing with per-item guess
+        rates.
+      - >-
+        Review the learners whose mastery changed most in a week to catch broken ordering or pollution.
+    deliverable: A calibration dashboard and runbooks for the four known failure modes.
+  - phase: 9
+    title: Scale to 75 million answers a day
+    steps:
+      - >-
+        Partition by learner across 12 partitions, size three state-cache shards at about 21,000 lookups per second each
+        and run six 8-vCPU pods for inference.
+      - >-
+        Keep only a bounded recent sequence per learner in cache, and plan 107 GB a day and 42 TB over 400 days in the
+        lakehouse.
+      - >-
+        Handle the age of the learner population with the data-protection rules that apply to children, including
+        retention and deletion.
+    deliverable: A capacity plan and a retention and deletion design for learner data.
+  - phase: 10
+    title: Retrain on a cadence and know when to stop
+    steps:
+      - >-
+        Retrain on fresh student-level splits each term and when a curriculum changes, with the baseline as the permanent
+        control.
+      - >-
+        Track cost at about $0.002 per thousand updates against learning gain per hour.
+      - >-
+        Stop improving prediction when AUC gains no longer improve learning gain per hour, and spend the effort on content,
+        skill map quality and the practice selector.
+    deliverable: A term-by-term retraining runbook and a learning-gain-based stop rule.

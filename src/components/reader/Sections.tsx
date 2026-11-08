@@ -107,7 +107,20 @@ export async function Sections({ uc }: { uc: UseCase }) {
         kicker="Business objective → ML objective → hard constraints"
       >
         <div className="card space-y-3 p-4" data-testid="problem-statement">
-          <p className="font-mono text-[11px] uppercase tracking-wider text-signal">Problem statement</p>
+          <p className="font-mono text-[11px] uppercase tracking-wider text-signal">
+            Problem statement
+            <span
+              className={`ml-2 rounded border px-1.5 py-0.5 normal-case tracking-normal ${uc.narrativeProvenance === 'authored' ? 'border-signal/40 text-signal' : 'border-warn/40 text-warn'}`}
+              data-testid="narrative-provenance"
+              title={
+                uc.narrativeProvenance === 'authored'
+                  ? 'The problem statement, solution approach, architecture rationale and end-to-end breakdown for this use case were written by hand.'
+                  : "These sections are assembled from this use case's own fields."
+              }
+            >
+              {uc.narrativeProvenance === 'authored' ? 'hand-written' : 'generated'}
+            </span>
+          </p>
           <p data-prose className="prose-bs max-w-3xl text-base">
             <strong className="text-ink">Situation. </strong>
             {uc.problemStatement.situation}

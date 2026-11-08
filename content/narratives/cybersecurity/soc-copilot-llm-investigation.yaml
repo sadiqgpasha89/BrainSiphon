@@ -1,0 +1,287 @@
+problemStatement:
+  situation: >-
+    A security operations centre receives thousands of alerts a day, and most of the analyst's time on each one goes into
+    the same routine: open the alert, pull the surrounding SIEM events, check the endpoint, look up the user and the
+    address, and decide whether it is benign, suspicious or an incident. The copilot does the gathering. It plans which
+    questions to ask, runs read-only queries across the SIEM, endpoint detection, identity and threat-intelligence
+    tools, links every claim to the log line that supports it, and proposes a verdict for an analyst to accept or change.
+    It never contains, isolates or disables anything on its own.
+  whyHard: >-
+    The inputs are attacker-controlled. A log field, a file name or an email subject can carry instructions, and an
+    agent that reads them while holding tools can be steered into running the wrong query or changing its verdict. The
+    cost of errors is lopsided: a fluent wrong benign verdict lets a live attack continue unnoticed, so when evidence is
+    missing the only safe output is escalation. Tool results can be enormous or absent, a log backend outage can hide the
+    deciding evidence, and an agent that fills the gap with a plausible story is worse than one that stops. And the usual
+    measures mislead: analyst satisfaction and demo cases flatter, and cases used for prompt tuning poison the replay set.
+  scaleAndStakes: >-
+    The sizing this entry assumes is extreme: about 300 million model-touching events a day, 3,472 per second on average and
+    21,000 at peak, provisioned for 31,000, which at an LLM step budget per case means tens of thousands of H100-class GPUs
+    and an estimated $106.5M a month, or $11.84 per thousand decisions. No SOC runs an agent investigation on 300 million
+    alerts, which is itself a design lesson: an inexpensive triage model has to send only the ambiguous fraction to the
+    agent, and the unit of capacity is cases, not raw events. The stakes are a missed intrusion on one side and an analyst
+    team that stops trusting the tool on the other.
+  successLooksLike: >-
+    Offline, verdict accuracy on replayed cases with known ground truth, evidence link validity, and resistance to a held-out
+    set of planted attacks on the agent itself. Online, the launch is judged on investigation time per alert, with
+    escalation precision as the guardrail: the copilot should escalate when evidence is missing and not escalate everything.
+    Every action is read-only unless a human approves it, every step is in an audit log, and an injection attempt never
+    changes a verdict or triggers a tool call.
+  risks:
+    - >-
+      An attacker plants instructions in log fields or file names, the agent follows them, and an unintended tool call
+      is run.
+    - >-
+      A tool returns a huge result set, the context overflows, and the agent silently drops the key facts.
+    - >-
+      The log backend is down and the deciding evidence is hidden, so the agent writes a plausible benign verdict from the
+      little it has.
+    - >-
+      A paraphrased injection evades a keyword filter, so a defence based only on pattern matching fails when it matters.
+
+solutionApproach:
+  thesis: >-
+    Start with the SOAR playbooks the team already trusts, since static enrichment steps are predictable and auditable,
+    and let the agent earn the cases they cannot handle. The agent is a planner and executor over typed, least-privilege,
+    read-only tools. Its only way to take effect in the world is to propose a verdict with cited evidence, which an
+    independent verifier checks line by line, and any containment action goes through a human approval gate. Safety does
+    not rely on the model resisting injection; it relies on what the model is allowed to do.
+  moves:
+    - move: Replace free-form access with typed tools
+      detail: >-
+        Offer a fixed set of query tools for the SIEM, endpoint, identity and threat intelligence, each with typed
+        arguments, scoped permissions and row limits, with no shell, no arbitrary HTTP and no write access.
+    - move: Treat every log as untrusted data
+      detail: >-
+        Wrap tool output as quoted data, never as instructions, enforce a per-case tool allow-list and step budget, and use
+        any injection filter only as an alarm, because paraphrases will get past patterns.
+    - move: Make evidence the unit of a verdict
+      detail: >-
+        Require each claim to cite a log line, and have an independent verifier open the line and confirm it contains the
+        indicator before the verdict is shown.
+    - move: Make missing evidence a first-class result
+      detail: >-
+        If a tool fails, a backend is down or no deciding line exists, the case escalates with a stated reason and is never
+        auto-closed as benign without a cited deciding line.
+    - move: Summarise before the context overflows
+      detail: >-
+        Use paginating and summarising tools for large results, so the agent sees counts, top values and anomalies rather
+        than a million rows.
+    - move: Gate every action that changes anything
+      detail: >-
+        Containment, isolation and account actions are proposals with a prepared command that an analyst approves,
+        and the approval is part of the audit record.
+  deliberatelyNot:
+    - >-
+      Count how many tools a case used or reward longer narratives: both reward activity rather than a correct,
+      well-supported verdict.
+    - >-
+      Trust the model's confidence wording: it is uncalibrated, and calibrated escalation comes from the verifier and the
+      evidence rules.
+    - >-
+      Give the agent free-form shell access: it turns any successful injection into damage.
+    - >-
+      Judge on analyst satisfaction or showcase cases: they hide wrong verdicts that happened to sound convincing.
+  proof: >-
+    Offline, replay held-out cases with known ground truth that were never used for prompt tuning, and score verdict
+    accuracy, evidence link validity and the share of planted-injection cases in which the agent changes its verdict or acts.
+    Online, run in advisory mode beside analysts, compare blind senior-analyst verdicts with the agent's, and measure
+    investigation time per alert and escalation precision, widening autonomy only while the injection success rate stays at
+    zero on the attack set.
+
+architectureRationale:
+  - stage: Alert context loader
+    tech: SIEM
+    role: >-
+      Pulls the alert, the entities in it and a bounded window of related events, and prepares a sanitised case file for the
+      agent.
+    carries: >-
+      The input boundary lives here: all fields are tagged as untrusted, and the case id that threads through every later
+      call and log entry is created.
+    budget: 556 ms of 2500 ms
+    onFailure: >-
+      If the SIEM cannot return context, the case is escalated immediately with the reason, rather than proceeding with a
+      partial file.
+  - stage: Planner agent
+    tech: LLM
+    role: >-
+      Decides the next question to ask, selects a typed tool, reads the summarised result and either continues or proposes
+      a verdict with citations.
+    carries: >-
+      Step budget and tool allow-list are enforced outside the model, and the loss penalises unsupported claims, which
+      trains it to cite and to stop.
+    budget: 1111 ms of 2500 ms
+    onFailure: >-
+      A model timeout or a budget exhaustion ends the case with an escalation and the partial evidence gathered so far,
+      never with a verdict.
+  - stage: SIEM and EDR query tools
+    tech: read-only APIs
+    role: >-
+      Run bounded, parameterised searches across logs and endpoint telemetry, paginate and summarise results.
+    carries: >-
+      Huge result sets are handled by pagination and summarisation here, and read-only permissions mean even a
+      successful injection has no write to perform.
+    budget: 278 ms of 2500 ms
+    onFailure: >-
+      A failing tool is retried within the budget and logged, and persistent failure becomes a missing-evidence
+      escalation instead of a guess.
+  - stage: Identity and threat-intel tools
+    tech: APIs
+    role: >-
+      Look up the user, device, location history and known indicators against identity and intelligence services.
+    carries: >-
+      External intelligence is treated as data of uncertain quality, so a hit raises or lowers a suspicion but is never
+      by itself the cited evidence for a verdict.
+    budget: 278 ms of 2500 ms
+    onFailure: >-
+      An unavailable service reduces the evidence available and is recorded, which can push the case toward escalation.
+  - stage: Evidence verifier
+    tech: log-line check
+    role: >-
+      Independently opens each cited log line and checks that it exists, belongs to this case and contains the indicator
+      claimed.
+    carries: >-
+      The evidence link rate is only meaningful if links are real, so the verifier is separate code, not another prompt, and
+      an invalid citation blocks the verdict.
+    budget: 278 ms of 2500 ms
+    onFailure: >-
+      A verifier outage blocks any verdict from being marked verified and sends the case to a human with the unverified
+      label.
+  - stage: Analyst workspace
+    tech: human
+    role: >-
+      Shows the verdict, the cited lines, the queries run and the proposed actions, and lets the analyst accept, edit or
+      reject them.
+    carries: >-
+      Analyst verdicts are the ground truth for the next replay set, and a blind sample is used to measure agreement
+      without the agent influencing the reviewer.
+    budget: off the critical path
+    onFailure: >-
+      Unreviewed cases keep their escalation status and age visibly; the copilot never closes a case by itself.
+  - stage: Audit log
+    tech: immutable
+    role: >-
+      Records every prompt, tool call, result, retry, verdict and approval against the case id in write-once storage.
+    carries: >-
+      The full audit trail is a stated requirement, and the log is also how injection attempts and tool failures are
+      studied afterwards.
+    budget: off the critical path
+    onFailure: >-
+      If the audit log is unavailable, investigations pause, because acting without a record violates the control.
+
+e2e:
+  - phase: 1
+    title: Decide what the copilot may do and who answers for it
+    steps:
+      - >-
+        Meet SOC leads, incident response and security architecture to fix the boundary: read-only investigation, proposed
+        verdicts, human-approved containment.
+      - >-
+        List alert types in scope and the ones that always go straight to a human, and write the escalation rules for
+        missing evidence.
+      - >-
+        Agree the measures: investigation time per alert and escalation precision for the business, verdict accuracy and
+        evidence validity for the model.
+    deliverable: A charter with scope, boundary, escalation rules and metrics.
+  - phase: 2
+    title: Build the case set and the attack set
+    steps:
+      - >-
+        Collect past alerts with senior-analyst verdicts and the evidence they used, and keep a replay set never touched by
+        prompt tuning.
+      - >-
+        Build an attack set from real log fields, file names and email subjects carrying injected instructions, including
+        paraphrases.
+      - >-
+        Label cases where the deciding evidence was missing, since the right answer there is to escalate.
+    deliverable: A tuning set, a protected replay set and an attack set.
+  - phase: 3
+    title: Define the typed tools
+    steps:
+      - >-
+        Specify each SIEM, endpoint, identity and intelligence tool with typed arguments, row limits and read-only
+        permissions.
+      - >-
+        Add pagination and summarisation so no result can overflow the context.
+      - >-
+        Remove any free-form capability and put the allow-list and step budget outside the model.
+    deliverable: A tool catalogue with schemas, permissions, limits and tests for each.
+  - phase: 4
+    title: Measure the SOAR baseline
+    steps:
+      - >-
+        Run the static playbooks on the replay set and record verdict accuracy and time per alert.
+      - >-
+        Identify the case types where playbooks stall, and the share of analyst time they leave untouched.
+      - >-
+        Set the target the agent has to beat: better verdict accuracy on those stalled types without losing evidence
+        validity.
+    deliverable: A baseline report that names the cases where an agent is worth trying.
+  - phase: 5
+    title: Build the planner and the verifier
+    steps:
+      - >-
+        Build the planner and executor over the tools, with citations required for each claim and a stop condition when the
+        evidence is enough or the budget is gone.
+      - >-
+        Build the verifier as code that opens each cited line and checks the indicator, and measure its false-accept rate.
+      - >-
+        Train or prompt for the escalation behaviour on missing-evidence cases and measure how often it appears.
+    deliverable: A working agent and verifier scored on the tuning set.
+  - phase: 6
+    title: Attack it before anyone else does
+    steps:
+      - >-
+        Run the attack set and record any case in which the agent changes its verdict or calls an unintended tool.
+      - >-
+        Fix by narrowing tools and permissions, not by adding pattern filters, and treat the filter as an alarm only.
+      - >-
+        Repeat with new paraphrases from the red team until the injection success rate on a fresh set is zero.
+    deliverable: An attack report showing zero successes on a fresh set, and the defences that achieved it.
+  - phase: 7
+    title: Advisory mode beside analysts
+    steps:
+      - >-
+        Run on live alerts without acting, and compare the verdict with blind senior-analyst reviews.
+      - >-
+        Measure investigation time per alert and escalation precision with analysts using the evidence view.
+      - >-
+        Grant any further autonomy only for alert types with a long record of correct verdicts and zero injection successes.
+    deliverable: An advisory-mode report and a per-alert-type autonomy decision.
+  - phase: 8
+    title: Operate with the audit trail
+    steps:
+      - >-
+        Monitor tool failure and retry counts, unsupported escalation rate and verdict agreement, watching for a rise after
+        any log pipeline change.
+      - >-
+        Prepare runbooks for the known failures: planted instructions, oversized results, a backend outage and paraphrased
+        injection.
+      - >-
+        Review a sample of audit records every week, including cases the agent closed as benign.
+    deliverable: Operational dashboards, runbooks and a weekly audit sampling routine.
+  - phase: 9
+    title: Size for cases, not raw events
+    steps:
+      - >-
+        Put a cheap triage model ahead of the agent, so only the ambiguous share of alerts become investigations, because
+        sending 300 million daily events to an LLM is not affordable at an estimated $106.5M a month.
+      - >-
+        Plan capacity in cases per hour and tokens per case, set a per-case cost cap, and keep a queue with priorities
+        for severity.
+      - >-
+        Provision the event bus and the immutable audit store for the volume that remains, and keep retention aligned with
+        the SOC's evidence rules.
+    deliverable: A triage-first capacity plan with cost caps per case and an audit retention design.
+  - phase: 10
+    title: Improve on evidence, and know when to stop
+    steps:
+      - >-
+        Add replay cases from every analyst correction and every escalation, and re-run the full replay set before each
+        prompt or model change.
+      - >-
+        Track cost per case against analyst hours saved, starting from the $11.84 per thousand decisions this entry's
+        sizing implies, using escalation precision as the check that savings do not come from missed escalations.
+      - >-
+        Stop widening autonomy when marginal time savings stop, and invest in tool coverage and log quality, which limit what
+        the agent can verify.
+    deliverable: A replay-gated change process and a cost-versus-hours report.

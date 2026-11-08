@@ -395,6 +395,8 @@ export const UseCaseSchema = z
     pattern: z.enum(PATTERN_IDS),
     lastVerifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     summary: nonEmpty,
+    /** whether the problem statement, solution approach, architecture rationale and end-to-end breakdown were written by hand or assembled from this entry's fields */
+    narrativeProvenance: z.enum(['authored', 'generated']),
     problemStatement: ProblemStatementSchema,
     solutionApproach: SolutionApproachSchema,
     architectureRationale: ArchitectureRationaleSchema,

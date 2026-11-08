@@ -1,0 +1,301 @@
+problemStatement:
+  situation: >-
+    A developer integrating an API is mid-task with a specific SDK version pinned in their project, and they ask a
+    narrow question: how do I paginate this endpoint, what is the rate limit, why does this call return a 403. A search
+    box returns pages. What they need is the one correct snippet or number for their version, with a link to the
+    authoritative page, in seconds. The assistant sits in the documentation site and the IDE and answers from the docs and
+    OpenAPI specs, and the product succeeds when the developer reaches a working first call faster and files fewer support
+    tickets.
+  whyHard: >-
+    A language model writes fluent code for endpoints that do not exist, and a developer who pastes it spends an hour
+    discovering that. The right answer also depends on state the question never states: the SDK version, the language,
+    whether an API is deprecated. Documentation itself contradicts itself, since a changelog quotes both the old and the
+    new limit and a citation to either is technically valid. Evaluation misleads too: questions written from docs headings
+    are easy to retrieve and hide the failures on real developer phrasing, and fluency scores reward exactly the confident
+    wrong answer that does the damage.
+  scaleAndStakes: >-
+    With 10 million registered and 3 million active developers the assistant handles about 6 million questions a day, 69
+    per second on average and 417 at peak, with capacity for 625. Generation dominates the cost: roughly 263 H100-class
+    GPUs and an estimated $832K a month, about $4.62 per thousand answers, which is why every avoidable model call and
+    every long answer matters. The stake is trust: one invented endpoint costs a developer an hour, and a handful of them
+    send developers back to searching and to opening tickets.
+  successLooksLike: >-
+    Offline, a high snippet execution pass rate in a sandbox and a hallucinated-API rate near zero on a held-out golden set
+    that includes unanswerable questions. Online, the launch is judged on time to first successful API call, with docs
+    support ticket rate as the guardrail that should fall and must not rise. Latency stays within about 2.5 seconds end to
+    end, and the assistant says it does not know whenever the documentation does not state the fact.
+  risks:
+    - >-
+      A deprecated API still appears in older docs, the assistant recommends it, and the developer's code breaks in
+      production rather than at write time.
+    - >-
+      A changelog quotes both the old and the new limit, the reader picks the stale number, and the answer cites a valid
+      passage while being wrong.
+    - >-
+      A snippet for one SDK language is adapted for another and does not compile, because the language-specific
+      differences were not in the retrieved context.
+    - >-
+      A developer's wording is outside the known vocabulary, such as throttle or size cap for rate limit, so the intent is
+      missed and the system either guesses or abstains pointlessly.
+
+solutionApproach:
+  thesis: >-
+    Treat the model as a writer and the documentation as the only source of truth. Begin with keyword docs search, which
+    cannot invent anything, and replace it with a retrieval-grounded generator only where it improves the snippet
+    execution pass rate without raising the hallucinated-API rate. Everything the model produces is checked after the fact:
+    every symbol against the OpenAPI spec for the user's version, every snippet in a sandbox pinned to that SDK, and every
+    stated value against the passage cited for it. When the documentation does not state the fact, the right answer is a
+    refusal with a pointer, not a fluent guess.
+  moves:
+    - move: Resolve the version before retrieving
+      detail: >-
+        Read the SDK and language version from the request context, such as the package manifest, the IDE or the docs
+        page, not from the question text, and use it as a hard filter on retrieval so the user never sees another
+        version's behaviour.
+    - move: Retrieve in two ways, by words and by structure
+      detail: >-
+        Combine dense and keyword search over docs chunks with a structured lookup into the OpenAPI spec, so a question
+        about an endpoint pulls its exact schema and not just prose about it. Exclude changelog chunks from answer sources
+        unless the question is about changes.
+    - move: Generate with citations the check can read
+      detail: >-
+        The model must cite the passage for each stated value, and a verifier checks that the cited passage literally
+        contains the value, because a valid link alone is not proof.
+    - move: Verify before showing
+      detail: >-
+        An API-existence validator rejects any symbol not in the spec for the user's version, and a sandbox runs the
+        snippet against the pinned SDK, so only code that compiles and runs reaches the developer.
+    - move: Make abstention a first-class answer
+      detail: >-
+        When retrieval finds nothing that states the fact, answer that the docs do not say, give the nearest page, and log
+        the question; review the log weekly and extend the intent vocabulary from real traffic.
+    - move: Measure on questions developers actually ask
+      detail: >-
+        Build a golden set from support tickets and forum threads, include unanswerable questions, and score facts and
+        executability, not fluency.
+  deliberatelyNot:
+    - >-
+      Optimise for answer length or friendly greetings: verbosity hides the one fact the developer needs, and the extra
+      tokens are a direct cost at this scale.
+    - >-
+      Retrieve only the latest docs for every user: a version mismatch is the most common way correct-looking code breaks.
+    - >-
+      Trust generated code without running it: language models invent plausible API calls, and a pass in the sandbox is
+      the only evidence that matters.
+    - >-
+      Judge by retrieval recall at five alone: it is easy on small corpora and silent about stale or invented answers.
+  proof: >-
+    Offline, run a held-out golden set that includes unanswerable and version-specific questions, and compare the baseline
+    keyword search with the grounded generator on snippet execution pass rate, hallucinated-API rate and abstention
+    precision. Online, run the assistant for a share of docs traffic and measure time to first successful API call and
+    support ticket rate against a control group, with a weekly review of abstentions and any answer a developer rated
+    wrong.
+
+architectureRationale:
+  - stage: Question
+    tech: docs site or IDE
+    role: >-
+      Captures the question together with the context only the client knows: SDK and language version, the surrounding
+      code, and the page the developer was reading.
+    carries: >-
+      Version awareness starts here. The question text rarely says which version is in use, so the client has to send it,
+      and the assistant must never guess it from wording.
+    budget: 227 ms of 2500 ms
+    onFailure: >-
+      If context is missing the assistant asks which version, or uses the most commonly deployed version and states it, but
+      never answers silently for an unknown version.
+  - stage: Version detector
+    tech: context
+    role: >-
+      Normalises the version, language and product area into filters, and decides whether the question is about changes
+      between versions.
+    carries: >-
+      The changelog problem is handled here: changelog chunks are excluded unless the question asks about changes, since
+      they quote both old and new values.
+    budget: 606 ms of 2500 ms
+    onFailure: >-
+      An unparseable version falls back to the latest stable with a visible note, and the mismatch is logged.
+  - stage: Retriever
+    tech: hybrid search
+    role: >-
+      Returns the most relevant documentation chunks and the exact OpenAPI schema entries for the version, using keyword
+      and dense search merged and reranked.
+    carries: >-
+      The vocabulary gap lives here: synonyms like throttle for rate limit are covered by dense retrieval and an intent
+      vocabulary extended from the abstention log.
+    budget: 455 ms of 2500 ms
+    onFailure: >-
+      An empty or low-confidence result triggers abstention with the closest page rather than generation from nothing; a
+      search outage falls back to keyword search.
+  - stage: Answer LLM
+    tech: grounded code
+    role: >-
+      Writes the short answer and the snippet from the retrieved passages only, with a citation for each value.
+    carries: >-
+      The loss penalises references to nonexistent APIs, and the prompt forbids using knowledge outside the passages,
+      which is what keeps the answer inside the documentation.
+    budget: 606 ms of 2500 ms
+    onFailure: >-
+      A model timeout returns the retrieved passages and the nearest page directly, which is worse than an answer but never
+      wrong.
+  - stage: API existence validator
+    tech: spec check
+    role: >-
+      Parses the snippet and the prose for symbols and checks each against the OpenAPI spec and SDK index for the user's
+      version, and flags deprecated ones.
+    carries: >-
+      This is the guard against invented endpoints, and its deprecation metadata is the answer to the deprecated-API
+      risk, so an old endpoint is flagged with its replacement.
+    budget: 152 ms of 2500 ms
+    onFailure: >-
+      If a symbol fails, the answer is regenerated once with the failure as feedback, and if it still fails the assistant
+      abstains instead of showing the snippet.
+  - stage: Sandbox runner
+    tech: test
+    role: >-
+      Compiles or runs the snippet in an isolated container with the pinned SDK version, with network access limited to a
+      mock of the API.
+    carries: >-
+      Language differences are tested here, so a Python snippet adapted for Java that does not compile never reaches the
+      developer, and the pass rate is the headline offline metric.
+    budget: 227 ms of 2500 ms
+    onFailure: >-
+      A sandbox timeout marks the snippet as unverified and says so on the answer; a pool outage degrades to showing the
+      validated snippet with that label.
+  - stage: Developer
+    tech: feedback
+    role: >-
+      Shows the answer with its citations, collects a thumbs rating and an optional correction, and records whether a
+      later call succeeded.
+    carries: >-
+      Time to first successful API call is measured from here, and a thumbs-down with a correction is the cheapest source
+      of new golden questions.
+    budget: 227 ms of 2500 ms
+    onFailure: >-
+      Feedback is best-effort and never blocks the answer; missing feedback is treated as unknown, not as satisfaction.
+
+e2e:
+  - phase: 1
+    title: Decide what the assistant may and may not answer
+    steps:
+      - >-
+        Agree with developer relations and support which question types it handles: how-to, parameter and limit lookup,
+        error explanation, and migration between versions. Name the ones it must refuse.
+      - >-
+        Set the success numbers with them: snippet execution pass rate, hallucinated-API rate and the support ticket
+        deflection they hope to see.
+      - >-
+        Decide what the assistant does on every page it is not sure about, because abstention behaviour is a product
+        decision and not a model setting.
+    deliverable: A scope document with answerable classes, a refusal policy and target metrics.
+  - phase: 2
+    title: Collect the documents and the real questions
+    steps:
+      - >-
+        Ingest docs, OpenAPI specs, SDK references and changelogs per version, and tag each chunk with version, language
+        and deprecation status.
+      - >-
+        Mine support tickets, forum threads and search logs for real phrasing, since questions written from docs headings
+        are too easy to retrieve.
+      - >-
+        Build a golden set with answers and unanswerable cases, kept out of any tuning.
+    deliverable: A versioned documentation corpus and a golden set with unanswerable questions.
+  - phase: 3
+    title: Build version-aware retrieval
+    steps:
+      - >-
+        Make version a hard filter, read from the request context rather than the question text.
+      - >-
+        Combine dense and keyword retrieval over docs with a structured lookup into the OpenAPI spec, and exclude changelog
+        chunks unless the question asks about changes.
+      - >-
+        Measure retrieval on the golden set by whether the passage that states the answer is present, not by recall at five
+        alone.
+    deliverable: A retriever that meets a target for answer-bearing passage presence on the golden set.
+  - phase: 4
+    title: Beat keyword search with a grounded generator
+    steps:
+      - >-
+        Record the keyword docs search result on the golden set as the bar to clear.
+      - >-
+        Add a generator limited to the retrieved passages, with a cited passage for every stated value and an instruction
+        to abstain when the passages do not state the answer.
+      - >-
+        Check that a cited passage literally contains the stated value, since a changelog can support both the old and the
+        new number.
+    deliverable: A generator that improves snippet pass rate over keyword search without raising hallucinated-API rate.
+  - phase: 5
+    title: Verify what the model writes
+    steps:
+      - >-
+        Build the API-existence validator against the spec for each version, with deprecation metadata, and measure how many
+        invented symbols it catches on adversarial prompts.
+      - >-
+        Build the sandbox runner with a pinned SDK per language and a mock server, and measure the pass rate by language.
+      - >-
+        Add regeneration with the failure as feedback once, then abstention, so a failed check never becomes a shown
+        answer.
+    deliverable: A verification chain with measured catch rates for invented symbols and failing snippets.
+  - phase: 6
+    title: Fit the 2.5 second budget and the GPU bill
+    steps:
+      - >-
+        Allocate the budget: 0.6 s version detection, 0.5 s retrieval, 0.6 s generation, 0.2 s existence check, 0.2 s
+        sandbox, and measure p95 at 625 requests per second.
+      - >-
+        Control generation cost, which dominates at about 263 GPUs, by capping answer length, caching answers to common
+        questions per version, and routing simple lookups to a smaller model.
+      - >-
+        Degrade gracefully: if the model times out, return the retrieved passages directly, and if the sandbox is
+        unavailable, label the snippet unverified.
+    deliverable: A load-tested pipeline with a cost per thousand answers and a tested degradation order.
+  - phase: 7
+    title: Release to a slice of docs traffic
+    steps:
+      - >-
+        Start with internal developers and the docs team, reading every wrong answer in the first week.
+      - >-
+        Move to a small share of real docs traffic with a holdout, and compare time to first successful API call and
+        support ticket rate against the control.
+      - >-
+        Widen only while the hallucinated-API rate on reviewed live samples stays under the agreed limit.
+    deliverable: A ramp plan with a holdout and a live hallucination sampling rule.
+  - phase: 8
+    title: Operate on abstentions and drift
+    steps:
+      - >-
+        Review the abstention log every week, extending the intent vocabulary from real phrasing and adding docs where
+        the same question is asked and unanswerable.
+      - >-
+        Re-run the golden set on every docs release and every SDK release, since a new version can quietly break
+        retrieval.
+      - >-
+        Track the known failures from the edge cases: deprecated endpoints, cross-language snippets, changelog
+        contradictions, and unfamiliar vocabulary.
+    deliverable: A weekly abstention review, a golden-set regression run per release and failure runbooks.
+  - phase: 9
+    title: Scale to 6 million questions a day
+    steps:
+      - >-
+        Provision for 625 requests per second, with about 263 H100-class GPUs for generation at roughly 656,000 decoded
+        tokens per second at peak, autoscaled by queue depth.
+      - >-
+        Cache per version and language so the most repeated questions never reach the model, and measure the hit rate as a
+        cost lever.
+      - >-
+        Plan the data side: 12 event partitions, 86 GB a day of logs and 34 TB retained over 400 days, with user code
+        snippets treated as sensitive.
+    deliverable: A capacity plan with cache hit-rate targets and a data-retention policy for user snippets.
+  - phase: 10
+    title: Run the cost and quality loop
+    steps:
+      - >-
+        Track cost against value: at about $4.62 per thousand answers and roughly $832K a month, compare it with support
+        tickets deflected and time saved per developer.
+      - >-
+        Retrain or re-prompt on new golden questions from thumbs-downs and corrections, with the same pass rate and
+        hallucination gates before every promotion.
+      - >-
+        Stop investing in generation quality when failures are mainly missing documentation, and send those gaps to the
+        docs team as a prioritised list.
+    deliverable: A cost-versus-deflection report and a standing list of documentation gaps for the docs team.

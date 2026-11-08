@@ -1,0 +1,281 @@
+problemStatement:
+  situation: >-
+    A distribution network plans from a monthly statistical forecast, and that forecast is blind to what happened this
+    week: a heatwave moved beverages, a competitor's promotion pulled sales, a large order landed from a key customer. The
+    demand planner who owns each product family wants a corrected forecast for the next 1 to 14 days, for every product at
+    every location, waiting for them each morning, along with a range, not just a single number. That correction decides
+    where inventory is moved, what is expedited and what is cancelled. The planners still make the final call, so every
+    override they apply has to be recorded and its value measured.
+  whyHard: >-
+    Most of the apparent signal is aftermath. Point-of-sale feeds arrive late and partners differ, so a missing day looks
+    like zero demand. Sales during a supply restriction understate demand, and a model trained on raw sales learns that
+    demand collapsed when stock was rationed. Signals such as promotions and weather must be taken as they were known at
+    forecast time, not as they finally happened, or the backtest is optimistic. Error at an aggregate level can be a
+    fifth of error at the product-location level because mistakes cancel, so it is easy to report accuracy that planners do
+    not experience. And forecasts that do not add up to the plan hierarchy are ignored by the people they are meant to help.
+  scaleAndStakes: >-
+    The nightly refresh covers 5 million series and has to finish inside a two-hour window so planners have it when they
+    start work. Compute is modest, two Spark executors, with about $1.7K a month and $0.018 per thousand forecasts, and
+    1.7 TB retained for 400 days. The value sits in the decisions it changes: expedited shipments avoided, and stock
+    placed where demand is actually going to be rather than where last month said it would be. A forecast that is wrong
+    in a visible way costs planner trust, which is far harder to rebuild than model accuracy.
+  successLooksLike: >-
+    Offline, weighted MAPE at the 1 to 14 day horizons and, more importantly, forecast value added over the statistical
+    baseline measured at product-location level, not in aggregate. Online, the launch is judged on forecast accuracy at
+    lag 2, with expedite shipments avoided as the business guardrail. The nightly run completes in its window, forecasts
+    reconcile to the plan hierarchy, quantile bands are calibrated, and planner overrides are audited with their
+    effect on error.
+  risks:
+    - >-
+      A point-of-sale feed arrives late for a region and the model reads the missing day as zero demand, creating a
+      false collapse in the forecast.
+    - >-
+      A supplier imposes allocation limits, observed sales understate demand, and the model learns the shortfall as a trend.
+    - >-
+      A promotion is planned, the model forecasts an uplift, the promotion is cancelled late, and stock is overbuilt.
+    - >-
+      A new product with fewer than four weeks of history has no same-weekday features and an unknown level.
+
+solutionApproach:
+  thesis: >-
+    Keep the statistical baseline forecast with its seasonal factor as the floor, because it is what planners already
+    use and it defines the value added. Layer a gradient-boosted sensing model on recent signals, open orders,
+    sell-through momentum, known events and same-weekday history, that outputs quantiles for each of the next 14 days,
+    then reconcile its output to the plan hierarchy with MinT so totals agree. Everything is judged at product-location
+    level and as forecast value added, and any signal that was not known at the forecast origin is excluded from both
+    training and backtest.
+  moves:
+    - move: Define the forecast origin and freeze what was known
+      detail: >-
+        Every feature is built from a snapshot at the forecast origin: the open order book as it stood, the promotion plan
+        as of that day, and the external forecast as published then, never the observed value.
+    - move: Build signals planners can recognise
+      detail: >-
+        Open orders by product, the ratio of 7-day to 28-day velocity with calendar days aligned, same-weekday history from
+        days on or before the origin and a planned-promotion flag treated as probabilistic until a week out.
+    - move: Separate demand from sales
+      detail: >-
+        Add constrained-demand flags so periods of allocation or rationing are not read as demand, and adjust the target
+        accordingly.
+    - move: Forecast quantiles, not points
+      detail: >-
+        Train with the pinball loss for several quantiles across the 14 horizons and publish a P90 band beside the point
+        forecast, so planners see the risk in a promotion that may be cancelled.
+    - move: Reconcile before anyone sees it
+      detail: >-
+        Use MinT to make product, location and family totals agree with the plan, so the sensing output can be compared
+        with the plan line by line.
+    - move: Treat overrides as data
+      detail: >-
+        Record each planner override with a reason, compare its error against the model's, and use the pattern to
+        decide where the model needs a better signal.
+  deliberatelyNot:
+    - >-
+      Use year-over-year growth rate or category growth: they are too slow to matter inside 14 days and are already in the
+      level of the series.
+    - >-
+      Use the planner identifier as a feature: it carries no demand information and only records who last edited a plan.
+    - >-
+      Reuse the monthly statistical forecast for the short horizon: it ignores this week's signals, which are the whole point.
+    - >-
+      Report accuracy at aggregate level only: errors cancel and the figure bears no relation to what a planner sees at
+      the product-location level.
+  proof: >-
+    Offline, a rolling-origin backtest that rebuilds every feature from its origin snapshot, scored by weighted MAPE and
+    forecast value added at product-location level against the baseline and by quantile coverage. Online, run the sensing
+    forecast beside the plan for several cycles in shadow, then publish it to a group of planners and compare error at lag
+    2 and expedite shipments avoided with a group still on the baseline.
+
+architectureRationale:
+  - stage: POS and order feeds
+    tech: Kafka
+    role: >-
+      Collects point-of-sale sales, confirmed orders, shipments and external signals from partners with their own
+      cut-off times.
+    carries: >-
+      Late feeds are handled here: a completeness check per partner marks a day as missing, not zero, and imputation
+      carries a confidence flag into the features.
+    budget: inside the run window
+    onFailure: >-
+      A missing partner feed delays only its slice of forecasts, which are served from the previous run with a warning,
+      and the run is not blocked.
+  - stage: Signal feature builder
+    tech: Spark
+    role: >-
+      Creates the origin-time snapshot of order book, sell-through momentum, same-weekday history, promotion plan and event
+      signals for every series.
+    carries: >-
+      The leakage defences are implemented here: signals are joined as of the origin, not as of the target day, and the
+      same-weekday features use only days on or before the origin.
+    budget: inside the run window
+    onFailure: >-
+      A failed partition is retried from the prior checkpoint, and a series with insufficient history gets the category
+      prior flagged as low confidence.
+  - stage: Sensing forecaster
+    tech: LightGBM quantile
+    role: >-
+      Produces quantile forecasts for each of the next 14 days for each series, with constrained-demand adjustments.
+    carries: >-
+      The pinball loss and the quantile outputs are what give planners a range, and the P90 band is what protects
+      against a cancelled promotion that the point forecast would overstate.
+    budget: inside the run window
+    onFailure: >-
+      If training or scoring fails, the statistical baseline is published for that run, flagged as baseline.
+  - stage: Hierarchical reconciler
+    tech: MinT
+    role: >-
+      Adjusts forecasts across the product, location and family hierarchy so every level sums to the plan.
+    carries: >-
+      Hierarchical consistency is a stated constraint, and reconciliation is why the totals match what planners and
+      finance already have.
+    budget: inside the run window
+    onFailure: >-
+      A singular covariance estimate falls back to a simpler shrinkage estimator, and any reconciliation that changes a
+      forecast by more than a set share is reported.
+  - stage: Plan publisher
+    tech: planning system
+    role: >-
+      Writes the reconciled forecast, bands and confidence flags into the planning system by the start of the working
+      day.
+    carries: >-
+      The two-hour window is a service commitment, so publication is the stage that is monitored hardest, with an
+      explicit time of completion shown to planners.
+    budget: inside the run window
+    onFailure: >-
+      If the run misses its window, yesterday's forecast stays visible with its date, and planners are notified instead of
+      silently seeing stale data.
+  - stage: Planner override
+    tech: demand planner
+    role: >-
+      Lets planners adjust a forecast with a reason code, and records who changed what and when.
+    carries: >-
+      Overrides are audited as required, and each one is later scored against the model's value, which shows planners
+      where their knowledge beats the model and where it does not.
+    budget: inside the run window
+    onFailure: >-
+      An override that cannot be saved is rejected with a clear error, never applied silently or lost.
+  - stage: Actuals tracking
+    tech: KPI
+    role: >-
+      Joins realised demand to forecasts by horizon and computes weighted MAPE, forecast value added and quantile
+      coverage by segment.
+    carries: >-
+      Accuracy is reported at product-location level, and constrained periods are marked so a rationed week does not count
+      as a model failure.
+    budget: inside the run window
+    onFailure: >-
+      Late actuals only delay metrics, and the KPI view always shows how many series are still waiting for actuals.
+
+e2e:
+  - phase: 1
+    title: Agree what the forecast changes
+    steps:
+      - >-
+        Meet demand planners, supply planning and logistics to list the decisions that depend on the 1 to 14 day forecast,
+        such as expediting, stock transfers and order cancellations.
+      - >-
+        Choose forecast value added at product-location level as the primary measure, with accuracy at lag 2 and
+        expedites avoided as business measures.
+      - >-
+        Fix the nightly window of two hours and the time by which planners need the forecast.
+    deliverable: A decision map, a measurement plan and a service window.
+  - phase: 2
+    title: Inventory the feeds and their delays
+    steps:
+      - >-
+        List each point-of-sale partner with its cut-off time, typical lateness and share of volume, and build the
+        completeness check.
+      - >-
+        Identify periods of supplier allocation and rationing so constrained-demand flags can be created from history.
+      - >-
+        Archive promotion plans, external forecasts and order snapshots as they stood at each past date.
+    deliverable: A feed register, constrained-demand flags and an archive of as-of snapshots.
+  - phase: 3
+    title: Build features as of the forecast origin
+    steps:
+      - >-
+        Build open order book, 7-day to 28-day velocity ratio with calendar alignment, same-weekday history and the planned
+        promotion flag, all from the origin snapshot.
+      - >-
+        Use the external event forecast as it was published at the origin, not the observed weather or outcome.
+      - >-
+        Drop year-over-year growth, planner identifier and category growth.
+    deliverable: A feature pipeline checked by comparing replayed features with archived snapshots.
+  - phase: 4
+    title: Win against the seasonal baseline
+    steps:
+      - >-
+        Run the statistical baseline with a seasonal factor through a rolling-origin backtest and record weighted MAPE and
+        value added by horizon.
+      - >-
+        Train the gradient-boosted sensing model with the pinball loss across quantiles and compare at product-location
+        level.
+      - >-
+        Test low-history products separately and set the category-prior fallback with wide bands.
+    deliverable: A backtest report showing forecast value added by horizon, segment and history length.
+  - phase: 5
+    title: Reconcile and calibrate
+    steps:
+      - >-
+        Reconcile to the plan hierarchy with MinT and check that product, location and family totals agree.
+      - >-
+        Check quantile coverage: the P90 band should contain actuals about 90 percent of the time, per segment and horizon.
+      - >-
+        Compare the reconciled forecast to the plan on a few weeks of known events, such as promotions and weather.
+    deliverable: A reconciled, calibrated forecast with coverage tables by segment.
+  - phase: 6
+    title: Make the nightly run reliable
+    steps:
+      - >-
+        Orchestrate the run so feeds, features, scoring, reconciliation and publication fit the two-hour window on two
+        executors, with checkpoints.
+      - >-
+        Test the late-feed, failed-partition, missed-window and singular-covariance paths, and verify each ends in a
+        published and flagged result.
+      - >-
+        Build the planner override capture with reason codes and an audit trail.
+    deliverable: A tested orchestration with failure paths and an override audit trail.
+  - phase: 7
+    title: Run beside the plan, then hand it to planners
+    steps:
+      - >-
+        Run for several cycles in shadow and compare to the plan and the baseline at lag 2.
+      - >-
+        Release to a group of planners with a short onboarding on bands and confidence flags, keeping another group on the
+        baseline.
+      - >-
+        Check expedites avoided and collect the reasons planners override the model.
+    deliverable: A planner-group comparison with override reasons.
+  - phase: 8
+    title: Watch feed health and coverage
+    steps:
+      - >-
+        Monitor feed completeness per partner, share of forecasts on fallback, weighted MAPE by horizon and quantile
+        coverage.
+      - >-
+        Prepare runbooks for the known cases: late feeds, allocation limits, cancelled promotions and new products.
+      - >-
+        Review the weekly override audit and feed repeated planner corrections back as features or constraints.
+    deliverable: A feed-health and coverage dashboard with failure runbooks.
+  - phase: 9
+    title: Scale to 5 million series
+    steps:
+      - >-
+        Partition series by location and product family so Spark executors scale linearly, and keep the run inside two
+        hours at 5 million series.
+      - >-
+        Store features as of each origin for 400 days, about 1.7 TB, in a way that supports point-in-time replay.
+      - >-
+        Version the model and plan hierarchy so a forecast can be reproduced for an audit.
+    deliverable: A partitioning plan, a replay-capable archive and a versioning scheme.
+  - phase: 10
+    title: Operate and decide when to stop
+    steps:
+      - >-
+        Retrain on a fixed cadence with rolling-origin validation, promoting only if forecast value added improves.
+      - >-
+        Track cost at about $0.018 per thousand forecasts against expedites avoided and inventory moved.
+      - >-
+        Stop improving the model when forecast value added flattens at product-location level, and spend effort on feed
+        quality and planner workflow.
+    deliverable: A retraining runbook and a stop rule tied to forecast value added.

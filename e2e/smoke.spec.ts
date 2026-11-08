@@ -156,4 +156,15 @@ test('each blueprint states its own problem, solution approach and stage-by-stag
   await page.goto('/real-estate/automated-valuation-model');
   await expect(page.getByTestId('problem-statement')).not.toContainText('Fails avoided per day');
   await expect(page.getByTestId('solution-approach')).toContainText('Condition score from photos');
+  await expect(page.getByTestId('narrative-provenance')).toHaveText('generated');
+});
+
+test('a pilot use case shows hand-written narrative sections with its own stage rationale', async ({
+  page,
+}) => {
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  await expect(page.getByTestId('narrative-provenance')).toHaveText('hand-written');
+  await expect(page.getByTestId('problem-statement')).toContainText('about 8 milliseconds');
+  await expect(page.getByTestId('solution-approach')).toContainText('Precompute the graph, never query it');
+  await expect(page.getByTestId('architecture-rationale')).toContainText('mule-device rotation');
 });

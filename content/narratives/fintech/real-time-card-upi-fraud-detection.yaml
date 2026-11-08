@@ -1,0 +1,309 @@
+problemStatement:
+  situation: >-
+    Every card and UPI authorisation passes through a decision point where the issuer has about 8 milliseconds to say
+    approve, step up or decline. Behind that decision sit three groups with opposed incentives: fraud losses that the
+    issuer eats, genuine customers who abandon a card the second it is declined at a petrol pump, and an analyst team that
+    can only review a few hundred cases an hour. The model does not decide alone. It produces a calibrated risk that a
+    policy engine turns into one of those three actions, and every decline must carry a reason code a call-centre agent
+    can read out.
+  whyHard: >-
+    Fraud is roughly one in a thousand authorisations, so accuracy and ROC-AUC look excellent for a model that is
+    useless at the operating point. The labels arrive late and biased: a chargeback is filed 30 to 90 days after the
+    transaction, so last week's data looks clean, and only the cases the previous model flagged were ever reviewed. The
+    attackers adapt to whatever you deploy within days, rotating devices and slowing their spend to stay under velocity
+    rules. And the 8 ms budget forbids anything that needs a network round trip that was not planned for, which rules out
+    the most informative feature, the device-and-card graph, unless its embedding is precomputed and cached.
+  scaleAndStakes: >-
+    With 10 million registered and 3 million daily active users, the system scores about 24 million authorisations a day,
+    277 per second on average and 2,200 per second at peak, and is provisioned for 3,300. The estimated run cost is about
+    $4.2K a month, or $0.006 per thousand decisions, which is small next to the stakes: each extra basis point of fraud on
+    a card book of this size is real money, and each extra 0.1 percentage point of false declines drives genuine customers
+    to a competitor's card and costs more than the fraud it prevented.
+  successLooksLike: >-
+    The agreed operating point is fraud held to a target number of basis points of volume while false declines on genuine
+    transactions stay under 0.3 percent. Offline that means a PR-AUC at 0.5 percent false-positive rate and recall at the
+    analysts' fixed review capacity, never ROC-AUC. The launch is judged on fraud basis points per volume, with the
+    false-decline rate on good customers as the guardrail that must not move. p99 latency stays under 8 ms and
+    availability at 99.99 percent, because a slow fraud service is an outage for the whole payment rail.
+  risks:
+    - >-
+      Selection bias in the labels: confirmed fraud comes only from cases the old model flagged or the customer
+      reported, so a challenger trained on it learns to imitate the old model rather than to find what it missed.
+    - >-
+      Label delay: recent weeks look clean because chargebacks have not arrived, and a model trained on them treats this
+      week's attack as genuine behaviour.
+    - >-
+      Flash sales and festive shopping spikes make ordinary customers look like a velocity burst, and a wave of false
+      declines on the busiest day of the year is the most visible failure the business can have.
+    - >-
+      Mule-device rotation resets device fan-out to zero after every block, so a static device rule decays in days.
+
+solutionApproach:
+  thesis: >-
+    Put a calibrated logistic regression on 40 velocity features in front of customers first, because it sets the cost
+    floor, gives reason codes for free and is the model the policy engine can fall back to. Then replace it with LightGBM
+    on about 300 features plus a cached device-card graph embedding only if it wins PR-AUC at 0.5 percent false-positive
+    rate on a time-ordered split and survives a four-week shadow. The model's job is a trustworthy probability; the
+    thresholds that turn it into approve, step up or decline live in config, owned by risk, and change without a retrain.
+  moves:
+    - move: Fix the operating point before touching a model
+      detail: >-
+        Agree with risk and operations the review capacity per hour and the maximum tolerated false-decline rate, then
+        express the target as recall at that capacity. Every later choice, from features to thresholds, is judged
+        against that one number.
+    - move: Build features that are true at decision time
+      detail: >-
+        Card velocity at 1 minute, 1 hour and 24 hours, device-card fan-out, merchant risk drift and the amount against
+        the card's own 90-day median are computed from events strictly before the authorisation, using a point-in-time
+        store. The merchant chargeback rate uses only matured labels.
+    - move: Treat labels as a product with a delay
+      detail: >-
+        Train on a window that excludes the last 90 days of unmatured outcomes, impute the survival-aware probability for
+        the gap, and reserve a small random slice of traffic for unbiased review so the model sees fraud the old
+        policy would have approved.
+    - move: Precompute the graph, never query it
+      detail: >-
+        The device-and-card graph is embedded offline every few hours and stored as vectors in the feature cache, so the
+        graph contributes a 2.7 ms cached lookup instead of a traversal the 8 ms budget could never afford.
+    - move: Separate score from policy
+      detail: >-
+        The scorer returns a calibrated probability and the top reason features. A rules-as-config policy engine maps it
+        to approve, step-up authentication or decline per merchant category and amount band, which lets risk move a
+        threshold during a flash sale without a deploy.
+    - move: Plan the degradation ladder up front
+      detail: >-
+        If the feature store is slow the scorer falls back to the logistic baseline on cached features, and if the scorer
+        itself is down the policy engine applies conservative static rules, so the auth path never waits.
+  deliberatelyNot:
+    - >-
+      Cardholder name length or raw merchant free text: no causal link to fraud, and they overfit to data-entry quirks.
+      The merchant is represented by MCC plus a learned embedding.
+    - >-
+      Issuer country alone as a feature: it mostly proxies for the population, and it produces unfair declines for
+      travellers, which would show up first in the false-decline guardrail.
+    - >-
+      A random train-test split: it leaks the same cardholder into both sides. Every evaluation is time-ordered and
+      grouped by card.
+    - >-
+      Treating transactions not yet reported as fraud as genuine and training on them: it teaches the model to ignore
+      the attack that is under way right now.
+  proof: >-
+    Offline, compare against the logistic baseline on PR-AUC at 0.5 percent false-positive rate and recall at review
+    capacity, on a time-ordered, card-grouped split, with the unbiased review slice used as the honest test set. Online,
+    run the challenger in shadow for four weeks logging the decision it would have made, then canary on a low-risk
+    merchant category and judge fraud basis points per volume with the false-decline rate on good customers as a hard
+    guardrail. If the guardrail moves, the ramp stops, regardless of how good the fraud number looks.
+
+architectureRationale:
+  - stage: Auth gateway
+    tech: Envoy gRPC
+    role: >-
+      Terminates the payment network's authorisation message, tokenises the card number so nothing downstream sees a PAN,
+      and enforces the 8 ms deadline for everything behind it.
+    carries: >-
+      The PCI-DSS scope constraint lives here: the gateway is the only component allowed to see the raw card, and the
+      deadline it propagates is what makes the degradation ladder possible.
+    budget: 0.7 ms of 8 ms
+    onFailure: >-
+      An unreachable scorer must never block the rail. The gateway applies the static fallback rules and records that it
+      did, so the miss is visible afterwards.
+  - stage: Feature store lookup
+    tech: Redis cluster
+    role: >-
+      Returns the card, device and merchant aggregates for 1 minute, 1 hour and 24 hours in one pipelined read, and updates
+      the windows after the decision.
+    carries: >-
+      The velocity signal, the device-card fan-out and the 90-day baseline all depend on windows that close strictly
+      before decision time, so reads and writes are ordered per card token on a single shard.
+    budget: 1.3 ms of 8 ms
+    onFailure: >-
+      On a timeout the scorer receives only the cached 24-hour features and the baseline model scores, with a flag set so
+      the policy engine can be stricter on large amounts.
+  - stage: Graph embedding
+    tech: cached GNN vectors
+    role: >-
+      Supplies a precomputed vector for the device and card that summarises who else shares this device, token or IP range.
+    carries: >-
+      This is the answer to mule-device rotation: when a ring moves to a new device, the embedding of the cluster
+      still carries its risk, which a hard-coded fan-out count would reset to zero.
+    budget: 2.7 ms of 8 ms
+    onFailure: >-
+      A missing vector is replaced by a cohort mean and the scorer sees an explicit missing-embedding flag, so the model
+      learned to be cautious in that case rather than treating it as safe.
+  - stage: Fraud scorer
+    tech: LightGBM on Triton
+    role: >-
+      Produces a calibrated fraud probability and the five reason features behind it from about 300 inputs.
+    carries: >-
+      Calibration decides everything downstream, because policy thresholds are set on probability. The loss adds an
+      expected-calibration-error term to the focal loss for exactly this reason, and reason codes come from the model, not
+      a separate explainer.
+    budget: 2.7 ms of 8 ms
+    onFailure: >-
+      If the model server is over budget the baseline logistic regression, loaded in the same process, scores instead and
+      the response is tagged degraded.
+  - stage: Policy engine
+    tech: rules as config
+    role: >-
+      Converts probability and context into approve, step-up or decline using thresholds by merchant category and amount
+      band, and attaches the reason code.
+    carries: >-
+      The false-decline ceiling of 0.3 percent is enforced here, as a threshold risk can move live during a flash sale.
+      The step-up band between review and block is what protects a genuine shopping session that looks like velocity.
+    budget: 0.7 ms of 8 ms
+    onFailure: >-
+      A bad config push is caught by a staged rollout and a schema check, and the previous version is retained so a
+      revert is one pointer change.
+  - stage: Case queue
+    tech: analyst review tool
+    role: >-
+      Routes the uncertain band to human review, ordered by expected loss, and captures the analyst's verdict and reason.
+    carries: >-
+      Review capacity is the real constraint behind recall at fixed capacity, and the random unbiased slice is routed here
+      too so the model keeps seeing fraud it would have approved.
+    budget: off the critical path
+    onFailure: >-
+      A full queue raises the step-up share automatically rather than letting cases age, and the backlog is an alerting
+      signal in its own right.
+  - stage: Label store
+    tech: Kafka to lakehouse
+    role: >-
+      Keeps every decision, feature vector and later outcome, joined on transaction id once chargebacks, customer reports
+      and analyst verdicts mature.
+    carries: >-
+      This is where label delay is handled: each row stores when its label became known, so training windows can exclude
+      unmatured outcomes and replays reproduce exactly what the model knew.
+    budget: off the critical path
+    onFailure: >-
+      Events are durable in Kafka with replay, so a lakehouse outage delays training data but never loses a decision or
+      breaks the auth path.
+
+e2e:
+  - phase: 1
+    title: Agree the operating point with risk and operations
+    steps:
+      - >-
+        Sit with the head of risk and the analyst lead to fix two numbers before any modelling: the maximum acceptable
+        false-decline rate on genuine volume, 0.3 percent, and the number of cases the team can review per hour.
+      - >-
+        Translate them into the single metric the whole project optimises, recall at that review capacity, and write down
+        the cost of a missed fraud against the cost of a declined genuine customer so thresholds have a basis.
+      - >-
+        List the actions the policy can take, approve, step up or decline, and what each costs in friction, because the
+        step-up band is the cheapest way to protect genuine shoppers.
+    deliverable: A one-page decision contract naming the false-decline ceiling, review capacity and the action costs.
+  - phase: 2
+    title: Get decisions, outcomes and the delay between them
+    steps:
+      - >-
+        Collect two years of authorisations with the decision made at the time, and join chargebacks, customer fraud
+        reports and analyst verdicts, recording the date each label became known.
+      - >-
+        Measure the label maturity curve: what share of eventual chargebacks have arrived after 7, 30 and 90 days, since
+        that curve decides how recent a training window can be.
+      - >-
+        Quantify the review selection bias by comparing the fraud rate in flagged versus unflagged traffic, and start the
+        small random slice of unbiased review so the next retrain has honest data.
+    deliverable: A label table with known-at timestamps, a maturity curve and a running unbiased-review slice.
+  - phase: 3
+    title: Build velocity and graph features that are true at decision time
+    steps:
+      - >-
+        Implement card velocity at 1 minute, 1 hour and 24 hours, device-card fan-out, merchant risk drift against its
+        90-day baseline, new-device-for-card and amount versus the card's own median in a point-in-time store.
+      - >-
+        Test each feature for leakage by recomputing it on replayed events and asserting it matches what the online store
+        returned at the time, which catches windows that closed after the decision.
+      - >-
+        Drop cardholder name length, raw merchant text and bare issuer country, and replace the merchant with MCC and a
+        learned embedding.
+    deliverable: A tested feature set with a replay-equality check against the online store.
+  - phase: 4
+    title: Ship the calibrated logistic baseline
+    steps:
+      - >-
+        Train a logistic regression on the 40 velocity features with isotonic calibration, and check that reliability is
+        good in the 0.1 to 5 percent probability band where thresholds will sit.
+      - >-
+        Generate reason codes from the top contributing features and have an analyst read 50 of them to confirm they are
+        something a call-centre agent could say aloud.
+      - >-
+        Record its PR-AUC at 0.5 percent false-positive rate as the number the challenger has to beat, and keep it as the
+        in-process fallback.
+    deliverable: A calibrated baseline with reason codes, a recorded reference score and a fallback artifact.
+  - phase: 5
+    title: Train the challenger and read its errors
+    steps:
+      - >-
+        Train LightGBM on about 300 features plus the precomputed device-card embedding, with the focal loss and a
+        calibration penalty, on a time-ordered, card-grouped split that excludes unmatured labels.
+      - >-
+        Evaluate on PR-AUC at 0.5 percent false-positive rate and recall at review capacity, and also on the unbiased
+        review slice, which is the only set that measures fraud the old policy missed.
+      - >-
+        Slice errors by merchant category, amount band and new versus established cards, and look specifically at the
+        quiet account-takeover cases that velocity never catches.
+    deliverable: A challenger that beats the baseline on the unbiased slice, with an error analysis by segment.
+  - phase: 6
+    title: Make the 8 ms path real
+    steps:
+      - >-
+        Allocate the budget stage by stage, 0.7 ms gateway, 1.3 ms feature read, 2.7 ms embedding, 2.7 ms scoring, 0.7 ms
+        policy, and measure p99 for each in a load test at 3,300 requests per second.
+      - >-
+        Build the degradation ladder and test it by killing the feature store, the embedding cache and the model server in
+        turn, confirming the response is still returned in time and tagged degraded.
+      - >-
+        Move the graph work offline by embedding the device-card graph every few hours, so the online cost is a cache read.
+    deliverable: A load-tested serving path with a proven degradation ladder at the 8 ms p99 target.
+  - phase: 7
+    title: Shadow, then canary on a low-risk slice
+    steps:
+      - >-
+        Run the challenger in shadow for four weeks, logging the decision it would have made next to the live decision,
+        and compare fraud caught and false declines that would have occurred.
+      - >-
+        Canary on one low-risk merchant category with the false-decline rate as a hard stop, and review every declined
+        genuine customer in the first week by hand.
+      - >-
+        Ramp through categories, holding the unbiased review slice constant so measurement stays honest.
+    deliverable: A signed-off ramp plan with the false-decline stop condition and weekly review of canary declines.
+  - phase: 8
+    title: Watch for drift and attack adaptation
+    steps:
+      - >-
+        Monitor score distribution, feature distributions and the fraud rate in the unbiased slice daily, with an alert
+        when fan-out or merchant drift features shift after a new attack pattern.
+      - >-
+        Prepare the playbook for the failures already listed: flash-sale spikes handled by per-merchant adaptive baselines
+        and an event calendar, and rotating mule devices handled by cluster-level risk.
+      - >-
+        Keep the chargeback delay in mind when reading dashboards: a fraud-rate fall in the last 30 days is not good news
+        until the labels mature.
+    deliverable: A drift dashboard, an attack-response runbook and a rule for reading immature labels.
+  - phase: 9
+    title: Size and harden for 24 million decisions a day
+    steps:
+      - >-
+        Provision for 3,300 requests per second against a 2,200 peak using six 8-vCPU pods, three feature-store shards at
+        about 8,900 lookups per second each and a 12-partition event bus.
+      - >-
+        Keep three active-active regions with the card-token shard colocated with the scorer, so no auth call crosses a
+        region, and rehearse a regional loss.
+      - >-
+        Plan storage at roughly 69 GB a day, 27 TB retained over 400 days, with PAN-free records so the lakehouse stays out
+        of PCI scope.
+    deliverable: A capacity plan, a regional failover test result and a retention policy outside PCI scope.
+  - phase: 10
+    title: Run the weekly loop and decide when to stop
+    steps:
+      - >-
+        Retrain weekly on matured windows plus the unbiased slice, with the previous model as the challenger's baseline and
+        the same shadow-first rule for every promotion.
+      - >-
+        Track fraud basis points, false-decline rate and cost per thousand decisions at about $0.006, and review the cost of
+        an extra feature against the fraud it removes.
+      - >-
+        Stop adding model complexity when an extra point of PR-AUC no longer moves fraud basis points on the unbiased slice,
+        and spend the effort on label quality and attack response instead.
+    deliverable: A weekly retrain runbook and a stop rule tied to the unbiased-slice fraud number.

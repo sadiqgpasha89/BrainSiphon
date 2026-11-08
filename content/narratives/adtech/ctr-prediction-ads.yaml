@@ -1,0 +1,285 @@
+problemStatement:
+  situation: >-
+    Every time a page loads, the ad server has a few hundred candidate ads and about 8 milliseconds to price them. The
+    auction needs one number per candidate: the probability that this user, on this placement, at this moment, will click
+    this ad. Bids are multiplied by that probability to decide who wins and what they pay, so the number is not a ranking
+    score. It is a price input. The model sees billions of sparse identifiers, a feedback loop that only shows clicks on
+    ads it chose to show, and a requirement to keep learning through the day as ads and creatives appear.
+  whyHard: >-
+    Calibration matters more than ranking: an AUC of 0.8 with scores that are off by 20 percent misprices every auction
+    and moves money between advertisers and the platform. Logs are biased by the old ranking, because ads shown at the top
+    get more clicks and the model learns to repeat the previous ordering unless position is modelled and a randomised
+    exploration slice is kept. Accidental taps on mobile banners inflate CTR and reward misleading creatives. New ads have
+    no history, and a daily retrain starves them. And the serving budget leaves about 2 ms for inference over embedding
+    tables too large for one machine, with versions that must match between training and serving or scores jump.
+  scaleAndStakes: >-
+    With 10 million registered and 3 million daily active users the system scores about 120 million candidate sets a day,
+    1,389 per second on average and 11,000 at peak, provisioned for 17,000 on about 28 L4 or L40S class GPUs, at an
+    estimated $52.8K a month or $0.015 per thousand decisions. The cost is small against the revenue on the table: a half
+    percent miscalibration is a persistent pricing error across every auction, and advertisers notice it in their return
+    on spend before the platform notices it in its own dashboards.
+  successLooksLike: >-
+    Offline, normalised cross-entropy and log-loss improve over the baseline, AUC does not fall, and calibration is within a
+    small tolerance for each placement. Online, the launch is judged on revenue per mille, with advertiser CTR satisfaction
+    as the guardrail so that revenue is not bought with misleading creatives. The scorer stays inside its 2 ms inference
+    budget and the 8 ms total, and new ads reach a fair amount of exposure within hours.
+  risks:
+    - >-
+      An embedding table is updated while serving, so a fraction of requests use the new version and the rest the old, and
+      scores jump for that share of traffic.
+    - >-
+      A new creative format has no history, its CTR is underestimated, and it never receives exposure to correct that.
+    - >-
+      Accidental taps on mobile banners are counted as clicks, inflating CTR and rewarding misleading creatives.
+    - >-
+      A site redesign changes the placement mix and calibration drifts for one segment while the average still looks fine.
+
+solutionApproach:
+  thesis: >-
+    Start with logistic regression on hashed feature crosses, which is cheap, fast to train and a tough baseline, and
+    replace it with a DCN-v2 network over sharded embedding tables only where it improves normalised cross-entropy and
+    holds calibration per placement. Online learning keeps the head fresh through the day, a per-segment calibration layer
+    converts scores into prices the auction can trust, and position is modelled in training and neutralised at serving. The
+    objective that decides success is revenue per mille with advertiser satisfaction held steady, not AUC.
+  moves:
+    - move: Clean the label before improving the model
+      detail: >-
+        Filter clicks with very short dwell time, remove accidental taps from labels and from historical CTR features, and
+        count only impressions that occurred before the one being scored.
+    - move: Handle position as a variable, not a nuisance
+      detail: >-
+        Train with the slot as an input, set it to the top slot at serving so every candidate is compared as if it were
+        shown first, and keep a small randomised exploration slice to measure position effects without the old
+        ranking's bias.
+    - move: Let the network learn the crosses
+      detail: >-
+        Hash sparse identifiers into embeddings and learn feature interactions with DCN-v2, because hand-made crosses
+        cannot cover billions of ad and user pairs, while keeping ad-user embedding interaction, smoothed historical CTR,
+        context and ad age as the main signals.
+    - move: Update the head every hour
+      detail: >-
+        Apply FTRL-style online updates to the model head and ship embedding tables as versioned atomic swaps, so new ads
+        are scored with current information and version skew never occurs mid-request.
+    - move: Calibrate where the money is priced
+      detail: >-
+        Fit isotonic calibration per segment and placement, refresh it hourly, and alarm on the ratio of expected to
+        observed clicks.
+    - move: Give new ads a chance
+      detail: >-
+        Reserve an exploration budget and content-based priors for ads and formats with no history, and track their
+        exposure separately.
+  deliberatelyNot:
+    - >-
+      Use impression identifiers, advertiser name text or raw user agent strings: the first is random, the second
+      duplicates the advertiser identifier and the third hashes thousands of rare variants into noise when device class
+      already carries the signal.
+    - >-
+      Retrain only daily: new ads cold-start badly, and the hour matters when campaigns launch.
+    - >-
+      Learn click rates from logs ranked by the old model without modelling position: the model would learn the old
+      ranking and punish ads that were never shown at the top.
+    - >-
+      Optimise AUC alone: a well-ranked but miscalibrated score misprices every auction, and AUC cannot see it.
+  proof: >-
+    Offline, compare against the logistic baseline on normalised cross-entropy, log-loss and AUC on a strictly later time
+    window, with calibration plotted per placement and segment. Online, run the new model on a small percentage of auctions
+    with a matched control, and judge revenue per mille and advertiser CTR satisfaction, checking that expected clicks
+    equal observed clicks within each placement before widening.
+
+architectureRationale:
+  - stage: Ad request
+    tech: ad server
+    role: >-
+      Receives the page, user and placement context, assembles the candidate ads and enforces the 8 ms deadline for the
+      rest of the pipeline.
+    carries: >-
+      Context features such as placement, device and hour are known at request time and attached here, and the exploration
+      slice assignment is made here so it is random and logged.
+    budget: 0.6 ms of 8 ms
+    onFailure: >-
+      If scoring is late, the ad server falls back to a precomputed default price per placement, so a page always renders
+      with an ad.
+  - stage: Feature hashing
+    tech: in-process
+    role: >-
+      Converts sparse categorical values into hashed identifiers and forms the crossed inputs the model needs.
+    carries: >-
+      The same hashing must be used in training and in serving, and the position input is set to the top slot here, to
+      avoid double counting the slot where the ad was previously shown.
+    budget: 0.8 ms of 8 ms
+    onFailure: >-
+      A feature missing at request time is encoded as a missing value rather than zero, and the rate of missing values is
+      alarmed because it signals a pipeline break.
+  - stage: Embedding lookup
+    tech: sharded tables
+    role: >-
+      Fetches the embeddings for the user, ad, advertiser and context identifiers from tables sharded across hosts.
+    carries: >-
+      Version skew is the key edge case: tables are swapped atomically as a single version, canaried on a share of traffic,
+      and the version is stamped on the response.
+    budget: 1.6 ms of 8 ms
+    onFailure: >-
+      A shard timeout returns the default embedding for that identifier family and increments a counter, and sustained
+      misses switch the request to the baseline model.
+  - stage: DCN-v2 scorer
+    tech: ONNX INT8
+    role: >-
+      Computes the raw click logit for each candidate from the embeddings and context, quantised to run on CPU or small
+      GPUs within the 2 ms inference budget.
+    carries: >-
+      The head is the part updated online, so it must be small enough to update hourly and validate before it takes
+      traffic.
+    budget: 1.6 ms of 8 ms
+    onFailure: >-
+      An over-budget batch drops to the logistic baseline for the remaining candidates, and the share of requests on the
+      baseline is a service-level indicator.
+  - stage: Calibration layer
+    tech: per-segment isotonic
+    role: >-
+      Maps each raw score to a probability for its placement and segment, so that predicted clicks equal observed clicks.
+    carries: >-
+      This is where a site redesign is absorbed: the layer is refreshed hourly and an alarm compares expected and observed
+      clicks, since the auction multiplies this output by the bid.
+    budget: 1.6 ms of 8 ms
+    onFailure: >-
+      A stale or missing calibrator falls back to the last good one for that segment, and a segment drifting past tolerance
+      is held to a conservative price.
+  - stage: Candidate ranking
+    tech: auction
+    role: >-
+      Multiplies calibrated click probability by the bid, ranks candidates, applies reserve prices and selects the winners.
+    carries: >-
+      The revenue per mille metric is produced here, and an exploration slice is honoured so a new ad can win a small share
+      of auctions regardless of its estimated score.
+    budget: 1.2 ms of 8 ms
+    onFailure: >-
+      If the auction cannot complete, a default winner from the precomputed fallback is returned, and the incident is
+      logged against the advertiser to keep billing correct.
+  - stage: Click logs
+    tech: Kafka
+    role: >-
+      Streams impressions, clicks and dwell times with the model version and position into the training and calibration
+      pipelines.
+    carries: >-
+      Short-dwell filtering of accidental taps happens in this stream, and the model version recorded here lets every
+      later analysis separate old and new behaviour.
+    budget: 0.4 ms of 8 ms
+    onFailure: >-
+      Logging is asynchronous and durable, and a gap in the stream pauses the online head updates rather than letting them
+      train on partial data.
+
+e2e:
+  - phase: 1
+    title: Agree what the number is used for
+    steps:
+      - >-
+        Meet auction, pricing and advertiser-success owners to confirm that the prediction is multiplied by the bid, which
+        makes calibration by placement the first requirement.
+      - >-
+        Set the business metric as revenue per mille, with advertiser CTR satisfaction as the guardrail, and agree the
+        tolerance for calibration error by placement.
+      - >-
+        Choose the baseline as logistic regression on hashed feature crosses.
+    deliverable: A requirements note linking calibration tolerance, revenue per mille and the guardrail.
+  - phase: 2
+    title: Make the click label trustworthy
+    steps:
+      - >-
+        Analyse click dwell time on mobile banners to identify accidental taps, and set the filter that removes them from
+        labels and from historical CTR.
+      - >-
+        Measure how much of the logged data was shown under the old ranking, and estimate position effects with the small
+        randomised slice.
+      - >-
+        Define the training window and the strictly later test window.
+    deliverable: A label definition, a position-effect estimate and fixed time windows.
+  - phase: 3
+    title: Build features that exist at request time
+    steps:
+      - >-
+        Build ad-user embeddings, Bayesian-smoothed CTR by ad and placement, context features and ad age, each computed
+        only from earlier impressions.
+      - >-
+        Set the position input to the top slot at serving time and test that this is consistent with training.
+      - >-
+        Drop impression identifiers, advertiser name text and raw user agent strings.
+    deliverable: A feature set verified for request-time availability and position handling.
+  - phase: 4
+    title: Establish the logistic baseline
+    steps:
+      - >-
+        Train logistic regression on hashed crosses and record normalised cross-entropy, log-loss, AUC and calibration by
+        placement.
+      - >-
+        Review calibration plots for the top placements and segments to locate where the baseline misprices.
+      - >-
+        Keep it deployed as the fallback model for the serving path.
+    deliverable: A baseline with calibration plots and a recorded reference score.
+  - phase: 5
+    title: Train DCN-v2 and calibrate it
+    steps:
+      - >-
+        Train DCN-v2 over sharded embeddings and compare it with the baseline on normalised cross-entropy and AUC on the
+        later window.
+      - >-
+        Fit isotonic calibration per segment and placement, and check expected against observed clicks in each.
+      - >-
+        Inspect cold-start behaviour for new ads and new creative formats, and add exploration and content priors.
+    deliverable: A calibrated candidate and a cold-start plan with exploration budget.
+  - phase: 6
+    title: Fit the 8 ms path
+    steps:
+      - >-
+        Allocate the budget stage by stage, 0.8 ms hashing, 1.6 ms embeddings, 1.6 ms scoring, 1.6 ms calibration, and
+        measure p99 at 17,000 requests per second.
+      - >-
+        Quantise the scorer to INT8 and verify calibration and AUC are not materially changed.
+      - >-
+        Test the fallbacks: shard timeout, over-budget batch, stale calibrator and failed auction.
+    deliverable: A load-tested path with a quantisation check and tested fallbacks.
+  - phase: 7
+    title: Ship embeddings and models as versions
+    steps:
+      - >-
+        Implement atomic embedding swaps with a version stamp on each response and a canary on a small share of auctions.
+      - >-
+        Run the new model on a small percentage of auctions with a matched control, comparing revenue per mille and
+        expected-versus-observed clicks.
+      - >-
+        Widen only while the advertiser satisfaction guardrail holds.
+    deliverable: A versioned release process with a canary readout.
+  - phase: 8
+    title: Watch calibration continuously
+    steps:
+      - >-
+        Alarm on the ratio of expected to observed clicks for each placement and segment, with an hourly refresh of the
+        calibrator.
+      - >-
+        Prepare runbooks for the known failures: embedding version skew, new creative formats, accidental taps and
+        placement mix changes after redesigns.
+      - >-
+        Track exposure of new ads, so the cold-start fix is visible and not assumed.
+    deliverable: A calibration dashboard, hourly alerts and failure runbooks.
+  - phase: 9
+    title: Scale to 120 million scorings a day
+    steps:
+      - >-
+        Provision for 17,000 requests per second, with about 28 L4 or L40S class GPUs, three embedding shards at about
+        44,000 lookups per second each and 12 event partitions.
+      - >-
+        Replicate embedding tables per region with versioned swaps coordinated across regions.
+      - >-
+        Plan 172 GB a day of logs and 67 TB retained over 400 days, with user identifiers pseudonymised.
+    deliverable: A capacity plan and a regional embedding rollout design.
+  - phase: 10
+    title: Run the loop and decide when to stop
+    steps:
+      - >-
+        Update the head hourly and retrain the full model on a fixed cadence, promoting only on normalised cross-entropy
+        and calibration gates.
+      - >-
+        Track cost at about $0.015 per thousand scorings against revenue per mille gains.
+      - >-
+        Stop growing the network when an extra point of AUC no longer changes revenue per mille, and spend effort on
+        label quality, exploration and calibration instead.
+    deliverable: A retraining runbook and a stop rule tied to revenue per mille.

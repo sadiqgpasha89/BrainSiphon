@@ -1,0 +1,309 @@
+problemStatement:
+  situation: >-
+    Sepsis kills quickly and is treatable when caught early: each hour of delay before antibiotics measurably raises
+    mortality. On a ward, the signs are scattered across vitals charted by different nurses at different times, lab
+    results that arrive later than they were drawn, and a clinician's gut feeling that is never written down. The system
+    reads that stream continuously and asks a charge nurse to look at one patient hours before the textbook criteria are
+    met. It is only useful if the nurse believes the alert, because the whole value is a person acting earlier.
+  whyHard: >-
+    The label itself is contested: billing codes lag and misplace onset by hours, so the ground truth has to be
+    Sepsis-3 criteria with clinician-adjudicated onset times. The data are irregular, with vitals every few hours on a
+    ward and every few minutes in intensive care, and the pattern of missing readings is itself informative because
+    clinicians measure more when they are worried, which leaks suspicion into the features. Treatment interrupts the
+    outcome, since a patient flagged and treated early never reaches the onset the label records. And alert fatigue is the
+    real constraint: a model that fires each shift is switched off within a week, however good its AUROC.
+  scaleAndStakes: >-
+    With 10 million registered users and 3 million active, the system consumes about 72 million vital, lab and charting
+    events a day, 833 per second on average and 5,000 at peak, and is provisioned for 7,500. The run cost is about $6.3K a
+    month, or $0.003 per thousand decisions, trivial next to the stakes. The cost of a missed case is a death or an
+    intensive-care admission, and the cost of a noisy system is that nurses stop reading alerts, including the true
+    ones. Because it influences care, it is a medical device with change control, not just a service.
+  successLooksLike: >-
+    Offline, the model delivers useful lead time, measured in hours before onset, at the agreed alert burden of 0.5 alerts
+    per 100 patient-days, with positive predictive value at the fixed sensitivity that clinical leadership accepts.
+    Online, the launch is judged on time to antibiotics after an alert, while sepsis mortality and the alert override
+    rate are the guardrails: if nurses override more than a set share of alerts, the system is losing trust and the
+    rollout stops. The hard ceiling on burden is under one alert per ten patient-days, and the evaluation point sits well
+    inside it.
+  risks:
+    - >-
+      A new laboratory analyser reports lactate in different units for some wards, shifting values tenfold, and the model
+      reads a healthy ward as critical or the reverse.
+    - >-
+      A threshold change after retraining raises the number of alerts, and clinicians quietly start ignoring them, which
+      is a safety failure that no accuracy metric reports.
+    - >-
+      Retrospective validation on one hospital: charting habits, case mix and lab turnaround differ across sites, so a
+      model that looks excellent at the first hospital can be miscalibrated at the second.
+    - >-
+      Labels set after clinicians intervened are partly caused by the intervention, which makes the retrospective data
+      look kinder to the model than live use will be.
+
+solutionApproach:
+  thesis: >-
+    Start from the modified early warning score with fixed thresholds, because it is what clinicians already trust and
+    it is the number any new system must beat on lead time. Then move to a gradient-boosted model on irregularly sampled
+    features with a GRU-D branch that handles missing readings explicitly, but only after it gives longer lead time at the
+    same alert burden on patient-level held-out stays, and ship it with per-unit thresholds calibrated to what each ward's
+    nurses will tolerate. The aim is an alert that arrives early, rarely and with a reason.
+  moves:
+    - move: Settle the label with clinicians before modelling
+      detail: >-
+        Define onset by Sepsis-3 with adjudicated times, have two clinicians re-adjudicate a sample of a few hundred
+        stays to measure agreement, and write down how treated-early patients are handled so the label does not punish
+        success.
+    - move: Make every feature true at the time it was known
+      detail: >-
+        Use result time rather than draw time for labs, charted time rather than clinical time for vitals, and carry
+        values forward only from past readings with an age stamp. Lactate level and six-hour trend, three-hour vital slopes
+        and SIRS or qSOFA drift all follow this rule.
+    - move: Use the missingness carefully
+      detail: >-
+        The number of vitals charted in the last four hours is a real signal of clinician concern, so include it, but
+        test its stability across wards and hospitals and drop it where charting habits differ.
+    - move: Split by patient, not by row
+      detail: >-
+        Hold out whole stays, and later whole hospitals, so hours from one patient never sit in both training and test,
+        and report lead time at fixed alert burden rather than AUROC over all hours.
+    - move: Set thresholds per unit with nurse leaders
+      detail: >-
+        Calibrate the alert threshold for each ward to a burden its nursing lead has agreed, cap alerts per shift, and
+        change thresholds in stages with a burden dashboard rather than in one release.
+    - move: Treat it as a regulated device
+      detail: >-
+        Version the model and its thresholds, record which version scored each alert, and run every change through the
+        change-control process that a software-as-a-medical-device product requires.
+  deliberatelyNot:
+    - >-
+      Admission diagnosis text: it encodes the admitting clinician's suspicion, which already knows the label, so the
+      model would look good by repeating what a human thought.
+    - >-
+      Antibiotic orders as input: an order placed after suspicion leaks the label and would make the system useless in the
+      exact case it exists for.
+    - >-
+      Length of stay so far: longer stays correlate with sepsis only because sicker patients stay longer, and it would
+      make the model drift as discharge practices change.
+    - >-
+      Optimising AUROC and shipping whatever threshold falls out: late alerts carry no clinical value yet inflate AUROC,
+      and the threshold is the product.
+  proof: >-
+    Offline, show longer lead time than the early warning score at the same 0.5 alerts per 100 patient-days, on stays held
+    out at the patient level and then at a second hospital, with positive predictive value at the agreed sensitivity.
+    Online, run silently for weeks so alerts are logged but not shown, compare against clinician-recognised cases, then
+    switch on ward by ward with time to antibiotics as the benefit and the override rate and sepsis mortality as stop
+    conditions.
+
+architectureRationale:
+  - stage: HL7 FHIR stream
+    tech: integration engine
+    role: >-
+      Receives vitals, lab results, medication and charting events from the electronic health record as HL7 and FHIR
+      messages and normalises them to one schema with event time and arrival time.
+    carries: >-
+      The new-analyser unit change lives here: a unit-normalisation layer with range checks at ingest stops a tenfold
+      lactate shift reaching the model, and it records both result time and draw time for the leakage rules downstream.
+    budget: 8 ms of 80 ms
+    onFailure: >-
+      Messages are persisted before processing, so an engine restart replays them in order; an unrecognised unit or an
+      out-of-range value is quarantined and flagged rather than silently coerced.
+  - stage: Feature aggregator
+    tech: Flink windows
+    role: >-
+      Maintains per-patient rolling windows for slopes, reading density and composite score drift, and carries values
+      forward with an age stamp.
+    carries: >-
+      Irregular sampling and sensor dropout are handled here. A pulse oximeter unplugged for hours must not produce a
+      confident feature, so staleness is capped and passed to the model as a feature in its own right.
+    budget: 17 ms of 80 ms
+    onFailure: >-
+      State is checkpointed per patient; on recovery windows are rebuilt from the durable stream, and a patient with no
+      recoverable state is scored as unknown and not as low risk.
+  - stage: Sepsis scorer
+    tech: GRU-D plus GBDT
+    role: >-
+      Combines a gradient-boosted model over engineered features with a GRU-D sequence branch that learns how to decay
+      stale readings, and outputs a calibrated risk with the top contributing features.
+    carries: >-
+      Explainability is a constraint, so the clinician sees which signals moved, such as the lactate trend or the
+      respiratory rate slope. The per-unit calibration also sits on this stage's output.
+    budget: 34 ms of 80 ms
+    onFailure: >-
+      If the scorer is unavailable the modified early warning score runs as a fallback, so a ward is never left with no
+      protection, and the fallback is labelled on the alert.
+  - stage: Alert policy
+    tech: per-unit thresholds
+    role: >-
+      Turns risk into an alert only when it crosses the ward's threshold, suppresses repeats for the same patient, and
+      enforces the per-shift cap.
+    carries: >-
+      The alert-fatigue budget is enforced here: thresholds are per unit, changed in stages, and re-baselined when a
+      patient is transferred, because a change of ward changes charting patterns and makes scores jump.
+    budget: 8 ms of 80 ms
+    onFailure: >-
+      A bad threshold push is caught by the burden dashboard and reverted; an outage defaults to the previous
+      thresholds, never to alerting on everyone.
+  - stage: Clinician alert
+    tech: EHR in-basket
+    role: >-
+      Delivers the alert to the right nurse inside the tools they already use, with the reasons and the trend, and records
+      when it was seen.
+    carries: >-
+      Time to antibiotics is only reduced if the alert lands where the clinician works, with an explanation short enough
+      to read in seconds.
+    budget: off the critical path
+    onFailure: >-
+      An undelivered alert is retried and escalated to the charge nurse; delivery latency and acknowledgement time are
+      monitored as part of the service level.
+  - stage: Review and feedback
+    tech: clinician response
+    role: >-
+      Captures whether the clinician acted, overrode or dismissed the alert, and why, in one tap.
+    carries: >-
+      The override rate is the online trust metric, and the reason text is the best source of the next round of feature
+      ideas and label corrections.
+    budget: off the critical path
+    onFailure: >-
+      Missing feedback is not treated as agreement; the response rate is itself tracked so a silent ward is investigated.
+  - stage: Outcome labels
+    tech: adjudicated cases
+    role: >-
+      Stores each alert, the model version and the later adjudicated outcome, joined once clinicians have reviewed the
+      stay.
+    carries: >-
+      Labels set after intervention are partly caused by it, so the record keeps whether and when treatment started, which
+      lets later analyses separate prevented cases from never-were cases.
+    budget: 13 ms of 80 ms
+    onFailure: >-
+      Adjudication lags by weeks, so a late label never blocks scoring; retraining waits for adjudicated windows and
+      reports how many cases are still pending.
+
+e2e:
+  - phase: 1
+    title: Agree the clinical question and the alert burden
+    steps:
+      - >-
+        Meet the sepsis committee, ward nursing leads and informatics to fix what the system is for: an earlier alert
+        about the patients clinicians would otherwise recognise late, at a burden of 0.5 alerts per 100 patient-days.
+      - >-
+        Write down the benefit being sought, shorter time to antibiotics, and the harms to guard against, a rising override
+        rate and any change in sepsis mortality.
+      - >-
+        Confirm the regulatory path early, since changes to a model that influences care need change control and a defined
+        intended use.
+    deliverable: A one-page intended-use statement with the burden target, benefit metric and stop conditions.
+  - phase: 2
+    title: Build the label with clinicians
+    steps:
+      - >-
+        Define onset by Sepsis-3 criteria and have clinicians adjudicate onset times for a sample of stays, measuring
+        agreement between two reviewers.
+      - >-
+        Decide how treated-early patients are represented, since a patient flagged and treated never reaches the onset the
+        label records.
+      - >-
+        Compare billing-code sepsis with adjudicated onset to document how many hours billing codes misplace the event.
+    deliverable: An adjudicated label set with measured agreement and a written treated-early rule.
+  - phase: 3
+    title: Turn the stream into features that were known at the time
+    steps:
+      - >-
+        Build lactate level and six-hour trend, three-hour slopes of heart rate, respiratory rate and systolic pressure,
+        four-hour reading density and three-hour composite score drift, all keyed on result and charted times.
+      - >-
+        Add an age stamp to every carried-forward value and cap how stale a value the model may trust, to cover sensor
+        dropout.
+      - >-
+        Drop admission diagnosis text, antibiotic orders and length of stay so far, because each one leaks suspicion or
+        confounds severity.
+    deliverable: A feature pipeline verified by replaying historical stays and matching the online values.
+  - phase: 4
+    title: Beat the early warning score
+    steps:
+      - >-
+        Implement the modified early warning score with fixed thresholds and measure its lead time at the target alert
+        burden on held-out stays.
+      - >-
+        Train a gradient-boosted model on the irregular features and add a GRU-D branch, comparing lead time and positive
+        predictive value at fixed sensitivity.
+      - >-
+        Keep the more complex model only if it clears the early warning score by a margin larger than the variance across
+        resampled patient groups.
+    deliverable: A baseline and a candidate compared on lead time at fixed burden, with variance estimates.
+  - phase: 5
+    title: Validate across patients, wards and hospitals
+    steps:
+      - >-
+        Split by whole stays, never by row, and report lead time at 0.5 alerts per 100 patient-days alongside positive
+        predictive value at fixed sensitivity.
+      - >-
+        Test on a second hospital with its own charting habits, and check the stability of the reading-density feature
+        site by site before trusting it.
+      - >-
+        Check calibration by ward and by patient subgroup and look at cases where the alert came after clinicians had
+        already acted, since those carry no value.
+    deliverable: A validation report with held-out-hospital results and subgroup calibration.
+  - phase: 6
+    title: Fit the 80 ms path and the failure modes
+    steps:
+      - >-
+        Allocate the budget: 8 ms to ingest, 17 ms for windows, 34 ms for the scorer, 8 ms for policy, and test p99 at the
+        7,500 requests per second provisioned.
+      - >-
+        Test the three degradations that matter clinically: stream engine restart, scorer outage with the early warning
+        score as fallback, and a missing patient state scored as unknown.
+      - >-
+        Build the unit-normalisation layer and run a replay with a deliberately changed lactate unit to confirm it is
+        caught at ingest.
+    deliverable: A load-tested path with proven fallbacks and a unit-change replay test.
+  - phase: 7
+    title: Silent mode, then ward by ward
+    steps:
+      - >-
+        Run silently for several weeks, logging alerts the model would have fired without showing them, and compare
+        against cases clinicians recognised on their own.
+      - >-
+        Switch on in one ward with the nursing lead, with a per-shift alert cap and a one-tap feedback control, and review
+        every alert for the first two weeks.
+      - >-
+        Extend ward by ward only while the override rate stays below the agreed limit and time to antibiotics moves in the
+        right direction.
+    deliverable: A staged enablement plan with an override-rate stop condition and weekly clinical review.
+  - phase: 8
+    title: Watch the burden and the trust
+    steps:
+      - >-
+        Track alerts per 100 patient-days by ward, the override rate and the time from alert to acknowledgement as the
+        first-line health metrics, not model accuracy.
+      - >-
+        Prepare runbooks for the known failures: analyser unit change, threshold changes causing fatigue, patient
+        transfers, and long sensor dropouts.
+      - >-
+        Review every missed case and every dismissed alert in a monthly clinical safety meeting and feed corrections into
+        the labels.
+    deliverable: A burden and trust dashboard with a monthly safety review and failure runbooks.
+  - phase: 9
+    title: Scale to 72 million events a day
+    steps:
+      - >-
+        Partition the stream by patient across 12 partitions and size three feature-store shards at about 20,000
+        lookups per second each, with six 8-vCPU scorer pods behind 7,500 requests per second of capacity.
+      - >-
+        Plan for 309 GB a day of raw events and 121 TB retained over 400 days, with identifiers handled according to the
+        hospital's data-protection rules.
+      - >-
+        Run active-active across regions only where the hospital's data-residency terms allow it, and rehearse the
+        fallback to the early warning score during a regional loss.
+    deliverable: A capacity plan, a data-residency review and a regional loss rehearsal.
+  - phase: 10
+    title: Operate under change control and decide when to stop
+    steps:
+      - >-
+        Retrain on adjudicated windows on a fixed schedule, and send each new version through the change-control process
+        with its validation report before any threshold changes.
+      - >-
+        Track cost at about $6.3K a month against the clinical benefit, the lead time gained and the time to antibiotics
+        achieved, with ward leaders in the review.
+      - >-
+        Stop tuning the model when additional lead time at the same burden no longer reaches clinicians, and invest in
+        alert delivery and workflow instead.
+    deliverable: A change-control retraining runbook and a benefit review with clinical leadership.

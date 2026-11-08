@@ -51,6 +51,14 @@ against the strict Zod schema (`src/schemas/usecase.schema.ts`) — **a missing 
 
 > The capacity table is a transparent back-of-envelope model (assumptions are printed on every page), **not** a quote.
 
+## Problem statement, solution approach and end-to-end breakdown
+
+Every use case has a problem statement, a solution approach, a stage-by-stage architecture rationale and a ten-phase
+end-to-end breakdown. The 8 pilot use cases carry **hand-written** versions in `content/narratives/<domain>/<key>.yaml`
+(the page marks them "hand-written"); the other 492 are **generated** from each use case's own objective, constraints,
+signals, traps, metrics and pipeline stages, and are marked "generated". An authored file replaces the generated text for
+that use case; its rationale table must list exactly the pipeline's stages in order, which the build checks.
+
 ## Build playbooks (all 500: 8 hand-written, 492 generated)
 
 A blueprint explains *what a good system looks like*. A **Build playbook** is what an intermediate engineer needs to
