@@ -56,6 +56,31 @@ const PALETTE: Record<Mode, Record<string, string | boolean>> = {
   },
 };
 
+/**
+ * The generators emit dark-theme `classDef` fills for the highlighted nodes (model, loop, agent, guard). The stored source stays
+ * as generated (it is also what the .md export carries), and the fills are swapped here for the current theme.
+ */
+const CLASS_DEFS: Record<Mode, Record<string, string>> = {
+  dark: {
+    model: 'fill:#0b2e25,stroke:#34d399,color:#d1fae5',
+    loop: 'fill:#1e1b3a,stroke:#818cf8,color:#e0e7ff',
+    agent: 'fill:#1e1b3a,stroke:#818cf8,color:#e0e7ff',
+    guard: 'fill:#33121a,stroke:#fb7185,color:#ffe4e6',
+  },
+  light: {
+    model: 'fill:#d1fae5,stroke:#047857,color:#064e3b',
+    loop: 'fill:#e0e7ff,stroke:#4338ca,color:#312e81',
+    agent: 'fill:#e0e7ff,stroke:#4338ca,color:#312e81',
+    guard: 'fill:#ffe4e6,stroke:#be123c,color:#881337',
+  },
+};
+
+export const themeDiagram = (code: string, mode: Mode): string =>
+  code.replace(
+    /^(\s*)classDef (model|loop|agent|guard)\b.*$/gm,
+    (_m, ind: string, name: string) => `${ind}classDef ${name} ${CLASS_DEFS[mode][name]}`,
+  );
+
 let mermaidMod: Promise<MermaidApi> | null = null;
 
 /** Mermaid keeps one global config, so (re)apply the palette for the current theme before each render. */
@@ -110,7 +135,7 @@ function MermaidInner({ code, label }: { code: string; label: string }) {
     const render = async () => {
       try {
         const mermaid = await loadMermaid(mode);
-        const out = await mermaid.render(`mmd${uid}${mode}`, code);
+        const out = await mermaid.render(`mmd${uid}${mode}`, themeDiagram(code, mode));
         if (!cancelled) setSvg(out.svg);
       } catch (e) {
         if (!cancelled) setFailed(e as Error);
