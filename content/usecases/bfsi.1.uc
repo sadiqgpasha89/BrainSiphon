@@ -114,7 +114,7 @@ prod: Table-structure model with layout transformer, line-to-account mapper with
 pipe: Statement intake @ email and portal upload ; Table detector @ layout model ; Cell reader @ OCR with constrained decoding ; Account mapper @ embedding classifier ; Validator @ accounting rules engine ; Analyst correction UI @ review tool ; Spread store @ warehouse with lineage
 edge: Handwritten amendments | corrected figures are written on printed statements | Flag low-confidence handwriting and route to an analyst
 edge: Consolidated versus entity statements | numbers from the group are spread as the borrower's | Detect scope from the title page and ask when ambiguous
-edge: Hyperinflation or restated accounts | values need adjustment | Capture the standard and flag for analyst treatment
+edge: Hyperinflation or restated accounts | A restated or hyperinflation-adjusted statement reports values on a different basis and the spread mixes two bases | Capture the accounting standard and restatement flag on each statement and route those files to an analyst for treatment
 off: Cell exact-match accuracy ; Share of statements that foot and balance
 on: Analyst minutes per statement ; Rating rework caused by spreading errors
 gap: Clean statements in training hide scanner noise in production ; Same-auditor leakage inflates layout accuracy
@@ -210,7 +210,7 @@ prod: Ordinal gradient boosting with monotone constraints and macro covariates, 
 pipe: Rating history store @ credit risk warehouse ; Financial spread feed @ spreading system ; Feature builder @ Spark ; Migration model @ ordinal boosting ; Calibrator @ isotonic per class ; Review queue @ rating committee tool ; Back-test archive @ lakehouse
 edge: Merger or demerger | the entity changes and history no longer applies | Use a legal-entity graph and restart features on the new entity
 edge: Rating policy change | the scale or criteria change mid-sample | Map old to new ratings and cap training to the consistent window
-edge: Rare high-grade downgrades | few events to learn from | Pooling with sector priors and credible-interval reporting
+edge: Rare high-grade downgrades | Very few high-grade obligors have been downgraded, so the model has almost no examples to learn from | Pool with sector priors and report credible intervals so a low estimate is not read as safety
 off: Ranked probability score ; Calibration by rating class
 on: Share of downgrades flagged at least one quarter early ; Expected loss variance
 gap: Pooling cycles in a random split understates downturn risk ; Overrides in history hide the model's own errors
@@ -304,7 +304,7 @@ noise: Currency pair labels | not informative for pass-through
 base: Static repricing gap analysis with parallel shocks, because it is standard in ALM.
 prod: Product-level behavioural models for beta and prepayment combined with a dynamic balance-sheet simulator and scenario fan charts, with attribution of NII change to drivers.
 pipe: Balance sheet snapshot @ finance data mart ; Behaviour models @ boosting per product ; Scenario curve engine @ treasury ; NII simulator @ Python on Spark ; Attribution engine @ variance decomposition ; ALCO dashboard @ BI tool ; Run archive @ lakehouse
-edge: Negative rate regime | model assumptions break | Floors and regime flag in the behaviour models
+edge: Negative rate regime | Behavioural assumptions such as deposit pass-through break when rates go below zero | Apply floors in the behaviour models and a regime flag that moves the forecast to a stress mode
 edge: Large one-off prepayments | a pool pays out in one month | Event flag and exclusion from behaviour estimation
 edge: Hedge accounting changes | the effective rate depends on hedges | Include the hedge book in the simulator
 off: NII forecast error by quarter ; Beta calibration
@@ -352,9 +352,9 @@ noise: Currency | indirect
 base: Rank exposures by RWA density and review manually, because treasury and finance already do that.
 prod: A constrained optimiser (mixed integer program) over candidate actions with RWA and income models, and a learned execution-cost estimator, giving a ranked plan with trade-offs.
 pipe: Exposure and RWA feed @ risk engine ; Action generator @ rules over book ; Cost estimator @ boosting ; Optimiser @ MIP solver ; Capital committee pack @ BI ; Execution tracker @ workflow ; Plan archive @ lakehouse
-edge: Rule change mid-quarter | RWA calculation changes | Parameterised rule sets and rerun
-edge: Client refusal | a planned sale is blocked | Re-solve with the exclusion
-edge: Market closure | execution costs spike | Cost multipliers and timing windows
+edge: Rule change mid-quarter | The RWA calculation changes part-way through the quarter and the optimiser plans on rules that no longer apply | Keep rule sets parameterised with effective dates and rerun the plan when a rule changes
+edge: Client refusal | A planned sale or reduction is blocked by the client and the plan no longer adds up | Re-solve the plan with the blocked action excluded and show the effect on the capital target
+edge: Market closure | A market closes or liquidity dries up and execution costs spike | Apply cost multipliers for stressed markets and move actions to the next open window
 off: RWA saved per plan ; Income retained
 on: Capital ratio change ; Cost of execution
 gap: Counting reductions that cannot be executed ; Static prices make plans look cheaper
@@ -376,7 +376,7 @@ noise: Severity assigned by the reporter | not calibrated
 base: Manual classification by the operational risk team using the taxonomy, because it is the standard practice.
 prod: A multilingual encoder classifier with a heavy-tail loss model (lognormal body, generalised Pareto tail), review queues for high-severity items and drift monitoring.
 pipe: Incident intake @ risk system ; Text preprocessor @ PII redaction ; Event classifier @ transformer ; Severity model @ tail model ; Reviewer queue @ case tool ; Control linker @ rules and retrieval ; Loss database @ warehouse
-edge: Novel event type | taxonomy does not fit | Out-of-distribution flag and taxonomy proposal
+edge: Novel event type | A new kind of loss event does not fit the existing taxonomy and is forced into a wrong class | Flag out-of-distribution events for review and propose a new taxonomy entry to the risk owner
 edge: Duplicate reports | the same event reported by many | Clustering and merge suggestions
 edge: Unquantified loss | severity unknown for months | Mark pending and separate training labels
 off: Macro-F1 by event type ; Tail quantile accuracy
@@ -400,9 +400,9 @@ noise: Tool formatting | cosmetic
 base: Manual checklist-based validation by teams, because it is the current process.
 prod: A planner-executor agent with sandboxed code tools, retrieval over policy and documentation, a citation verifier and validator approval for each finding.
 pipe: Validation request @ GRC tool ; Document retriever @ hybrid search ; Sandbox runner @ containerised Python ; Policy checker @ LLM with structured checks ; Finding drafter @ LLM with citations ; Validator review @ workflow ; Evidence archive @ immutable store
-edge: Model code unavailable | black-box vendor model | Switch to documentation and output testing only and flag the limitation
-edge: Non-deterministic tests | metrics vary across runs | Fixed seeds and tolerance bands
-edge: Conflicting policy versions | two policies apply | Prefer the latest and flag for human resolution
+edge: Model code unavailable | A vendor model is a black box and the code cannot be tested | Switch to testing documentation and outputs only and record the limitation in the validation report
+edge: Non-deterministic tests | Metrics vary between runs so a test passes once and fails once | Fix random seeds and set tolerance bands based on the variation across repeated runs
+edge: Conflicting policy versions | Two versions of a policy apply to the same model and give different requirements | Prefer the version in force at the model's approval date and flag the conflict for a human decision
 off: Finding precision and recall against validator findings ; Citation validity
 on: Validation cycle time ; Findings missed on later audit
 gap: Evaluating on past reports the retriever has seen ; Reviewers accept plausible findings too easily
@@ -449,8 +449,8 @@ base: Fixed par stock per branch with replenishment on a schedule, because it is
 prod: Quantile demand forecasts by denomination feeding a stochastic inventory optimiser that sets shipment sizes within CIT slots and vault limits.
 pipe: Branch transactions @ core banking ; Demand forecaster @ quantile boosting ; Event calendar @ configuration store ; Inventory optimiser @ stochastic program ; CIT scheduler @ logistics tool ; Branch manager view @ web app ; Outcome store @ warehouse
 edge: Branch closure | demand moves to nearby branches | Link closures to neighbour forecasts
-edge: Armoured vehicle delay | shipment misses the slot | Safety stock and reroute logic
-edge: Denomination shortage | a note type is scarce | Substitution rules and alerts
+edge: Armoured vehicle delay | A cash delivery misses its slot and the branch is at risk of running out | Hold safety stock above the expected demand for the delivery gap and reroute the next vehicle
+edge: Denomination shortage | One note denomination is scarce at the depot and branches cannot fill their orders | Define substitution rules between denominations and alert when depot stock falls under a threshold
 off: Forecast pinball loss ; Stock-out rate
 on: Cash held per branch ; Stock-out events
 gap: Training on stocked-out days underestimates demand ; Static calendar in test
@@ -473,7 +473,7 @@ base: Compliance team reads and maps changes manually using spreadsheets, becaus
 prod: An agent with retrieval over regulator sites and the policy library, structured obligation extraction, mapping to controls with citations and a review queue for compliance owners.
 pipe: Regulatory feed @ official publication monitors ; Document parser @ layout-aware parser ; Obligation extractor @ LLM with schema ; Policy mapper @ hybrid retrieval ; Impact drafter @ LLM with citations ; Owner review @ workflow ; Obligation register @ GRC database
 edge: Ambiguous drafting | the rule can be read two ways | Present both readings and escalate to legal
-edge: Cross-border overlap | two regimes apply | Jurisdiction tags and conflict flags
+edge: Cross-border overlap | A change affects a firm under two regimes that give conflicting requirements | Tag each obligation by jurisdiction and flag conflicts between regimes for legal review
 edge: Amendments by reference | text refers to another instrument | Resolve references with the consolidated text
 off: Obligation precision and recall ; Citation validity
 on: Time from publication to impact assessment ; Missed obligations at audit
@@ -496,9 +496,9 @@ noise: Booking system id | arbitrary
 base: A rule list by counterparty fail history and unmatched status, because operations already use it.
 prod: Gradient boosting trained on matured settlement outcomes with calibrated probabilities, ranked by expected penalty and shown with top reasons.
 pipe: Trade and instruction feed @ post-trade platform ; Feature builder @ Spark ; Fail model @ gradient boosting ; Penalty estimator @ rules ; Chase queue @ operations workbench ; Outcome capture @ settlement confirmations ; Model monitor @ dashboard
-edge: Market holiday | settlement day shifts | Calendar service per market
+edge: Market holiday | A market holiday shifts the settlement day and the features are computed for the wrong date | Use a calendar service per market and compute every window against the real settlement date
 edge: Corporate action | trade affected by an event | Event flag and separate handling
-edge: Mass fails due to a CSD outage | all trades fail together | Outage regime and manual process
+edge: Mass fails due to a CSD outage | A central securities depository outage makes every trade fail together and the model reads it as risk | Detect an outage regime and switch to a manual process instead of scoring individual trades
 off: PR-AUC at the chase capacity ; Calibration by market
 on: Fails avoided per day ; Penalty cost
 gap: Using post-cut-off status ; Operations intervention changes outcomes, labels mixed
@@ -521,7 +521,7 @@ base: Vendor feed with manual comparison to the issuer notice, because it is the
 prod: Document-understanding model with a constrained schema, cross-source reconciliation rules and a reviewer queue for mandatory event discrepancies.
 pipe: Notice intake @ SWIFT and vendor feeds ; Document parser @ layout model ; Event extractor @ LLM with schema ; Reconciler @ rules engine ; Reviewer queue @ operations tool ; Golden source @ reference database ; Downstream publish @ message bus
 edge: Late amendment | terms change after the first notice | Versioned events with change alerts
-edge: Complex multi-leg event | merger with cash and shares | Structured event templates
+edge: Complex multi-leg event | A merger paid in cash and shares has several legs and a flat extraction loses the structure | Use structured event templates with a leg for each component and validate totals against the announcement
 edge: Language ambiguity | decimal separators differ | Locale-aware parsing and review
 off: Field-level accuracy ; Event-level exact match
 on: Manual touches per event ; Entitlement errors
@@ -545,8 +545,8 @@ base: Rule-based matching with manual assignment, because it is the current prac
 prod: A multi-class cause classifier on mismatch patterns with next-action suggestions, a safe auto-resolution policy and a prioritised worklist.
 pipe: Reconciliation engine @ matching platform ; Break feature builder @ stream processor ; Cause classifier @ gradient boosting ; Action recommender @ rules and ranker ; Worklist @ operations tool ; Four-eyes approval @ workflow ; Outcome log @ warehouse
 edge: Systemic mismatch | a static data error creates thousands of breaks | Cluster detection and one root-cause ticket
-edge: Late counterparty confirmation | break closes by itself | Wait states and re-check before action
-edge: Currency rounding differences | many small breaks | Tolerance policy by currency
+edge: Late counterparty confirmation | A break closes by itself when the counterparty confirms late and the team has already chased it | Add a wait state and re-check the break before any outreach
+edge: Currency rounding differences | Rounding in different currencies creates many tiny breaks that swamp the queue | Set a tolerance policy by currency and auto-close breaks inside it with an audit entry
 off: Cause accuracy ; Safe auto-fix precision
 on: Breaks aged beyond SLA ; Operator touches per break
 gap: Labels from past manual assignment ; Auto-fix feedback loop hides errors
@@ -568,9 +568,9 @@ noise: Billing analyst | irrelevant
 base: Month-on-month variance thresholds by client, because finance already uses them.
 prod: Contract-aware recomputation engine plus an anomaly model on residuals and context, ranked by value at risk with reason codes.
 pipe: Billing extract @ billing platform ; Contract term store @ structured contracts ; Fee recompute @ rules engine ; Residual model @ gradient boosting ; Review queue @ finance tool ; Correction workflow @ approvals ; Outcome log @ warehouse
-edge: Mid-month asset transfer | pro-rata mistakes | Daily accrual checks
-edge: Verbal discount | no contract record | Exception register and expiry
-edge: Currency conversion rule | different rate dates | Rate date policy captured in terms
+edge: Mid-month asset transfer | A transfer part-way through the month makes the pro-rata fee wrong | Check fees on a daily accrual basis and compare with the billed total
+edge: Verbal discount | A discount agreed verbally has no contract record and the bill looks wrong | Keep an exception register with an owner and an expiry date for each agreed discount
+edge: Currency conversion rule | Different rate dates for conversion produce differences that look like errors | Capture the rate date policy in the contract terms and use it in the checks
 off: Precision at review capacity ; Recall of known errors
 on: Revenue leakage recovered ; Invoice disputes
 gap: Training on past errors found by clients ; Contract data differs between train and test
@@ -594,7 +594,7 @@ prod: Gradient boosting for fee and recall probability with event features and o
 pipe: Inventory and loan data @ lending platform ; Market data @ vendor feeds ; Feature builder @ Spark ; Fee and recall models @ gradient boosting ; Price suggester @ rules ; Desk screen @ trading UI ; Outcome archive @ warehouse
 edge: Short squeeze | fees spike far beyond history | Regime flag and cap on suggested pricing
 edge: Restricted securities | Securities under borrowing restrictions are suggested for lending and the loan fails at the lender | Check eligibility and beneficial-owner restrictions from compliance before any price suggestion is shown
-edge: Data delay | utilisation arrives late | Freshness checks and fallback
+edge: Data delay | Utilisation data arrives late so the model works from yesterday's picture | Check the freshness of each feed and fall back to the last known value with a staleness flag
 off: Fee MAE on specials ; Recall PR-AUC
 on: Lending revenue ; Failed returns due to recalls
 gap: Survivorship in security lists ; Event dates known only after the fact

@@ -40,9 +40,9 @@ noise: Report time stamp | arbitrary
 base: Fixed percentage tolerance on NAV change per fund, because administrators already use it.
 prod: Attribution engine producing residuals, plus an anomaly model per fund type on residual and context, ranked by NAV impact in basis points.
 pipe: Holdings and prices @ fund accounting system ; NAV attribution @ rules engine ; Residual anomaly model @ gradient boosting ; Impact ranker @ rules ; Reviewer queue @ operations tool ; Correction log @ audit store ; Model monitor @ dashboard
-edge: Large subscription | NAV change driven by flows | Flow-aware attribution
-edge: Corporate action not booked | holdings and prices disagree | Event feed cross-check
-edge: Market holiday in one region | prices unchanged legitimately | Holiday calendar per market
+edge: Large subscription | A large subscription changes the NAV through flows and looks like a pricing error | Attribute the NAV change to flows before testing for a break
+edge: Corporate action not booked | Holdings and prices disagree because an action has not been booked | Cross-check holdings against the corporate action feed and flag unmatched events
+edge: Market holiday in one region | Prices in one region do not change because the market is shut and the check reads it as a stale price | Use a holiday calendar for each market and suppress the stale-price test on closed days
 off: Recall of known breaks at fixed review load ; Precision of flags
 on: NAV errors published ; Review time per fund
 gap: Labels only for breaks found later ; Calm-period tuning
@@ -88,8 +88,8 @@ noise: Branch | administrative
 base: Random sampling of sales plus a rule list on product and client risk, because it is the standard control.
 prod: A tabular model over fit features with a transcript model for claims, producing a ranked review list with evidence snippets.
 pipe: Sales records @ advice platform ; Call transcripts @ speech to text store ; Fit feature builder @ Spark ; Fit model @ gradient boosting ; Claim detector @ encoder classifier ; Review list builder @ rules with capacity ; Compliance workbench @ case tool
-edge: Updated client profile after sale | fit changes over time | Use profile as at sale date
-edge: Joint advice | two clients with different profiles | Evaluate against both
+edge: Updated client profile after sale | A client's risk profile changes after the sale, so fit at the time cannot be read from today's profile | Use the client profile as it stood on the sale date and keep a history of changes
+edge: Joint advice | A sale to two clients with different profiles fits one and not the other | Evaluate suitability against both profiles and flag the more cautious one
 edge: Transcript errors | speech to text misses words | Confidence-aware flags and audio links
 off: Precision at review capacity ; Recall on confirmed breaches
 on: Confirmed breaches found per 100 reviews ; Time to detect
@@ -136,9 +136,9 @@ noise: Weather | no link
 base: Same-day-last-year flow scaled by AUM, because treasury uses it.
 prod: Quantile gradient boosting by fund group with calendar, performance and stress features and an event overlay for large investors.
 pipe: Transfer agent data @ flow feeds ; Feature builder @ Spark ; Flow model @ quantile boosting ; Event overlay @ rules ; Forecast store @ lakehouse ; PM dashboard @ BI ; Monitor @ drift dashboard
-edge: Large institutional redemption | one investor moves a lot | Concentration flag and manual input
+edge: Large institutional redemption | One investor redeems a large amount and the forecast is dominated by a single event | Flag concentrated holders and take their intentions as manual inputs
 edge: Fund merger | A fund merger breaks the flow history so the model sees a sudden level change | Link predecessor and successor series and add a merger event flag to the features
-edge: Market crash | flows leave all history | Stress regime scaling
+edge: Market crash | Flows in a crash leave all history behind and the model underestimates redemptions | Scale forecasts with a stress regime and use scenario analysis alongside the model
 off: Pinball loss ; Coverage of the 90% interval
 on: Cash drag ; Forced sales
 gap: Using final data instead of as-known data ; Calm-year back-test
@@ -160,9 +160,9 @@ noise: Email domain | weak
 base: Rule list on outflows and contact gaps, because relationship managers use it.
 prod: Gradient boosting with survival framing on outflow, advisor and performance features, calibrated and ranked by assets at risk.
 pipe: Client and account data @ wealth platform ; Event feed @ CRM ; Feature builder @ Spark ; Attrition model @ boosting ; Value ranker @ rules ; RM call list @ CRM ; Outcome capture @ warehouse
-edge: Planned large withdrawal | property purchase | Planned flag from advisor
-edge: Advisor departure | clients leave in a group | Group-level treatment
-edge: Market fall | performance gap widens for all | Peer-relative features
+edge: Planned large withdrawal | A client withdraws money for a house purchase and the model reads it as leaving | Allow advisors to record planned withdrawals and exclude them from attrition signals
+edge: Advisor departure | When an advisor leaves, their clients leave as a group | Treat the departing advisor's book as a group case with a retention plan
+edge: Market fall | A market fall widens the performance gap for every client and raises attrition scores for all | Use peer-relative performance features so the market effect is removed
 off: PR-AUC ; Calibration
 on: Assets retained ; Save rate of called clients
 gap: Retention actions change labels ; Random split leaks households
@@ -170,26 +170,26 @@ gap: Retention actions change labels ; Random split leaks households
 == investment-research-qa-copilot | Investment Research Q&A Copilot | llm-agents,nlp | seconds | production-grade | a=3 k=70 s=5 t=700
 obj: Answer analysts' questions from the firm's research notes, filings and data with citations and clear abstention.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Every claim cites a document and date ; Entitlements by research permission ; Compliance restrictions on restricted lists ; No external uploads
-sn: Currency | Latest note and filing versions | Any matching text | Old estimates mislead
-sn: Entitlement | Access rights applied at retrieval | Post-filter on the answer | Leaks via summaries
-sn: Numbers | Figures from the data service | Numbers in text | Transcription errors
-sig: Citation validity | share of claims supported | Core quality | Needs entailment
-sig: Retrieval recall | gold passage in the top k | Basis of answers | Gold sets are costly
-sig: Abstention precision | refusals when evidence is missing | Safety | Over-refusal
-sig: Freshness | age of cited sources | Currency | Dating metadata
-noise: Note length | style
-noise: Author | weak
-noise: Rating word frequency | bias
+con: Every claim cites a document and its publication date ; An analyst sees only the research they are entitled to, enforced at retrieval ; Restricted-list and information-barrier rules are applied before any text is retrieved ; No document or question leaves the firm's environment
+sn: Currency | The latest version of each note, estimate and filing | Any passage that matches the question | An old earnings estimate can be the closest text match and still be wrong
+sn: Entitlement | Access rights applied when documents are retrieved | A filter applied after the answer is written | A summary can leak restricted content even when the quoted text is removed
+sn: Numbers | Figures read from the firm's data service | Numbers copied from note text | Transcription errors and stale tables put a wrong figure into an answer that looks cited
+sig: Citation validity | share of claims whose cited passage entails the claim | The core quality measure | A passage may exist and not support the claim, so test entailment
+sig: Retrieval recall | share of questions where the gold passage is in the top k | Everything depends on retrieval | Gold sets are costly to build, so sample across sectors
+sig: Abstention precision | share of refusals that were correct because the evidence was missing | Limits confident wrong answers | Over-refusal lowers usefulness, so track both
+sig: Freshness | age in days of each cited source against the latest available version | Prevents stale answers | Dating metadata are often missing or wrong
+noise: Note length | A style of the author and not a mark of relevance
+noise: Author | Weak signal once the content is matched, and it invites bias to star analysts
+noise: Rating word frequency | Counts of words like buy reflect the author's tone and not the facts
 base: Keyword search across the research portal, because analysts use it today.
 prod: Hybrid retrieval with entitlements, structured data tools for figures, a verifier for claims and abstention when evidence is thin.
 pipe: Research and filings index @ hybrid search ; Entitlement filter @ policy service ; Figure tools @ market data APIs ; Answer composer @ LLM with citations ; Claim verifier @ entailment model ; Analyst UI @ web app ; Feedback log @ warehouse
-edge: Restricted-list company | information barrier | Block at retrieval
-edge: Conflicting estimates | two analysts differ | Show both with dates
-edge: Prompt injection in a document | embedded instruction | Treat text as data
+edge: Restricted-list company | A question concerns a company on the restricted list and an answer could breach an information barrier | Block restricted-list documents at retrieval and tell the analyst the topic is restricted
+edge: Conflicting estimates | Two analysts publish different estimates for the same item | Show both estimates with dates and authors and do not pick one silently
+edge: Prompt injection in a document | A document contains text that tries to instruct the assistant | Treat retrieved text as data and not instructions and enforce tool allow-lists
 off: Citation validity ; Retrieval recall at 10
 on: Analyst time saved per question ; Thumbs-down rate
-gap: Evaluating on questions with known notes ; Entitlements differ by tester
+gap: Evaluating on questions where the relevant notes are known flatters retrieval ; Entitlements differ by tester, so a test run by a senior user hides access failures
 
 == fund-factsheet-generation-with-compliance-review | Fund Factsheet Generation with Compliance Review | llm-agents,nlp | seconds | production-grade | a=0.1 k=60 s=4 t=800
 obj: Generate monthly fund factsheet commentary from portfolio data and manager notes, checked by a compliance verifier before review.
@@ -208,9 +208,9 @@ noise: Font choice | cosmetic
 base: Template with manager-written commentary, because it is the current process.
 prod: Structured draft generation from data and notes, number and phrase verifiers, a disclosure checker and a compliance queue.
 pipe: Performance data @ attribution system ; Manager notes @ document store ; Commentary drafter @ LLM with schema ; Number verifier @ rule checks ; Phrase and disclosure checker @ rules plus classifier ; Compliance review @ workflow ; Publish @ document system
-edge: Late restatement | performance changes after drafting | Version lock and re-check
-edge: New regulation | wording rules change | Rule configuration with dates
-edge: Manager note contradictions | notes conflict with data | Flag to the manager
+edge: Late restatement | Performance figures change after the draft is written and the factsheet is wrong | Lock the data version at drafting and re-check every figure before release
+edge: New regulation | Wording rules change and an approved template becomes non-compliant | Keep rules in configuration with effective dates and re-run the compliance check on templates
+edge: Manager note contradictions | The manager's commentary contradicts the performance data | Flag the contradiction to the manager before the compliance review
 off: Figure exact match ; Banned phrase recall
 on: Time to publish ; Compliance rework
 gap: Test notes are cleaner than real ones ; Rules change between test and live
@@ -233,8 +233,8 @@ base: Questionnaire rules with full underwriting for flagged cases, because it i
 prod: Gradient boosting trained against underwriting outcomes and claims, with a referral band and actuarial monitoring of mortality slippage.
 pipe: Application API @ gateway ; Data enrichment @ consented data providers ; Risk model @ monotone boosting ; Eligibility rules @ rules engine ; Referral to underwriter @ workflow ; Decision letter @ document service ; Mortality monitor @ actuarial dashboard
 edge: Data provider outage | A data provider outage leaves key inputs missing for an applicant | Refer the application to full underwriting instead of imputing, and log the outage for monitoring
-edge: Late-disclosed condition | claim shows non-disclosure | Feedback and audit
-edge: Fairness complaint | disparate outcomes | Periodic fairness tests
+edge: Late-disclosed condition | A claim shows that a condition was not disclosed and the fast decision was wrong | Feed the finding back to the model and audit the cases decided in the same way
+edge: Fairness complaint | A customer complains of disparate outcomes in accelerated decisions | Run periodic fairness tests across protected groups and publish the results to compliance
 off: AUC and referral rate ; Mortality ratio by decile
 on: Instant decision share ; Mortality slippage
 gap: Labels only for accepted applicants ; Long claim delay
@@ -256,7 +256,7 @@ noise: Name | irrelevant
 base: Persistency tables by product and year, because actuaries use them.
 prod: Discrete-time hazard boosting with calibrated survival curves and a retention-uplift model for who to contact.
 pipe: Policy admin extract @ nightly feed ; Feature builder @ Spark ; Lapse model @ boosting survival ; Uplift ranker @ causal model ; Campaign lists @ CRM ; Actuarial feed @ reserving system ; Monitor @ dashboard
-edge: Regulation limits offers | some offers not allowed | Offer eligibility rules
+edge: Regulation limits offers | Some retention offers are not allowed for certain customers | Apply offer eligibility rules before ranking so the list contains only lawful offers
 edge: Product withdrawal | A product is withdrawn and many policies are forced to lapse, which looks like voluntary behaviour | Add an event flag and exclude forced lapses from the voluntary-lapse label
 edge: Economic downturn | A downturn raises lapse rates beyond anything in the training years | Include macro covariates and report scenario-conditioned persistency alongside the baseline
 off: Concordance ; Calibration by duration
@@ -266,17 +266,17 @@ gap: Contacted customers differ ; Ignoring censoring
 == claims-triage-and-straight-through-processing | Claims Triage & Straight-Through Processing | tabular,nlp | seconds | production-grade | a=0.1 k=40
 obj: Route each insurance claim to straight-through payment, standard handling or a specialist based on complexity and risk.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y_{\text{stp}})
-con: Auto-pay only below a limit ; Fair-treatment rules ; Explainable routing ; Audit trail
-sn: Complexity | Expected handling effort and severity | Claim amount only | Small claims can be complex
-sn: Safety | Straight-through only for low-risk, low-value claims | Highest accuracy | A wrongly paid claim is costly
-sn: Fraud | Separate fraud scoring | Complexity as fraud proxy | Mixed signals
-sig: First notice text | encoder over the claim description | Complexity | Language
-sig: Coverage check | policy in force and covered peril | Eligibility | Data quality
-sig: Claimant history | prior claims | Pattern | Fair use
-sig: Reserve estimate | initial reserve by type | Severity | Initial reserves are rough
-noise: Handler | irrelevant
-noise: Day filed | weak
-noise: Channel | cohort
+con: Automatic payment only for claims below a set value and risk limit ; Fair-treatment and vulnerable-customer rules applied at triage ; Every routing decision explained in words the handler can read ; A full audit trail from first notice to payment
+sn: Complexity | Expected handling effort and severity of the loss | The claim amount alone | A small claim can be complex, such as disputed liability, and a large one can be simple
+sn: Safety | Straight-through only for low-risk, low-value claims | Maximising accuracy at any value | A wrongly paid claim is costly and hard to recover, so errors in this class must be rare
+sn: Fraud | A separate fraud score alongside the complexity score | Using complexity as a proxy for fraud | Mixed signals send honest complex claims to a fraud team and let simple fraud pass
+sig: First notice text | encoder embedding of the claim description mapped to complexity classes | Describes what happened in the customer's words | Language varies, so test across channels
+sig: Coverage check | policy in force on the loss date and the peril covered, as binary flags | Eligibility decides whether a claim is payable at all | Data quality issues in policy records cause false denials
+sig: Claimant history | number of claims by the claimant in the last 3 years | Patterns of repeated claims | Fair-use rules limit how it can be used
+sig: Reserve estimate | initial reserve set by claim type and loss description | A first estimate of severity | Initial reserves are rough, so treat it as a prior
+noise: Handler | The handler who first opens the claim has no bearing on its complexity
+noise: Day filed | Weak relation to complexity once the type is known
+noise: Channel | Reflects customer cohort and not the claim, so it risks unfair treatment
 base: Rule-based routing by amount and type, because it is the current practice.
 prod: A triage model over text and structured data, a straight-through policy with limits and an exception queue.
 pipe: Claim intake @ portal and call centre ; Coverage verification @ policy service ; Triage model @ boosting plus encoder ; STP policy @ rules ; Handler queue @ claims system ; Payment @ payment service ; Outcome log @ warehouse
@@ -285,22 +285,22 @@ edge: Mis-described loss | The claim is filed under the wrong peril so the routi
 edge: Vulnerable claimant | A vulnerable claimant is routed to straight-through handling and not offered extra support | Run a vulnerability check on every claim and route flagged claimants to a trained handler
 off: Routing accuracy ; STP leakage rate
 on: STP share ; Cycle time
-gap: Labels from past routing ; Fraud found later
+gap: Labels come from past routing decisions, so the model learns the old process and its biases ; Fraud found later is missing from the labels at training time
 
 == subrogation-recovery-detection | Subrogation Recovery Detection | nlp,tabular | batch | production-grade | a=0.05 k=30
 obj: Find paid claims where another party is liable so the insurer recovers money it would otherwise lose.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{Huber}(\hat{r}-r)
-con: Statute-of-limitations tracking ; Reviewer sees evidence ; Recovery cost versus value ; Privacy rules
-sn: Liability | Third-party fault evidence | Claim size | Large claims without a liable party recover nothing
-sn: Value | Expected recovery net of cost | Probability only | Low-value recoveries are not worth pursuing
-sn: Timing | Deadlines for recovery | Case age | Missed deadlines kill recovery
-sig: Fault phrases | third party, rear-ended, defective product in notes | Liability | Context
-sig: Police report match | report assigns fault | Strong signal | Availability
-sig: Counterparty insurer known | other party identified | Feasibility | Data
-sig: Days to limitation | time left | Priority | Jurisdiction
-noise: Adjuster | irrelevant
-noise: Claim number | arbitrary
-noise: Handling office | admin
+con: Statute-of-limitations dates tracked for every candidate and shown to the reviewer ; A reviewer sees the evidence behind every flag ; Recovery effort weighed against the expected net value ; Privacy rules followed when sharing information with other insurers
+sn: Liability | Evidence that a third party was at fault | The size of the claim | A large claim with no liable party recovers nothing, and size says nothing about fault
+sn: Value | Expected recovery net of the cost of pursuit | The probability of recovery alone | A low-value recovery costs more to chase than it returns
+sn: Timing | The deadline to start recovery for the jurisdiction | The age of the case | A missed deadline ends the claim to recover, regardless of its strength
+sig: Fault phrases | presence of phrases such as rear-ended, third party driver or defective product in the claim notes | A text signal of liability | Phrases need context, since a customer may blame themselves
+sig: Police report match | whether an attached report assigns fault to another party | A strong, formal signal | Reports are not available for every loss
+sig: Counterparty insurer known | whether the other party and their insurer are identified | A recovery needs someone to claim from | Data are often incomplete early in the claim
+sig: Days to limitation | days remaining to the limitation date for the jurisdiction | Sets the priority of review | Jurisdiction rules differ and change
+noise: Adjuster | Who handled the claim does not decide whether a third party is liable
+noise: Claim number | An arbitrary identifier with no signal
+noise: Handling office | An administrative attribute that adds no fact about fault
 base: Adjusters flag recovery by judgement, because that is the process.
 prod: Text and tabular models for liability and recovery value, a deadline-aware ranker and a recovery team queue.
 pipe: Claims data @ claims system ; Notes processor @ text pipeline ; Liability model @ encoder plus boosting ; Value estimator @ boosting ; Recovery queue @ workflow ; Legal tracker @ case tool ; Outcome feed @ warehouse
@@ -309,7 +309,7 @@ edge: Opposing insurer disputes | The opposing insurer disputes liability and th
 edge: Missing evidence | There is no police report or evidence, so liability cannot be shown | Send standard evidence requests early and score the case with a missing-evidence flag
 off: PR-AUC ; Recovery value captured
 on: Recovery rate ; Cost per recovered dollar
-gap: Past flags biased to obvious cases ; Delay in outcomes
+gap: Past flags are biased to obvious cases, so the model repeats the cases staff already found ; Outcomes arrive months later, so recent flags have no result yet
 
 == loss-reserving-with-machine-learning | Loss Reserving with Machine Learning | time-series,tabular | batch | staff-principal | a=1 k=4
 obj: Estimate ultimate claim costs and their uncertainty by line and accident period to set reserves.
@@ -328,8 +328,8 @@ noise: Region code | noisy
 base: Chain-ladder with actuarial adjustments, because it is the industry standard.
 prod: Claim-level and triangle-level models blended with chain-ladder, bootstrap or quantile intervals and a drivers report.
 pipe: Claims and payments @ data warehouse ; Triangle builder @ Spark ; Development model @ boosting ; Uncertainty engine @ bootstrap ; Actuary workbench @ notebook UI ; Reserve report @ finance system ; Back-test archive @ lakehouse
-edge: Large loss | one claim dominates | Large-loss separation
-edge: Process change | payments speed up | Change flags
+edge: Large loss | One large claim dominates the triangle and distorts the estimate | Separate large losses and model them on their own with a different method
+edge: Process change | A faster payments process changes development patterns | Add process-change flags and weight recent development more
 edge: Few data points | A new line of business has too few accident years to estimate development | Borrow development patterns from related lines with priors and report wider intervals
 off: Reserve error against ultimate ; Interval coverage
 on: Reserve volatility ; Release or strengthening
