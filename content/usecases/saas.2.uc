@@ -363,18 +363,25 @@ gap: Evaluating with deterministic links only ; Ignoring unmerge costs
 obj: Answer developer questions about APIs and SDKs with correct, version-specific code snippets and links to authoritative docs.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{docs})+\lambda\,\mathrm{NonExistentAPI}
 con: Version-aware answers ; Code must compile ; No invented endpoints ; Low latency
-sn: Version | Retrieve docs for the user's SDK version | Latest-docs only | Version mismatch breaks code
+sn: Version | Retrieve docs for the user's SDK version | Retrieving only the latest docs for every user | Version mismatch breaks code
 sn: Verification | Compile or run snippets in a sandbox | Trust generated code | LLMs invent plausible API calls
-sig: API existence check | referenced symbols found in spec | Hallucination | OpenAPI specs
-sig: Snippet execution pass | sandbox run succeeds | Correctness | Test harness
-sig: Version match | docs version equals user version | Correctness | Metadata
-noise: Answer verbosity | weak
-noise: Greeting text | none
+sn: Abstention | Declining to answer when the docs do not state the fact | Always producing a fluent answer | A confident invented limit or endpoint costs developers hours
+sn: Evaluation | Held-out golden questions with unanswerable cases scored on facts | Questions written from docs headings and judged on fluency | Heading-derived questions are easy to retrieve and hide failures on real phrasing
+sig: API existence check | referenced symbols found in spec | Catches invented endpoints and parameters before they reach the developer | Use the OpenAPI spec for the user's version
+sig: Snippet execution pass | sandbox run succeeds | Shows the code actually works, not just that it reads well | Run against the pinned SDK version in a test harness
+sig: Version match | docs version equals user version | A correct answer for the wrong version breaks the developer's code | Read the version from request context, not from the question text alone
+sig: Citation supports the value | the cited passage literally contains the stated value | Catches fabricated numbers and endpoints | A valid citation alone is not proof, because a changelog can cite both the old and the new value
+sig: Abstention precision | share of declined questions that are truly unanswerable | Shows whether refusals are justified | Needs labelled unanswerable questions kept out of tuning
+noise: Answer verbosity | longer answers are not more helpful and hide the one fact the developer needs
+noise: Greeting text | adds tokens and nothing a developer can act on
+noise: Retrieval recall at five alone | easy on small corpora and silent about stale or invented answers
 base: Docs search with keyword matching.
 prod: Version-aware retrieval over docs and OpenAPI specs, code generation with API-existence validators and sandbox execution.
 pipe: Question @ docs site or IDE ; Version detector @ context ; Retriever @ hybrid search ; Answer LLM @ grounded code ; API existence validator @ spec check ; Sandbox runner @ test ; Developer @ feedback
-edge: Deprecated API still in older docs | wrong recommendation | Deprecation metadata and warnings
+edge: Deprecated API still in older docs | a deprecated API is recommended and the developer's code breaks | Deprecation metadata and warnings
 edge: SDK differences across languages | snippet does not compile | Language-specific retrieval and tests
+edge: Changelog quotes both old and new values | the reader picks the stale number and cites a valid passage | Exclude changelog chunks from answer sources unless the question asks about changes
+edge: Question phrased outside the known vocabulary | a synonym such as throttle or size cap is not recognised as the intended fact | Log abstentions, review them weekly and extend the intent vocabulary from real traffic
 off: Snippet execution pass rate ; Hallucinated API rate
 on: Time to first successful API call ; Docs support ticket rate
 gap: Evaluating on questions from docs headings ; Not executing the code

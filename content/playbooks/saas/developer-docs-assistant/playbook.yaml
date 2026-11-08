@@ -1,0 +1,268 @@
+summary: >-
+  A documentation question-answering assistant that is allowed to say "the docs do not say": versioned chunks with
+  metadata, hybrid retrieval, a version-and-source filter, an intent check, a verifier that requires the cited passage
+  to contain the stated value, and a golden set with unanswerable questions that is kept apart from tuning. The starter
+  runs M1-M4 offline with a deterministic extractive reader standing in for the LLM, so the retrieval, guardrails and
+  evaluation are real and testable; M5-M6 (code execution sandbox, serving and online feedback) need your platform and
+  model.
+prerequisites:
+  skills:
+    - "Retrieval basics: BM25, character n-gram or embedding similarity, and reciprocal rank fusion"
+    - "Writing and maintaining a golden evaluation set, including unanswerable and version-specific questions"
+    - "Prompting and tool use with an LLM API, and treating retrieved text as data rather than instructions"
+    - "API documentation concepts: versions, deprecation, OpenAPI specs and changelogs"
+  tools:
+    - "Python 3.11+ (the starter uses only the standard library plus pytest)"
+    - "An LLM API or a self-hosted model for the generator, and an embedding model for dense retrieval"
+    - "A sandbox for running generated code (a container or a service such as a code interpreter) for M5"
+data:
+  strategy: >-
+    Start with the synthetic docs and questions, where every answer, version and unanswerable case is known. Then build
+    the same golden set for your own documentation, with at least a third of the questions unanswerable and a share
+    written by people who did not read the docs. Public question-answering sets teach the unanswerable-question
+    protocol; public OpenAPI specs let you test the symbol-existence check.
+  datasets:
+    - name: "SQuAD 2.0 (Stanford Question Answering Dataset)"
+      url: "https://rajpurkar.github.io/SQuAD-explorer/"
+      license: "CC BY-SA 4.0 (see the site)"
+      gives: "Reading-comprehension questions over Wikipedia passages including about 50,000 unanswerable questions, ideal for testing abstention"
+      caveat: "Wikipedia prose, not API documentation; use it for the abstention protocol, not for domain retrieval quality"
+    - name: "OpenAPI Directory (APIs.guru)"
+      url: "https://github.com/APIs-guru/openapi-directory"
+      license: "Specs keep their original licences; the repository is open under its own terms, check each API"
+      gives: "Thousands of real OpenAPI definitions with versions, so you can test that every endpoint or parameter in an answer exists in the spec"
+      caveat: "Specs are not prose docs and vary in quality; pair them with real documentation pages to build questions"
+    - name: "Stack Exchange data dump (Stack Overflow)"
+      url: "https://archive.org/details/stackexchange"
+      license: "CC BY-SA, with attribution requirements; read the terms on the page"
+      gives: "Real developer questions with accepted answers and tags, useful for the way people actually phrase API questions"
+      caveat: "Answers can be wrong or out of date for the current version; treat them as phrasing data, not ground truth"
+  synthetic:
+    file: "make_data.py"
+    description: >-
+      132 documentation chunks for 12 products: reference pages for v1 and v2 (limits, reliability, data), a changelog chunk
+      per fact that quotes both the old and the new value, and tutorials that use the same words in other senses. The golden
+      set has 132 questions: latest-version facts, explicit v1 facts and unanswerable questions about uptime SLAs, GraphQL
+      support and hosting regions. Half the products are held out as the test set.
+    knobs:
+      - "seed: identical seed gives an identical corpus and question set"
+      - "PRODUCTS, FACTS and UNANSWERABLE in the file: add facts, products or question phrasings"
+      - "dev_products: which products are used for tuning; everything else is reported as the test set"
+  sample:
+    columns: [chunk_id, product, version, kind, text]
+    rows:
+      - [0, "events", "any", "changelog", "Changelog, events: in v2 the rate limit changed from 50 requests per minute to 110 requests per minute."]
+      - [2, "audit", "any", "tutorial", "Tutorial: audit webhooks and retries. Store payload data for a few days while you debug; check the size of each message."]
+      - [122, "users", "v1", "reference", "[v1] users API reference, limits. The users API allows 100 requests per minute per API key. Request bodies sent to the users API may be at most 33 MB."]
+  label: >-
+    Each golden question carries the product, fact, version and the exact expected value, or none when the docs never state
+    it. A response is correct only when it gives the expected value for the right version, or abstains on an unanswerable
+    question. Citations are checked separately for support, because a cited passage can still give the wrong version.
+milestones:
+  - id: M0
+    title: "Define the answer policy"
+    days: "2-3"
+    tasks:
+      - "Decide that the assistant may abstain, what the abstention message says and where it sends the developer"
+      - "Decide how the version is known: from the SDK in the request context, the docs page the user is on, or a default with a visible label"
+      - "Set the targets: hallucination rate on unanswerable questions, precision of given answers, and an upper bound on abstentions for answerable ones"
+    deliverable: "Answer policy with numeric targets"
+    gate:
+      metric: "Policy and targets"
+      threshold: "Hallucination rate target below 5%, answered precision above 95%, abstention on answerable questions below 40%, signed by docs and support leads"
+      how: "Review before any model work"
+  - id: M1
+    title: "Chunks with metadata"
+    days: "3-4"
+    tasks:
+      - "Split docs into chunks that carry product, version, kind (reference, tutorial, changelog) and deprecation status"
+      - "Keep changelog and tutorial chunks, but mark them so they are never answer sources for plain factual questions"
+      - "Run python make_data.py or index your own docs and spot-check 50 chunks by eye"
+    deliverable: "Chunked corpus with metadata and a chunking spec"
+    gate:
+      metric: "Corpus tests"
+      threshold: "pytest -k 'deterministic or disjoint' passes; every chunk has product, version and kind"
+      how: "Run pytest in the starter directory"
+  - id: M2
+    title: "Golden set with unanswerable questions"
+    days: "4-5"
+    tasks:
+      - "Write questions for latest-version facts, explicit older-version facts and questions the docs do not answer"
+      - "Include paraphrases that avoid the docs' own words, ideally written by people who did not write the docs"
+      - "Split by product: tune on one half, report on the other, and never edit the test half after looking at results"
+    deliverable: "Golden question set and a held-out split"
+    gate:
+      metric: "Golden set composition"
+      threshold: "At least 25% unanswerable, at least two phrasings per fact, and a test half whose products never appear in tuning"
+      how: "pytest -k 'tuning_and_test'"
+  - id: M3
+    title: "Naive RAG baseline"
+    days: "2-3"
+    tasks:
+      - "Retrieve the top 5 chunks by BM25 and let the reader answer from them, never abstaining"
+      - "Measure accuracy, hallucination on unanswerable questions, stale-version errors and citation support"
+      - "Write the numbers down and read ten failures by hand"
+    deliverable: "Baseline report and a failure catalogue"
+    gate:
+      metric: "Baseline measured honestly"
+      threshold: "Hallucination at or above 90% on unanswerable questions and a valid-citation rate that is higher than accuracy, proving citations alone do not prove correctness (starter: 100% and 100% against 60%)"
+      how: "python baseline.py; pytest -k 'naive_rag or valid_citation'"
+  - id: M4
+    title: "Guarded pipeline"
+    days: "5-7"
+    tasks:
+      - "Fuse BM25 with a similarity measure that tolerates wording differences (embeddings in production) using reciprocal rank fusion"
+      - "Filter to reference chunks for the requested version, detect the question's intent and abstain when none is documented"
+      - "Verify that every answer value appears in the passage it cites, and replace the extractive reader with your LLM behind the same verifier"
+    deliverable: "Guarded pipeline with the verifier, and the same evaluation run on your real model"
+    gate:
+      metric: "Safety without too many refusals"
+      threshold: "Hallucination at most 5%, answered precision at least 95%, accuracy at least 5 points above the baseline, abstention on answerable questions at most 40% (starter: 0%, 100%, 73% against 60%, 27%)"
+      how: "python baseline.py; pytest -k 'guarded'"
+  - id: M5
+    title: "Code validation and serving"
+    days: "6-8"
+    tasks:
+      - "Check that every endpoint, parameter and symbol in a generated snippet exists in the spec for the user's version"
+      - "Run generated snippets in a sandbox against the pinned SDK and only show those that pass, or label them untested"
+      - "Serve with streaming, a cache keyed by question and version, and a per-request cost cap"
+    deliverable: "Validators, sandbox runner, serving layer and a cost dashboard"
+    gate:
+      metric: "Snippet validity and latency"
+      threshold: "Snippet execution pass rate and hallucinated-symbol rate meet the M0 targets on the golden code questions, with p95 answer time inside the interactive budget"
+      how: "Execution harness over golden code questions plus a load test"
+  - id: M6
+    title: "Online feedback and drift"
+    days: "3-4"
+    tasks:
+      - "Log every abstention and every thumbs-down with the question, version and retrieved chunks, and review them weekly"
+      - "Re-run the golden set when docs, models or prompts change and block releases that regress any gate"
+      - "Track time to first successful API call and docs-related support tickets for users who used the assistant"
+    deliverable: "Feedback loop, release gate on the golden set and a weekly review ritual"
+    gate:
+      metric: "Outcome and regression gate"
+      threshold: "Time to first successful call down and docs tickets not up, and every release passes the golden-set gate"
+      how: "CI gate plus the product analytics dashboard"
+starter:
+  runtime: "Python 3.11+ with pytest only (the whole suite runs in under a second)"
+  run:
+    - "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+    - "python make_data.py"
+    - "python baseline.py"
+    - "pytest"
+  expected: >-
+    make_data.py prints 132 chunks and 132 golden questions with 36 unanswerable. baseline.py reports on the 66 held-out
+    questions: the naive pipeline answers 60% correctly, hallucinates on 100% of unanswerable questions and makes 6 errors
+    by quoting a changelog, with 100% citation support; the guarded pipeline is correct on every answer it gives, abstains
+    on 27% of answerable questions and hallucinates on none. pytest reports 8 passed.
+  files:
+    - path: "make_data.py"
+      purpose: "Synthetic documentation chunks, changelog trap and golden questions with unanswerable cases and a held-out product split"
+    - path: "rag.py"
+      purpose: "BM25, character n-gram similarity, rank fusion, the extractive reader stand-in, the verifier and the two pipelines"
+    - path: "baseline.py"
+      purpose: "Evaluation of naive and guarded pipelines on the held-out products"
+    - path: "test_starter.py"
+      purpose: "Executable gates for determinism, split, retrieval, reader, verifier and the safety thresholds"
+    - path: "requirements.txt"
+      purpose: "Python dependencies (pytest is the only one this starter needs)"
+workedExample:
+  scenario: >-
+    Real questions from the held-out half of the synthetic set, answered by the naive pipeline and the guarded one.
+  steps:
+    - stage: "1. A stale answer with a perfect citation"
+      detail: "Question: \"What is the users timeout?\" The correct v2 answer is 39 seconds. The naive pipeline retrieves the changelog chunk \"in v2 the timeout changed from 27 seconds to 39 seconds\", reads the first number and answers 27, citing a passage that does contain 27. The guarded pipeline restricts to v2 reference pages and answers 39."
+    - stage: "2. An unanswerable question"
+      detail: "Question: \"What is the uptime SLA of the users API?\" The docs never state it. The naive pipeline answers 120, taken from the rate-limit sentence, and cites it. The guarded pipeline finds no documented intent and abstains. Across the 18 unanswerable test questions, naive hallucinates on all of them and guarded on none."
+    - stage: "3. The price of abstaining"
+      detail: "Question: \"What is the size cap for users requests in v1?\" The docs do state 33 MB, but 'size cap' is not in the intent vocabulary, so the guarded pipeline abstains, while the naive pipeline answers 100 (the rate limit, wrong). In total the guarded pipeline abstains on 13 of 48 answerable questions (27%). Reviewing those abstentions is how the vocabulary grows."
+    - stage: "4. An explicit older version"
+      detail: "Question: \"How many calls per minute does the users API accept in v1?\" The guarded pipeline filters to v1 reference pages and answers 100 from \"[v1] users API reference, limits\", which the verifier confirms."
+    - stage: "5. What the headline numbers hide"
+      detail: "Retrieval recall at 5 is 100% for both pipelines, and citation support is 100% for both. If you had measured only retrieval or only citations you would have called the naive pipeline healthy. The differences are in version handling, source filtering and abstention."
+  outcome: >-
+    The naive pipeline is correct 60% of the time with every citation valid; the guarded pipeline is wrong on none of the
+    answers it gives at the cost of declining 27% of answerable questions. That trade is an explicit product decision made in M0.
+tests:
+  - test: "Corpus and golden set"
+    tool: "pytest test_generator_is_deterministic_and_has_every_question_type"
+    pass: "Same seed gives the same corpus and questions, all three question types exist and a changelog chunk exists"
+  - test: "Held-out split"
+    tool: "pytest test_tuning_and_test_products_are_disjoint"
+    pass: "No product that is used for tuning appears in the test set"
+  - test: "Retrieval sanity"
+    tool: "pytest test_bm25_ranks_the_matching_document_first"
+    pass: "BM25 ranks the matching document first on a three-document corpus"
+  - test: "Reader ignores version tags"
+    tool: "pytest test_the_reader_does_not_mistake_the_version_tag_for_the_answer"
+    pass: "The value read from a v2 page is 120, not the 2 in the version tag"
+  - test: "Verifier"
+    tool: "pytest test_the_verifier_rejects_a_value_the_cited_chunk_does_not_contain"
+    pass: "A value absent from the cited chunk, or an abstention, never passes"
+  - test: "Hallucination on unanswerable questions"
+    tool: "pytest test_naive_rag_hallucinates_on_unanswerable_questions_and_guarded_does_not"
+    pass: "Naive at least 90% and guarded at most 5%"
+  - test: "Precision, accuracy and abstention cost"
+    tool: "pytest test_guarded_answers_are_correct_when_given_and_better_overall"
+    pass: "Answered precision at least 95%, accuracy at least 5 points above naive, abstention on answerable questions at most 40%, zero stale errors"
+  - test: "Citation is not correctness"
+    tool: "pytest test_a_valid_citation_does_not_prove_the_answer_is_right"
+    pass: "Naive citation support is at least 99% while its accuracy is below 70%"
+  - test: "Generated code existence and execution"
+    tool: "Validator against the version's OpenAPI spec plus a sandbox run of each snippet"
+    pass: "No snippet reaches a developer with a symbol missing from the spec, and failing snippets are suppressed or labelled untested"
+decisions:
+  - question: "Which retriever?"
+    options:
+      - option: "Keyword search (BM25) alone"
+        chooseWhen: "Your docs use consistent terminology and questions quote them; cheap and a strong baseline"
+      - option: "Hybrid keyword plus embeddings with rank fusion"
+        chooseWhen: "Users paraphrase, use synonyms or mix languages; the default for production docs assistants"
+      - option: "Embeddings with a re-ranker"
+        chooseWhen: "Hybrid recall is high but the right passage is not first and you can afford the re-ranking latency"
+    default: "Hybrid with rank fusion, adding a re-ranker only if the right passage is retrieved but ranked low"
+  - question: "How is the user's version determined?"
+    options:
+      - option: "From request context (SDK version, docs page version)"
+        chooseWhen: "Always when available; it is the most reliable source"
+      - option: "From the question text"
+        chooseWhen: "Only as an override when the user names a version explicitly"
+      - option: "Default to the latest version with a visible label"
+        chooseWhen: "No context exists; say which version the answer applies to"
+    default: "Context first, explicit mention second, labelled latest as the fallback"
+  - question: "What happens when the assistant is unsure?"
+    options:
+      - option: "Abstain and link to the closest pages"
+        chooseWhen: "A wrong limit or endpoint costs the developer hours; the right default for APIs"
+      - option: "Answer with a hedge"
+        chooseWhen: "Only for open-ended how-to questions where partial guidance is still useful"
+    default: "Abstain on factual questions, hedge only on how-to guidance, and track both rates"
+pitfalls:
+  - at: M1
+    mistake: "Letting changelogs and tutorials be answer sources"
+    symptom: "Stale values are quoted with a perfectly valid citation: 6 stale answers in the starter"
+    fix: "Tag chunks by kind and restrict factual answers to reference pages of the right version"
+  - at: M2
+    mistake: "Writing golden questions from docs headings"
+    symptom: "Retrieval looks perfect (100% recall at 5) and real users still get wrong answers"
+    fix: "Add paraphrases written by people who did not write the docs, and unanswerable questions"
+  - at: M2
+    mistake: "Tuning on the questions you report"
+    symptom: "Every release improves on paper and nothing improves for developers"
+    fix: "Split by product, never edit the held-out half after seeing results"
+  - at: M3
+    mistake: "Treating a valid citation as proof of correctness"
+    symptom: "The baseline shows 100% citation support with 60% accuracy"
+    fix: "Verify that the cited passage supports the value for the requested version, not just that it contains it"
+  - at: M4
+    mistake: "Never abstaining"
+    symptom: "Invented answers for every question the docs do not cover, with full confidence"
+    fix: "Abstain when no documented intent or supporting passage exists, and measure the abstention rate"
+  - at: M4
+    mistake: "Abstaining too much"
+    symptom: "27% of answerable questions are declined because the vocabulary is narrow"
+    fix: "Review abstentions weekly, extend vocabulary from real traffic and retest on the held-out half"
+  - at: M5
+    mistake: "Trusting generated code because it reads well"
+    symptom: "Plausible calls to endpoints that do not exist"
+    fix: "Check symbols against the spec for the user's version and run the snippet in a sandbox"
