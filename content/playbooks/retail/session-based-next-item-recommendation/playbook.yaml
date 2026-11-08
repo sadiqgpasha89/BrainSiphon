@@ -1,0 +1,258 @@
+summary: >-
+  A next-item recommender for sessions with no user history: bot filtering, item-to-item transition counts that
+  respect click order, a session-theme boost, and an evaluation by hit rate, mean reciprocal rank and catalogue
+  coverage on a time split. The starter runs M1-M4 on synthetic sessions; M5-M6 (session state, vector retrieval,
+  re-ranking and online tests) need your platform. It also shows the route to a sequence model without starting
+  there.
+prerequisites:
+  skills:
+    - "Sparse matrices and counting in NumPy and SciPy, and how item-to-item co-occurrence works"
+    - "Ranking metrics for next-item prediction: hit rate at k, MRR and coverage, and leave-last-out evaluation"
+    - "Why random splits leak in recommender data and how to split by time"
+    - "Basic bot detection from behavioural signals such as dwell time and traversal order"
+  tools:
+    - "Python 3.11+ with numpy, pandas, scipy (requirements.txt in the starter)"
+    - "A clickstream (Kafka or similar) and a key-value store for session state (Redis) for M5"
+    - "An ANN index (HNSW via FAISS or similar) once you move to embeddings"
+data:
+  strategy: >-
+    Start on the synthetic sessions, where the true structure (asymmetric successors, a session theme, a mid-month
+    sale and crawler bots) is known. Then repeat on a public clickstream to check the pipeline on real sparsity,
+    keeping the same time split and metrics. Public sets rarely label bots, so filter on dwell time and traversal
+    order yourself and report how many sessions you removed.
+  datasets:
+    - name: "Retailrocket recommender system dataset"
+      url: "https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset"
+      license: "CC BY-NC-SA 4.0 (check the dataset page); free Kaggle login"
+      gives: "About 2.7 million view, add-to-cart and transaction events from 1.4 million visitors over four months, with item properties and a category tree"
+      caveat: "Anonymised ids and no dwell time, so bot filtering must rely on event counts and timing; sessions have to be reconstructed from visitor ids and time gaps"
+    - name: "RecSys Challenge 2015 (YooChoose clicks and buys)"
+      url: "https://www.kaggle.com/datasets/chadgostopp/recsys-challenge-2015"
+      license: "Challenge terms; free Kaggle login"
+      gives: "About 33 million click events grouped into sessions with item and category ids, and which sessions ended in a purchase, useful for session-goal labels"
+      caveat: "Sessions are given but old (2014) and categories are coarse; popularity drifts, so keep a strict time split"
+    - name: "Amazon-M2 multilingual shopping session dataset"
+      url: "https://arxiv.org/abs/2307.09688"
+      license: "See the paper for the data licence and download instructions"
+      gives: "A large set of anonymised shopping sessions across several locales with product attributes, a modern benchmark for next-item prediction"
+      caveat: "Several locales with different catalogues; evaluate each locale separately before pooling"
+  synthetic:
+    file: "make_data.py"
+    description: >-
+      60,000 sessions (about 360,000 clicks) over 30 days on a 1,500-item catalogue. Item flow is asymmetric, each
+      session has a theme category, a sale from day 22 multiplies the popularity of 30 items by 40, and 10% of
+      sessions are crawlers that walk the catalogue in id order at under a second per item.
+    knobs:
+      - "bot_share: share of crawler sessions (default 10%)"
+      - "n_sessions, n_items, days: scale of the log (defaults 60,000, 1,500 and 30)"
+      - "seed: identical seed gives an identical log"
+  sample:
+    columns: [session, day, step, item, category, dwell_s, is_bot]
+    rows:
+      - [5, 0, 0, 1482, 21, 9.76, 0]
+      - [5, 0, 1, 1162, 6, 6.12, 0]
+      - [0, 0, 1, 553, 10, 0.37, 1]
+  label: >-
+    There is no separate label: for each test session the prefix of clicks is the input and the final click is
+    the target (leave-last-out). Sessions shorter than 3 clicks are skipped. Test sessions are humans only, but
+    the training log is left unfiltered or filtered depending on the experiment.
+milestones:
+  - id: M0
+    title: "Define the slot, the metric and the constraints"
+    days: "1-2"
+    tasks:
+      - "Name the placement (product page, cart, home) and what a good recommendation is there: a click, an add-to-cart or a purchase"
+      - "Choose offline metrics (MRR at 20, hit rate at 20, coverage) and the online metric they must predict"
+      - "Fix the constraints: anonymous users, no cross-site tracking, 50 ms end to end, items must be in stock"
+    deliverable: "One-page spec for the slot, the metrics and the constraints"
+    gate:
+      metric: "Slot and metric agreement"
+      threshold: "A named online metric and the offline metric expected to track it, signed by the owning product manager"
+      how: "Review before any modelling"
+  - id: M1
+    title: "Sessions, time split and leave-last-out"
+    days: "3-4"
+    tasks:
+      - "Build ordered sessions from the clickstream and run python make_data.py or load a public set"
+      - "Split by time: train on days before 21, skip a gap day, test from day 24, and verify no session sits on both sides"
+      - "Define leave-last-out evaluation and never recommend items already in the prefix"
+    deliverable: "Session table and a written split and evaluation protocol"
+    gate:
+      metric: "Generator, split and protocol tests"
+      threshold: "pytest -k 'deterministic or time_split or never_credits' passes"
+      how: "Run pytest in the starter directory"
+  - id: M2
+    title: "Bot filter and session features"
+    days: "3-4"
+    tasks:
+      - "Filter sessions whose median dwell is under a second and report precision and recall against any known bots"
+      - "Build ordered transition counts and a symmetric co-visitation matrix from the filtered sessions only"
+      - "Derive a session theme feature from the prefix and nothing else"
+    deliverable: "Bot filter, count matrices and feature code with tests"
+    gate:
+      metric: "Bot filter quality"
+      threshold: "At least 95% of crawler sessions removed and at least 98% of human sessions kept"
+      how: "pytest -k bot_filter"
+  - id: M3
+    title: "Baselines: popularity, co-visitation, ordered transitions"
+    days: "2-3"
+    tasks:
+      - "Report popularity, bag-of-items co-visitation and ordered transition counts on the test sessions"
+      - "Measure how much click order is worth by comparing the last two"
+      - "Record coverage so a popularity machine cannot pass as a good model"
+    deliverable: "Baseline table with HitRate@20, MRR@20 and coverage"
+    gate:
+      metric: "Order and personalisation over popularity"
+      threshold: "Ordered transitions beat bag co-visitation on MRR by at least 0.04, and co-visitation reaches at least five times popularity's hit rate (starter: 0.315 against 0.224 MRR, and 0.557 against 0.076 hit rate)"
+      how: "python baseline.py; pytest -k order_matters"
+  - id: M4
+    title: "Session-aware challenger"
+    days: "4-6"
+    tasks:
+      - "Add the session theme boost and popularity correction on top of the ordered transitions"
+      - "Compare with and without bots in training, and with a random versus a time split, to see the two biggest traps in numbers"
+      - "Decide whether a sequence model such as SASRec is justified by the remaining error before building one"
+    deliverable: "Challenger scores, trap measurements and a written decision on a sequence model"
+    gate:
+      metric: "No regression and a measured trap cost"
+      threshold: "Challenger HitRate@20 and MRR@20 within 0.005 of the ordered model or better, coverage above 50%, and bots in training cutting MRR by more than 10% (starter: 0.597 and 0.327, and a 16% MRR loss)"
+      how: "python baseline.py; pytest -k 'theme_aware or bots_in_training'"
+  - id: M5
+    title: "Serving: session state, retrieval and re-ranking"
+    days: "6-8"
+    tasks:
+      - "Keep the session prefix in Redis keyed by session id with a short expiry and update it per click"
+      - "Retrieve candidates from precomputed transition lists or an ANN index and re-rank with stock, margin and merchandising rules"
+      - "Cache responses for a few seconds per prefix and degrade to category popularity when state is unavailable"
+    deliverable: "Recommendation service, load-test report and runbook"
+    gate:
+      metric: "Latency and freshness"
+      threshold: "p99 under 50 ms end to end at 1.5 times provisioned peak, with candidate freshness within the sale-event tolerance"
+      how: "Load test and a simulated sale that changes popularity mid-test"
+  - id: M6
+    title: "Online test and monitoring"
+    days: "3-4"
+    tasks:
+      - "Run an A/B test on click-through and add-to-cart with interleaving for fast read-outs on ranking changes"
+      - "Monitor coverage, bot share, and the gap between offline MRR and online click-through weekly"
+      - "Re-run the bot filter and rebuild counts daily, and review top recommendations by hand every week"
+    deliverable: "Experiment readout and monitoring dashboards"
+    gate:
+      metric: "Online lift"
+      threshold: "Add-to-cart rate up with no drop in revenue per visit, and coverage not collapsing toward the head of the catalogue"
+      how: "Experiment platform and weekly review"
+starter:
+  runtime: "Python 3.11+ with numpy, pandas, scipy and pytest (about 25 seconds per run; the test suite takes about 30 seconds)"
+  run:
+    - "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+    - "python make_data.py"
+    - "python baseline.py"
+    - "pytest"
+  expected: >-
+    make_data.py prints 60,000 sessions, about 360,000 clicks and 10% bot sessions. baseline.py reports HitRate@20 of
+    0.076 for popularity, 0.557 for bag co-visitation, 0.588 for ordered transitions and 0.597 for the theme-aware
+    model (MRR 0.025, 0.224, 0.315 and 0.327). Leaving bots in training drops the theme-aware MRR to 0.273. pytest
+    reports 8 passed.
+  files:
+    - path: "make_data.py"
+      purpose: "Synthetic sessions with asymmetric item flow, themes, a sale and crawler bots"
+    - path: "baseline.py"
+      purpose: "Time split, bot filter, four recommenders, leave-last-out evaluation and the two trap experiments"
+    - path: "test_starter.py"
+      purpose: "Executable gates for determinism, split, bot filter, evaluation protocol, model ordering and both traps"
+    - path: "requirements.txt"
+      purpose: "Python dependencies"
+workedExample:
+  scenario: >-
+    Four things worth seeing in the starter data before building anything heavier.
+  steps:
+    - stage: "1. A bot looks like a shopper to a counting model"
+      detail: "Session 0 is a crawler: items 552, 553, 554 with dwell times of 0.82, 0.37 and 0.39 seconds. Crawlers walk items in id order, so across about 4,200 bot sessions in the training window every item gains a spurious transition to the next id with a count around 23-25."
+    - stage: "2. The spurious transition wins"
+      detail: "For item 552 the real top successors have counts of 11, 7 and 5. The crawler transition 552 to 553 has a count of 23 and ranks first. Unfiltered, the model recommends item 553 to every human viewing item 552. After filtering sessions with a median dwell under one second the spurious count is 0."
+    - stage: "3. What the bots cost in the metric"
+      detail: "With bots left in training the theme-aware model's MRR@20 falls from 0.327 to 0.273, a 16% loss, while hit rate barely moves (0.597 to 0.593). A team watching only hit rate would not notice."
+    - stage: "4. Order and split choices change the story"
+      detail: "Treating the session as a bag of items scores MRR 0.224; honouring click order scores 0.315. A random split of sessions gives popularity a hit rate of 0.096 against 0.076 on a time split, because the sale's popularity shift sits on both sides of the split. For the ordered model the leakage is smaller (0.603 against 0.588) but it is still optimistic."
+  outcome: >-
+    The two largest effects are data hygiene (bots) and evaluation design (time split), not model class. The
+    session-aware challenger adds about 1 point of hit rate over plain ordered transitions, so a sequence model
+    has to clear a small gap to justify its serving cost.
+tests:
+  - test: "Time split"
+    tool: "pytest test_time_split_has_a_gap_and_no_shared_session"
+    pass: "Training ends before the test window starts and no session id appears on both sides"
+  - test: "Bot filter quality"
+    tool: "pytest test_bot_filter_catches_crawlers_and_keeps_humans"
+    pass: "At least 95% of crawler sessions removed and at least 98% of human sessions kept"
+  - test: "Evaluation protocol"
+    tool: "pytest test_evaluation_never_credits_a_repeat_of_what_the_user_just_saw"
+    pass: "A recommender that echoes the last item scores a hit rate of 0"
+  - test: "Order and personalisation"
+    tool: "pytest test_order_matters_and_everything_beats_popularity"
+    pass: "Ordered MRR exceeds bag MRR by 0.04 and co-visitation reaches at least five times popularity's hit rate"
+  - test: "Challenger does not regress"
+    tool: "pytest test_theme_aware_challenger_does_not_regress"
+    pass: "Hit rate and MRR within 0.005 of the ordered model or better, with coverage above 50%"
+  - test: "Bots hurt ranking quality"
+    tool: "pytest test_leaving_bots_in_training_hurts_ranking_quality"
+    pass: "MRR with bots left in training is below 90% of MRR with the filter"
+  - test: "Random splits flatter the baseline"
+    tool: "pytest test_random_session_splits_flatter_the_popularity_baseline"
+    pass: "Popularity hit rate on a random split exceeds the time-split figure by more than 10%"
+  - test: "Stock and freshness at serving"
+    tool: "Integration test that marks the top candidate out of stock during a simulated sale"
+    pass: "The service drops it and backfills within one request, and popularity features refresh inside the sale tolerance"
+decisions:
+  - question: "Counts and nearest neighbours, or a neural sequence model?"
+    options:
+      - option: "Ordered item-to-item transition counts (optionally with a session theme)"
+        chooseWhen: "You are launching, need sub-50 ms latency on CPU and an easily explained model; it is a strong baseline that is hard to beat by much"
+      - option: "Session-based kNN"
+        chooseWhen: "Sessions repeat in structure and you want a stronger non-parametric baseline before neural models"
+      - option: "Transformer sequence model (SASRec-style)"
+        chooseWhen: "Counts plateau, you have tens of millions of sessions and can afford GPU training and an embedding index"
+    default: "Ordered transitions with a theme boost; build a sequence model only when error analysis shows order beyond the last two clicks matters"
+  - question: "How do you evaluate negatives?"
+    options:
+      - option: "Rank against the full catalogue"
+        chooseWhen: "Always for the final numbers; it is what production does"
+      - option: "Sampled negatives for training speed"
+        chooseWhen: "Training large models; use popularity-corrected sampling and never report metrics from uniform negatives, they inflate results"
+    default: "Full-catalogue metrics, sampled negatives only inside training"
+  - question: "Where do you filter bots?"
+    options:
+      - option: "At ingestion, before counts are updated"
+        chooseWhen: "Always as the first line; keep the raw stream for analysis"
+      - option: "In the model as a feature"
+        chooseWhen: "Only as a second line when borderline traffic matters; it does not replace ingestion filtering"
+    default: "Filter at ingestion on dwell and traversal patterns and report the filtered share daily"
+pitfalls:
+  - at: M1
+    mistake: "Splitting sessions at random"
+    symptom: "Popularity hit rate is 26% higher on a random split than on a time split in the starter, and every model looks better offline than live"
+    fix: "Split by time with a gap day and keep a sale or launch inside the test window"
+  - at: M1
+    mistake: "Letting the target item appear in the input prefix"
+    symptom: "A model that just echoes the last item scores well"
+    fix: "Mask items already in the prefix and keep the echo test"
+  - at: M2
+    mistake: "Counting every click as a human signal"
+    symptom: "A crawler transition outranks real shopper behaviour and MRR falls by 16%"
+    fix: "Filter by dwell and traversal order before counting, and monitor the removed share"
+  - at: M3
+    mistake: "Treating the session as a bag of items"
+    symptom: "Recommendations suggest the phone to someone who just looked at the case, with MRR 0.224 against 0.315"
+    fix: "Use ordered transitions and test for asymmetry"
+  - at: M4
+    mistake: "Choosing a transformer before measuring the gap"
+    symptom: "Months of work for a model that moves hit rate by a point"
+    fix: "Quantify the headroom with the cheap challenger first and let error analysis justify the next step"
+  - at: M5
+    mistake: "Letting candidate lists go stale during a sale"
+    symptom: "Recommendations point at last week's popular items while traffic shifts within minutes"
+    fix: "Refresh popularity features and candidate sets near real time and test with a simulated sale"
+  - at: M6
+    mistake: "Optimising offline MRR alone"
+    symptom: "Coverage collapses onto head items and add-to-cart stalls"
+    fix: "Track coverage and an exploration share beside MRR, and confirm with an A/B test"

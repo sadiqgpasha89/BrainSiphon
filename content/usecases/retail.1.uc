@@ -63,18 +63,25 @@ gap: Training on logged policy without propensities ; Offline hits vs online div
 obj: Recommend the next item for anonymous or logged-in sessions in real time, using only in-session behaviour when history is absent.
 loss: \mathcal{L}=-\sum_t\log\frac{e^{s(h_t,i_{t+1})}}{\sum_j e^{s(h_t,j)}}
 con: Works for anonymous users ; State updated per click ; 50 ms ; Privacy-friendly (no cross-site tracking)
-sn: Order | Sequence models capturing transitions and intent shifts | Bag-of-items co-occurrence | Order distinguishes browsing from buying intent
-sn: Negatives | Sampled softmax with popularity-corrected negatives | Uniform negatives | Easy negatives inflate offline metrics
-sig: Last-k item embeddings | transformer encoding of last 20 interactions | Current intent | Cap sequence length for latency
-sig: Dwell and scroll depth | seconds on item pages and scroll fraction | Interest strength | Bots inflate dwell; filter them
-sig: Session goal inference | classifier over browse vs compare vs purchase | Adjusts recommendations | Label from eventual purchase carefully
+sn: Order | Sequence models capturing transitions and intent shifts | Bag-of-items co-occurrence that ignores click order | Order distinguishes browsing from buying intent
+sn: Negatives | Sampled softmax with popularity-corrected negatives | Uniform random negatives for evaluation | Easy negatives inflate offline metrics
+sn: Bots | Bot and crawler filtering before any counts are built | Using every click as a human signal | Crawlers walking the catalogue in id order create transitions as strong as real shopper behaviour
+sn: Evaluation | Time-split leave-last-out with MRR and catalogue coverage | Random session splits and hit rate alone | A random split lets a sale's popularity shift appear on both sides and flatters the baseline
+sig: Last-k item embeddings | transformer encoding of last 20 interactions | Captures what the shopper wants right now | Cap sequence length so latency stays inside the budget
+sig: Dwell and scroll depth | seconds on item pages and scroll fraction | Shows how strongly the shopper cares about an item | Bots inflate or deflate dwell, so filter them first
+sig: Session goal inference | classifier over browse vs compare vs purchase | Changes what to recommend: alternatives versus accessories | Label from the eventual purchase carefully to avoid leakage
+sig: Session theme category | share of recent items in each category | A shopper keeps returning to one need, such as lamps | Compute from the prefix only, never including the item to be predicted
+sig: Transition recency | how recently each item-to-item transition was observed, decayed over days | Catalogue and trends change within days | Decay by event time and keep the training cut-off before the test window
 noise: Session ID | arbitrary
 noise: Total session clicks | confounded with browsing style
+noise: Raw click count per item | dominated by crawlers and promotions rather than genuine interest
 base: Item-to-item co-visitation counts.
 prod: Causal transformer (SASRec-style) with in-memory session state, ANN lookup and business re-rank; retrained daily.
 pipe: Event stream @ Kafka ; Session state store @ Redis ; Sequence encoder @ SASRec on GPU ; ANN retrieval @ HNSW ; Re-ranker @ business rules ; Response cache @ short TTL ; Click feedback @ stream
 edge: Bot traffic produces random sequences | random bot sequences pollute transition statistics and degrade recommendations | Bot filter and per-session anomaly flags
 edge: Sale event changes item popularity within minutes | stale candidate sets | Near-real-time popularity features and index refresh
+edge: Anonymous session with a single click | there is no prefix beyond one item | Fall back to category-level transitions plus popularity within the category
+edge: Out-of-stock item at the top of the list | the best candidate cannot be bought and shoppers bounce | Filter by live stock at re-rank time and backfill from the next candidates
 off: HitRate@20 and MRR on time-split ; Catalogue coverage
 on: Click-through on recommendations ; Add-to-cart rate
 gap: Random session splits leak popularity ; Test sessions from the same day as training
