@@ -280,6 +280,14 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
                         <ParadigmChips paradigms={e.mlParadigms} />
                         <LatencyChip latency={e.latencySLA} />
                         <DifficultyChip difficulty={e.difficulty} />
+                        {e.playbook && (
+                          <span
+                            className="chip !border-signal/50 !bg-signal-soft !text-signal"
+                            title="Includes a Build Playbook with a runnable starter kit"
+                          >
+                            Playbook
+                          </span>
+                        )}
                         <span className="chip chip-signal ml-auto">{e.signalCount} signals</span>
                         <span className="chip chip-noise">{e.noiseCount} noise</span>
                       </div>

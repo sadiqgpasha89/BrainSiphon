@@ -1,9 +1,10 @@
-import { BadgeCheck, TriangleAlert } from 'lucide-react';
+import { BadgeCheck, Hammer, TriangleAlert } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DifficultyChip, LatencyChip, ParadigmChips } from '../../../components/Badges';
 import { ReaderShell } from '../../../components/reader/ReaderShell';
+import { PlaybookSection } from '../../../components/reader/Playbook';
 import { Pager, Sections, tocFor } from '../../../components/reader/Sections';
 import { getIndex, getNeighbours, getUseCase } from '../../../lib/content';
 import { toMarkdown } from '../../../content/markdown';
@@ -60,7 +61,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
   };
 
   return (
-    <ReaderShell toc={tocFor()} slug={uc.slug} markdownText={toMarkdown(uc, SITE_URL)}>
+    <ReaderShell toc={tocFor(Boolean(uc.playbook))} slug={uc.slug} markdownText={toMarkdown(uc, SITE_URL)}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
@@ -84,6 +85,15 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         <p className="mt-3 max-w-3xl text-lg text-mute" data-prose>
           {uc.summary}
         </p>
+        {uc.playbook && (
+          <a
+            href="#playbook"
+            className="btn mt-4 !border-signal/50 !bg-signal-soft !text-signal no-underline"
+            data-testid="playbook-link"
+          >
+            <Hammer size={14} aria-hidden /> Build playbook: data, milestones, runnable starter kit
+          </a>
+        )}
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <ParadigmChips paradigms={uc.mlParadigms} />
           <LatencyChip latency={uc.latencySLA} />
@@ -100,6 +110,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
       </header>
       <article>
         <Sections uc={uc} />
+        {uc.playbook && <PlaybookSection pb={uc.playbook} />}
       </article>
       <Pager prev={prev} next={next} related={related} />
     </ReaderShell>

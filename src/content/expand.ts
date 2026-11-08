@@ -10,7 +10,8 @@ import {
 } from '../schemas/usecase.schema';
 import type { RawUseCase } from './parse';
 import { bottlenecksFor, buildLLD, buildStages, hldDiagram, pipelineDiagram, resilienceFor, sequenceDiagram, snake, TOTAL_BUDGET_MS } from './design';
-import { computeScale } from './scale';
+import { computeScale, usd } from './scale';
+import { loadPlaybook } from './playbook';
 
 export const VERIFIED_AT = '2026-11-07';
 
@@ -43,10 +44,11 @@ const sentence = (s: string, max = 190) => {
   return first.length <= max ? first : `${first.slice(0, max - 1).trimEnd()}…`;
 };
 
-export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT): UseCase {
+export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT, root?: string): UseCase {
   const where = `${raw.file}:${raw.line} (${raw.key})`;
   if (!REQUIRED_ENUMS.latency.includes(raw.latency)) throw new Error(`${where}: bad latency "${raw.latency}"`);
   if (!REQUIRED_ENUMS.difficulty.includes(raw.difficulty)) throw new Error(`${where}: bad difficulty "${raw.difficulty}"`);
+  if (!(raw.opts.a > 0) || !(raw.opts.k > 0)) throw new Error(`${where}: a= (events per active user per day) and k= (KB per event) must be > 0, otherwise every capacity and cost figure is zero or infinite`);
   if (raw.pipe.length < 4) throw new Error(`${where}: pipe needs at least 4 stages`);
 
   const paradigms = raw.paradigms as Paradigm[];
@@ -80,7 +82,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     summary: `${scale.mode === 'batch' ? 'Orchestrated batch pipeline' : scale.mode === 'interactive' ? 'Streaming, budget-capped serving plane' : 'Stateless, deadline-propagating serving plane'} for ${raw.title}: ${sync.map((s) => s.label).join(' → ')}${stages.some((s) => s.async) ? `, with ${stages.filter((s) => s.async).map((s) => s.label).join(' and ')} off the critical path` : ''}. Three active-active regions, shared data/ML plane, signed model artifacts.`,
     components: [
       { name: 'Edge and API gateway', tech: 'CDN/WAF + Envoy', responsibility: 'TLS, authN, per-key rate limits, idempotency, deadline propagation, load shedding.', latencyBudgetMs: scale.mode === 'batch' ? null : 0.5 },
-      ...stages.map((s) => ({ name: s.label, tech: s.tech, responsibility: stageResponsibility(s.kind), latencyBudgetMs: s.budgetMs })),
+      ...stages.map((s) => ({ name: s.label, tech: s.tech, responsibility: stageResponsibility(s.kind, s.label), latencyBudgetMs: s.budgetMs })),
       { name: 'Event bus', tech: 'Kafka (partitioned by entity)', responsibility: 'Durable decision/outcome log; replay for backfills and training sets.', latencyBudgetMs: null },
       { name: 'Training and registry', tech: 'Spark/Ray + MLflow-style registry', responsibility: 'Point-in-time datasets, challenger training, signed artifacts, shadow/canary promotion.', latencyBudgetMs: null },
     ],
@@ -88,6 +90,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   };
 
   const e2e = buildE2E(raw, stages, scale, loss, features, latency, paradigms);
+  const playbook = root ? loadPlaybook(root, domain, raw, latency, scale) : undefined;
 
   const candidate = {
     id: uuidFor(slug),
@@ -121,6 +124,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
         resilience: resilienceFor(scale.mode),
       },
     },
+    ...(playbook ? { playbook } : {}),
   };
 
   const parsed = UseCaseSchema.safeParse(candidate);
@@ -131,7 +135,9 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   return parsed.data;
 }
 
-function stageResponsibility(kind: string): string {
+function stageResponsibility(kind: string, label = ''): string {
+  if (kind === 'model' && /embed/i.test(label))
+    return 'Compute or fetch versioned embeddings for the entity; precompute off the request path where possible and stamp the version into the decision.';
   switch (kind) {
     case 'ingest':
       return 'Validate, normalise and timestamp the incoming event; reject malformed input early and cheaply.';
@@ -156,8 +162,8 @@ function buildE2E(raw: RawUseCase, stages: ReturnType<typeof buildStages>, scale
   const sync = stages.filter((s) => !s.async);
   const top3 = raw.sig.slice(0, 3);
   const budget = TOTAL_BUDGET_MS[latency];
-  const monthly = scale.monthlyTotalUSD >= 1e6 ? `$${(scale.monthlyTotalUSD / 1e6).toFixed(2)}M` : `$${(scale.monthlyTotalUSD / 1e3).toFixed(1)}K`;
-  const per1k = scale.costPer1kUSD >= 1 ? `$${scale.costPer1kUSD.toFixed(2)}` : `$${scale.costPer1kUSD.toFixed(3)}`;
+  const monthly = usd(scale.monthlyTotalUSD);
+  const per1k = usd(scale.costPer1kUSD);
   const reco = paradigms.includes('recommender');
   const llm = paradigms.includes('llm-agents');
   const fmtN = (n: number) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${(n / 1e3).toFixed(1)}K` : n.toFixed(0));
@@ -203,7 +209,7 @@ function buildE2E(raw: RawUseCase, stages: ReturnType<typeof buildStages>, scale
       steps: [
         `Baseline: ${raw.base}`,
         `Production: ${raw.prod}`,
-        `Optimise: ${loss.replace(/\\/g, '')} — pick the loss that matches the decision cost, then calibrate so scores are usable as probabilities or costs.`,
+        'Optimise the objective written in Problem formulation — pick the loss that matches the decision cost, then calibrate so scores are usable as probabilities or costs.',
         'Ship the baseline to shadow first; a complex model must beat it on the launch metric after variance, not on a leaderboard.',
       ],
       deliverable: 'Champion and challenger artifacts in the registry with model cards and reproducible training runs.',

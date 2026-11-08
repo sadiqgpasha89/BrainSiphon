@@ -179,6 +179,89 @@ export const SystemDesignSchema = z.object({
   }),
 });
 
+const Cell = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+
+/**
+ * Build Playbook: what an intermediate engineer needs to go from this blueprint to a shipped system —
+ * where the data comes from, the ordered milestones with numeric exit gates, a starter kit that runs
+ * on synthetic data, a worked example, an executable test plan, decisions and pitfalls.
+ */
+export const PlaybookSchema = z.object({
+  summary: nonEmpty,
+  prerequisites: z.object({
+    skills: z.array(nonEmpty).min(3),
+    tools: z.array(nonEmpty).min(2),
+    effort: nonEmpty,
+  }),
+  data: z.object({
+    strategy: nonEmpty,
+    datasets: z
+      .array(
+        z.object({
+          name: nonEmpty,
+          url: z.string().url(),
+          license: nonEmpty,
+          gives: nonEmpty,
+          caveat: nonEmpty,
+        }),
+      )
+      .min(1),
+    synthetic: z.object({ file: nonEmpty, description: nonEmpty, knobs: z.array(nonEmpty).min(2) }),
+    sample: z.object({
+      columns: z.array(nonEmpty).min(3),
+      rows: z.array(z.array(Cell)).min(3),
+    }),
+    label: nonEmpty,
+  }),
+  milestones: z
+    .array(
+      z.object({
+        id: z.string().regex(/^M\d$/),
+        title: nonEmpty,
+        days: nonEmpty,
+        tasks: z.array(nonEmpty).min(2),
+        deliverable: nonEmpty,
+        gate: z.object({ metric: nonEmpty, threshold: nonEmpty, how: nonEmpty }),
+      }),
+    )
+    .min(6),
+  starter: z.object({
+    runtime: nonEmpty,
+    run: z.array(nonEmpty).min(2),
+    expected: nonEmpty,
+    files: z
+      .array(
+        z.object({
+          path: nonEmpty,
+          purpose: nonEmpty,
+          language: z.enum(['python', 'yaml', 'text']),
+          code: nonEmpty,
+        }),
+      )
+      .min(3),
+  }),
+  workedExample: z.object({
+    scenario: nonEmpty,
+    steps: z.array(z.object({ stage: nonEmpty, detail: nonEmpty })).min(4),
+    outcome: nonEmpty,
+  }),
+  tests: z.array(z.object({ test: nonEmpty, tool: nonEmpty, pass: nonEmpty })).min(6),
+  decisions: z
+    .array(
+      z.object({
+        question: nonEmpty,
+        options: z.array(z.object({ option: nonEmpty, chooseWhen: nonEmpty })).min(2),
+        default: nonEmpty,
+      }),
+    )
+    .min(2),
+  pitfalls: z
+    .array(z.object({ at: z.string().regex(/^M\d$/), mistake: nonEmpty, symptom: nonEmpty, fix: nonEmpty }))
+    .min(4),
+  first30Days: z.array(nonEmpty).min(4),
+});
+export type Playbook = z.infer<typeof PlaybookSchema>;
+
 export const UseCaseSchema = z
   .object({
     id: z.string().uuid(),
@@ -225,6 +308,7 @@ export const UseCaseSchema = z
     }),
     productionEdgeCases: z.array(EdgeCaseSchema).min(2),
     systemDesign: SystemDesignSchema,
+    playbook: PlaybookSchema.optional(),
   })
   .strict();
 
@@ -245,6 +329,8 @@ export interface UseCaseIndexEntry {
   noiseCount: number;
   lastVerifiedAt: string;
   keywords: string;
+  /** true when a Build Playbook is published for this use case */
+  playbook?: boolean;
 }
 
 /** URL query validation shared by /api/search and the catalog. */

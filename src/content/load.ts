@@ -13,7 +13,7 @@ export function loadAllUseCases(root = process.cwd()): UseCase[] {
     const domain = f.split('.')[0] as Domain;
     if (!(DOMAINS as readonly string[]).includes(domain)) throw new Error(`content/usecases/${f}: filename must start with a known domain (${DOMAINS.join(', ')})`);
     const raws = parseUseCaseFile(`content/usecases/${f}`, readFileSync(join(dir, f), 'utf8'));
-    for (const r of raws) out.push(expand(r, domain));
+    for (const r of raws) out.push(expand(r, domain, undefined, root));
   }
   return out;
 }
@@ -41,5 +41,6 @@ export function toIndexEntry(u: UseCase): UseCaseIndexEntry {
     noiseCount: u.dataAndFeatures.noisyFeaturesToDrop.length + u.signalVsNoiseMatrix.length,
     lastVerifiedAt: u.lastVerifiedAt,
     keywords,
+    ...(u.playbook ? { playbook: true } : {}),
   };
 }

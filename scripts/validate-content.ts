@@ -5,7 +5,7 @@
  *  - every KaTeX loss compiles; every Mermaid block parses
  *  - flags use cases older than 180 days or lacking concrete failure modes
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import katex from 'katex';
 import { loadAllUseCases } from '../src/content/load';
@@ -63,6 +63,35 @@ async function main() {
       }
     }
 
+    if (u.playbook) {
+      // Playbook use cases must also be deep: the shallow 2/3/2 shape is only acceptable without a playbook.
+      const depth: [string, number, number][] = [
+        ['signal-vs-noise rows', u.signalVsNoiseMatrix.length, 4],
+        ['high-signal features', u.dataAndFeatures.highSignalFeatures.length, 5],
+        ['noisy features', u.dataAndFeatures.noisyFeaturesToDrop.length, 3],
+        ['edge cases', u.productionEdgeCases.length, 4],
+      ];
+      for (const [what, have, need] of depth)
+        if (have < need) errors.push(`${u.slug}: has a playbook but only ${have} ${what} (need ≥ ${need})`);
+      const cells = [
+        ...u.signalVsNoiseMatrix.flatMap((r) => [r.trueSignal, r.commonNoise, r.whyEngineersFail]),
+        ...u.dataAndFeatures.highSignalFeatures.flatMap((f) => [
+          f.formulaOrLogic,
+          f.intuition,
+          f.leakageRisk,
+        ]),
+        ...u.productionEdgeCases.flatMap((e) => [e.failureMode, e.mitigationStrategy]),
+      ];
+      const thin = cells.filter((c) => c.trim().split(/\s+/).length < 3);
+      if (thin.length) errors.push(`${u.slug}: ${thin.length} cell(s) are under 3 words, e.g. "${thin[0]}"`);
+      for (const f of u.playbook.starter.files)
+        if (/\bTODO\b|FIXME|NotImplementedError/.test(f.code))
+          errors.push(`${u.slug}: starter file ${f.path} contains a stub marker`);
+    }
+
+    if (/\b(Infinity|NaN|undefined)\b/.test(JSON.stringify(u.systemDesign)))
+      errors.push(`${u.slug}: generated design contains Infinity, NaN or undefined`);
+
     const ageDays = (Date.now() - new Date(u.lastVerifiedAt).getTime()) / 86_400_000;
     if (ageDays > STALE_DAYS)
       warnings.push(`${u.slug}: last verified ${Math.floor(ageDays)} days ago (> ${STALE_DAYS})`);
@@ -82,6 +111,16 @@ async function main() {
     if (n < MIN_PER_DOMAIN) errors.push(`domain ${d} has ${n} use cases, requires ≥ ${MIN_PER_DOMAIN}`);
   }
 
+  // every playbook directory must belong to a live use case (no orphans after a rename)
+  const pbRoot = 'content/playbooks';
+  if (existsSync(pbRoot))
+    for (const d of readdirSync(pbRoot, { withFileTypes: true }).filter((x) => x.isDirectory()))
+      for (const k of readdirSync(`${pbRoot}/${d.name}`, { withFileTypes: true }).filter((x) =>
+        x.isDirectory(),
+      ))
+        if (!slugs.has(`${d.name}/${k.name}`))
+          errors.push(`${pbRoot}/${d.name}/${k.name} has no matching use case`);
+
   // slug history: every redirect must point at a live use case, and an old slug must never also be live
   const history = JSON.parse(readFileSync('content/slug-history.json', 'utf8')) as Record<string, string>;
   for (const [from, to] of Object.entries(history)) {
@@ -95,8 +134,9 @@ async function main() {
     if (errors.length > 60) console.error(`… and ${errors.length - 60} more`);
     process.exit(1);
   }
+  const withPlaybook = all.filter((u) => u.playbook).length;
   console.log(
-    `validate:content ✔ ${all.length} use cases, ${all.length * 4} Mermaid blocks, ${all.length} KaTeX blocks`,
+    `validate:content ✔ ${all.length} use cases, ${all.length * 4} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks`,
   );
 }
 

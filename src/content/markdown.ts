@@ -1,4 +1,4 @@
-import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type UseCase } from '../schemas/usecase.schema';
+import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Playbook, type UseCase } from '../schemas/usecase.schema';
 
 const fence = (lang: string, body: string) => `\`\`\`${lang}\n${body.trim()}\n\`\`\``;
 const esc = (s: string) => s.replace(/\|/g, '\\|');
@@ -48,5 +48,41 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   u.evaluationAndMetrics.offlineOnlineGapTraps.forEach((x) => L.push(`- ${x}`));
   L.push('', '## Production edge cases', '', '| Scenario | Failure mode | Mitigation |', '|---|---|---|');
   u.productionEdgeCases.forEach((e) => L.push(`| ${esc(e.scenario)} | ${esc(e.failureMode)} | ${esc(e.mitigationStrategy)} |`));
+  if (u.playbook) playbookMarkdown(u.playbook, L);
   return `${L.join('\n')}\n`;
+}
+
+function playbookMarkdown(pb: Playbook, L: string[]) {
+  L.push('', '## Build playbook', '', pb.summary, '', '### Before you start', '', '**Skills**', '');
+  pb.prerequisites.skills.forEach((x) => L.push(`- ${x}`));
+  L.push('', '**Tools**', '');
+  pb.prerequisites.tools.forEach((x) => L.push(`- ${x}`));
+  L.push('', `**Effort.** ${pb.prerequisites.effort}`, '', '### 1. Data', '', pb.data.strategy, '', '| Dataset | License / access | What it gives you | Caveat |', '|---|---|---|---|');
+  pb.data.datasets.forEach((d) => L.push(`| [${esc(d.name)}](${d.url}) | ${esc(d.license)} | ${esc(d.gives)} | ${esc(d.caveat)} |`));
+  L.push('', `**Synthetic generator** (\`${pb.data.synthetic.file}\`). ${pb.data.synthetic.description}`, '', '**Knobs**', '');
+  pb.data.synthetic.knobs.forEach((k) => L.push(`- ${k}`));
+  L.push('', `| ${pb.data.sample.columns.join(' | ')} |`, `|${pb.data.sample.columns.map(() => '---').join('|')}|`);
+  pb.data.sample.rows.forEach((r) => L.push(`| ${r.map((c) => esc(String(c))).join(' | ')} |`));
+  L.push('', `**Label.** ${pb.data.label}`, '', '### 2. Milestones with exit gates', '');
+  pb.milestones.forEach((m) => {
+    L.push(`#### ${m.id} · ${m.title} (${m.days} days)`, '');
+    m.tasks.forEach((t) => L.push(`- ${t}`));
+    L.push('', `*Deliverable:* ${m.deliverable}`, '', `**Exit gate:** ${m.gate.metric} — pass when ${m.gate.threshold}. How: ${m.gate.how}`, '');
+  });
+  L.push('### 3. Starter kit', '', `Runtime: ${pb.starter.runtime}`, '', fence('bash', pb.starter.run.join('\n')), '', `Expect: ${pb.starter.expected}`, '');
+  pb.starter.files.forEach((f) => L.push(`#### ${f.path}`, '', f.purpose, '', fence(f.language === 'text' ? 'text' : f.language, f.code), ''));
+  L.push('### 4. Worked example', '', pb.workedExample.scenario, '');
+  pb.workedExample.steps.forEach((s) => L.push(`- **${s.stage}** ${s.detail}`));
+  L.push('', `**Outcome.** ${pb.workedExample.outcome}`, '', '### 5. Test and acceptance plan', '', '| Test | Tool / command | Pass criterion |', '|---|---|---|');
+  pb.tests.forEach((t) => L.push(`| ${esc(t.test)} | ${esc(t.tool)} | ${esc(t.pass)} |`));
+  L.push('', '### 6. Decisions', '');
+  pb.decisions.forEach((d) => {
+    L.push(`**${d.question}**`, '', '| Option | Choose it when |', '|---|---|');
+    d.options.forEach((o) => L.push(`| ${esc(o.option)} | ${esc(o.chooseWhen)} |`));
+    L.push('', `Default: ${d.default}`, '');
+  });
+  L.push('### 7. Pitfalls', '', '| At | Mistake | Symptom | Fix |', '|---|---|---|---|');
+  pb.pitfalls.forEach((p) => L.push(`| ${p.at} | ${esc(p.mistake)} | ${esc(p.symptom)} | ${esc(p.fix)} |`));
+  L.push('', '### 8. The first 30 days', '');
+  pb.first30Days.forEach((x) => L.push(`- ${x}`));
 }

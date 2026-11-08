@@ -70,7 +70,7 @@ export function computeClassOf(p: Paradigm[], latency: LatencySLA): ComputeClass
 
 const fmt = (n: number, d = 0) =>
   n >= 1e9 ? `${(n / 1e9).toFixed(1)}B` : n >= 1e6 ? `${(n / 1e6).toFixed(n >= 1e8 ? 0 : 1)}M` : n >= 1e4 ? `${(n / 1e3).toFixed(0)}K` : n.toLocaleString('en-US', { maximumFractionDigits: d });
-const usd = (n: number) => (n >= 1e6 ? `$${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `$${(n / 1e3).toFixed(1)}K` : `$${n.toFixed(2)}`);
+export const usd = (n: number) => (n >= 1e6 ? `$${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `$${(n / 1e3).toFixed(1)}K` : n >= 1 ? `$${n.toFixed(2)}` : `$${n.toFixed(3)}`);
 
 export function computeScale(i: ScaleInput): ScaleResult {
   const mode = modeOf(i.latency);

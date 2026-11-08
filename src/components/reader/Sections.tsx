@@ -4,7 +4,7 @@ import { CodeBlock } from '../Code';
 import { MathBlock } from '../Math';
 import { MermaidDiagram } from '../Mermaid';
 
-function Section({
+export function Section({
   id,
   title,
   kicker,
@@ -33,10 +33,10 @@ function Section({
   );
 }
 
-const TableWrap = ({ children }: { children: React.ReactNode }) => (
+export const TableWrap = ({ children }: { children: React.ReactNode }) => (
   <div className="card overflow-x-auto">{children}</div>
 );
-const List = ({ items, tone }: { items: string[]; tone?: 'signal' | 'noise' }) => (
+export const List = ({ items, tone }: { items: string[]; tone?: 'signal' | 'noise' }) => (
   <ul className="space-y-2 text-sm text-ink/90">
     {items.map((x) => (
       <li key={x} className="flex gap-2">
@@ -50,7 +50,7 @@ const List = ({ items, tone }: { items: string[]; tone?: 'signal' | 'noise' }) =
   </ul>
 );
 
-export const tocFor = (): { id: string; label: string; prose?: boolean }[] => [
+export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?: boolean }[] => [
   { id: 'signal-noise', label: 'Signal vs. Noise' },
   { id: 'problem', label: 'Problem & loss' },
   { id: 'features', label: 'Features' },
@@ -62,6 +62,7 @@ export const tocFor = (): { id: string; label: string; prose?: boolean }[] => [
   { id: 'scale', label: 'Scale & capacity' },
   { id: 'evaluation', label: 'Evaluation' },
   { id: 'edge-cases', label: 'Edge cases' },
+  ...(hasPlaybook ? [{ id: 'playbook', label: 'Build playbook' }] : []),
 ];
 
 export async function Sections({ uc }: { uc: UseCase }) {
