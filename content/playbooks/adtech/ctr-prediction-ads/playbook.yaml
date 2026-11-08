@@ -13,6 +13,99 @@ prerequisites:
     - "Python 3.11+ with numpy, pandas, scikit-learn (requirements.txt in the starter)"
     - "A stream or log store for impressions (Kafka plus a warehouse) and a model server that can load ONNX or similar for M5"
     - "An experimentation platform able to split traffic for M6"
+domainKnowledge:
+  overview: >-
+    Online advertising is sold through auctions that run in the time it takes a page to load. When a user opens an app or
+    page, an ad request goes to an exchange, several buyers bid, and the winner's ad is shown, all within roughly 100 ms.
+    The click-through-rate model supplies the number that turns a bid into a ranking, so a wrong or miscalibrated
+    probability changes who wins and what they pay. Learn how the auction uses your score before tuning the model.
+  concepts:
+    - name: "How an ad auction works"
+      explanation: >-
+        A publisher's page makes an ad request to a supply-side platform and exchange. Demand-side platforms bid on behalf of
+        advertisers, often through the OpenRTB protocol. In a first-price auction the winner pays their bid; in a second-price
+        auction they pay just above the next bid. A floor price sets the minimum.
+      whyItMatters: "Your model is one stage inside a hard time limit that the bid request announces, so latency and failure behaviour are part of the design."
+    - name: "Pricing models and expected value"
+      explanation: >-
+        Advertisers pay per thousand impressions (CPM), per click (CPC) or per action (CPA). To compare bids on a common scale
+        the system converts everything to expected revenue per thousand impressions (eCPM): for a click-priced bid it is
+        bid times predicted click probability times 1000.
+      whyItMatters: "The predicted probability is multiplied by money, so calibration matters as much as ranking. A score that ranks well but is 30% too high overcharges and over-delivers."
+    - name: "Position, placement and context"
+      explanation: >-
+        The same ad gets very different click rates depending on where it appears (top of the feed versus a sidebar), on the
+        device and on the time of day. Users also look at higher positions more, so observed click rates mix the quality of an
+        ad with how visible it was.
+      whyItMatters: "Logs ranked by an old model teach a new model the old ranking unless position is handled explicitly."
+    - name: "Click quality and invalid traffic"
+      explanation: >-
+        Not every click is a real, interested human. Bots, click farms, accidental taps and misleading creatives produce
+        invalid traffic that inflates click rates and wastes advertiser budget, and industry bodies set standards for
+        filtering it. Very short dwell time after a click is a common signal.
+      whyItMatters: "Training on junk clicks teaches the model to reward what causes mistakes, and advertisers punish platforms that bill for them."
+    - name: "Feedback loops and exploration"
+      explanation: >-
+        You only observe clicks for ads that were shown, and the ranker decides what is shown. A new ad that is never shown
+        never gets a click rate. Systems therefore keep a small exploration budget and a randomised slice that provides
+        unbiased data.
+      whyItMatters: "Without exploration, new creatives are starved and offline evaluation rewards the incumbent ranker."
+    - name: "Privacy and signal loss"
+      explanation: >-
+        Consent rules (GDPR, CCPA), platform changes such as app tracking limits and the phase-out of third-party cookies
+        remove cross-site identifiers. Models rely more on context, first-party signals and aggregated data.
+      whyItMatters: "Features you can use today may be unavailable next year; design for graceful loss of signals."
+  glossary:
+    - term: "Impression"
+      definition: "One instance of an ad being shown to a user; the denominator of click-through rate."
+    - term: "CTR"
+      definition: "Click-through rate: clicks divided by impressions, typically a few percent or much less."
+    - term: "CPM / CPC / CPA"
+      definition: "Pricing per thousand impressions, per click or per action such as a purchase or install."
+    - term: "eCPM"
+      definition: "Effective cost per mille: expected revenue per thousand impressions, used to rank bids of different pricing types."
+    - term: "RTB"
+      definition: "Real-time bidding: ads sold one impression at a time in an auction that runs while the page loads."
+    - term: "SSP"
+      definition: "Supply-side platform, the system publishers use to sell their ad space."
+    - term: "DSP"
+      definition: "Demand-side platform, the system advertisers use to buy impressions and where a CTR model usually lives."
+    - term: "Ad exchange"
+      definition: "A marketplace that connects sellers and buyers and runs the auction."
+    - term: "OpenRTB"
+      definition: "A widely used protocol for bid requests and responses, which includes a maximum response time."
+    - term: "First-price / second-price auction"
+      definition: "Auction rules in which the winner pays their own bid or just above the runner-up's bid."
+    - term: "Floor price"
+      definition: "The lowest price a publisher will accept for an impression."
+    - term: "Pacing"
+      definition: "Spreading an advertiser's budget over the day so it is neither spent in minutes nor left unspent."
+    - term: "Creative"
+      definition: "The ad itself: image, video or text, in a given size and format."
+    - term: "Placement"
+      definition: "The slot where an ad appears, such as feed, sidebar or banner; position is the rank within it."
+    - term: "Viewability"
+      definition: "Whether an ad was actually on screen long enough to be seen, a quality measure advertisers care about."
+    - term: "Invalid traffic (IVT)"
+      definition: "Clicks and impressions from bots or accidental taps that should not be billed."
+    - term: "Attribution"
+      definition: "Assigning credit for a conversion, such as a purchase, to the ads that preceded it."
+    - term: "Log loss"
+      definition: "The negative log-likelihood of the observed clicks under the predicted probabilities, the standard training loss."
+    - term: "Normalised cross-entropy (NE)"
+      definition: "Log loss divided by the log loss of always predicting the average click rate; below 1 means better than the base rate."
+    - term: "Calibration"
+      definition: "Predicted probabilities matching observed frequencies, so that ads scored at 3% really are clicked about 3% of the time."
+    - term: "Feature hashing"
+      definition: "Mapping categorical values to a fixed-size vector with a hash function, so memory stays flat however many ids exist."
+    - term: "Cold start"
+      definition: "A new ad, user or placement with no history, whose click rate must be guessed from priors and similar items."
+  askTheExperts:
+    - "Is our auction first-price or second-price, and exactly where in the bid does the predicted click probability enter?"
+    - "What does a valid, billable click mean here, and which invalid-traffic filters run before clicks reach the training logs?"
+    - "Do the logs record the display position, and do we have randomised-position traffic we can use for evaluation?"
+    - "What is the time budget for the model inside the bid request, and what happens when it is exceeded?"
+    - "Which identifiers and consent signals will we still have next year, and which features depend on ones that are going away?"
 data:
   strategy: >-
     Start on the synthetic log, where the true click probability is stored so you can measure bias exactly.
