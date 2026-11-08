@@ -48,6 +48,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
   const uc = await getUseCase(full);
   if (!uc) notFound();
   const { prev, next, related } = await getNeighbours(full);
+  const entry = (await getIndex()).find((e) => e.slug === full);
 
   const ageDays = Math.floor((Date.now() - new Date(uc.lastVerifiedAt).getTime()) / 86_400_000);
   const stale = ageDays > STALE_DAYS;
@@ -76,6 +77,19 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
           <Link href={`/${uc.domain}`} className="hover:text-ink">
             {DOMAIN_META[uc.domain].short}
           </Link>
+          {entry?.trackId && (
+            <>
+              {' '}
+              /{' '}
+              <Link
+                href={`/${uc.domain}?track=${entry.trackId}#catalog`}
+                className="hover:text-ink"
+                data-testid="track-crumb"
+              >
+                {entry.trackName}
+              </Link>
+            </>
+          )}
         </nav>
         <h1
           className="max-w-4xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl"
@@ -96,6 +110,14 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
           </a>
         )}
         <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Link
+            href={`/patterns/${uc.pattern}`}
+            className="chip !border-signal/50 !bg-signal-soft !text-signal no-underline"
+            data-testid="pattern-chip"
+            title="The reference pattern and runnable kit this system is an instance of"
+          >
+            Pattern: {uc.pattern}
+          </Link>
           <ParadigmChips paradigms={uc.mlParadigms} />
           <LatencyChip latency={uc.latencySLA} />
           <DifficultyChip difficulty={uc.difficulty} />

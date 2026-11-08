@@ -6,6 +6,16 @@ Zero-noise engineering blueprints for AI/ML systems — **500 use cases, 10 doma
 _signal_ that moves the metric, names the _noise_ that wastes your quarter, and designs the whole system for
 **10 million users**: HLD, sequence diagram, LLD, 10-phase end-to-end breakdown, capacity/cost model, evaluation and edge cases.
 
+## How to find your way
+
+- **Start here and tracks.** Each domain page opens with a three-step "Start here" path, then 7–8 tracks (for example
+  fintech: payments fraud, credit and lending, financial crime, markets, insurance). A track filters the catalog.
+  Both live in `content/tracks.json`; the build fails unless the tracks of a domain cover every use case exactly once.
+- **Patterns.** `/patterns` lists the 11 reference patterns (the same eleven as the starter kits). Each hub shows what the
+  pattern teaches, how to run its kit and every blueprint, in every domain, that is an instance of it.
+- **Agentic solution.** Every blueprint has a section on where agents help, the typed tools they get, an autonomy ladder
+  with promotion gates, guardrails and how to evaluate them. It is generated from the blueprint and not expert-reviewed.
+
 ## Quick start
 
 ```bash

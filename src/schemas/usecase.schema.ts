@@ -25,6 +25,21 @@ export const ML_PARADIGMS = [
 export const LATENCY_SLAS = ['sub-10ms', 'sub-100ms', 'seconds', 'batch'] as const;
 export const DIFFICULTIES = ['foundational', 'production-grade', 'staff-principal'] as const;
 
+export const PATTERN_IDS = [
+  'tabular',
+  'forecast',
+  'anomaly',
+  'recommender',
+  'graph',
+  'nlp',
+  'cv',
+  'bandit',
+  'optimize',
+  'llm-rag',
+  'llm-agent',
+] as const;
+export type PatternId = (typeof PATTERN_IDS)[number];
+
 export const DomainEnum = z.enum(DOMAINS);
 export const ParadigmEnum = z.enum(ML_PARADIGMS);
 export const LatencyEnum = z.enum(LATENCY_SLAS);
@@ -349,6 +364,8 @@ export const UseCaseSchema = z
     mlParadigms: z.array(ParadigmEnum).min(1),
     latencySLA: LatencyEnum,
     difficulty: DifficultyEnum,
+    /** which of the 11 reference patterns this system is an instance of (the same list as the starter kits) */
+    pattern: z.enum(PATTERN_IDS),
     lastVerifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     summary: nonEmpty,
     signalVsNoiseMatrix: z.array(SignalNoiseRowSchema).min(2),
@@ -406,6 +423,10 @@ export interface UseCaseIndexEntry {
   noiseCount: number;
   lastVerifiedAt: string;
   keywords: string;
+  pattern: PatternId;
+  /** the sub-area of the domain this use case belongs to, and its position in the domain's authored order */
+  trackId?: string;
+  trackName?: string;
   /** how the Build Playbook was made: written by hand with its own kit, or generated from the blueprint and a reference kit */
   playbook?: 'authored' | 'generated';
 }

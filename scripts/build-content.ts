@@ -7,7 +7,9 @@ import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { loadAllUseCases, toIndexEntry } from '../src/content/load';
 import { toMarkdown } from '../src/content/markdown';
-import { DOMAIN_META, DOMAINS } from '../src/schemas/usecase.schema';
+import { DOMAIN_META, DOMAINS, PATTERN_IDS } from '../src/schemas/usecase.schema';
+import { loadTracksFile, resolveTracks, type ResolvedDomainTracks } from '../src/content/tracks';
+import { readFileSync } from 'node:fs';
 
 const root = process.cwd();
 const gen = join(root, 'content', 'generated');
@@ -29,6 +31,47 @@ for (const u of all) {
   write(join(pub, `${u.slug}.md`), toMarkdown(u, origin));
 }
 const index = all.map(toIndexEntry);
+
+// tracks: group each domain's use cases (in authored order) into sub-areas and name the ones to read first
+const tracksFile = loadTracksFile(root);
+const tracksOut: Record<string, ResolvedDomainTracks> = {};
+for (const d of DOMAINS) {
+  const entries = index.filter((e) => e.domain === d);
+  const resolved = resolveTracks(
+    d,
+    tracksFile,
+    entries.map((e) => e.slug),
+  );
+  tracksOut[d] = resolved;
+  for (const t of resolved.tracks)
+    for (const slug of t.slugs) {
+      const e = entries.find((x) => x.slug === slug)!;
+      e.trackId = t.id;
+      e.trackName = t.name;
+    }
+}
+write(join(gen, 'tracks.json'), JSON.stringify(tracksOut));
+
+// pattern hubs: what each of the 11 reference kits teaches, taken from its kit.json
+const patternsOut = PATTERN_IDS.map((id) => {
+  const k = JSON.parse(readFileSync(join(root, 'content', 'kits', id, 'kit.json'), 'utf8')) as Record<
+    string,
+    unknown
+  >;
+  return {
+    id,
+    label: k.label,
+    summary: k.summary,
+    target: k.target,
+    runtime: k.runtime,
+    run: k.run,
+    expected: k.expected,
+    headline: k.headline,
+    lessons: k.lessons,
+    files: k.files,
+  };
+});
+write(join(gen, 'patterns.json'), JSON.stringify(patternsOut));
 write(join(gen, 'index.json'), JSON.stringify(index));
 write(join(pub, 'search-index.json'), JSON.stringify(index));
 

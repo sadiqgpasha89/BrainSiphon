@@ -29,6 +29,14 @@ export function SiteHeader() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                href="/patterns"
+                className="block whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm text-signal no-underline transition hover:bg-raised"
+              >
+                Patterns
+              </Link>
+            </li>
           </ul>
         </nav>
         <SearchTrigger />

@@ -13,7 +13,7 @@ import { bottlenecksFor, buildLLD, buildStages, hldDiagram, pipelineDiagram, res
 import { computeScale, usd } from './scale';
 import { loadPlaybook } from './playbook';
 import { generateAgentic } from './agentic-gen';
-import { generatePlaybook } from './playbook-gen';
+import { generatePlaybook, pickKit } from './playbook-gen';
 import { explainLoss } from './lossvars';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -120,6 +120,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     mlParadigms: paradigms,
     latencySLA: latency,
     difficulty,
+    pattern: pickKit(raw, paradigms),
     lastVerifiedAt: verifiedAt,
     summary: sentence(raw.obj),
     signalVsNoiseMatrix: raw.sn.map(([concept, trueSignal, commonNoise, whyEngineersFail]) => ({ concept, trueSignal, commonNoise, whyEngineersFail })),

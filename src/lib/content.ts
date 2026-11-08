@@ -2,7 +2,14 @@ import 'server-only';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cache } from 'react';
-import { UseCaseSchema, type Domain, type UseCase, type UseCaseIndexEntry } from '../schemas/usecase.schema';
+import type { ResolvedDomainTracks } from '../content/tracks';
+import {
+  UseCaseSchema,
+  type Domain,
+  type PatternId,
+  type UseCase,
+  type UseCaseIndexEntry,
+} from '../schemas/usecase.schema';
 
 const root = join(process.cwd(), 'content', 'generated');
 
@@ -46,4 +53,31 @@ export async function getNeighbours(
     .slice(0, 5)
     .map((x) => x.e);
   return { prev: same[j - 1] ?? null, next: same[j + 1] ?? null, related };
+}
+
+export interface PatternHub {
+  id: PatternId;
+  label: string;
+  summary: string;
+  target: string;
+  runtime: string;
+  run: string[];
+  expected: string;
+  headline: Record<string, string>;
+  lessons: { trap: string; evidence: string; at: string }[];
+  files: { path: string; purpose: string }[];
+}
+
+let tracksMemo: Promise<Record<string, ResolvedDomainTracks>> | null = null;
+export function getTracks(domain: Domain): Promise<ResolvedDomainTracks> {
+  tracksMemo ??= readFile(join(root, 'tracks.json'), 'utf8').then(
+    (t) => JSON.parse(t) as Record<string, ResolvedDomainTracks>,
+  );
+  return tracksMemo.then((m) => m[domain]!);
+}
+
+let patternsMemo: Promise<PatternHub[]> | null = null;
+export function getPatterns(): Promise<PatternHub[]> {
+  patternsMemo ??= readFile(join(root, 'patterns.json'), 'utf8').then((t) => JSON.parse(t) as PatternHub[]);
+  return patternsMemo;
 }

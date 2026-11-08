@@ -41,6 +41,7 @@ export function toIndexEntry(u: UseCase): UseCaseIndexEntry {
     noiseCount: u.dataAndFeatures.noisyFeaturesToDrop.length + u.signalVsNoiseMatrix.length,
     lastVerifiedAt: u.lastVerifiedAt,
     keywords,
+    pattern: u.pattern,
     ...(u.playbook ? { playbook: u.playbook.provenance } : {}),
   };
 }

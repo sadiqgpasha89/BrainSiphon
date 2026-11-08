@@ -12,13 +12,17 @@ export interface Filters {
   paradigm?: Paradigm;
   latency?: LatencySLA;
   difficulty?: Difficulty;
+  track?: string;
+  pattern?: string;
 }
 
 export const passesFilters = (e: UseCaseIndexEntry, f: Filters): boolean =>
   (!f.domain || e.domain === f.domain) &&
   (!f.paradigm || e.mlParadigms.includes(f.paradigm)) &&
   (!f.latency || e.latencySLA === f.latency) &&
-  (!f.difficulty || e.difficulty === f.difficulty);
+  (!f.difficulty || e.difficulty === f.difficulty) &&
+  (!f.track || e.trackId === f.track) &&
+  (!f.pattern || e.pattern === f.pattern);
 
 export function buildMiniSearch(entries: UseCaseIndexEntry[]): MiniSearch<UseCaseIndexEntry> {
   const ms = new MiniSearch<UseCaseIndexEntry>({

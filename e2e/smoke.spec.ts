@@ -119,3 +119,29 @@ test('a pilot use case opens straight to its build playbook, with gates and runn
   await page.goto('/fintech/real-time-card-upi-fraud-detection');
   await expect(page.getByTestId('playbook-provenance')).toContainText('Hand-written playbook');
 });
+
+test('a domain page opens with a start-here path and tracks, and a track filters the catalog', async ({
+  page,
+}) => {
+  await page.goto('/bfsi');
+  await expect(page.getByTestId('start-here').getByRole('listitem')).toHaveCount(3);
+  const tracks = page.getByTestId('tracks').getByRole('listitem');
+  expect(await tracks.count()).toBeGreaterThanOrEqual(6);
+  await tracks.filter({ hasText: 'Insurance' }).getByRole('link').click();
+  await expect(page).toHaveURL(/track=insurance/);
+  await expect(page.getByTestId('result-count')).toContainText('11 of 50');
+});
+
+test('pattern hubs list blueprints across domains and a blueprint links back to its pattern', async ({
+  page,
+}) => {
+  await page.goto('/patterns');
+  await expect(page.getByTestId('pattern-list').getByRole('listitem')).toHaveCount(11);
+  await page.goto('/real-estate/automated-valuation-model');
+  await expect(page.getByTestId('track-crumb')).toContainText('Valuation');
+  await page.getByTestId('pattern-chip').click();
+  await expect(page).toHaveURL(/\/patterns\/[a-z-]+$/);
+  await expect(page.getByTestId('pattern-title')).toBeVisible();
+  const n = await page.getByTestId('pattern-usecases').getByRole('link').count();
+  expect(n).toBeGreaterThan(10);
+});

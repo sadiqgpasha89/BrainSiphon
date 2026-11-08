@@ -61,6 +61,7 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
   const [paradigm, setParadigm] = useState<Paradigm | undefined>();
   const [latency, setLatency] = useState<LatencySLA | undefined>();
   const [difficulty, setDifficulty] = useState<Difficulty | undefined>();
+  const [track, setTrack] = useState<string | undefined>();
   const [sort, setSort] = useState<Sort>('relevance');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
@@ -71,11 +72,13 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
     const para = p.get('paradigm');
     const lat = p.get('latency');
     const dif = p.get('difficulty');
+    const trk = p.get('track');
+    if (trk && entries.some((e) => e.trackId === trk)) setTrack(trk);
     if (para && (ML_PARADIGMS as readonly string[]).includes(para)) setParadigm(para as Paradigm);
     if (lat && (LATENCY_SLAS as readonly string[]).includes(lat)) setLatency(lat as LatencySLA);
     if (dif && (DIFFICULTIES as readonly string[]).includes(dif)) setDifficulty(dif as Difficulty);
     setQ((p.get('q') ?? '').slice(0, 120));
-  }, []);
+  }, [entries]);
 
   useEffect(() => {
     const p = new URLSearchParams();
@@ -83,15 +86,16 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
     if (paradigm) p.set('paradigm', paradigm);
     if (latency) p.set('latency', latency);
     if (difficulty) p.set('difficulty', difficulty);
+    if (track) p.set('track', track);
     const qs = p.toString();
     window.history.replaceState(null, '', `${window.location.pathname}${qs ? `?${qs}` : ''}`);
-  }, [q, paradigm, latency, difficulty]);
+  }, [q, paradigm, latency, difficulty, track]);
 
   const ms = useMemo(() => buildMiniSearch(entries), [entries]);
 
   const filters: Filters = useMemo(
-    () => ({ paradigm, latency, difficulty }),
-    [paradigm, latency, difficulty],
+    () => ({ paradigm, latency, difficulty, track }),
+    [paradigm, latency, difficulty, track],
   );
 
   const results = useMemo(() => {
@@ -128,16 +132,35 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
     getItemKey: (i) => results[i]!.id,
   });
 
-  const activeCount = [paradigm, latency, difficulty].filter(Boolean).length;
+  const trackList = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const e of entries)
+      if (e.trackId && !seen.has(e.trackId)) seen.set(e.trackId, e.trackName ?? e.trackId);
+    return [...seen];
+  }, [entries]);
+  const activeCount = [paradigm, latency, difficulty, track].filter(Boolean).length;
   const clear = () => {
     setParadigm(undefined);
     setLatency(undefined);
     setDifficulty(undefined);
+    setTrack(undefined);
     setQ('');
   };
 
   const filterPanel = (
     <div className="space-y-6">
+      {trackList.length > 0 && (
+        <fieldset>
+          <legend className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Track</legend>
+          <div className="flex flex-wrap gap-1.5">
+            {trackList.map(([id, name]) => (
+              <Chip key={id} value={id} active={track === id} onClick={setTrack} count={count('track', id)}>
+                {name}
+              </Chip>
+            ))}
+          </div>
+        </fieldset>
+      )}
       <fieldset>
         <legend className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">ML paradigm</legend>
         <div className="flex flex-wrap gap-1.5">
@@ -277,6 +300,11 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
                       </div>
                       <p className="mt-1 line-clamp-2 text-sm text-mute">{e.summary}</p>
                       <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                        {e.trackName && (
+                          <span className="chip" data-testid="track-chip">
+                            {e.trackName}
+                          </span>
+                        )}
                         <ParadigmChips paradigms={e.mlParadigms} />
                         <LatencyChip latency={e.latencySLA} />
                         <DifficultyChip difficulty={e.difficulty} />

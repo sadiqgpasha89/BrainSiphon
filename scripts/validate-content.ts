@@ -10,6 +10,7 @@ import { JSDOM } from 'jsdom';
 import katex from 'katex';
 import { loadAllUseCases } from '../src/content/load';
 import { DOMAINS, type UseCase } from '../src/schemas/usecase.schema';
+import { loadTracksFile, resolveTracks } from '../src/content/tracks';
 
 const MIN_PER_DOMAIN = Number(process.env.MIN_PER_DOMAIN ?? 50);
 const STALE_DAYS = 180;
@@ -185,6 +186,20 @@ async function main() {
   for (const [from, to] of Object.entries(history)) {
     if (!slugs.has(to)) errors.push(`slug-history: ${from} -> ${to} points at a missing use case`);
     if (slugs.has(from)) errors.push(`slug-history: ${from} is redirected but still exists`);
+  }
+
+  // tracks must partition each domain exactly and every start-here step must exist
+  const tracksFile = loadTracksFile();
+  for (const d of DOMAINS) {
+    try {
+      resolveTracks(
+        d,
+        tracksFile,
+        all.filter((u) => u.domain === d).map((u) => u.slug),
+      );
+    } catch (e) {
+      errors.push(`tracks: ${(e as Error).message}`);
+    }
   }
 
   warnings.forEach((w) => console.warn(`⚠ ${w}`));
