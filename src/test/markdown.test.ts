@@ -22,10 +22,11 @@ describe('markdown export', () => {
       '## Security, governance and responsible AI',
       '## MLOps',
       '## Production operations and SRE',
+      '## Metrics catalogue',
       '## Validation and architecture review',
     ])
       expect(md).toContain(h);
-    expect((md.match(/```mermaid/g) ?? []).length).toBe(8);
+    expect((md.match(/```mermaid/g) ?? []).length).toBe(9);
     expect((md.match(/```/g) ?? []).length % 2).toBe(0);
   });
 

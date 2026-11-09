@@ -712,3 +712,143 @@ export function ValidationSection({ uc }: { uc: UseCase }) {
     </Section>
   );
 }
+
+/* ------------------------------------------------------------------ metrics catalogue */
+
+const KIND_TONE: Record<string, string> = {
+  outcome: 'chip-signal',
+  leading: 'chip-accent',
+  guardrail: '!border-warn/40 !bg-warn/10 !text-warn',
+  diagnostic: '',
+};
+
+const KIND_HELP: Record<string, string> = {
+  outcome: 'The result itself',
+  leading: 'Moves before the outcome does',
+  guardrail: 'Must not get worse',
+  diagnostic: 'Explains why something moved',
+};
+
+export function MetricsSection({ uc }: { uc: UseCase }) {
+  const x = uc.metrics;
+  const total = x.layers.reduce((n, l) => n + l.rows.length, 0);
+  return (
+    <Section
+      id="metrics"
+      title="Metrics catalogue"
+      kicker="What to measure for this system, layer by layer: business, model, data, system, cost, responsible AI, security, MLOps and, where they apply, RAG, LLM, agents and human review"
+    >
+      <div className="card p-4" data-testid="metrics-summary">
+        <p className="text-base text-ink">
+          <strong>
+            {total} metrics in {x.layers.length} layers
+          </strong>{' '}
+          for {uc.title}, each with a definition, a starting target, a cadence, an owner and what to do when
+          it breaches.
+          {x.notApplicable.length > 0 && (
+            <>
+              {' '}
+              {x.notApplicable.length} further {x.notApplicable.length === 1 ? 'layer does' : 'layers do'} not
+              apply to this system; each says why below.
+            </>
+          )}
+        </p>
+        <p className="mt-2 text-sm text-mute" data-prose>
+          {x.basis}
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2" data-prose>
+          {Object.keys(KIND_TONE).map((k) => (
+            <span key={k} className={`chip ${KIND_TONE[k]}`} title={KIND_HELP[k]}>
+              {k}: {KIND_HELP[k]!.toLowerCase()}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <MermaidDiagram code={x.tree} label="How the metric layers connect for this system" />
+
+      <Table
+        head={['Layer', 'Metrics', 'Why it matters here']}
+        rows={x.layers.map((l) => [
+          <a key="a" href={`#mt-${l.id}`} className="no-underline hover:underline">
+            {l.title}
+          </a>,
+          l.rows.length,
+          <span key="w" data-prose>
+            {l.why}
+          </span>,
+        ])}
+      />
+
+      {x.layers.map((l) => (
+        <Sub key={l.id} id={`mt-${l.id}`} title={l.title}>
+          <p data-prose className="text-sm text-mute">
+            {l.why}
+          </p>
+          <Table
+            head={['Metric', 'What it measures', 'Target', 'Cadence · owner', 'If it breaches']}
+            rows={l.rows.map((r) => [
+              <span key="m">
+                {r.metric}
+                <br />
+                <span className={`chip mt-1 ${KIND_TONE[r.kind]}`}>{r.kind}</span>
+              </span>,
+              r.definition,
+              r.target,
+              <span key="c">
+                {r.cadence}
+                <br />
+                <span className="text-dim">{r.owner}</span>
+              </span>,
+              r.onBreach,
+            ])}
+          />
+        </Sub>
+      ))}
+
+      {x.notApplicable.length > 0 && (
+        <Sub id="mt-not-applicable" title="Layers that do not apply here">
+          <div className="grid gap-4 md:grid-cols-2">
+            {x.notApplicable.map((n) => (
+              <div key={n.layer} className="card p-4" data-testid={`metrics-na-${n.layer}`}>
+                <Label>
+                  Not applicable:{' '}
+                  {n.layer === 'rag'
+                    ? 'RAG'
+                    : n.layer === 'llm'
+                      ? 'LLM serving'
+                      : n.layer === 'agent'
+                        ? 'Agents'
+                        : 'Human review'}
+                </Label>
+                <p className="text-sm text-mute">{n.reason}</p>
+              </div>
+            ))}
+          </div>
+        </Sub>
+      )}
+
+      <Sub id="mt-failure-monitors" title="Monitors for this system's own edge cases">
+        <p data-prose className="text-sm text-mute">
+          One monitor for each edge case in the specification, so a known failure mode has a signal and a
+          threshold before it happens, not a post-mortem after.
+        </p>
+        <Table
+          head={['Edge case', 'Signal to watch', 'Alert when', 'Response']}
+          rows={x.failureMonitors.map((f) => [f.scenario, f.signal, f.threshold, f.response])}
+        />
+      </Sub>
+
+      <Sub id="mt-gaming" title="How these metrics get gamed">
+        <p data-prose className="text-sm text-mute">
+          A metric that becomes a target stops measuring what it measured. For each headline number: how it
+          lies, and which metric to read beside it.
+        </p>
+        <Table
+          head={['Metric', 'How it misleads', 'Read it beside']}
+          rows={x.gaming.map((g) => [g.metric, g.risk, g.counter])}
+        />
+      </Sub>
+    </Section>
+  );
+}

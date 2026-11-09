@@ -11,6 +11,7 @@ import {
   EnterpriseSection,
   ExperimentationSection,
   GovernanceSection,
+  MetricsSection,
   MlopsSection,
   OperationsSection,
   ValidationSection,
@@ -160,6 +161,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         <Sections uc={uc} />
         <GovernanceSection uc={uc} />
         <ExperimentationSection uc={uc} />
+        <MetricsSection uc={uc} />
         <MlopsSection uc={uc} />
         <OperationsSection uc={uc} />
         <AgenticSection ag={uc.agentic} />

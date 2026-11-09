@@ -85,6 +85,7 @@ async function main() {
       ['agent-sequence', u.agentic.sequence],
       ['c4-context', u.enterpriseContext.c4Context],
       ['c4-container', u.enterpriseContext.c4Container],
+      ['metric-tree', u.metrics.tree],
     ];
     for (const [name, code] of blocks) {
       try {
@@ -341,7 +342,7 @@ async function main() {
   }
   const withPlaybook = all.filter((u) => u.playbook).length;
   console.log(
-    `validate:content ✔ ${all.length} use cases, ${all.length * 8} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${all.length * 10} feasibility checks`,
+    `validate:content ✔ ${all.length} use cases, ${all.length * 9} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${all.length * 10} feasibility checks`,
   );
 }
 
