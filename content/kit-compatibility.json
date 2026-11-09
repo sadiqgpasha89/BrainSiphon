@@ -1,0 +1,325 @@
+{
+  "_readme": "Overrides for the automatic problem-type classifier (src/content/kit-compat.ts). Each entry names the use case, the problem type it really is and why the rule is not enough. The build fails if a key does not name a use case. Prefer fixing the rule when many use cases share a cause.",
+  "overrides": {
+    "adtech/ad-spend-forecasting-and-allocation": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    },
+    "adtech/bid-traffic-shaping-and-qps-throttling": {
+      "problemType": "sequential-control-simulation",
+      "reason": "a controller for repeated decisions, judged by tracking error or simulation, not a one-shot prediction"
+    },
+    "adtech/brand-lift-and-sentiment-tracking": {
+      "problemType": "text-classification",
+      "reason": "classifies text against a label set"
+    },
+    "adtech/budget-pacing-controller": {
+      "problemType": "sequential-control-simulation",
+      "reason": "a controller for repeated decisions, judged by tracking error or simulation, not a one-shot prediction"
+    },
+    "adtech/conversational-ads-assistant": {
+      "problemType": "grounded-qa",
+      "reason": "answers from a document collection with citations"
+    },
+    "adtech/cross-channel-budget-allocation": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    },
+    "adtech/ctv-ad-avails-forecasting": {
+      "problemType": "forecasting",
+      "reason": "forecasts audience reach and availability, judged by forecast error against a panel"
+    },
+    "adtech/differential-privacy-measurement": {
+      "problemType": "causal-measurement",
+      "reason": "an aggregate measurement with no per-row label"
+    },
+    "adtech/feed-ad-load-and-yield-optimization": {
+      "problemType": "sequential-control-simulation",
+      "reason": "a controller for repeated decisions, judged by tracking error or simulation, not a one-shot prediction"
+    },
+    "adtech/first-price-bid-shading": {
+      "problemType": "off-policy-decisioning",
+      "reason": "chooses actions and is judged by off-policy or replay value"
+    },
+    "adtech/modeled-conversions-privacy": {
+      "problemType": "causal-measurement",
+      "reason": "an aggregate measurement with no per-row label"
+    },
+    "adtech/pre-launch-creative-performance-prediction": {
+      "problemType": "generative-or-other",
+      "reason": "a generated or specialised output"
+    },
+    "bfsi/branch-cash-and-vault-optimisation": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    },
+    "bfsi/collateral-valuation-and-haircut-monitoring": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "bfsi/contact-centre-call-qa-and-summarisation": {
+      "problemType": "grounded-generation",
+      "reason": "generates text that must stay faithful to its source"
+    },
+    "bfsi/longevity-and-mortality-forecasting": {
+      "problemType": "forecasting",
+      "reason": "predicts future values of a series"
+    },
+    "bfsi/risk-weighted-asset-optimisation": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    },
+    "bfsi/sme-financial-statement-spreading": {
+      "problemType": "information-extraction",
+      "reason": "extracts fields from documents"
+    },
+    "cybersecurity/adversarial-ml-robustness": {
+      "problemType": "generative-or-other",
+      "reason": "a generated or specialised output"
+    },
+    "cybersecurity/attack-path-analysis-graph": {
+      "problemType": "graph-analytics",
+      "reason": "analyses structure in a graph"
+    },
+    "cybersecurity/cloud-iam-privilege-anomaly": {
+      "problemType": "graph-analytics",
+      "reason": "analyses structure in a graph"
+    },
+    "cybersecurity/cyber-risk-quantification": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "cybersecurity/email-attachment-sandbox-triage": {
+      "problemType": "binary-event-classification",
+      "reason": "its offline metric is a binary classification metric on events or entities"
+    },
+    "cybersecurity/endpoint-malware-detection": {
+      "problemType": "binary-event-classification",
+      "reason": "its offline metric is a binary classification metric on events or entities"
+    },
+    "cybersecurity/model-extraction-and-abuse-detection-api": {
+      "problemType": "tabular-anomaly-detection",
+      "reason": "finds departures from normal behaviour in entity features"
+    },
+    "cybersecurity/threat-actor-attribution-clustering": {
+      "problemType": "graph-analytics",
+      "reason": "analyses structure in a graph"
+    },
+    "edtech/accessibility-alt-text-and-captioning": {
+      "problemType": "generative-or-other",
+      "reason": "generates descriptions and captions, judged by human ratings"
+    },
+    "edtech/admissions-application-scoring-fairness": {
+      "problemType": "text-classification",
+      "reason": "classifies text against a label set"
+    },
+    "edtech/knowledge-tracing-student-modeling": {
+      "problemType": "binary-event-classification",
+      "reason": "its offline metric is a binary classification metric on events or entities"
+    },
+    "edtech/placement-test-and-cold-start-onboarding": {
+      "problemType": "multiclass-classification",
+      "reason": "assigns one of several classes"
+    },
+    "edtech/short-answer-grading-llm": {
+      "problemType": "text-classification",
+      "reason": "scores or labels short text against a rubric"
+    },
+    "edtech/spaced-repetition-scheduling": {
+      "problemType": "binary-event-classification",
+      "reason": "its offline metric is a binary classification metric on events or entities"
+    },
+    "edtech/vocabulary-level-estimation": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "fintech/credit-model-drift-and-fairness-monitoring": {
+      "problemType": "binary-event-classification",
+      "reason": "its offline metric is a binary classification metric on events or entities"
+    },
+    "fintech/cross-border-fx-pricing-optimization": {
+      "problemType": "off-policy-decisioning",
+      "reason": "chooses actions and is judged by off-policy or replay value"
+    },
+    "fintech/customer-support-chatbot-banking": {
+      "problemType": "agentic-read-only",
+      "reason": "a language-model agent that reads policy and account data through tools and escalates"
+    },
+    "fintech/earnings-call-sentiment-and-esg-signals": {
+      "problemType": "text-classification",
+      "reason": "classifies text against a label set"
+    },
+    "fintech/insurance-underwriting-risk-pricing": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "fintech/kyc-document-verification-vision": {
+      "problemType": "information-extraction",
+      "reason": "extracts fields from documents"
+    },
+    "fintech/market-making-quote-optimization": {
+      "problemType": "sequential-control-simulation",
+      "reason": "a policy evaluated in a market or system simulator"
+    },
+    "fintech/market-regime-detection": {
+      "problemType": "clustering-segmentation",
+      "reason": "groups with no ground-truth label"
+    },
+    "fintech/payment-routing-optimization": {
+      "problemType": "off-policy-decisioning",
+      "reason": "chooses actions and is judged by off-policy or replay value"
+    },
+    "fintech/portfolio-optimization-risk-parity": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    },
+    "healthcare/dicom-image-deidentification": {
+      "problemType": "information-extraction",
+      "reason": "extracts fields from documents"
+    },
+    "healthcare/drug-drug-interaction-and-adverse-event-prediction": {
+      "problemType": "graph-analytics",
+      "reason": "analyses structure in a graph"
+    },
+    "healthcare/federated-learning-multi-hospital": {
+      "problemType": "binary-event-classification",
+      "reason": "its offline metric is a binary classification metric on events or entities"
+    },
+    "healthcare/medication-adherence-prediction-and-nudges": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "healthcare/patient-feedback-sentiment-and-complaints": {
+      "problemType": "text-classification",
+      "reason": "classifies text against a label set"
+    },
+    "healthcare/prior-authorization-automation": {
+      "problemType": "grounded-qa",
+      "reason": "answers from a document collection with citations"
+    },
+    "healthcare/virtual-screening-docking-surrogate": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "healthcare/wearable-arrhythmia-detection-ecg": {
+      "problemType": "time-series-anomaly-detection",
+      "reason": "detects events in a signal"
+    },
+    "real-estate/construction-cost-estimation-from-plans": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "real-estate/contractor-bid-evaluation": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "real-estate/floor-plan-extraction-from-images": {
+      "problemType": "vision-detection-segmentation",
+      "reason": "localises content in images"
+    },
+    "real-estate/investment-property-screening-and-underwriting": {
+      "problemType": "generative-or-other",
+      "reason": "a generated or specialised output"
+    },
+    "real-estate/permit-and-zoning-compliance-checking": {
+      "problemType": "grounded-qa",
+      "reason": "answers from a document collection with citations"
+    },
+    "real-estate/rental-listing-scam-detection": {
+      "problemType": "binary-event-classification",
+      "reason": "its offline metric is a binary classification metric on events or entities"
+    },
+    "real-estate/site-selection-for-retail-and-logistics": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "retail/assortment-planning": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    },
+    "retail/buy-box-seller-ranking": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "retail/conversational-shopping-assistant": {
+      "problemType": "grounded-qa",
+      "reason": "answers from a document collection with citations"
+    },
+    "retail/dynamic-pricing-optimization": {
+      "problemType": "regression-estimation",
+      "reason": "judged by error on a continuous quantity"
+    },
+    "retail/loyalty-offer-optimization": {
+      "problemType": "off-policy-decisioning",
+      "reason": "chooses actions and is judged by off-policy or replay value"
+    },
+    "retail/send-time-optimization": {
+      "problemType": "off-policy-decisioning",
+      "reason": "chooses actions and is judged by off-policy or replay value"
+    },
+    "saas/capacity-forecasting-and-autoscaling": {
+      "problemType": "sequential-control-simulation",
+      "reason": "a controller for repeated decisions, judged by tracking error or simulation, not a one-shot prediction"
+    },
+    "saas/learned-trace-sampling": {
+      "problemType": "tabular-anomaly-detection",
+      "reason": "finds departures from normal behaviour in entity features"
+    },
+    "saas/llm-gateway-routing-and-cost-optimization": {
+      "problemType": "text-classification",
+      "reason": "classifies text against a label set"
+    },
+    "saas/log-anomaly-detection": {
+      "problemType": "tabular-anomaly-detection",
+      "reason": "finds departures from normal behaviour in entity features"
+    },
+    "saas/meeting-notes-and-action-items": {
+      "problemType": "grounded-generation",
+      "reason": "generates text that must stay faithful to its source"
+    },
+    "saas/ml-platform-drift-monitoring": {
+      "problemType": "tabular-anomaly-detection",
+      "reason": "finds departures from normal behaviour in entity features"
+    },
+    "saas/pricing-and-packaging-optimization": {
+      "problemType": "off-policy-decisioning",
+      "reason": "chooses actions and is judged by off-policy or replay value"
+    },
+    "saas/saas-account-security-anomalies": {
+      "problemType": "tabular-anomaly-detection",
+      "reason": "finds departures from normal behaviour in entity features"
+    },
+    "saas/voice-of-customer-mining": {
+      "problemType": "clustering-segmentation",
+      "reason": "topic mining over text with no ground-truth label"
+    },
+    "supply-chain/bom-and-part-matching-llm": {
+      "problemType": "entity-resolution",
+      "reason": "decides whether two records are the same entity"
+    },
+    "supply-chain/carrier-selection-and-tendering": {
+      "problemType": "binary-event-classification",
+      "reason": "its offline metric is a binary classification metric on events or entities"
+    },
+    "supply-chain/drone-and-av-delivery-path-planning": {
+      "problemType": "sequential-control-simulation",
+      "reason": "a controller for repeated decisions, judged by tracking error or simulation, not a one-shot prediction"
+    },
+    "supply-chain/eta-prediction-for-shipments": {
+      "problemType": "forecasting",
+      "reason": "predicts future values of a series"
+    },
+    "supply-chain/inventory-optimization-multi-echelon": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    },
+    "supply-chain/safety-stock-and-service-level-optimization": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    },
+    "supply-chain/warehouse-slotting-optimization": {
+      "problemType": "optimisation-allocation",
+      "reason": "allocates or plans under constraints and is judged by plan quality"
+    }
+  }
+}

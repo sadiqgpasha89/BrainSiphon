@@ -5,6 +5,7 @@ import {
   type UseCase,
   type UseCaseIndexEntry,
 } from '../../schemas/usecase.schema';
+import { ArtifactLegend, KindLine } from '../ArtifactKind';
 import { CodeBlock } from '../Code';
 import { MathBlock } from '../Math';
 import { MermaidDiagram } from '../Mermaid';
@@ -393,13 +394,15 @@ export async function Sections({ uc }: { uc: UseCase }) {
           {d.lld.status !== 'expert-reviewed' && (
             <span className="text-sm text-mute">
               Generated from the {ARCHETYPE_LABEL[d.lld.archetype].toLowerCase()} template and this use
-              case&apos;s own fields: it shows the right shape of API, schema and failure model, not complete
-              production code.
+              case&apos;s own fields: it shows the right shape of API, schema and failure model. The hot-path
+              code is pseudocode and the rest is architectural illustration: nothing here is production code.
             </span>
           )}
         </div>
+        <ArtifactLegend />
         <div className="card p-4">
-          <p className="font-mono text-sm">
+          <KindLine kind={d.lld.artifacts.apiContract}>API contract</KindLine>
+          <p className="mt-2 font-mono text-sm">
             <span className="rounded bg-signal-soft px-2 py-0.5 text-signal">{d.lld.apiContract.method}</span>{' '}
             <span className="ml-2 text-ink">{d.lld.apiContract.path}</span>
           </p>
@@ -416,15 +419,27 @@ export async function Sections({ uc }: { uc: UseCase }) {
             />
           </div>
         </div>
-        <CodeBlock code={d.lld.dataModelDDL} lang="sql" title="Data model · DDL" />
-        <CodeBlock code={d.lld.eventSchema} lang="json" title="Event schema" />
+        <CodeBlock
+          code={d.lld.dataModelDDL}
+          lang="sql"
+          title="Data model · DDL"
+          kind={d.lld.artifacts.dataModelDDL}
+        />
+        <CodeBlock
+          code={d.lld.eventSchema}
+          lang="json"
+          title="Event schema"
+          kind={d.lld.artifacts.eventSchema}
+        />
+        <KindLine kind={d.lld.artifacts.classDiagram}>Component classes</KindLine>
         <MermaidDiagram code={d.lld.classDiagram} label="Component classes" />
         <CodeBlock
           code={d.lld.algorithm.code}
           lang={d.lld.algorithm.language}
           title="Core algorithm · hot path"
+          kind={d.lld.artifacts.algorithm}
         />
-        <CodeBlock code={d.lld.config} lang="yaml" title="Runtime config" />
+        <CodeBlock code={d.lld.config} lang="yaml" title="Runtime config" kind={d.lld.artifacts.config} />
         <div>
           <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Degradation ladder</p>
           <TableWrap>

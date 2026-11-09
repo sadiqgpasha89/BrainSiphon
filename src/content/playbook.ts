@@ -9,7 +9,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
-import { PlaybookSchema, type LatencySLA, type Paradigm, type Playbook } from '../schemas/usecase.schema';
+import { PlaybookBase, PlaybookSchema, type Compatibility, type LatencySLA, type Paradigm, type Playbook } from '../schemas/usecase.schema';
+import { buildCompletion, milestoneDelivery, milestoneState } from './completion';
 import type { RawUseCase } from './parse';
 import type { ScaleResult } from './scale';
 import { TOTAL_BUDGET_MS } from './design';
@@ -17,16 +18,23 @@ import { TOTAL_BUDGET_MS } from './design';
 const nonEmpty = z.string().trim().min(2);
 
 /** What authors write: the shared schema minus derived fields, with starter files referenced by path. */
-const AuthoredSchema = PlaybookSchema.omit({ provenance: true, prerequisites: true, starter: true, tests: true, first30Days: true })
+const AuthoredSchema = PlaybookBase.omit({ provenance: true, prerequisites: true, starter: true, tests: true, first30Days: true, compatibility: true, completion: true })
   .extend({
-    prerequisites: PlaybookSchema.shape.prerequisites.partial({ effort: true }),
+    prerequisites: PlaybookBase.shape.prerequisites.partial({ effort: true }),
+    /** authors supply the data description; the rest of `data` is shared */
+    data: PlaybookBase.shape.data.extend({
+      synthetic: PlaybookBase.shape.data.shape.synthetic.unwrap(),
+      sample: PlaybookBase.shape.data.shape.sample.unwrap(),
+    }),
+    milestones: PlaybookBase.shape.milestones.element.omit({ delivery: true, state: true }).array().min(6),
+    workedExample: PlaybookBase.shape.workedExample.omit({ basis: true }),
     starter: z.object({
       runtime: nonEmpty,
       run: z.array(nonEmpty).min(2),
       expected: nonEmpty,
       files: z.array(z.object({ path: nonEmpty, purpose: nonEmpty })).min(3),
     }),
-    tests: PlaybookSchema.shape.tests.element.array().min(4),
+    tests: PlaybookBase.shape.tests.element.array().min(4),
     first30Days: z.array(nonEmpty).min(4).optional(),
   })
   .strict();
@@ -109,6 +117,8 @@ export function loadPlaybook(
   raw: RawUseCase,
   latency: LatencySLA,
   scale: ScaleResult,
+  /** builds the compatibility record once the starter's own files are known */
+  compatibilityFor: (authored: { syntheticDescription: string; label: string; files: string[] }) => Compatibility,
 ): Playbook | undefined {
   const dir = join(root, 'content', 'playbooks', domain, raw.key);
   const yamlPath = join(dir, 'playbook.yaml');
@@ -126,7 +136,7 @@ export function loadPlaybook(
     const p = join(dir, 'starter', f.path);
     if (!existsSync(p)) throw new Error(`${where}: starter file "${f.path}" does not exist under starter/`);
     const ext = f.path.slice(f.path.lastIndexOf('.'));
-    return { path: f.path, purpose: f.purpose, language: LANG[ext] ?? 'text', code: readFileSync(p, 'utf8').trimEnd() };
+    return { path: f.path, purpose: f.purpose, language: LANG[ext] ?? 'text', kind: 'executable-reference' as const, code: readFileSync(p, 'utf8').trimEnd() };
   });
   if (!files.some((f) => f.path === a.data.synthetic.file))
     throw new Error(`${where}: data.synthetic.file "${a.data.synthetic.file}" is not listed in starter.files`);
@@ -136,19 +146,23 @@ export function loadPlaybook(
   for (const row of a.data.sample.rows)
     if (row.length !== a.data.sample.columns.length) throw new Error(`${where}: every data.sample row needs ${a.data.sample.columns.length} cells`);
 
+  const compatibility = compatibilityFor({ syntheticDescription: a.data.synthetic.description, label: a.data.label, files: files.map((f) => f.path) });
+  const milestones = a.milestones.map((m) => ({ ...m, delivery: milestoneDelivery(compatibility, m.id), state: milestoneState(m.id) }));
   const out = {
     provenance: 'authored' as const,
     summary: a.summary,
     prerequisites: derivePrerequisites(raw, a),
     domainKnowledge: a.domainKnowledge,
     data: a.data,
-    milestones: a.milestones,
+    milestones,
     starter: { runtime: a.starter.runtime, run: a.starter.run, expected: a.starter.expected, files },
-    workedExample: a.workedExample,
+    workedExample: { basis: 'reference-kit' as const, ...a.workedExample },
     tests: [...a.tests, ...deriveTests(raw, latency, scale)],
     decisions: a.decisions,
     pitfalls: a.pitfalls,
     first30Days: a.first30Days ?? deriveFirst30Days(raw),
+    compatibility,
+    completion: buildCompletion(compatibility, milestones),
   };
   const checked = PlaybookSchema.safeParse(out);
   if (!checked.success) {
