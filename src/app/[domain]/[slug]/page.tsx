@@ -7,6 +7,14 @@ import { ReaderShell } from '../../../components/reader/ReaderShell';
 import { PlaybookSection } from '../../../components/reader/Playbook';
 import { AgenticSection } from '../../../components/reader/Agentic';
 import { Pager, Sections, tocFor } from '../../../components/reader/Sections';
+import {
+  EnterpriseSection,
+  ExperimentationSection,
+  GovernanceSection,
+  MlopsSection,
+  OperationsSection,
+  ValidationSection,
+} from '../../../components/reader/Enterprise';
 import { getIndex, getNeighbours, getUseCase } from '../../../lib/content';
 import { toMarkdown } from '../../../content/markdown';
 import { IS_STATIC, SITE_URL } from '../../../lib/site';
@@ -52,6 +60,10 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
 
   const ageDays = Math.floor((Date.now() - new Date(uc.lastVerifiedAt).getTime()) / 86_400_000);
   const stale = ageDays > STALE_DAYS;
+  const passed = uc.validation.levels.filter((l) => l.state === 'passed').length;
+  const expert = uc.validation.levels.some(
+    (l) => l.level === 'domain-expert-reviewed' && l.state === 'passed',
+  );
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
@@ -121,20 +133,38 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
           <ParadigmChips paradigms={uc.mlParadigms} />
           <LatencyChip latency={uc.latencySLA} />
           <DifficultyChip difficulty={uc.difficulty} />
-          <span
-            className={`chip ${stale ? '!border-warn/40 !bg-warn/10 !text-warn' : 'chip-signal'}`}
+          <a
+            href="#validation"
+            className={`chip no-underline ${stale ? '!border-warn/40 !bg-warn/10 !text-warn' : passed >= 2 ? 'chip-signal' : ''}`}
             data-testid="verified-badge"
-            title="Last verified against production standards"
+            title="Automated checks are not expert review: see the Validation section for what has and has not been verified"
           >
             {stale ? <TriangleAlert size={12} aria-hidden /> : <BadgeCheck size={12} aria-hidden />}
-            {stale ? 'Needs re-verification' : 'Verified against production standards'} · {uc.lastVerifiedAt}
-          </span>
+            {stale ? 'Needs re-checking' : 'Automated checks passed'} · {passed} of{' '}
+            {uc.validation.levels.length} validation levels ·{' '}
+            {expert ? 'domain-expert reviewed' : 'not yet domain-expert reviewed'} · checked{' '}
+            {uc.lastVerifiedAt}
+          </a>
+          <Link
+            href={`/${uc.domain}`}
+            className={`chip no-underline ${uc.governance.riskTier === 'low' ? '' : '!border-warn/40 !text-warn'}`}
+            data-testid="risk-chip"
+            title={uc.governance.treatment}
+          >
+            Risk tier: {uc.governance.riskTier}
+          </Link>
         </div>
       </header>
       <article>
+        <EnterpriseSection uc={uc} />
         <Sections uc={uc} />
+        <GovernanceSection uc={uc} />
+        <ExperimentationSection uc={uc} />
+        <MlopsSection uc={uc} />
+        <OperationsSection uc={uc} />
         <AgenticSection ag={uc.agentic} />
         {uc.playbook && <PlaybookSection pb={uc.playbook} />}
+        <ValidationSection uc={uc} />
       </article>
       <Pager prev={prev} next={next} related={related} />
     </ReaderShell>

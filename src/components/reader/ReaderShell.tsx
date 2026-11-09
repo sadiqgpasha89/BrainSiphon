@@ -77,7 +77,7 @@ export function ReaderShell({
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === '[') set(true);
       else if (e.key === ']') set(false);
-      else if (e.key >= '1' && e.key <= '6') {
+      else if (e.key >= '1' && e.key <= String(ROLE_IDS.length)) {
         const r = ROLE_IDS[Number(e.key) - 1]!;
         setRole(roleRef.current === r ? null : r);
       } else if (e.key === '0') setRole(null);
@@ -179,7 +179,7 @@ export function ReaderShell({
               <span className="kbd">]</span> full detail
             </p>
             <p>
-              <span className="kbd">1</span>–<span className="kbd">6</span> role lens ·{' '}
+              <span className="kbd">1</span>–<span className="kbd">{ROLE_IDS.length}</span> role lens ·{' '}
               <span className="kbd">0</span> all
             </p>
             <p>

@@ -18,7 +18,10 @@ test('domain → filter → open blueprint → Pure Signal toggle', async ({ pag
     .first()
     .click();
   await expect(page.getByTestId('uc-title')).toHaveText('Real-Time Card & UPI Fraud Detection');
-  await expect(page.getByTestId('verified-badge')).toContainText('Verified');
+  await expect(page.getByTestId('verified-badge')).toContainText('Automated checks passed');
+  await expect(page.getByTestId('verified-badge')).toContainText('not yet domain-expert reviewed');
+  await expect(page.locator('#enterprise')).toBeVisible();
+  await expect(page.locator('#validation')).toBeVisible();
 
   const prose = page.locator('[data-prose]:visible');
   expect(await prose.count()).toBeGreaterThan(0);
@@ -169,7 +172,7 @@ test('a pilot use case shows hand-written narrative sections with its own stage 
   await expect(page.getByTestId('architecture-rationale')).toContainText('mule-device rotation');
 });
 
-test('role lens keys 1-6 filter sections, 0 resets, and the role-lens section lists primitives', async ({
+test('role lens keys 1-7 filter sections, 0 resets, and the role-lens section lists primitives', async ({
   page,
 }) => {
   await page.goto('/healthcare/sepsis-early-warning');
@@ -181,6 +184,12 @@ test('role lens keys 1-6 filter sections, 0 resets, and the role-lens section li
   await expect(page.locator('#scale')).toBeVisible();
   await expect(page.getByTestId('lens-inference-engineer')).toBeVisible();
   await expect(page.getByTestId('lens-data-scientist')).toBeHidden();
+  await page.keyboard.press('7');
+  await expect(reader).toHaveAttribute('data-role', 'mlops-engineer');
+  await expect(page.locator('#mlops')).toBeVisible();
+  await expect(page.locator('#operations')).toBeVisible();
+  await expect(page.getByTestId('lens-mlops-engineer')).toBeVisible();
+  await expect(page.locator('#signal-noise')).toBeHidden();
   await page.keyboard.press('0');
   await expect(reader).toHaveAttribute('data-role', 'all');
   await expect(page.locator('#signal-noise')).toBeVisible();
@@ -193,6 +202,12 @@ test('capacity calculator re-runs the model and resets to the published numbers'
   await calc.scrollIntoViewIfNeeded();
   const cost = calc.locator('dl > div', { hasText: 'Monthly run cost' }).locator('dd').first();
   const before = await cost.textContent();
+  await expect(calc.getByTestId('profile-transaction')).toHaveAttribute('aria-pressed', 'true');
+  await calc.getByLabel('Average transactions per second').fill('1');
+  await expect(cost).not.toHaveText(before ?? '');
+  await page.getByTestId('calc-reset').click();
+  await expect(cost).toHaveText(before ?? '');
+  await calc.getByTestId('profile-session').click();
   await calc.getByLabel('Daily active share').fill('60');
   await expect(cost).not.toHaveText(before ?? '');
   await page.getByTestId('calc-reset').click();
@@ -229,4 +244,47 @@ test('theme toggle switches light/dark/system, persists across reloads and re-th
   await expect(html).toHaveAttribute('data-theme', 'dark');
   await page.emulateMedia({ colorScheme: 'light' });
   await expect(html).toHaveAttribute('data-theme', 'light');
+});
+
+test('blueprint 2.0 sections: governance risk tier, decision matrix, MLOps and operations scenarios', async ({
+  page,
+}) => {
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  await expect(page.getByTestId('decision-matrix')).toBeVisible();
+  await expect(page.getByTestId('risk-tier')).toContainText('Risk tier');
+  await expect(page.locator('#mlops')).toContainText('Experiment management');
+  await expect(page.locator('#operations')).toContainText('regional cloud outage');
+  await expect(page.getByTestId('adr').first()).toBeVisible();
+  await expect(page.getByTestId('validation-levels').getByRole('listitem')).toHaveCount(5);
+});
+
+test('patterns page explains the three-level hierarchy', async ({ page }) => {
+  await page.goto('/patterns');
+  await expect(page.getByTestId('enterprise-patterns').getByRole('listitem').first()).toBeVisible();
+});
+
+test('review hardening: a forecast gets a forecast LLD, workload-based sizing and an honest no-agent verdict', async ({
+  page,
+}) => {
+  await page.goto('/retail/demand-forecasting-sku-store');
+  await expect(page.getByTestId('lld-status')).toContainText('Forecasting');
+  await expect(page.getByTestId('lld-status')).toContainText('Illustrative scaffold');
+  await expect(page.locator('#lld')).toContainText('/forecasts');
+  await expect(page.locator('#scale')).toContainText('5M series nightly');
+  await expect(page.getByTestId('capacity-scenarios')).toContainText('(P95)');
+  await expect(page.getByTestId('capacity-calculator').getByTestId('profile-forecast')).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(page.getByTestId('agentic-fit')).toContainText('No agent recommended');
+  await expect(page.getByTestId('agentic-decision')).toContainText('rejected');
+  await expect(page.locator('#experimentation')).toContainText('rolling-origin-backtest');
+  await expect(page.getByTestId('provenance')).toContainText('generated from a template');
+  await expect(page.getByTestId('reviewer')).toContainText('No named reviewer yet');
+});
+
+test('deployment modes page explains what the static site leaves out', async ({ page }) => {
+  await page.goto('/deployment');
+  await expect(page.getByTestId('deployment-table')).toContainText('Static documentation site');
+  await expect(page.getByTestId('deployment-table')).toContainText('Full-stack Docker');
 });

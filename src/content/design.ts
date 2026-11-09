@@ -1,4 +1,5 @@
-import type { LatencySLA, Paradigm } from '../schemas/usecase.schema';
+import type { Archetype, LatencySLA, Paradigm } from '../schemas/usecase.schema';
+import { archetypeLLD } from './archetype-lld';
 import type { RawStage } from './parse';
 import type { ScaleResult } from './scale';
 
@@ -71,19 +72,42 @@ export const TOTAL_BUDGET_MS: Record<LatencySLA, number | null> = {
   batch: null,
 };
 
+/**
+ * The p99 envelope is a sum, not a wish: edge + every synchronous stage + a reserve for network hops and
+ * serialisation must equal the SLA exactly. (A review found a blueprint whose stage budgets added up to 8.6 ms
+ * against an 8 ms budget; `src/content/feasibility.ts` now fails the build on that.)
+ */
+export const EDGE_MS: Record<LatencySLA, number | null> = { 'sub-10ms': 0.5, 'sub-100ms': 2, seconds: 25, batch: null };
+export const RESERVE_MS: Record<LatencySLA, number | null> = { 'sub-10ms': 0.8, 'sub-100ms': 8, seconds: 250, batch: null };
+
+/** Pool left for synchronous stages once the edge and the network/serialisation reserve are paid. */
+export const stagePoolMs = (latency: LatencySLA): number | null => {
+  const t = TOTAL_BUDGET_MS[latency];
+  return t === null ? null : Math.round((t - EDGE_MS[latency]! - RESERVE_MS[latency]!) * 10) / 10;
+};
+
 export function buildStages(pipe: RawStage[], latency: LatencySLA): Stage[] {
-  const total = TOTAL_BUDGET_MS[latency];
+  const pool = stagePoolMs(latency);
   const base = pipe.map((p, i) => {
     const kind = classify(p.label, p.tech);
     return { id: `S${i + 1}`, label: p.label, tech: p.tech, kind, async: kind === 'human' || kind === 'sink', budgetMs: null as number | null };
   });
-  if (total !== null) {
+  if (pool !== null) {
     const sync = base.filter((s) => !s.async);
     const wsum = sync.reduce((a, s) => a + WEIGHT[s.kind], 0) || 1;
-    for (const s of sync) {
-      const raw = (total * WEIGHT[s.kind]) / wsum;
-      s.budgetMs = total <= 10 ? Math.max(0.1, Math.round(raw * 10) / 10) : Math.max(1, Math.round(raw));
-    }
+    // Largest-remainder allocation in whole units (0.1 ms below 10 ms, otherwise 1 ms) so the stages sum to the pool exactly.
+    const unit = TOTAL_BUDGET_MS[latency]! <= 10 ? 0.1 : 1;
+    const units = Math.round(pool / unit);
+    const exact = sync.map((s) => (units * WEIGHT[s.kind]) / wsum);
+    const floor = exact.map((x) => Math.max(1, Math.floor(x)));
+    let left = units - floor.reduce((a, b) => a + b, 0);
+    const order = exact.map((x, i) => [x - Math.floor(x), i] as const).sort((a, b) => b[0] - a[0]);
+    for (let n = 0; left > 0; n = (n + 1) % order.length, left--) floor[order[n]![1]]! += 1;
+    // never possible with sane pools, but keep the sum exact if the floor of 1 unit overshoots
+    for (let i = 0; left < 0; i = (i + 1) % floor.length) if (floor[i]! > 1) { floor[i]! -= 1; left++; }
+    sync.forEach((s, i) => {
+      s.budgetMs = Math.round(floor[i]! * unit * 10) / 10;
+    });
   }
   return base;
 }
@@ -282,40 +306,21 @@ export interface LLDInput {
   prod: string;
   onMetrics: string[];
   steps: number;
+  archetype: Archetype;
+  /** true only when a named reviewer has signed this blueprint off (content/reviews.json) */
+  reviewed: boolean;
 }
 
 export function buildLLD(i: LLDInput) {
   const feats = i.features.map((f) => snake(f));
   const tbl = snake(i.slugTail, 30);
   const base = `/v1/${i.slugTail}`;
-  const inline = feats.slice(0, 2);
 
-  let apiContract: { method: 'GET' | 'POST'; path: string; request: string; response: string };
-  if (i.mode === 'online') {
-    apiContract = {
-      method: 'POST',
-      path: `${base}/decide`,
-      request: JSON.stringify({ request_id: '01JABCDEF…', entity_id: 'ent_8f3a', occurred_at: '2026-11-07T10:15:30Z', inline_signals: Object.fromEntries(inline.map((f, n) => [f, n === 0 ? 0.0 : 3])), deadline_ms: TOTAL_BUDGET_MS[i.latency] }, null, 2),
-      response: JSON.stringify({ request_id: '01JABCDEF…', decision: 'PASS | REVIEW | ACT', score: 0.0134, reason_codes: [feats[0] ?? 'top_signal', feats[1] ?? 'second_signal'], model_version: '2026-11-03.r2', latency_ms: 4.2, degraded: false }, null, 2),
-    };
-  } else if (i.mode === 'interactive') {
-    apiContract = {
-      method: 'POST',
-      path: `${base}/run`,
-      request: JSON.stringify({ session_id: 'ses_91c2', principal: { user_id: 'u_123', scopes: ['read'] }, input: '…', constraints: { max_steps: i.steps, max_cost_usd: 0.02 }, stream: true }, null, 2),
-      response: 'event: delta      data: {"text":"…"}\nevent: tool_call  data: {"name":"…","args":{…}}\nevent: final      data: {"answer":"…","citations":[…],"usage":{"steps":2,"tokens":1840,"cost_usd":0.004},"degraded":false}',
-    };
-  } else {
-    apiContract = {
-      method: 'POST',
-      path: `${base}/runs`,
-      request: JSON.stringify({ run_date: '2026-11-07', partition: 'all', dry_run: false, model_version: 'champion' }, null, 2),
-      response: JSON.stringify({ run_id: 'run_20261107_01', status: 'RUNNING | SUCCEEDED | FAILED_DQ', rows_in: 0, rows_out: 0, manifest_uri: 's3://…/manifest.json' }, null, 2),
-    };
-  }
+  const arch = archetypeLLD(i.archetype, { slugTail: i.slugTail, title: i.title, feats, tbl, base, budgetMs: TOTAL_BUDGET_MS[i.latency], steps: i.steps, latency: i.latency, mode: i.mode });
+  const apiContract = arch.apiContract;
 
   const featCols = feats.map((f) => `  ${f.padEnd(34)} DOUBLE PRECISION`).join(',\n');
-  const dataModelDDL = `-- point-in-time correct feature table (as_of is the ONLY join key to labels)
+  const decisioningDDL = `-- point-in-time correct feature table (as_of is the ONLY join key to labels)
 CREATE TABLE ${tbl}_features (
   entity_id                          TEXT        NOT NULL,
   as_of                              TIMESTAMPTZ NOT NULL,
@@ -345,6 +350,8 @@ CREATE TABLE ${tbl}_labels (
   PRIMARY KEY (decision_id, labeled_at)
 );`;
 
+  const dataModelDDL = arch.dataModelDDL || decisioningDDL;
+
   const cls = i.stages.map((s) => ({ ...s, cname: `${pascal(s.label)}${s.id}` }));
   const cd: string[] = ['classDiagram', '  class Stage {', '    <<interface>>', '    +run(ctx) StageResult', '    +timeout_ms() int', '  }'];
   cd.push('  class Deadline { +remaining() ms +share(f) ms }');
@@ -362,7 +369,7 @@ CREATE TABLE ${tbl}_labels (
   cd.push('  DecisionLogger <-- Stage : emits');
 
   const T = TOTAL_BUDGET_MS[i.latency];
-  const code = algorithmCode(i, feats, T);
+  const code = arch.algorithm ?? algorithmCode(i, feats, T);
 
   const timeouts = i.stages.filter((s) => !s.async).map((s) => `    - { name: ${snake(s.label)}, timeout_ms: ${s.budgetMs ?? 'n/a'}, on_timeout: fallback_level_1 }`).join('\n');
   const guard = i.onMetrics.slice(0, 3).map((x) => `    - "${x.replace(/"/g, "'")}"`).join('\n');
@@ -384,7 +391,20 @@ privacy:
   retention_days: 400`;
 
   const ladder = degradation(i.mode);
-  return { apiContract, dataModelDDL, classDiagram: cd.join('\n'), algorithm: { language: 'python' as const, code }, config, degradationLadder: ladder };
+  return {
+    archetype: i.archetype,
+    status: i.reviewed ? ('expert-reviewed' as const) : ('illustrative-scaffold' as const),
+    apiContract,
+    dataModelDDL,
+    eventSchema: arch.eventSchema,
+    classDiagram: cd.join('\n'),
+    algorithm: { language: 'python' as const, code },
+    config,
+    degradationLadder: ladder,
+    failureAndRetry: arch.failureAndRetry,
+    securityModel: arch.securityModel,
+    testScenarios: arch.testScenarios,
+  };
 }
 
 function degradation(mode: ScaleResult['mode']) {

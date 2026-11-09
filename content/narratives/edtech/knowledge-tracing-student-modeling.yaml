@@ -97,7 +97,7 @@ architectureRationale:
     carries: >-
       Ordering by server time is what protects against device clock drift, and partitioning by learner keeps each
       learner's updates sequential so the state cache never sees answers out of order.
-    budget: 7 ms of 80 ms
+    budget: 6 ms of 80 ms
     onFailure: >-
       Events are durable and replayable, so a consumer outage delays mastery by seconds but loses nothing, and late events
       are applied in timestamp order on replay.
@@ -109,7 +109,7 @@ architectureRationale:
     carries: >-
       Cold start for new skills and the long-break case both show here: a missing state is initialised from a prior for
       the skill, and an old timestamp triggers decay and a short diagnostic.
-    budget: 13 ms of 80 ms
+    budget: 11 ms of 80 ms
     onFailure: >-
       On a cache miss the state is rebuilt from the last few hundred events in the log, and if that is too slow the
       Bayesian baseline answers from its tiny per-skill state.
@@ -121,7 +121,7 @@ architectureRationale:
     carries: >-
       Skill structure keeps the model interpretable, and the item difficulty embedding keeps a hard question from being
       read as a weak learner, which is the leakage and confounding risk named in the signals.
-    budget: 27 ms of 80 ms
+    budget: 23 ms of 80 ms
     onFailure: >-
       An over-budget inference falls back to the baseline Bayesian update and the response is tagged, with a catch-up job
       applying the full model later.
@@ -133,7 +133,7 @@ architectureRationale:
     carries: >-
       This is where the overconfidence risk is contained: a 95 percent that is really 70 would stop practice early, so
       calibration is checked per skill and recalibrated on every model release.
-    budget: 10 ms of 80 ms
+    budget: 9 ms of 80 ms
     onFailure: >-
       A missing calibrator for a new skill uses a pooled one for its skill family and flags the skill as provisional in the
       report.
@@ -145,7 +145,7 @@ architectureRationale:
     carries: >-
       The selector's choices are logged with their probabilities, so later analysis can correct for the fact that practice
       depends on the model.
-    budget: 7 ms of 80 ms
+    budget: 6 ms of 80 ms
     onFailure: >-
       If mastery is unavailable the selector falls back to curriculum order, which is slower learning but never a broken
       session.
@@ -156,7 +156,7 @@ architectureRationale:
     carries: >-
       Interpretability is a constraint, so the API returns the per-skill number with its uncertainty and the evidence
       behind it, and handles curriculum remaps by reading the versioned skill map.
-    budget: 7 ms of 80 ms
+    budget: 6 ms of 80 ms
     onFailure: >-
       The last stored mastery is served with its age, and progress reports are never recomputed on the read path.
   - stage: Interaction logs
@@ -167,7 +167,7 @@ architectureRationale:
     carries: >-
       The migration job after a curriculum remap runs here, replaying history under the new skill map, and student-level
       splits are built from these logs.
-    budget: 10 ms of 80 ms
+    budget: 9 ms of 80 ms
     onFailure: >-
       Writes are buffered and replayed; a lakehouse outage pauses training data collection, not learning.
 

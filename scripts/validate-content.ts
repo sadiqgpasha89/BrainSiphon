@@ -9,9 +9,11 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import katex from 'katex';
 import { loadAllUseCases } from '../src/content/load';
-import { DOMAINS, type UseCase } from '../src/schemas/usecase.schema';
+import { DOMAINS, isAgentic, type UseCase } from '../src/schemas/usecase.schema';
 import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
+import { TOTAL_BUDGET_MS } from '../src/content/design';
+import { ROLE_IDS } from '../src/lib/roles';
 
 const MIN_PER_DOMAIN = Number(process.env.MIN_PER_DOMAIN ?? 50);
 const STALE_DAYS = 180;
@@ -81,6 +83,8 @@ async function main() {
       ['classes', u.systemDesign.lld.classDiagram],
       ['agent-architecture', u.agentic.architecture],
       ['agent-sequence', u.agentic.sequence],
+      ['c4-context', u.enterpriseContext.c4Context],
+      ['c4-container', u.enterpriseContext.c4Container],
     ];
     for (const [name, code] of blocks) {
       try {
@@ -148,7 +152,7 @@ async function main() {
     {
       const toolSet = new Set(u.agentic.tools.map((t) => t.name));
       if (toolSet.size !== u.agentic.tools.length) errors.push(`${u.slug}: duplicate agent tool names`);
-      if (!u.agentic.tools.some((t) => t.access === 'write'))
+      if (isAgentic(u.agentic.fit) && !u.agentic.tools.some((t) => t.access === 'write'))
         errors.push(`${u.slug}: agentic section has no write tool, so no approval path is described`);
       if (new Set(u.agentic.agents.map((a) => a.name)).size !== u.agentic.agents.length)
         errors.push(`${u.slug}: duplicate agent names`);
@@ -156,6 +160,89 @@ async function main() {
         errors.push(`${u.slug}: agentic rationale is too thin`);
       if ((u.latencySLA === 'sub-10ms' || u.latencySLA === 'sub-100ms') && u.agentic.fit === 'core')
         errors.push(`${u.slug}: an agent cannot be the core of a ${u.latencySLA} decision path`);
+      // the decision table must be self-consistent: exactly one chosen architecture, and a "no agent" verdict must say why
+      const chosen = u.agentic.decision.options.filter((o) => o.verdict === 'chosen');
+      if (chosen.length !== 1)
+        errors.push(
+          `${u.slug}: agent decision must choose exactly one architecture (found ${chosen.length})`,
+        );
+      if (
+        new Set(u.agentic.decision.options.map((o) => o.approach)).size !== u.agentic.decision.options.length
+      )
+        errors.push(`${u.slug}: agent decision lists an approach twice`);
+      if (!isAgentic(u.agentic.fit) && u.agentic.rationale.trim().split(/\s+/).length < 40)
+        errors.push(`${u.slug}: a non-agentic verdict needs a full rationale`);
+    }
+
+    // LLD: the archetype decides the shape; a generated LLD must say it is a scaffold
+    {
+      const lld = u.systemDesign.lld;
+      if (!u.systemDesign.lld.apiContract.path.startsWith('/v1/'))
+        errors.push(`${u.slug}: LLD API path is not versioned`);
+      if (
+        lld.status === 'illustrative-scaffold' &&
+        u.validation.levels.find((l) => l.level === 'domain-expert-reviewed')?.state === 'passed'
+      )
+        errors.push(`${u.slug}: LLD is a scaffold but the blueprint claims expert review`);
+      const kind = lld.archetype;
+      const ddl = lld.dataModelDDL;
+      const must: Partial<Record<typeof kind, RegExp>> = {
+        forecasting: /_forecasts/,
+        recommendation: /_impressions/,
+        rag: /_chunks/,
+        'agentic-workflow': /_steps/,
+        'computer-vision': /_detections/,
+        'document-extraction': /_fields/,
+        optimisation: /_plans/,
+        'batch-analytics': /_runs/,
+        'realtime-decisioning': /_decisions/,
+      };
+      if (must[kind] && !must[kind]!.test(ddl))
+        errors.push(`${u.slug}: ${kind} LLD data model has no ${must[kind]} table`);
+      if (kind !== 'realtime-decisioning' && /\/decide$/.test(lld.apiContract.path))
+        errors.push(`${u.slug}: ${kind} LLD uses the generic /decide endpoint`);
+    }
+
+    // Blueprint 2.0 enterprise layer: no unresolved placeholders, seven lenses, and architecture feasibility
+    {
+      const ent = JSON.stringify([
+        u.enterpriseContext,
+        u.decisionMatrix,
+        u.governance,
+        u.mlops,
+        u.operations,
+        u.validation,
+      ]);
+      if (/\b(undefined|NaN|Infinity)\b|\[object|\$\{|\{\{/.test(ent))
+        errors.push(`${u.slug}: enterprise layer contains an unresolved placeholder`);
+      if (u.roleLenses.length !== ROLE_IDS.length)
+        errors.push(`${u.slug}: expected ${ROLE_IDS.length} role lenses`);
+      if (u.decisionMatrix.alternatives.filter((a) => a.verdict === 'chosen').length !== 1)
+        errors.push(`${u.slug}: decision matrix must name exactly one chosen option`);
+      if (
+        (u.governance.riskTier === 'high' || u.governance.riskTier === 'critical') &&
+        u.decisionMatrix.humanOversight.mode === 'autonomous-with-audit'
+      )
+        errors.push(
+          `${u.slug}: ${u.governance.riskTier}-risk use case cannot be autonomous without human oversight`,
+        );
+      if (
+        u.mlops.llmops &&
+        !(u.pattern === 'llm-rag' || u.pattern === 'llm-agent' || u.mlParadigms.includes('llm-agents'))
+      )
+        errors.push(`${u.slug}: LLMOps section on a non-LLM use case`);
+      // Architecture Feasibility Validator: every stored check must not fail, and the latency sum is re-derived independently
+      for (const f of u.validation.feasibility)
+        if (f.status === 'fail') errors.push(`${u.slug}: feasibility — ${f.check}: ${f.detail}`);
+        else if (f.status === 'warn') warnings.push(`${u.slug}: feasibility — ${f.check}: ${f.detail}`);
+      const total = TOTAL_BUDGET_MS[u.latencySLA];
+      if (total !== null) {
+        const sum =
+          Math.round(u.systemDesign.hld.components.reduce((a, c) => a + (c.latencyBudgetMs ?? 0), 0) * 1000) /
+          1000;
+        if (sum > total + 1e-9)
+          errors.push(`${u.slug}: synchronous budgets sum to ${sum} ms against a ${total} ms p99`);
+      }
     }
 
     if (/\b(Infinity|NaN|undefined)\b/.test(JSON.stringify(u.systemDesign)))
@@ -254,7 +341,7 @@ async function main() {
   }
   const withPlaybook = all.filter((u) => u.playbook).length;
   console.log(
-    `validate:content ✔ ${all.length} use cases, ${all.length * 6} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections`,
+    `validate:content ✔ ${all.length} use cases, ${all.length * 8} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${all.length * 10} feasibility checks`,
   );
 }
 

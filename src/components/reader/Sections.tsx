@@ -1,5 +1,10 @@
 import Link from 'next/link';
-import { DOMAIN_META, type UseCase, type UseCaseIndexEntry } from '../../schemas/usecase.schema';
+import {
+  ARCHETYPE_LABEL,
+  DOMAIN_META,
+  type UseCase,
+  type UseCaseIndexEntry,
+} from '../../schemas/usecase.schema';
 import { CodeBlock } from '../Code';
 import { MathBlock } from '../Math';
 import { MermaidDiagram } from '../Mermaid';
@@ -56,6 +61,7 @@ export const List = ({ items, tone }: { items: string[]; tone?: 'signal' | 'nois
 );
 
 export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?: boolean }[] => [
+  { id: 'enterprise', label: 'Enterprise context' },
   { id: 'signal-noise', label: 'Signal vs. Noise' },
   { id: 'problem', label: 'Problem & loss' },
   { id: 'features', label: 'Features' },
@@ -68,8 +74,13 @@ export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?
   { id: 'evaluation', label: 'Evaluation' },
   { id: 'edge-cases', label: 'Edge cases' },
   { id: 'role-lenses', label: 'Role lenses' },
+  { id: 'governance', label: 'Security & governance' },
+  { id: 'experimentation', label: 'Statistical validation' },
+  { id: 'mlops', label: 'MLOps & LLMOps' },
+  { id: 'operations', label: 'Production operations' },
   { id: 'agentic', label: 'Agentic solution' },
   ...(hasPlaybook ? [{ id: 'playbook', label: 'Build playbook' }] : []),
+  { id: 'validation', label: 'Validation' },
 ];
 
 export async function Sections({ uc }: { uc: UseCase }) {
@@ -371,8 +382,21 @@ export async function Sections({ uc }: { uc: UseCase }) {
       <Section
         id="lld"
         title="Low-level design"
-        kicker="API contract · data model · classes · hot path · config · fallbacks"
+        kicker="API contract · data model · events · classes · hot path · config · failure, security and tests"
       >
+        <div className="flex flex-wrap items-center gap-2" data-testid="lld-status">
+          <span className="chip chip-signal">{ARCHETYPE_LABEL[d.lld.archetype]}</span>
+          <span className={`chip ${d.lld.status === 'expert-reviewed' ? 'chip-signal' : 'chip-noise'}`}>
+            {d.lld.status === 'expert-reviewed' ? 'Expert reviewed' : 'Illustrative scaffold'}
+          </span>
+          {d.lld.status !== 'expert-reviewed' && (
+            <span className="text-sm text-mute">
+              Generated from the {ARCHETYPE_LABEL[d.lld.archetype].toLowerCase()} template and this use
+              case&apos;s own fields: it shows the right shape of API, schema and failure model, not complete
+              production code.
+            </span>
+          )}
+        </div>
         <div className="card p-4">
           <p className="font-mono text-sm">
             <span className="rounded bg-signal-soft px-2 py-0.5 text-signal">{d.lld.apiContract.method}</span>{' '}
@@ -392,6 +416,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
           </div>
         </div>
         <CodeBlock code={d.lld.dataModelDDL} lang="sql" title="Data model · DDL" />
+        <CodeBlock code={d.lld.eventSchema} lang="json" title="Event schema" />
         <MermaidDiagram code={d.lld.classDiagram} label="Component classes" />
         <CodeBlock
           code={d.lld.algorithm.code}
@@ -416,6 +441,69 @@ export async function Sections({ uc }: { uc: UseCase }) {
                     <td className={`font-mono font-semibold ${ladderTone[l.level] ?? ''}`}>L{l.level}</td>
                     <td>{l.trigger}</td>
                     <td className="text-mute">{l.behaviour}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        </div>
+        <div>
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">
+            Failure and retry behaviour
+          </p>
+          <TableWrap>
+            <table className="bs-table">
+              <thead>
+                <tr>
+                  <th>Failure</th>
+                  <th>Behaviour</th>
+                </tr>
+              </thead>
+              <tbody>
+                {d.lld.failureAndRetry.map((f) => (
+                  <tr key={f.failure}>
+                    <td>{f.failure}</td>
+                    <td className="text-mute">{f.behaviour}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        </div>
+        <div>
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">
+            Security and access model
+          </p>
+          <TableWrap>
+            <table className="bs-table">
+              <tbody>
+                {d.lld.securityModel.map((x) => (
+                  <tr key={x.surface}>
+                    <th>{x.surface}</th>
+                    <td className="text-mute">{x.control}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        </div>
+        <div>
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Test scenarios</p>
+          <TableWrap>
+            <table className="bs-table">
+              <thead>
+                <tr>
+                  <th>Scenario</th>
+                  <th>Kind</th>
+                  <th>Assertion</th>
+                </tr>
+              </thead>
+              <tbody>
+                {d.lld.testScenarios.map((t) => (
+                  <tr key={t.scenario}>
+                    <td>{t.scenario}</td>
+                    <td className="font-mono text-xs">{t.kind}</td>
+                    <td className="text-mute">{t.assertion}</td>
                   </tr>
                 ))}
               </tbody>
@@ -476,7 +564,13 @@ export async function Sections({ uc }: { uc: UseCase }) {
             </tbody>
           </table>
         </TableWrap>
-        <CapacityCalculator paradigms={uc.mlParadigms} latency={uc.latencySLA} inputs={d.scale.inputs} />
+        <CapacityCalculator
+          domain={uc.domain}
+          paradigms={uc.mlParadigms}
+          latency={uc.latencySLA}
+          inputs={d.scale.inputs}
+          archetype={d.lld.archetype}
+        />
         <div data-prose className="grid gap-6 md:grid-cols-3">
           <div>
             <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Assumptions</p>
@@ -542,7 +636,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
       <Section
         id="role-lenses"
         title="Role lenses: production gaps by persona"
-        kicker="What each of the six roles must additionally check, specialised to this system. Press 1 to 6 to filter the page."
+        kicker="What each of the seven roles must additionally check, specialised to this system. Press 1 to 7 to filter the page."
       >
         <div className="grid gap-4 lg:grid-cols-2">
           {uc.roleLenses.map((r) => (

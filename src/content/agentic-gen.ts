@@ -9,7 +9,7 @@
  * Everything below is generated deterministically from the blueprint's own pipeline stages, constraints, edge cases, metrics and
  * traps, plus a role pattern per kind of system (the same eleven kinds as the reference starter kits).
  */
-import { DOMAIN_META, type Agentic, AgenticSchema, type Domain, type LatencySLA, type Paradigm } from '../schemas/usecase.schema';
+import { DOMAIN_META, type Agentic, type AgentAlternative, type AgentDecision, AgenticSchema, type Domain, type LatencySLA, type Paradigm, isAgentic } from '../schemas/usecase.schema';
 import { m, snake, type Stage, TOTAL_BUDGET_MS } from './design';
 import type { RawUseCase } from './parse';
 import { pickKit, type KitId } from './playbook-gen';
@@ -165,6 +165,184 @@ const DATA_RULE: Record<string, string> = {
   'real-estate': 'Personal data of tenants, buyers and owners is masked in tool results, and fair-housing protected attributes are never passed to a model',
 };
 
+
+/* ------------------------------------------------------------------ does this problem need an agent at all? */
+
+type NoAgent = 'fast-no-queue' | 'batch-no-queue' | 'closed-loop' | 'solver';
+const REGULATED: Domain[] = ['healthcare', 'fintech', 'bfsi'];
+
+/**
+ * The first question is not "which agents?" but "is an agent better than a rules engine, a conventional model, an optimiser or a
+ * deterministic workflow?". An agent earns its place when there is work a score cannot do (investigating, explaining, chasing
+ * evidence, drafting changes) or when the product is language. Without a human queue to feed, a closed learning loop or a solver,
+ * the deterministic design wins and the blueprint says so.
+ */
+export function agentVerdict(kit: KitId, latency: LatencySLA, hasHumanQueue: boolean): NoAgent | null {
+  if (kit === 'llm-agent' || kit === 'llm-rag' || kit === 'nlp') return null;
+  const fast = latency === 'sub-10ms' || latency === 'sub-100ms';
+  if (kit === 'bandit' && !hasHumanQueue) return 'closed-loop';
+  if (kit === 'optimize' && !hasHumanQueue) return 'solver';
+  if (hasHumanQueue) return null;
+  if (fast) return 'fast-no-queue';
+  if (latency === 'batch') return 'batch-no-queue';
+  return null;
+}
+
+const APPROACH_START: Record<AgentAlternative, string> = {
+  'rules-engine': 'Stable, explicit business rules that a domain owner can state and audit',
+  'conventional-ml': 'A structured prediction with labelled history and a measurable loss',
+  optimiser: 'A constrained allocation, routing or scheduling problem where feasibility must be guaranteed',
+  'llm-rag': 'Knowledge-intensive language tasks that need grounded, cited answers',
+  'deterministic-workflow': 'Known steps that need retries, SLAs, ordering and an exception queue',
+  'human-in-the-loop': 'High-consequence decisions that need a named accountable person',
+  'agentic-workflow': 'Multi-step work whose intermediate results decide the next step and cannot be scripted in advance',
+};
+
+const PRIMARY: Record<KitId, AgentAlternative> = {
+  tabular: 'conventional-ml', forecast: 'conventional-ml', anomaly: 'conventional-ml', recommender: 'conventional-ml', graph: 'conventional-ml',
+  nlp: 'conventional-ml', cv: 'conventional-ml', bandit: 'conventional-ml', optimize: 'optimiser', 'llm-rag': 'llm-rag', 'llm-agent': 'agentic-workflow',
+};
+
+const WHY_NOT: Record<NoAgent, (b: number | null) => string> = {
+  'fast-no-queue': (b) => `the decision runs in ${b ?? 'a few'} ms and no case queue exists to feed an asynchronous agent: a planning loop cannot sit in the path, and there is nothing beside it to investigate`,
+  'batch-no-queue': () => 'the work is a scheduled, fully specified pipeline; orchestration with retries, a reconciliation report and an exception list does the same job deterministically and testably',
+  'closed-loop': () => 'the policy already learns from its own feedback loop; an agent in or beside it would be a second, unaccountable controller of the same decision',
+  solver: () => 'the solver searches the space and proves feasibility; a language-model planner can give neither the guarantee nor the explanation of binding constraints',
+};
+
+const REVISIT: Record<NoAgent, string[]> = {
+  'fast-no-queue': ['A review or case-handling queue appears and analysts spend most of their time gathering evidence', 'Unstructured inputs (documents, free text) become part of the decision', 'Disputes or explanations must be produced for each decision at a volume people cannot handle'],
+  'batch-no-queue': ['Exception volume grows until manual triage costs more than an agent would', 'The exception handling needs multi-step investigation whose steps cannot be fixed in advance', 'Free-text sources start to drive the run'],
+  'closed-loop': ['Business owners need natural-language what-if analysis over the policy, not control of it', 'A human review stage is introduced for high-value decisions', 'Campaign or policy setup becomes a multi-step process with tool use'],
+  solver: ['Planners need an assistant that gathers inputs and explains plans, while the solver still decides', 'Disruptions arrive as unstructured messages that must be turned into constraints', 'A human approval queue forms around the plan and consumes analyst time'],
+};
+
+function buildDecision(opts: { raw: RawUseCase; kit: KitId; fit: Agentic['fit']; no: NoAgent | null; domain: Domain; latency: LatencySLA; hasHuman: boolean; steps: number }): AgentDecision {
+  const { raw, kit, fit, no, domain, latency, hasHuman, steps } = opts;
+  const agentic = isAgentic(fit);
+  const budget = TOTAL_BUDGET_MS[latency];
+  const north = raw.on[0] ?? 'the north-star metric';
+  const guard = raw.on[1] ?? 'the guardrail metric';
+  const primary = PRIMARY[kit];
+  const regulated = REGULATED.includes(domain);
+  const baseText = low(raw.base.replace(/[.!?]$/, ''));
+  const prodText = low(raw.prod.replace(/[.!?]$/, ''));
+
+  const verdictOf = (a: AgentAlternative): AgentDecision['options'][number]['verdict'] => {
+    if (a === primary) return 'chosen';
+    switch (a) {
+      case 'agentic-workflow': return agentic ? 'complement' : 'rejected';
+      case 'rules-engine': return 'fallback';
+      case 'deterministic-workflow': return 'complement';
+      case 'human-in-the-loop': return hasHuman || regulated ? 'complement' : 'rejected';
+      case 'llm-rag': return agentic ? 'complement' : 'rejected';
+      case 'conventional-ml': return 'complement';
+      case 'optimiser': return 'rejected';
+    }
+  };
+
+  const reason = (a: AgentAlternative, v: string): string => {
+    switch (a) {
+      case 'rules-engine':
+        return `Kept as the last rung of the degradation ladder: the baseline (${baseText}) is versioned, owned by the business and explainable to an auditor.`;
+      case 'conventional-ml':
+        return v === 'chosen'
+          ? `The production model (${prodText}) decides: it is trained on labelled history, judged on "${raw.off[0] ?? 'the offline metric'}" and fits the ${budget ? `${budget} ms` : 'batch'} budget.`
+          : 'Classifiers for routing, risk tier and redaction sit around the language model; they are cheap, testable and run before any generation.';
+      case 'optimiser':
+        return v === 'chosen'
+          ? 'The decision is a constrained allocation: a solver guarantees feasibility and explains which constraints bind, which an agent cannot.'
+          : 'There is no constrained allocation to solve inside this scope; a solver would add machinery without a decision to optimise.';
+      case 'llm-rag':
+        return v === 'chosen'
+          ? 'The product is a grounded answer over documents: retrieval, re-ranking and citation checking are the architecture.'
+          : v === 'complement'
+            ? 'Used by the agents to search policy, runbooks and closed cases with citations; it is not part of the scoring path.'
+            : 'No knowledge-intensive language task sits in the decision, so retrieval-augmented generation would add cost and a hallucination surface for nothing.';
+      case 'deterministic-workflow':
+        return v === 'chosen'
+          ? 'Fixed steps with retries, SLAs and a reconciliation report.'
+          : 'Orchestrates the pipeline with retries, ordering and an exception queue; every step is explicit and testable.';
+      case 'human-in-the-loop':
+        return v === 'complement'
+          ? `Error consequences${regulated ? ` in ${DOMAIN_META[domain].name}` : ''} justify named accountability: reviewers work the uncertain band and a sampled audit.`
+          : 'Errors here are low-cost and reversible at this volume, so a sampled audit is enough; routine per-decision review would cost more than it saves.';
+      case 'agentic-workflow':
+        return v === 'chosen'
+          ? 'The task is multi-step: tool results decide the next step, which a fixed script cannot express. Autonomy is earned level by level.'
+          : v === 'complement'
+            ? `Only around the model: it investigates review-band cases, chases delayed labels and drafts change requests${budget ? `, and never sits in the ${budget} ms path` : ''}.`
+            : `Rejected: ${WHY_NOT[no ?? 'batch-no-queue'](budget)}.`;
+    }
+  };
+
+  const options = (Object.keys(APPROACH_START) as AgentAlternative[]).map((a) => {
+    const verdict = verdictOf(a);
+    return { approach: a, startWhen: APPROACH_START[a], verdict, reason: reason(a, verdict) };
+  });
+
+  const question = `Why is an agent better than a rules engine, a conventional model, an optimiser or a deterministic workflow for ${raw.title}?`;
+  if (agentic)
+    return {
+      question,
+      options,
+      measurableValue: `Agents must beat a no-agent control on "${north}" without worsening "${guard}": analyst minutes per case, time to a matured label and precision of escalations, measured in four weeks of shadow before any autonomy.`,
+      incrementalCost: `About ${(steps * 2400).toLocaleString('en-US')} tokens per task, plus a replay set, a verifier and a security review of every tool contract; the budget table below prices it.`,
+      operationalRisk: 'Prompt injection through records, over-permissioned tools, unsupported claims and runaway loops: each has a control and an evaluation row below.',
+      fallbackArchitecture: `Withdraw the agent layer and the system keeps working: the ${primary === 'agentic-workflow' ? 'workflow runs as a scripted pipeline with a human queue' : 'model still decides, people work the review queue and thresholds change by change request'}.`,
+      revisitWhen: ['Evidence validity or analyst agreement falls below its gate for two consecutive weeks', 'A deterministic workflow reaches the same task success at lower cost', 'A tool the agents rely on changes its contract or permissions'],
+    };
+  const chosen = options.find((o) => o.verdict === 'chosen')!;
+  return {
+    question,
+    options,
+    measurableValue: `An agent would have to improve "${north}" over the ${chosen.approach.replace(/-/g, ' ')} design by more than its run cost, with "${guard}" unchanged. No lever of that kind exists in this scope today.`,
+    incrementalCost: 'Avoided by this verdict: token spend, replay-set upkeep, a verifier, tool-permission reviews and an autonomy-governance process.',
+    operationalRisk: 'None added. Residual risk sits in model drift and data quality, which the MLOps and operations sections cover.',
+    fallbackArchitecture: `${chosen.approach === 'optimiser' ? 'A constraint-based solver with an independent plan checker, warm-started re-planning and a published explanation' : `${raw.prod.replace(/\.$/, '')} behind a deterministic ${latency === 'batch' ? 'orchestrated pipeline with reconciliation and an exception report' : 'serving path with a rules fallback and a sampled review'}`}; the baseline (${baseText}) is the last rung.`,
+    revisitWhen: REVISIT[no ?? 'batch-no-queue'],
+  };
+}
+
+function nonAgenticArchitecture(sync: Stage[], target: Stage | undefined, latency: LatencySLA, no: NoAgent) {
+  const body = sync.slice(0, 5);
+  const fast = latency === 'sub-10ms' || latency === 'sub-100ms';
+  const lines = ['flowchart LR', `  IN(["${no === 'closed-loop' ? 'Request or auction event' : 'Input'}"])`];
+  body.forEach((s, n) => lines.push(`  S${n}["${m(s.label, 30)}<br/>${m(s.tech, 30)}"]`));
+  lines.push('  IN --> S0');
+  body.forEach((_, n) => n < body.length - 1 && lines.push(`  S${n} --> S${n + 1}`));
+  const last = `S${body.length - 1}`;
+  lines.push(`  ${last} --> OUT(["${m(target?.label ?? 'Decision or output', 32)}"])`);
+  lines.push('  CHK{"Rule or quality gate"}', `  ${last} --> CHK`, '  CHK -- pass --> OUT', `  CHK -- exception --> Q[("Exception queue<br/>${fast ? 'sampled review' : 'owner and SLA'}")]`, '  OUT -.-> LOG[("Decision and outcome log")]', '  Q -.-> LOG', '  LOG -. labels and outcomes .-> S0');
+  lines.push('  classDef gate fill:#33121a,stroke:#fb7185,color:#ffe4e6', '  class CHK gate');
+  return lines.join('\n');
+}
+
+function nonAgenticSequence(target: Stage | undefined, latency: LatencySLA) {
+  return [
+    'sequenceDiagram',
+    '  autonumber',
+    '  participant C as Caller or scheduler',
+    '  participant P as Pipeline',
+    '  participant M as Model or solver',
+    `  participant R as ${m(target?.label ?? 'Rules and policy', 28)}`,
+    '  participant Q as Exception queue',
+    '  participant L as Decision log',
+    '  C->>P: request or scheduled run',
+    '  P->>M: features and inputs',
+    '  M-->>P: score, plan or forecast',
+    '  P->>R: apply policy from config',
+    '  alt within policy',
+    '    R-->>C: decision or output',
+    '  else exception',
+    `    R->>Q: ${latency === 'batch' ? 'owner and SLA' : 'sampled review'}`,
+    '  end',
+    '  R-->>L: decision with versions',
+    '  Q-->>L: outcome and reason',
+    '  Note over L,M: outcomes become labels, no agent sits anywhere in this path',
+  ].join('\n');
+}
+
 export function generateAgentic(raw: RawUseCase, domain: Domain, paradigms: Paradigm[], latency: LatencySLA, difficulty: string, stages: Stage[]): Agentic {
   const picked = pickKit(raw, paradigms);
   // a language model in a sub-100ms path is a model call, not an agent loop: the agents work around it, asynchronously
@@ -178,6 +356,45 @@ export function generateAgentic(raw: RawUseCase, domain: Domain, paradigms: Para
   const target = [...sync].reverse().find((s) => s.kind === 'rules') ?? sync[sync.length - 1];
   const asyncS = stages.filter((s) => s.async);
   const steps = difficulty === 'foundational' ? 4 : difficulty === 'staff-principal' ? 8 : 6;
+  const hasHuman = stages.some((s) => s.kind === 'human');
+  const no = agentVerdict(kit, latency, hasHuman);
+
+  if (no) {
+    const fit: Agentic['fit'] = no === 'closed-loop' ? 'not-applicable' : 'not-recommended';
+    const decision = buildDecision({ raw, kit, fit, no, domain, latency, hasHuman, steps });
+    const chosen = decision.options.find((o) => o.verdict === 'chosen')!;
+    const reasonText = WHY_NOT[no](TOTAL_BUDGET_MS[latency]);
+    const outNo: Agentic = {
+      fit,
+      role: `No agent: ${chosen.approach.replace(/-/g, ' ')} is the recommended architecture`,
+      pattern: no === 'solver' ? 'Solver in the decision path, deterministic workflow around it' : no === 'closed-loop' ? 'Learning policy in a closed loop, no agent' : 'Model and rules in the path, deterministic workflow around them',
+      rationale: `For ${raw.title}, ${reasonText}. ${sentence(raw.obj)} The better engineering answer is the plain design: ${low(raw.prod.replace(/[.!?]$/, ''))}, with the baseline (${low(raw.base.replace(/[.!?]$/, ''))}) as the fallback rung, an exception queue for the cases the rules cannot settle and a decision log that turns outcomes into labels. Section "Revisit when" lists what would change this answer.`,
+      decision,
+      agents: [],
+      tools: [],
+      autonomy: [],
+      architecture: nonAgenticArchitecture(sync, target, latency, no),
+      sequence: nonAgenticSequence(target, latency),
+      context: [],
+      guardrails: [],
+      evaluation: [],
+      failureModes: [],
+      budget: [],
+      buildSteps: [],
+      whenNotToUse: [
+        `Do not add an agent to this design for its own sake: ${reasonText}`,
+        'Do not use an agent where a rule, a model score or a solver already makes the decision reliably and cheaply',
+        'Do not introduce one without a measured gain over the deterministic workflow and a named owner for its tools and permissions',
+      ],
+    };
+    const checkedNo = AgenticSchema.safeParse(outNo);
+    if (!checkedNo.success) {
+      const issues = checkedNo.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n');
+      throw new Error(`${raw.file}:${raw.line} (${raw.key}): agentic section invalid\n${issues}`);
+    }
+    return checkedNo.data;
+  }
+
 
   // typed tools: one read tool per synchronous stage, one gated write tool per human or sink stage, plus the generic ones
   const tools: Agentic['tools'] = [
@@ -315,6 +532,7 @@ export function generateAgentic(raw: RawUseCase, domain: Domain, paradigms: Para
     fit: role.fit,
     role: role.role,
     pattern: role.pattern,
+    decision: buildDecision({ raw, kit, fit: role.fit, no: null, domain, latency, hasHuman, steps }),
     rationale: `${role.why} For ${raw.title}: ${sentence(raw.obj)} ${DOMAIN_META[domain].short} constraints that shape the agents: ${raw.con.slice(0, 2).join('; ')}.`,
     agents,
     tools: uniqueTools,

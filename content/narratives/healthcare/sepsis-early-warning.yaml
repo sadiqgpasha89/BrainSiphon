@@ -102,7 +102,7 @@ architectureRationale:
     carries: >-
       The new-analyser unit change lives here: a unit-normalisation layer with range checks at ingest stops a tenfold
       lactate shift reaching the model, and it records both result time and draw time for the leakage rules downstream.
-    budget: 8 ms of 80 ms
+    budget: 7 ms of 80 ms
     onFailure: >-
       Messages are persisted before processing, so an engine restart replays them in order; an unrecognised unit or an
       out-of-range value is quarantined and flagged rather than silently coerced.
@@ -114,7 +114,7 @@ architectureRationale:
     carries: >-
       Irregular sampling and sensor dropout are handled here. A pulse oximeter unplugged for hours must not produce a
       confident feature, so staleness is capped and passed to the model as a feature in its own right.
-    budget: 17 ms of 80 ms
+    budget: 15 ms of 80 ms
     onFailure: >-
       State is checkpointed per patient; on recovery windows are rebuilt from the durable stream, and a patient with no
       recoverable state is scored as unknown and not as low risk.
@@ -126,7 +126,7 @@ architectureRationale:
     carries: >-
       Explainability is a constraint, so the clinician sees which signals moved, such as the lactate trend or the
       respiratory rate slope. The per-unit calibration also sits on this stage's output.
-    budget: 34 ms of 80 ms
+    budget: 30 ms of 80 ms
     onFailure: >-
       If the scorer is unavailable the modified early warning score runs as a fallback, so a ward is never left with no
       protection, and the fallback is labelled on the alert.
@@ -138,7 +138,7 @@ architectureRationale:
     carries: >-
       The alert-fatigue budget is enforced here: thresholds are per unit, changed in stages, and re-baselined when a
       patient is transferred, because a change of ward changes charting patterns and makes scores jump.
-    budget: 8 ms of 80 ms
+    budget: 7 ms of 80 ms
     onFailure: >-
       A bad threshold push is caught by the burden dashboard and reverted; an outage defaults to the previous
       thresholds, never to alerting on everyone.
@@ -172,7 +172,7 @@ architectureRationale:
     carries: >-
       Labels set after intervention are partly caused by it, so the record keeps whether and when treatment started, which
       lets later analyses separate prevented cases from never-were cases.
-    budget: 13 ms of 80 ms
+    budget: 11 ms of 80 ms
     onFailure: >-
       Adjudication lags by weeks, so a late label never blocks scoring; retraining waits for adjudicated windows and
       reports how many cases are still pending.
@@ -246,7 +246,8 @@ e2e:
     title: Fit the 80 ms path and the failure modes
     steps:
       - >-
-        Allocate the budget: 8 ms to ingest, 17 ms for windows, 34 ms for the scorer, 8 ms for policy, and test p99 at the
+        Allocate the budget: 7 ms to ingest, 15 ms for windows, 30 ms for the scorer, 7 ms for policy, 11 ms for outcome
+        labels, with 2 ms for the edge and 8 ms held back for network hops, and test p99 at the
         7,500 requests per second provisioned.
       - >-
         Test the three degradations that matter clinically: stream engine restart, scorer outage with the early warning

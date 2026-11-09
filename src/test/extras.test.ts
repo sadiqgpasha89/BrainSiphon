@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { loadAllUseCases } from '../content/load';
 import { PRIMITIVE_BY_ID } from '../content/primitives';
 import { computeScale } from '../content/scale';
-import { ROLE_IDS, ROLE_SECTIONS } from '../lib/roles';
+import { ROLE_IDS, ROLE_SECTIONS, SECTION_IDS } from '../lib/roles';
 
 const all = loadAllUseCases();
 const bySlug = (s: string) => all.find((u) => u.slug === s)!;
 
 describe('role lenses and primitives', () => {
-  it('gives every blueprint all six role lenses with resolvable primitive links', () => {
+  it('gives every blueprint all seven role lenses with resolvable primitive links', () => {
     for (const u of all) {
       expect(
         u.roleLenses.map((l) => l.role),
@@ -22,23 +22,16 @@ describe('role lenses and primitives', () => {
   });
 
   it('only references sections that exist in the reader', () => {
-    const toc = [
-      'signal-noise',
-      'problem',
-      'features',
-      'blueprint',
-      'hld',
-      'sequence',
-      'lld',
-      'e2e',
-      'scale',
-      'evaluation',
-      'edge-cases',
-      'role-lenses',
-      'agentic',
-      'playbook',
-    ];
+    const toc: readonly string[] = SECTION_IDS;
     for (const r of ROLE_IDS) for (const id of ROLE_SECTIONS[r]) expect(toc).toContain(id);
+  });
+});
+
+describe('role lens styling', () => {
+  it('has a CSS rule that shows the sections of every role (a role without one hides the whole page)', async () => {
+    const { readFileSync } = await import('node:fs');
+    const css = readFileSync('src/app/globals.css', 'utf8');
+    for (const r of ROLE_IDS) expect(css, r).toContain(`[data-role='${r}'] section[data-roles~='${r}']`);
   });
 });
 

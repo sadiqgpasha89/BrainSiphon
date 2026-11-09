@@ -2,11 +2,13 @@ import {
   ArrowRight,
   Blocks,
   Boxes,
+  Building2,
   Gauge,
   GitBranch,
   Layers,
   ListTree,
   Network,
+  ShieldCheck,
   Sigma,
   Table2,
   Users,
@@ -17,7 +19,7 @@ import Link from 'next/link';
 import { SearchTrigger } from '../components/SearchTrigger';
 import { getIndex } from '../lib/content';
 import { DOMAINS, DOMAIN_META, ML_PARADIGMS, PARADIGM_LABEL, type Paradigm } from '../schemas/usecase.schema';
-import { ROLE_IDS, ROLE_META } from '../lib/roles';
+import { ROLE_IDS, ROLE_META, ROLE_OWNS } from '../lib/roles';
 import { PRIMITIVES } from '../content/primitives';
 
 export const revalidate = 86400;
@@ -74,9 +76,19 @@ const SECTIONS = [
     body: 'Scenario → failure mode → mitigation, from real production incidents.',
   },
   {
+    icon: Building2,
+    title: 'Enterprise context',
+    body: 'Business, application, data, technology and security architecture, C4 diagrams, ADRs and an AI decision matrix before any model is chosen.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Governance, MLOps and operations',
+    body: 'Risk tier, obligation-to-evidence controls, a nine-area MLOps lifecycle, SLOs and ten failure scenarios.',
+  },
+  {
     icon: Users,
     title: 'Role lenses',
-    body: 'Production gaps for six personas, from AI architect to inference engineer.',
+    body: 'Production gaps for seven personas, from AI architect to MLOps engineer.',
   },
   {
     icon: Blocks,
@@ -111,8 +123,8 @@ export default async function Home() {
         <p className="mt-6 max-w-2xl text-lg text-mute">
           {all.length} production-grade blueprints across {DOMAINS.length} industries. Each one teaches the
           exact signals that move the metric, names the noise that wastes your quarter, and designs the whole
-          system for <strong className="text-ink">10 million users</strong> — HLD, LLD, sequence diagram,
-          rollout and cost.
+          system for <strong className="text-ink">10 million users</strong> — from the enterprise context and
+          decision matrix, through HLD, LLD, MLOps and governance, to production operations, rollout and cost.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Link href="/fintech" className="btn !border-signal !bg-signal-soft !text-signal no-underline">
@@ -122,14 +134,14 @@ export default async function Home() {
           <span className="text-sm text-dim">
             Inside a blueprint press <span className="kbd">[</span> for Pure Signal ·{' '}
             <span className="kbd">]</span> for full detail · <span className="kbd">1</span>–
-            <span className="kbd">6</span> to read as your role
+            <span className="kbd">7</span> to read as your role
           </span>
         </div>
         <dl className="mt-12 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
           {[
             [String(all.length), 'blueprints'],
             [String(DOMAINS.length), 'domains × 50 each'],
-            [String(all.length * 6), 'system diagrams'],
+            [String(all.length * 8), 'system diagrams'],
             [String(ML_PARADIGMS.length), 'ML paradigms'],
           ].map(([n, l]) => (
             <div key={l}>
@@ -196,7 +208,9 @@ export default async function Home() {
         </h2>
         <p className="mt-2 max-w-3xl text-sm text-mute">
           Inside any blueprint, press the number key (or use the Lens bar) to keep only the sections that role
-          needs, and read the role&apos;s checklist of production gaps at the end.
+          needs, and read the role&apos;s checklist of production gaps at the end. Roles differ in what they
+          own: the AI architect decides the topology, the solution architect fits it into the enterprise, the
+          MLOps engineer industrialises and operates it.
         </p>
         <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="role-cards">
           {ROLE_IDS.map((r) => (
@@ -205,6 +219,7 @@ export default async function Home() {
                 <span className="kbd mr-2">{ROLE_META[r].key}</span>
                 {ROLE_META[r].label}
               </p>
+              <p className="mt-1 text-xs text-signal">{ROLE_OWNS[r]}</p>
               <p className="mt-2 text-sm text-mute">{ROLE_META[r].focus}</p>
             </li>
           ))}

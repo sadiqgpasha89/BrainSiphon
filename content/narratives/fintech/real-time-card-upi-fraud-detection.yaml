@@ -64,7 +64,7 @@ solutionApproach:
     - move: Precompute the graph, never query it
       detail: >-
         The device-and-card graph is embedded offline every few hours and stored as vectors in the feature cache, so the
-        graph contributes a 2.7 ms cached lookup instead of a traversal the 8 ms budget could never afford.
+        graph contributes a 2.2 ms cached lookup instead of a traversal the 8 ms budget could never afford.
     - move: Separate score from policy
       detail: >-
         The scorer returns a calibrated probability and the top reason features. A rules-as-config policy engine maps it
@@ -103,7 +103,7 @@ architectureRationale:
     carries: >-
       The PCI-DSS scope constraint lives here: the gateway is the only component allowed to see the raw card, and the
       deadline it propagates is what makes the degradation ladder possible.
-    budget: 0.7 ms of 8 ms
+    budget: 0.6 ms of 8 ms
     onFailure: >-
       An unreachable scorer must never block the rail. The gateway applies the static fallback rules and records that it
       did, so the miss is visible afterwards.
@@ -115,7 +115,7 @@ architectureRationale:
     carries: >-
       The velocity signal, the device-card fan-out and the 90-day baseline all depend on windows that close strictly
       before decision time, so reads and writes are ordered per card token on a single shard.
-    budget: 1.3 ms of 8 ms
+    budget: 1.1 ms of 8 ms
     onFailure: >-
       On a timeout the scorer receives only the cached 24-hour features and the baseline model scores, with a flag set so
       the policy engine can be stricter on large amounts.
@@ -126,7 +126,7 @@ architectureRationale:
     carries: >-
       This is the answer to mule-device rotation: when a ring moves to a new device, the embedding of the cluster
       still carries its risk, which a hard-coded fan-out count would reset to zero.
-    budget: 2.7 ms of 8 ms
+    budget: 2.2 ms of 8 ms
     onFailure: >-
       A missing vector is replaced by a cohort mean and the scorer sees an explicit missing-embedding flag, so the model
       learned to be cautious in that case rather than treating it as safe.
@@ -138,7 +138,7 @@ architectureRationale:
       Calibration decides everything downstream, because policy thresholds are set on probability. The loss adds an
       expected-calibration-error term to the focal loss for exactly this reason, and reason codes come from the model, not
       a separate explainer.
-    budget: 2.7 ms of 8 ms
+    budget: 2.2 ms of 8 ms
     onFailure: >-
       If the model server is over budget the baseline logistic regression, loaded in the same process, scores instead and
       the response is tagged degraded.
@@ -150,7 +150,7 @@ architectureRationale:
     carries: >-
       The false-decline ceiling of 0.3 percent is enforced here, as a threshold risk can move live during a flash sale.
       The step-up band between review and block is what protects a genuine shopping session that looks like velocity.
-    budget: 0.7 ms of 8 ms
+    budget: 0.6 ms of 8 ms
     onFailure: >-
       A bad config push is caught by a staged rollout and a schema check, and the previous version is retained so a
       revert is one pointer change.
@@ -248,8 +248,9 @@ e2e:
     title: Make the 8 ms path real
     steps:
       - >-
-        Allocate the budget stage by stage, 0.7 ms gateway, 1.3 ms feature read, 2.7 ms embedding, 2.7 ms scoring, 0.7 ms
-        policy, and measure p99 for each in a load test at 3,300 requests per second.
+        Allocate the budget stage by stage, 0.6 ms gateway, 1.1 ms feature read, 2.2 ms embedding, 2.2 ms scoring, 0.6 ms
+        policy, plus 0.5 ms for the edge and 0.8 ms held back for network hops and serialisation so the parts add up to
+        the 8 ms, and measure p99 for each in a load test at 3,300 requests per second.
       - >-
         Build the degradation ladder and test it by killing the feature store, the embedding cache and the model server in
         turn, confirming the response is still returned in time and tagged degraded.

@@ -17,9 +17,15 @@ describe('markdown export', () => {
       '## Scale to 10M users',
       '## Production edge cases',
       '## Agentic solution',
+      '## Enterprise solution context',
+      '### AI solution architecture decision matrix',
+      '## Security, governance and responsible AI',
+      '## MLOps',
+      '## Production operations and SRE',
+      '## Validation and architecture review',
     ])
       expect(md).toContain(h);
-    expect((md.match(/```mermaid/g) ?? []).length).toBe(6);
+    expect((md.match(/```mermaid/g) ?? []).length).toBe(8);
     expect((md.match(/```/g) ?? []).length % 2).toBe(0);
   });
 

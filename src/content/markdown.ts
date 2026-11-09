@@ -1,6 +1,6 @@
 import { PRIMITIVE_BY_ID } from './primitives';
-import { ROLE_META } from '../lib/roles';
-import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook, type UseCase } from '../schemas/usecase.schema';
+import { ROLE_META, ROLE_OWNS } from '../lib/roles';
+import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook, type UseCase, ARCHETYPE_LABEL, isAgentic } from '../schemas/usecase.schema';
 
 const fence = (lang: string, body: string) => `\`\`\`${lang}\n${body.trim()}\n\`\`\``;
 const esc = (s: string) => s.replace(/\|/g, '\\|');
@@ -11,7 +11,9 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   const L: string[] = [];
   L.push(`# ${u.title}`, '');
   L.push(`> ${DOMAIN_META[u.domain].name} · ${u.mlParadigms.map((p) => PARADIGM_LABEL[p]).join(' + ')} · ${LATENCY_LABEL[u.latencySLA]} · ${u.difficulty}`);
-  L.push(`> Last verified against production standards: ${u.lastVerifiedAt} · ${origin}/${u.slug}`, '');
+  const passed = u.validation.levels.filter((l) => l.state === 'passed').map((l) => l.level);
+  L.push(`> Automated checks passed ${u.lastVerifiedAt} (${passed.length} of ${u.validation.levels.length} validation levels: ${passed.join(', ')}); ${u.validation.levels.some((l) => l.level === 'domain-expert-reviewed' && l.state === 'passed') ? 'domain-expert reviewed' : 'not yet domain-expert reviewed'} · Risk tier: ${u.governance.riskTier} · ${origin}/${u.slug}`, '');
+  enterpriseMarkdown(u, L);
   L.push('## Signal vs. Noise', '', '| Concept | True signal | Common noise | Why engineers fail |', '|---|---|---|---|');
   u.signalVsNoiseMatrix.forEach((r) => L.push(`| ${esc(r.concept)} | ${esc(r.trueSignal)} | ${esc(r.commonNoise)} | ${esc(r.whyEngineersFail)} |`));
   L.push('', '## Problem statement', '', `**Situation.** ${u.problemStatement.situation}`, '', `**Why it is hard.** ${u.problemStatement.whyHard}`, '', `**Scale and stakes.** ${u.problemStatement.scaleAndStakes}`, '', `**Success looks like.** ${u.problemStatement.successLooksLike}`, '', '**What can go wrong.**', '');
@@ -36,9 +38,15 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   d.hld.components.forEach((c) => L.push(`| ${esc(c.name)} | ${esc(c.tech)} | ${esc(c.responsibility)} | ${c.latencyBudgetMs === null ? '—' : `${c.latencyBudgetMs} ms`} |`));
   L.push('', '## Sequence diagram', '', fence('mermaid', d.sequence.mermaid), '');
   d.sequence.notes.forEach((n) => L.push(`- ${n}`));
-  L.push('', '## Low-level design', '', `### API contract\n\n\`${d.lld.apiContract.method} ${d.lld.apiContract.path}\``, '', 'Request:', '', fence('json', d.lld.apiContract.request), '', 'Response:', '', fence('json', d.lld.apiContract.response));
+  L.push('', '## Low-level design', '', `**Archetype:** ${ARCHETYPE_LABEL[d.lld.archetype]} · **Status:** ${d.lld.status === 'expert-reviewed' ? 'expert reviewed' : 'illustrative implementation scaffold, not a complete production LLD'}`, '', `### API contract\n\n\`${d.lld.apiContract.method} ${d.lld.apiContract.path}\``, '', 'Request:', '', fence('json', d.lld.apiContract.request), '', 'Response:', '', fence('json', d.lld.apiContract.response));
   L.push('', '### Data model', '', fence('sql', d.lld.dataModelDDL), '', '### Classes', '', fence('mermaid', d.lld.classDiagram), '', '### Core algorithm', '', fence(d.lld.algorithm.language, d.lld.algorithm.code), '', '### Config', '', fence('yaml', d.lld.config), '', '### Degradation ladder', '', '| Level | Trigger | Behaviour |', '|---|---|---|');
   d.lld.degradationLadder.forEach((x) => L.push(`| L${x.level} | ${esc(x.trigger)} | ${esc(x.behaviour)} |`));
+  L.push('', '### Event schema', '', fence('json', d.lld.eventSchema), '', '### Failure and retry behaviour', '', '| Failure | Behaviour |', '|---|---|');
+  d.lld.failureAndRetry.forEach((x) => L.push(`| ${esc(x.failure)} | ${esc(x.behaviour)} |`));
+  L.push('', '### Security and access model', '', '| Surface | Control |', '|---|---|');
+  d.lld.securityModel.forEach((x) => L.push(`| ${esc(x.surface)} | ${esc(x.control)} |`));
+  L.push('', '### Test scenarios', '', '| Scenario | Kind | Assertion |', '|---|---|---|');
+  d.lld.testScenarios.forEach((x) => L.push(`| ${esc(x.scenario)} | ${x.kind} | ${esc(x.assertion)} |`));
   L.push('', '## End-to-end breakdown', '');
   d.e2e.forEach((p) => {
     L.push(`### ${p.phase}. ${p.title}`, '');
@@ -77,13 +85,45 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
     const p = PRIMITIVE_BY_ID[id];
     if (p) L.push(`- [${p.title}](${origin}/patterns/primitives/${p.id}): ${p.summary}`);
   });
+  governanceMarkdown(u, L);
+  mlopsMarkdown(u, L);
+  operationsMarkdown(u, L);
+  experimentationMarkdown(u, L);
   agenticMarkdown(u.agentic, L);
   if (u.playbook) playbookMarkdown(u.playbook, L);
+  validationMarkdown(u, L);
   return `${L.join('\n')}\n`;
 }
 
+function experimentationMarkdown(u: UseCase, L: string[]) {
+  const x = u.experimentation;
+  L.push('', '## Statistical validation and experimentation', '', `**Question.** ${x.question}`, '', `**Estimand.** ${x.estimand}`, '', `**Design.** ${x.design.type} · unit: ${x.design.unit}`, '', x.design.why, '', `**Interference.** ${x.design.interference}`, '');
+  L.push(`- **Primary metric.** ${x.metrics.primary}`, `- **Offline to online.** ${x.metrics.offlineOnlineGap}`, `- **Significance.** alpha ${x.power.alpha}, power ${Math.round(x.power.power * 100)}%`, `- **Minimum detectable effect.** ${x.power.mde}`, `- **Sample-size rule.** ${x.power.sampleSizeRule}`, `- **Duration.** ${x.power.duration}`);
+  L.push('', '**Guardrails**', '');
+  x.metrics.guardrails.forEach((g) => L.push(`- ${g}`));
+  L.push('', '**Stopping rules**', '');
+  x.stopping.forEach((g) => L.push(`- ${g}`));
+  L.push('', '### Labels, sampling and data quality', '', `- **Label maturity.** ${x.labels.maturity}`, `- **Label quality.** ${x.labels.quality}`, `- **Selection bias.** ${x.labels.selectionBias}`, `- **Sampling.** ${x.sampling}`, '');
+  x.dataQuality.forEach((g) => L.push(`- ${g}`));
+  L.push('', '### Calibration, uncertainty, slices and causal methods', '', `- **Calibration.** ${x.calibration}`, `- **Uncertainty.** ${x.uncertainty}`, `- **Causal method.** ${x.causal.method}. Use it when: ${x.causal.when}.`, `- **Counterfactual evaluation.** ${x.counterfactual}`, '', '**Slices**', '');
+  x.slices.forEach((g) => L.push(`- ${g}`));
+  L.push('', '### Business value', '', '| Measure | How |', '|---|---|');
+  x.businessValue.forEach((b) => L.push(`| ${esc(b.metric)} | ${esc(b.how)} |`));
+  L.push('', '**Common failure modes**', '');
+  x.pitfalls.forEach((g) => L.push(`- ${g}`));
+}
+
 function agenticMarkdown(a: Agentic, L: string[]) {
-  L.push('', '## Agentic solution', '', `**Fit:** ${a.fit} · **Role:** ${a.role} · **Pattern:** ${a.pattern}`, '', a.rationale, '', '### Agents', '');
+  L.push('', '## Agentic solution', '', `**Fit:** ${a.fit} · **Role:** ${a.role} · **Pattern:** ${a.pattern}`, '', a.rationale, '', '### Do we need an agent at all?', '', `**${a.decision.question}**`, '', '| Approach | Start with it when | Verdict | Why |', '|---|---|---|---|');
+  a.decision.options.forEach((o) => L.push(`| ${esc(o.approach)} | ${esc(o.startWhen)} | ${o.verdict} | ${esc(o.reason)} |`));
+  L.push('', `- **What would justify an agent.** ${a.decision.measurableValue}`, `- **Incremental cost.** ${a.decision.incrementalCost}`, `- **Operational risk.** ${a.decision.operationalRisk}`, `- **Fallback architecture.** ${a.decision.fallbackArchitecture}`, '', '**Revisit when**', '');
+  a.decision.revisitWhen.forEach((x) => L.push(`- ${x}`));
+  if (!isAgentic(a.fit)) {
+    L.push('', '### Recommended architecture without agents', '', '```mermaid', a.architecture, '```', '', '```mermaid', a.sequence, '```', '', '### When not to add an agent here', '');
+    a.whenNotToUse.forEach((x) => L.push(`- ${x}`));
+    return;
+  }
+  L.push('', '### Agents', '');
   L.push('| Agent | Responsibility | Trigger | Tools | Starts at | Hands off to |', '|---|---|---|---|---|---|');
   a.agents.forEach((x) => L.push(`| ${esc(x.name)} | ${esc(x.responsibility)} | ${esc(x.trigger)} | ${esc(x.tools.join(', '))} | ${x.autonomy} | ${esc(x.handoff)} |`));
   L.push('', '```mermaid', a.architecture, '```', '', '```mermaid', a.sequence, '```', '', '### Typed tools', '', '| Tool | Access | Backed by | Permission |', '|---|---|---|---|');
@@ -145,4 +185,108 @@ function playbookMarkdown(pb: Playbook, L: string[]) {
   pb.pitfalls.forEach((p) => L.push(`| ${p.at} | ${esc(p.mistake)} | ${esc(p.symptom)} | ${esc(p.fix)} |`));
   L.push('', '### 9. The first 30 days', '');
   pb.first30Days.forEach((x) => L.push(`- ${x}`));
+}
+
+function enterpriseMarkdown(u: UseCase, L: string[]) {
+  const e = u.enterpriseContext;
+  const dm = u.decisionMatrix;
+  const t = (head: string[], rows: string[][]) => {
+    L.push(`| ${head.join(' | ')} |`, `|${head.map(() => '---').join('|')}|`);
+    rows.forEach((r) => L.push(`| ${r.map(esc).join(' | ')} |`));
+  };
+  L.push('## Enterprise solution context', '', '### Business architecture', '', `- **Capability.** ${e.business.capability}`, `- **Processes.** ${e.business.processes.join('; ')}`, `- **Decision ownership.** ${e.business.decisionOwner}`, `- **Current state.** ${e.business.currentState}`, `- **Target state.** ${e.business.futureState}`, `- **KPIs.** ${e.business.kpis.join('; ')}`, '');
+  t(['Stakeholder', 'Needs'], e.business.stakeholders.map((s) => [s.who, s.needs]));
+  L.push('', '### Application and integration architecture', '', `- **Systems of record.** ${e.application.systemsOfRecord.join('; ')}`, `- **Upstream.** ${e.application.upstream.join('; ')}`, `- **Downstream.** ${e.application.downstream.join('; ')}`, '', fence('mermaid', e.c4Context), '', fence('mermaid', e.c4Container), '');
+  t(['Boundary', 'Style', 'Contract', 'On failure'], e.application.integration.map((i) => [i.boundary, i.style, i.contract, i.onFailure]));
+  L.push('', `**Legacy coexistence.** ${e.application.coexistence}`, '', '### Enterprise data architecture', '');
+  t(['Source', 'Owner', 'System of record', 'Ingestion', 'Quality rule'], e.data.sources.map((s) => [s.source, s.owner, s.systemOfRecord, s.ingestion, s.quality]));
+  L.push('', '**Data quality SLA**', '');
+  t(['Dimension', 'Target', 'Check'], e.data.qualitySla.map((q) => [q.dimension, q.target, q.check]));
+  L.push('', fence('yaml', e.data.contractExample), '', `- **Lineage.** ${e.data.lineage}`, `- **Schema change.** ${e.data.onSchemaChange}`, `- **Corrections and backfills.** ${e.data.corrections}`, `- **Privacy and deletion.** ${e.data.privacyDeletion}`, '', '### Technology, security and operating architecture', '');
+  L.push(`- **Hosting.** ${e.technology.hosting}`, `- **Compute.** ${e.technology.compute}`, `- **Data platform.** ${e.technology.dataPlatform}`, `- **AI platform.** ${e.technology.aiPlatform}`, `- **Deployment.** ${e.technology.deployment}`, `- **RTO / RPO.** ${e.technology.dr.rto} / ${e.technology.dr.rpo}`, `- **Disaster recovery.** ${e.technology.dr.strategy}`, `- **Identity.** ${e.security.identity}`, `- **Classification.** ${e.security.classification}`, `- **Encryption.** ${e.security.encryption}`, `- **Privacy.** ${e.security.privacy}`, `- **Service ownership.** ${e.operating.serviceOwner}`, `- **Support model.** ${e.operating.supportModel}`, '', '**Trust boundaries**', '');
+  e.security.trustBoundaries.forEach((x) => L.push(`- ${x}`));
+  L.push('', '**Lifecycle ownership**', '');
+  t(['Asset', 'Owner'], e.operating.lifecycleOwners.map((o) => [o.asset, o.owner]));
+  L.push('', '### Non-functional requirements', '');
+  t(['Attribute', 'Requirement', 'Measured by'], e.nfr.map((n) => [n.attribute, n.requirement, n.measuredBy]));
+  L.push('', '### AI solution architecture decision matrix', '', `1. **Why AI?** ${dm.whyAI}`, `2. **Why not rules or traditional software?** ${dm.whyNotRules}`, `3. **Why this paradigm?** ${dm.whyThisParadigm}`, '', '4. **Alternatives considered**', '');
+  t(['Option', 'Verdict', 'Why'], dm.alternatives.map((a) => [a.option, a.verdict, a.reason]));
+  L.push('', `5. **Why this architecture.** ${dm.whyChosen}`, '', `- **Topology.** ${dm.topology}`, `- **Sourcing.** ${dm.sourcing}`, `- **Human intelligence (${dm.humanOversight.mode}).** ${dm.humanOversight.detail}`, `- **Economics.** ${dm.economics}`, '', '6. **What would trigger a change in architecture**', '');
+  dm.changeTriggers.forEach((x) => L.push(`- ${x}`));
+  L.push('', '### Architecture decision records', '');
+  e.adrs.forEach((a) => L.push(`**${a.id} (${a.status}): ${a.title}.** Context: ${a.context} Decision: ${a.decision} Alternatives: ${a.alternatives.join('; ')}. Consequences: ${a.consequences}`, ''));
+  L.push('### Build, buy or integrate', '', `**${e.buildBuy.question}**`, '');
+  t(['Option', 'Choose it when', 'Main risk'], e.buildBuy.options.map((o) => [o.option, o.chooseWhen, o.risk]));
+  L.push('', `**Recommendation.** ${e.buildBuy.recommendation}`, '');
+}
+
+function governanceMarkdown(u: UseCase, L: string[]) {
+  const g = u.governance;
+  const ctl = (rows: { area: string; control: string; evidence: string }[]) => {
+    L.push('| Area | Control | Evidence |', '|---|---|---|');
+    rows.forEach((r) => L.push(`| ${esc(r.area)} | ${esc(r.control)} | ${esc(r.evidence)} |`));
+  };
+  L.push('', '## Security, governance and responsible AI', '', `**Risk tier: ${g.riskTier}.** ${g.rationale} Treatment: ${g.treatment}`, '', '**Approval path**', '');
+  g.approvalPath.forEach((x) => L.push(`- ${x}`));
+  L.push('', '### Data governance', '');
+  ctl(g.data);
+  L.push('', '### Model governance', '');
+  ctl(g.model);
+  L.push('', '### Responsible AI', '');
+  ctl(g.responsibleAI);
+  L.push('', '### AI security', '', '| Threat | Control |', '|---|---|');
+  g.aiSecurity.forEach((t) => L.push(`| ${esc(t.threat)} | ${esc(t.control)} |`));
+  L.push('', '### Obligation to control to evidence', '', '| Obligation | Control | Evidence | Owner | Cadence |', '|---|---|---|---|---|');
+  g.regulatory.forEach((r) => L.push(`| ${esc(r.obligation)} | ${esc(r.architecturalControl)} | ${esc(r.evidence)} | ${esc(r.owner)} | ${esc(r.cadence)} |`));
+}
+
+function mlopsMarkdown(u: UseCase, L: string[]) {
+  const m = u.mlops;
+  L.push('', `## ${m.llmops ? 'MLOps and LLMOps' : 'MLOps'}`, '', '| Area | Practice | Artifact | Gate |', '|---|---|---|---|');
+  m.lifecycle.forEach((l) => L.push(`| ${esc(l.area)} | ${esc(l.practice)} | ${esc(l.artifact)} | ${esc(l.gate)} |`));
+  L.push('', '**Retraining triggers**', '');
+  m.retraining.triggers.forEach((x) => L.push(`- ${x}`));
+  L.push('', `- **Label maturity.** ${m.retraining.dataMaturity}`, `- **Champion/challenger.** ${m.retraining.championChallenger}`, '', '**Rollback**', '');
+  m.rollback.forEach((x) => L.push(`- ${x}`));
+  L.push('', '| Concern | Options |', '|---|---|');
+  m.toolchain.forEach((t) => L.push(`| ${esc(t.concern)} | ${esc(t.options)} |`));
+  if (m.llmops) {
+    L.push('', '### LLMOps additions', '', '| Area | Practice |', '|---|---|');
+    m.llmops.forEach((x) => L.push(`| ${esc(x.area)} | ${esc(x.practice)} |`));
+  }
+}
+
+function operationsMarkdown(u: UseCase, L: string[]) {
+  const o = u.operations;
+  L.push('', '## Production operations and SRE', '', '| SLI | SLO | Window | Error budget |', '|---|---|---|---|');
+  o.slos.forEach((s) => L.push(`| ${esc(s.sli)} | ${esc(s.slo)} | ${esc(s.window)} | ${esc(s.errorBudget)} |`));
+  L.push('', '| Layer | Telemetry |', '|---|---|');
+  o.telemetry.forEach((t) => L.push(`| ${esc(t.layer)} | ${esc(t.signals)} |`));
+  L.push('', '| Severity | Definition | Response |', '|---|---|---|');
+  o.severities.forEach((s) => L.push(`| ${s.sev} | ${esc(s.definition)} | ${esc(s.response)} |`));
+  L.push('', '| Support | Owns |', '|---|---|');
+  o.support.forEach((s) => L.push(`| ${s.level} | ${esc(s.owns)} |`));
+  L.push('', `- **Release.** ${o.release.deploy}`, `- **Rollback.** ${o.release.rollback}`, `- **Capacity.** ${o.capacity}`, '', '| Failure | Detection | Alert | Owner | Mitigation | Recovery | Learning |', '|---|---|---|---|---|---|---|');
+  o.scenarios.forEach((s) => L.push(`| ${esc(s.failure)} | ${esc(s.detection)} | ${esc(s.alert)} | ${esc(s.owner)} | ${esc(s.mitigation)} | ${esc(s.recovery)} | ${esc(s.learning)} |`));
+  L.push('', '| Unit cost | Value | How |', '|---|---|---|');
+  o.unitCost.forEach((c) => L.push(`| ${esc(c.unit)} | ${esc(c.value)} | ${esc(c.how)} |`));
+}
+
+function validationMarkdown(u: UseCase, L: string[]) {
+  const pv = u.validation.provenance;
+  L.push('', '## Validation and architecture review', '', `**Content status:** ${pv.status} · **Owner:** ${pv.owner} · **Reviewer:** ${pv.reviewer ? `${pv.reviewer}, ${pv.reviewedAt}` : 'none yet'} · **Generated:** ${pv.generatedAt}`, '', '### How each part was made', '', '| Section | Origin | Basis |', '|---|---|---|');
+  pv.sections.forEach((x) => L.push(`| ${esc(x.section)} | ${x.origin} | ${esc(x.basis)} |`));
+  L.push('', '### What kind of number is this?', '', '| Figure | Nature | Note |', '|---|---|---|');
+  pv.numbers.forEach((x) => L.push(`| ${esc(x.item)} | ${x.nature} | ${esc(x.note)} |`));
+  L.push('', '**Sources**', '');
+  pv.sources.forEach((x) => L.push(`- ${x.kind}: ${x.ref}`));
+  L.push('', '**Assumptions**', '');
+  pv.assumptions.forEach((x) => L.push(`- ${x}`));
+  L.push('', '**Known limitations**', '');
+  pv.limitations.forEach((x) => L.push(`- ${x}`));
+  L.push('', '### Validation levels', '', '| Level | State | Evidence |', '|---|---|---|');
+  u.validation.levels.forEach((l) => L.push(`| ${l.level} | ${l.state} | ${esc(l.evidence)} |`));
+  L.push('', '| Feasibility check | Result | Detail |', '|---|---|---|');
+  u.validation.feasibility.forEach((f) => L.push(`| ${esc(f.check)} | ${f.status} | ${esc(f.detail)} |`));
+  L.push('', `Role ownership: ${(Object.keys(ROLE_META) as (keyof typeof ROLE_META)[]).map((r) => `${ROLE_META[r].label} (${ROLE_OWNS[r].toLowerCase()})`).join('; ')}.`);
 }

@@ -97,7 +97,7 @@ architectureRationale:
     carries: >-
       The input boundary lives here: all fields are tagged as untrusted, and the case id that threads through every later
       call and log entry is created.
-    budget: 556 ms of 2500 ms
+    budget: 495 ms of 2500 ms
     onFailure: >-
       If the SIEM cannot return context, the case is escalated immediately with the reason, rather than proceeding with a
       partial file.
@@ -109,7 +109,7 @@ architectureRationale:
     carries: >-
       Step budget and tool allow-list are enforced outside the model, and the loss penalises unsupported claims, which
       trains it to cite and to stop.
-    budget: 1111 ms of 2500 ms
+    budget: 989 ms of 2500 ms
     onFailure: >-
       A model timeout or a budget exhaustion ends the case with an escalation and the partial evidence gathered so far,
       never with a verdict.
@@ -120,7 +120,7 @@ architectureRationale:
     carries: >-
       Huge result sets are handled by pagination and summarisation here, and read-only permissions mean even a
       successful injection has no write to perform.
-    budget: 278 ms of 2500 ms
+    budget: 247 ms of 2500 ms
     onFailure: >-
       A failing tool is retried within the budget and logged, and persistent failure becomes a missing-evidence
       escalation instead of a guess.
@@ -131,7 +131,7 @@ architectureRationale:
     carries: >-
       External intelligence is treated as data of uncertain quality, so a hit raises or lowers a suspicion but is never
       by itself the cited evidence for a verdict.
-    budget: 278 ms of 2500 ms
+    budget: 247 ms of 2500 ms
     onFailure: >-
       An unavailable service reduces the evidence available and is recorded, which can push the case toward escalation.
   - stage: Evidence verifier
@@ -142,7 +142,7 @@ architectureRationale:
     carries: >-
       The evidence link rate is only meaningful if links are real, so the verifier is separate code, not another prompt, and
       an invalid citation blocks the verdict.
-    budget: 278 ms of 2500 ms
+    budget: 247 ms of 2500 ms
     onFailure: >-
       A verifier outage blocks any verdict from being marked verified and sends the case to a human with the unverified
       label.

@@ -508,6 +508,76 @@ call = llm.plan(ctx)
 policy.check(call, allowed_tools=ALLOW, arg_schema=SCHEMAS, egress=EGRESS_ALLOWLIST)  # raises on violation`,
     pitfalls: ['A classifier alone is bypassed by encodings, suffix attacks and multi-turn setups.'],
   },
+  {
+    id: 'model-registry-promotion-gates',
+    title: 'Model registry with evidence-gated promotion',
+    summary:
+      'Every model version is an immutable, signed registry entry with its data snapshot, code commit, metrics and approvals; promotion between stages is a gate that needs evidence, not a button.',
+    whenToUse: 'Any model that reaches production. The registry is the single source of truth for what is running and why.',
+    how: [
+      'Register (model artifact digest, training-data snapshot id, code commit, environment lock, metrics, model card) as one immutable version; sign the artifact.',
+      'Stages are None -> Staging -> Shadow -> Canary -> Production -> Archived; each transition checks automated gates (offline metrics vs champion, slice floors, latency and memory budget, bias and robustness suite).',
+      'Risk-tiered approvals: low tier auto-promotes on green gates, high and critical tiers also need a named independent validator and a risk owner.',
+      'Write every transition (who, when, which evidence bundle) to an append-only audit log; the serving layer only loads versions whose signature and stage verify.',
+    ],
+    language: 'yaml',
+    code: `promotion:
+  staging_to_shadow:  { require: [offline_beats_champion, slice_floors_pass, latency_budget_pass] }
+  shadow_to_canary:   { require: [shadow_7d_agreement>=0.97, no_guardrail_breach, cost_per_1k<=1.2x] }
+  canary_to_prod:     { require: [canary_24h_slo_ok], approvals: [model_owner, independent_validator] }
+  rollback_to:        previous_production   # always one click, always rehearsed`,
+    pitfalls: [
+      'A registry that stores artifacts but not the data snapshot cannot reproduce or audit a model.',
+      'Approvals by the same person who trained the model are not independent validation.',
+    ],
+  },
+  {
+    id: 'drift-triggered-retraining',
+    title: 'Drift monitoring and champion/challenger retraining',
+    summary:
+      'Separate data drift, prediction drift and concept drift, alert on the right one, and retrain only on matured labels with a champion/challenger gate and a rehearsed rollback.',
+    whenToUse: 'Every deployed model whose inputs or world change. Retrain on evidence, not on a calendar alone.',
+    how: [
+      'Monitor feature drift (PSI / KS per feature against the training reference), prediction drift (score distribution) and, once labels mature, quality (PR-AUC, calibration) per slice.',
+      'Feature or score drift without a quality drop is an investigation, not a retrain; a quality drop on matured labels triggers a challenger run.',
+      'Retrain on a time-forward window that excludes immature labels; compare challenger with champion on the same frozen holdout and a shadow window.',
+      'Keep the previous champion warm for rollback and record the trigger, data window and decision in the registry.',
+    ],
+    language: 'yaml',
+    code: `triggers:
+  - { signal: psi_top_feature, threshold: 0.2, action: open_investigation }
+  - { signal: pr_auc_matured_7d, threshold: -0.03, action: train_challenger }
+  - { signal: calendar,          threshold: 30d,   action: train_challenger }
+gate: { champion_vs_challenger: "challenger >= champion on every protected slice", shadow_days: 7 }
+rollback: { to: previous_champion, when: [ "guardrail_breach", "slo_breach_30m" ] }`,
+    pitfalls: [
+      'Retraining on every drift alert chases noise and trains on immature labels.',
+      'Without a random holdout the retrain learns from the previous model\'s own decisions.',
+    ],
+  },
+  {
+    id: 'data-contract-quality-sla',
+    title: 'Data contract with a quality SLA',
+    summary:
+      'A versioned, machine-checked agreement between a data producer and its consumers: schema, semantics, freshness, quality thresholds, ownership and what happens on breach.',
+    whenToUse: 'Every input dataset a model or feature depends on, especially those owned by another team or a vendor.',
+    how: [
+      'Publish schema (Avro/Protobuf/JSON Schema) in a registry with backward-compatible evolution; breaking changes need a new major version and a migration window.',
+      'State semantics and units, the system of record, the owner and on-call, and the quality expectations (completeness, validity, uniqueness, freshness) as testable assertions.',
+      'Enforce in CI for the producer and at ingestion for the consumer; failing rows go to a quarantine table with a reason, never silently dropped.',
+      'Define breach handling: alert the owner, hold the pipeline or serve stale-with-flag, and record the incident against the contract.',
+    ],
+    language: 'yaml',
+    code: `contract: orders.v2
+owner: payments-data@bank   system_of_record: core-ledger
+schema: { registry: schema-registry, compatibility: BACKWARD_TRANSITIVE }
+sla: { freshness_p95: 60s, completeness: ">=99.5%", duplicates: "<0.01%", null_rate: { customer_id: 0 } }
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }`,
+    pitfalls: [
+      'A contract nobody enforces is documentation; wire it into CI and ingestion.',
+      'Freshness measured at the producer hides delay introduced by the pipeline; measure at the consumer.',
+    ],
+  },
 ];
 
 export const PRIMITIVE_BY_ID: Record<string, Primitive> = Object.fromEntries(PRIMITIVES.map((p) => [p.id, p]));

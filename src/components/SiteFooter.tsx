@@ -43,6 +43,12 @@ export function SiteFooter() {
               </Link>{' '}
               — canonical mechanisms, written once
             </li>
+            <li>
+              <Link href="/deployment" className="hover:text-ink">
+                Deployment modes
+              </Link>{' '}
+              — what the static site includes and what it does not
+            </li>
           </ul>
         </div>
       </div>

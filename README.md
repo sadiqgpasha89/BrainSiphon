@@ -2,9 +2,54 @@
 
 URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
-Zero-noise engineering blueprints for AI/ML systems — **500 use cases, 10 domains × 50**. Every blueprint teaches the
-_signal_ that moves the metric, names the _noise_ that wastes your quarter, and designs the whole system for
-**10 million users**: HLD, sequence diagram, LLD, 10-phase end-to-end breakdown, capacity/cost model, evaluation and edge cases.
+Zero-noise **enterprise AI architecture and engineering playbook** — **500 use cases, 10 domains × 50**. Every blueprint
+teaches the _signal_ that moves the metric, names the _noise_ that wastes your quarter, and takes the solution from the
+enterprise context (business, applications, data, security, operating model) through HLD, sequence diagram, LLD, MLOps,
+governance and production operations to a capacity/cost model for **10 million users**, with evaluation and edge cases.
+
+> **Which deployment am I looking at?** The GitHub Pages site is a **static export**: it uses the build-time MiniSearch
+> index and has no Postgres, Redis, middleware or API routes. The **Docker deployment** (`docker compose up`) runs the full
+> stack: Postgres + pgvector hybrid search, Redis cache and rate limiting, health endpoints and telemetry.
+
+## Blueprint 2.0: what every use case now contains
+
+| #   | Section                          | Where it lives                                                  |
+| --- | -------------------------------- | --------------------------------------------------------------- |
+| 1   | Enterprise solution context      | `enterpriseContext`: business, application, data, technology, security, operating architecture; C4 context and container diagrams; integration matrix; data-quality SLA and a data-contract example; NFR matrix; ADRs; build / buy / integrate |
+| 2   | AI solution decision matrix      | `decisionMatrix`: why AI, why not rules, why this paradigm, alternatives, why chosen, what would change it, human oversight, economics |
+| 3   | AI/ML problem formulation, data, architecture, HLD, LLD, evaluation | the original sections |
+| 4   | Security, governance, responsible AI | `governance`: risk tier (low/medium/high/critical), approval path, data/model/responsible-AI controls with evidence, AI-security threats, obligation → control → evidence |
+| 5   | MLOps (and LLMOps where it applies) | `mlops`: nine lifecycle areas each with an artifact and a gate, retraining triggers, champion/challenger, rollback, toolchain |
+| 6   | Production operations and SRE    | `operations`: SLIs/SLOs/error budgets, telemetry, incident classes, support model, ten failure scenarios (detection → alert → owner → mitigation → recovery → learning), unit cost |
+| 7   | Validation and architecture review | `validation`: provenance (who made each part, what kind of number each figure is, owner, reviewer, sources, assumptions, limitations), five separate validation levels and the feasibility checks |
+| 8   | Statistical validation and business experimentation | `experimentation`: causal question and estimand, experimental design by archetype (interleaving, switchback, rolling-origin backtest, shadow then holdout, replay then canary), power arithmetic, label maturity and selection bias, calibration and uncertainty, slices and fairness, causal methods, stopping rules, business-value measurement |
+| 9   | Archetype-driven low-level design | `systemDesign.lld`: one of nine solution archetypes picks the API contract, data model, event schema, core algorithm, failure and retry behaviour, security model and test scenarios; always labelled an illustrative scaffold unless a review is recorded |
+| 10  | An explicit verdict on agents | `agentic.decision`: why an agent is or is not better than a rules engine, a conventional model, an optimiser, RAG or a deterministic workflow, with cost, risk, fallback and when to revisit |
+
+The enterprise layer is generated deterministically from each use case's own fields plus per-domain enterprise facts
+(`src/content/enterprise.ts`, `src/content/enterprise-domains.ts`). It is **not** expert-reviewed (see below).
+
+### Validation levels (they are not the same thing)
+
+| Level                          | Meaning                                                              | Source                                   |
+| ------------------------------ | -------------------------------------------------------------------- | ---------------------------------------- |
+| Schema validated               | Required sections and types passed the strict Zod schema             | build                                    |
+| Technically validated          | Diagrams parse, equations compile, architecture-feasibility checks pass | `npm run validate:content`            |
+| Synthetic-data tested          | A starter kit ran end to end on synthetic data                       | `npm run test:playbooks`                 |
+| Domain-expert reviewed         | A domain specialist reviewed the technical content                   | `content/reviews.json` (empty by default) |
+| Production evidence validated  | Evidence from a real deployment or production dataset                | not claimed for any blueprint            |
+
+The blueprint badge says "Automated checks passed" and "not yet domain-expert reviewed" until a review is recorded. To record one,
+add `{"<domain>/<slug>": {"reviewer": "...", "date": "YYYY-MM-DD", "scope": "..."}}` to `content/reviews.json`.
+
+### Architecture Feasibility Validator
+
+A blueprint does not pass because every section exists; its numbers must agree (`src/content/feasibility.ts`, run at generation
+and again in `validate:content`). Checks: the synchronous stage budgets plus edge plus a network/serialisation reserve must sum
+to the p99 exactly (an earlier version summed to 8.6 ms against 8 ms); hand-written stage budgets must equal the HLD; a stated
+p99 must not be tighter than the envelope; demand must fit provisioned capacity; availability vs redundancy; storage vs a stated
+retention; cost sanity; RTO/RPO vs the replication strategy; and model memory vs GPU memory. A `fail` breaks the build, a `warn` is shown on the page.
+
 
 ## How to find your way
 
@@ -17,8 +62,9 @@ _signal_ that moves the metric, names the _noise_ that wastes your quarter, and 
   stage-by-stage account of why each part of its architecture exists, all assembled from that use case's own signals,
   constraints, edge cases and metrics. The end-to-end breakdown is gated so that under 3% of its steps may be identical
   between use cases (it was 47% before).
-- **Role lenses.** Press `1`–`6` inside a blueprint (or use the Lens bar) to keep only the sections one persona needs: AI architect,
-  solution architect, data engineer, data scientist, AI engineer, inference engineer. `0` shows everything. Each blueprint ends with a
+- **Role lenses.** Press `1`–`7` inside a blueprint (or use the Lens bar) to keep only the sections one persona needs: AI architect,
+  solution architect, data engineer, data scientist, AI engineer, inference engineer and **MLOps engineer** (a distinct lens: the inference
+  engineer optimises model execution; the MLOps engineer industrialises development, deployment and operation). `0` shows everything. Each blueprint ends with a
   per-role checklist of production gaps (`roleLenses`), generated from the use case's own stages, features and compute class
   (`src/content/extras.ts`).
 - **Regions and state.** The HLD no longer says "three active-active regions" for everything. `systemDesign.topology` splits the
@@ -27,10 +73,40 @@ _signal_ that moves the metric, names the _noise_ that wastes your quarter, and 
 - **Primitives.** Mechanisms that repeat across blueprints (point-in-time joins, PID budget pacer, adaptive load shedding, outbox + CDC,
   plan-preview-commit, ...) are written once in `src/content/primitives.ts`, shown at `/patterns/primitives/<id>`, and linked from every
   blueprint that uses them. `validate:content` fails on a link to an unknown primitive.
-- **Live sizing calculator.** The capacity table is followed by sliders (users, DAU share, events per user, payload, peak ratio, p99 target)
-  that re-run the same model (`src/content/scale.ts`) in the browser; at the defaults it reproduces the table exactly (tested).
-- **Agentic solution.** Every blueprint has a section on where agents help, the typed tools they get, an autonomy ladder
-  with promotion gates, guardrails and how to evaluate them. It is generated from the blueprint and not expert-reviewed.
+- **Live sizing calculator with workload profiles.** The capacity table is followed by a calculator that re-runs the same model
+  (`src/content/scale.ts`) in the browser. Choose the unit the workload is really sized in (`src/content/workload-profiles.ts`):
+  user/session, transaction (TPS), asset/equipment, document/image/video, LLM/agent (requests × steps × tokens), batch (rows × runs),
+  **forecasting** (series × runs × horizon × quantiles), **streaming** (events/s, burst ratio, resident state) or **recommendation**
+  (requests/s × candidates scored). Each industry opens in its natural profile and forecasting use cases open in the forecast profile;
+  at the defaults every profile reproduces the table (tested). A batch use case that states its own volume ("5M series nightly") is
+  sized from it rather than from 10 million app users. The table and calculator also show an all-in monthly cost (retraining,
+  observability, data transfer, backup/DR, human review), a low / expected / high range, P50 / P95 / P99 load scenarios and a cost per
+  business outcome (per forecast series-run, per document, per decision...). Retraining, observability and transfer are modelled shares, not measurements.
+- **Pattern hierarchy.** `/patterns` now shows three levels: L1 AI/ML archetypes (the 11 kits), L2 enterprise architecture patterns
+  (`src/content/architecture-patterns.ts`: online inference, event-driven AI, batch scoring, human-in-the-loop, multi-tenant, LLM gateway,
+  jurisdiction-pinned state, strangler coexistence) and L3 engineering primitives (the mechanisms in `src/content/primitives.ts`).
+- **Agentic solution, or a reasoned "no agent".** Every blueprint first answers "why is an agent better than a rules engine, a
+  conventional model, an optimiser, RAG or a deterministic workflow?" with a verdict per option. Where agents help (language products, or
+  systems with a review queue to feed) it then gives the agents, typed tools, an autonomy ladder with promotion gates, guardrails and
+  evaluation. Where they do not (batch or low-latency pipelines with no human queue, closed-loop bidding policies, solver-driven planning),
+  the fit is `not-recommended` or `not-applicable`, no agents are defined, and the page shows the recommended non-agentic architecture and
+  what would change the answer. The rule lives in `agentVerdict` in `src/content/agentic-gen.ts`.
+- **Deployment modes.** `/deployment` compares the static GitHub Pages site, the Docker stack and a cloud-hosted production deployment, and
+  lists what the static site leaves out.
+
+## Review follow-ups
+
+Done in this branch (from an architecture and engineering review): MLOps lens, validation levels and provenance, workload-aware
+capacity with cost scenarios, archetype-driven LLD, explicit no-agent verdicts, statistical validation and experimentation, and the
+deployment-modes page. Still open, in the order we would take them:
+
+- Represent pipelines as a DAG (fan-out, fan-in, retries, several consumers) instead of a linear chain with async sidecars.
+- Make residency, tenancy and active-active choices an explicit per-blueprint input rather than an industry default.
+- A structured security / privacy profile per use case (classification, residency, retention, threat scenarios) beyond the shared governance controls.
+- Graph-analytics and multi-tenant SaaS workload profiles for the capacity calculator.
+- An Enterprise AI and data platform category (lakehouse, feature platform, ML platform, LLM gateway, RAG platform, agent control plane...) and additional industries.
+- Workshop flow, decision comparison and a downloadable architecture package (diagrams, ADRs, contracts, schemas, test plans).
+- Executable starter kits for the most important implementation patterns, and recorded expert reviews in `content/reviews.json`.
 
 ## Quick start
 
@@ -57,10 +133,10 @@ against the strict Zod schema (`src/schemas/usecase.schema.ts`) — **a missing 
 | Output                                               | Derived from                                                                                 |
 | ---------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | Pipeline + HLD + sequence + class diagrams (Mermaid) | the use case's own stages; latency budgets split by stage kind                               |
-| API contract, DDL, hot-path code, runtime config     | the use case's own features, loss, stages, guardrail metrics                                 |
+| API contract, DDL, events, hot-path code, runtime config, failure/security/test tables | the use case's solution archetype (`src/content/archetype-lld.ts`) filled with its own features, loss, stages and guardrail metrics; a scaffold, not production code |
 | Degradation ladder                                   | serving mode (online / interactive / batch)                                                  |
 | 10-phase end-to-end breakdown                        | every authored field (objective, labels, features, models, metrics, edge cases)              |
-| 10M-user capacity & cost table                       | `a`, `k`, compute class (CPU scorer, GPU ranker, vision, encoder, LLM tokens/s, Spark batch) |
+| Capacity & cost table                                | `a`, `k`, compute class (CPU scorer, GPU ranker, vision, encoder, LLM tokens/s, Spark batch), or the volume the use case states; defaults to 10M users otherwise |
 
 > The capacity table is a transparent back-of-envelope model (assumptions are printed on every page), **not** a quote.
 
@@ -108,13 +184,13 @@ numbers come from *synthetic* data (far easier than production); the dataset lin
 
 ## Architecture
 
-- **Next.js 15 App Router**, RSC + `generateStaticParams` (416 statically generated pages) + ISR; Tailwind; Radix; `cmdk`; KaTeX; Shiki (server-side); Mermaid (lazy, client).
+- **Next.js 15 App Router**, RSC + `generateStaticParams` (556 statically generated pages in the static export: the 500 blueprints, 10 domain hubs, 11 pattern hubs, 27 primitive pages and a handful of site pages; every blueprint also has a static `.md` twin) + ISR; Tailwind; Radix; `cmdk`; KaTeX; Shiki (server-side); Mermaid (lazy, client).
 - **Search** (`/api/search`): Redis cache → Postgres hybrid (full-text `ts_rank_cd` + `pgvector` cosine, fused by **Reciprocal Rank Fusion**) behind an 800 ms **circuit breaker** → build-time **MiniSearch** fallback. Embeddings are deterministic feature-hashing vectors (`src/lib/search/embed.ts`), the single swap-in point for a learned encoder.
 - **Rate limiting**: Redis sliding-window (atomic Lua) with in-memory LRU fallback. **Validation**: Zod on every query parameter.
 - **Ops**: OpenTelemetry (`@vercel/otel`), Pino JSON logs with `x-request-id` correlation and redaction, `/api/health/liveness`, `/api/health/readiness` (2 s dependency timeouts, 200/503), strict CSP + HSTS + nosniff + Referrer/Permissions-Policy.
 - **SEO / agents**: `sitemap.xml`, `robots.txt`, dynamic OG images (`/api/og?slug=`), `/llms.txt`, and a clean `.md` for every blueprint (append `.md` to the URL).
 - **Slug evolution**: `content/slug-history.json` → 308 redirects in middleware (client-side equivalent in static export).
-- **Keyboard**: `⌘/Ctrl+K` search, `/` search, `[` Pure Signal Mode, `]` full detail, `1`–`6` role lens, `0` all roles.
+- **Keyboard**: `⌘/Ctrl+K` search, `/` search, `[` Pure Signal Mode, `]` full detail, `1`–`7` role lens, `0` all roles.
 
 ## Deviations from the original spec (deliberate)
 

@@ -35,7 +35,7 @@ export interface RoleLens {
 const REGULATED: Domain[] = ['fintech', 'bfsi', 'healthcare'];
 const TENANT: Domain[] = ['saas', 'real-estate', 'cybersecurity'];
 
-const RESIDENCY: Partial<Record<Domain, string>> = {
+export const RESIDENCY: Partial<Record<Domain, string>> = {
   fintech: 'RBI payment-data localisation (UPI and card data stored only in India), PCI-DSS scope',
   bfsi: 'RBI/IRDAI data-localisation and outsourcing rules, GDPR for EU customers, regulator-readable audit',
   healthcare: 'ABDM, HIPAA and GDPR: identifiable clinical data stays in the patient\'s jurisdiction',
@@ -101,7 +101,7 @@ export function buildTopology(domain: Domain, stance: Stance, raw: Pick<RawUseCa
 
 /* ------------------------------------------------------------------ role lenses */
 
-const PROTOCOLS: Record<Domain, string> = {
+export const PROTOCOLS: Record<Domain, string> = {
   fintech: 'ISO 8583 over mTLS to card switches, NPCI UPI APIs, ISO 20022 for settlement',
   bfsi: 'ISO 20022 / SWIFT MX, core-banking MQ and batch copybooks, FIX for markets',
   healthcare: 'HL7 v2 over MLLP, FHIR R4 REST, DICOMweb and ABDM gateways',
@@ -114,7 +114,7 @@ const PROTOCOLS: Record<Domain, string> = {
   'real-estate': 'RESO Web API, MLS feeds, BIM/IFC and BACnet/Modbus building protocols',
 };
 
-const LABEL_DELAY: Record<Domain, string> = {
+export const LABEL_DELAY: Record<Domain, string> = {
   fintech: 'chargebacks that mature in 30 to 90 days',
   bfsi: 'defaults, claims and lapses that resolve over months',
   healthcare: 'outcomes such as 30-day readmission or mortality that arrive after discharge',
@@ -127,7 +127,7 @@ const LABEL_DELAY: Record<Domain, string> = {
   'real-estate': 'sale, lease and valuation outcomes that take months',
 };
 
-const TAIL_COHORTS: Record<Domain, string> = {
+export const TAIL_COHORTS: Record<Domain, string> = {
   fintech: 'thin-file and new-to-credit customers, first-time devices, small merchants',
   bfsi: 'thin-file borrowers, new-to-bank customers, small-balance accounts and rare product lines',
   healthcare: 'paediatric and elderly patients, renal failure, rare units and patients with missing devices',
@@ -175,7 +175,7 @@ const RUNTIME: Record<ScaleResult['computeClass'], { compiler: string; bound: st
   },
 };
 
-const CASCADE: Record<ScaleResult['computeClass'], string> = {
+export const CASCADE: Record<ScaleResult['computeClass'], string> = {
   'cpu-scorer': 'L0 rules and Bloom filters resolve the obvious tail, L1 is the CPU GBDT, and only the uncertain band escalates to a deeper model or review',
   'cpu-graph': 'L0 blocklists, L1 CPU scorer on payload features, L2 graph-derived scalars read from the online store (computed asynchronously, never traversed inline)',
   'gpu-ranker': 'L0 availability and eligibility masks, L1 a cheap pre-ranker, L2 the GPU ranker on a short list',
@@ -185,6 +185,8 @@ const CASCADE: Record<ScaleResult['computeClass'], string> = {
   'cpu-batch': 'L0 deterministic rules, L1 the main batch model, L2 expert review on the uncertain tail',
   'gpu-batch': 'L0 deterministic rules, L1 a cheap model, L2 the GPU model on the uncertain remainder',
 };
+
+const strip1 = (s: string) => s.trim().replace(/[.;]+$/, '');
 
 export function buildRoleLenses(
   raw: RawUseCase,
@@ -314,6 +316,42 @@ export function buildRoleLenses(
               title: 'Untrusted content isolation',
               detail: 'Mark retrieved and tool-returned text as data, and enforce a deterministic policy engine on every outbound tool call so an injected instruction cannot exfiltrate or mutate.',
               primitive: 'spotlighting-policy-engine',
+            },
+          ]
+        : []),
+    ],
+    'mlops-engineer': [
+      {
+        title: 'Registry, lineage and promotion gates',
+        detail: `Register ${strip1(raw.prod)} as an immutable, signed version with its data snapshot, code commit, environment lock and model card. Promotion from staging to shadow to canary to production is a gate that needs evidence (metrics vs champion, slice floors, ${total} latency budget, cost per 1,000 decisions), not a button.`,
+        primitive: 'model-registry-promotion-gates',
+      },
+      {
+        title: 'Drift monitoring and retraining triggers',
+        detail: `Separate feature drift, prediction drift and concept drift for ${raw.title}. Retrain only on matured labels (${LABEL_DELAY[domain]}) and only on evidence: a drop on matured labels triggers a challenger, drift alone opens an investigation.`,
+        primitive: 'drift-triggered-retraining',
+      },
+      {
+        title: 'Champion/challenger release and rollback',
+        detail: `Shadow the challenger for ${modelStage.label}, canary at 1%, 5%, 25% with automatic halt on guardrail or SLO breach, keep the previous champion warm and rehearse the one-step rollback each quarter.`,
+        primitive: 'shadow-canary-mirroring',
+      },
+      {
+        title: batch ? 'Orchestration, idempotent runs and atomic publish' : 'Environments, infrastructure as code and autoscaling',
+        detail: batch
+          ? 'Make every run idempotent on its partition, orchestrate with retries and backfill isolation, and publish outputs atomically so a failed run never leaves a half-written table.'
+          : `Provision with Terraform, promote dev to staging to production by evidence, keep secrets in a vault, and autoscale ${scale.nodeUnit} on queue depth with a tested disaster-recovery path.`,
+        primitive: batch ? 'backfill-isolation' : undefined,
+      },
+      {
+        title: 'Release evidence and audit trail',
+        detail: 'Every production version has an evidence bundle (data snapshot, validation report, approvals, canary results, SLO baselines) and an append-only audit log of who promoted what and when.',
+      },
+      ...(llm
+        ? [
+            {
+              title: 'LLMOps: prompts, indexes and providers are release artifacts',
+              detail: 'Version prompts, retrieval indexes and provider models together; pin provider versions, shadow-test changes on the frozen evaluation set, track token spend per tenant and replay recorded agent sessions before widening autonomy.',
             },
           ]
         : []),

@@ -1,3 +1,8 @@
+> **Archived original specification.** This is the first design brief (eight domains, 400 use cases). The current product has
+> **ten domains and 500 use cases** and has grown beyond this brief: role lenses, tracks, patterns, build playbooks, an agentic
+> section and the enterprise layer (Blueprint 2.0). The source of truth is now `README.md` and `src/schemas/usecase.schema.ts`.
+> Kept for history; do not use it to infer current behaviour.
+
 # Project Specification: BrainSiphon.com
 You are a Principal Full-Stack Architect, AI/ML Systems Engineer, and Production DevOps Lead. Your task is to architect, scaffold, build, test, and configure the production operations for **BrainSiphon.com**—an ultra-high-signal, zero-noise knowledge platform for AI/ML Engineers.
 
