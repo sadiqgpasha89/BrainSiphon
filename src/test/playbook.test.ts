@@ -13,10 +13,13 @@ describe('generated playbooks (the other 492)', () => {
     expect(generated.length).toBe(all.length - 8);
   });
 
-  it('uses all eleven reference kits and records which one each playbook uses', () => {
-    const kits = new Set(generated.map((u) => u.playbook!.starter.kitId));
+  it('uses all eleven reference kits, but only where the compatibility check allows one', () => {
+    const withKit = generated.filter((u) => u.playbook!.compatibility.verdict !== 'none');
+    const kits = new Set(withKit.map((u) => u.playbook!.starter!.kitId));
     expect(kits.size).toBe(11);
-    expect([...kits].every(Boolean)).toBe(true);
+    for (const u of withKit) expect(u.playbook!.starter!.kitId).toBe(u.playbook!.compatibility.kitId);
+    for (const u of generated.filter((x) => x.playbook!.compatibility.verdict === 'none'))
+      expect(u.playbook!.starter).toBeUndefined();
   });
 
   it('is specific to the use case: its own objective, signals, constraints, baseline and edge case appear in the plan', () => {
@@ -36,8 +39,10 @@ describe('generated playbooks (the other 492)', () => {
     const lines = (u: (typeof generated)[number]) =>
       new Set(JSON.stringify(u.playbook!.milestones.map((m) => m.tasks)).split('","'));
     const byKit = new Map<string, typeof generated>();
-    for (const u of generated)
-      byKit.set(u.playbook!.starter.kitId!, [...(byKit.get(u.playbook!.starter.kitId!) ?? []), u]);
+    for (const u of generated) {
+      const key = u.playbook!.starter?.kitId ?? 'none';
+      byKit.set(key, [...(byKit.get(key) ?? []), u]);
+    }
     for (const group of byKit.values()) {
       const a = lines(group[0]!),
         b = lines(group[1]!);
@@ -81,8 +86,8 @@ describe('build playbooks (pilot)', () => {
   it.each(withPlaybook.map((u) => [u.slug, u] as const))(
     '%s starter code is real, listed and referenced',
     (_slug, u) => {
-      const files = u.playbook!.starter.files;
-      expect(files.some((f) => f.path === u.playbook!.data.synthetic.file)).toBe(true);
+      const files = u.playbook!.starter!.files;
+      expect(files.some((f) => f.path === u.playbook!.data.synthetic!.file)).toBe(true);
       expect(files.some((f) => f.path === 'test_starter.py')).toBe(true);
       for (const f of files) expect(f.code.length).toBeGreaterThan(5);
       expect(
@@ -140,7 +145,7 @@ describe('build playbooks (pilot)', () => {
     expect(md).toContain('#### M0 ·');
     expect(md).toContain('### 1. Domain knowledge and terminology');
     expect(md).toContain(u.playbook!.domainKnowledge.glossary[0]!.term);
-    expect(md).toContain(u.playbook!.starter.files[0]!.code.split('\n')[0]!);
+    expect(md).toContain(u.playbook!.starter!.files[0]!.code.split('\n')[0]!);
   });
 });
 

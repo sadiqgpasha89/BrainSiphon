@@ -43,6 +43,6 @@ export function toIndexEntry(u: UseCase): UseCaseIndexEntry {
     keywords,
     pattern: u.pattern,
     primitives: u.primitives,
-    ...(u.playbook ? { playbook: u.playbook.provenance } : {}),
+    ...(u.playbook ? { playbook: u.playbook.provenance, starter: { verdict: u.playbook.compatibility.verdict, ...(u.playbook.compatibility.kitId ? { kitId: u.playbook.compatibility.kitId } : {}), problemType: u.playbook.compatibility.problemType, reached: u.playbook.completion.reached, conditional: u.playbook.completion.conditional } } : {}),
   };
 }

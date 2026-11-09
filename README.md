@@ -26,6 +26,7 @@ governance and production operations to a capacity/cost model for **10 million u
 | 9   | Archetype-driven low-level design | `systemDesign.lld`: one of nine solution archetypes picks the API contract, data model, event schema, core algorithm, failure and retry behaviour, security model and test scenarios; always labelled an illustrative scaffold unless a review is recorded |
 | 10  | An explicit verdict on agents | `agentic.decision`: why an agent is or is not better than a rules engine, a conventional model, an optimiser, RAG or a deterministic workflow, with cost, risk, fallback and when to revisit |
 | 11  | Metrics catalogue                | `metrics`: about 65 to 110 metrics per use case in up to 14 layers, each with a definition, a starting target, a cadence, an owner and what to do on a breach. Ten layers apply to every system (business, adoption and trust, model, data and features, system and reliability, cost and sustainability, responsible AI, security and compliance, MLOps and delivery, experimentation health); four appear only where the system has the component (RAG, LLM serving, agents, human review) and otherwise say why they do not apply. Also a metric tree, a monitor for each of the use case's own edge cases, and how each headline metric gets gamed (`src/content/metrics.ts`) |
+| 12  | Starter-kit compatibility, completion state and artifact labels | `playbook.compatibility`, `playbook.completion`, `systemDesign.lld.artifacts`: a starter kit is shipped only when it implements the same problem (exact, adaptable with named modifications, or none: guidance only), how far its executable artifacts get an engineer on a four-step ladder (prototype, evaluation, shadow, production), and a label on every code block saying what kind of artifact it is |
 
 The enterprise layer is generated deterministically from each use case's own fields plus per-domain enterprise facts
 (`src/content/enterprise.ts`, `src/content/enterprise-domains.ts`). It is **not** expert-reviewed (see below).
@@ -155,7 +156,7 @@ that use case; its rationale table must list exactly the pipeline's stages in or
 
 A blueprint explains *what a good system looks like*. A **Build playbook** is what an intermediate engineer needs to
 *build it*: the domain knowledge and terminology to learn first, where the data comes from, ordered milestones with numeric
-exit gates, a starter kit that runs on synthetic data, a worked example, an executable test plan, decisions and pitfalls,
+exit gates, a starter kit where a compatible one exists, a worked example, an executable test plan, decisions and pitfalls,
 and a 30-day launch checklist.
 
 **Two tiers, labelled on every page.**
@@ -165,11 +166,72 @@ and a 30-day launch checklist.
   agent and a developer docs assistant.
 - **Generated (the other 492).** Assembled from the use case's *own* authored fields (objective, constraints, signals,
   noise, baseline and production model, pipeline, edge cases, metrics and traps), shared domain and method knowledge
-  (`content/domain-knowledge`), a curated and link-checked dataset registry (`content/dataset-registry.json`) and one of **11
-  reference starter kits** (`content/kits`: tabular, forecast, anomaly, recommender, graph, nlp, cv, bandit, optimize, llm-rag,
-  llm-agent), each run on synthetic data and tested in CI. Generated playbooks are specific to the use case where the
-  blueprint is, and generic where it is not; they have not been reviewed by a domain expert, and the kit numbers are
-  the reference kit's, not the use case's.
+  (`content/domain-knowledge`), a curated and link-checked dataset registry (`content/dataset-registry.json`) and, **only where
+  one is compatible**, one of **11 reference starter kits** (`content/kits`: tabular, forecast, anomaly, recommender, graph, nlp,
+  cv, bandit, optimize, llm-rag, llm-agent), each run on synthetic data and tested in CI. Generated playbooks are specific to the
+  use case where the blueprint is, and generic where it is not; they have not been reviewed by a domain expert, and the kit
+  numbers are the reference kit's, not the use case's.
+
+### Starter-kit compatibility (a build gate, not a label)
+
+Sharing a broad paradigm is not enough to share a starter. Survival modelling, uplift, regression and event classification are all
+"tabular", and none can reuse another's labels, validation, metrics or model. Every use case is therefore classified into a **problem
+type** (`src/lib/problem-types.ts`: 28 types, decided by `classifyProblem` in `src/content/kit-compat.ts` from its own metrics, title
+and pipeline, with explicit per-use-case overrides and reasons in `content/kit-compatibility.json`) and compared, dimension by
+dimension, with the **contract of every reference kit** (`content/kit-contracts.json`):
+
+| Dimension | Example: credit default survival | Example: card fraud |
+| --- | --- | --- |
+| Prediction problem | time to event | event classification |
+| Label and target | right-censored | delayed binary label |
+| Validation method | cohort split that keeps censoring | chronological, entity-safe split |
+| Evaluation metrics | time-dependent AUC, calibration | PR-AUC, recall at a fixed false-positive rate |
+| Data shape and timing | loan lifecycles with censoring | transaction events |
+| Model family and baseline | Cox or discrete-time hazard | logistic regression then boosted trees |
+| Serving mode and latency | batch | online, a few milliseconds |
+| Integrations and operations | lakehouse, review sign-off | feature store, case queue |
+
+The outcome is one of three, shown on every blueprint (header chip, "Fit with the starter kit" table, pattern hubs, catalog badge, `.md`):
+
+- **Exact match.** The kit implements the same fundamental problem. It runs on synthetic data; serving and rollout are still yours.
+- **Adaptable match.** The kit has reusable parts but implements a neighbouring problem (for example next-item recommendation for
+  personalised search ranking, or a read-only agent for a copilot that performs authorised actions). The page lists the parts that carry
+  over and the **modifications required first**; no milestone is labelled "runs in the starter".
+- **No match.** *No compatible executable starter kit exists. This playbook provides architecture and implementation guidance only.*
+  No starter code, no synthetic data and no kit numbers are shipped, the worked example is blueprint-only, and the page names the
+  closest kit for background reading only, with the reason it is not a starter.
+
+Today, of the 500 blueprints: 8 hand-written exact starters, about 100 exact generated matches, about 320 adaptable and 70 with no
+compatible kit (`npm run validate:content` prints the current counts). The generator **never picks a kit on its own**: it receives the
+verdict, and the schema rejects a playbook that ships a kit its verdict does not allow. `validate:content` (`src/content/kit-gate.ts`)
+fails the build if a kit is shipped for a problem its contract does not claim, if an adjacent problem is called an exact match, if the
+record does not show all eleven kits as compared, if a "none" playbook ships any kit material, if a plan uses the vocabulary of a
+different problem (a credit-survival playbook teaching chargebacks and mule accounts), or if a regression case from review changes
+(`KNOWN_CASES`: credit survival, personalised search, the in-app copilot, the fraud pilot and others).
+
+### How far the executable artifacts get you (completion state)
+
+Every playbook states which of four states its **actual executable artifacts** reach, with the evidence and what is still needed:
+
+| State | Meaning |
+| --- | --- |
+| Prototype-ready | Synthetic data and an initial algorithm run end to end |
+| Evaluation-ready | Reproducible experiments, baselines and validation that fail when the method is wrong |
+| Shadow-ready | Production-connected scoring that sees live traffic but changes no business decision |
+| Production-ready | Approved live deployment with monitored operations, rollback and a named support owner |
+
+The 8 hand-written pilots reach **evaluation-ready** (M1 to M4 are running, tested code; M5 and M6 are your platform). An exact generated
+match reaches prototype-ready, and an adaptable one only after its modifications. A "no match" playbook reaches **guidance only**. **No
+use case reaches shadow-ready or production-ready**: that is the engineer's platform work, and the schema enforces that M5 and M6 are
+never labelled as supplied by a starter. Each milestone also says how it is supplied: *runs in the starter*, *adapt the starter*,
+*guidance only* or *your platform*.
+
+### Artifact labels
+
+Every code block, schema, contract, config and starter file carries one of four labels, defined on the page: **production code** (none
+exists on this site), **executable reference code** (runs and is tested in CI on synthetic data), **pseudocode** (code-shaped, never
+compiled, run or tested: the low-level design's hot path) and **architectural illustration** (schemas, contracts, configs and diagrams
+whose names and values are examples). The build fails if anything is labelled production code.
 
 ```bash
 npm run test:playbooks            # run every kit and pilot starter's pytest suite (needs Python 3.11+ and content/playbooks/requirements.txt)

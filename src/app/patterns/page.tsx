@@ -9,7 +9,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: 'Patterns',
   description:
-    'Eleven reference patterns cover all 500 blueprints. Learn a pattern once with a runnable kit, then apply it across domains.',
+    'Eleven reference patterns cover all 500 blueprints. Each has a runnable kit, which is a starter only for the blueprints that implement the same problem.',
 };
 
 export default async function PatternsPage() {
@@ -29,8 +29,10 @@ export default async function PatternsPage() {
           L2 pattern first, then the archetype it serves, then the primitives it needs.
         </p>
         <p className="mt-3 text-mute">
-          Every blueprint is an instance of one of eleven L1 patterns. Each pattern has a runnable reference
-          kit that shows its traps on synthetic data. Learn a pattern once, then see it in every domain.
+          Every blueprint resembles one of eleven L1 patterns. Each pattern has a reference kit that shows its
+          traps on synthetic data. A kit is a starter only for the blueprints that implement the same problem;
+          each pattern page lists which blueprints it is an exact starter for, which can adapt it and which
+          should read it for background only.
         </p>
       </header>
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-testid="pattern-list">

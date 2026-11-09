@@ -15,6 +15,8 @@ import { generateAgentic } from './agentic-gen';
 import { buildE2E, buildNarrative } from './narrative';
 import { loadAuthoredNarrative } from './narrative-authored';
 import { generatePlaybook, pickKit } from './playbook-gen';
+import { buildAuthoredCompatibility, buildCompatibility } from './kit-compat';
+import type { ArtifactKind } from '../lib/artifacts';
 import { buildRoleLenses, buildTopology, pickPrimitives, stanceOf } from './extras';
 import { explainLoss } from './lossvars';
 import { buildDecisionMatrix, buildEnterpriseContext, buildGovernance, buildMlops, buildOperations, buildValidation, drFor, type EntCtx, type Review } from './enterprise';
@@ -27,6 +29,16 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 export const VERIFIED_AT = '2026-11-07';
+
+/** What each block of the low-level design is. None of it is production code, and none of it has been compiled or run. */
+const LLD_ARTIFACTS: Record<'apiContract' | 'dataModelDDL' | 'eventSchema' | 'classDiagram' | 'algorithm' | 'config', ArtifactKind> = {
+  apiContract: 'architectural-illustration',
+  dataModelDDL: 'architectural-illustration',
+  eventSchema: 'architectural-illustration',
+  classDiagram: 'architectural-illustration',
+  algorithm: 'pseudocode',
+  config: 'architectural-illustration',
+};
 
 /** Retention window the capacity table assumes (see scale.ts RETENTION_DAYS). */
 const ASSUMED_RETENTION_DAYS = 400;
@@ -148,7 +160,11 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   const narrative = authored
     ? { problemStatement: authored.problemStatement, solutionApproach: authored.solutionApproach, architectureRationale: authored.architectureRationale }
     : buildNarrative(raw, domain, paradigms, latency, stages, scale, explained);
-  const playbook = root ? (loadPlaybook(root, domain, raw, latency, scale) ?? generatePlaybook(root, raw, domain, paradigms, latency, difficulty, scale, stages)) : undefined;
+  // the starter-kit compatibility check runs first: a kit is shipped only when its verdict allows it
+  const playbook = root
+    ? (loadPlaybook(root, domain, raw, latency, scale, (authored) => buildAuthoredCompatibility(raw, paradigms, latency, stages, domain, slug, root, authored)) ??
+      generatePlaybook(root, raw, domain, paradigms, latency, difficulty, scale, stages, buildCompatibility(raw, paradigms, latency, stages, domain, slug, root)))
+    : undefined;
 
   const agentic = generateAgentic(raw, domain, paradigms, latency, difficulty, stages);
   const experimentation = buildExperimentation(raw, domain, archetype, latency, stages.some((s) => s.kind === 'human'));
@@ -186,7 +202,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
       specFile: raw.file,
       specKey: raw.key,
       narrativeAuthored: Boolean(authored),
-      playbook: !playbook ? 'none' : root && loadPlaybook(root, domain, raw, latency, scale) ? 'authored' : 'generated',
+      playbook: !playbook ? 'none' : playbook.provenance,
       kit: pattern,
       archetype,
       ...(review ? { review } : {}),
@@ -225,7 +241,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
       topology,
       hld,
       sequence: seq,
-      lld,
+      lld: { ...lld, artifacts: LLD_ARTIFACTS },
       e2e,
       scale: {
         inputs: { a: raw.opts.a, k: raw.opts.k, ...(raw.opts.s ? { steps: raw.opts.s } : {}), ...(raw.opts.t ? { tokensPerStep: raw.opts.t } : {}), ...scaleInputs },
