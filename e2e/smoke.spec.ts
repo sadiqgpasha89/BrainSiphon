@@ -18,8 +18,15 @@ test('domain → filter → open blueprint → Pure Signal toggle', async ({ pag
     .first()
     .click();
   await expect(page.getByTestId('uc-title')).toHaveText('Real-Time Card & UPI Fraud Detection');
-  await expect(page.getByTestId('verified-badge')).toContainText('Automated checks passed');
-  await expect(page.getByTestId('verified-badge')).toContainText('not yet domain-expert reviewed');
+  // five separate statuses instead of one "verified" badge
+  const status = page.getByTestId('validation-status');
+  await expect(status.getByTestId('status-schema')).toContainText('Schema validated: Passed');
+  await expect(status.getByTestId('status-feasibility')).toContainText('Architecture feasibility: Passed');
+  await expect(status.getByTestId('status-expert')).toContainText('Domain expert reviewed: Not reviewed');
+  await expect(status.getByTestId('status-production')).toContainText('Production evidence: Not available');
+  await expect(status.getByTestId('status-synthetic')).toContainText('Synthetic starter tested');
+  await expect(page.getByTestId('validation-summary').getByTestId('release-line')).toContainText('commit');
+  await expect(page.getByText(/Verified against|Automated checks passed/)).toHaveCount(0);
   await expect(page.locator('#enterprise')).toBeVisible();
   await expect(page.locator('#validation')).toBeVisible();
 
@@ -208,28 +215,74 @@ test('a pilot use case shows hand-written narrative sections with its own stage 
   await expect(page.getByTestId('architecture-rationale')).toContainText('mule-device rotation');
 });
 
-test('role lens keys 1-7 filter sections, 0 resets, and the role-lens section lists primitives', async ({
+test('role lens keys add and remove roles, 0 resets, and several roles combine into one view', async ({
   page,
 }) => {
   await page.goto('/healthcare/sepsis-early-warning');
   const reader = page.getByTestId('reader');
   await expect(reader).toHaveAttribute('data-role', 'all');
-  await page.keyboard.press('6');
-  await expect(reader).toHaveAttribute('data-role', 'inference-engineer');
+  await expect(page.getByTestId('role-lens').getByRole('button')).toHaveCount(15); // All + 14 roles
+  await page.keyboard.press('a');
+  await expect(reader).toHaveAttribute('data-sel', 'inference-engineer');
   await expect(page.locator('#signal-noise')).toBeHidden();
   await expect(page.locator('#scale')).toBeVisible();
+  await expect(page.locator('#discovery')).toBeVisible(); // Phase 0 is in every role's view
   await expect(page.getByTestId('lens-inference-engineer')).toBeVisible();
   await expect(page.getByTestId('lens-data-scientist')).toBeHidden();
-  await page.keyboard.press('7');
-  await expect(reader).toHaveAttribute('data-role', 'mlops-engineer');
-  await expect(page.locator('#mlops')).toBeVisible();
-  await expect(page.locator('#operations')).toBeVisible();
-  await expect(page.getByTestId('lens-mlops-engineer')).toBeVisible();
+  await page.keyboard.press('a');
+  await expect(reader).toHaveAttribute('data-role', 'all');
+
+  // Data Engineer + MLOps Engineer: one combined view
+  await page.keyboard.press('5');
+  await page.keyboard.press('9');
+  await expect(reader).toHaveAttribute('data-sel', 'data-engineer mlops-engineer');
+  const combined = page.getByTestId('combined-view');
+  await expect(combined).toContainText('Data Engineer + MLOps Engineer');
+  await expect(combined.getByTestId('phase-p0')).toContainText('compulsory');
+  await expect(combined.getByTestId('phase-p2')).toContainText('ingestion');
+  await expect(combined.getByTestId('phase-p3')).toContainText('training');
+  await expect(combined.getByTestId('combined-handoffs')).toContainText('Operational handoff');
+  await expect(combined.getByTestId('combined-handoffs')).toContainText('Deployment dependencies');
+  await expect(page.locator('#features')).toBeVisible(); // data engineer
+  await expect(page.locator('#mlops')).toBeVisible(); // mlops engineer
   await expect(page.locator('#signal-noise')).toBeHidden();
+  await expect(page.getByTestId('lens-data-engineer')).toBeVisible();
+  await expect(page.getByTestId('lens-mlops-engineer')).toBeVisible();
+  await expect(page.getByTestId('lens-data-scientist')).toBeHidden();
+  await page.getByTestId('role-security-engineer').click();
+  await expect(reader).toHaveAttribute('data-sel', /security-engineer/);
   await page.keyboard.press('0');
   await expect(reader).toHaveAttribute('data-role', 'all');
   await expect(page.locator('#signal-noise')).toBeVisible();
+  await expect(page.getByTestId('combined-view')).toHaveCount(0);
   await expect(page.getByTestId('primitives').getByRole('link').first()).toBeVisible();
+});
+
+test('every blueprint opens with a compulsory Phase 0 of discovery and business requirements', async ({
+  page,
+}) => {
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  const first = page.locator('article section').first();
+  await expect(first).toHaveAttribute('id', 'discovery');
+  await expect(page.getByTestId('discovery-status')).toContainText('Compulsory');
+  const d = page.locator('#discovery');
+  for (const q of [
+    'Who is the actual system user?',
+    'Who owns the business decision?',
+    'What is the existing process?',
+    'Which application will consume the model or AI output?',
+    'What happens when the output is wrong?',
+    'Who approves changes to business policies?',
+    'What is the baseline business performance?',
+    'How will financial or operational ROI be measured?',
+  ])
+    await expect(d).toContainText(q);
+  await expect(d.getByRole('heading', { name: 'RACI' })).toBeVisible();
+  await expect(d).toContainText('AS-IS today');
+  await expect(d).toContainText('TO-BE with this system');
+  await expect(d.getByTestId('journey')).toHaveCount(3);
+  await expect(d.getByTestId('exit-gate').locator('li').first()).toContainText('open');
+  await expect(page.locator('nav[aria-label="On this page"]')).toContainText('Phase 0');
 });
 
 test('capacity calculator re-runs the model and resets to the published numbers', async ({ page }) => {

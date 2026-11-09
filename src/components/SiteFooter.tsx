@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { DOMAINS, DOMAIN_META } from '../schemas/usecase.schema';
 import { withBase } from '../lib/site';
+import { getRelease } from '../lib/content';
+import { ReleaseLine } from './reader/ValidationStatus';
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const release = await getRelease();
   return (
     <footer className="mt-24 border-t border-line">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 text-sm text-mute md:grid-cols-3">
@@ -51,6 +54,16 @@ export function SiteFooter() {
             </li>
           </ul>
         </div>
+      </div>
+      <div className="mx-auto max-w-7xl px-4 pb-8" data-testid="release-footer">
+        <ReleaseLine release={release} />
+        <p className="mt-1 text-xs text-dim">
+          Each blueprint shows its own validation statuses.{' '}
+          <a href={withBase('/release.json')} className="hover:text-ink">
+            release.json
+          </a>{' '}
+          lists the commit, content version and check results this site was built from.
+        </p>
       </div>
     </footer>
   );

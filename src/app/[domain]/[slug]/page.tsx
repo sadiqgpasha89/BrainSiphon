@@ -1,4 +1,4 @@
-import { BadgeCheck, Hammer, TriangleAlert } from 'lucide-react';
+import { Hammer, TriangleAlert } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -9,6 +9,7 @@ import { COMPLETION_META } from '../../../lib/artifacts';
 import { AgenticSection } from '../../../components/reader/Agentic';
 import { Pager, Sections, tocFor } from '../../../components/reader/Sections';
 import {
+  DiscoverySection,
   EnterpriseSection,
   ExperimentationSection,
   GovernanceSection,
@@ -17,7 +18,9 @@ import {
   OperationsSection,
   ValidationSection,
 } from '../../../components/reader/Enterprise';
-import { getIndex, getNeighbours, getUseCase } from '../../../lib/content';
+import { getIndex, getNeighbours, getRelease, getUseCase } from '../../../lib/content';
+import { ReleaseLine, ValidationStatusStrip } from '../../../components/reader/ValidationStatus';
+import { blueprintStatuses } from '../../../content/release';
 import { toMarkdown } from '../../../content/markdown';
 import { IS_STATIC, SITE_URL } from '../../../lib/site';
 import { DOMAIN_META } from '../../../schemas/usecase.schema';
@@ -62,10 +65,8 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
 
   const ageDays = Math.floor((Date.now() - new Date(uc.lastVerifiedAt).getTime()) / 86_400_000);
   const stale = ageDays > STALE_DAYS;
-  const passed = uc.validation.levels.filter((l) => l.state === 'passed').length;
-  const expert = uc.validation.levels.some(
-    (l) => l.level === 'domain-expert-reviewed' && l.state === 'passed',
-  );
+  const release = await getRelease();
+  const statuses = blueprintStatuses(uc, release);
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
@@ -77,7 +78,11 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
   };
 
   return (
-    <ReaderShell toc={tocFor(Boolean(uc.playbook))} slug={uc.slug} markdownText={toMarkdown(uc, SITE_URL)}>
+    <ReaderShell
+      toc={tocFor(Boolean(uc.playbook))}
+      slug={uc.slug}
+      markdownText={toMarkdown(uc, SITE_URL, release)}
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
@@ -158,18 +163,6 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
           <ParadigmChips paradigms={uc.mlParadigms} />
           <LatencyChip latency={uc.latencySLA} />
           <DifficultyChip difficulty={uc.difficulty} />
-          <a
-            href="#validation"
-            className={`chip no-underline ${stale ? '!border-warn/40 !bg-warn/10 !text-warn' : passed >= 2 ? 'chip-signal' : ''}`}
-            data-testid="verified-badge"
-            title="Automated checks are not expert review: see the Validation section for what has and has not been verified"
-          >
-            {stale ? <TriangleAlert size={12} aria-hidden /> : <BadgeCheck size={12} aria-hidden />}
-            {stale ? 'Needs re-checking' : 'Automated checks passed'} · {passed} of{' '}
-            {uc.validation.levels.length} validation levels ·{' '}
-            {expert ? 'domain-expert reviewed' : 'not yet domain-expert reviewed'} · checked{' '}
-            {uc.lastVerifiedAt}
-          </a>
           <Link
             href={`/${uc.domain}`}
             className={`chip no-underline ${uc.governance.riskTier === 'low' ? '' : '!border-warn/40 !text-warn'}`}
@@ -179,8 +172,19 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
             Risk tier: {uc.governance.riskTier}
           </Link>
         </div>
+        <div className="mt-3 space-y-1.5" data-testid="validation-summary">
+          <ValidationStatusStrip statuses={statuses} />
+          <ReleaseLine release={release} />
+          {stale && (
+            <p className="flex items-center gap-1.5 text-xs text-warn">
+              <TriangleAlert size={12} aria-hidden /> This blueprint was last generated {ageDays} days ago:
+              re-check it before relying on it.
+            </p>
+          )}
+        </div>
       </header>
       <article>
+        <DiscoverySection uc={uc} />
         <EnterpriseSection uc={uc} />
         <Sections uc={uc} />
         <GovernanceSection uc={uc} />
@@ -190,7 +194,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         <OperationsSection uc={uc} />
         <AgenticSection ag={uc.agentic} />
         {uc.playbook && <PlaybookSection pb={uc.playbook} />}
-        <ValidationSection uc={uc} />
+        <ValidationSection uc={uc} release={release} />
       </article>
       <Pager prev={prev} next={next} related={related} />
     </ReaderShell>

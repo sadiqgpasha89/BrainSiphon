@@ -1,7 +1,7 @@
 /**
  * Generated per-blueprint extras that close the gaps a rigid template leaves:
  *  - topology: which plane is active-active and which state is pinned (residency, tenancy), instead of "3 regions" everywhere
- *  - roleLenses: what each of six personas must additionally check, specialised with this use case's own stages/features
+ *  - roleLenses: what each of fourteen personas must additionally check, specialised with this use case's own stages/features
  *  - primitives: the canonical mechanisms this system leans on, linked to /patterns/primitives/<id>
  */
 import type { Domain, LatencySLA, Paradigm, PatternId } from '../schemas/usecase.schema';
@@ -10,6 +10,7 @@ import type { Stage } from './design';
 import type { RawUseCase } from './parse';
 import type { ScaleResult } from './scale';
 import { PRIMITIVE_BY_ID } from './primitives';
+import { DOMAIN_ENTERPRISE } from './enterprise-domains';
 
 export type Stance = 'stateless-active-active' | 'residency-pinned' | 'tenant-isolated';
 
@@ -210,7 +211,118 @@ export function buildRoleLenses(
   const regulated = stance === 'residency-pinned';
   const total = latency === 'sub-10ms' ? '8 ms' : latency === 'sub-100ms' ? '80 ms' : latency === 'seconds' ? '2.5 s' : 'the run window';
 
+  const ent = DOMAIN_ENTERPRISE[domain];
+
   const L: Record<RoleId, RoleLensItem[]> = {
+    'business-analyst': [
+      {
+        title: 'Phase 0 is the entry gate',
+        detail: `Before design starts, settle with ${ent.stakeholders[0]!.who} who uses ${raw.title}, who owns the decision, what the process is today, which application consumes the output, what happens when it is wrong, who approves policy changes, the baseline and how return is measured. The answers are in the Phase 0 section; the exit gate stays open until the client confirms them.`,
+      },
+      {
+        title: 'Requirements the tests can check',
+        detail: `Write each requirement with an acceptance criterion in given/when/then form, starting from the objective "${strip1(raw.obj)}". The ${total} budget, the review path for ${ent.stakeholders[1]?.who ?? 'the operators'} and the override behaviour are requirements, not design details.`,
+      },
+      {
+        title: 'Baseline and business case before build',
+        detail: `Measure today's ${strip1(raw.on[0] ?? 'business outcome').toLowerCase()} over a full label-maturity window (${LABEL_DELAY[domain]}) so benefit is a difference against a measured baseline. Agree the ROI formula and unit values with finance first.`,
+      },
+    ],
+    'data-analyst': [
+      {
+        title: 'Profile before you define',
+        detail: `Profile each source behind "${f1}" and "${f2}": null rates, cardinality, duplicate keys, time zones and late arrival. Record what each field means to the business, and where two systems of record (${ent.systemsOfRecord.slice(0, 2).join(', ')}) disagree.`,
+        primitive: 'data-contract-quality-sla',
+      },
+      {
+        title: 'Source-to-target mapping and KPI definitions',
+        detail: `Write the mapping from ${ent.systemsOfRecord[0]} to the feature and reporting tables, and define each KPI once (numerator, denominator, grain, filter, owner): ${raw.on.slice(0, 2).map((m) => strip1(m)).join('; ')}. The dashboard and the evaluation report must use the same definitions.`,
+      },
+      {
+        title: 'Data-quality analysis on the tail cohorts',
+        detail: `Check completeness and label quality separately for ${TAIL_COHORTS[domain]}; a clean overall rate can hide a cohort whose data is missing or mislabelled.`,
+      },
+    ],
+    'ml-engineer': [
+      {
+        title: 'Training pipeline that reproduces',
+        detail: `Package training for ${strip1(raw.prod)} as a pipeline with pinned data snapshot, code commit and environment lock, so any registered version can be rebuilt byte-for-byte from its inputs.`,
+        primitive: 'model-registry-promotion-gates',
+      },
+      {
+        title: batch ? 'Batch scoring contract' : 'Inference interface and shared transforms',
+        detail: batch
+          ? 'Expose scoring as an idempotent partition-level job with a manifest, so a re-run replaces output atomically and a failed run never leaves partial rows.'
+          : `Expose one versioned inference interface for ${modelStage.label}, and import the feature transform for "${f1}" in both training and serving so the two cannot diverge.`,
+        primitive: batch ? undefined : 'point-in-time-feature-joins',
+      },
+      {
+        title: 'Model packaging and registry integration',
+        detail: 'Register a signed artifact with its model card, input and output schema, resource needs and evaluation report. Refuse unsafe serialisation formats and keep the package small enough to load within the autoscaling window.',
+        primitive: 'model-registry-promotion-gates',
+      },
+    ],
+    'platform-engineer': [
+      {
+        title: 'Landing zone, cluster and network',
+        detail: `${ent.hosting}. Provision the ${scale.nodes} ${scale.nodeUnit} the capacity table assumes as code (Terraform), with separate accounts or projects per environment and network paths that match the trust boundaries in the architecture.`,
+      },
+      {
+        title: 'Identity, secrets and policy',
+        detail: `${ent.identity} Give each workload its own identity with least-privilege scopes, keep secrets in a vault with rotation, and enforce guardrails (image signing, no public endpoints, region pinning${regulated ? ', jurisdiction-pinned state' : ''}) as policy-as-code.`,
+      },
+      {
+        title: 'Pipeline infrastructure and platform services',
+        detail: 'Run the CI/CD and training runners, artifact and model registries, feature store and observability stack as shared platform services with quotas, upgrade windows and a cost-allocation tag per team.',
+      },
+    ],
+    'sre-devops-engineer': [
+      {
+        title: 'SLOs and error budgets',
+        detail: `Turn the ${total} p99 and the availability target into SLIs measured at the consumer, with an error budget that gates releases. Alert on budget burn, not on single thresholds.`,
+        primitive: 'adaptive-concurrency-shedding',
+      },
+      {
+        title: 'Observability and incident response',
+        detail: `Emit traces per stage of ${sync.map((s) => s.label).slice(0, 3).join(' → ')}, plus model-quality and data-freshness signals next to the infrastructure ones. Write a severity model, an on-call rota and a first-response runbook for each failure scenario in the Operations section.`,
+      },
+      {
+        title: 'Recovery and capacity',
+        detail: `Rehearse failover each quarter and measure RTO and RPO against the targets. Plan capacity from the workload model (${scale.nodes} ${scale.nodeUnit} at ${Math.round(scale.utilisation * 100)}% of provisioned demand) and revisit it when traffic changes.`,
+        primitive: regulated ? 'residency-pinned-state' : undefined,
+      },
+    ],
+    'security-engineer': [
+      {
+        title: 'Threat model and trust boundaries',
+        detail: `Model ${raw.title} with STRIDE across each trust boundary, plus the AI-specific threats in the Governance section (${llm ? 'prompt injection, tool abuse and retrieval leakage' : 'adversarial inputs, poisoning and model extraction'}). Every threat gets a control, an owner and a test.`,
+        primitive: llm ? 'spotlighting-policy-engine' : undefined,
+      },
+      {
+        title: 'Identity, encryption and data access',
+        detail: `${ent.classification.split(';')[0]}. Enforce workload identity, column-level access and masking in analyst views, encryption in transit and at rest with managed keys${regulated ? ' per jurisdiction' : ''}, and a quarterly access review.`,
+        primitive: regulated ? 'wal-decision-ledger' : undefined,
+      },
+      {
+        title: 'Vulnerability management and sign-off',
+        detail: 'Scan code, containers, base models and dependencies on every build, keep a bill of materials, run a penetration or red-team test before launch and record the security sign-off as part of the release evidence.',
+      },
+    ],
+    'qa-test-engineer': [
+      {
+        title: 'Test strategy across levels',
+        detail: `Cover functional, integration, contract (against ${ent.upstream[0]} and ${ent.downstream[0]}), regression and performance tests. Contract tests run in CI on both sides of each boundary so a schema change cannot reach production unnoticed.`,
+      },
+      {
+        title: 'Fault injection and the edge cases',
+        detail: `Turn the production edge cases into tests, starting with "${strip1(raw.edge[0]?.[0] ?? 'the leading edge case')}". Inject upstream timeouts, a stale feature store, a poison message and a lost region, and assert the fallback ladder rather than a stack trace.`,
+      },
+      {
+        title: 'Performance and acceptance',
+        detail: `Load-test at 1.2× the provisioned rate against the ${total} budget, and run business acceptance tests derived from the Phase 0 acceptance criteria. Quality gates on model metrics are agreed with the Data Scientist and recorded as evidence.`,
+        primitive: 'shadow-canary-mirroring',
+      },
+    ],
     'solution-architect': [
       {
         title: 'Legacy and protocol boundaries',

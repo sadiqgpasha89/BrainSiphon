@@ -10,11 +10,19 @@ import { JSDOM } from 'jsdom';
 import katex from 'katex';
 import { loadAllUseCases } from '../src/content/load';
 import { checkKitCompatibility, compatibilitySummary } from '../src/content/kit-gate';
-import { DOMAINS, isAgentic, type UseCase } from '../src/schemas/usecase.schema';
+import { DISCOVERY_QUESTION_IDS, DOMAINS, isAgentic, type UseCase } from '../src/schemas/usecase.schema';
 import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
 import { TOTAL_BUDGET_MS } from '../src/content/design';
 import { ROLE_IDS } from '../src/lib/roles';
+import {
+  clearReport,
+  computeContentDigest,
+  gitInfo,
+  VALIDATION_REPORT,
+  writeReport,
+} from '../src/content/release-io';
+import { RELEASE_SCHEMA_VERSION } from '../src/content/release';
 
 const MIN_PER_DOMAIN = Number(process.env.MIN_PER_DOMAIN ?? 50);
 const STALE_DAYS = 180;
@@ -22,6 +30,8 @@ const errors: string[] = [];
 const warnings: string[] = [];
 
 async function main() {
+  // a pass is only ever recorded by the last line of a fully successful run; remove any earlier one first
+  clearReport(process.cwd(), VALIDATION_REPORT);
   const dom = new JSDOM('<!doctype html><html><body></body></html>');
   const g = globalThis as unknown as Record<string, unknown>;
   g.window = dom.window;
@@ -208,7 +218,7 @@ async function main() {
         errors.push(`${u.slug}: ${kind} LLD uses the generic /decide endpoint`);
     }
 
-    // Blueprint 2.0 enterprise layer: no unresolved placeholders, seven lenses, and architecture feasibility
+    // Blueprint 2.0 enterprise layer: no unresolved placeholders, every role lens, compulsory Phase 0 and architecture feasibility
     {
       const ent = JSON.stringify([
         u.enterpriseContext,
@@ -217,11 +227,26 @@ async function main() {
         u.mlops,
         u.operations,
         u.validation,
+        u.discovery,
       ]);
       if (/\b(undefined|NaN|Infinity)\b|\[object|\$\{|\{\{/.test(ent))
         errors.push(`${u.slug}: enterprise layer contains an unresolved placeholder`);
       if (u.roleLenses.length !== ROLE_IDS.length)
         errors.push(`${u.slug}: expected ${ROLE_IDS.length} role lenses`);
+      // Phase 0 is compulsory: every discovery question answered once, requirements testable, gate open until a client confirms
+      {
+        const ids = u.discovery.questions.map((q) => q.id);
+        for (const id of DISCOVERY_QUESTION_IDS)
+          if (ids.filter((x) => x === id).length !== 1)
+            errors.push(`${u.slug}: Phase 0 must answer discovery question "${id}" exactly once`);
+        for (const r of u.discovery.requirements)
+          if (!/^given .+, when .+, then .+/i.test(r.acceptance))
+            errors.push(`${u.slug}: ${r.id} acceptance criterion is not in given/when/then form`);
+        if (!u.discovery.raci.some((r) => r.responsible.includes('Business Analyst')))
+          errors.push(`${u.slug}: Phase 0 RACI has no activity the Business Analyst is responsible for`);
+        if (u.discovery.exitGate.some((g) => g.status !== 'open'))
+          errors.push(`${u.slug}: Phase 0 exit gate cannot be closed without a recorded client confirmation`);
+      }
       if (u.decisionMatrix.alternatives.filter((a) => a.verdict === 'chosen').length !== 1)
         errors.push(`${u.slug}: decision matrix must name exactly one chosen option`);
       if (
@@ -356,6 +381,23 @@ async function main() {
       .map(([k, n]) => `${k} ${n}`)
       .join(', ')}`,
   );
+  const feas = all.flatMap((u) => u.validation.feasibility);
+  const git = gitInfo();
+  writeReport(process.cwd(), VALIDATION_REPORT, {
+    schemaVersion: RELEASE_SCHEMA_VERSION,
+    commit: git.commit,
+    dirty: git.dirty,
+    contentDigest: computeContentDigest(),
+    validatedAt: new Date().toISOString(),
+    useCases: all.length,
+    feasibility: {
+      checks: feas.length,
+      pass: feas.filter((f) => f.status === 'pass' || f.status === 'n/a').length,
+      warn: feas.filter((f) => f.status === 'warn').length,
+      fail: feas.filter((f) => f.status === 'fail').length,
+    },
+    warnings: warnings.length,
+  });
   console.log(
     `validate:content ✔ ${all.length} use cases, ${all.length * 9} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${all.length * 10} feasibility checks`,
   );

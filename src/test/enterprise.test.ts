@@ -18,11 +18,11 @@ import { ROLE_IDS, ROLE_META, ROLE_SECTIONS } from '../lib/roles';
 const all = loadAllUseCases();
 const bySlug = (s: string) => all.find((u) => u.slug === s)!;
 
-describe('MLOps Engineer as the seventh lens', () => {
-  it('is a distinct role from the inference engineer, on key 7', () => {
-    expect(ROLE_IDS).toHaveLength(7);
-    expect(ROLE_IDS[6]).toBe('mlops-engineer');
-    expect(ROLE_META['mlops-engineer'].key).toBe('7');
+describe('MLOps Engineer lens', () => {
+  it('is a distinct role from the inference engineer and the ML engineer, on key 9', () => {
+    expect(ROLE_IDS).toHaveLength(14);
+    expect(ROLE_META['mlops-engineer'].key).toBe('9');
+    expect(ROLE_IDS).toContain('ml-engineer');
     expect(ROLE_IDS).toContain('inference-engineer');
   });
   it('gives every blueprint an MLOps lens that links the registry and drift primitives', () => {
@@ -199,7 +199,8 @@ describe('governance, operations and validation provenance', () => {
       const state = Object.fromEntries(u.validation.levels.map((l) => [l.level, l.state]));
       expect(state['schema-validated'], u.slug).toBe('passed');
       expect(state['technically-validated'], u.slug).toBe('passed');
-      expect(state['synthetic-data-tested'], u.slug).toBe('passed');
+      // a starter pass is claimed only where a compatible starter kit exists to have been run
+      expect(state['synthetic-data-tested'], u.slug).toBe(u.playbook?.starter ? 'passed' : 'not-yet');
       // nothing is claimed as expert-reviewed or production-proven unless content/reviews.json says so
       expect(state['domain-expert-reviewed'], u.slug).toBe('not-yet');
       expect(state['production-evidence'], u.slug).toBe('not-yet');

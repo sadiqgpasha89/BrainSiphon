@@ -8,7 +8,7 @@ const all = loadAllUseCases();
 const bySlug = (s: string) => all.find((u) => u.slug === s)!;
 
 describe('role lenses and primitives', () => {
-  it('gives every blueprint all seven role lenses with resolvable primitive links', () => {
+  it('gives every blueprint all fourteen role lenses with resolvable primitive links', () => {
     for (const u of all) {
       expect(
         u.roleLenses.map((l) => l.role),
@@ -31,7 +31,7 @@ describe('role lens styling', () => {
   it('has a CSS rule that shows the sections of every role (a role without one hides the whole page)', async () => {
     const { readFileSync } = await import('node:fs');
     const css = readFileSync('src/app/globals.css', 'utf8');
-    for (const r of ROLE_IDS) expect(css, r).toContain(`[data-role='${r}'] section[data-roles~='${r}']`);
+    for (const r of ROLE_IDS) expect(css, r).toContain(`[data-sel~='${r}'] section[data-roles~='${r}']`);
   });
 });
 

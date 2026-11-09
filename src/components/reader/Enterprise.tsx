@@ -3,6 +3,14 @@ import { RISK_TIERS, type RiskTier, type UseCase, type ValidationLevel } from '.
 import { CodeBlock } from '../Code';
 import { MermaidDiagram } from '../Mermaid';
 import { List, Section, TableWrap } from './Sections';
+import { ReleaseLine } from './ValidationStatus';
+import {
+  blueprintStatuses,
+  kitKeyFor,
+  shortSha,
+  type ReleaseManifest,
+  type StatusState,
+} from '../../content/release';
 
 /* Blueprint 2.0 sections: enterprise context, governance, MLOps, production operations and validation provenance. */
 
@@ -54,6 +62,134 @@ const KV = ({ rows }: { rows: [string, React.ReactNode][] }) => (
     ))}
   </dl>
 );
+
+/* ------------------------------------------------------------------ phase 0: discovery */
+
+export function DiscoverySection({ uc }: { uc: UseCase }) {
+  const x = uc.discovery;
+  return (
+    <Section
+      id="discovery"
+      title="Phase 0 · Enterprise discovery and business requirements"
+      kicker="Compulsory before any architecture, data or model work: the Business Analyst's entry gate"
+    >
+      <div className="card flex flex-wrap items-center gap-3 p-4 text-sm" data-testid="discovery-status">
+        <span className="chip chip-signal">Compulsory</span>
+        <span className="chip">To be confirmed with the client</span>
+        <span className="text-mute">{x.summary}</span>
+      </div>
+
+      <Sub id="disc-questions" title="The eight questions to settle first">
+        <Table
+          head={['Question', 'Proposed starting answer', 'Confirm with', 'Evidence that closes it']}
+          rows={x.questions.map((q) => [q.question, q.proposedAnswer, q.confirmWith, q.evidence])}
+        />
+      </Sub>
+
+      <Sub id="disc-process" title="AS-IS and TO-BE process">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="card p-4">
+            <Label>AS-IS today</Label>
+            <ol className="list-decimal space-y-1.5 pl-5 text-sm text-ink/90">
+              {x.process.asIs.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ol>
+          </div>
+          <div className="card p-4">
+            <Label>TO-BE with this system</Label>
+            <ol className="list-decimal space-y-1.5 pl-5 text-sm text-ink/90">
+              {x.process.toBe.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ol>
+          </div>
+        </div>
+        <Label>What changes for people</Label>
+        <List items={x.process.changes} />
+      </Sub>
+
+      <Sub id="disc-stakeholders" title="Stakeholders and user journeys">
+        <Table
+          head={['Stakeholder', 'What they need', 'Involvement']}
+          rows={x.stakeholders.map((s) => [s.who, s.needs, s.involvement])}
+        />
+        <div className="grid gap-4 md:grid-cols-3">
+          {x.journeys.map((j) => (
+            <div key={j.persona} className="card p-4" data-testid="journey">
+              <p className="text-sm font-semibold text-ink">{j.persona}</p>
+              <p className="mt-1 text-xs text-signal">{j.goal}</p>
+              <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-ink/90">
+                {j.steps.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ol>
+              <p className="mt-3 text-xs text-mute">
+                <strong>When it is wrong:</strong> {j.whenWrong}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Sub>
+
+      <Sub id="disc-requirements" title="Functional requirements and acceptance criteria">
+        <Table
+          head={['ID', 'Requirement', 'Acceptance criterion']}
+          rows={x.requirements.map((r) => [r.id, r.requirement, r.acceptance])}
+        />
+      </Sub>
+
+      <Sub id="disc-raci" title="RACI">
+        <Table
+          head={['Activity', 'Responsible', 'Accountable', 'Consulted', 'Informed']}
+          rows={x.raci.map((r) => [r.activity, r.responsible, r.accountable, r.consulted, r.informed])}
+        />
+      </Sub>
+
+      <Sub id="disc-case" title="Business case and ROI measurement">
+        <KV
+          rows={[
+            ['Baseline', x.businessCase.baseline],
+            ['Target', x.businessCase.target],
+            ['Value drivers', x.businessCase.valueDrivers.join(' · ')],
+            ['ROI formula', x.businessCase.roiFormula],
+          ]}
+        />
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="card p-4">
+            <Label>Costs</Label>
+            <List items={x.businessCase.costs} />
+          </div>
+          <div className="card p-4">
+            <Label>How it is measured</Label>
+            <List items={x.businessCase.measurement} />
+          </div>
+          <div className="card p-4">
+            <Label>Assumptions</Label>
+            <List items={x.businessCase.assumptions} />
+          </div>
+        </div>
+      </Sub>
+
+      <Sub id="disc-exit" title="Phase 0 exit gate">
+        <p className="text-sm text-mute">
+          Phase 1 (architecture and design) starts only when every criterion below is closed by the named
+          owner. All are open on this page because nothing has been confirmed with a real client.
+        </p>
+        <ul className="space-y-2 text-sm" data-testid="exit-gate">
+          {x.exitGate.map((g) => (
+            <li key={g.criterion} className="card flex flex-wrap items-center gap-2 p-3">
+              <CircleDashed size={16} className="text-dim" aria-hidden />
+              <span className="min-w-0 flex-1 text-ink/90">{g.criterion}</span>
+              <span className="chip">{g.owner}</span>
+              <span className="chip">{g.status}</span>
+            </li>
+          ))}
+        </ul>
+      </Sub>
+    </Section>
+  );
+}
 
 /* ------------------------------------------------------------------ enterprise context */
 
@@ -451,24 +587,32 @@ export function OperationsSection({ uc }: { uc: UseCase }) {
   );
 }
 
+function LevelIcon({ state }: { state: StatusState }) {
+  if (state === 'passed')
+    return <CircleCheck size={18} className="mt-0.5 shrink-0 text-signal" aria-label="passed" />;
+  if (state === 'failed')
+    return <ShieldAlert size={18} className="mt-0.5 shrink-0 text-noise" aria-label="failed" />;
+  return <CircleDashed size={18} className="mt-0.5 shrink-0 text-dim" aria-label="not yet" />;
+}
+
 /* ------------------------------------------------------------------ validation provenance */
 
 const LEVEL_LABEL: Record<ValidationLevel, { title: string; means: string }> = {
   'schema-validated': { title: 'Schema validated', means: 'Required sections and types passed validation' },
   'technically-validated': {
-    title: 'Technically validated',
-    means: 'Diagrams, equations and architecture-feasibility checks passed',
+    title: 'Architecture feasibility',
+    means: 'Diagrams parse, equations compile and the architecture-feasibility checks pass',
   },
   'synthetic-data-tested': {
-    title: 'Synthetic-data tested',
+    title: 'Synthetic starter tested',
     means: 'A starter kit ran successfully against synthetic data',
   },
   'domain-expert-reviewed': {
-    title: 'Domain-expert reviewed',
+    title: 'Domain expert reviewed',
     means: 'A domain specialist reviewed the technical content',
   },
   'production-evidence': {
-    title: 'Production evidence validated',
+    title: 'Production evidence',
     means: 'Evidence exists from a real deployment or production dataset',
   },
 };
@@ -598,7 +742,7 @@ function ProvenancePanel({ uc }: { uc: UseCase }) {
     <div className="space-y-5" data-testid="provenance">
       <div className="card grid gap-3 p-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <Label>Content status</Label>
+          <Label>Highest level claimed</Label>
           <p className="font-medium text-ink" data-testid="content-status">
             {LEVEL_LABEL[p.status].title}
           </p>
@@ -662,38 +806,85 @@ function ProvenancePanel({ uc }: { uc: UseCase }) {
   );
 }
 
-export function ValidationSection({ uc }: { uc: UseCase }) {
+const STATE_MEANS: Record<string, string> = {
+  schema: 'Required sections and types passed the strict schema when the page was built',
+  feasibility:
+    'Diagrams parse, equations compile, and stage budgets, capacity, storage, cost and recovery numbers agree',
+  synthetic:
+    'The starter kit for this blueprint was run end to end on synthetic data for exactly this content',
+  expert: 'A named domain specialist reviewed the technical content (content/reviews.json)',
+  production: 'Evidence from a real deployment or production dataset is recorded',
+};
+
+export function ValidationSection({ uc, release }: { uc: UseCase; release: ReleaseManifest | null }) {
   const v = uc.validation;
+  const statuses = blueprintStatuses(uc, release);
   return (
     <Section
       id="validation"
       title="Validation and architecture review"
-      kicker="What has been verified, by what, and what has not: automated checks are not expert review"
+      kicker="Five separate kinds of evidence, each shown on its own: automated checks are not expert review, and neither is production evidence"
     >
       <ProvenancePanel uc={uc} />
       <ol className="space-y-2" data-testid="validation-levels">
-        {v.levels.map((l) => {
-          const meta = LEVEL_LABEL[l.level];
-          const ok = l.state === 'passed';
-          return (
-            <li key={l.level} className="card flex gap-3 p-3 text-sm" data-state={l.state}>
-              {ok ? (
-                <CircleCheck size={18} className="mt-0.5 shrink-0 text-signal" aria-label="passed" />
-              ) : (
-                <CircleDashed size={18} className="mt-0.5 shrink-0 text-dim" aria-label="not yet" />
-              )}
-              <div>
-                <p className="font-medium text-ink">
-                  {meta.title}{' '}
-                  <span className="font-mono text-xs text-dim">· {ok ? 'passed' : 'not yet'}</span>
-                </p>
-                <p className="text-xs text-mute">{meta.means}</p>
-                <p className="mt-1 text-ink/90">{l.evidence}</p>
-              </div>
-            </li>
-          );
-        })}
+        {statuses.map((l) => (
+          <li
+            key={l.id}
+            className="card flex gap-3 p-3 text-sm"
+            data-state={l.state}
+            data-testid={`level-${l.id}`}
+          >
+            <LevelIcon state={l.state} />
+            <div>
+              <p className="font-medium text-ink">
+                {l.label} <span className="font-mono text-xs text-dim">· {l.text}</span>
+              </p>
+              <p className="text-xs text-mute">{STATE_MEANS[l.id]}</p>
+              <p className="mt-1 text-ink/90">{l.detail}</p>
+            </div>
+          </li>
+        ))}
       </ol>
+      <div className="card p-4 text-sm" data-testid="release-card">
+        <Label>Release this page was built from</Label>
+        {release ? (
+          <dl className="mt-2 grid gap-x-6 gap-y-1 sm:grid-cols-2">
+            <dt className="text-mute">Source commit</dt>
+            <dd className="font-mono text-xs">
+              {release.sourceCommit ?? 'unknown'}
+              {release.sourceDirty ? ' (uncommitted changes)' : ''}
+            </dd>
+            <dt className="text-mute">Content version</dt>
+            <dd className="font-mono text-xs">{release.contentVersion}</dd>
+            <dt className="text-mute">Last successful validation</dt>
+            <dd className="font-mono text-xs">{release.validatedAt ?? 'none for this content'}</dd>
+            <dt className="text-mute">Deployment built</dt>
+            <dd className="font-mono text-xs">{release.deployedAt ?? 'not a deployment build'}</dd>
+            <dt className="text-mute">Starter kit run</dt>
+            <dd className="font-mono text-xs">
+              {kitKeyFor(uc)}: {release.checks.executable.ranAt ?? 'not run in this build'}
+            </dd>
+            <dt className="text-mute">Across all {release.checks.schema.useCases} blueprints</dt>
+            <dd className="text-xs">
+              {release.checks.domainExpert.reviewed} domain-expert reviewed ·{' '}
+              {release.checks.productionEvidence.claimed} with production evidence ·{' '}
+              {release.checks.feasibility.fail} feasibility failures
+            </dd>
+          </dl>
+        ) : (
+          <p className="mt-2 text-mute">
+            No release manifest was found for this build, so no commit or timestamps are shown.
+          </p>
+        )}
+        <div className="mt-3">
+          <ReleaseLine release={release} />
+        </div>
+        <p className="mt-2 text-xs text-dim">
+          Commit {shortSha(release?.sourceCommit ?? null)}: the deployment is built only when the validation
+          report and the starter-kit report were produced for this exact commit and content (
+          <code>npm run release:check</code>).
+        </p>
+      </div>
       <Label>Architecture feasibility checks</Label>
       <Table
         head={['Check', 'Result', 'Detail']}

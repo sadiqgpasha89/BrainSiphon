@@ -4,7 +4,7 @@ import { Eye, EyeOff, FileText } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CopyButton } from '../CopyButton';
 import { withBase } from '../../lib/site';
-import { ROLE_IDS, ROLE_META, ROLE_SECTIONS, isRoleId, type RoleId } from '../../lib/roles';
+import { ROLE_IDS, ROLE_META, combineRoles, isRoleId, sectionsForRoles, type RoleId } from '../../lib/roles';
 
 export interface TocItem {
   id: string;
@@ -13,7 +13,9 @@ export interface TocItem {
 }
 
 const STORAGE_KEY = 'bs:pure-signal';
-const ROLE_KEY = 'bs:role';
+const ROLE_KEY = 'bs:roles';
+const LEGACY_ROLE_KEY = 'bs:role';
+const ROLE_BY_KEY = new Map<string, RoleId>(ROLE_IDS.map((r) => [ROLE_META[r].key, r]));
 
 export function ReaderShell({
   toc,
@@ -28,15 +30,17 @@ export function ReaderShell({
 }) {
   const [pure, setPure] = useState(false);
   const [active, setActive] = useState(toc[0]?.id ?? '');
-  const [role, setRoleState] = useState<RoleId | null>(null);
-  const roleRef = useRef<RoleId | null>(null);
-  roleRef.current = role;
+  const [roles, setRolesState] = useState<RoleId[]>([]);
+  const rolesRef = useRef<RoleId[]>([]);
+  rolesRef.current = roles;
 
   useEffect(() => {
     try {
       setPure(localStorage.getItem(STORAGE_KEY) === '1');
-      const r = localStorage.getItem(ROLE_KEY);
-      if (isRoleId(r)) setRoleState(r);
+      const saved = (localStorage.getItem(ROLE_KEY) ?? localStorage.getItem(LEGACY_ROLE_KEY) ?? '')
+        .split(',')
+        .filter(isRoleId);
+      if (saved.length) setRolesState(ROLE_IDS.filter((r) => saved.includes(r)));
     } catch {
       /* storage unavailable */
     }
@@ -51,19 +55,28 @@ export function ReaderShell({
     }
   }, []);
 
-  const setRole = useCallback((r: RoleId | null) => {
-    setRoleState(r);
+  const setRoles = useCallback((next: RoleId[]) => {
+    const ordered = ROLE_IDS.filter((r) => next.includes(r));
+    setRolesState(ordered);
     try {
-      localStorage.setItem(ROLE_KEY, r ?? 'all');
+      localStorage.setItem(ROLE_KEY, ordered.length ? ordered.join(',') : 'all');
     } catch {
       /* storage unavailable */
     }
-    // the layout just changed: bring the first section this role cares about back into view
-    if (r)
-      requestAnimationFrame(() =>
-        document.getElementById(ROLE_SECTIONS[r][0]!)?.scrollIntoView({ block: 'start' }),
-      );
+    // the layout just changed: bring the first section the combined lens cares about back into view
+    if (ordered.length) {
+      const first = sectionsForRoles(ordered)[0];
+      if (first)
+        requestAnimationFrame(() => document.getElementById(first)?.scrollIntoView({ block: 'start' }));
+    }
   }, []);
+  const toggleRole = useCallback(
+    (r: RoleId) =>
+      setRoles(
+        rolesRef.current.includes(r) ? rolesRef.current.filter((x) => x !== r) : [...rolesRef.current, r],
+      ),
+    [setRoles],
+  );
 
   // "[" → Pure Signal (collapse to tables, diagrams, math, code); "]" → full detail.
   useEffect(() => {
@@ -77,14 +90,15 @@ export function ReaderShell({
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === '[') set(true);
       else if (e.key === ']') set(false);
-      else if (e.key >= '1' && e.key <= String(ROLE_IDS.length)) {
-        const r = ROLE_IDS[Number(e.key) - 1]!;
-        setRole(roleRef.current === r ? null : r);
-      } else if (e.key === '0') setRole(null);
+      else if (e.key === '0') setRoles([]);
+      else {
+        const r = ROLE_BY_KEY.get(e.key.toLowerCase());
+        if (r) toggleRole(r);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [set, setRole]);
+  }, [set, setRoles, toggleRole]);
 
   // Which section is current: the last one whose top has passed the sticky header. Scroll-driven (and re-queried
   // on every event) rather than an IntersectionObserver set up at mount, because streamed sections may not exist yet then.
@@ -146,11 +160,16 @@ export function ReaderShell({
     };
   }, []);
 
+  const combined = roles.length ? combineRoles(roles) : null;
+  const visible = combined?.sections ?? [];
+
   return (
     <div
       className={`mx-auto grid max-w-7xl gap-10 px-4 pt-8 lg:grid-cols-[14rem_minmax(0,1fr)] ${pure ? 'pure-signal' : ''}`}
       data-pure={pure ? 'true' : 'false'}
-      data-role={role ?? 'all'}
+      data-role={roles.length ? roles.join(' ') : 'all'}
+      data-sel={roles.join(' ')}
+      data-filtered={roles.length ? 'true' : 'false'}
       data-testid="reader"
     >
       <aside className="hidden lg:block">
@@ -158,7 +177,7 @@ export function ReaderShell({
           <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-dim">On this page</p>
           <ul className="space-y-0.5 border-l border-line">
             {toc
-              .filter((t) => !role || ROLE_SECTIONS[role].includes(t.id))
+              .filter((t) => !roles.length || visible.includes(t.id))
               .map((t) => (
                 <li key={t.id} {...(t.prose ? { 'data-prose-section': true } : {})}>
                   <a
@@ -179,8 +198,8 @@ export function ReaderShell({
               <span className="kbd">]</span> full detail
             </p>
             <p>
-              <span className="kbd">1</span>–<span className="kbd">{ROLE_IDS.length}</span> role lens ·{' '}
-              <span className="kbd">0</span> all
+              <span className="kbd">1</span>–<span className="kbd">9</span>, <span className="kbd">a</span>–
+              <span className="kbd">e</span> add or remove a role · <span className="kbd">0</span> all
             </p>
             <p>
               <span className="kbd">⌘K</span> search
@@ -220,9 +239,9 @@ export function ReaderShell({
             <span className="mr-1 font-mono text-[11px] uppercase tracking-wider text-dim">Lens</span>
             <button
               type="button"
-              className={`chip cursor-pointer ${role === null ? 'chip-signal' : ''}`}
-              aria-pressed={role === null}
-              onClick={() => setRole(null)}
+              className={`chip cursor-pointer ${roles.length === 0 ? 'chip-signal' : ''}`}
+              aria-pressed={roles.length === 0}
+              onClick={() => setRoles([])}
               data-testid="role-all"
             >
               <span className="text-dim">0</span> All
@@ -231,24 +250,92 @@ export function ReaderShell({
               <button
                 key={r}
                 type="button"
-                className={`chip cursor-pointer ${role === r ? 'chip-signal' : ''}`}
-                aria-pressed={role === r}
-                onClick={() => setRole(role === r ? null : r)}
+                className={`chip cursor-pointer ${roles.includes(r) ? 'chip-signal' : ''}`}
+                aria-pressed={roles.includes(r)}
+                onClick={() => toggleRole(r)}
                 title={ROLE_META[r].focus}
                 data-testid={`role-${r}`}
               >
                 <span className="text-dim">{ROLE_META[r].key}</span> {ROLE_META[r].label}
               </button>
             ))}
-            {role && (
+            {roles.length > 0 && (
               <span className="ml-2 text-xs text-dim">
-                {ROLE_SECTIONS[role].filter((id) => toc.some((t) => t.id === id)).length} of {toc.length}{' '}
-                sections
+                {roles.length} {roles.length === 1 ? 'role' : 'roles'} ·{' '}
+                {visible.filter((id) => toc.some((t) => t.id === id)).length} of {toc.length} sections
               </span>
             )}
           </div>
         </div>
+        {combined && <CombinedView view={combined} />}
         {children}
+      </div>
+    </div>
+  );
+}
+
+/** What the selected roles do together: every lifecycle phase they touch, and the handoffs at the edge of the combination. */
+function CombinedView({ view }: { view: ReturnType<typeof combineRoles> }) {
+  const name = (r: RoleId) => ROLE_META[r].label;
+  return (
+    <div className="card mb-8 p-4" data-testid="combined-view" aria-label="Combined responsibilities">
+      <p className="font-mono text-[11px] uppercase tracking-wider text-dim">
+        {view.roles.length === 1 ? 'Your role' : `Combined view of ${view.roles.length} roles`}
+      </p>
+      <h2 className="mt-1 text-base font-semibold text-ink">{view.roles.map(name).join(' + ')}</h2>
+      <ol className="mt-3 space-y-3" data-testid="combined-phases">
+        {view.phases.map((p) => (
+          <li key={p.id} data-testid={`phase-${p.id}`}>
+            <p className="text-sm font-semibold text-ink">
+              {p.label}
+              {p.mandatory && <span className="chip chip-signal ml-2">compulsory</span>}
+            </p>
+            <ul className="mt-1 space-y-1 text-sm text-mute">
+              {p.items.map((i) => (
+                <li key={i.role}>
+                  {view.roles.length > 1 && <span className="font-medium text-ink">{name(i.role)}: </span>}
+                  {i.text}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-4 grid gap-4 text-sm sm:grid-cols-3" data-testid="combined-handoffs">
+        <div>
+          <p className="font-semibold text-ink">Handled inside your combination</p>
+          {view.internalHandoffs.length ? (
+            <ul className="mt-1 space-y-1 text-mute">
+              {view.internalHandoffs.map((h) => (
+                <li key={`${h.from}-${h.to}`}>
+                  {name(h.from)} → {name(h.to)}: {h.artefact}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-1 text-mute">No handoff between the roles you picked.</p>
+          )}
+        </div>
+        <div>
+          <p className="font-semibold text-ink">You receive from others</p>
+          <ul className="mt-1 space-y-1 text-mute">
+            {view.inbound.map((h) => (
+              <li key={`${h.from}-${h.to}`}>
+                {name(h.from)}: {h.artefact}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="font-semibold text-ink">You hand over to others</p>
+          <ul className="mt-1 space-y-1 text-mute">
+            {view.outbound.map((h) => (
+              <li key={`${h.from}-${h.to}`}>
+                {name(h.to)}: {h.artefact}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
