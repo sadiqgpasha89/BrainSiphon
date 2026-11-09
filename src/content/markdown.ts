@@ -1,6 +1,6 @@
 import { PRIMITIVE_BY_ID } from './primitives';
 import { blueprintStatuses, shortSha, type ReleaseManifest } from './release';
-import { ROLE_META, ROLE_OWNS } from '../lib/roles';
+import { LIFECYCLE_PHASES, ROLE_LIFECYCLE, ROLE_META, ROLE_OWNS } from '../lib/roles';
 import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook, type UseCase, ARCHETYPE_LABEL, isAgentic } from '../schemas/usecase.schema';
 
 const fence = (lang: string, body: string) => `\`\`\`${lang}\n${body.trim()}\n\`\`\``;
@@ -16,6 +16,7 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', relea
   const statuses = blueprintStatuses(u, release);
   L.push(`> Validation: ${statuses.map((x) => `${x.label} ${x.text.toLowerCase()}`).join(' · ')}`);
   L.push(`> ${release ? `Release ${release.contentVersion} · commit ${shortSha(release.sourceCommit)} · validated ${release.validatedAt ?? 'not in this build'}${release.deployedAt ? ` · deployed ${release.deployedAt}` : ''}` : 'Release information is not available for this export'} · Risk tier: ${u.governance.riskTier} · ${origin}/${u.slug}`, '');
+  discoveryMarkdown(u, L);
   enterpriseMarkdown(u, L);
   L.push('## Signal vs. Noise', '', '| Concept | True signal | Common noise | Why engineers fail |', '|---|---|---|---|');
   u.signalVsNoiseMatrix.forEach((r) => L.push(`| ${esc(r.concept)} | ${esc(r.trueSignal)} | ${esc(r.commonNoise)} | ${esc(r.whyEngineersFail)} |`));
@@ -76,7 +77,12 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', relea
   u.productionEdgeCases.forEach((e) => L.push(`| ${esc(e.scenario)} | ${esc(e.failureMode)} | ${esc(e.mitigationStrategy)} |`));
   L.push('', '## Role lenses: production gaps by persona', '');
   u.roleLenses.forEach((r) => {
-    L.push(`### ${ROLE_META[r.role].label}`, '', `*${r.focus}*`, '');
+    L.push(`### ${ROLE_META[r.role].label}`, '', `*${r.focus}*`, '', '**In the lifecycle.**', '');
+    LIFECYCLE_PHASES.forEach((p) => {
+      const text = ROLE_LIFECYCLE[r.role][p.id];
+      if (text) L.push(`- ${p.label}: ${text}`);
+    });
+    L.push('', '**For this system.**', '');
     r.items.forEach((i) => {
       const p = i.primitive ? PRIMITIVE_BY_ID[i.primitive] : undefined;
       L.push(`- **${i.title}.** ${i.detail}${p ? ` See [${p.title}](${origin}/patterns/primitives/${p.id}).` : ''}`);
@@ -207,6 +213,46 @@ function playbookMarkdown(pb: Playbook, L: string[]) {
   pb.pitfalls.forEach((p) => L.push(`| ${p.at} | ${esc(p.mistake)} | ${esc(p.symptom)} | ${esc(p.fix)} |`));
   L.push('', '### 9. The first 30 days', '');
   pb.first30Days.forEach((x) => L.push(`- ${x}`));
+}
+
+function discoveryMarkdown(u: UseCase, L: string[]) {
+  const x = u.discovery;
+  const t = (head: string[], rows: string[][]) => {
+    L.push(`| ${head.join(' | ')} |`, `|${head.map(() => '---').join('|')}|`);
+    rows.forEach((r) => L.push(`| ${r.map(esc).join(' | ')} |`));
+  };
+  L.push('## Phase 0: Enterprise discovery and business requirements (compulsory)', '', `> Status: ${x.status}. ${x.summary}`, '', '### The eight questions to settle first', '');
+  t(['Question', 'Proposed starting answer', 'Confirm with', 'Evidence that closes it'], x.questions.map((q) => [q.question, q.proposedAnswer, q.confirmWith, q.evidence]));
+  L.push('', '### AS-IS process', '');
+  x.process.asIs.forEach((a, i) => L.push(`${i + 1}. ${a}`));
+  L.push('', '### TO-BE process', '');
+  x.process.toBe.forEach((a, i) => L.push(`${i + 1}. ${a}`));
+  L.push('', '**What changes for people**', '');
+  x.process.changes.forEach((a) => L.push(`- ${a}`));
+  L.push('', '### Stakeholders', '');
+  t(['Stakeholder', 'Needs', 'Involvement'], x.stakeholders.map((s) => [s.who, s.needs, s.involvement]));
+  L.push('', '### User journeys', '');
+  x.journeys.forEach((j) => {
+    L.push(`**${j.persona}.** ${j.goal}`, '');
+    j.steps.forEach((a, i) => L.push(`${i + 1}. ${a}`));
+    L.push('', `*When it is wrong:* ${j.whenWrong}`, '');
+  });
+  L.push('### Functional requirements and acceptance criteria', '');
+  t(['ID', 'Requirement', 'Acceptance criterion'], x.requirements.map((r) => [r.id, r.requirement, r.acceptance]));
+  L.push('', '### RACI', '');
+  t(['Activity', 'Responsible', 'Accountable', 'Consulted', 'Informed'], x.raci.map((r) => [r.activity, r.responsible, r.accountable, r.consulted, r.informed]));
+  const b = x.businessCase;
+  L.push('', '### Business case and ROI measurement', '', `- **Baseline.** ${b.baseline}`, `- **Target.** ${b.target}`, `- **Value drivers.** ${b.valueDrivers.join('; ')}`, `- **ROI formula.** ${b.roiFormula}`, '', '**Costs**', '');
+  b.costs.forEach((a) => L.push(`- ${a}`));
+  L.push('', '**How it is measured**', '');
+  b.measurement.forEach((a) => L.push(`- ${a}`));
+  L.push('', '**Assumptions**', '');
+  b.assumptions.forEach((a) => L.push(`- ${a}`));
+  L.push('', '### Phase 0 exit gate (all open until confirmed with a real client)', '');
+  x.exitGate.forEach((g) => L.push(`- [ ] ${g.criterion} (${g.owner})`));
+  L.push('', '### Common engineering lifecycle', '', 'Every role below works inside the same phases; pick several roles to combine their responsibilities.', '');
+  LIFECYCLE_PHASES.forEach((p) => L.push(`- **${p.label}${p.mandatory ? ' (compulsory)' : ''}**`));
+  L.push('');
 }
 
 function enterpriseMarkdown(u: UseCase, L: string[]) {

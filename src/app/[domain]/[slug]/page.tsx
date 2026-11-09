@@ -8,6 +8,7 @@ import { PlaybookSection } from '../../../components/reader/Playbook';
 import { AgenticSection } from '../../../components/reader/Agentic';
 import { Pager, Sections, tocFor } from '../../../components/reader/Sections';
 import {
+  DiscoverySection,
   EnterpriseSection,
   ExperimentationSection,
   GovernanceSection,
@@ -159,6 +160,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         </div>
       </header>
       <article>
+        <DiscoverySection uc={uc} />
         <EnterpriseSection uc={uc} />
         <Sections uc={uc} />
         <GovernanceSection uc={uc} />

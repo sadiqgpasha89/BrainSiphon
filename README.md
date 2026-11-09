@@ -104,11 +104,25 @@ retention; cost sanity; RTO/RPO vs the replication strategy; and model memory vs
   stage-by-stage account of why each part of its architecture exists, all assembled from that use case's own signals,
   constraints, edge cases and metrics. The end-to-end breakdown is gated so that under 3% of its steps may be identical
   between use cases (it was 47% before).
-- **Role lenses.** Press `1`–`7` inside a blueprint (or use the Lens bar) to keep only the sections one persona needs: AI architect,
-  solution architect, data engineer, data scientist, AI engineer, inference engineer and **MLOps engineer** (a distinct lens: the inference
-  engineer optimises model execution; the MLOps engineer industrialises development, deployment and operation). `0` shows everything. Each blueprint ends with a
-  per-role checklist of production gaps (`roleLenses`), generated from the use case's own stages, features and compute class
-  (`src/content/extras.ts`).
+- **Phase 0: discovery and business requirements (compulsory).** Every blueprint opens with a `discovery` section that no
+  blueprint can omit (the schema has no optional form and `validate:content` re-checks it). It answers the eight questions a
+  Business Analyst settles before any design: who the actual user is, who owns the business decision, what the existing process is,
+  which application consumes the output, what happens when the output is wrong, who approves changes to business policy, the
+  baseline business performance and how financial or operational ROI is measured. It also carries the AS-IS and TO-BE process,
+  stakeholders, user journeys, functional requirements with given/when/then acceptance criteria, a RACI, a business case with an ROI
+  formula, and a Phase 0 exit gate. All of it is generated from the use case and its domain (`src/content/discovery.ts`) and is
+  labelled `to-confirm`: these are starting positions for a discovery workshop, never findings about a real organisation, so every
+  exit-gate item is open until a client confirms it.
+- **Role lenses (fourteen roles, combinable).** Business Analyst, Solution Architect, AI Architect, Data Analyst, Data Engineer, Data
+  Scientist, ML Engineer, AI Engineer, MLOps Engineer, Inference Engineer, Platform Engineer, SRE / DevOps Engineer, Security Engineer
+  and QA / Test Engineer. They are not fourteen navigation entries: in a blueprint, press a role's key (`1`–`9`, then `a`–`e`) or click
+  its chip in the Lens bar to add or remove it, and `0` clears. Pick several and the page keeps the union of their sections and shows a
+  **combined view**: every phase of one common engineering lifecycle (Phase 0 discovery, architecture, data, model and application
+  build, platform/security/verification, release, operate) with what each selected role does in it, the handoffs between them, and the
+  handoffs they must receive from or give to roles they did not pick. Data Engineer + MLOps Engineer, for example, gives the data
+  pipeline, the training pipeline, the deployment dependencies for the platform team and the operational handoff to SRE. The role
+  model is in `src/lib/roles.ts`. Each blueprint ends with a per-role checklist of production gaps (`roleLenses`, at least three items
+  per role), generated from the use case's own stages, features and compute class (`src/content/extras.ts`).
 - **Regions and state.** The HLD no longer says "three active-active regions" for everything. `systemDesign.topology` splits the
   stateless inference plane (active-active) from the state plane: pinned by jurisdiction with a synchronous in-country standby for
   fintech, BFSI and healthcare; tenant cells, quotas and BYOK for SaaS, cybersecurity and real estate.
@@ -234,7 +248,7 @@ numbers come from *synthetic* data (far easier than production); the dataset lin
 - **Ops**: OpenTelemetry (`@vercel/otel`), Pino JSON logs with `x-request-id` correlation and redaction, `/api/health/liveness`, `/api/health/readiness` (2 s dependency timeouts, 200/503), strict CSP + HSTS + nosniff + Referrer/Permissions-Policy.
 - **SEO / agents**: `sitemap.xml`, `robots.txt`, dynamic OG images (`/api/og?slug=`), `/llms.txt`, and a clean `.md` for every blueprint (append `.md` to the URL).
 - **Slug evolution**: `content/slug-history.json` → 308 redirects in middleware (client-side equivalent in static export).
-- **Keyboard**: `⌘/Ctrl+K` search, `/` search, `[` Pure Signal Mode, `]` full detail, `1`–`7` role lens, `0` all roles.
+- **Keyboard**: `⌘/Ctrl+K` search, `/` search, `[` Pure Signal Mode, `]` full detail, `1`–`9` and `a`–`e` add or remove a role lens (combinable), `0` all roles.
 
 ## Deviations from the original spec (deliberate)
 

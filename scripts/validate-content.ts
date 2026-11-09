@@ -9,7 +9,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import katex from 'katex';
 import { loadAllUseCases } from '../src/content/load';
-import { DOMAINS, isAgentic, type UseCase } from '../src/schemas/usecase.schema';
+import { DISCOVERY_QUESTION_IDS, DOMAINS, isAgentic, type UseCase } from '../src/schemas/usecase.schema';
 import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
 import { TOTAL_BUDGET_MS } from '../src/content/design';
@@ -214,7 +214,7 @@ async function main() {
         errors.push(`${u.slug}: ${kind} LLD uses the generic /decide endpoint`);
     }
 
-    // Blueprint 2.0 enterprise layer: no unresolved placeholders, seven lenses, and architecture feasibility
+    // Blueprint 2.0 enterprise layer: no unresolved placeholders, every role lens, compulsory Phase 0 and architecture feasibility
     {
       const ent = JSON.stringify([
         u.enterpriseContext,
@@ -223,11 +223,26 @@ async function main() {
         u.mlops,
         u.operations,
         u.validation,
+        u.discovery,
       ]);
       if (/\b(undefined|NaN|Infinity)\b|\[object|\$\{|\{\{/.test(ent))
         errors.push(`${u.slug}: enterprise layer contains an unresolved placeholder`);
       if (u.roleLenses.length !== ROLE_IDS.length)
         errors.push(`${u.slug}: expected ${ROLE_IDS.length} role lenses`);
+      // Phase 0 is compulsory: every discovery question answered once, requirements testable, gate open until a client confirms
+      {
+        const ids = u.discovery.questions.map((q) => q.id);
+        for (const id of DISCOVERY_QUESTION_IDS)
+          if (ids.filter((x) => x === id).length !== 1)
+            errors.push(`${u.slug}: Phase 0 must answer discovery question "${id}" exactly once`);
+        for (const r of u.discovery.requirements)
+          if (!/^given .+, when .+, then .+/i.test(r.acceptance))
+            errors.push(`${u.slug}: ${r.id} acceptance criterion is not in given/when/then form`);
+        if (!u.discovery.raci.some((r) => r.responsible.includes('Business Analyst')))
+          errors.push(`${u.slug}: Phase 0 RACI has no activity the Business Analyst is responsible for`);
+        if (u.discovery.exitGate.some((g) => g.status !== 'open'))
+          errors.push(`${u.slug}: Phase 0 exit gate cannot be closed without a recorded client confirmation`);
+      }
       if (u.decisionMatrix.alternatives.filter((a) => a.verdict === 'chosen').length !== 1)
         errors.push(`${u.slug}: decision matrix must name exactly one chosen option`);
       if (

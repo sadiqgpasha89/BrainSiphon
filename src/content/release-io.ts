@@ -4,7 +4,7 @@
  */
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { KitReport, ReleaseManifest, ValidationReport } from './release';
 
@@ -13,7 +13,8 @@ export const VALIDATION_REPORT = join(RELEASE_DIR, 'validation.json');
 export const KIT_REPORT = join(RELEASE_DIR, 'kit-results.json');
 
 /** Everything that decides what a published page says. A change to any of these invalidates earlier reports. */
-const DIGEST_ROOTS = ['content', 'src/content', 'src/schemas'];
+// (the role model decides which lenses every blueprint carries, so it is part of the content too)
+const DIGEST_ROOTS = ['content', 'src/content', 'src/schemas', 'src/lib/roles.ts'];
 const SKIP_DIRS = new Set(['generated', '__pycache__', '.pytest_cache', '.venv', 'node_modules']);
 // outputs of running a starter kit are not content
 const SKIP_FILE = /(\.pyc|\.csv)$|(^|\/)report\.json$/;
@@ -29,7 +30,11 @@ function walk(root: string, rel: string, out: string[]) {
 
 export function computeContentDigest(root = process.cwd()): string {
   const files: string[] = [];
-  for (const d of DIGEST_ROOTS) if (existsSync(join(root, d))) walk(root, d, files);
+  for (const d of DIGEST_ROOTS) {
+    if (!existsSync(join(root, d))) continue;
+    if (statSync(join(root, d)).isFile()) files.push(d);
+    else walk(root, d, files);
+  }
   const h = createHash('sha256');
   for (const f of files) {
     h.update(f);

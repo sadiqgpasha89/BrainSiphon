@@ -22,6 +22,7 @@ import { checkFeasibility } from './feasibility';
 import { buildProvenance } from './provenance';
 import { buildExperimentation } from './experimentation';
 import { buildMetrics } from './metrics';
+import { buildDiscovery } from './discovery';
 import { archetypeOf, OUTCOME_UNIT, REVIEW_RATE } from './archetype-lld';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -162,6 +163,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   const governance = buildGovernance(entCtx);
   const mlops = buildMlops(entCtx);
   const operations = buildOperations(entCtx);
+  const discovery = buildDiscovery(entCtx, enterpriseContext, governance);
   const dr = drFor(entCtx);
   const feasibility = checkFeasibility({
     latency,
@@ -238,6 +240,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     roleLenses,
     primitives,
     agentic,
+    discovery,
     enterpriseContext,
     decisionMatrix,
     governance,

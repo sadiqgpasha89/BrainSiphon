@@ -178,51 +178,95 @@ a {
   }
 }
 
-/* Role lens: show only the sections a persona reads, and only that persona's card in the role-lens section. */
-[data-testid='reader']:not([data-role='all']) section[data-roles] {
+/* Role lens: one or more roles can be selected. The reader carries data-filtered and the selected ids in data-sel; a section is
+   shown when it belongs to any selected role, and the role-lens section keeps only the selected roles' cards. */
+[data-testid='reader'][data-filtered='true'] section[data-roles] {
   display: none;
 }
-[data-testid='reader'][data-role='ai-architect'] section[data-roles~='ai-architect'] {
+[data-testid='reader'][data-filtered='true'] [data-role-card] {
+  display: none;
+}
+[data-testid='reader'][data-sel~='business-analyst'] section[data-roles~='business-analyst'] {
   display: block;
 }
-[data-testid='reader'][data-role='ai-architect'] [data-role-card]:not([data-role-card='ai-architect']) {
-  display: none;
-}
-[data-testid='reader'][data-role='solution-architect'] section[data-roles~='solution-architect'] {
+[data-testid='reader'][data-sel~='business-analyst'] [data-role-card='business-analyst'] {
   display: block;
 }
-[data-testid='reader'][data-role='solution-architect']
-  [data-role-card]:not([data-role-card='solution-architect']) {
-  display: none;
-}
-[data-testid='reader'][data-role='data-engineer'] section[data-roles~='data-engineer'] {
+[data-testid='reader'][data-sel~='solution-architect'] section[data-roles~='solution-architect'] {
   display: block;
 }
-[data-testid='reader'][data-role='data-engineer'] [data-role-card]:not([data-role-card='data-engineer']) {
-  display: none;
-}
-[data-testid='reader'][data-role='data-scientist'] section[data-roles~='data-scientist'] {
+[data-testid='reader'][data-sel~='solution-architect'] [data-role-card='solution-architect'] {
   display: block;
 }
-[data-testid='reader'][data-role='data-scientist'] [data-role-card]:not([data-role-card='data-scientist']) {
-  display: none;
-}
-[data-testid='reader'][data-role='ai-engineer'] section[data-roles~='ai-engineer'] {
+[data-testid='reader'][data-sel~='ai-architect'] section[data-roles~='ai-architect'] {
   display: block;
 }
-[data-testid='reader'][data-role='ai-engineer'] [data-role-card]:not([data-role-card='ai-engineer']) {
-  display: none;
-}
-[data-testid='reader'][data-role='inference-engineer'] section[data-roles~='inference-engineer'] {
+[data-testid='reader'][data-sel~='ai-architect'] [data-role-card='ai-architect'] {
   display: block;
 }
-[data-testid='reader'][data-role='inference-engineer']
-  [data-role-card]:not([data-role-card='inference-engineer']) {
-  display: none;
-}
-[data-testid='reader'][data-role='mlops-engineer'] section[data-roles~='mlops-engineer'] {
+[data-testid='reader'][data-sel~='data-analyst'] section[data-roles~='data-analyst'] {
   display: block;
 }
-[data-testid='reader'][data-role='mlops-engineer'] [data-role-card]:not([data-role-card='mlops-engineer']) {
-  display: none;
+[data-testid='reader'][data-sel~='data-analyst'] [data-role-card='data-analyst'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='data-engineer'] section[data-roles~='data-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='data-engineer'] [data-role-card='data-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='data-scientist'] section[data-roles~='data-scientist'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='data-scientist'] [data-role-card='data-scientist'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='ml-engineer'] section[data-roles~='ml-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='ml-engineer'] [data-role-card='ml-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='ai-engineer'] section[data-roles~='ai-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='ai-engineer'] [data-role-card='ai-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='mlops-engineer'] section[data-roles~='mlops-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='mlops-engineer'] [data-role-card='mlops-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='inference-engineer'] section[data-roles~='inference-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='inference-engineer'] [data-role-card='inference-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='platform-engineer'] section[data-roles~='platform-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='platform-engineer'] [data-role-card='platform-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='sre-devops-engineer'] section[data-roles~='sre-devops-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='sre-devops-engineer'] [data-role-card='sre-devops-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='security-engineer'] section[data-roles~='security-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='security-engineer'] [data-role-card='security-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='qa-test-engineer'] section[data-roles~='qa-test-engineer'] {
+  display: block;
+}
+[data-testid='reader'][data-sel~='qa-test-engineer'] [data-role-card='qa-test-engineer'] {
+  display: block;
 }

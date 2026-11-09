@@ -788,6 +788,78 @@ export const GovernanceSchema = z.object({
 });
 export type Governance = z.infer<typeof GovernanceSchema>;
 
+/**
+ * Phase 0: Enterprise Discovery and Business Requirements. Compulsory on every blueprint (the schema has no optional form):
+ * before anyone writes code someone has to establish who uses the system, who owns the decision, what happens today and what
+ * happens when the output is wrong. Every answer here is a starting position for the discovery workshop, not a finding about a
+ * real organisation, so `status` is always `to-confirm` and the exit gate stays open until the client has confirmed it.
+ */
+export const DISCOVERY_QUESTION_IDS = [
+  'system-user',
+  'decision-owner',
+  'existing-process',
+  'consuming-application',
+  'wrong-output',
+  'policy-approver',
+  'baseline-performance',
+  'roi-measurement',
+] as const;
+export type DiscoveryQuestionId = (typeof DISCOVERY_QUESTION_IDS)[number];
+
+export const DiscoverySchema = z.object({
+  status: z.literal('to-confirm'),
+  summary: nonEmpty,
+  questions: z
+    .array(
+      z.object({
+        id: z.enum(DISCOVERY_QUESTION_IDS),
+        question: nonEmpty,
+        proposedAnswer: nonEmpty,
+        confirmWith: nonEmpty,
+        evidence: nonEmpty,
+      }),
+    )
+    .length(DISCOVERY_QUESTION_IDS.length),
+  process: z.object({ asIs: list(3), toBe: list(3), changes: list(2) }),
+  stakeholders: z
+    .array(
+      z.object({
+        who: nonEmpty,
+        needs: nonEmpty,
+        involvement: z.enum(['decides', 'uses', 'consulted', 'informed']),
+      }),
+    )
+    .min(3),
+  journeys: z
+    .array(z.object({ persona: nonEmpty, goal: nonEmpty, steps: list(3), whenWrong: nonEmpty }))
+    .min(2),
+  requirements: z
+    .array(z.object({ id: z.string().regex(/^FR-\d+$/), requirement: nonEmpty, acceptance: nonEmpty }))
+    .min(5),
+  raci: z
+    .array(
+      z.object({
+        activity: nonEmpty,
+        responsible: nonEmpty,
+        accountable: nonEmpty,
+        consulted: nonEmpty,
+        informed: nonEmpty,
+      }),
+    )
+    .min(6),
+  businessCase: z.object({
+    baseline: nonEmpty,
+    target: nonEmpty,
+    valueDrivers: list(2),
+    costs: list(2),
+    roiFormula: nonEmpty,
+    measurement: list(3),
+    assumptions: list(2),
+  }),
+  exitGate: z.array(z.object({ criterion: nonEmpty, owner: nonEmpty, status: z.literal('open') })).min(6),
+});
+export type Discovery = z.infer<typeof DiscoverySchema>;
+
 export const OperationsSchema = z.object({
   slos: z.array(z.object({ sli: nonEmpty, slo: nonEmpty, window: nonEmpty, errorBudget: nonEmpty })).min(5),
   telemetry: z.array(z.object({ layer: nonEmpty, signals: nonEmpty })).min(4),
@@ -961,11 +1033,13 @@ export const UseCaseSchema = z
     }),
     productionEdgeCases: z.array(EdgeCaseSchema).min(2),
     systemDesign: SystemDesignSchema,
-    /** what each of the seven personas must additionally check, specialised to this use case */
+    /** what each of the fourteen personas must additionally check, specialised to this use case */
     roleLenses: z.array(RoleLensSchema).length(ROLE_IDS.length),
     /** canonical mechanisms this system leans on, explained once at /patterns/primitives/<id> */
     primitives: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1),
     agentic: AgenticSchema,
+    /** Phase 0, compulsory: discovery and business requirements come before any architecture */
+    discovery: DiscoverySchema,
     enterpriseContext: EnterpriseContextSchema,
     decisionMatrix: DecisionMatrixSchema,
     governance: GovernanceSchema,

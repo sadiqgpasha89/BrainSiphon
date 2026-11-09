@@ -88,7 +88,7 @@ const SECTIONS = [
   {
     icon: Users,
     title: 'Role lenses',
-    body: 'Production gaps for seven personas, from AI architect to MLOps engineer.',
+    body: 'Fourteen roles, from business analyst to QA engineer: pick one or several and read the combined responsibilities, handoffs and production gaps.',
   },
   {
     icon: Blocks,
@@ -134,7 +134,8 @@ export default async function Home() {
           <span className="text-sm text-dim">
             Inside a blueprint press <span className="kbd">[</span> for Pure Signal ·{' '}
             <span className="kbd">]</span> for full detail · <span className="kbd">1</span>–
-            <span className="kbd">7</span> to read as your role
+            <span className="kbd">9</span>, <span className="kbd">a</span>–<span className="kbd">e</span> to
+            read as your role(s)
           </span>
         </div>
         <dl className="mt-12 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
@@ -207,10 +208,10 @@ export default async function Home() {
           Read it as your role
         </h2>
         <p className="mt-2 max-w-3xl text-sm text-mute">
-          Inside any blueprint, press the number key (or use the Lens bar) to keep only the sections that role
-          needs, and read the role&apos;s checklist of production gaps at the end. Roles differ in what they
-          own: the AI architect decides the topology, the solution architect fits it into the enterprise, the
-          MLOps engineer industrialises and operates it.
+          Inside any blueprint, press a role&apos;s key (or use the Lens bar) to keep only the sections that
+          role needs. Pick several roles to get their combined responsibilities across one common lifecycle,
+          starting with a compulsory Phase 0 of discovery and business requirements, plus the handoffs to the
+          roles you did not pick.
         </p>
         <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="role-cards">
           {ROLE_IDS.map((r) => (

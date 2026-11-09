@@ -63,6 +63,134 @@ const KV = ({ rows }: { rows: [string, React.ReactNode][] }) => (
   </dl>
 );
 
+/* ------------------------------------------------------------------ phase 0: discovery */
+
+export function DiscoverySection({ uc }: { uc: UseCase }) {
+  const x = uc.discovery;
+  return (
+    <Section
+      id="discovery"
+      title="Phase 0 · Enterprise discovery and business requirements"
+      kicker="Compulsory before any architecture, data or model work: the Business Analyst's entry gate"
+    >
+      <div className="card flex flex-wrap items-center gap-3 p-4 text-sm" data-testid="discovery-status">
+        <span className="chip chip-signal">Compulsory</span>
+        <span className="chip">To be confirmed with the client</span>
+        <span className="text-mute">{x.summary}</span>
+      </div>
+
+      <Sub id="disc-questions" title="The eight questions to settle first">
+        <Table
+          head={['Question', 'Proposed starting answer', 'Confirm with', 'Evidence that closes it']}
+          rows={x.questions.map((q) => [q.question, q.proposedAnswer, q.confirmWith, q.evidence])}
+        />
+      </Sub>
+
+      <Sub id="disc-process" title="AS-IS and TO-BE process">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="card p-4">
+            <Label>AS-IS today</Label>
+            <ol className="list-decimal space-y-1.5 pl-5 text-sm text-ink/90">
+              {x.process.asIs.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ol>
+          </div>
+          <div className="card p-4">
+            <Label>TO-BE with this system</Label>
+            <ol className="list-decimal space-y-1.5 pl-5 text-sm text-ink/90">
+              {x.process.toBe.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ol>
+          </div>
+        </div>
+        <Label>What changes for people</Label>
+        <List items={x.process.changes} />
+      </Sub>
+
+      <Sub id="disc-stakeholders" title="Stakeholders and user journeys">
+        <Table
+          head={['Stakeholder', 'What they need', 'Involvement']}
+          rows={x.stakeholders.map((s) => [s.who, s.needs, s.involvement])}
+        />
+        <div className="grid gap-4 md:grid-cols-3">
+          {x.journeys.map((j) => (
+            <div key={j.persona} className="card p-4" data-testid="journey">
+              <p className="text-sm font-semibold text-ink">{j.persona}</p>
+              <p className="mt-1 text-xs text-signal">{j.goal}</p>
+              <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-ink/90">
+                {j.steps.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ol>
+              <p className="mt-3 text-xs text-mute">
+                <strong>When it is wrong:</strong> {j.whenWrong}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Sub>
+
+      <Sub id="disc-requirements" title="Functional requirements and acceptance criteria">
+        <Table
+          head={['ID', 'Requirement', 'Acceptance criterion']}
+          rows={x.requirements.map((r) => [r.id, r.requirement, r.acceptance])}
+        />
+      </Sub>
+
+      <Sub id="disc-raci" title="RACI">
+        <Table
+          head={['Activity', 'Responsible', 'Accountable', 'Consulted', 'Informed']}
+          rows={x.raci.map((r) => [r.activity, r.responsible, r.accountable, r.consulted, r.informed])}
+        />
+      </Sub>
+
+      <Sub id="disc-case" title="Business case and ROI measurement">
+        <KV
+          rows={[
+            ['Baseline', x.businessCase.baseline],
+            ['Target', x.businessCase.target],
+            ['Value drivers', x.businessCase.valueDrivers.join(' · ')],
+            ['ROI formula', x.businessCase.roiFormula],
+          ]}
+        />
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="card p-4">
+            <Label>Costs</Label>
+            <List items={x.businessCase.costs} />
+          </div>
+          <div className="card p-4">
+            <Label>How it is measured</Label>
+            <List items={x.businessCase.measurement} />
+          </div>
+          <div className="card p-4">
+            <Label>Assumptions</Label>
+            <List items={x.businessCase.assumptions} />
+          </div>
+        </div>
+      </Sub>
+
+      <Sub id="disc-exit" title="Phase 0 exit gate">
+        <p className="text-sm text-mute">
+          Phase 1 (architecture and design) starts only when every criterion below is closed by the named
+          owner. All are open on this page because nothing has been confirmed with a real client.
+        </p>
+        <ul className="space-y-2 text-sm" data-testid="exit-gate">
+          {x.exitGate.map((g) => (
+            <li key={g.criterion} className="card flex flex-wrap items-center gap-2 p-3">
+              <CircleDashed size={16} className="text-dim" aria-hidden />
+              <span className="min-w-0 flex-1 text-ink/90">{g.criterion}</span>
+              <span className="chip">{g.owner}</span>
+              <span className="chip">{g.status}</span>
+            </li>
+          ))}
+        </ul>
+      </Sub>
+    </Section>
+  );
+}
+
 /* ------------------------------------------------------------------ enterprise context */
 
 const VERDICT_TONE: Record<string, string> = {

@@ -61,6 +61,7 @@ export const List = ({ items, tone }: { items: string[]; tone?: 'signal' | 'nois
 );
 
 export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?: boolean }[] => [
+  { id: 'discovery', label: 'Phase 0 · Discovery' },
   { id: 'enterprise', label: 'Enterprise context' },
   { id: 'signal-noise', label: 'Signal vs. Noise' },
   { id: 'problem', label: 'Problem & loss' },
@@ -637,7 +638,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
       <Section
         id="role-lenses"
         title="Role lenses: production gaps by persona"
-        kicker="What each of the seven roles must additionally check, specialised to this system. Press 1 to 7 to filter the page."
+        kicker="What each of the fourteen roles must additionally check, specialised to this system. Pick one or more roles in the Lens bar to filter the page and combine their responsibilities."
       >
         <div className="grid gap-4 lg:grid-cols-2">
           {uc.roleLenses.map((r) => (
