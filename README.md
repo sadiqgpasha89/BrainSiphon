@@ -34,16 +34,55 @@ The metrics catalogue is built from each use case's own fields (its offline and 
 
 ### Validation levels (they are not the same thing)
 
-| Level                          | Meaning                                                              | Source                                   |
-| ------------------------------ | -------------------------------------------------------------------- | ---------------------------------------- |
-| Schema validated               | Required sections and types passed the strict Zod schema             | build                                    |
-| Technically validated          | Diagrams parse, equations compile, architecture-feasibility checks pass | `npm run validate:content`            |
-| Synthetic-data tested          | A starter kit ran end to end on synthetic data                       | `npm run test:playbooks`                 |
-| Domain-expert reviewed         | A domain specialist reviewed the technical content                   | `content/reviews.json` (empty by default) |
-| Production evidence validated  | Evidence from a real deployment or production dataset                | not claimed for any blueprint            |
+Every blueprint shows five statuses **side by side**. There is no combined "verified" badge, because the five are different kinds of
+evidence and a reader needs to see exactly which have been earned:
 
-The blueprint badge says "Automated checks passed" and "not yet domain-expert reviewed" until a review is recorded. To record one,
-add `{"<domain>/<slug>": {"reviewer": "...", "date": "YYYY-MM-DD", "scope": "..."}}` to `content/reviews.json`.
+| Status                     | Shown as                              | Meaning                                                              | Evidence comes from                            |
+| -------------------------- | ------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| Schema validated           | Passed                                | Required sections and types passed the strict Zod schema             | the build (a failure stops it)                 |
+| Architecture feasibility   | Passed / Passed (n warnings) / Failed | Diagrams parse, equations compile, the numbers agree with each other | `npm run validate:content`                     |
+| Synthetic starter tested   | Passed / Failed / Not run             | The starter kit for this blueprint ran end to end on synthetic data  | `npm run test:playbooks` report for this content |
+| Domain expert reviewed     | Not reviewed (until a review is recorded) | A domain specialist reviewed the technical content               | `content/reviews.json` (empty by default)      |
+| Production evidence        | Not available                         | Evidence from a real deployment or production dataset                | not claimed for any blueprint                  |
+
+"Passed" for the starter is shown only when a kit report exists for **exactly this content**; a build that did not run the kits says
+"Not run". To record an expert review, add `{"<domain>/<slug>": {"reviewer": "...", "date": "YYYY-MM-DD", "scope": "..."}}` to
+`content/reviews.json`.
+
+### Release provenance and the deploy gate
+
+Every build writes `release.json` (served at `<site>/release.json`, shown in the footer and in each blueprint's Validation section,
+and summarised in the header of each blueprint's `.md` twin):
+
+| Field                                     | Meaning                                                                                           |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `sourceCommit` / `sourceDirty`            | The Git commit SHA the content was built from, and whether the tree had uncommitted changes       |
+| `contentVersion` / `contentDigest`        | `<package version>+<12 hex>` and the sha256 over every content input (`content/`, `src/content/`, `src/schemas/`) |
+| `validatedAt`                             | When `validate:content` last passed for exactly this content (null if no matching report)         |
+| `deployedAt`                              | When the deployment artefact was built (null for a build that is not a deployment)                |
+| `checks.schema` / `checks.feasibility`    | Status of the schema and architecture-feasibility checks across all 500 blueprints                |
+| `checks.executable`                       | Starter-kit results (one entry per kit) and when they ran                                         |
+| `checks.domainExpert` / `checks.productionEvidence` | How many blueprints have a recorded expert review / production evidence (both 0 today)  |
+
+A report is only used when its content digest equals the build's, so a validation or kit run from earlier content can never vouch for
+later content. The reports are `.release/validation.json` (written by `validate:content` only after every gate passes, and removed at
+the start of each run) and `.release/kit-results.json` (written by a full `test:playbooks` run).
+
+**The deployment fails unless the published content corresponds to the validated release.** In CI, `deploy-pages`:
+
+1. downloads the `kit-results` artefact that the `starter-kits` job produced for this commit;
+2. runs `build:static` with `BS_RELEASE_STRICT=1`, which re-runs `validate:content`, then runs `release:check` (same commit, same content
+   digest, clean tree, every starter kit present and passed, no feasibility failure) and stops before building if anything disagrees;
+3. has `verify:static` check that `out/release.json` matches the checkout and that every page and `.md` twin carries the release and all
+   five statuses and none makes a combined "verified" claim;
+4. after publishing, the `verify-live` job fetches the live `release.json` (retrying while the CDN catches up) and fails if the served
+   commit or content digest differs from the commit that was just validated.
+
+```bash
+npm run release:check                     # does the current build correspond to a validated release? (add BS_RELEASE_STRICT=1 for the deployment rules)
+SITE=https://<owner>.github.io/<repo>/ EXPECTED_SHA=<sha> npm run verify:live
+docker build --build-arg GIT_SHA=$(git rev-parse HEAD) .   # the image has no .git; this names the commit in release.json
+```
 
 ### Architecture Feasibility Validator
 
@@ -120,7 +159,9 @@ npm run validate:content          # strict gate (schema, ≥50/domain, KaTeX, Me
 npm test                          # unit/integration tests
 npm run build && npm run test:e2e # production build + Playwright smoke tests
 docker compose up --build         # app + pgvector + redis        → http://localhost:3200
-npm run build:static              # CDN / GitHub Pages export → ./out (also verifies llms.txt, every .md route and base-path links)
+npm run build:static              # CDN / GitHub Pages export → ./out (also verifies llms.txt, every .md route, base-path links and release.json)
+npm run test:playbooks            # run every starter kit; writes .release/kit-results.json
+npm run release:check             # does this build correspond to a validated release?
 npm run verify:static             # re-run that verification on an existing ./out (set NEXT_PUBLIC_BASE_PATH / NEXT_PUBLIC_SITE_URL as in CI)
 ```
 

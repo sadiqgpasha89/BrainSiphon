@@ -11,11 +11,14 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadAllUseCases } from '../src/content/load';
 import { PRIMITIVE_IDS } from '../src/content/primitives';
+import { STATUS_LABEL, type ReleaseManifest } from '../src/content/release';
+import { computeContentDigest, gitInfo } from '../src/content/release-io';
 
 export function verifyStatic(
   root = process.cwd(),
   basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '',
   siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  strict = process.env.BS_RELEASE_STRICT === '1',
 ): string[] {
   const out = join(root, 'out');
   const errors: string[] = [];
@@ -58,6 +61,52 @@ export function verifyStatic(
   for (const id of PRIMITIVE_IDS)
     if (!nonEmpty(join(out, 'patterns', 'primitives', id, 'index.html')))
       fail(`missing primitive page for ${id}`);
+
+  // 2b. the export carries its own release manifest, it matches the checkout, and no page makes a blanket "verified" claim
+  const relPath = join(out, 'release.json');
+  if (!nonEmpty(relPath)) fail('out/release.json is missing: the deployment cannot be matched to a commit');
+  else {
+    const m = JSON.parse(readFileSync(relPath, 'utf8')) as ReleaseManifest;
+    if (m.contentDigest !== computeContentDigest(root))
+      fail('out/release.json was built from different content than this checkout');
+    if (strict) {
+      if (!m.sourceCommit) fail('out/release.json has no source commit');
+      if (m.sourceCommit !== gitInfo(root).commit)
+        fail(`out/release.json commit ${m.sourceCommit} is not this checkout`);
+      if (!m.deployedAt) fail('out/release.json has no deployment timestamp');
+      if (!m.validatedAt) fail('out/release.json has no validation timestamp');
+      if (m.checks.executable.status !== 'passed')
+        fail(`out/release.json executable-test status is ${m.checks.executable.status}`);
+      if (m.checks.feasibility.status !== 'passed')
+        fail(`out/release.json feasibility status is ${m.checks.feasibility.status}`);
+    }
+    for (const u of all) {
+      const md = join(out, `${u.slug}.md`);
+      if (!nonEmpty(md)) continue;
+      const text = readFileSync(md, 'utf8');
+      if (!text.includes(`Release ${m.contentVersion}`))
+        fail(`out/${u.slug}.md does not carry release ${m.contentVersion}`);
+      if (/Verified against|Automated checks passed/i.test(text.split('\n').slice(0, 6).join('\n')))
+        fail(`out/${u.slug}.md still makes a single combined verification claim`);
+      for (const label of Object.values(STATUS_LABEL))
+        if (!text.includes(label)) fail(`out/${u.slug}.md is missing the "${label}" status`);
+    }
+    const sampleSlug = all[0]?.slug;
+    const samplePage = sampleSlug ? join(out, sampleSlug, 'index.html') : '';
+    if (nonEmpty(samplePage)) {
+      const html = readFileSync(samplePage, 'utf8');
+      if (!html.includes(m.contentVersion))
+        fail(`${sampleSlug} page does not show content version ${m.contentVersion}`);
+      for (const id of Object.keys(STATUS_LABEL))
+        if (!html.includes(`data-testid="status-${id}"`))
+          fail(`${sampleSlug} page is missing the ${id} status`);
+      if (
+        html.includes('data-testid="verified-badge"') ||
+        /Verified against|Automated checks passed/i.test(html)
+      )
+        fail(`${sampleSlug} page still shows a combined verification badge`);
+    }
+  }
 
   // 3. advertised links carry the base path
   const home = join(out, 'index.html');

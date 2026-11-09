@@ -7,6 +7,8 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, renameSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { verifyStatic } from './verify-static';
+import { checkRelease } from './release-check';
+import { gitInfo } from '../src/content/release-io';
 
 const root = process.cwd();
 const stash = join(root, '.static-stash');
@@ -18,6 +20,13 @@ const moves: [string, string][] = [
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+// Strict mode is the deployment: it re-runs the content gate itself and refuses to build unless the validation and starter-kit
+// reports were produced for this exact commit and content. A local export (not strict) shows missing checks as "not run".
+const strict = process.env.BS_RELEASE_STRICT === '1';
+// the state of the checkout before any file is moved aside below
+const git = gitInfo(root);
+process.env.BS_GIT_COMMIT = git.commit ?? '';
+process.env.BS_GIT_DIRTY = git.dirty ? '1' : '0';
 
 function run(cmd: string, args: string[], env: Record<string, string> = {}) {
   const r = spawnSync(cmd, args, { stdio: 'inherit', env: { ...process.env, ...env }, cwd: root });
@@ -33,7 +42,18 @@ try {
       moved.push([src, name]);
     }
   }
-  run('npx', ['tsx', 'scripts/build-content.ts'], { SITE_URL: `${siteUrl}${basePath}` });
+  if (strict) run('npx', ['tsx', 'scripts/validate-content.ts']);
+  run('npx', ['tsx', 'scripts/build-content.ts'], {
+    SITE_URL: `${siteUrl}${basePath}`,
+    ...(strict ? { BS_DEPLOY: '1' } : {}),
+  });
+  if (strict) {
+    const release = checkRelease(root, true);
+    if (release.length)
+      throw new Error(
+        `release gate failed: the published content would not correspond to a validated release:\n  - ${release.join('\n  - ')}`,
+      );
+  }
   rmSync(join(root, 'out'), { recursive: true, force: true });
   run('npx', ['next', 'build'], {
     BS_STATIC: '1',
@@ -43,7 +63,7 @@ try {
     NEXT_PUBLIC_SITE_URL: `${siteUrl}${basePath}`,
   });
   writeFileSync(join(root, 'out', '.nojekyll'), '');
-  const problems = verifyStatic(root, basePath, siteUrl);
+  const problems = verifyStatic(root, basePath, siteUrl, strict);
   if (problems.length)
     throw new Error(`static export verification failed:\n  - ${problems.slice(0, 20).join('\n  - ')}`);
   console.log('build:static ✔ output in ./out');

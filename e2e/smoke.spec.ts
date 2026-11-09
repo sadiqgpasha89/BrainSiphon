@@ -18,8 +18,15 @@ test('domain → filter → open blueprint → Pure Signal toggle', async ({ pag
     .first()
     .click();
   await expect(page.getByTestId('uc-title')).toHaveText('Real-Time Card & UPI Fraud Detection');
-  await expect(page.getByTestId('verified-badge')).toContainText('Automated checks passed');
-  await expect(page.getByTestId('verified-badge')).toContainText('not yet domain-expert reviewed');
+  // five separate statuses instead of one "verified" badge
+  const status = page.getByTestId('validation-status');
+  await expect(status.getByTestId('status-schema')).toContainText('Schema validated: Passed');
+  await expect(status.getByTestId('status-feasibility')).toContainText('Architecture feasibility: Passed');
+  await expect(status.getByTestId('status-expert')).toContainText('Domain expert reviewed: Not reviewed');
+  await expect(status.getByTestId('status-production')).toContainText('Production evidence: Not available');
+  await expect(status.getByTestId('status-synthetic')).toContainText('Synthetic starter tested');
+  await expect(page.getByTestId('validation-summary').getByTestId('release-line')).toContainText('commit');
+  await expect(page.getByText(/Verified against|Automated checks passed/)).toHaveCount(0);
   await expect(page.locator('#enterprise')).toBeVisible();
   await expect(page.locator('#validation')).toBeVisible();
 

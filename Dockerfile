@@ -19,7 +19,9 @@ CMD ["npm", "run", "db:sync"]
 FROM deps AS builder
 ARG NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ARG NEXT_PUBLIC_SEARCH_MODE=static
-ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL NEXT_PUBLIC_SEARCH_MODE=$NEXT_PUBLIC_SEARCH_MODE
+# the image has no .git; pass the commit it is built from (docker build --build-arg GIT_SHA=$(git rev-parse HEAD)) so release.json can name it
+ARG GIT_SHA=""
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL NEXT_PUBLIC_SEARCH_MODE=$NEXT_PUBLIC_SEARCH_MODE GIT_SHA=$GIT_SHA
 COPY . .
 RUN npm run validate:content && npm run build
 

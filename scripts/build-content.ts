@@ -11,6 +11,14 @@ import { DOMAIN_META, DOMAINS, PATTERN_IDS } from '../src/schemas/usecase.schema
 import { PRIMITIVES } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks, type ResolvedDomainTracks } from '../src/content/tracks';
 import { readFileSync } from 'node:fs';
+import { buildManifest } from '../src/content/release';
+import {
+  computeContentDigest,
+  gitInfo,
+  packageVersion,
+  readKitReport,
+  readValidationReport,
+} from '../src/content/release-io';
 
 const root = process.cwd();
 const gen = join(root, 'content', 'generated');
@@ -25,12 +33,28 @@ const write = (p: string, data: string) => {
 const t0 = Date.now();
 const all = loadAllUseCases(root);
 
+// release provenance: which commit and content this build is, and which checks have been run for exactly this content
+const git = gitInfo(root);
+const manifest = buildManifest({
+  commit: git.commit,
+  dirty: git.dirty,
+  contentDigest: computeContentDigest(root),
+  packageVersion: packageVersion(root),
+  now: new Date().toISOString(),
+  useCases: all,
+  validation: readValidationReport(root),
+  kits: readKitReport(root),
+  deployment: process.env.BS_DEPLOY === '1',
+});
+
 rmSync(gen, { recursive: true, force: true });
 for (const d of DOMAINS) rmSync(join(pub, d), { recursive: true, force: true });
 for (const u of all) {
   write(join(gen, 'uc', `${u.slug}.json`), JSON.stringify(u));
-  write(join(pub, `${u.slug}.md`), toMarkdown(u, origin));
+  write(join(pub, `${u.slug}.md`), toMarkdown(u, origin, manifest));
 }
+write(join(gen, 'release.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+write(join(pub, 'release.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 const index = all.map(toIndexEntry);
 
 // tracks: group each domain's use cases (in authored order) into sub-areas and name the ones to read first
@@ -104,3 +128,6 @@ if (!existsSync(join(root, 'content', 'slug-history.json')))
 
 const perDomain = DOMAINS.map((d) => `${d}=${all.filter((u) => u.domain === d).length}`).join(' ');
 console.log(`content:build ✔ ${all.length} use cases (${perDomain}) in ${Date.now() - t0} ms`);
+console.log(
+  `release ${manifest.contentVersion} @ ${manifest.sourceCommit?.slice(0, 7) ?? 'no commit'}: validated ${manifest.validatedAt ?? 'no'}; starter kits ${manifest.checks.executable.status}`,
+);

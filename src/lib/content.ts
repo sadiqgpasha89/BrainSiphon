@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cache } from 'react';
 import type { ResolvedDomainTracks } from '../content/tracks';
+import type { ReleaseManifest } from '../content/release';
 import {
   UseCaseSchema,
   type Domain,
@@ -19,6 +20,15 @@ export function getIndex(): Promise<UseCaseIndexEntry[]> {
   indexMemo ??= readFile(join(root, 'index.json'), 'utf8').then((t) => JSON.parse(t) as UseCaseIndexEntry[]);
   return indexMemo;
 }
+
+/** The release manifest written by content:build: commit, content version and the status of every check. Null if it is missing. */
+export const getRelease = cache(async (): Promise<ReleaseManifest | null> => {
+  try {
+    return JSON.parse(await readFile(join(root, 'release.json'), 'utf8')) as ReleaseManifest;
+  } catch {
+    return null;
+  }
+});
 
 export async function getDomainEntries(domain: Domain): Promise<UseCaseIndexEntry[]> {
   return (await getIndex()).filter((e) => e.domain === domain);

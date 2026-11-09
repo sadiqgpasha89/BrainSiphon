@@ -5,35 +5,33 @@
  *   npm run test:playbooks -- fintech                # only kits under one domain
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import {
+  discoverKits,
+  clearReport,
+  computeContentDigest,
+  gitInfo,
+  KIT_REPORT,
+  writeReport,
+} from '../src/content/release-io';
+import { RELEASE_SCHEMA_VERSION, type KitResult } from '../src/content/release';
 
-const root = join(process.cwd(), 'content', 'playbooks');
 const python = process.env.PYTHON ?? 'python3';
 const only = process.argv[2];
 
-const kits: string[] = [];
-const kitRoot = join(process.cwd(), 'content', 'kits');
-if (existsSync(kitRoot) && (!only || only === 'kits'))
-  for (const k of readdirSync(kitRoot, { withFileTypes: true }).filter((x) => x.isDirectory()))
-    if (existsSync(join(kitRoot, k.name, 'test_starter.py'))) kits.push(join(kitRoot, k.name));
-for (const d of readdirSync(root, { withFileTypes: true }).filter((x) => x.isDirectory())) {
-  if (only && d.name !== only) continue;
-  for (const k of readdirSync(join(root, d.name), { withFileTypes: true }).filter((x) => x.isDirectory())) {
-    const dir = join(root, d.name, k.name, 'starter');
-    if (existsSync(join(dir, 'test_starter.py'))) kits.push(dir);
-  }
-}
+const all = discoverKits();
+const kits = all.filter(
+  (k) => !only || (only === 'kits' ? k.name.startsWith('kits/') : k.name.startsWith(`${only}/`)),
+);
 if (!kits.length) {
   console.error('no starter kits found');
   process.exit(1);
 }
+// only a full run can vouch for a release; a filtered run leaves the last full report alone
+if (!only) clearReport(process.cwd(), KIT_REPORT);
 
 let failed = 0;
-for (const dir of kits) {
-  const name = dir.startsWith(kitRoot)
-    ? `kits/${dir.slice(kitRoot.length + 1)}`
-    : dir.slice(root.length + 1).replace('/starter', '');
+const results: KitResult[] = [];
+for (const { name, dir } of kits) {
   const t0 = Date.now();
   const r = spawnSync(python, ['-m', 'pytest', '-q', '-p', 'no:cacheprovider'], {
     cwd: dir,
@@ -43,10 +41,26 @@ for (const dir of kits) {
   console.log(
     `${r.status === 0 ? '✔' : '✖'} ${name.padEnd(62)} ${tail} (${((Date.now() - t0) / 1000).toFixed(1)}s)`,
   );
+  results.push({
+    name,
+    status: r.status === 0 ? 'passed' : 'failed',
+    seconds: Math.round((Date.now() - t0) / 100) / 10,
+  });
   if (r.status !== 0) {
     failed++;
     console.log((r.stdout + r.stderr).split('\n').slice(-40).join('\n'));
   }
+}
+if (!only) {
+  const git = gitInfo();
+  writeReport(process.cwd(), KIT_REPORT, {
+    schemaVersion: RELEASE_SCHEMA_VERSION,
+    commit: git.commit,
+    dirty: git.dirty,
+    contentDigest: computeContentDigest(),
+    ranAt: new Date().toISOString(),
+    kits: results,
+  });
 }
 if (failed) {
   console.error(`${failed} of ${kits.length} starter kits failed`);

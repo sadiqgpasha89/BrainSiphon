@@ -74,6 +74,14 @@ jobs:
       - run: npm ci
       - run: pip install -r content/playbooks/requirements.txt
       - run: npm run test:playbooks
+      # the deployment is only built when this report was produced for the same commit and content (see release:check)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kit-results
+          path: .release/kit-results.json
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: true
 
   # ── Stage 4: build, container, vulnerability scan ───────────────────────────
   build-and-scan:
@@ -114,6 +122,8 @@ jobs:
       pages: write
       id-token: write
       contents: read
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -122,8 +132,16 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '${{ env.NODE_VERSION }}', cache: npm }
       - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: kit-results
+          path: .release
+      # Strict release gate: build:static re-runs validate:content, then refuses to build unless the validation and starter-kit
+      # reports belong to this exact commit and content. It stamps release.json (commit, content version, timestamps, check
+      # statuses) into the export, and verify:static fails if the export disagrees with the checkout.
       - run: npm run build:static
         env:
+          BS_RELEASE_STRICT: '1'
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           NEXT_PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io
       - uses: actions/configure-pages@v5
@@ -131,3 +149,17 @@ jobs:
         with: { path: out }
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # ── After deploy: the site being served must be the release that was validated ──────────────
+  verify-live:
+    needs: deploy-pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '${{ env.NODE_VERSION }}', cache: npm }
+      - run: npm ci
+      - run: npm run verify:live
+        env:
+          SITE: ${{ needs.deploy-pages.outputs.page_url }}
+          EXPECTED_SHA: ${{ github.sha }}

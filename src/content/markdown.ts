@@ -1,4 +1,5 @@
 import { PRIMITIVE_BY_ID } from './primitives';
+import { blueprintStatuses, shortSha, type ReleaseManifest } from './release';
 import { ROLE_META, ROLE_OWNS } from '../lib/roles';
 import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook, type UseCase, ARCHETYPE_LABEL, isAgentic } from '../schemas/usecase.schema';
 
@@ -6,13 +7,15 @@ const fence = (lang: string, body: string) => `\`\`\`${lang}\n${body.trim()}\n\`
 const esc = (s: string) => s.replace(/\|/g, '\\|');
 
 /** Clean markdown export of a blueprint — pipe it straight into an IDE agent. */
-export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): string {
+export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', release: ReleaseManifest | null = null): string {
   const d = u.systemDesign;
   const L: string[] = [];
   L.push(`# ${u.title}`, '');
   L.push(`> ${DOMAIN_META[u.domain].name} · ${u.mlParadigms.map((p) => PARADIGM_LABEL[p]).join(' + ')} · ${LATENCY_LABEL[u.latencySLA]} · ${u.difficulty}`);
-  const passed = u.validation.levels.filter((l) => l.state === 'passed').map((l) => l.level);
-  L.push(`> Automated checks passed ${u.lastVerifiedAt} (${passed.length} of ${u.validation.levels.length} validation levels: ${passed.join(', ')}); ${u.validation.levels.some((l) => l.level === 'domain-expert-reviewed' && l.state === 'passed') ? 'domain-expert reviewed' : 'not yet domain-expert reviewed'} · Risk tier: ${u.governance.riskTier} · ${origin}/${u.slug}`, '');
+  // five separate statuses, never one "verified" verdict
+  const statuses = blueprintStatuses(u, release);
+  L.push(`> Validation: ${statuses.map((x) => `${x.label} ${x.text.toLowerCase()}`).join(' · ')}`);
+  L.push(`> ${release ? `Release ${release.contentVersion} · commit ${shortSha(release.sourceCommit)} · validated ${release.validatedAt ?? 'not in this build'}${release.deployedAt ? ` · deployed ${release.deployedAt}` : ''}` : 'Release information is not available for this export'} · Risk tier: ${u.governance.riskTier} · ${origin}/${u.slug}`, '');
   enterpriseMarkdown(u, L);
   L.push('## Signal vs. Noise', '', '| Concept | True signal | Common noise | Why engineers fail |', '|---|---|---|---|');
   u.signalVsNoiseMatrix.forEach((r) => L.push(`| ${esc(r.concept)} | ${esc(r.trueSignal)} | ${esc(r.commonNoise)} | ${esc(r.whyEngineersFail)} |`));
@@ -92,7 +95,7 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   metricsMarkdown(u, L);
   agenticMarkdown(u.agentic, L);
   if (u.playbook) playbookMarkdown(u.playbook, L);
-  validationMarkdown(u, L);
+  validationMarkdown(u, L, release);
   return `${L.join('\n')}\n`;
 }
 
@@ -291,7 +294,7 @@ function operationsMarkdown(u: UseCase, L: string[]) {
   o.unitCost.forEach((c) => L.push(`| ${esc(c.unit)} | ${esc(c.value)} | ${esc(c.how)} |`));
 }
 
-function validationMarkdown(u: UseCase, L: string[]) {
+function validationMarkdown(u: UseCase, L: string[], release: ReleaseManifest | null) {
   const pv = u.validation.provenance;
   L.push('', '## Validation and architecture review', '', `**Content status:** ${pv.status} · **Owner:** ${pv.owner} · **Reviewer:** ${pv.reviewer ? `${pv.reviewer}, ${pv.reviewedAt}` : 'none yet'} · **Generated:** ${pv.generatedAt}`, '', '### How each part was made', '', '| Section | Origin | Basis |', '|---|---|---|');
   pv.sections.forEach((x) => L.push(`| ${esc(x.section)} | ${x.origin} | ${esc(x.basis)} |`));
@@ -303,8 +306,10 @@ function validationMarkdown(u: UseCase, L: string[]) {
   pv.assumptions.forEach((x) => L.push(`- ${x}`));
   L.push('', '**Known limitations**', '');
   pv.limitations.forEach((x) => L.push(`- ${x}`));
-  L.push('', '### Validation levels', '', '| Level | State | Evidence |', '|---|---|---|');
-  u.validation.levels.forEach((l) => L.push(`| ${l.level} | ${l.state} | ${esc(l.evidence)} |`));
+  L.push('', '### Validation status (each is separate evidence)', '', '| Validation | Status | What it means here |', '|---|---|---|');
+  blueprintStatuses(u, release).forEach((x) => L.push(`| ${x.label} | ${x.text} | ${esc(x.detail)} |`));
+  if (release)
+    L.push('', `**Release.** Version ${release.contentVersion} · source commit ${release.sourceCommit ?? 'unknown'}${release.sourceDirty ? ' (uncommitted changes)' : ''} · last successful validation ${release.validatedAt ?? 'none for this content'} · ${release.deployedAt ? `deployment built ${release.deployedAt}` : 'not a deployment build'}.`);
   L.push('', '| Feasibility check | Result | Detail |', '|---|---|---|');
   u.validation.feasibility.forEach((f) => L.push(`| ${esc(f.check)} | ${f.status} | ${esc(f.detail)} |`));
   L.push('', `Role ownership: ${(Object.keys(ROLE_META) as (keyof typeof ROLE_META)[]).map((r) => `${ROLE_META[r].label} (${ROLE_OWNS[r].toLowerCase()})`).join('; ')}.`);

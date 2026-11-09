@@ -38,6 +38,14 @@ export function SiteHeader() {
                 Patterns
               </Link>
             </li>
+            <li>
+              <Link
+                href="/deployment"
+                className="block whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm text-mute no-underline transition hover:bg-raised hover:text-ink"
+              >
+                Deployment
+              </Link>
+            </li>
           </ul>
         </nav>
         <ThemeToggle />

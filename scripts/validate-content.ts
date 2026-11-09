@@ -14,6 +14,14 @@ import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
 import { TOTAL_BUDGET_MS } from '../src/content/design';
 import { ROLE_IDS } from '../src/lib/roles';
+import {
+  clearReport,
+  computeContentDigest,
+  gitInfo,
+  VALIDATION_REPORT,
+  writeReport,
+} from '../src/content/release-io';
+import { RELEASE_SCHEMA_VERSION } from '../src/content/release';
 
 const MIN_PER_DOMAIN = Number(process.env.MIN_PER_DOMAIN ?? 50);
 const STALE_DAYS = 180;
@@ -21,6 +29,8 @@ const errors: string[] = [];
 const warnings: string[] = [];
 
 async function main() {
+  // a pass is only ever recorded by the last line of a fully successful run; remove any earlier one first
+  clearReport(process.cwd(), VALIDATION_REPORT);
   const dom = new JSDOM('<!doctype html><html><body></body></html>');
   const g = globalThis as unknown as Record<string, unknown>;
   g.window = dom.window;
@@ -341,6 +351,23 @@ async function main() {
     process.exit(1);
   }
   const withPlaybook = all.filter((u) => u.playbook).length;
+  const feas = all.flatMap((u) => u.validation.feasibility);
+  const git = gitInfo();
+  writeReport(process.cwd(), VALIDATION_REPORT, {
+    schemaVersion: RELEASE_SCHEMA_VERSION,
+    commit: git.commit,
+    dirty: git.dirty,
+    contentDigest: computeContentDigest(),
+    validatedAt: new Date().toISOString(),
+    useCases: all.length,
+    feasibility: {
+      checks: feas.length,
+      pass: feas.filter((f) => f.status === 'pass' || f.status === 'n/a').length,
+      warn: feas.filter((f) => f.status === 'warn').length,
+      fail: feas.filter((f) => f.status === 'fail').length,
+    },
+    warnings: warnings.length,
+  });
   console.log(
     `validate:content ✔ ${all.length} use cases, ${all.length * 9} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${all.length * 10} feasibility checks`,
   );
