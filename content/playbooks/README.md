@@ -56,3 +56,14 @@ npm run validate:content          # schema, depth rules, orphan check, starter s
 PYTHON=$(which python) npm run test:playbooks -- <domain>
 npm run check:links               # dataset URLs
 ```
+
+
+## Starter kits, compatibility and completion state
+
+A hand-written playbook ships its own starter, so its compatibility verdict is *exact* by construction and is recorded automatically
+(`source: authored-starter`). Its milestones are labelled automatically: M0 is guidance, M1 to M4 run in the starter, and M5 and M6 are
+the engineer's platform. The completion state is *evaluation-ready*. Say in the playbook summary which milestones the starter covers
+(for example "The starter runs M1-M4; M5-M6 need your platform"), and do not describe anything the starter does not run.
+
+A generated playbook never chooses a kit by itself. The kit comes from `content/kit-contracts.json` matched against the use case's problem
+type; add or correct a problem type in `content/kit-compatibility.json` (with a reason), and change what a kit claims in its contract.

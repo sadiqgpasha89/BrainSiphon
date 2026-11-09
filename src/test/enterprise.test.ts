@@ -199,7 +199,8 @@ describe('governance, operations and validation provenance', () => {
       const state = Object.fromEntries(u.validation.levels.map((l) => [l.level, l.state]));
       expect(state['schema-validated'], u.slug).toBe('passed');
       expect(state['technically-validated'], u.slug).toBe('passed');
-      expect(state['synthetic-data-tested'], u.slug).toBe('passed');
+      // a starter pass is claimed only where a compatible starter kit exists to have been run
+      expect(state['synthetic-data-tested'], u.slug).toBe(u.playbook?.starter ? 'passed' : 'not-yet');
       // nothing is claimed as expert-reviewed or production-proven unless content/reviews.json says so
       expect(state['domain-expert-reviewed'], u.slug).toBe('not-yet');
       expect(state['production-evidence'], u.slug).toBe('not-yet');

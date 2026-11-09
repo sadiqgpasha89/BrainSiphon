@@ -1,3 +1,5 @@
+import { ARTIFACT_KINDS, ARTIFACT_META, COMPLETION_META, DELIVERY_META, type ArtifactKind } from '../lib/artifacts';
+import { PROBLEM_LABEL } from '../lib/problem-types';
 import { PRIMITIVE_BY_ID } from './primitives';
 import { blueprintStatuses, shortSha, type ReleaseManifest } from './release';
 import { LIFECYCLE_PHASES, ROLE_LIFECYCLE, ROLE_META, ROLE_OWNS } from '../lib/roles';
@@ -5,6 +7,9 @@ import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook
 
 const fence = (lang: string, body: string) => `\`\`\`${lang}\n${body.trim()}\n\`\`\``;
 const esc = (s: string) => s.replace(/\|/g, '\\|');
+/** One line before a code block saying what kind of artifact it is, so a reader (or a model) never has to infer it. */
+const kindLine = (k: ArtifactKind) => `*Artifact kind: ${ARTIFACT_META[k].label}. ${ARTIFACT_META[k].runs}*`;
+const LEGEND = ARTIFACT_KINDS.map((k) => `- **${ARTIFACT_META[k].label}.** ${ARTIFACT_META[k].meaning}`);
 
 /** Clean markdown export of a blueprint — pipe it straight into an IDE agent. */
 export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', release: ReleaseManifest | null = null): string {
@@ -42,10 +47,10 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', relea
   d.hld.components.forEach((c) => L.push(`| ${esc(c.name)} | ${esc(c.tech)} | ${esc(c.responsibility)} | ${c.latencyBudgetMs === null ? '—' : `${c.latencyBudgetMs} ms`} |`));
   L.push('', '## Sequence diagram', '', fence('mermaid', d.sequence.mermaid), '');
   d.sequence.notes.forEach((n) => L.push(`- ${n}`));
-  L.push('', '## Low-level design', '', `**Archetype:** ${ARCHETYPE_LABEL[d.lld.archetype]} · **Status:** ${d.lld.status === 'expert-reviewed' ? 'expert reviewed' : 'illustrative implementation scaffold, not a complete production LLD'}`, '', `### API contract\n\n\`${d.lld.apiContract.method} ${d.lld.apiContract.path}\``, '', 'Request:', '', fence('json', d.lld.apiContract.request), '', 'Response:', '', fence('json', d.lld.apiContract.response));
-  L.push('', '### Data model', '', fence('sql', d.lld.dataModelDDL), '', '### Classes', '', fence('mermaid', d.lld.classDiagram), '', '### Core algorithm', '', fence(d.lld.algorithm.language, d.lld.algorithm.code), '', '### Config', '', fence('yaml', d.lld.config), '', '### Degradation ladder', '', '| Level | Trigger | Behaviour |', '|---|---|---|');
+  L.push('', '## Low-level design', '', `**Archetype:** ${ARCHETYPE_LABEL[d.lld.archetype]} · **Status:** ${d.lld.status === 'expert-reviewed' ? 'expert reviewed' : 'illustrative implementation scaffold, not a complete production LLD'}`, '', '**What the artifact labels mean**', '', ...LEGEND, '', `### API contract\n\n${kindLine(d.lld.artifacts.apiContract)}\n\n\`${d.lld.apiContract.method} ${d.lld.apiContract.path}\``, '', 'Request:', '', fence('json', d.lld.apiContract.request), '', 'Response:', '', fence('json', d.lld.apiContract.response));
+  L.push('', '### Data model', '', kindLine(d.lld.artifacts.dataModelDDL), '', fence('sql', d.lld.dataModelDDL), '', '### Classes', '', kindLine(d.lld.artifacts.classDiagram), '', fence('mermaid', d.lld.classDiagram), '', '### Core algorithm', '', kindLine(d.lld.artifacts.algorithm), '', fence(d.lld.algorithm.language, d.lld.algorithm.code), '', '### Config', '', kindLine(d.lld.artifacts.config), '', fence('yaml', d.lld.config), '', '### Degradation ladder', '', '| Level | Trigger | Behaviour |', '|---|---|---|');
   d.lld.degradationLadder.forEach((x) => L.push(`| L${x.level} | ${esc(x.trigger)} | ${esc(x.behaviour)} |`));
-  L.push('', '### Event schema', '', fence('json', d.lld.eventSchema), '', '### Failure and retry behaviour', '', '| Failure | Behaviour |', '|---|---|');
+  L.push('', '### Event schema', '', kindLine(d.lld.artifacts.eventSchema), '', fence('json', d.lld.eventSchema), '', '### Failure and retry behaviour', '', '| Failure | Behaviour |', '|---|---|');
   d.lld.failureAndRetry.forEach((x) => L.push(`| ${esc(x.failure)} | ${esc(x.behaviour)} |`));
   L.push('', '### Security and access model', '', '| Surface | Control |', '|---|---|');
   d.lld.securityModel.forEach((x) => L.push(`| ${esc(x.surface)} | ${esc(x.control)} |`));
@@ -175,7 +180,29 @@ function agenticMarkdown(a: Agentic, L: string[]) {
 }
 
 function playbookMarkdown(pb: Playbook, L: string[]) {
-  L.push('', '## Build playbook', '', pb.summary, '', '### Before you start', '', '**Skills**', '');
+  const c = pb.compatibility;
+  const k = pb.completion;
+  L.push('', '## Build playbook', '', pb.summary, '', '### What this playbook gives you, and where your platform starts', '');
+  L.push(`- **Starter kit verdict.** ${c.verdict === 'exact' ? 'Exact match' : c.verdict === 'adaptable' ? 'Adaptable match' : 'No compatible starter kit'}. ${c.statement}`);
+  L.push(`- **Problem type.** ${PROBLEM_LABEL[c.problemType]} (decided ${c.basis.charAt(0).toLowerCase()}${c.basis.slice(1)})`);
+  L.push(`- **Executable artifacts reach.** ${COMPLETION_META[k.reached].label}${k.conditional ? ' (only after the listed modifications)' : ''}. ${k.boundary}`, '');
+  L.push('| State | Status | Evidence | Still needed |', '|---|---|---|---|');
+  k.states.forEach((st) => L.push(`| ${COMPLETION_META[st.state].label} | ${st.status === 'conditional' ? 'after modifications' : st.status === 'reached' ? 'reached' : 'not reached'} | ${esc(st.evidence)} | ${esc(st.stillNeeded.join('; ') || 'nothing')} |`));
+  L.push('', '**What the artifact labels mean**', '', ...LEGEND, '', '### Fit with the starter kit', '', '| Dimension | This use case needs | The kit provides | Fit |', '|---|---|---|---|');
+  c.dimensions.forEach((d) => L.push(`| ${d.dimension} | ${esc(d.needs)} | ${esc(d.provides)} | ${d.status}${d.change ? `: ${esc(d.change)}` : ''} |`));
+  if (c.verdict === 'none') {
+    L.push('', '**Why no kit fits**', '');
+    c.blockers.forEach((b) => L.push(`- ${b}`));
+    if (c.closest) L.push('', `Closest kit, for background reading only: ${c.closest.label}. ${c.closest.whyNot} It is not a starter for this use case.`);
+  } else {
+    L.push('', '**What carries over**', '');
+    c.reusable.forEach((r) => L.push(`- ${r}`));
+    if (c.modifications.length) {
+      L.push('', '**Modifications required first**', '');
+      c.modifications.forEach((m) => L.push(`- ${m}`));
+    }
+  }
+  L.push('', '### Before you start', '', '**Skills**', '');
   pb.prerequisites.skills.forEach((x) => L.push(`- ${x}`));
   L.push('', '**Tools**', '');
   pb.prerequisites.tools.forEach((x) => L.push(`- ${x}`));
@@ -187,19 +214,23 @@ function playbookMarkdown(pb: Playbook, L: string[]) {
   pb.domainKnowledge.askTheExperts.forEach((q) => L.push(`- ${q}`));
   L.push('', '### 2. Data', '', pb.data.strategy, '', '| Dataset | License / access | What it gives you | Caveat |', '|---|---|---|---|');
   pb.data.datasets.forEach((d) => L.push(`| [${esc(d.name)}](${d.url}) | ${esc(d.license)} | ${esc(d.gives)} | ${esc(d.caveat)} |`));
-  L.push('', `**Synthetic generator** (\`${pb.data.synthetic.file}\`). ${pb.data.synthetic.description}`, '', '**Knobs**', '');
-  pb.data.synthetic.knobs.forEach((k) => L.push(`- ${k}`));
-  L.push('', `| ${pb.data.sample.columns.join(' | ')} |`, `|${pb.data.sample.columns.map(() => '---').join('|')}|`);
-  pb.data.sample.rows.forEach((r) => L.push(`| ${r.map((c) => esc(String(c))).join(' | ')} |`));
+  if (pb.data.synthetic && pb.data.sample) {
+    L.push('', `**Synthetic generator** (\`${pb.data.synthetic.file}\`). ${pb.data.synthetic.description}`, '', '**Knobs**', '');
+    pb.data.synthetic.knobs.forEach((k) => L.push(`- ${k}`));
+    L.push('', `| ${pb.data.sample.columns.join(' | ')} |`, `|${pb.data.sample.columns.map(() => '---').join('|')}|`);
+    pb.data.sample.rows.forEach((r) => L.push(`| ${r.map((c) => esc(String(c))).join(' | ')} |`));
+  } else L.push('', '**No synthetic data is supplied.** No reference kit generates this problem\'s data.');
   L.push('', `**Label.** ${pb.data.label}`, '', '### 3. Milestones with exit gates', '');
   pb.milestones.forEach((m) => {
-    L.push(`#### ${m.id} · ${m.title} (${m.days} days)`, '');
+    L.push(`#### ${m.id} · ${m.title} (${m.days} days)`, '', `*Delivery: ${DELIVERY_META[m.delivery].label}. Completes: ${COMPLETION_META[m.state].label}.*`, '');
     m.tasks.forEach((t) => L.push(`- ${t}`));
     L.push('', `*Deliverable:* ${m.deliverable}`, '', `**Exit gate:** ${m.gate.metric} — pass when ${m.gate.threshold}. How: ${m.gate.how}`, '');
   });
-  L.push('### 4. Starter kit', '', `Runtime: ${pb.starter.runtime}`, '', fence('bash', pb.starter.run.join('\n')), '', `Expect: ${pb.starter.expected}`, '');
-  pb.starter.files.forEach((f) => L.push(`#### ${f.path}`, '', f.purpose, '', fence(f.language === 'text' ? 'text' : f.language, f.code), ''));
-  L.push('### 5. Worked example', '', pb.workedExample.scenario, '');
+  if (pb.starter) {
+    L.push('### 4. Starter kit', '', c.verdict === 'adaptable' ? '**Adapt before you rely on it:** this kit implements a neighbouring problem; make the modifications above first.' : 'Runs on synthetic data; it is not production code.', '', `Runtime: ${pb.starter.runtime}`, '', fence('bash', pb.starter.run.join('\n')), '', `Expect: ${pb.starter.expected}`, '');
+    pb.starter.files.forEach((f) => L.push(`#### ${f.path}`, '', f.purpose, '', kindLine(f.kind), '', fence(f.language === 'text' ? 'text' : f.language, f.code), ''));
+  } else L.push('### 4. Starter kit', '', `**None.** ${c.statement} No code, data generator or run command is supplied for this use case.`, '');
+  L.push('### 5. Worked example', '', `*Basis: ${pb.workedExample.basis === 'reference-kit' ? 'run on the starter kit' : 'blueprint only, nothing was run'}.* ${pb.workedExample.scenario}`, '');
   pb.workedExample.steps.forEach((s) => L.push(`- **${s.stage}** ${s.detail}`));
   L.push('', `**Outcome.** ${pb.workedExample.outcome}`, '', '### 6. Test and acceptance plan', '', '| Test | Tool / command | Pass criterion |', '|---|---|---|');
   pb.tests.forEach((t) => L.push(`| ${esc(t.test)} | ${esc(t.tool)} | ${esc(t.pass)} |`));

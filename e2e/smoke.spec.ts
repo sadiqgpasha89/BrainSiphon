@@ -120,7 +120,7 @@ test('a pilot use case opens straight to its build playbook, with gates and runn
   await expect(file.locator('pre').first()).toContainText('def generate');
   // every other use case gets a generated playbook that says so, plus a legend for its loss formula
   await page.goto('/fintech');
-  await expect(page.getByText('Playbook', { exact: true }).first()).toBeVisible();
+  await expect(page.getByTestId('starter-badge').first()).toBeVisible();
   await page.goto('/fintech/credit-default-survival-modeling');
   await expect(page.getByTestId('playbook-link')).toHaveCount(1);
   await expect(page.getByTestId('playbook-provenance')).toContainText('Generated playbook');
@@ -128,6 +128,42 @@ test('a pilot use case opens straight to its build playbook, with gates and runn
   await expect(page.getByTestId('loss-variables')).toContainText('hazard');
   await page.goto('/fintech/real-time-card-upi-fraud-detection');
   await expect(page.getByTestId('playbook-provenance')).toContainText('Hand-written playbook');
+});
+
+test('the starter-kit verdict, the completion ladder and the artifact labels are unmistakable', async ({
+  page,
+}) => {
+  // no compatible kit: guidance only, said in the standard words, and no runnable code is shown
+  await page.goto('/fintech/credit-default-survival-modeling');
+  await expect(page.getByTestId('starter-chip')).toContainText('no compatible starter kit');
+  await expect(page.getByTestId('header-boundary')).toContainText('No executable starter');
+  await expect(page.getByTestId('compat-statement')).toContainText(
+    'No compatible executable starter kit exists. This playbook provides architecture and implementation guidance only.',
+  );
+  await expect(page.getByTestId('starter-verdict')).toHaveAttribute('data-verdict', 'none');
+  await expect(page.getByTestId('reached-state')).toContainText('Guidance only');
+  await expect(page.getByTestId('starter-file')).toHaveCount(0);
+  await expect(page.getByTestId('no-starter')).toBeVisible();
+  await expect(page.getByTestId('kit-blockers')).toContainText('censor');
+  // an adaptable kit says what must change first
+  await page.goto('/retail/personalized-search-ranking');
+  await expect(page.getByTestId('starter-verdict')).toHaveAttribute('data-verdict', 'adaptable');
+  await expect(page.getByTestId('kit-modifications')).toContainText('query');
+  await expect(page.getByTestId('adapt-warning')).toBeVisible();
+  // the pilot: M1 to M4 run, M5 and M6 are the engineer's platform
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  await expect(page.getByTestId('header-boundary')).toContainText('M1–M4');
+  await expect(page.getByTestId('reached-state')).toContainText('Evaluation-ready');
+  await expect(page.getByTestId('completion-ladder').locator(':scope > li')).toHaveCount(4);
+  const delivery = page.getByTestId('milestone-delivery');
+  await expect(delivery.nth(1)).toHaveAttribute('data-delivery', 'executable-reference');
+  await expect(delivery.nth(5)).toHaveAttribute('data-delivery', 'your-platform');
+  await expect(page.getByTestId('starter-file').first().getByTestId('artifact-kind').first()).toHaveAttribute(
+    'data-kind',
+    'executable-reference',
+  );
+  // the design's code is labelled for what it is: the hot path is pseudocode
+  await expect(page.locator('#lld .shiki-host [data-kind="pseudocode"]').first()).toBeVisible();
 });
 
 test('a domain page opens with a start-here path and tracks, and a track filters the catalog', async ({

@@ -44,6 +44,7 @@ export function buildProvenance(i: ProvenanceInput): Provenance {
       { section: 'Agentic verdict and solution', origin: 'generated-from-template', basis: 'A rule over the reference kit, latency class and presence of a review queue decides whether agents are recommended at all.' },
       { section: 'Statistical validation and experimentation', origin: 'generated-from-template', basis: 'A design chosen by archetype and latency, with the use case\'s own metrics inserted.' },
       { section: 'Metrics catalogue', origin: 'generated-from-spec', basis: 'Assembled from this use case\'s own offline and online metrics, signals and leakage risks, pipeline stages, edge cases, SLOs, capacity model, regulatory obligations and agents; the layer structure is shared. Targets are starting thresholds.' },
+      { section: 'Starter-kit compatibility and completion state', origin: 'generated-from-spec', basis: 'The use case\'s problem type is classified from its own fields and compared, dimension by dimension, with the contract of every reference kit (content/kit-contracts.json). A kit is shipped only for a problem it implements; otherwise the playbook is guidance only.' },
       { section: 'Build playbook and starter kit', origin: i.playbook === 'authored' ? 'hand-authored' : 'generated-from-template', basis: i.playbook === 'none' ? 'No playbook is attached to this blueprint.' : i.playbook === 'authored' ? 'Written for this use case with its own kit.' : `Generated from the blueprint and the "${i.kit}" reference kit; the kit's numbers are the kit's, not this use case's.` },
     ],
     numbers: [
@@ -53,7 +54,7 @@ export function buildProvenance(i: ProvenanceInput): Provenance {
       { item: 'Metric targets in the metrics catalogue (PSI, ECE, kappa, faithfulness, coverage and similar)', nature: 'proposed-target', note: 'Rules-of-thumb starting values to replace with your own baseline; none is a measurement.' },
       { item: 'Model-quality, agent and release-gate thresholds', nature: 'proposed-target', note: 'Gates to adopt or change after measuring your own baseline.' },
       { item: 'Starter-kit and playbook results', nature: 'synthetic', note: 'Produced on synthetic data from a reference kit; they show the pipeline runs, not that this use case reaches those scores.' },
-      { item: 'Example payloads, schemas and code', nature: 'illustrative', note: 'Shaped to the archetype; field names and values are examples.' },
+      { item: 'Example payloads, schemas and code', nature: 'illustrative', note: 'Shaped to the archetype; field names and values are examples. The hot-path code is labelled pseudocode and the schemas, contracts and diagrams architectural illustration. Only starter-kit files are executable, and they are labelled executable reference code. Nothing is production code.' },
       { item: 'Measured results from a pilot or production', nature: i.review ? 'pilot-measured' : 'illustrative', note: i.review ? `Reviewed by ${i.review.reviewer}; see the review scope above for what was covered.` : 'None recorded. No figure on this page comes from a real deployment.' },
     ],
     sources: [

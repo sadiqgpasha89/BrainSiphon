@@ -102,7 +102,7 @@ export const STATUS_LABEL: Record<StatusId, string> = {
 
 /** Which entry of the kit report covers this blueprint's starter. */
 export const kitKeyFor = (uc: Pick<UseCase, 'slug' | 'pattern' | 'playbook'>): string =>
-  uc.playbook?.provenance === 'authored' ? uc.slug : `kits/${uc.pattern}`;
+  uc.playbook?.provenance === 'authored' ? uc.slug : `kits/${uc.playbook?.starter?.kitId ?? uc.pattern}`;
 
 /**
  * The five validation statuses of one blueprint, each derived on its own from evidence. Nothing is rolled into a single
@@ -129,7 +129,13 @@ export function blueprintStatuses(
   // synthetic starter: the claim is "a kit exists for this pattern"; the status is what the last kit run for this content said
   let synthetic: StatusRow;
   if (!claimed('synthetic-data-tested')) {
-    synthetic = row('synthetic', 'not-available', 'No starter kit is attached to this blueprint.');
+    synthetic = row(
+      'synthetic',
+      'not-available',
+      uc.playbook?.compatibility.verdict === 'none'
+        ? 'No compatible executable starter kit exists for this problem, so none was run. The playbook is architecture and implementation guidance only.'
+        : 'No starter kit is attached to this blueprint.',
+    );
   } else {
     const key = kitKeyFor(uc);
     const exec = release?.checks.executable;
@@ -144,7 +150,8 @@ export function blueprintStatuses(
       synthetic = row(
         'synthetic',
         'passed',
-        `${key} ran end to end on synthetic data (${result.seconds.toFixed(1)} s, ${exec?.ranAt ?? 'unknown time'}). Its numbers are the kit's, not this use case's.`,
+        `${key} ran end to end on synthetic data (${result.seconds.toFixed(1)} s, ${exec?.ranAt ?? 'unknown time'}). Its numbers are the kit's, not this use case's.${uc.playbook?.compatibility.verdict === 'adaptable' ? ' The kit solves a related problem: this blueprint lists the changes it needs, so the pass is for the kit, not for a finished starter.' : ''}`,
+        uc.playbook?.compatibility.verdict === 'adaptable' ? ' (adaptable kit)' : '',
       );
     else synthetic = row('synthetic', 'failed', `${key} failed its tests in the last run.`);
   }

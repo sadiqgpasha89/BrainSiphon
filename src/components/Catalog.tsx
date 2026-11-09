@@ -310,14 +310,26 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
                         <DifficultyChip difficulty={e.difficulty} />
                         {e.playbook && (
                           <span
-                            className="chip !border-signal/50 !bg-signal-soft !text-signal"
+                            className={`chip ${e.starter?.verdict === 'exact' ? '!border-signal/50 !bg-signal-soft !text-signal' : e.starter?.verdict === 'adaptable' ? '!border-warn/40 !bg-warn/10 !text-warn' : ''}`}
                             title={
-                              e.playbook === 'authored'
-                                ? 'Hand-written Build Playbook with its own runnable starter kit'
-                                : 'Generated Build Playbook with a tested reference starter kit'
+                              e.starter?.verdict === 'none'
+                                ? 'Build Playbook with architecture and implementation guidance only: no compatible executable starter kit exists'
+                                : e.starter?.verdict === 'adaptable'
+                                  ? 'Build Playbook with a starter kit that needs modifications before it fits this use case'
+                                  : e.playbook === 'authored'
+                                    ? 'Hand-written Build Playbook with its own starter kit (runs on synthetic data)'
+                                    : 'Generated Build Playbook with a reference starter kit for the same problem (runs on synthetic data)'
                             }
+                            data-testid="starter-badge"
+                            data-verdict={e.starter?.verdict}
                           >
-                            {e.playbook === 'authored' ? 'Playbook · hand-written' : 'Playbook'}
+                            {e.starter?.verdict === 'none'
+                              ? 'Playbook · guidance only'
+                              : e.starter?.verdict === 'adaptable'
+                                ? 'Playbook · adapt kit'
+                                : e.playbook === 'authored'
+                                  ? 'Playbook · hand-written'
+                                  : 'Playbook · exact kit'}
                           </span>
                         )}
                         <span className="chip chip-signal ml-auto">{e.signalCount} signals</span>

@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { ARTIFACT_KINDS, COMPLETION_STATES, MILESTONE_DELIVERIES, REACHED_STATES } from '../lib/artifacts';
+import { NO_KIT_STATEMENT, PROBLEM_TYPES } from '../lib/problem-types';
 import { ROLE_IDS } from '../lib/roles';
 
 export const DOMAINS = [
@@ -246,6 +248,15 @@ export const SystemDesignSchema = z.object({
   lld: z.object({
     archetype: z.enum(ARCHETYPES),
     status: z.enum(LLD_STATUSES),
+    /** what kind of artifact each block below is: none of them is production code */
+    artifacts: z.object({
+      apiContract: z.enum(ARTIFACT_KINDS),
+      dataModelDDL: z.enum(ARTIFACT_KINDS),
+      eventSchema: z.enum(ARTIFACT_KINDS),
+      classDiagram: z.enum(ARTIFACT_KINDS),
+      algorithm: z.enum(ARTIFACT_KINDS),
+      config: z.enum(ARTIFACT_KINDS),
+    }),
     apiContract: z.object({
       method: z.enum(['GET', 'POST']),
       path: nonEmpty,
@@ -298,11 +309,141 @@ export const SystemDesignSchema = z.object({
 const Cell = z.union([z.string(), z.number(), z.boolean(), z.null()]);
 
 /**
+ * Starter-kit compatibility. A reference kit is a starter only when it implements the same fundamental problem; the generator
+ * compares the use case's problem profile with every kit's contract and records the outcome here. `exact`: the kit implements
+ * the same problem. `adaptable`: reusable parts, with named modifications. `none`: no compatible executable kit, so the playbook
+ * is architecture and implementation guidance only. A kit is never silently substituted.
+ */
+export const COMPAT_VERDICTS = ['exact', 'adaptable', 'none'] as const;
+export const COMPAT_DIMENSIONS = [
+  'problem',
+  'label',
+  'validation',
+  'metrics',
+  'data',
+  'model',
+  'serving',
+  'integrations',
+] as const;
+export const DIMENSION_STATUSES = ['match', 'adapt', 'mismatch', 'outside-kit'] as const;
+const CompatDimensionSchema = z.object({
+  dimension: z.enum(COMPAT_DIMENSIONS),
+  /** what this use case needs on the dimension, from its own authored fields */
+  needs: nonEmpty,
+  /** what the kit provides on it */
+  provides: nonEmpty,
+  /** `outside-kit`: the kit does not claim this dimension (serving, integrations): it is the engineer's platform work */
+  status: z.enum(DIMENSION_STATUSES),
+  change: nonEmpty.optional(),
+});
+export type CompatDimension = z.infer<typeof CompatDimensionSchema>;
+
+export const CompatibilitySchema = z
+  .object({
+    verdict: z.enum(COMPAT_VERDICTS),
+    /** `authored-starter`: a hand-written starter built for this use case. `reference-kit`: a shared kit. `none`: no executable artifact. */
+    source: z.enum(['authored-starter', 'reference-kit', 'none']),
+    problemType: z.enum(PROBLEM_TYPES),
+    /** how the problem type was decided */
+    basis: nonEmpty,
+    kitId: z.string().optional(),
+    kitLabel: nonEmpty.optional(),
+    statement: nonEmpty,
+    dimensions: z.array(CompatDimensionSchema).length(COMPAT_DIMENSIONS.length),
+    /** parts of the kit that carry over */
+    reusable: z.array(nonEmpty),
+    /** explicit changes needed before an adaptable kit does this use case's job */
+    modifications: z.array(nonEmpty),
+    /** why no kit fits (verdict none) */
+    blockers: z.array(nonEmpty),
+    /** the closest kit, shown for background reading and never as a starter when the verdict is none */
+    closest: z.object({ kitId: nonEmpty, label: nonEmpty, whyNot: nonEmpty }).optional(),
+    /** every reference kit that was compared, so a substitution cannot be silent */
+    evaluated: z.array(
+      z.object({ kitId: nonEmpty, verdict: z.enum(COMPAT_VERDICTS), blocker: nonEmpty.optional() }),
+    ),
+  })
+  .superRefine((c, ctx) => {
+    const bad = (message: string) => ctx.addIssue({ code: 'custom', message });
+    const dims = c.dimensions.map((d) => d.dimension);
+    if (COMPAT_DIMENSIONS.some((d, i) => dims[i] !== d))
+      bad(`dimensions must be exactly ${COMPAT_DIMENSIONS.join(', ')} in that order`);
+    const problem = c.dimensions.find((d) => d.dimension === 'problem')?.status;
+    const hard = c.dimensions.filter((d) => d.status === 'adapt' || d.status === 'mismatch');
+    if (c.verdict === 'none') {
+      if (c.kitId || c.source !== 'none') bad('a "none" verdict must not name a starter kit');
+      if (!c.statement.includes(NO_KIT_STATEMENT))
+        bad('a "none" verdict must carry the standard no-compatible-kit statement');
+      if (c.blockers.length < 1) bad('a "none" verdict must say why no kit fits');
+      if (c.modifications.length) bad('a "none" verdict has nothing to modify');
+    } else {
+      if (!c.kitLabel) bad('an exact or adaptable verdict must name its kit');
+      if (c.source === 'none') bad('an exact or adaptable verdict needs a kit source');
+      if (c.source === 'reference-kit' && !c.kitId) bad('a reference-kit verdict must carry the kit id');
+      if (problem === 'mismatch')
+        bad('a kit whose problem dimension is a mismatch cannot be exact or adaptable');
+    }
+    if (c.verdict === 'exact' && (c.modifications.length || hard.length))
+      bad('an exact match has no adapted or mismatched dimension and no modifications');
+    if (c.verdict === 'adaptable' && c.modifications.length < 1)
+      bad('an adaptable match must list its modifications explicitly');
+    if (c.verdict === 'adaptable' && c.source !== 'reference-kit')
+      bad('only a shared reference kit can be adaptable');
+  });
+export type Compatibility = z.infer<typeof CompatibilitySchema>;
+
+/**
+ * Completion ladder: how far the executable artifacts supplied for a use case actually get an engineer. Nothing supplied here is
+ * shadow-ready or production-ready: that is the engineer's platform work, and the page says so.
+ */
+export const CompletionSchema = z
+  .object({
+    /** highest state fully reached by the supplied artifacts, or `guidance-only` when there are none */
+    reached: z.enum(REACHED_STATES),
+    /** true when `reached` holds only after the listed modifications are made */
+    conditional: z.boolean(),
+    summary: nonEmpty,
+    /** one sentence: which milestones run as code and which are yours */
+    boundary: nonEmpty,
+    states: z
+      .array(
+        z.object({
+          state: z.enum(COMPLETION_STATES),
+          meaning: nonEmpty,
+          status: z.enum(['reached', 'conditional', 'not-reached']),
+          evidence: nonEmpty,
+          stillNeeded: z.array(nonEmpty),
+        }),
+      )
+      .length(COMPLETION_STATES.length),
+  })
+  .superRefine((c, ctx) => {
+    const bad = (message: string) => ctx.addIssue({ code: 'custom', message });
+    if (COMPLETION_STATES.some((s, i) => c.states[i]?.state !== s))
+      bad(`states must be ${COMPLETION_STATES.join(', ')} in that order`);
+    const full = [...c.states].reverse().find((s) => s.status === 'reached');
+    const cond = [...c.states].reverse().find((s) => s.status === 'conditional');
+    const want = full?.state ?? cond?.state ?? 'guidance-only';
+    if (c.reached !== want)
+      bad(`reached must be the highest state with evidence (${want}), not ${c.reached}`);
+    if (c.conditional !== (!full && Boolean(cond)))
+      bad('conditional must be true exactly when only conditional states exist');
+    const order = c.states.map((s) => s.status);
+    const firstGap = order.indexOf('not-reached');
+    if (firstGap >= 0 && order.slice(firstGap).some((s) => s !== 'not-reached'))
+      bad('a state cannot be reached after one that is not');
+    for (const s of c.states)
+      if (s.status !== 'reached' && s.stillNeeded.length === 0)
+        bad(`${s.state} is not reached but says nothing is still needed`);
+  });
+export type Completion = z.infer<typeof CompletionSchema>;
+
+/**
  * Build Playbook: what an intermediate engineer needs to go from this blueprint to a shipped system —
  * where the data comes from, the ordered milestones with numeric exit gates, a starter kit that runs
  * on synthetic data, a worked example, an executable test plan, decisions and pitfalls.
  */
-export const PlaybookSchema = z.object({
+export const PlaybookBase = z.object({
   /** `authored`: written by hand with its own starter kit. `generated`: assembled from the blueprint's own fields, shared domain and paradigm knowledge, and a reference starter kit. */
   provenance: z.enum(['authored', 'generated']),
   summary: nonEmpty,
@@ -330,11 +471,16 @@ export const PlaybookSchema = z.object({
         }),
       )
       .min(1),
-    synthetic: z.object({ file: nonEmpty, description: nonEmpty, knobs: z.array(nonEmpty).min(2) }),
-    sample: z.object({
-      columns: z.array(nonEmpty).min(3),
-      rows: z.array(z.array(Cell)).min(3),
-    }),
+    /** absent when no executable starter kit is compatible with this use case */
+    synthetic: z
+      .object({ file: nonEmpty, description: nonEmpty, knobs: z.array(nonEmpty).min(2) })
+      .optional(),
+    sample: z
+      .object({
+        columns: z.array(nonEmpty).min(3),
+        rows: z.array(z.array(Cell)).min(3),
+      })
+      .optional(),
     label: nonEmpty,
   }),
   milestones: z
@@ -346,27 +492,38 @@ export const PlaybookSchema = z.object({
         tasks: z.array(nonEmpty).min(2),
         deliverable: nonEmpty,
         gate: z.object({ metric: nonEmpty, threshold: nonEmpty, how: nonEmpty }),
+        /** how this milestone's work is supplied: runs in the starter, adapt the starter, guidance only, or your platform */
+        delivery: z.enum(MILESTONE_DELIVERIES),
+        /** the completion state this milestone's exit gate completes */
+        state: z.enum(COMPLETION_STATES),
       }),
     )
     .min(6),
-  starter: z.object({
-    /** reference kit id (content/kits/<id>) when the starter is shared across use cases */
-    kitId: z.string().optional(),
-    runtime: nonEmpty,
-    run: z.array(nonEmpty).min(2),
-    expected: nonEmpty,
-    files: z
-      .array(
-        z.object({
-          path: nonEmpty,
-          purpose: nonEmpty,
-          language: z.enum(['python', 'yaml', 'text']),
-          code: nonEmpty,
-        }),
-      )
-      .min(3),
-  }),
+  /** absent when no executable starter kit is compatible with this use case */
+  starter: z
+    .object({
+      /** reference kit id (content/kits/<id>) when the starter is shared across use cases */
+      kitId: z.string().optional(),
+      runtime: nonEmpty,
+      run: z.array(nonEmpty).min(2),
+      expected: nonEmpty,
+      files: z
+        .array(
+          z.object({
+            path: nonEmpty,
+            purpose: nonEmpty,
+            language: z.enum(['python', 'yaml', 'text']),
+            /** every file says whether it is production code, executable reference code, pseudocode or an illustration */
+            kind: z.enum(ARTIFACT_KINDS),
+            code: nonEmpty,
+          }),
+        )
+        .min(3),
+    })
+    .optional(),
   workedExample: z.object({
+    /** `reference-kit`: run on the starter kit's synthetic data. `blueprint-only`: a walk-through built from the blueprint with no run and no numbers. */
+    basis: z.enum(['reference-kit', 'blueprint-only']),
     scenario: nonEmpty,
     steps: z.array(z.object({ stage: nonEmpty, detail: nonEmpty })).min(4),
     outcome: nonEmpty,
@@ -385,6 +542,50 @@ export const PlaybookSchema = z.object({
     .array(z.object({ at: z.string().regex(/^M\d$/), mistake: nonEmpty, symptom: nonEmpty, fix: nonEmpty }))
     .min(4),
   first30Days: z.array(nonEmpty).min(4),
+  compatibility: CompatibilitySchema,
+  completion: CompletionSchema,
+});
+
+/** The full playbook with its cross-field rules: a kit is supplied if and only if the compatibility verdict allows it. */
+export const PlaybookSchema = PlaybookBase.superRefine((pb, ctx) => {
+  const bad = (message: string) => ctx.addIssue({ code: 'custom', message });
+  const c = pb.compatibility;
+  const hasKit = Boolean(pb.starter);
+  if (c.verdict === 'none') {
+    if (hasKit) bad('verdict "none": the playbook must not ship a starter kit');
+    if (pb.data.synthetic || pb.data.sample)
+      bad('verdict "none": the playbook must not ship synthetic data or a sample');
+    if (pb.workedExample.basis !== 'blueprint-only')
+      bad('verdict "none": the worked example cannot be run on a kit');
+  } else {
+    if (!hasKit) bad(`verdict "${c.verdict}": the playbook needs its starter kit`);
+    if (!pb.data.synthetic || !pb.data.sample)
+      bad(`verdict "${c.verdict}": the playbook needs its synthetic data and sample`);
+    if (pb.provenance === 'generated' && pb.starter?.kitId !== c.kitId)
+      bad('the starter kit shipped is not the kit the compatibility check chose');
+    if (pb.provenance === 'authored' && c.source !== 'authored-starter')
+      bad('an authored playbook must record an authored starter');
+  }
+  const ids = pb.milestones.map((m) => m.id);
+  for (const m of pb.milestones) {
+    if (c.verdict === 'none' && (m.delivery === 'executable-reference' || m.delivery === 'adapt-reference'))
+      bad(`${m.id}: no starter exists, so its work cannot be "${m.delivery}"`);
+    if (c.verdict === 'adaptable' && m.delivery === 'executable-reference')
+      bad(`${m.id}: an adaptable kit does not run this milestone as it is`);
+    if ((m.id === 'M5' || m.id === 'M6') && m.delivery !== 'your-platform')
+      bad(`${m.id}: serving and rollout are never supplied by a starter kit`);
+  }
+  if (
+    ids.length &&
+    pb.completion.reached !== 'guidance-only' &&
+    pb.completion.reached !== 'prototype-ready' &&
+    pb.completion.reached !== 'evaluation-ready'
+  )
+    bad('no starter kit reaches shadow-ready or production-ready');
+  if (c.verdict === 'none' && pb.completion.reached !== 'guidance-only')
+    bad('verdict "none" has no executable artifact, so completion is guidance-only');
+  if (c.verdict !== 'none' && pb.completion.reached === 'guidance-only')
+    bad('a playbook with a starter reaches at least prototype-ready');
 });
 export type Playbook = z.infer<typeof PlaybookSchema>;
 
@@ -1077,6 +1278,14 @@ export interface UseCaseIndexEntry {
   trackName?: string;
   /** how the Build Playbook was made: written by hand with its own kit, or generated from the blueprint and a reference kit */
   playbook?: 'authored' | 'generated';
+  /** the starter-kit compatibility verdict and how far the executable artifacts get an engineer */
+  starter?: {
+    verdict: 'exact' | 'adaptable' | 'none';
+    kitId?: string;
+    problemType: string;
+    reached: string;
+    conditional: boolean;
+  };
 }
 
 /** URL query validation shared by /api/search and the catalog. */

@@ -137,6 +137,34 @@ describe('per-blueprint statuses', () => {
     expect(missing).toEqual([]);
   });
 
+  it('claims no starter pass for a blueprint with no compatible kit, and flags an adaptable kit as such', () => {
+    const none = all.filter((u) => u.playbook?.compatibility.verdict === 'none');
+    const adaptable = all.filter((u) => u.playbook?.compatibility.verdict === 'adaptable');
+    expect(none.length).toBeGreaterThan(0);
+    expect(adaptable.length).toBeGreaterThan(0);
+    for (const u of none) {
+      expect(u.playbook?.starter, u.slug).toBeUndefined();
+      const row = blueprintStatuses(u, manifest()).find((x) => x.id === 'synthetic')!;
+      expect(row.state, u.slug).toBe('not-available');
+      expect(row.detail, u.slug).toMatch(/No compatible executable starter kit/);
+      expect(u.validation.levels.find((l) => l.level === 'synthetic-data-tested')?.state, u.slug).toBe(
+        'not-yet',
+      );
+    }
+    for (const u of adaptable.slice(0, 20)) {
+      const row = blueprintStatuses(u, manifest()).find((x) => x.id === 'synthetic')!;
+      expect(row.state, u.slug).toBe('passed');
+      expect(row.text, u.slug).toContain('adaptable kit');
+    }
+  });
+
+  it('names the kit the compatibility check chose, not the blueprint pattern', () => {
+    for (const u of all) {
+      const id = u.playbook?.starter?.kitId;
+      if (id && u.playbook?.provenance !== 'authored') expect(kitKeyFor(u), u.slug).toBe(`kits/${id}`);
+    }
+  });
+
   it('never reports expert review or production evidence for a blueprint without a recorded one', () => {
     for (const u of all) {
       const s = blueprintStatuses(u, manifest());

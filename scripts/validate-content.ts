@@ -9,6 +9,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import katex from 'katex';
 import { loadAllUseCases } from '../src/content/load';
+import { checkKitCompatibility, compatibilitySummary } from '../src/content/kit-gate';
 import { DISCOVERY_QUESTION_IDS, DOMAINS, isAgentic, type UseCase } from '../src/schemas/usecase.schema';
 import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
@@ -107,10 +108,13 @@ async function main() {
 
     if (u.playbook?.provenance === 'generated') {
       const pb = u.playbook;
-      const text = JSON.stringify({ ...pb, starter: { ...pb.starter, files: [] } });
+      const text = JSON.stringify({ ...pb, starter: pb.starter ? { ...pb.starter, files: [] } : undefined });
       if (/\b(undefined|NaN|Infinity)\b|\[object|\$\{|\{\{/.test(text))
         errors.push(`${u.slug}: generated playbook contains an unresolved placeholder`);
-      if (!pb.starter.kitId) errors.push(`${u.slug}: generated playbook has no reference kit`);
+      if (pb.compatibility.verdict !== 'none' && !pb.starter?.kitId)
+        errors.push(`${u.slug}: generated playbook has no reference kit`);
+      if (pb.compatibility.verdict === 'none' && pb.starter)
+        errors.push(`${u.slug}: generated playbook ships a starter kit although no kit is compatible`);
       if (pb.milestones.filter((m) => /\d/.test(m.gate.threshold)).length < 5)
         errors.push(`${u.slug}: fewer than 5 generated milestone gates carry a number`);
       if (pb.domainKnowledge.glossary.length < 15 || pb.domainKnowledge.concepts.length < 5)
@@ -153,7 +157,7 @@ async function main() {
           errors.push(
             `${u.slug}: domain concept "${c.name}" is too thin (explanation >= 20 words, why it matters >= 8)`,
           );
-      for (const f of u.playbook.starter.files)
+      for (const f of u.playbook.starter?.files ?? [])
         if (/\bTODO\b|FIXME|NotImplementedError/.test(f.code))
           errors.push(`${u.slug}: starter file ${f.path} contains a stub marker`);
     }
@@ -359,6 +363,9 @@ async function main() {
     }
   }
 
+  // starter-kit compatibility: a kit is shipped only for the problem it implements, and nothing claims to be production code
+  errors.push(...checkKitCompatibility(all));
+
   warnings.forEach((w) => console.warn(`⚠ ${w}`));
   if (errors.length) {
     errors.slice(0, 60).forEach((e) => console.error(`✖ ${e}`));
@@ -366,6 +373,14 @@ async function main() {
     process.exit(1);
   }
   const withPlaybook = all.filter((u) => u.playbook).length;
+  const kits = compatibilitySummary(all);
+  console.log(
+    `starter-kit compatibility: ${kits.exact + kits.authored} exact (${kits.authored} hand-written), ${kits.adaptable} adaptable, ${kits.none} with no compatible kit; executable artifacts reach ${Object.entries(
+      kits.reached,
+    )
+      .map(([k, n]) => `${k} ${n}`)
+      .join(', ')}`,
+  );
   const feas = all.flatMap((u) => u.validation.feasibility);
   const git = gitInfo();
   writeReport(process.cwd(), VALIDATION_REPORT, {

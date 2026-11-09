@@ -673,14 +673,20 @@ export function buildOperations(c: EntCtx): Operations {
 export function buildValidation(
   c: EntCtx,
   feasibility: FeasibilityCheck[],
-  opts: { hasPlaybook: boolean; hasStarter: boolean; review?: Review },
+  opts: { hasPlaybook: boolean; hasStarter: boolean; starterAdaptable?: boolean; hasCompatibleKit?: boolean; review?: Review },
 ): Omit<Validation, 'provenance'> {
   const fails = feasibility.filter((x) => x.status === 'fail').length;
   const warns = feasibility.filter((x) => x.status === 'warn').length;
   const evidence = {
     schema: 'Passed the strict Zod schema at build time; a missing or malformed section fails the build.',
     technical: fails === 0 ? `${feasibility.filter((x) => x.status === 'pass').length} architecture feasibility checks passed${warns ? `, ${warns} with a warning to read` : ''}; Mermaid diagrams parse and loss formulas compile in the content gate.` : 'Feasibility checks failed.',
-    synthetic: opts.hasStarter ? 'A starter kit for this pattern runs end to end on synthetic data in CI. Its numbers are the reference kit\'s, not this use case\'s.' : 'No starter kit has been run for this use case.',
+    synthetic: opts.hasStarter
+      ? opts.starterAdaptable
+        ? 'The closest reference kit runs end to end on synthetic data in CI, but it solves a related problem, not this one: the playbook lists the changes it needs. Its numbers are the kit\'s, not this use case\'s.'
+        : 'A starter kit for this problem runs end to end on synthetic data in CI. Its numbers are the kit\'s, not this use case\'s.'
+      : opts.hasCompatibleKit === false
+        ? 'No compatible executable starter kit exists for this problem, so none was run: the playbook is architecture and implementation guidance only.'
+        : 'No starter kit has been run for this use case.',
     expert: opts.review ? `Reviewed by ${opts.review.reviewer} on ${opts.review.date}: ${opts.review.scope}` : 'No domain-specialist review is recorded for this blueprint.',
     production: 'No evidence from a real deployment or a production dataset is recorded.',
   };

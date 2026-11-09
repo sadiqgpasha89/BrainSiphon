@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DifficultyChip, LatencyChip, ParadigmChips } from '../../../components/Badges';
 import { ReaderShell } from '../../../components/reader/ReaderShell';
-import { PlaybookSection } from '../../../components/reader/Playbook';
+import { PlaybookSection, VERDICT_LABEL, VERDICT_TONE } from '../../../components/reader/Playbook';
+import { COMPLETION_META } from '../../../lib/artifacts';
 import { AgenticSection } from '../../../components/reader/Agentic';
 import { Pager, Sections, tocFor } from '../../../components/reader/Sections';
 import {
@@ -124,18 +125,41 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
             className="btn mt-4 !border-signal/50 !bg-signal-soft !text-signal no-underline"
             data-testid="playbook-link"
           >
-            <Hammer size={14} aria-hidden /> Build playbook: data, milestones, runnable starter kit
+            <Hammer size={14} aria-hidden />{' '}
+            {uc.playbook.compatibility.verdict === 'exact'
+              ? 'Build playbook: data, milestones, runnable starter kit'
+              : uc.playbook.compatibility.verdict === 'adaptable'
+                ? 'Build playbook: data, milestones, a starter kit to adapt'
+                : 'Build playbook: guidance only, no compatible starter kit'}
           </a>
+        )}
+        {uc.playbook && (
+          <p className="mt-3 max-w-3xl text-sm text-mute" data-testid="header-boundary" data-prose>
+            <strong className="text-ink">Implementation boundary. </strong>
+            {uc.playbook.completion.boundary}
+          </p>
         )}
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <Link
             href={`/patterns/${uc.pattern}`}
             className="chip !border-signal/50 !bg-signal-soft !text-signal no-underline"
             data-testid="pattern-chip"
-            title="The reference pattern and runnable kit this system is an instance of"
+            title="The teaching archetype this system resembles. It is not a promise of a compatible starter kit: see the Starter chip for that"
           >
             Pattern: {uc.pattern}
           </Link>
+          {uc.playbook && (
+            <a
+              href="#pb-status"
+              className={`chip no-underline ${VERDICT_TONE[uc.playbook.compatibility.verdict]}`}
+              data-testid="starter-chip"
+              title={uc.playbook.compatibility.statement}
+            >
+              Starter: {VERDICT_LABEL[uc.playbook.compatibility.verdict].toLowerCase()} · reaches{' '}
+              {COMPLETION_META[uc.playbook.completion.reached].label.toLowerCase()}
+              {uc.playbook.completion.conditional ? ' after changes' : ''}
+            </a>
+          )}
           <ParadigmChips paradigms={uc.mlParadigms} />
           <LatencyChip latency={uc.latencySLA} />
           <DifficultyChip difficulty={uc.difficulty} />
