@@ -480,6 +480,188 @@ const CHECK_TONE = {
   'n/a': '',
 } as const;
 
+/* ------------------------------------------------------------------ statistical validation and experimentation */
+
+export function ExperimentationSection({ uc }: { uc: UseCase }) {
+  const x = uc.experimentation;
+  return (
+    <Section
+      id="experimentation"
+      title="Statistical validation and experimentation"
+      kicker="Proving the business effect, not just the model metric: design, power, labels, slices, causal method and when to stop"
+    >
+      <div className="card p-4" data-testid="experiment-question">
+        <Label>The question</Label>
+        <p className="text-base text-ink">{x.question}</p>
+        <p className="mt-2 text-sm text-mute">
+          <strong className="text-ink">Estimand.</strong> {x.estimand}
+        </p>
+      </div>
+
+      <Sub id="xp-design" title="Experimental design">
+        <KV
+          rows={[
+            [
+              'Design',
+              <span key="d" className="chip chip-signal">
+                {x.design.type}
+              </span>,
+            ],
+            ['Unit', x.design.unit],
+            ['Why this design', x.design.why],
+            ['Interference', x.design.interference],
+          ]}
+        />
+      </Sub>
+
+      <Sub id="xp-metrics" title="Metrics, power and stopping">
+        <KV
+          rows={[
+            ['Primary', x.metrics.primary],
+            ['Offline to online', x.metrics.offlineOnlineGap],
+            ['Significance', `α = ${x.power.alpha}, power = ${Math.round(x.power.power * 100)}%`],
+            ['Minimum detectable effect', x.power.mde],
+            ['Sample-size rule', x.power.sampleSizeRule],
+            ['Duration', x.power.duration],
+          ]}
+        />
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="card p-4">
+            <Label>Guardrails</Label>
+            <List items={x.metrics.guardrails} />
+          </div>
+          <div className="card p-4">
+            <Label>Stopping rules</Label>
+            <List items={x.stopping} />
+          </div>
+        </div>
+      </Sub>
+
+      <Sub id="xp-data" title="Labels, sampling and data quality">
+        <KV
+          rows={[
+            ['Label maturity', x.labels.maturity],
+            ['Label quality', x.labels.quality],
+            ['Selection bias', x.labels.selectionBias],
+            ['Sampling', x.sampling],
+          ]}
+        />
+        <div className="card p-4">
+          <Label>Missing and biased data checks</Label>
+          <List items={x.dataQuality} />
+        </div>
+      </Sub>
+
+      <Sub id="xp-model" title="Calibration, uncertainty, slices and causal methods">
+        <KV
+          rows={[
+            ['Calibration', x.calibration],
+            ['Uncertainty', x.uncertainty],
+            ['Causal method', `${x.causal.method}. Use it when: ${x.causal.when}.`],
+            ['Counterfactual evaluation', x.counterfactual],
+          ]}
+        />
+        <div className="card p-4">
+          <Label>Subgroup and fairness slices</Label>
+          <List items={x.slices} />
+        </div>
+      </Sub>
+
+      <Sub id="xp-value" title="Measuring business value">
+        <Table head={['Measure', 'How']} rows={x.businessValue.map((b) => [b.metric, b.how])} />
+        <div className="card p-4">
+          <Label>Common ways this goes wrong</Label>
+          <List items={x.pitfalls} tone="noise" />
+        </div>
+      </Sub>
+    </Section>
+  );
+}
+
+const ORIGIN_LABEL: Record<string, { label: string; tone: string }> = {
+  'hand-authored': { label: 'hand-authored', tone: 'chip-signal' },
+  'generated-from-spec': { label: 'generated from the spec', tone: '' },
+  'generated-from-template': { label: 'generated from a template', tone: '!border-warn/40 !text-warn' },
+};
+const NATURE_TONE: Record<string, string> = {
+  illustrative: '!border-warn/40 !text-warn',
+  modelled: '!border-warn/40 !text-warn',
+  synthetic: '',
+  'proposed-target': '',
+  'pilot-measured': 'chip-signal',
+  'production-measured': 'chip-signal',
+};
+
+function ProvenancePanel({ uc }: { uc: UseCase }) {
+  const p = uc.validation.provenance;
+  return (
+    <div className="space-y-5" data-testid="provenance">
+      <div className="card grid gap-3 p-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <Label>Content status</Label>
+          <p className="font-medium text-ink" data-testid="content-status">
+            {LEVEL_LABEL[p.status].title}
+          </p>
+        </div>
+        <div>
+          <Label>Owner</Label>
+          <p>{p.owner}</p>
+        </div>
+        <div>
+          <Label>Reviewer</Label>
+          <p data-testid="reviewer">
+            {p.reviewer ? `${p.reviewer}, ${p.reviewedAt}` : 'No named reviewer yet'}
+          </p>
+        </div>
+        <div>
+          <Label>Generated</Label>
+          <p>{p.generatedAt} (a generation date, not a review date)</p>
+        </div>
+      </div>
+      <div>
+        <Label>How each part of this page was made</Label>
+        <Table
+          head={['Section', 'Origin', 'Basis']}
+          rows={p.sections.map((x) => [
+            x.section,
+            <span key="o" className={`chip ${ORIGIN_LABEL[x.origin]!.tone}`}>
+              {ORIGIN_LABEL[x.origin]!.label}
+            </span>,
+            x.basis,
+          ])}
+        />
+      </div>
+      <div>
+        <Label>What kind of number is this?</Label>
+        <Table
+          head={['Figure', 'Nature', 'Note']}
+          rows={p.numbers.map((n) => [
+            n.item,
+            <span key="n" className={`chip ${NATURE_TONE[n.nature] ?? ''}`}>
+              {n.nature}
+            </span>,
+            n.note,
+          ])}
+        />
+      </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="card p-4">
+          <Label>Sources</Label>
+          <List items={p.sources.map((s) => `${s.kind}: ${s.ref}`)} />
+        </div>
+        <div className="card p-4">
+          <Label>Assumptions</Label>
+          <List items={p.assumptions} />
+        </div>
+        <div className="card p-4">
+          <Label>Known limitations</Label>
+          <List items={p.limitations} tone="noise" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ValidationSection({ uc }: { uc: UseCase }) {
   const v = uc.validation;
   return (
@@ -488,6 +670,7 @@ export function ValidationSection({ uc }: { uc: UseCase }) {
       title="Validation and architecture review"
       kicker="What has been verified, by what, and what has not: automated checks are not expert review"
     >
+      <ProvenancePanel uc={uc} />
       <ol className="space-y-2" data-testid="validation-levels">
         {v.levels.map((l) => {
           const meta = LEVEL_LABEL[l.level];

@@ -26,7 +26,18 @@ interface Props {
   domain: Domain;
   paradigms: Paradigm[];
   latency: LatencySLA;
-  inputs: { a: number; k: number; steps?: number; tokensPerStep?: number };
+  inputs: {
+    a: number;
+    k: number;
+    steps?: number;
+    tokensPerStep?: number;
+    outcomeUnit?: string;
+    reviewRate?: number;
+    eventsPerDay?: number;
+    driver?: string;
+  };
+  /** the solution archetype, which picks the workload profile the calculator opens with */
+  archetype?: string;
 }
 
 const num = (n: number, d = 0) =>
@@ -102,7 +113,7 @@ function ParamSlider({
 }
 
 /** Re-runs the same capacity model that produced the static table, with the sliders as inputs. Defaults reproduce the table exactly. */
-export function CapacityCalculator({ domain, paradigms, latency, inputs }: Props) {
+export function CapacityCalculator({ domain, paradigms, latency, inputs, archetype }: Props) {
   const batch = latency === 'batch';
   const baseSla = BASELINE_SLA_MS[latency];
   const basePeak = latency === 'sub-10ms' ? 8 : 6;
@@ -131,7 +142,7 @@ export function CapacityCalculator({ domain, paradigms, latency, inputs }: Props
     }),
     [base, inputs],
   );
-  const initialProfile = defaultProfile(domain, base.computeClass);
+  const initialProfile = defaultProfile(domain, base.computeClass, archetype);
   const [profile, setProfile] = useState<ProfileId>(initialProfile);
   const [vals, setVals] = useState<Record<string, number>>({});
   const defs: ProfileParam[] = useMemo(
@@ -158,6 +169,10 @@ export function CapacityCalculator({ domain, paradigms, latency, inputs }: Props
         k: ap.k ?? inputs.k,
         steps: ap.steps ?? inputs.steps ?? 3,
         tokensPerStep: ap.tokensPerStep ?? inputs.tokensPerStep ?? 350,
+        ...(inputs.outcomeUnit ? { outcomeUnit: inputs.outcomeUnit } : {}),
+        ...(inputs.reviewRate ? { reviewRate: inputs.reviewRate } : {}),
+        ...(ap.candidates ? { candidates: ap.candidates } : {}),
+        ...(ap.stateGB ? { stateGB: ap.stateGB } : {}),
         ...(ap.peakFactor ? { peakFactor: ap.peakFactor } : {}),
         ...(profileAtDefault
           ? {}
@@ -172,6 +187,8 @@ export function CapacityCalculator({ domain, paradigms, latency, inputs }: Props
       k: inputs.k * s.kMul,
       ...(inputs.steps ? { steps: inputs.steps } : {}),
       ...(inputs.tokensPerStep ? { tokensPerStep: inputs.tokensPerStep } : {}),
+      ...(inputs.outcomeUnit ? { outcomeUnit: inputs.outcomeUnit } : {}),
+      ...(inputs.reviewRate ? { reviewRate: inputs.reviewRate } : {}),
       registeredUsers: Math.round(2 ** s.users),
       dauRatio: s.dau / 100,
       peakFactor: s.peak,
@@ -194,6 +211,12 @@ export function CapacityCalculator({ domain, paradigms, latency, inputs }: Props
     ['Feature-store shards', String(r.redisShards), delta(r.redisShards, base.redisShards)],
     ['Monthly run cost', usd(r.monthlyTotalUSD), delta(r.monthlyTotalUSD, base.monthlyTotalUSD)],
     ['Cost / 1,000 decisions', usd(r.costPer1kUSD), delta(r.costPer1kUSD, base.costPer1kUSD)],
+    ['All-in monthly cost', usd(r.monthlyAllInUSD), delta(r.monthlyAllInUSD, base.monthlyAllInUSD)],
+    [
+      `Cost per ${r.outcomeUnit}`,
+      usd(r.costPerOutcomeUSD),
+      delta(r.costPerOutcomeUSD, base.costPerOutcomeUSD),
+    ],
   ];
 
   return (
@@ -313,7 +336,7 @@ export function CapacityCalculator({ domain, paradigms, latency, inputs }: Props
           />
         )}
       </div>
-      <dl className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6" aria-live="polite">
+      <dl className="grid grid-cols-2 gap-3 md:grid-cols-4" aria-live="polite">
         {kpis.map(([label, value, d]) => (
           <div key={label} className="rounded-lg border border-line bg-raised/40 p-3">
             <dt className="text-[11px] text-mute">{label}</dt>
@@ -322,6 +345,51 @@ export function CapacityCalculator({ domain, paradigms, latency, inputs }: Props
           </div>
         ))}
       </dl>
+      <div className="grid gap-4 lg:grid-cols-2" data-testid="capacity-scenarios">
+        <div>
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">
+            {batch ? 'Volume scenarios' : 'Load scenarios'}: P50 / P95 / P99
+          </p>
+          <table className="bs-table w-full text-sm">
+            <thead>
+              <tr>
+                <th>Scenario</th>
+                <th>Load</th>
+                <th>{r.nodeUnit.split(' (')[0]}</th>
+                <th>Monthly</th>
+              </tr>
+            </thead>
+            <tbody>
+              {r.scenarios.map((x) => (
+                <tr key={x.label} title={x.note}>
+                  <td>{x.label}</td>
+                  <td className="font-mono text-xs">{x.load}</td>
+                  <td className="font-mono">{num(x.nodes)}</td>
+                  <td className="font-mono">{usd(x.monthlyUSD)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-2 text-xs text-dim">
+            Cost range: low <span className="font-mono">{usd(r.costRange.low)}</span> · expected{' '}
+            <span className="font-mono">{usd(r.costRange.expected)}</span> · high{' '}
+            <span className="font-mono">{usd(r.costRange.high)}</span> per month.
+          </p>
+        </div>
+        <div>
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">Where the money goes</p>
+          <table className="bs-table w-full text-sm">
+            <tbody>
+              {r.costBreakdown.map((c) => (
+                <tr key={c.item} title={c.basis}>
+                  <td>{c.item}</td>
+                  <td className="font-mono">{usd(c.monthlyUSD)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
       <p className="text-xs text-dim">
         Same model as the table above, re-run in your browser. A tighter p99 than the published target derates
         per-node utilisation (more headroom); a looser one lets nodes run hotter. Indicative on-demand list

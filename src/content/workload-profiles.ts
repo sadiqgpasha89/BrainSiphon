@@ -9,7 +9,7 @@ import type { Domain } from '../schemas/usecase.schema';
 import type { ComputeClass, ScaleInput } from './scale';
 import { REGISTERED_USERS } from './scale';
 
-export const PROFILE_IDS = ['session', 'transaction', 'asset', 'media', 'llm', 'batch'] as const;
+export const PROFILE_IDS = ['session', 'transaction', 'asset', 'media', 'llm', 'batch', 'forecast', 'stream', 'recsys'] as const;
 export type ProfileId = (typeof PROFILE_IDS)[number];
 
 export interface ProfileParam {
@@ -40,7 +40,7 @@ export interface ProfileDef {
   label: string;
   blurb: string;
   params: (b: Baseline) => ProfileParam[];
-  apply: (v: Record<string, number>, b: Baseline) => Partial<Pick<ScaleInput, 'eventsPerDay' | 'driver' | 'k' | 'peakFactor' | 'steps' | 'tokensPerStep'>>;
+  apply: (v: Record<string, number>, b: Baseline) => Partial<Pick<ScaleInput, 'eventsPerDay' | 'driver' | 'k' | 'peakFactor' | 'steps' | 'tokensPerStep' | 'candidates' | 'stateGB'>>;
 }
 
 const SECONDS = 86_400;
@@ -123,6 +123,48 @@ export const PROFILES: Record<ProfileId, ProfileDef> = {
     ],
     apply: (v) => ({ eventsPerDay: v.rows! * v.runs!, k: v.k!, driver: `${fmt(v.rows!)} rows × ${fmt(v.runs!)} runs/day` }),
   },
+  forecast: {
+    id: 'forecast',
+    label: 'Forecasting',
+    blurb: 'Series to forecast, runs per day, horizon and quantiles. A nightly SKU-store forecast is sized in series and horizon, not in users or requests per second.',
+    params: (b) => [
+      { id: 'series', label: 'Series forecast per run (entities x locations)', log: true, ...span(b.eventsPerDay), step: 0.05, default: b.eventsPerDay },
+      { id: 'runs', label: 'Forecast runs per day', min: 1, max: 24, step: 1, default: 1 },
+      { id: 'horizon', label: 'Forecast horizon (periods)', log: true, min: 1, max: 365, step: 0.05, default: 28 },
+      { id: 'q', label: 'Quantiles per period', min: 1, max: 9, step: 1, default: 3 },
+      { id: 'k', label: 'History window and covariates per series', log: true, ...span(b.k, 0.25, 8), step: 0.05, default: b.k, unit: 'KB' },
+    ],
+    apply: (v) => ({
+      eventsPerDay: v.series! * v.runs!,
+      // output volume: 16 bytes per quantile per period, relative to the published 28 periods x 3 quantiles
+      k: Math.max(0.05, v.k! + (v.horizon! - 28) * v.q! * 0.016 + (v.q! - 3) * 28 * 0.016),
+      driver: `${fmt(v.series!)} series x ${fmt(v.runs!)} run/day x ${fmt(v.horizon!)}-period horizon x ${fmt(v.q!)} quantiles`,
+    }),
+  },
+  stream: {
+    id: 'stream',
+    label: 'Streaming events',
+    blurb: 'Events per second, burst ratio, event size and the online state the processors hold (windows, sessions, counters).',
+    params: (b) => [
+      { id: 'eps', label: 'Average events per second', log: true, ...span(b.avgQps), step: 0.05, default: b.avgQps, unit: 'ev/s' },
+      { id: 'peak', label: 'Burst-to-average ratio', min: 1, max: 30, step: 0.5, default: b.peakFactor, unit: 'x' },
+      { id: 'k', label: 'Event size', log: true, ...span(b.k, 0.25, 8), step: 0.05, default: b.k, unit: 'KB' },
+      { id: 'state', label: 'Resident online state (windows, sessions, counters)', min: 0, max: 2000, step: 10, default: 0, unit: 'GB' },
+    ],
+    apply: (v) => ({ eventsPerDay: v.eps! * SECONDS, k: v.k!, peakFactor: v.peak!, stateGB: v.state!, driver: `${fmt(v.eps!)} events/s average, ${fmt(v.state!)} GB state` }),
+  },
+  recsys: {
+    id: 'recsys',
+    label: 'Recommendation and ranking',
+    blurb: 'Requests per second and the candidates scored per request. Ranking cost scales with the candidate pool, so a retrieval change moves the fleet.',
+    params: (b) => [
+      { id: 'qps', label: 'Average ranking requests per second', log: true, ...span(b.avgQps), step: 0.05, default: b.avgQps, unit: 'req/s' },
+      { id: 'peak', label: 'Peak-to-average ratio', min: 1, max: 20, step: 0.5, default: b.peakFactor, unit: 'x' },
+      { id: 'cand', label: 'Candidates scored per request', log: true, min: 100, max: 20000, step: 0.05, default: 1500 },
+      { id: 'k', label: 'Payload per request', log: true, ...span(b.k, 0.25, 4), step: 0.05, default: b.k, unit: 'KB' },
+    ],
+    apply: (v) => ({ eventsPerDay: v.qps! * SECONDS, k: v.k!, peakFactor: v.peak!, candidates: v.cand!, driver: `${fmt(v.qps!)} req/s x ${fmt(v.cand!)} candidates` }),
+  },
 };
 
 /** What each industry is really sized in (the dimensions a reviewer should ask for before accepting "10M users"). */
@@ -153,7 +195,8 @@ const DOMAIN_PROFILE: Record<Domain, ProfileId> = {
 };
 
 /** The profile a use case opens with: its compute class first (LLM, vision, batch), then its industry. */
-export function defaultProfile(domain: Domain, computeClass: ComputeClass): ProfileId {
+export function defaultProfile(domain: Domain, computeClass: ComputeClass, archetype?: string): ProfileId {
+  if (archetype === 'forecasting') return 'forecast';
   if (computeClass === 'gpu-llm') return 'llm';
   if (computeClass === 'gpu-vision') return 'media';
   if (computeClass === 'cpu-batch' || computeClass === 'gpu-batch') return 'batch';

@@ -262,3 +262,29 @@ test('patterns page explains the three-level hierarchy', async ({ page }) => {
   await page.goto('/patterns');
   await expect(page.getByTestId('enterprise-patterns').getByRole('listitem').first()).toBeVisible();
 });
+
+test('review hardening: a forecast gets a forecast LLD, workload-based sizing and an honest no-agent verdict', async ({
+  page,
+}) => {
+  await page.goto('/retail/demand-forecasting-sku-store');
+  await expect(page.getByTestId('lld-status')).toContainText('Forecasting');
+  await expect(page.getByTestId('lld-status')).toContainText('Illustrative scaffold');
+  await expect(page.locator('#lld')).toContainText('/forecasts');
+  await expect(page.locator('#scale')).toContainText('5M series nightly');
+  await expect(page.getByTestId('capacity-scenarios')).toContainText('(P95)');
+  await expect(page.getByTestId('capacity-calculator').getByTestId('profile-forecast')).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(page.getByTestId('agentic-fit')).toContainText('No agent recommended');
+  await expect(page.getByTestId('agentic-decision')).toContainText('rejected');
+  await expect(page.locator('#experimentation')).toContainText('rolling-origin-backtest');
+  await expect(page.getByTestId('provenance')).toContainText('generated from a template');
+  await expect(page.getByTestId('reviewer')).toContainText('No named reviewer yet');
+});
+
+test('deployment modes page explains what the static site leaves out', async ({ page }) => {
+  await page.goto('/deployment');
+  await expect(page.getByTestId('deployment-table')).toContainText('Static documentation site');
+  await expect(page.getByTestId('deployment-table')).toContainText('Full-stack Docker');
+});

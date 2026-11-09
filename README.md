@@ -21,7 +21,10 @@ governance and production operations to a capacity/cost model for **10 million u
 | 4   | Security, governance, responsible AI | `governance`: risk tier (low/medium/high/critical), approval path, data/model/responsible-AI controls with evidence, AI-security threats, obligation → control → evidence |
 | 5   | MLOps (and LLMOps where it applies) | `mlops`: nine lifecycle areas each with an artifact and a gate, retraining triggers, champion/challenger, rollback, toolchain |
 | 6   | Production operations and SRE    | `operations`: SLIs/SLOs/error budgets, telemetry, incident classes, support model, ten failure scenarios (detection → alert → owner → mitigation → recovery → learning), unit cost |
-| 7   | Validation and architecture review | `validation`: five separate validation levels plus the feasibility checks |
+| 7   | Validation and architecture review | `validation`: provenance (who made each part, what kind of number each figure is, owner, reviewer, sources, assumptions, limitations), five separate validation levels and the feasibility checks |
+| 8   | Statistical validation and business experimentation | `experimentation`: causal question and estimand, experimental design by archetype (interleaving, switchback, rolling-origin backtest, shadow then holdout, replay then canary), power arithmetic, label maturity and selection bias, calibration and uncertainty, slices and fairness, causal methods, stopping rules, business-value measurement |
+| 9   | Archetype-driven low-level design | `systemDesign.lld`: one of nine solution archetypes picks the API contract, data model, event schema, core algorithm, failure and retry behaviour, security model and test scenarios; always labelled an illustrative scaffold unless a review is recorded |
+| 10  | An explicit verdict on agents | `agentic.decision`: why an agent is or is not better than a rules engine, a conventional model, an optimiser, RAG or a deterministic workflow, with cost, risk, fallback and when to revisit |
 
 The enterprise layer is generated deterministically from each use case's own fields plus per-domain enterprise facts
 (`src/content/enterprise.ts`, `src/content/enterprise-domains.ts`). It is **not** expert-reviewed (see below).
@@ -72,13 +75,38 @@ retention; cost sanity; RTO/RPO vs the replication strategy; and model memory vs
   blueprint that uses them. `validate:content` fails on a link to an unknown primitive.
 - **Live sizing calculator with workload profiles.** The capacity table is followed by a calculator that re-runs the same model
   (`src/content/scale.ts`) in the browser. Choose the unit the workload is really sized in (`src/content/workload-profiles.ts`):
-  user/session, transaction (TPS), asset/equipment, document/image/video, LLM/agent (requests × steps × tokens) or batch (rows × runs).
-  Each industry opens in its natural profile (fintech in TPS, healthcare in assets); at the defaults every profile reproduces the table (tested).
+  user/session, transaction (TPS), asset/equipment, document/image/video, LLM/agent (requests × steps × tokens), batch (rows × runs),
+  **forecasting** (series × runs × horizon × quantiles), **streaming** (events/s, burst ratio, resident state) or **recommendation**
+  (requests/s × candidates scored). Each industry opens in its natural profile and forecasting use cases open in the forecast profile;
+  at the defaults every profile reproduces the table (tested). A batch use case that states its own volume ("5M series nightly") is
+  sized from it rather than from 10 million app users. The table and calculator also show an all-in monthly cost (retraining,
+  observability, data transfer, backup/DR, human review), a low / expected / high range, P50 / P95 / P99 load scenarios and a cost per
+  business outcome (per forecast series-run, per document, per decision...). Retraining, observability and transfer are modelled shares, not measurements.
 - **Pattern hierarchy.** `/patterns` now shows three levels: L1 AI/ML archetypes (the 11 kits), L2 enterprise architecture patterns
   (`src/content/architecture-patterns.ts`: online inference, event-driven AI, batch scoring, human-in-the-loop, multi-tenant, LLM gateway,
   jurisdiction-pinned state, strangler coexistence) and L3 engineering primitives (the mechanisms in `src/content/primitives.ts`).
-- **Agentic solution.** Every blueprint has a section on where agents help, the typed tools they get, an autonomy ladder
-  with promotion gates, guardrails and how to evaluate them. It is generated from the blueprint and not expert-reviewed.
+- **Agentic solution, or a reasoned "no agent".** Every blueprint first answers "why is an agent better than a rules engine, a
+  conventional model, an optimiser, RAG or a deterministic workflow?" with a verdict per option. Where agents help (language products, or
+  systems with a review queue to feed) it then gives the agents, typed tools, an autonomy ladder with promotion gates, guardrails and
+  evaluation. Where they do not (batch or low-latency pipelines with no human queue, closed-loop bidding policies, solver-driven planning),
+  the fit is `not-recommended` or `not-applicable`, no agents are defined, and the page shows the recommended non-agentic architecture and
+  what would change the answer. The rule lives in `agentVerdict` in `src/content/agentic-gen.ts`.
+- **Deployment modes.** `/deployment` compares the static GitHub Pages site, the Docker stack and a cloud-hosted production deployment, and
+  lists what the static site leaves out.
+
+## Review follow-ups
+
+Done in this branch (from an architecture and engineering review): MLOps lens, validation levels and provenance, workload-aware
+capacity with cost scenarios, archetype-driven LLD, explicit no-agent verdicts, statistical validation and experimentation, and the
+deployment-modes page. Still open, in the order we would take them:
+
+- Represent pipelines as a DAG (fan-out, fan-in, retries, several consumers) instead of a linear chain with async sidecars.
+- Make residency, tenancy and active-active choices an explicit per-blueprint input rather than an industry default.
+- A structured security / privacy profile per use case (classification, residency, retention, threat scenarios) beyond the shared governance controls.
+- Graph-analytics and multi-tenant SaaS workload profiles for the capacity calculator.
+- An Enterprise AI and data platform category (lakehouse, feature platform, ML platform, LLM gateway, RAG platform, agent control plane...) and additional industries.
+- Workshop flow, decision comparison and a downloadable architecture package (diagrams, ADRs, contracts, schemas, test plans).
+- Executable starter kits for the most important implementation patterns, and recorded expert reviews in `content/reviews.json`.
 
 ## Quick start
 
@@ -105,10 +133,10 @@ against the strict Zod schema (`src/schemas/usecase.schema.ts`) — **a missing 
 | Output                                               | Derived from                                                                                 |
 | ---------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | Pipeline + HLD + sequence + class diagrams (Mermaid) | the use case's own stages; latency budgets split by stage kind                               |
-| API contract, DDL, hot-path code, runtime config     | the use case's own features, loss, stages, guardrail metrics                                 |
+| API contract, DDL, events, hot-path code, runtime config, failure/security/test tables | the use case's solution archetype (`src/content/archetype-lld.ts`) filled with its own features, loss, stages and guardrail metrics; a scaffold, not production code |
 | Degradation ladder                                   | serving mode (online / interactive / batch)                                                  |
 | 10-phase end-to-end breakdown                        | every authored field (objective, labels, features, models, metrics, edge cases)              |
-| 10M-user capacity & cost table                       | `a`, `k`, compute class (CPU scorer, GPU ranker, vision, encoder, LLM tokens/s, Spark batch) |
+| Capacity & cost table                                | `a`, `k`, compute class (CPU scorer, GPU ranker, vision, encoder, LLM tokens/s, Spark batch), or the volume the use case states; defaults to 10M users otherwise |
 
 > The capacity table is a transparent back-of-envelope model (assumptions are printed on every page), **not** a quote.
 

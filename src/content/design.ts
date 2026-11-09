@@ -1,4 +1,5 @@
-import type { LatencySLA, Paradigm } from '../schemas/usecase.schema';
+import type { Archetype, LatencySLA, Paradigm } from '../schemas/usecase.schema';
+import { archetypeLLD } from './archetype-lld';
 import type { RawStage } from './parse';
 import type { ScaleResult } from './scale';
 
@@ -305,40 +306,21 @@ export interface LLDInput {
   prod: string;
   onMetrics: string[];
   steps: number;
+  archetype: Archetype;
+  /** true only when a named reviewer has signed this blueprint off (content/reviews.json) */
+  reviewed: boolean;
 }
 
 export function buildLLD(i: LLDInput) {
   const feats = i.features.map((f) => snake(f));
   const tbl = snake(i.slugTail, 30);
   const base = `/v1/${i.slugTail}`;
-  const inline = feats.slice(0, 2);
 
-  let apiContract: { method: 'GET' | 'POST'; path: string; request: string; response: string };
-  if (i.mode === 'online') {
-    apiContract = {
-      method: 'POST',
-      path: `${base}/decide`,
-      request: JSON.stringify({ request_id: '01JABCDEF…', entity_id: 'ent_8f3a', occurred_at: '2026-11-07T10:15:30Z', inline_signals: Object.fromEntries(inline.map((f, n) => [f, n === 0 ? 0.0 : 3])), deadline_ms: TOTAL_BUDGET_MS[i.latency] }, null, 2),
-      response: JSON.stringify({ request_id: '01JABCDEF…', decision: 'PASS | REVIEW | ACT', score: 0.0134, reason_codes: [feats[0] ?? 'top_signal', feats[1] ?? 'second_signal'], model_version: '2026-11-03.r2', latency_ms: 4.2, degraded: false }, null, 2),
-    };
-  } else if (i.mode === 'interactive') {
-    apiContract = {
-      method: 'POST',
-      path: `${base}/run`,
-      request: JSON.stringify({ session_id: 'ses_91c2', principal: { user_id: 'u_123', scopes: ['read'] }, input: '…', constraints: { max_steps: i.steps, max_cost_usd: 0.02 }, stream: true }, null, 2),
-      response: 'event: delta      data: {"text":"…"}\nevent: tool_call  data: {"name":"…","args":{…}}\nevent: final      data: {"answer":"…","citations":[…],"usage":{"steps":2,"tokens":1840,"cost_usd":0.004},"degraded":false}',
-    };
-  } else {
-    apiContract = {
-      method: 'POST',
-      path: `${base}/runs`,
-      request: JSON.stringify({ run_date: '2026-11-07', partition: 'all', dry_run: false, model_version: 'champion' }, null, 2),
-      response: JSON.stringify({ run_id: 'run_20261107_01', status: 'RUNNING | SUCCEEDED | FAILED_DQ', rows_in: 0, rows_out: 0, manifest_uri: 's3://…/manifest.json' }, null, 2),
-    };
-  }
+  const arch = archetypeLLD(i.archetype, { slugTail: i.slugTail, title: i.title, feats, tbl, base, budgetMs: TOTAL_BUDGET_MS[i.latency], steps: i.steps, latency: i.latency, mode: i.mode });
+  const apiContract = arch.apiContract;
 
   const featCols = feats.map((f) => `  ${f.padEnd(34)} DOUBLE PRECISION`).join(',\n');
-  const dataModelDDL = `-- point-in-time correct feature table (as_of is the ONLY join key to labels)
+  const decisioningDDL = `-- point-in-time correct feature table (as_of is the ONLY join key to labels)
 CREATE TABLE ${tbl}_features (
   entity_id                          TEXT        NOT NULL,
   as_of                              TIMESTAMPTZ NOT NULL,
@@ -368,6 +350,8 @@ CREATE TABLE ${tbl}_labels (
   PRIMARY KEY (decision_id, labeled_at)
 );`;
 
+  const dataModelDDL = arch.dataModelDDL || decisioningDDL;
+
   const cls = i.stages.map((s) => ({ ...s, cname: `${pascal(s.label)}${s.id}` }));
   const cd: string[] = ['classDiagram', '  class Stage {', '    <<interface>>', '    +run(ctx) StageResult', '    +timeout_ms() int', '  }'];
   cd.push('  class Deadline { +remaining() ms +share(f) ms }');
@@ -385,7 +369,7 @@ CREATE TABLE ${tbl}_labels (
   cd.push('  DecisionLogger <-- Stage : emits');
 
   const T = TOTAL_BUDGET_MS[i.latency];
-  const code = algorithmCode(i, feats, T);
+  const code = arch.algorithm ?? algorithmCode(i, feats, T);
 
   const timeouts = i.stages.filter((s) => !s.async).map((s) => `    - { name: ${snake(s.label)}, timeout_ms: ${s.budgetMs ?? 'n/a'}, on_timeout: fallback_level_1 }`).join('\n');
   const guard = i.onMetrics.slice(0, 3).map((x) => `    - "${x.replace(/"/g, "'")}"`).join('\n');
@@ -407,7 +391,20 @@ privacy:
   retention_days: 400`;
 
   const ladder = degradation(i.mode);
-  return { apiContract, dataModelDDL, classDiagram: cd.join('\n'), algorithm: { language: 'python' as const, code }, config, degradationLadder: ladder };
+  return {
+    archetype: i.archetype,
+    status: i.reviewed ? ('expert-reviewed' as const) : ('illustrative-scaffold' as const),
+    apiContract,
+    dataModelDDL,
+    eventSchema: arch.eventSchema,
+    classDiagram: cd.join('\n'),
+    algorithm: { language: 'python' as const, code },
+    config,
+    degradationLadder: ladder,
+    failureAndRetry: arch.failureAndRetry,
+    securityModel: arch.securityModel,
+    testScenarios: arch.testScenarios,
+  };
 }
 
 function degradation(mode: ScaleResult['mode']) {

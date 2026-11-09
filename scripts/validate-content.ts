@@ -9,7 +9,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import katex from 'katex';
 import { loadAllUseCases } from '../src/content/load';
-import { DOMAINS, type UseCase } from '../src/schemas/usecase.schema';
+import { DOMAINS, isAgentic, type UseCase } from '../src/schemas/usecase.schema';
 import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
 import { TOTAL_BUDGET_MS } from '../src/content/design';
@@ -152,7 +152,7 @@ async function main() {
     {
       const toolSet = new Set(u.agentic.tools.map((t) => t.name));
       if (toolSet.size !== u.agentic.tools.length) errors.push(`${u.slug}: duplicate agent tool names`);
-      if (!u.agentic.tools.some((t) => t.access === 'write'))
+      if (isAgentic(u.agentic.fit) && !u.agentic.tools.some((t) => t.access === 'write'))
         errors.push(`${u.slug}: agentic section has no write tool, so no approval path is described`);
       if (new Set(u.agentic.agents.map((a) => a.name)).size !== u.agentic.agents.length)
         errors.push(`${u.slug}: duplicate agent names`);
@@ -160,6 +160,47 @@ async function main() {
         errors.push(`${u.slug}: agentic rationale is too thin`);
       if ((u.latencySLA === 'sub-10ms' || u.latencySLA === 'sub-100ms') && u.agentic.fit === 'core')
         errors.push(`${u.slug}: an agent cannot be the core of a ${u.latencySLA} decision path`);
+      // the decision table must be self-consistent: exactly one chosen architecture, and a "no agent" verdict must say why
+      const chosen = u.agentic.decision.options.filter((o) => o.verdict === 'chosen');
+      if (chosen.length !== 1)
+        errors.push(
+          `${u.slug}: agent decision must choose exactly one architecture (found ${chosen.length})`,
+        );
+      if (
+        new Set(u.agentic.decision.options.map((o) => o.approach)).size !== u.agentic.decision.options.length
+      )
+        errors.push(`${u.slug}: agent decision lists an approach twice`);
+      if (!isAgentic(u.agentic.fit) && u.agentic.rationale.trim().split(/\s+/).length < 40)
+        errors.push(`${u.slug}: a non-agentic verdict needs a full rationale`);
+    }
+
+    // LLD: the archetype decides the shape; a generated LLD must say it is a scaffold
+    {
+      const lld = u.systemDesign.lld;
+      if (!u.systemDesign.lld.apiContract.path.startsWith('/v1/'))
+        errors.push(`${u.slug}: LLD API path is not versioned`);
+      if (
+        lld.status === 'illustrative-scaffold' &&
+        u.validation.levels.find((l) => l.level === 'domain-expert-reviewed')?.state === 'passed'
+      )
+        errors.push(`${u.slug}: LLD is a scaffold but the blueprint claims expert review`);
+      const kind = lld.archetype;
+      const ddl = lld.dataModelDDL;
+      const must: Partial<Record<typeof kind, RegExp>> = {
+        forecasting: /_forecasts/,
+        recommendation: /_impressions/,
+        rag: /_chunks/,
+        'agentic-workflow': /_steps/,
+        'computer-vision': /_detections/,
+        'document-extraction': /_fields/,
+        optimisation: /_plans/,
+        'batch-analytics': /_runs/,
+        'realtime-decisioning': /_decisions/,
+      };
+      if (must[kind] && !must[kind]!.test(ddl))
+        errors.push(`${u.slug}: ${kind} LLD data model has no ${must[kind]} table`);
+      if (kind !== 'realtime-decisioning' && /\/decide$/.test(lld.apiContract.path))
+        errors.push(`${u.slug}: ${kind} LLD uses the generic /decide endpoint`);
     }
 
     // Blueprint 2.0 enterprise layer: no unresolved placeholders, seven lenses, and architecture feasibility

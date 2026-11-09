@@ -9,6 +9,7 @@ import { AgenticSection } from '../../../components/reader/Agentic';
 import { Pager, Sections, tocFor } from '../../../components/reader/Sections';
 import {
   EnterpriseSection,
+  ExperimentationSection,
   GovernanceSection,
   MlopsSection,
   OperationsSection,
@@ -158,6 +159,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         <EnterpriseSection uc={uc} />
         <Sections uc={uc} />
         <GovernanceSection uc={uc} />
+        <ExperimentationSection uc={uc} />
         <MlopsSection uc={uc} />
         <OperationsSection uc={uc} />
         <AgenticSection ag={uc.agentic} />

@@ -9,7 +9,7 @@ import {
 } from '../schemas/usecase.schema';
 import type { RawUseCase } from './parse';
 import { bottlenecksFor, buildLLD, buildStages, EDGE_MS, hldDiagram, pipelineDiagram, RESERVE_MS, resilienceFor, sequenceDiagram, snake, TOTAL_BUDGET_MS } from './design';
-import { computeScale } from './scale';
+import { computeScale, modeOf } from './scale';
 import { loadPlaybook } from './playbook';
 import { generateAgentic } from './agentic-gen';
 import { buildE2E, buildNarrative } from './narrative';
@@ -19,6 +19,9 @@ import { buildRoleLenses, buildTopology, pickPrimitives, stanceOf } from './extr
 import { explainLoss } from './lossvars';
 import { buildDecisionMatrix, buildEnterpriseContext, buildGovernance, buildMlops, buildOperations, buildValidation, drFor, type EntCtx, type Review } from './enterprise';
 import { checkFeasibility } from './feasibility';
+import { buildProvenance } from './provenance';
+import { buildExperimentation } from './experimentation';
+import { archetypeOf, OUTCOME_UNIT, REVIEW_RATE } from './archetype-lld';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -92,7 +95,12 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
   const slug = `${domain}/${raw.key}`;
   const stages = buildStages(raw.pipe, latency);
   if (stages.filter((s) => !s.async).length < 2) throw new Error(`${where}: needs at least 2 synchronous stages`);
-  const scale = computeScale({ paradigms, latency, a: raw.opts.a, k: raw.opts.k, steps: raw.opts.s, tokensPerStep: raw.opts.t });
+  const archetype = archetypeOf(pickKit(raw, paradigms), paradigms, modeOf(latency));
+  const reviewRate = stages.some((s) => s.kind === 'human') ? REVIEW_RATE[archetype] : 0;
+  // a batch use case that states its own volume ("5M series nightly") is sized from that, not from 10 million app users
+  const volume = latency === 'batch' ? inferVolume(raw.con) : null;
+  const scaleInputs = { outcomeUnit: OUTCOME_UNIT[archetype], ...(reviewRate ? { reviewRate } : {}), ...(volume ? { eventsPerDay: volume.perDay, driver: volume.driver } : {}) };
+  const scale = computeScale({ paradigms, latency, a: raw.opts.a, k: raw.opts.k, steps: raw.opts.s, tokensPerStep: raw.opts.t, ...scaleInputs });
   const steps = raw.opts.s ?? 3;
   const loss = raw.loss ?? DEFAULT_LOSS[paradigms[0]!];
   const lossData_ = lossData(root ?? process.cwd());
@@ -113,6 +121,8 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     prod: raw.prod,
     onMetrics: raw.on,
     steps,
+    archetype,
+    reviewed: Boolean(root && reviewsFor(root)[slug]),
   });
   const seq = sequenceDiagram(stages, scale.mode, latency, paradigms, steps);
 
@@ -160,11 +170,29 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     dr: { rpoSeconds: dr.rpoSeconds, rtoSeconds: dr.rtoSeconds, replication: dr.replication },
     productionModel: raw.prod,
   });
-  const validation = buildValidation(entCtx, feasibility, {
+  const review = root ? reviewsFor(root)[slug] : undefined;
+  const validationBase = buildValidation(entCtx, feasibility, {
     hasPlaybook: Boolean(playbook),
     hasStarter: Boolean(playbook),
-    ...(root && reviewsFor(root)[slug] ? { review: reviewsFor(root)[slug]! } : {}),
+    ...(review ? { review } : {}),
   });
+  const validation = {
+    ...validationBase,
+    provenance: buildProvenance({
+      specFile: raw.file,
+      specKey: raw.key,
+      narrativeAuthored: Boolean(authored),
+      playbook: !playbook ? 'none' : root && loadPlaybook(root, domain, raw, latency, scale) ? 'authored' : 'generated',
+      kit: pattern,
+      archetype,
+      ...(review ? { review } : {}),
+      governance,
+      levels: validationBase.levels,
+      generatedAt: verifiedAt,
+      statedVolume: volume ? volume.driver.replace(/ \(stated.*$/, '') : null,
+      scaleDriver: volume ? 'sized from the stated volume' : 'sized at 10 million registered users unless you change the workload profile',
+    }),
+  };
 
   const candidate = {
     id: uuidFor(slug),
@@ -196,7 +224,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
       lld,
       e2e,
       scale: {
-        inputs: { a: raw.opts.a, k: raw.opts.k, ...(raw.opts.s ? { steps: raw.opts.s } : {}), ...(raw.opts.t ? { tokensPerStep: raw.opts.t } : {}) },
+        inputs: { a: raw.opts.a, k: raw.opts.k, ...(raw.opts.s ? { steps: raw.opts.s } : {}), ...(raw.opts.t ? { tokensPerStep: raw.opts.t } : {}), ...scaleInputs },
         assumptions: scale.assumptions,
         table: scale.rows,
         bottlenecks: bottlenecksFor(scale.computeClass, scale.mode),
@@ -209,6 +237,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     enterpriseContext,
     decisionMatrix,
     governance,
+    experimentation: buildExperimentation(raw, domain, archetype, latency, stages.some((s) => s.kind === 'human')),
     mlops,
     operations,
     validation,
@@ -221,6 +250,17 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     throw new Error(`${where}: schema validation failed\n${issues}`);
   }
   return parsed.data;
+}
+
+/** A volume the specification itself states for a scheduled run, e.g. "5M series nightly" or "Daily refresh for 5M SKUs". */
+export function inferVolume(con: string[]): { perDay: number; driver: string } | null {
+  for (const c of con) {
+    const m = /(\d+(?:\.\d+)?)\s*([KMB])?\s+(series|skus?|stores|items|entities|accounts|rows|documents|records|pairs|shipments|policies|claims|properties|listings)\b/i.exec(c);
+    if (!m || !/nightly|daily|per day|each night|every night|per run|overnight/i.test(c)) continue;
+    const mult = { K: 1e3, M: 1e6, B: 1e9 }[(m[2] ?? '').toUpperCase() as 'K' | 'M' | 'B'] ?? 1;
+    return { perDay: Number(m[1]) * mult, driver: `${c.trim()} (stated in the use case's own constraints)` };
+  }
+  return null;
 }
 
 function stageResponsibility(kind: string, label = ''): string {

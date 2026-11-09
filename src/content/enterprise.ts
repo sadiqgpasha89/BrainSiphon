@@ -674,7 +674,7 @@ export function buildValidation(
   c: EntCtx,
   feasibility: FeasibilityCheck[],
   opts: { hasPlaybook: boolean; hasStarter: boolean; review?: Review },
-): Validation {
+): Omit<Validation, 'provenance'> {
   const fails = feasibility.filter((x) => x.status === 'fail').length;
   const warns = feasibility.filter((x) => x.status === 'warn').length;
   const evidence = {

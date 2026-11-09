@@ -199,6 +199,38 @@ export const RoleLensSchema = z.object({
     .min(3),
 });
 
+/**
+ * Solution archetypes: the shape of the system, which decides what its low-level design contains. A fraud decision API, a
+ * nightly forecast job and a retrieval-augmented assistant do not share an endpoint, a schema or a failure model.
+ */
+export const ARCHETYPES = [
+  'realtime-decisioning',
+  'forecasting',
+  'recommendation',
+  'rag',
+  'agentic-workflow',
+  'computer-vision',
+  'document-extraction',
+  'batch-analytics',
+  'optimisation',
+] as const;
+export type Archetype = (typeof ARCHETYPES)[number];
+
+export const ARCHETYPE_LABEL: Record<Archetype, string> = {
+  'realtime-decisioning': 'Real-time decisioning',
+  forecasting: 'Forecasting',
+  recommendation: 'Recommendation and ranking',
+  rag: 'Retrieval-augmented generation',
+  'agentic-workflow': 'Agentic workflow',
+  'computer-vision': 'Computer vision',
+  'document-extraction': 'Document and language extraction',
+  'batch-analytics': 'Batch analytics',
+  optimisation: 'Optimisation and planning',
+};
+
+/** How far a low-level design has been reviewed. Generated LLDs are scaffolds: they show the right shape, not production code. */
+export const LLD_STATUSES = ['illustrative-scaffold', 'expert-reviewed'] as const;
+
 export const SystemDesignSchema = z.object({
   mode: z.enum(['online', 'interactive', 'batch']),
   topology: TopologySchema,
@@ -212,6 +244,8 @@ export const SystemDesignSchema = z.object({
     notes: z.array(nonEmpty).min(3),
   }),
   lld: z.object({
+    archetype: z.enum(ARCHETYPES),
+    status: z.enum(LLD_STATUSES),
     apiContract: z.object({
       method: z.enum(['GET', 'POST']),
       path: nonEmpty,
@@ -219,10 +253,24 @@ export const SystemDesignSchema = z.object({
       response: nonEmpty,
     }),
     dataModelDDL: nonEmpty,
+    /** the message contract for events this component emits or consumes (JSON schema or Avro-style) */
+    eventSchema: nonEmpty,
     classDiagram: MermaidSchema,
     algorithm: z.object({ language: z.enum(['python', 'typescript']), code: nonEmpty }),
     config: nonEmpty,
     degradationLadder: z.array(DegradationSchema).min(3),
+    /** what fails, how it is retried and what the caller sees: specific to the archetype */
+    failureAndRetry: z.array(z.object({ failure: nonEmpty, behaviour: nonEmpty })).min(4),
+    securityModel: z.array(z.object({ surface: nonEmpty, control: nonEmpty })).min(4),
+    testScenarios: z
+      .array(
+        z.object({
+          scenario: nonEmpty,
+          kind: z.enum(['unit', 'integration', 'contract', 'load', 'replay', 'safety']),
+          assertion: nonEmpty,
+        }),
+      )
+      .min(5),
   }),
   e2e: z.array(E2EPhaseSchema).min(8),
   scale: z.object({
@@ -232,6 +280,13 @@ export const SystemDesignSchema = z.object({
       k: z.number().positive(),
       steps: z.number().positive().optional(),
       tokensPerStep: z.number().positive().optional(),
+      /** what one model-touching event is in business terms (names the cost-per-outcome row) */
+      outcomeUnit: nonEmpty.optional(),
+      /** model-touching events per day when the use case states its own volume (e.g. "5M series nightly"), instead of users x DAU x a */
+      eventsPerDay: z.number().positive().optional(),
+      driver: nonEmpty.optional(),
+      /** share of events a person reviews or annotates, when the blueprint has a human stage */
+      reviewRate: z.number().min(0).max(1).optional(),
     }),
     assumptions: z.array(nonEmpty).min(3),
     table: z.array(ScaleRowSchema).min(8),
@@ -338,13 +393,56 @@ export type Playbook = z.infer<typeof PlaybookSchema>;
  * earned, what stops them going wrong and how they are evaluated. Generated from the blueprint's own stages, constraints, edge cases
  * and metrics plus a role pattern per kind of system.
  */
-export const AgenticSchema = z.object({
-  fit: z.enum(['core', 'strong', 'supporting']),
-  role: nonEmpty,
-  rationale: nonEmpty,
-  pattern: nonEmpty,
-  agents: z
+export const AGENT_FITS = ['core', 'strong', 'supporting', 'not-recommended', 'not-applicable'] as const;
+export const AGENT_ALTERNATIVES = [
+  'rules-engine',
+  'conventional-ml',
+  'optimiser',
+  'llm-rag',
+  'deterministic-workflow',
+  'human-in-the-loop',
+  'agentic-workflow',
+] as const;
+export type AgentAlternative = (typeof AGENT_ALTERNATIVES)[number];
+
+/**
+ * The question every blueprint must answer before it designs an agent: why is an agent better than a rules engine, a
+ * conventional model, an optimiser or a deterministic workflow for this problem? The verdict on each option is explicit, and the
+ * agent is allowed to lose.
+ */
+export const AgentDecisionSchema = z.object({
+  question: nonEmpty,
+  options: z
     .array(
+      z.object({
+        approach: z.enum(AGENT_ALTERNATIVES),
+        startWhen: nonEmpty,
+        verdict: z.enum(['chosen', 'complement', 'fallback', 'rejected']),
+        reason: nonEmpty,
+      }),
+    )
+    .min(6),
+  /** what would have to be measured to justify adding agents, and what it costs and risks */
+  measurableValue: nonEmpty,
+  incrementalCost: nonEmpty,
+  operationalRisk: nonEmpty,
+  fallbackArchitecture: nonEmpty,
+  revisitWhen: z.array(nonEmpty).min(3),
+});
+export type AgentDecision = z.infer<typeof AgentDecisionSchema>;
+
+export const isAgentic = (fit: (typeof AGENT_FITS)[number]) =>
+  fit !== 'not-recommended' && fit !== 'not-applicable';
+
+export const AgenticSchema = z
+  .object({
+    fit: z.enum(AGENT_FITS),
+    role: nonEmpty,
+    rationale: nonEmpty,
+    pattern: nonEmpty,
+    decision: AgentDecisionSchema,
+    /** empty when agents are not recommended or not applicable */
+    agents: z.array(
       z.object({
         name: nonEmpty,
         responsibility: nonEmpty,
@@ -353,38 +451,70 @@ export const AgenticSchema = z.object({
         autonomy: z.enum(['L0', 'L1', 'L2', 'L3']),
         handoff: nonEmpty,
       }),
-    )
-    .min(3),
-  tools: z
-    .array(
+    ),
+    tools: z.array(
       z.object({
         name: nonEmpty,
         access: z.enum(['read', 'write']),
         backedBy: nonEmpty,
         permission: nonEmpty,
       }),
-    )
-    .min(4),
-  autonomy: z
-    .array(
+    ),
+    autonomy: z.array(
       z.object({
         level: z.enum(['L0', 'L1', 'L2', 'L3']),
         name: nonEmpty,
         behaviour: nonEmpty,
         gate: nonEmpty,
       }),
-    )
-    .length(4),
-  architecture: MermaidSchema,
-  sequence: MermaidSchema,
-  context: z.array(z.object({ kind: nonEmpty, detail: nonEmpty })).min(3),
-  guardrails: z.array(z.object({ risk: nonEmpty, control: nonEmpty })).min(5),
-  evaluation: z.array(z.object({ what: nonEmpty, metric: nonEmpty, target: nonEmpty, how: nonEmpty })).min(5),
-  failureModes: z.array(z.object({ scenario: nonEmpty, response: nonEmpty })).min(4),
-  budget: z.array(z.object({ item: nonEmpty, value: nonEmpty })).min(4),
-  buildSteps: z.array(z.object({ step: nonEmpty, deliverable: nonEmpty })).min(6),
-  whenNotToUse: z.array(nonEmpty).min(3),
-});
+    ),
+    /** the agent architecture, or the recommended non-agentic architecture when agents are not recommended */
+    architecture: MermaidSchema,
+    sequence: MermaidSchema,
+    context: z.array(z.object({ kind: nonEmpty, detail: nonEmpty })),
+    guardrails: z.array(z.object({ risk: nonEmpty, control: nonEmpty })),
+    evaluation: z.array(z.object({ what: nonEmpty, metric: nonEmpty, target: nonEmpty, how: nonEmpty })),
+    failureModes: z.array(z.object({ scenario: nonEmpty, response: nonEmpty })),
+    budget: z.array(z.object({ item: nonEmpty, value: nonEmpty })),
+    buildSteps: z.array(z.object({ step: nonEmpty, deliverable: nonEmpty })),
+    whenNotToUse: z.array(nonEmpty).min(3),
+  })
+  .superRefine((a, ctx) => {
+    const need = (ok: boolean, path: string, msg: string) =>
+      ok || ctx.addIssue({ code: 'custom', path: [path], message: msg });
+    if (isAgentic(a.fit)) {
+      need(a.agents.length >= 3, 'agents', 'an agentic fit needs at least three agents');
+      need(a.tools.length >= 4, 'tools', 'an agentic fit needs at least four typed tools');
+      need(a.autonomy.length === 4, 'autonomy', 'an agentic fit needs the four-level autonomy ladder');
+      need(a.context.length >= 3, 'context', 'an agentic fit needs at least three context entries');
+      need(a.guardrails.length >= 5, 'guardrails', 'an agentic fit needs at least five guardrails');
+      need(a.evaluation.length >= 5, 'evaluation', 'an agentic fit needs at least five evaluation rows');
+      need(a.failureModes.length >= 4, 'failureModes', 'an agentic fit needs at least four failure modes');
+      need(a.budget.length >= 4, 'budget', 'an agentic fit needs at least four budget rows');
+      need(a.buildSteps.length >= 6, 'buildSteps', 'an agentic fit needs at least six build steps');
+      need(
+        a.decision.options.some((o) => o.approach === 'agentic-workflow' && o.verdict !== 'rejected'),
+        'decision',
+        'an agentic fit must not reject the agentic option',
+      );
+    } else {
+      need(
+        a.agents.length === 0 && a.tools.length === 0,
+        'agents',
+        'a non-agentic verdict must not define agents or tools',
+      );
+      need(
+        a.decision.options.some((o) => o.approach === 'agentic-workflow' && o.verdict === 'rejected'),
+        'decision',
+        'a non-agentic verdict must reject the agentic option explicitly',
+      );
+      need(
+        a.decision.options.some((o) => o.verdict === 'chosen'),
+        'decision',
+        'a non-agentic verdict must name the chosen architecture',
+      );
+    }
+  });
 export type Agentic = z.infer<typeof AgenticSchema>;
 
 export const ProblemStatementSchema = z.object({
@@ -420,6 +550,51 @@ export const RISK_TIERS = ['low', 'medium', 'high', 'critical'] as const;
 export type RiskTier = (typeof RISK_TIERS)[number];
 
 const list = (min = 2) => z.array(nonEmpty).min(min);
+
+export const EXPERIMENT_DESIGNS = [
+  'randomised-ab-test',
+  'interleaving-then-ab',
+  'switchback',
+  'geo-holdout',
+  'shadow-then-holdout',
+  'rolling-origin-backtest',
+  'offline-replay-then-canary',
+] as const;
+
+/**
+ * Statistical validation and business experimentation: how to show, with the right design and enough power, that the system
+ * improves a business outcome, not just a model metric.
+ */
+export const ExperimentationSchema = z.object({
+  question: nonEmpty,
+  estimand: nonEmpty,
+  design: z.object({
+    type: z.enum(EXPERIMENT_DESIGNS),
+    unit: nonEmpty,
+    why: nonEmpty,
+    interference: nonEmpty,
+  }),
+  metrics: z.object({ primary: nonEmpty, guardrails: list(3), offlineOnlineGap: nonEmpty }),
+  power: z.object({
+    alpha: z.number().gt(0).lt(0.5),
+    power: z.number().gt(0.5).lt(1),
+    mde: nonEmpty,
+    sampleSizeRule: nonEmpty,
+    duration: nonEmpty,
+  }),
+  labels: z.object({ maturity: nonEmpty, quality: nonEmpty, selectionBias: nonEmpty }),
+  sampling: nonEmpty,
+  dataQuality: list(3),
+  uncertainty: nonEmpty,
+  slices: list(3),
+  causal: z.object({ method: nonEmpty, when: nonEmpty }),
+  counterfactual: nonEmpty,
+  calibration: nonEmpty,
+  stopping: list(4),
+  businessValue: z.array(z.object({ metric: nonEmpty, how: nonEmpty })).min(3),
+  pitfalls: list(4),
+});
+export type Experimentation = z.infer<typeof ExperimentationSchema>;
 
 /**
  * Enterprise solution context: where this AI system sits in the business, the application landscape, the data estate, the
@@ -614,7 +789,48 @@ export const VALIDATION_LEVELS = [
 ] as const;
 export type ValidationLevel = (typeof VALIDATION_LEVELS)[number];
 
+export const SECTION_ORIGINS = ['hand-authored', 'generated-from-spec', 'generated-from-template'] as const;
+export const NUMBER_NATURES = [
+  'illustrative',
+  'modelled',
+  'synthetic',
+  'proposed-target',
+  'pilot-measured',
+  'production-measured',
+] as const;
+
+/**
+ * Where a blueprint's content came from and what kind of evidence stands behind each number, recorded in the data rather than
+ * implied by a badge. A generated page and a reviewed one must look different, and a modelled figure must never read as a measurement.
+ */
+export const ProvenanceSchema = z.object({
+  /** the highest validation level reached; a generated blueprint is never above `technically-validated` on its own */
+  status: z.enum(VALIDATION_LEVELS),
+  owner: nonEmpty,
+  reviewer: nonEmpty.nullable(),
+  reviewedAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullable(),
+  /** the date the content was last generated from the specification; not a review date */
+  generatedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  sections: z.array(z.object({ section: nonEmpty, origin: z.enum(SECTION_ORIGINS), basis: nonEmpty })).min(8),
+  numbers: z.array(z.object({ item: nonEmpty, nature: z.enum(NUMBER_NATURES), note: nonEmpty })).min(6),
+  sources: z
+    .array(
+      z.object({
+        kind: z.enum(['specification', 'reference-kit', 'public-standard', 'review']),
+        ref: nonEmpty,
+      }),
+    )
+    .min(2),
+  assumptions: z.array(nonEmpty).min(3),
+  limitations: z.array(nonEmpty).min(3),
+});
+export type Provenance = z.infer<typeof ProvenanceSchema>;
+
 export const ValidationSchema = z.object({
+  provenance: ProvenanceSchema,
   levels: z
     .array(
       z.object({
@@ -698,6 +914,7 @@ export const UseCaseSchema = z
     enterpriseContext: EnterpriseContextSchema,
     decisionMatrix: DecisionMatrixSchema,
     governance: GovernanceSchema,
+    experimentation: ExperimentationSchema,
     mlops: MlopsSchema,
     operations: OperationsSchema,
     validation: ValidationSchema,
