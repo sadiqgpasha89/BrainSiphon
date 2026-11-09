@@ -21,6 +21,7 @@ import { buildDecisionMatrix, buildEnterpriseContext, buildGovernance, buildMlop
 import { checkFeasibility } from './feasibility';
 import { buildProvenance } from './provenance';
 import { buildExperimentation } from './experimentation';
+import { buildMetrics } from './metrics';
 import { archetypeOf, OUTCOME_UNIT, REVIEW_RATE } from './archetype-lld';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -149,6 +150,9 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     : buildNarrative(raw, domain, paradigms, latency, stages, scale, explained);
   const playbook = root ? (loadPlaybook(root, domain, raw, latency, scale) ?? generatePlaybook(root, raw, domain, paradigms, latency, difficulty, scale, stages)) : undefined;
 
+  const agentic = generateAgentic(raw, domain, paradigms, latency, difficulty, stages);
+  const experimentation = buildExperimentation(raw, domain, archetype, latency, stages.some((s) => s.kind === 'human'));
+
   const roleLenses = buildRoleLenses(raw, domain, paradigms, latency, pattern, stance, scale, stages, features);
   const primitives = pickPrimitives(raw, domain, paradigms, pattern, stance, scale, roleLenses);
 
@@ -233,11 +237,12 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     },
     roleLenses,
     primitives,
-    agentic: generateAgentic(raw, domain, paradigms, latency, difficulty, stages),
+    agentic,
     enterpriseContext,
     decisionMatrix,
     governance,
-    experimentation: buildExperimentation(raw, domain, archetype, latency, stages.some((s) => s.kind === 'human')),
+    experimentation,
+    metrics: buildMetrics({ raw, domain, paradigms, latency, pattern, archetype, stance, scale, stages, features, agentic, operations, governance, experimentation, mlops, enterprise: enterpriseContext, rtoText: dr.text.rto }),
     mlops,
     operations,
     validation,

@@ -25,9 +25,12 @@ governance and production operations to a capacity/cost model for **10 million u
 | 8   | Statistical validation and business experimentation | `experimentation`: causal question and estimand, experimental design by archetype (interleaving, switchback, rolling-origin backtest, shadow then holdout, replay then canary), power arithmetic, label maturity and selection bias, calibration and uncertainty, slices and fairness, causal methods, stopping rules, business-value measurement |
 | 9   | Archetype-driven low-level design | `systemDesign.lld`: one of nine solution archetypes picks the API contract, data model, event schema, core algorithm, failure and retry behaviour, security model and test scenarios; always labelled an illustrative scaffold unless a review is recorded |
 | 10  | An explicit verdict on agents | `agentic.decision`: why an agent is or is not better than a rules engine, a conventional model, an optimiser, RAG or a deterministic workflow, with cost, risk, fallback and when to revisit |
+| 11  | Metrics catalogue                | `metrics`: about 65 to 110 metrics per use case in up to 14 layers, each with a definition, a starting target, a cadence, an owner and what to do on a breach. Ten layers apply to every system (business, adoption and trust, model, data and features, system and reliability, cost and sustainability, responsible AI, security and compliance, MLOps and delivery, experimentation health); four appear only where the system has the component (RAG, LLM serving, agents, human review) and otherwise say why they do not apply. Also a metric tree, a monitor for each of the use case's own edge cases, and how each headline metric gets gamed (`src/content/metrics.ts`) |
 
 The enterprise layer is generated deterministically from each use case's own fields plus per-domain enterprise facts
 (`src/content/enterprise.ts`, `src/content/enterprise-domains.ts`). It is **not** expert-reviewed (see below).
+
+The metrics catalogue is built from each use case's own fields (its offline and online metrics, signals and their leakage risks, pipeline stages and latency budgets, edge cases, SLOs, capacity model, regulatory obligations, agents and tools), not from a fixed list. System, latency and cost targets repeat the blueprint's own budgets; model and business targets are stated against the baseline and the minimum detectable effect, and thresholds such as PSI, ECE, kappa and faithfulness are labelled starting values. They are proposed targets, not measurements.
 
 ### Validation levels (they are not the same thing)
 

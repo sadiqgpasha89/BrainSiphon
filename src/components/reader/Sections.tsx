@@ -76,6 +76,7 @@ export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?
   { id: 'role-lenses', label: 'Role lenses' },
   { id: 'governance', label: 'Security & governance' },
   { id: 'experimentation', label: 'Statistical validation' },
+  { id: 'metrics', label: 'Metrics catalogue' },
   { id: 'mlops', label: 'MLOps & LLMOps' },
   { id: 'operations', label: 'Production operations' },
   { id: 'agentic', label: 'Agentic solution' },

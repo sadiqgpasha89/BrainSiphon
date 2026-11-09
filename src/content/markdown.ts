@@ -89,6 +89,7 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com'): stri
   mlopsMarkdown(u, L);
   operationsMarkdown(u, L);
   experimentationMarkdown(u, L);
+  metricsMarkdown(u, L);
   agenticMarkdown(u.agentic, L);
   if (u.playbook) playbookMarkdown(u.playbook, L);
   validationMarkdown(u, L);
@@ -111,6 +112,24 @@ function experimentationMarkdown(u: UseCase, L: string[]) {
   x.businessValue.forEach((b) => L.push(`| ${esc(b.metric)} | ${esc(b.how)} |`));
   L.push('', '**Common failure modes**', '');
   x.pitfalls.forEach((g) => L.push(`- ${g}`));
+}
+
+function metricsMarkdown(u: UseCase, L: string[]) {
+  const x = u.metrics;
+  const total = x.layers.reduce((n, l) => n + l.rows.length, 0);
+  L.push('', '## Metrics catalogue', '', `${total} metrics in ${x.layers.length} layers. ${x.basis}`, '', '```mermaid', x.tree, '```');
+  for (const l of x.layers) {
+    L.push('', `### ${l.title}`, '', l.why, '', '| Metric | Kind | What it measures | Target | Cadence | Owner | If it breaches |', '|---|---|---|---|---|---|---|');
+    l.rows.forEach((r) => L.push(`| ${esc(r.metric)} | ${r.kind} | ${esc(r.definition)} | ${esc(r.target)} | ${esc(r.cadence)} | ${esc(r.owner)} | ${esc(r.onBreach)} |`));
+  }
+  if (x.notApplicable.length) {
+    L.push('', '### Layers that do not apply here', '');
+    x.notApplicable.forEach((n) => L.push(`- **${n.layer}.** ${n.reason}`));
+  }
+  L.push('', '### Monitors for this system\'s own edge cases', '', '| Edge case | Signal to watch | Alert when | Response |', '|---|---|---|---|');
+  x.failureMonitors.forEach((f) => L.push(`| ${esc(f.scenario)} | ${esc(f.signal)} | ${esc(f.threshold)} | ${esc(f.response)} |`));
+  L.push('', '### How these metrics get gamed', '', '| Metric | How it misleads | Read it beside |', '|---|---|---|');
+  x.gaming.forEach((g) => L.push(`| ${esc(g.metric)} | ${esc(g.risk)} | ${esc(g.counter)} |`));
 }
 
 function agenticMarkdown(a: Agentic, L: string[]) {

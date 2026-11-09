@@ -597,6 +597,61 @@ export const ExperimentationSchema = z.object({
 export type Experimentation = z.infer<typeof ExperimentationSchema>;
 
 /**
+ * Metrics catalogue: what to measure for this system, by layer. The first ten layers apply to every system; RAG, LLM, agent and
+ * human-review layers appear only when the system has that component, otherwise `notApplicable` says why.
+ */
+export const METRIC_LAYER_IDS = [
+  'business',
+  'adoption',
+  'model',
+  'data',
+  'system',
+  'cost',
+  'responsible',
+  'security',
+  'mlops',
+  'experiment',
+  'rag',
+  'llm',
+  'agent',
+  'hitl',
+] as const;
+export type MetricLayerId = (typeof METRIC_LAYER_IDS)[number];
+export const OPTIONAL_METRIC_LAYERS = ['rag', 'llm', 'agent', 'hitl'] as const;
+
+export const MetricRowSchema = z.object({
+  metric: nonEmpty,
+  /** outcome = the result itself; leading = predicts it; guardrail = must not get worse; diagnostic = explains a move */
+  kind: z.enum(['outcome', 'leading', 'guardrail', 'diagnostic']),
+  definition: nonEmpty,
+  target: nonEmpty,
+  cadence: nonEmpty,
+  owner: nonEmpty,
+  onBreach: nonEmpty,
+});
+export type MetricRow = z.infer<typeof MetricRowSchema>;
+
+export const MetricLayerSchema = z.object({
+  id: z.enum(METRIC_LAYER_IDS),
+  title: nonEmpty,
+  why: nonEmpty,
+  rows: z.array(MetricRowSchema).min(3),
+});
+export type MetricLayer = z.infer<typeof MetricLayerSchema>;
+
+export const MetricsSchema = z.object({
+  basis: nonEmpty,
+  tree: MermaidSchema,
+  layers: z.array(MetricLayerSchema).min(10),
+  notApplicable: z.array(z.object({ layer: z.enum(OPTIONAL_METRIC_LAYERS), reason: nonEmpty })),
+  failureMonitors: z
+    .array(z.object({ scenario: nonEmpty, signal: nonEmpty, threshold: nonEmpty, response: nonEmpty }))
+    .min(2),
+  gaming: z.array(z.object({ metric: nonEmpty, risk: nonEmpty, counter: nonEmpty })).min(3),
+});
+export type Metrics = z.infer<typeof MetricsSchema>;
+
+/**
  * Enterprise solution context: where this AI system sits in the business, the application landscape, the data estate, the
  * technology stack, the security architecture and the operating model. Written before the AI/ML blueprint, because an
  * architect needs the decision owner, the systems of record and the failure scenarios before choosing a model.
@@ -915,6 +970,7 @@ export const UseCaseSchema = z
     decisionMatrix: DecisionMatrixSchema,
     governance: GovernanceSchema,
     experimentation: ExperimentationSchema,
+    metrics: MetricsSchema,
     mlops: MlopsSchema,
     operations: OperationsSchema,
     validation: ValidationSchema,
