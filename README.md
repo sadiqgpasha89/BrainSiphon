@@ -2,6 +2,44 @@
 
 URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
+**What this is, in five lines**
+
+1. BrainSiphon is a static website of **500 enterprise AI/ML system blueprints** across 10 industries (50 each), written for engineers who have to design, build and run them.
+2. Every blueprint separates the **signal** that moves the metric from the **noise** that wastes your quarter, then goes from the business problem through the high-level design, sequence diagram, low-level design, MLOps, governance and operations.
+3. Every design is sized for **10 million users** with a transparent capacity and cost model, and a live calculator you can re-run with your own traffic.
+4. Each page also has a **metrics catalogue** (business, model, data, system, cost, safety, plus RAG, LLM and agent metrics where they apply), the edge cases that break the system, and a **build playbook** with milestones and exit gates.
+5. Read it your way: keys `1`–`7` keep only what an AI architect, solution architect, data engineer, data scientist, AI engineer, inference engineer or MLOps engineer needs; `[` is Pure Signal mode, `⌘K` searches, and every page exports as clean Markdown for LLMs.
+
+> Blueprints are generated from a typed spec and have **not** been reviewed by a domain expert; every number is a modelled starting point, not a measurement. Each page says so.
+
+## How it works
+
+Screenshots of the live site, using one blueprint (Real-Time Card & UPI Fraud Detection) as the example.
+
+**1. Pick a domain.** Ten industries, 50 blueprints each, plus the shared patterns.
+
+![Home page: signal in, noise out, with the ten domains](docs/screenshots/01-home.png)
+
+**2. Start where the site tells you to.** Each domain opens with a three-step "start here" path and 7 to 8 tracks that filter its 50 blueprints.
+
+![FinTech domain page with a start-here path and tracks](docs/screenshots/02-domain-tracks.png)
+
+**3. Learn the signal and the noise.** The matrix names what actually moves the metric, what only looks like it does, and why engineers get it wrong.
+
+![Signal versus noise matrix for card fraud detection](docs/screenshots/03-signal-vs-noise.png)
+
+**4. See the architecture.** High-level design for 10 million users, then the sequence diagram, low-level design, MLOps and operations.
+
+![High-level design diagram for 10 million users](docs/screenshots/04-architecture-diagram.png)
+
+**5. Check that it fits your scale and budget.** A capacity and cost table built from the use case's own traffic profile, re-runnable in the page.
+
+![Scale and capacity table for 10 million users](docs/screenshots/05-capacity-model.png)
+
+**6. Read only what your role needs, and know what to measure.** The lens bar (here: Data Scientist, 10 of 21 sections) hides the rest; the metrics catalogue lists what to track, with targets, owners and what to do on a breach.
+
+![Role lens bar and the metrics catalogue with its metric tree](docs/screenshots/06-role-lens-and-metrics.png)
+
 Zero-noise **enterprise AI architecture and engineering playbook** — **500 use cases, 10 domains × 50**. Every blueprint
 teaches the _signal_ that moves the metric, names the _noise_ that wastes your quarter, and takes the solution from the
 enterprise context (business, applications, data, security, operating model) through HLD, sequence diagram, LLD, MLOps,
