@@ -12,13 +12,40 @@ URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
 > Blueprints are generated from a typed spec and have **not** been reviewed by a domain expert; every number is a modelled starting point, not a measurement. Each page says so.
 
+## Delivery guide: from project scoping to deployment and monitoring
+
+A blueprint is the worked answer for one use case. The **delivery guide** is the order to do the work in, and it is the same for
+all 500: **7 phases, 69 steps**. Every step names its owner, who takes part, when, how, the output and the blueprint section to
+read; every phase ends in a gate with named signers.
+
+- On the site: [`/delivery`](https://sadiqgpasha89.github.io/BrainSiphon/delivery/). Choose a use case and each step links into
+  that blueprint; choose a role and only that role's steps remain; tick steps off as you go (kept in the browser, per use case).
+  Every blueprint has a "Deliver this use case" button that opens the guide with it selected.
+- As one file: [`docs/DELIVERY_GUIDE.md`](docs/DELIVERY_GUIDE.md), also served at `/delivery.md` and listed first in `/llms.txt`.
+- It covers the 14 delivery roles and 9 business partners (sponsor, product owner, delivery lead, domain expert, end users, data
+  owner, risk and compliance, finance, support), a RACI by phase, the meeting rhythm, the seven monitoring layers after go-live,
+  and how the path changes for a solo learner, a small team, and for forecasting, recommender, LLM/RAG/agent, bandit and solver
+  use cases.
+
+![Delivery guide with a use case selected: Phase 0 steps, one opened to show who, when, how and the output](docs/screenshots/07-delivery-guide.png)
+
+The guide has one source, `src/content/delivery.ts`. The page, the markdown and the RACI are all derived from it: edit that file,
+run `npm run guide:build`, and commit the regenerated `docs/DELIVERY_GUIDE.md` (a unit test fails if the two disagree). The same
+test checks that every role responsibility in `src/lib/roles.ts` is covered by a step, and an end-to-end test checks that every
+blueprint section the guide links to exists on blueprints of different kinds. Week numbers in the guide are a 16-week planning
+default, not a measurement.
+
+The site navigation follows the same idea: the header has four destinations (Delivery guide, Use cases, Patterns, Deployment),
+the home page is "pick a use case, follow the guide, build from the blueprint", and inside a blueprint the 22 sections are grouped
+as Understand, Design, Prove, and Ship and run, with the role lens folded behind one button.
+
 ## How it works
 
 Screenshots of the live site, using one blueprint (Real-Time Card & UPI Fraud Detection) as the example.
 
-**1. Pick a domain.** Ten industries, 50 blueprints each, plus the shared patterns.
+**1. Pick a use case.** The home page is three steps: pick a use case, follow the delivery guide, build from the blueprint. Ten industries, 50 blueprints each.
 
-![Home page: signal in, noise out, with the ten domains](docs/screenshots/01-home.png)
+![Home page: signal in, noise out, and the three steps from a use case to a delivered system](docs/screenshots/01-home.png)
 
 **2. Start where the site tells you to.** Each domain opens with a three-step "start here" path and 7 to 8 tracks that filter its 50 blueprints.
 
@@ -208,6 +235,7 @@ deployment-modes page. Still open, in the order we would take them:
 ```bash
 npm ci
 npm run dev                       # content:build + next dev   → http://localhost:3000
+npm run guide:build               # regenerate docs/DELIVERY_GUIDE.md after editing src/content/delivery.ts
 npm run validate:content          # strict gate (schema, ≥50/domain, KaTeX, Mermaid, slug history, staleness)
 npm test                          # unit/integration tests
 npm run build && npm run test:e2e # production build + Playwright smoke tests

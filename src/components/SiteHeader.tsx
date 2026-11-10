@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { DOMAINS, DOMAIN_META } from '../schemas/usecase.schema';
+import { HeaderNav } from './HeaderNav';
 import { SearchTrigger } from './SearchTrigger';
 import { ThemeToggle } from './ThemeToggle';
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2.5">
+      <div className="relative mx-auto flex max-w-7xl items-center gap-2 px-4 py-2.5 sm:gap-4">
         <Link
           href="/"
           className="flex shrink-0 items-center gap-2 font-semibold tracking-tight no-underline"
@@ -18,36 +18,7 @@ export function SiteHeader() {
           />
           <span>BrainSiphon</span>
         </Link>
-        <nav aria-label="Domains" className="min-w-0 flex-1 overflow-x-auto">
-          <ul className="flex w-max items-center gap-1">
-            {DOMAINS.map((d) => (
-              <li key={d}>
-                <Link
-                  href={`/${d}`}
-                  className="block whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm text-mute no-underline transition hover:bg-raised hover:text-ink"
-                >
-                  {DOMAIN_META[d].short}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link
-                href="/patterns"
-                className="block whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm text-signal no-underline transition hover:bg-raised"
-              >
-                Patterns
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/deployment"
-                className="block whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm text-mute no-underline transition hover:bg-raised hover:text-ink"
-              >
-                Deployment
-              </Link>
-            </li>
-          </ul>
-        </nav>
+        <HeaderNav />
         <ThemeToggle />
         <SearchTrigger />
       </div>

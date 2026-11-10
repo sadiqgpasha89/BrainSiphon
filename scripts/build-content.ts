@@ -9,6 +9,8 @@ import { loadAllUseCases, toIndexEntry } from '../src/content/load';
 import { toMarkdown } from '../src/content/markdown';
 import { DOMAIN_META, DOMAINS, PATTERN_IDS } from '../src/schemas/usecase.schema';
 import { PRIMITIVES } from '../src/content/primitives';
+import { ALL_STEPS, DELIVERY_PHASES } from '../src/content/delivery';
+import { deliveryMarkdown } from '../src/content/delivery-markdown';
 import { loadTracksFile, resolveTracks, type ResolvedDomainTracks } from '../src/content/tracks';
 import { readFileSync } from 'node:fs';
 import { buildManifest } from '../src/content/release';
@@ -107,6 +109,14 @@ const llms: string[] = [
   '> Zero-noise engineering blueprints for AI/ML systems: signal vs. noise, HLD, LLD, sequence diagrams, end-to-end breakdowns and 10M-user capacity models. Append `.md` to any use-case URL for clean markdown.',
   '',
 ];
+// the delivery guide comes first: it is the order of work that every blueprint below plugs into
+llms.push(
+  '## Delivery guide',
+  '',
+  `- [From project scoping to deployment and monitoring](${origin}/delivery.md): ${DELIVERY_PHASES.length} phases and ${ALL_STEPS.length} steps that apply to every use case, with the owner, collaborators, timing, method, output and blueprint section for each step, a gate per phase and a RACI.`,
+  '',
+);
+write(join(pub, 'delivery.md'), deliveryMarkdown(origin));
 for (const d of DOMAINS) {
   llms.push(`## ${DOMAIN_META[d].name}`, '');
   for (const u of all.filter((x) => x.domain === d))

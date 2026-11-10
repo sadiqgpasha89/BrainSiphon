@@ -2,6 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test('domain → filter → open blueprint → Pure Signal toggle', async ({ page }) => {
   await page.goto('/');
+  // the ten domains live in one "Use cases" menu instead of a scrolling row in the header
+  await expect(page.getByRole('navigation', { name: 'Domains', exact: true })).toBeHidden();
+  await page.getByTestId('usecases-button').click();
   await page
     .getByRole('navigation', { name: 'Domains', exact: true })
     .getByRole('link', { name: 'FinTech' })
@@ -221,7 +224,12 @@ test('role lens keys add and remove roles, 0 resets, and several roles combine i
   await page.goto('/healthcare/sepsis-early-warning');
   const reader = page.getByTestId('reader');
   await expect(reader).toHaveAttribute('data-role', 'all');
+  // the lens buttons are folded away until asked for; the keys work either way
+  await expect(page.getByTestId('role-lens')).toBeHidden();
+  await page.getByTestId('role-lens-toggle').click();
   await expect(page.getByTestId('role-lens').getByRole('button')).toHaveCount(15); // All + 14 roles
+  await page.getByTestId('role-lens-toggle').click();
+  await expect(page.getByTestId('role-lens')).toBeHidden();
   await page.keyboard.press('a');
   await expect(reader).toHaveAttribute('data-sel', 'inference-engineer');
   await expect(page.locator('#signal-noise')).toBeHidden();
@@ -249,6 +257,8 @@ test('role lens keys add and remove roles, 0 resets, and several roles combine i
   await expect(page.getByTestId('lens-data-engineer')).toBeVisible();
   await expect(page.getByTestId('lens-mlops-engineer')).toBeVisible();
   await expect(page.getByTestId('lens-data-scientist')).toBeHidden();
+  await expect(page.getByTestId('role-lens-toggle')).toContainText('2 roles');
+  await page.getByTestId('role-lens-toggle').click();
   await page.getByTestId('role-security-engineer').click();
   await expect(reader).toHaveAttribute('data-sel', /security-engineer/);
   await page.keyboard.press('0');
@@ -376,4 +386,100 @@ test('deployment modes page explains what the static site leaves out', async ({ 
   await page.goto('/deployment');
   await expect(page.getByTestId('deployment-table')).toContainText('Static documentation site');
   await expect(page.getByTestId('deployment-table')).toContainText('Full-stack Docker');
+});
+
+test('home page leads a newcomer from a use case to the delivery guide', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('how-it-works').getByRole('listitem')).toHaveCount(3);
+  await expect(page.getByTestId('home-phases').getByRole('link')).toHaveCount(7);
+  await page.getByTestId('cta-guide').click();
+  await expect(page).toHaveURL(/\/delivery$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('From project scoping to deployment');
+});
+
+test('delivery guide: steps, gates, a role filter, progress and links into the chosen blueprint', async ({
+  page,
+}) => {
+  await page.goto('/delivery');
+  const guide = page.getByTestId('delivery-guide');
+  await expect(guide.locator('[data-testid^="step-"]')).toHaveCount(69);
+  for (const p of ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6']) {
+    await expect(page.getByTestId(`guide-${p}`)).toBeVisible();
+    await expect(page.getByTestId(`gate-${p}`)).toContainText('Signed by');
+  }
+  await expect(page.getByTestId('raci-table').getByRole('row')).toHaveCount(24); // header + 9 partners + 14 roles
+  await expect(page.getByTestId('monitoring-table')).toContainText('Drift');
+
+  // a step opens to show who, when, how and the output; without a use case the blueprint references are plain labels
+  const step = page.getByTestId('step-0.3');
+  await expect(step.getByText('Discovery log')).toBeHidden();
+  await step.getByRole('button', { name: /Answer the eight discovery questions/ }).click();
+  await expect(step).toContainText('Discovery log');
+  await expect(step.getByRole('link')).toHaveCount(0);
+
+  // choosing a use case turns every reference into a link to that blueprint's section
+  await page.getByTestId('guide-domain').selectOption('fintech');
+  await page.getByTestId('guide-uc').selectOption('fintech/real-time-card-upi-fraud-detection');
+  await expect(page).toHaveURL(/uc=fintech/);
+  await expect(page.getByTestId('guide-uc-status')).toContainText('Real-Time Card & UPI Fraud Detection');
+  await expect(step.getByRole('link')).toHaveAttribute(
+    'href',
+    /\/fintech\/real-time-card-upi-fraud-detection\/?#disc-questions$/,
+  );
+
+  // progress is ticked per step and survives a reload
+  await step.getByRole('checkbox').check();
+  await expect(page.getByTestId('guide-progress')).toContainText('1 of 69 steps done');
+  await page.reload();
+  await expect(page.getByTestId('guide-uc')).toHaveValue('fintech/real-time-card-upi-fraud-detection');
+  await expect(page.getByTestId('guide-progress')).toContainText('1 of 69 steps done');
+  await expect(page.getByTestId('step-0.3').getByRole('checkbox')).toBeChecked();
+
+  // a role keeps only its own steps and says what that role does in each phase
+  await page.getByTestId('guide-party').selectOption('data-engineer');
+  await expect(guide).toHaveAttribute('data-party', 'data-engineer');
+  await expect(page.getByTestId('step-2.5')).toBeVisible();
+  await expect(page.getByTestId('step-0.3')).toHaveCount(0);
+  await expect(page.getByTestId('guide-p2-yours')).toContainText('ingestion');
+  await page.getByTestId('guide-party').selectOption('');
+  await expect(guide.locator('[data-testid^="step-"]')).toHaveCount(69);
+
+  // the markdown twin
+  const md = await (await page.request.get('/delivery.md')).text();
+  expect(md.startsWith('# BrainSiphon delivery guide')).toBe(true);
+  expect(md).toContain('### 6.7 Retrain, challenge and roll back');
+});
+
+test('every blueprint section the delivery guide points at exists, on blueprints of different kinds', async ({
+  page,
+}) => {
+  // an online scoring system with agents, a batch forecast with a "no agent" verdict, and an LLM product
+  for (const slug of [
+    'fintech/real-time-card-upi-fraud-detection',
+    'retail/demand-forecasting-sku-store',
+    'saas/in-app-ai-copilot',
+  ]) {
+    await page.goto(`/delivery?uc=${slug}`);
+    await expect(page.getByTestId('delivery-guide')).toHaveAttribute('data-uc', slug);
+    const anchors = await page
+      .getByTestId('delivery-guide')
+      .locator(`a[href*="/${slug}"][href*="#"]`)
+      .evaluateAll((links) => [...new Set(links.map((a) => (a as HTMLAnchorElement).hash.slice(1)))]);
+    expect(anchors.length).toBeGreaterThan(40);
+    await page.goto(`/${slug}`);
+    await expect(page.getByTestId('uc-title')).toBeVisible();
+    const missing = await page.evaluate((ids) => ids.filter((id) => !document.getElementById(id)), anchors);
+    expect(missing, `${slug} is missing anchors the guide links to`).toEqual([]);
+  }
+});
+
+test('a blueprint links to the delivery guide with itself selected, and its sections are grouped', async ({
+  page,
+}) => {
+  await page.goto('/healthcare/sepsis-early-warning');
+  for (const g of ['understand', 'design', 'prove', 'run'])
+    await expect(page.getByTestId(`toc-${g}`)).toBeVisible();
+  await page.getByTestId('delivery-link').click();
+  await expect(page).toHaveURL(/\/delivery\?uc=healthcare/);
+  await expect(page.getByTestId('guide-uc')).toHaveValue('healthcare/sepsis-early-warning');
 });

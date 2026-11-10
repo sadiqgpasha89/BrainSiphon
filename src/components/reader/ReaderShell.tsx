@@ -1,10 +1,18 @@
 'use client';
 
-import { Eye, EyeOff, FileText } from 'lucide-react';
+import { ChevronDown, Eye, EyeOff, FileText, Users } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CopyButton } from '../CopyButton';
 import { withBase } from '../../lib/site';
-import { ROLE_IDS, ROLE_META, combineRoles, isRoleId, sectionsForRoles, type RoleId } from '../../lib/roles';
+import {
+  ROLE_IDS,
+  ROLE_META,
+  SECTION_GROUPS,
+  combineRoles,
+  isRoleId,
+  sectionsForRoles,
+  type RoleId,
+} from '../../lib/roles';
 
 export interface TocItem {
   id: string;
@@ -31,6 +39,8 @@ export function ReaderShell({
   const [pure, setPure] = useState(false);
   const [active, setActive] = useState(toc[0]?.id ?? '');
   const [roles, setRolesState] = useState<RoleId[]>([]);
+  // the fifteen lens buttons stay folded away until asked for: the keys 0-9 and a-e work either way
+  const [lensOpen, setLensOpen] = useState(false);
   const rolesRef = useRef<RoleId[]>([]);
   rolesRef.current = roles;
 
@@ -173,24 +183,36 @@ export function ReaderShell({
       data-testid="reader"
     >
       <aside className="hidden lg:block">
-        <nav aria-label="On this page" className="sticky top-20">
+        <nav
+          aria-label="On this page"
+          className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto pb-4"
+        >
           <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-dim">On this page</p>
-          <ul className="space-y-0.5 border-l border-line">
-            {toc
-              .filter((t) => !roles.length || visible.includes(t.id))
-              .map((t) => (
-                <li key={t.id} {...(t.prose ? { 'data-prose-section': true } : {})}>
-                  <a
-                    href={`#${t.id}`}
-                    aria-current={active === t.id ? 'location' : undefined}
-                    className={`-ml-px block border-l px-3 py-1.5 text-sm no-underline transition ${active === t.id ? 'border-signal text-signal' : 'border-transparent text-mute hover:border-mute hover:text-ink'}`}
-                  >
-                    {t.label}
-                  </a>
-                </li>
-              ))}
-          </ul>
-          <div className="mt-6 space-y-2 text-xs text-dim">
+          {SECTION_GROUPS.map((g) => {
+            const items = toc.filter(
+              (t) => (g.sections as string[]).includes(t.id) && (!roles.length || visible.includes(t.id)),
+            );
+            if (!items.length) return null;
+            return (
+              <div key={g.id} className="mb-4" data-testid={`toc-${g.id}`}>
+                <p className="mb-1 pl-3 text-xs font-semibold text-ink">{g.label}</p>
+                <ul className="space-y-0.5 border-l border-line">
+                  {items.map((t) => (
+                    <li key={t.id} {...(t.prose ? { 'data-prose-section': true } : {})}>
+                      <a
+                        href={`#${t.id}`}
+                        aria-current={active === t.id ? 'location' : undefined}
+                        className={`-ml-px block border-l px-3 py-1 text-sm no-underline transition ${active === t.id ? 'border-signal text-signal' : 'border-transparent text-mute hover:border-mute hover:text-ink'}`}
+                      >
+                        {t.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+          <div className="mt-2 space-y-2 text-xs text-dim">
             <p>
               <span className="kbd">[</span> pure signal
             </p>
@@ -227,16 +249,35 @@ export function ReaderShell({
             <FileText size={14} aria-hidden /> .md
           </a>
           {markdownText && <CopyButton text={markdownText} label="Copy for LLM" />}
+          <button
+            type="button"
+            className={`btn ${roles.length ? '!border-signal !bg-signal-soft !text-signal' : ''}`}
+            aria-expanded={lensOpen}
+            aria-controls="role-lens"
+            onClick={() => setLensOpen((v) => !v)}
+            data-testid="role-lens-toggle"
+          >
+            <Users size={14} aria-hidden />
+            Role lens:{' '}
+            {roles.length === 0
+              ? 'all roles'
+              : roles.length === 1
+                ? ROLE_META[roles[0]!].label
+                : `${roles.length} roles`}
+            <ChevronDown size={14} className={`transition ${lensOpen ? 'rotate-180' : ''}`} aria-hidden />
+          </button>
           <span className="ml-auto hidden text-xs text-dim sm:inline">
             {pure ? 'Prose hidden — tables, diagrams, math and code only' : 'Full blueprint'}
           </span>
           <div
-            className="flex w-full flex-wrap items-center gap-1.5"
+            id="role-lens"
+            hidden={!lensOpen}
+            className={`${lensOpen ? 'flex' : 'hidden'} w-full flex-wrap items-center gap-1.5`}
             role="group"
             aria-label="Role lens"
             data-testid="role-lens"
           >
-            <span className="mr-1 font-mono text-[11px] uppercase tracking-wider text-dim">Lens</span>
+            <span className="mr-1 text-xs text-dim">Keep only the sections these roles need:</span>
             <button
               type="button"
               className={`chip cursor-pointer ${roles.length === 0 ? 'chip-signal' : ''}`}

@@ -1,159 +1,99 @@
-import {
-  ArrowRight,
-  Blocks,
-  Boxes,
-  Building2,
-  Gauge,
-  GitBranch,
-  Layers,
-  ListTree,
-  Network,
-  ShieldCheck,
-  Sigma,
-  Table2,
-  Users,
-  TriangleAlert,
-  Workflow,
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { SearchTrigger } from '../components/SearchTrigger';
+import { tocFor } from '../components/reader/Sections';
+import { ALL_STEPS, DELIVERY_PHASES } from '../content/delivery';
 import { getIndex } from '../lib/content';
-import { DOMAINS, DOMAIN_META, ML_PARADIGMS, PARADIGM_LABEL, type Paradigm } from '../schemas/usecase.schema';
-import { ROLE_IDS, ROLE_META, ROLE_OWNS } from '../lib/roles';
-import { PRIMITIVES } from '../content/primitives';
+import { ROLE_IDS, ROLE_META, ROLE_OWNS, SECTION_GROUPS } from '../lib/roles';
+import { DOMAINS, DOMAIN_META, PARADIGM_LABEL, type Paradigm } from '../schemas/usecase.schema';
 
 export const revalidate = 86400;
 
-const SECTIONS = [
-  {
-    icon: Table2,
-    title: 'Signal vs. Noise matrix',
-    body: 'The true signal, the textbook trap, and why engineers fall for it.',
-  },
-  {
-    icon: Sigma,
-    title: 'Problem & loss',
-    body: 'Business objective, ML objective as rendered math, hard constraints.',
-  },
-  {
-    icon: ListTree,
-    title: 'Features & leakage',
-    body: 'High-signal features with their leakage risk; the noisy ones to delete.',
-  },
-  {
-    icon: Workflow,
-    title: 'Pipeline blueprint',
-    body: 'Baseline first, then the production model and serving stack.',
-  },
-  {
-    icon: Network,
-    title: 'HLD for 10M users',
-    body: 'Stateless inference active-active; regulated or tenant state pinned. Budgets per hop.',
-  },
-  {
-    icon: GitBranch,
-    title: 'Sequence diagram',
-    body: 'Deadline-propagating request path with the degradation branch.',
-  },
-  {
-    icon: Layers,
-    title: 'Low-level design',
-    body: 'API contract, DDL, classes, hot-path code, config, fallback ladder.',
-  },
-  {
-    icon: Boxes,
-    title: 'End-to-end breakdown',
-    body: 'Ten phases from decision framing to ROI, with deliverables.',
-  },
-  {
-    icon: Gauge,
-    title: 'Capacity model',
-    body: 'QPS, nodes, partitions, storage and cost per 1,000 decisions, with a live what-if calculator.',
-  },
-  {
-    icon: TriangleAlert,
-    title: 'Edge cases',
-    body: 'Scenario → failure mode → mitigation, from real production incidents.',
-  },
-  {
-    icon: Building2,
-    title: 'Enterprise context',
-    body: 'Business, application, data, technology and security architecture, C4 diagrams, ADRs and an AI decision matrix before any model is chosen.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Governance, MLOps and operations',
-    body: 'Risk tier, obligation-to-evidence controls, a nine-area MLOps lifecycle, SLOs and ten failure scenarios.',
-  },
-  {
-    icon: Users,
-    title: 'Role lenses',
-    body: 'Fourteen roles, from business analyst to QA engineer: pick one or several and read the combined responsibilities, handoffs and production gaps.',
-  },
-  {
-    icon: Blocks,
-    title: 'Reference primitives',
-    body: `${PRIMITIVES.length} canonical mechanisms (pacers, PIT joins, shedding) linked, not repeated.`,
-  },
+const FEATURED = [
+  'fintech/real-time-card-upi-fraud-detection',
+  'retail/personalized-search-ranking',
+  'healthcare/sepsis-early-warning',
+  'adtech/real-time-bidding-bid-optimization',
+  'cybersecurity/llm-prompt-injection-detection',
+  'saas/in-app-ai-copilot',
 ];
 
 export default async function Home() {
   const all = await getIndex();
-  const featuredSlugs = [
-    'fintech/real-time-card-upi-fraud-detection',
-    'retail/personalized-search-ranking',
-    'healthcare/sepsis-early-warning',
-    'adtech/real-time-bidding-bid-optimization',
-    'cybersecurity/llm-prompt-injection-detection',
-    'saas/in-app-ai-copilot',
+  const featured = FEATURED.map((s) => all.find((e) => e.slug === s)).filter(
+    (e): e is NonNullable<typeof e> => Boolean(e),
+  );
+  const sectionLabel = new Map(tocFor(true).map((t) => [t.id, t.label]));
+
+  const steps = [
+    {
+      title: 'Pick a use case',
+      body: `${DOMAINS.length} industries, 50 solved use cases in each. Take the one closest to your problem.`,
+      href: '#domains',
+      cta: 'Browse the domains',
+    },
+    {
+      title: 'Follow the delivery guide',
+      body: `${DELIVERY_PHASES.length} phases and ${ALL_STEPS.length} steps from scoping to monitoring. Each step names who does it, with whom, when, how and what it produces.`,
+      href: '/delivery',
+      cta: 'Open the guide',
+    },
+    {
+      title: 'Build from the blueprint',
+      body: 'Each step links to the section of the blueprint you need: signals, architecture, data, evaluation, operations and, where one fits, a starter kit.',
+      href: `/${FEATURED[0]}`,
+      cta: 'See an example blueprint',
+    },
   ];
-  const featured = featuredSlugs
-    .map((s) => all.find((e) => e.slug === s))
-    .filter((e): e is NonNullable<typeof e> => Boolean(e));
 
   return (
     <div className="mx-auto max-w-7xl px-4">
-      <section className="py-16 sm:py-24">
+      <section className="py-14 sm:py-20">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal">
-          Knowledge platform for AI/ML engineers
+          Solved AI/ML use cases, and how to deliver them
         </p>
         <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
           Signal in. <span className="text-noise line-through decoration-2">Noise</span> out.
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-mute">
-          {all.length} production-grade blueprints across {DOMAINS.length} industries. Each one teaches the
-          exact signals that move the metric, names the noise that wastes your quarter, and designs the whole
-          system for <strong className="text-ink">10 million users</strong> — from the enterprise context and
-          decision matrix, through HLD, LLD, MLOps and governance, to production operations, rollout and cost.
+          {all.length} production-grade blueprints across {DOMAINS.length} industries, and{' '}
+          <strong className="text-ink">one delivery guide</strong> that takes any of them from project scoping
+          to a monitored system in production.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Link href="/fintech" className="btn !border-signal !bg-signal-soft !text-signal no-underline">
-            Start with FinTech <ArrowRight size={14} aria-hidden />
+          <Link
+            href="/delivery"
+            className="btn !border-signal !bg-signal-soft !text-signal no-underline"
+            data-testid="cta-guide"
+          >
+            Start with the delivery guide <ArrowRight size={14} aria-hidden />
           </Link>
+          <a href="#domains" className="btn no-underline">
+            Browse use cases
+          </a>
           <SearchTrigger />
-          <span className="text-sm text-dim">
-            Inside a blueprint press <span className="kbd">[</span> for Pure Signal ·{' '}
-            <span className="kbd">]</span> for full detail · <span className="kbd">1</span>–
-            <span className="kbd">9</span>, <span className="kbd">a</span>–<span className="kbd">e</span> to
-            read as your role(s)
-          </span>
         </div>
-        <dl className="mt-12 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
-          {[
-            [String(all.length), 'blueprints'],
-            [String(DOMAINS.length), 'domains × 50 each'],
-            [String(all.length * 8), 'system diagrams'],
-            [String(ML_PARADIGMS.length), 'ML paradigms'],
-          ].map(([n, l]) => (
-            <div key={l}>
-              <dt className="text-sm text-mute">{l}</dt>
-              <dd className="font-mono text-3xl font-semibold text-ink">{n}</dd>
-            </div>
-          ))}
-        </dl>
       </section>
 
-      <section aria-labelledby="domains" className="py-8">
+      <section aria-labelledby="how" className="pb-6">
+        <h2 id="how" className="h-section">
+          How it works
+        </h2>
+        <ol className="mt-5 grid gap-4 md:grid-cols-3" data-testid="how-it-works">
+          {steps.map((s, i) => (
+            <li key={s.title} className="card flex flex-col p-5">
+              <span className="font-mono text-sm text-signal">Step {i + 1}</span>
+              <h3 className="mt-1 text-lg font-semibold text-ink">{s.title}</h3>
+              <p className="mt-2 flex-1 text-sm text-mute">{s.body}</p>
+              <Link href={s.href} className="mt-4 inline-flex items-center gap-1 text-sm text-signal">
+                {s.cta} <ArrowRight size={13} aria-hidden />
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section aria-labelledby="domains" className="py-10">
         <h2 id="domains" className="h-section">
           Pick a domain
         </h2>
@@ -163,7 +103,7 @@ export default async function Home() {
             // the paradigms this domain actually uses most, not the first three that happen to appear
             const counts = new Map<Paradigm, number>();
             for (const e of items) for (const p of e.mlParadigms) counts.set(p, (counts.get(p) ?? 0) + 1);
-            const para = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+            const para = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
             return (
               <Link
                 key={d}
@@ -175,61 +115,16 @@ export default async function Home() {
                   <span className="font-mono text-xs text-mute">{items.length}</span>
                 </div>
                 <p className="mt-2 flex-1 text-sm text-mute">{DOMAIN_META[d].blurb}</p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {para.map(([p, n]) => (
-                    <span key={p} className="chip" title={`${n} of ${items.length} blueprints`}>
-                      {PARADIGM_LABEL[p]}
-                    </span>
-                  ))}
-                </div>
+                <p className="mt-3 text-xs text-dim">{para.map(([p]) => PARADIGM_LABEL[p]).join(' · ')}</p>
               </Link>
             );
           })}
         </div>
       </section>
 
-      <section aria-labelledby="inside" className="py-12">
-        <h2 id="inside" className="h-section">
-          What every blueprint contains
-        </h2>
-        <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-          {SECTIONS.map(({ icon: Icon, title, body }) => (
-            <li key={title} className="card p-4">
-              <Icon size={18} className="text-signal" aria-hidden />
-              <h3 className="mt-3 text-sm font-semibold">{title}</h3>
-              <p className="mt-1 text-xs leading-relaxed text-mute">{body}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="roles" className="py-8">
-        <h2 id="roles" className="h-section">
-          Read it as your role
-        </h2>
-        <p className="mt-2 max-w-3xl text-sm text-mute">
-          Inside any blueprint, press a role&apos;s key (or use the Lens bar) to keep only the sections that
-          role needs. Pick several roles to get their combined responsibilities across one common lifecycle,
-          starting with a compulsory Phase 0 of discovery and business requirements, plus the handoffs to the
-          roles you did not pick.
-        </p>
-        <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="role-cards">
-          {ROLE_IDS.map((r) => (
-            <li key={r} className="card p-4">
-              <p className="text-sm font-semibold text-ink">
-                <span className="kbd mr-2">{ROLE_META[r].key}</span>
-                {ROLE_META[r].label}
-              </p>
-              <p className="mt-1 text-xs text-signal">{ROLE_OWNS[r]}</p>
-              <p className="mt-2 text-sm text-mute">{ROLE_META[r].focus}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="featured" className="py-8">
+      <section aria-labelledby="featured" className="py-10">
         <h2 id="featured" className="h-section">
-          Start here
+          Not sure? Start with one of these
         </h2>
         <ul className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {featured.map((e) => (
@@ -242,11 +137,82 @@ export default async function Home() {
                   {DOMAIN_META[e.domain].short}
                 </p>
                 <h3 className="mt-1 font-semibold text-ink">{e.title}</h3>
-                <p className="mt-2 line-clamp-3 text-sm text-mute">{e.summary}</p>
+                <p className="mt-2 line-clamp-2 text-sm text-mute">{e.summary}</p>
               </Link>
             </li>
           ))}
         </ul>
+      </section>
+
+      <section aria-labelledby="path" className="py-10">
+        <h2 id="path" className="h-section">
+          The delivery path
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-mute">
+          The same seven phases for every use case. Each ends in a gate that named people sign.
+        </p>
+        <ol className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7" data-testid="home-phases">
+          {DELIVERY_PHASES.map((p) => (
+            <li key={p.id}>
+              <Link
+                href={`/delivery#${p.id}`}
+                className="card block h-full p-3 no-underline transition hover:border-signal/60"
+              >
+                <span className="font-mono text-xs text-signal">Phase {p.n}</span>
+                <span className="mt-0.5 block font-semibold text-ink">{p.short}</span>
+                <span className="mt-1 block text-xs text-mute">{p.name}</span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section aria-labelledby="inside" className="py-10">
+        <h2 id="inside" className="h-section">
+          What every blueprint contains
+        </h2>
+        <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {SECTION_GROUPS.map((g) => (
+            <li key={g.id} className="card p-5">
+              <h3 className="font-semibold text-ink">{g.label}</h3>
+              <p className="mt-1 text-sm text-mute">{g.blurb}</p>
+              <ul className="mt-3 space-y-1 text-sm text-ink/90">
+                {g.sections.map((id) => (
+                  <li key={id} className="flex gap-2">
+                    <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-signal" aria-hidden />
+                    {sectionLabel.get(id)}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="roles" className="py-10">
+        <h2 id="roles" className="h-section">
+          Read it as your role
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-mute">
+          Inside a blueprint, the Role lens keeps only the sections your role needs. In the delivery guide,
+          “Your role” keeps only your steps. Pick several roles if you hold several.
+        </p>
+        <details className="card mt-5 p-4">
+          <summary className="cursor-pointer text-sm font-semibold text-ink">
+            The {ROLE_IDS.length} roles and what each one owns
+          </summary>
+          <ul className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="role-cards">
+            {ROLE_IDS.map((r) => (
+              <li key={r} className="text-sm">
+                <p className="font-medium text-ink">
+                  <span className="kbd mr-2">{ROLE_META[r].key}</span>
+                  {ROLE_META[r].label}
+                </p>
+                <p className="mt-0.5 text-mute">{ROLE_OWNS[r]}</p>
+              </li>
+            ))}
+          </ul>
+        </details>
       </section>
     </div>
   );
