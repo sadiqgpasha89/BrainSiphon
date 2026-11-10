@@ -1,19 +1,10 @@
 'use client';
 
-import {
-  ArrowUpRight,
-  Check,
-  ChevronDown,
-  FileText,
-  RotateCcw,
-  ShieldCheck,
-  TriangleAlert,
-} from 'lucide-react';
+import { Check, ChevronDown, FileText, RotateCcw, ShieldCheck, TriangleAlert } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ALL_STEPS,
-  BLUEPRINT_ANCHORS,
   DELIVERY_PHASES,
   HOW_TO_USE,
   PARTNER_IDS,
@@ -28,6 +19,7 @@ import {
   type PartyId,
 } from '../../content/delivery';
 import { ROLE_IDS, ROLE_LIFECYCLE } from '../../lib/roles';
+import { BlueprintRefs, GuideContext, stepAnchor } from './GuideLinks';
 import { withBase } from '../../lib/site';
 import { DOMAINS, DOMAIN_META, type Domain } from '../../schemas/usecase.schema';
 
@@ -42,6 +34,8 @@ const PARTY_KEY = 'bs:delivery:party';
 const doneKey = (uc: string) => `bs:delivery:done:${uc || 'any'}`;
 
 const REFERENCE_TOC = [
+  { id: 'assurance', label: 'Evaluation & guardrails' },
+  { id: 'frameworks', label: 'Frameworks & regulations' },
   { id: 'people', label: 'Who is involved' },
   { id: 'raci', label: 'RACI by phase' },
   { id: 'rhythm', label: 'Meeting rhythm' },
@@ -145,6 +139,25 @@ export function DeliveryGuide({ entries, children }: { entries: GuideEntry[]; ch
     [],
   );
 
+  // A link to a step (#s3.9, from the reference tables or from outside) opens that step. If the role filter is hiding it,
+  // the filter is cleared: the reader asked for this step. Declared after the effect that restores the saved role, so the
+  // update below sees it.
+  useEffect(() => {
+    const openFromHash = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      const step = ALL_STEPS.find((s) => stepAnchor(s.id) === id);
+      if (!step) return;
+      setPartyState((p) => (p && !stepInvolves(step, p) ? '' : p));
+      setOpen((prev) => new Set(prev).add(step.id));
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: 'start' })),
+      );
+    };
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
+    return () => window.removeEventListener('hashchange', openFromHash);
+  }, []);
+
   // which part of the guide is on screen, for the side navigation
   useEffect(() => {
     let raf = 0;
@@ -168,6 +181,7 @@ export function DeliveryGuide({ entries, children }: { entries: GuideEntry[]; ch
     };
   }, []);
 
+  const guideContext = useMemo(() => ({ uc }), [uc]);
   const entry = uc ? bySlug.get(uc) : undefined;
   const inDomain = domain ? entries.filter((e) => e.domain === domain) : [];
   const mine = party ? ALL_STEPS.filter((s) => stepInvolves(s, party)) : ALL_STEPS;
@@ -394,7 +408,7 @@ export function DeliveryGuide({ entries, children }: { entries: GuideEntry[]; ch
           />
         ))}
 
-        {children}
+        <GuideContext.Provider value={guideContext}>{children}</GuideContext.Provider>
       </div>
     </div>
   );
@@ -550,7 +564,12 @@ function Step({
 }) {
   const panel = `step-${s.id}-panel`;
   return (
-    <li className={`card ${done ? 'opacity-70' : ''}`} data-testid={`step-${s.id}`} data-done={done}>
+    <li
+      id={stepAnchor(s.id)}
+      className={`card scroll-mt-24 ${done ? 'opacity-70' : ''}`}
+      data-testid={`step-${s.id}`}
+      data-done={done}
+    >
       <div className="flex items-start gap-3 px-3 py-2.5">
         <input
           type="checkbox"
@@ -609,17 +628,9 @@ function Step({
         )}
         <p className="mt-3 flex flex-wrap items-center gap-1.5 text-sm">
           <span className="mr-1 text-dim">Read in the blueprint</span>
-          {s.read.map((a) =>
-            uc ? (
-              <Link key={a} href={`/${uc}#${a}`} className="chip chip-signal no-underline hover:underline">
-                {BLUEPRINT_ANCHORS[a]} <ArrowUpRight size={11} aria-hidden />
-              </Link>
-            ) : (
-              <span key={a} className="chip">
-                {BLUEPRINT_ANCHORS[a]}
-              </span>
-            ),
-          )}
+          <GuideContext.Provider value={{ uc }}>
+            <BlueprintRefs anchors={s.read} />
+          </GuideContext.Provider>
         </p>
       </div>
     </li>

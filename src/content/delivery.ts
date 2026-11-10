@@ -144,9 +144,14 @@ export const BLUEPRINT_ANCHORS = {
   e2e: 'End-to-end breakdown',
   scale: 'Scale & capacity (with the sizing calculator)',
   evaluation: 'Evaluation',
+  'ev-offline': 'Evaluation · Offline protocol',
+  'ev-thresholds': 'Evaluation · Release thresholds',
+  'ev-online': 'Evaluation · Online evaluation',
+  'ev-continuous': 'Evaluation · After launch',
   'edge-cases': 'Production edge cases',
   'role-lenses': 'Role lenses',
   governance: 'Security & governance · Risk tier',
+  'gov-guardrails': 'Security & governance · Guardrails',
   'gov-approvals': 'Security & governance · Approval path',
   'gov-data': 'Security & governance · Data governance',
   'gov-model': 'Security & governance · Model governance',
@@ -492,7 +497,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
           'Walk the sequence diagram with the engineers and confirm the deadline is passed along every hop.',
         ],
         output: 'High-level design, sequence diagram and fallback ladder.',
-        read: ['hld', 'sequence', 'edge-cases'],
+        read: ['hld', 'sequence', 'gov-guardrails', 'edge-cases'],
       },
       {
         id: '1.5',
@@ -640,11 +645,11 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         when: 'Week 3',
         how: [
           'Request access to each source with the purpose stated.',
-          'Complete a privacy assessment wherever personal data is involved.',
+          'Complete a privacy impact assessment wherever personal data is involved (under GDPR, a data protection impact assessment).',
           'Sign the data contract with each producing team.',
           'Use service accounts with the least privilege that works.',
         ],
-        output: 'Access approvals, signed data contracts and the privacy assessment.',
+        output: 'Access approvals, signed data contracts and the privacy impact assessment.',
         read: ['gov-data', 'ent-data', 'pb-prereqs'],
       },
       {
@@ -746,7 +751,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
           'Record the dataset version, date range, row count and label rate.',
         ],
         output: 'Versioned datasets with a dataset card, reproducible from code.',
-        read: ['xp-data', 'evaluation'],
+        read: ['ev-offline', 'xp-data'],
       },
       {
         id: '2.9',
@@ -855,7 +860,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
           'Choose the threshold from the cost of a false positive against a false negative. This is the decision owner’s call, not the data scientist’s.',
         ],
         output: 'Evaluation report and an operating point signed by the decision owner.',
-        read: ['evaluation', 'xp-model', 'xp-metrics'],
+        read: ['ev-thresholds', 'ev-offline', 'xp-model'],
       },
       {
         id: '3.5',
@@ -928,7 +933,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
           'Set thresholds that block promotion when they are missed.',
         ],
         output: 'Evaluation harness in CI and guardrails in the request path.',
-        read: ['evaluation', 'gov-rai', 'gov-security'],
+        read: ['evaluation', 'gov-guardrails', 'gov-security'],
       },
       {
         id: '3.10',
@@ -1191,7 +1196,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
           'Plan how the new path coexists with the legacy one, and have the solution architect approve it.',
         ],
         output: 'Rollout and experiment plan, written before any traffic moves.',
-        read: ['xp-design', 'xp-metrics', 'operations'],
+        read: ['ev-online', 'xp-design', 'xp-metrics'],
       },
       {
         id: '5.3',
@@ -1376,7 +1381,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
           'Watch the human override rate: a rising rate means users have stopped trusting the output.',
         ],
         output: 'Weekly model performance review.',
-        read: ['evaluation', 'metrics', 'xp-model'],
+        read: ['ev-continuous', 'metrics', 'xp-model'],
       },
       {
         id: '6.4',
@@ -1434,7 +1439,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
           'Have the AI architect check drift findings against the original design assumptions.',
         ],
         output: 'Retraining record: a new champion, or a documented rejection.',
-        read: ['mlops-retraining', 'mlops'],
+        read: ['mlops-retraining', 'ev-continuous', 'mlops'],
         note: 'LLM systems: prompts, indexes and tool contracts are release artifacts too. A change to any of them goes through the same evaluation and promotion.',
       },
       {
@@ -1746,6 +1751,188 @@ export const VARIANTS: { kind: string; changes: string }[] = [
   {
     kind: 'Optimisation and planning with a solver',
     changes: 'The “model” is the formulation: objective and constraints. Validate that every constraint holds and compare solution quality with the current plan. There is no retraining; instead decide how often to re-solve and what triggers it.',
+  },
+];
+
+/* ------------------------------------------------------------------- evaluation, guardrails, governance: an index */
+
+/**
+ * The concerns people ask about by name ("is evaluation covered? guardrails? governance?"), each with the steps that deal
+ * with it and the blueprint sections that hold the detail. An index over the steps above: it adds no new obligations.
+ */
+export const ASSURANCE: { concern: string; question: string; steps: string[]; read: BlueprintAnchor[] }[] = [
+  {
+    concern: 'Evaluation',
+    question: 'Does it work, and how do we know?',
+    steps: ['2.8', '3.2', '3.4', '3.9', '5.5', '5.7', '6.3'],
+    read: ['evaluation', 'ev-thresholds', 'ev-online', 'experimentation', 'metrics'],
+  },
+  {
+    concern: 'Guardrails',
+    question: 'What must it never do, and what stops it?',
+    steps: ['1.4', '3.6', '3.8', '3.9', '4.5', '5.6'],
+    read: ['gov-guardrails', 'agentic', 'edge-cases'],
+  },
+  {
+    concern: 'Governance and approvals',
+    question: 'Who allowed this, and on what evidence?',
+    steps: ['0.7', '1.11', '3.10', '4.7', '5.3', '6.8', '6.10'],
+    read: ['governance', 'gov-approvals', 'gov-model', 'gov-regulatory', 'validation'],
+  },
+  {
+    concern: 'Responsible AI',
+    question: 'Is it fair, explainable and overseen by people?',
+    steps: ['1.3', '2.9', '3.4', '4.7', '6.3'],
+    read: ['gov-rai', 'xp-model', 'ent-decision'],
+  },
+  {
+    concern: 'Security',
+    question: 'How could it be attacked or misused, and what prevents that?',
+    steps: ['0.7', '1.7', '4.1', '4.6', '6.8'],
+    read: ['gov-security', 'ent-technology', 'gov-guardrails'],
+  },
+  {
+    concern: 'Privacy and data',
+    question: 'May we use this data, and is it fit to use?',
+    steps: ['0.7', '1.6', '2.1', '2.6'],
+    read: ['gov-data', 'ent-data', 'xp-data'],
+  },
+  {
+    concern: 'Monitoring',
+    question: 'How will we know when it stops working?',
+    steps: ['1.9', '4.3', '6.1', '6.2', '6.3'],
+    read: ['metrics', 'mt-failure-monitors', 'operations', 'ev-continuous'],
+  },
+  {
+    concern: 'Reliability and rollback',
+    question: 'What happens when something fails?',
+    steps: ['1.4', '4.5', '4.9', '4.10', '5.6', '6.6'],
+    read: ['operations', 'mlops-retraining', 'edge-cases'],
+  },
+  {
+    concern: 'Cost',
+    question: 'What does a decision cost, and is it worth it?',
+    steps: ['1.8', '3.7', '6.5'],
+    read: ['scale', 'disc-case'],
+  },
+];
+
+/* -------------------------------------------------------------------------------- frameworks and regulations */
+
+export const FRAMEWORK_NOTE =
+  'A reading map, not legal advice. Which of these apply to your system, and how, is settled with risk and compliance in step 0.7. Article numbers and item names refer to the published texts named here; check the current version before relying on them.';
+
+export const FRAMEWORKS: {
+  id: string;
+  name: string;
+  kind: string;
+  asks: string;
+  steps: string[];
+  read: BlueprintAnchor[];
+}[] = [
+  {
+    id: 'eu-ai-act',
+    name: 'EU AI Act (Regulation (EU) 2024/1689)',
+    kind: 'Law. Applies when a system is placed on the EU market or its output is used in the EU.',
+    asks: 'Classify the system by risk. A high-risk system needs a risk management system, data governance, technical documentation, logging, information for those who deploy it, human oversight, and accuracy, robustness and cybersecurity (Articles 9 to 15). Systems that talk to people or generate content carry transparency duties (Article 50).',
+    steps: ['0.7', '1.3', '1.7', '3.10', '4.7', '6.8'],
+    read: ['governance', 'gov-guardrails', 'gov-rai', 'gov-model', 'gov-regulatory'],
+  },
+  {
+    id: 'nist-ai-rmf',
+    name: 'NIST AI Risk Management Framework 1.0',
+    kind: 'Voluntary framework, widely used as a common language for AI risk.',
+    asks: 'Four functions. Govern: policies, roles and accountability. Map: context, intended use and who is affected. Measure: test and track the risks. Manage: prioritise, respond and keep monitoring. Its Generative AI Profile adds the risks specific to LLM systems.',
+    steps: ['0.6', '0.7', '0.9', '3.4', '4.7', '6.3', '6.10'],
+    read: ['ent-decision', 'governance', 'evaluation', 'metrics'],
+  },
+  {
+    id: 'iso-42001',
+    name: 'ISO/IEC 42001:2023',
+    kind: 'Management-system standard an organisation can be certified against.',
+    asks: 'Run AI through a management system: an AI policy, defined roles, risk and impact assessment, controls across the lifecycle, internal audit, management review and continual improvement.',
+    steps: ['0.9', '1.11', '3.10', '5.9', '6.8', '6.10'],
+    read: ['gov-model', 'gov-approvals', 'mlops', 'validation'],
+  },
+  {
+    id: 'gdpr-dpia',
+    name: 'GDPR data protection impact assessment (Article 35)',
+    kind: 'Law. Applies when personal data of people in the EU is processed.',
+    asks: 'Before processing that is likely to put people at high risk, describe the processing, assess whether it is necessary and what could go wrong for the people concerned, and record the measures that reduce those risks.',
+    steps: ['0.7', '2.1', '4.7'],
+    read: ['gov-data', 'ent-data', 'gov-regulatory'],
+  },
+  {
+    id: 'owasp-llm',
+    name: 'OWASP Top 10 for LLM Applications (2025)',
+    kind: 'Community security list. For any system with a language model or agent.',
+    asks: 'Ten risks to design and test against, itemised in the next table.',
+    steps: ['1.7', '3.9', '4.6'],
+    read: ['gov-security', 'gov-guardrails', 'agentic'],
+  },
+];
+
+/** The ten OWASP items, each with the control this guide and the blueprints use against it. */
+export const OWASP_LLM: { id: string; risk: string; control: string; steps: string[] }[] = [
+  {
+    id: 'LLM01',
+    risk: 'Prompt injection',
+    control: 'Treat retrieved text and tool output as untrusted data, keep tools typed and narrow, and replay planted-instruction attacks on every release.',
+    steps: ['1.7', '3.9', '4.6'],
+  },
+  {
+    id: 'LLM02',
+    risk: 'Sensitive information disclosure',
+    control: 'Mask personal data in tool results, logs and traces, scope caches to the caller, and filter outputs.',
+    steps: ['0.7', '3.9'],
+  },
+  {
+    id: 'LLM03',
+    risk: 'Supply chain',
+    control: 'Pin and scan base models and dependencies, sign artifacts and keep a bill of materials.',
+    steps: ['4.2', '4.6'],
+  },
+  {
+    id: 'LLM04',
+    risk: 'Data and model poisoning',
+    control: 'Record provenance for datasets and documents, validate at ingestion, audit labels and keep a holdout the pipeline cannot write to.',
+    steps: ['2.5', '2.6', '2.8'],
+  },
+  {
+    id: 'LLM05',
+    risk: 'Improper output handling',
+    control: 'Validate model output against a schema before anything downstream uses it, and never execute it directly.',
+    steps: ['1.5', '3.9'],
+  },
+  {
+    id: 'LLM06',
+    risk: 'Excessive agency',
+    control: 'Least-privilege tools, approval for every write action, and an autonomy ladder climbed one gate at a time.',
+    steps: ['1.3', '3.8'],
+  },
+  {
+    id: 'LLM07',
+    risk: 'System prompt leakage',
+    control: 'Keep secrets and authorisation rules out of prompts; enforce permissions in code, where a leaked prompt changes nothing.',
+    steps: ['1.7', '3.9'],
+  },
+  {
+    id: 'LLM08',
+    risk: 'Vector and embedding weaknesses',
+    control: 'Filter retrieval by tenant and permission, version the index with its embedding model, and validate what is ingested.',
+    steps: ['2.5', '3.6'],
+  },
+  {
+    id: 'LLM09',
+    risk: 'Misinformation',
+    control: 'Check that answers are grounded in cited sources, abstain or escalate when they are not, and score against a golden set.',
+    steps: ['2.4', '3.4', '3.9'],
+  },
+  {
+    id: 'LLM10',
+    risk: 'Unbounded consumption',
+    control: 'Budgets for steps, tokens and cost enforced outside the model, with rate limits and spend alerts.',
+    steps: ['3.8', '6.5'],
   },
 ];
 

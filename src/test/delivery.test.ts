@@ -3,9 +3,12 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   ALL_STEPS,
+  ASSURANCE,
   BLUEPRINT_ANCHORS,
   DELIVERY_PHASES,
+  FRAMEWORKS,
   MONITORING,
+  OWASP_LLM,
   PARTY_IDS,
   raciFor,
   stepInvolves,
@@ -44,6 +47,7 @@ describe('delivery guide', () => {
     const sections = new Set<string>(SECTION_IDS);
     const prefix: Record<string, string> = {
       disc: 'discovery',
+      ev: 'evaluation',
       ent: 'enterprise',
       gov: 'governance',
       xp: 'experimentation',
@@ -110,6 +114,28 @@ describe('delivery guide', () => {
 
   it('groups the blueprint sections without dropping, repeating or reordering any', () => {
     expect(SECTION_GROUPS.flatMap((g) => g.sections)).toEqual([...SECTION_IDS]);
+  });
+
+  it('indexes evaluation, guardrails and governance, and maps the frameworks, onto steps and sections that exist', () => {
+    const stepIds = new Set(ALL_STEPS.map((s) => s.id));
+    const anchors = Object.keys(BLUEPRINT_ANCHORS);
+    for (const row of [...ASSURANCE, ...FRAMEWORKS]) {
+      const name = 'concern' in row ? row.concern : row.name;
+      expect(row.steps.length, name).toBeGreaterThan(0);
+      for (const id of row.steps) expect(stepIds.has(id), `${name} points at step ${id}`).toBe(true);
+      expect(new Set(row.steps).size, name).toBe(row.steps.length);
+      for (const a of row.read) expect(anchors, `${name} reads ${a}`).toContain(a);
+    }
+    for (const concern of ['Evaluation', 'Guardrails', 'Governance and approvals'])
+      expect(ASSURANCE.map((a) => a.concern)).toContain(concern);
+    // the ten OWASP items, in order, each tied to at least one step
+    expect(OWASP_LLM.map((o) => o.id)).toEqual(
+      Array.from({ length: 10 }, (_, i) => `LLM${String(i + 1).padStart(2, '0')}`),
+    );
+    for (const o of OWASP_LLM)
+      for (const id of o.steps) expect(stepIds.has(id), `${o.id} -> ${id}`).toBe(true);
+    const md = deliveryMarkdown();
+    for (const f of FRAMEWORKS) expect(md).toContain(f.name);
   });
 
   it('writes every step, gate and party into the markdown', () => {
