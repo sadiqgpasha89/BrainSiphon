@@ -51,3 +51,77 @@ def test_baseline_clears_the_gate_and_challenger_earns_its_complexity():
     assert base["recall_at_0.5pct_fpr"] >= 0.60, rep      # M2 gate
     assert base["pr_auc"] >= 0.55, rep
     assert chal["pr_auc"] >= 0.95 * base["pr_auc"], rep   # M3 gate: no regression for the added complexity
+
+
+# --- Phase 1 consistency gates: the business ceiling, the decision vocabulary and the UPI variant ----------------------------
+# Spec constraint: "false declines stay under 0.3% of genuine volume, measured across allow, step-up and block".
+# Recall at 0.5% FPR (above) ranks models; it is not that ceiling, and nothing above proved the ceiling until these tests.
+
+FALSE_DECLINE_CEILING = 0.003
+
+
+@pytest.mark.parametrize("mode", ["card", "upi"])
+def test_false_decline_rate_on_genuine_volume_stays_under_the_ceiling(mode):
+    """The acceptance gate for the business constraint: measured on genuine test-window volume, across all three actions."""
+    from baseline import POLICY
+
+    rep = run(seed=7, mode=mode)
+    for name in ("baseline_lr", "challenger_hgb"):
+        pol = rep[name]["policy"]
+        g = pol["genuine"]
+        assert g["allow"] + g["step_up"] + g["block"] == pol["genuine_rows"], "every genuine row gets exactly one action"
+        # a blocked genuine payment is a decline; a stepped-up one is a decline only when the customer fails or abandons the challenge
+        expected = (g["block"] + POLICY["step_up_failure_rate"] * g["step_up"]) / pol["genuine_rows"]
+        assert pol["false_decline_rate"] == pytest.approx(expected)
+        assert pol["false_decline_rate"] <= FALSE_DECLINE_CEILING, (mode, name, pol)
+        assert pol["step_up_rate_on_genuine"] <= POLICY["step_up_budget"] * 1.5, (mode, name, pol)
+        assert pol["fraud"]["allow"] < pol["fraud_rows"], "a policy that allows all fraud also meets the ceiling; it must catch something"
+
+
+def test_the_half_percent_fpr_operating_point_alone_would_breach_the_ceiling():
+    """Why the ceiling needs its own gate: 0.5% of genuine flagged is already more than the 0.3% that may be declined."""
+    assert 0.005 > FALSE_DECLINE_CEILING
+    rep = run(seed=7)
+    assert rep["baseline_lr"]["policy"]["false_decline_rate"] < 0.005
+
+
+def test_decision_vocabulary_is_allow_step_up_block():
+    from baseline import DECISIONS
+
+    assert DECISIONS == ("allow", "step_up", "block")  # mapped to ALLOW | STEP_UP | BLOCK in the API contract
+
+
+def test_upi_labels_come_from_complaints_and_recoveries_not_chargebacks():
+    upi = generate(seed=7, mode="upi")
+    assert set(upi.label_source.unique()) <= {"complaint", "recovery", "none"}
+    assert "chargeback" not in set(upi.label_source.unique())
+    assert set(generate(seed=7).label_source.unique()) <= {"chargeback", "none"}
+
+
+def test_upi_labels_mature_faster_than_card_labels_and_some_fraud_is_never_reported():
+    from make_data import label_maturity_curve
+
+    card, upi = generate(seed=7), generate(seed=7, mode="upi")
+    cc, uc = label_maturity_curve(card), label_maturity_curve(upi)
+    assert uc[3] > cc[3], "by day 3 far more UPI than card fraud is labelled"
+    assert uc[7] >= 0.9 * uc[21], "the UPI curve has flattened by its short maturity window"
+    assert cc[21] == pytest.approx(1.0) and cc[7] < 0.2, "card labels are still arriving until the chargeback window closes"
+    fraud = upi[upi.is_fraud == 1]
+    silent = (fraud.label == 0).mean()
+    assert 0.1 < silent < 0.4, "UPI fraud nobody reports never becomes a positive label"
+    assert (generate(seed=7).query("is_fraud == 1").label == 1).all(), "card labels eventually cover every fraud"
+
+
+def test_upi_mode_is_deterministic_and_leaves_card_data_unchanged():
+    assert generate(seed=7, mode="upi").equals(generate(seed=7, mode="upi"))
+    card, upi = generate(seed=7), generate(seed=7, mode="upi")
+    assert card[["ts", "card", "device", "merchant", "amount", "is_fraud"]].equals(upi[["ts", "card", "device", "merchant", "amount", "is_fraud"]])
+
+
+def test_each_variant_has_its_own_split_and_a_matured_training_set():
+    from baseline import SPLITS
+
+    assert SPLITS["upi"][2] < SPLITS["card"][2], "a shorter label window allows an earlier test period"
+    for mode in ("card", "upi"):
+        train, _, test = split(build_features(generate(seed=7, mode=mode)), mode=mode)
+        assert train.label_ts.max() < test.ts.min()

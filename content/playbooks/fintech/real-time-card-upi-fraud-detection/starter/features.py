@@ -62,9 +62,11 @@ def _cumulative_at(events: pd.DataFrame, merchants: pd.Series, when: pd.Series) 
 
 def merchant_matured_rate(tx: pd.DataFrame, window_days: int | None, prior_n: float = 50.0, prior_p: float = 0.005):
     """Fraud rate of a merchant using only labels that had *arrived* by decision time (label_ts <= ts)."""
-    ev = tx[["merchant", "label_ts", "is_fraud"]].rename(columns={"label_ts": "t"}).sort_values("t", kind="mergesort")
+    # the *observed* label (what the rail has revealed by label_ts), not ground truth: on UPI some fraud is never reported
+    target = "label" if "label" in tx else "is_fraud"
+    ev = tx[["merchant", "label_ts", target]].rename(columns={"label_ts": "t", target: "y"}).sort_values("t", kind="mergesort")
     ev["cum_n"] = ev.groupby("merchant").cumcount() + 1.0
-    ev["cum_f"] = ev.groupby("merchant")["is_fraud"].cumsum().astype(float)
+    ev["cum_f"] = ev.groupby("merchant")["y"].cumsum().astype(float)
     ev = ev[["merchant", "t", "cum_n", "cum_f"]]
     now = _cumulative_at(ev, tx["merchant"], tx["ts"])
     n, f = now["cum_n"], now["cum_f"]
@@ -102,4 +104,5 @@ def build_features(tx: pd.DataFrame) -> pd.DataFrame:
     out["merchant_drift"] = out["merchant_rate_7d"] / out["merchant_rate_90d"]
     out["hour"] = (ts // 3600) % 24
     out["is_fraud"], out["ts"], out["label_ts"] = tx["is_fraud"].to_numpy(), ts, tx["label_ts"].to_numpy()
+    out["label"] = tx["label"].to_numpy() if "label" in tx else out["is_fraud"]
     return out
