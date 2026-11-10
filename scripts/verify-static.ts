@@ -108,6 +108,13 @@ export function verifyStatic(
     }
   }
 
+  // 2b. the delivery guide: its page and its markdown twin
+  if (!nonEmpty(join(out, 'delivery', 'index.html'))) fail('missing page out/delivery/index.html');
+  const guideMd = join(out, 'delivery.md');
+  if (!nonEmpty(guideMd)) fail('missing out/delivery.md');
+  else if (!readFileSync(guideMd, 'utf8').startsWith('# BrainSiphon delivery guide'))
+    fail('out/delivery.md does not start with its title');
+
   // 3. advertised links carry the base path
   const home = join(out, 'index.html');
   if (nonEmpty(home)) {

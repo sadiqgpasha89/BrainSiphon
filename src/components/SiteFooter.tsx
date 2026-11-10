@@ -12,8 +12,8 @@ export async function SiteFooter() {
         <div>
           <p className="font-semibold text-ink">BrainSiphon</p>
           <p className="mt-2 max-w-sm">
-            Zero-noise engineering blueprints for AI/ML systems. Every page: signals, noise traps, HLD, LLD,
-            sequence diagram and a 10M-user capacity model.
+            Zero-noise engineering blueprints for AI/ML systems, and one delivery guide that takes any of them
+            from scoping to monitoring.
           </p>
         </div>
         <nav aria-label="Footer domains">
@@ -29,7 +29,7 @@ export async function SiteFooter() {
           </ul>
         </nav>
         <div>
-          <p className="font-semibold text-ink">For agents & IDEs</p>
+          <p className="font-semibold text-ink">Guides, and files for agents</p>
           <ul className="mt-2 space-y-1">
             <li>
               <a href={withBase('/llms.txt')} className="hover:text-ink">
@@ -39,6 +39,15 @@ export async function SiteFooter() {
             </li>
             <li>
               Append <code className="kbd">.md</code> to any blueprint URL for clean markdown
+            </li>
+            <li>
+              <Link href="/delivery" className="hover:text-ink">
+                Delivery guide
+              </Link>{' '}
+              — scoping to monitoring, as a page or{' '}
+              <a href={withBase('/delivery.md')} className="hover:text-ink">
+                .md
+              </a>
             </li>
             <li>
               <Link href="/patterns" className="hover:text-ink">

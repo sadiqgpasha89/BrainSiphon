@@ -1,4 +1,4 @@
-import { Hammer, TriangleAlert } from 'lucide-react';
+import { Hammer, Route, TriangleAlert } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -119,20 +119,25 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         <p className="mt-3 max-w-3xl text-lg text-mute" data-prose>
           {uc.summary}
         </p>
-        {uc.playbook && (
-          <a
-            href="#playbook"
-            className="btn mt-4 !border-signal/50 !bg-signal-soft !text-signal no-underline"
-            data-testid="playbook-link"
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Link
+            href={{ pathname: '/delivery', query: { uc: uc.slug } }}
+            className="btn !border-signal/50 !bg-signal-soft !text-signal no-underline"
+            data-testid="delivery-link"
           >
-            <Hammer size={14} aria-hidden />{' '}
-            {uc.playbook.compatibility.verdict === 'exact'
-              ? 'Build playbook: data, milestones, runnable starter kit'
-              : uc.playbook.compatibility.verdict === 'adaptable'
-                ? 'Build playbook: data, milestones, a starter kit to adapt'
-                : 'Build playbook: guidance only, no compatible starter kit'}
-          </a>
-        )}
+            <Route size={14} aria-hidden /> Deliver this use case: step-by-step guide
+          </Link>
+          {uc.playbook && (
+            <a href="#playbook" className="btn no-underline" data-testid="playbook-link">
+              <Hammer size={14} aria-hidden />{' '}
+              {uc.playbook.compatibility.verdict === 'exact'
+                ? 'Build playbook: data, milestones, runnable starter kit'
+                : uc.playbook.compatibility.verdict === 'adaptable'
+                  ? 'Build playbook: data, milestones, a starter kit to adapt'
+                  : 'Build playbook: guidance only, no compatible starter kit'}
+            </a>
+          )}
+        </div>
         {uc.playbook && (
           <p className="mt-3 max-w-3xl text-sm text-mute" data-testid="header-boundary" data-prose>
             <strong className="text-ink">Implementation boundary. </strong>

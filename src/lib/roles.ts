@@ -151,6 +151,39 @@ export const SECTION_IDS = [
   'validation',
 ] as const;
 
+export type SectionId = (typeof SECTION_IDS)[number];
+
+/**
+ * The sections in four groups, in page order, so twenty-two entries read as four. Used by the "On this page" navigation and the
+ * home page; a test checks the groups cover every section exactly once and keep the page order.
+ */
+export const SECTION_GROUPS: { id: string; label: string; blurb: string; sections: SectionId[] }[] = [
+  {
+    id: 'understand',
+    label: 'Understand',
+    blurb: 'The problem, the business around it, and what actually moves the metric.',
+    sections: ['discovery', 'enterprise', 'signal-noise', 'problem'],
+  },
+  {
+    id: 'design',
+    label: 'Design',
+    blurb: 'Features, model pipeline and the system, sized for real load.',
+    sections: ['features', 'blueprint', 'hld', 'sequence', 'lld', 'e2e', 'scale'],
+  },
+  {
+    id: 'prove',
+    label: 'Prove',
+    blurb: 'Evidence that it works, fails safely and is allowed to run.',
+    sections: ['evaluation', 'edge-cases', 'role-lenses', 'governance', 'experimentation', 'metrics'],
+  },
+  {
+    id: 'run',
+    label: 'Ship and run',
+    blurb: 'Release, operations, agents where they fit, and a build playbook.',
+    sections: ['mlops', 'operations', 'agentic', 'playbook', 'validation'],
+  },
+];
+
 /**
  * Which blueprint sections each role should read first. Every section outside the list is hidden while that lens is on.
  * Phase 0 (`discovery`) is in every list: no role starts from the architecture, and the combined lens of several roles is
