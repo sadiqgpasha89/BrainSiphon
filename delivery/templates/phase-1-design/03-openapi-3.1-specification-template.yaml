@@ -1,0 +1,211 @@
+openapi: 3.1.0
+info:
+  title: BrainSiphon Real-Time Inference & Decisioning API
+  description: Production-grade REST contract for low-latency AI decision services with circuit breaking and SLA adherence.
+  version: 1.0.0
+servers:
+  - url: https://api.brainsiphon.internal/v1
+    description: Production internal ingress
+  - url: http://localhost:8000/v1
+    description: Local Docker development
+
+paths:
+  /score:
+    post:
+      summary: Evaluate an event and produce a scored decision
+      description: Synchronous low-latency inference endpoint. Enforces a strict P99 < 15ms service level agreement.
+      operationId: evaluateEvent
+      security:
+        - OAuth2Bearer: [inference:score]
+        - ApiKeyAuth: []
+      headers:
+        X-Request-ID:
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Unique correlation ID for distributed tracing
+        X-Tenant-ID:
+          schema:
+            type: string
+          required: false
+          description: Tenant isolation key for multi-tenant deployments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreRequest'
+      responses:
+        '200':
+          description: Event successfully scored and disposition assigned
+          headers:
+            X-Execution-Latency-MS:
+              schema:
+                type: number
+              description: Internal execution time in milliseconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreResponse'
+        '400':
+          description: Invalid request payload schema or missing required fields
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '401':
+          description: Unauthorized - missing or expired authentication token
+        '429':
+          description: Rate limit exceeded - circuit breaker shedding load
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '503':
+          description: Service degraded - model serving unavailable; fallback triggered
+
+  /health/liveness:
+    get:
+      summary: Liveness check
+      description: Returns 200 if the container process is responsive.
+      responses:
+        '200':
+          description: Container is alive
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'ok'
+
+  /health/readiness:
+    get:
+      summary: Readiness check
+      description: Returns 200 only if all downstream dependencies (Redis, Postgres) are healthy.
+      responses:
+        '200':
+          description: Service is ready for live traffic
+        '503':
+          description: Service is not ready (dependency failure)
+
+components:
+  securitySchemes:
+    OAuth2Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    ScoreRequest:
+      type: object
+      required:
+        - event_id
+        - entity_id
+        - timestamp
+        - amount
+      properties:
+        event_id:
+          type: string
+          format: uuid
+          example: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+        entity_id:
+          type: string
+          example: 'usr_9482910'
+        timestamp:
+          type: string
+          format: date-time
+          example: '2026-11-11T12:00:00.000Z'
+        amount:
+          type: number
+          minimum: 0.01
+          example: 249.50
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: 'USD'
+          example: 'USD'
+        features:
+          type: object
+          additionalProperties: true
+          description: Optional client-side observed features
+
+    ScoreResponse:
+      type: object
+      required:
+        - decision_id
+        - disposition
+        - score
+        - latency_ms
+        - model_version
+      properties:
+        decision_id:
+          type: string
+          format: uuid
+        disposition:
+          type: string
+          enum: [ALLOW, REVIEW, BLOCK]
+          example: 'BLOCK'
+        score:
+          type: number
+          minimum: 0.0
+          maximum: 1.0
+          example: 0.942
+        latency_ms:
+          type: number
+          example: 8.4
+        model_version:
+          type: string
+          example: 'v1.2.0-lgbm'
+        degraded:
+          type: boolean
+          default: false
+        top_explanations:
+          type: array
+          items:
+            type: object
+            properties:
+              feature:
+                type: string
+                example: 'tx_velocity_1h'
+              shap_value:
+                type: number
+                example: 0.38
+              direction:
+                type: string
+                enum: [INCREASES_RISK, DECREASES_RISK]
+
+    ProblemDetails:
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+          example: 'https://brainsiphon.internal/errors/validation-failed'
+        title:
+          type: string
+          example: 'Validation Error'
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+          example: "Field 'amount' must be greater than 0.01"
+        instance:
+          type: string
+          format: uri

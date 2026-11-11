@@ -1,0 +1,35 @@
+asyncapi: 3.0.0
+info:
+  title: Clinical Alert Streaming Backbone
+  version: 1.1.0
+channels:
+  ehr.vitals.stream:
+    address: ehr.vitals.stream
+    messages:
+      vitalsObserved:
+        summary: Real-time telemetry feed from bedside monitors
+        payload:
+          type: object
+          properties:
+            patient_id: { type: string }
+            encounter_id: { type: string }
+            hr: { type: number }
+            sbp: { type: number }
+            rr: { type: number }
+            temp: { type: number }
+            spo2: { type: number }
+            ts: { type: number }
+  clinical.sepsis.alerts:
+    address: clinical.sepsis.alerts
+    messages:
+      alertPublished:
+        summary: Dispatched alert to ICU central station and clinician pager
+        payload:
+          type: object
+          properties:
+            alert_id: { type: string }
+            patient_id: { type: string }
+            alert_tier: { type: string, enum: [LOW, MONITOR, CRITICAL] }
+            risk_score: { type: number }
+            timestamp: { type: number }
+

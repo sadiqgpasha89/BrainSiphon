@@ -1,0 +1,37 @@
+apiVersion: opendatacontract.com/v2alpha1
+kind: DataContract
+id: urn:datacontract:fintech:payment-fraud-features
+info:
+  title: Payment Fraud Feature Store Data Contract
+  version: 1.2.0
+  owner: Fraud Risk Platform Engineering Team
+  sla:
+    freshness: 60s
+    availability: 99.99%
+models:
+  features:
+    description: Aggregated velocity and historical spend features
+    type: table
+    fields:
+      card:
+        type: integer
+        primaryKey: true
+      card_cnt_1m:
+        type: integer
+        description: Rolling 1-minute transaction count
+      card_cnt_1h:
+        type: integer
+        description: Rolling 1-hour transaction count
+      card_sum_1h:
+        type: float
+        description: Rolling 1-hour sum in base currency
+      card_cnt_1d:
+        type: integer
+        description: Rolling 24-hour transaction count
+      card_sum_1d:
+        type: float
+        description: Rolling 24-hour sum in base currency
+    quality:
+      - rule: null_percentage(card) == 0
+      - rule: min(card_cnt_1h) >= 0
+

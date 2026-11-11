@@ -1,0 +1,43 @@
+openapi: 3.1.0
+info:
+  title: Real-Time Ad CTR Scoring API
+  description: High-throughput, sub-10ms CTR scoring and eCPM second-price auction service.
+  version: 1.2.0
+paths:
+  /v1/score_auction:
+    post:
+      summary: Score candidate ads and determine auction winner by eCPM
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuctionCandidateRequest'
+      responses:
+        '200':
+          description: Ranked ads with eCPM and winner selection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuctionResponse'
+components:
+  schemas:
+    AuctionCandidateRequest:
+      type: object
+      required: [auction_id, user_segment, placement_id, device_type, candidates]
+      properties:
+        auction_id: { type: string }
+        user_segment: { type: integer }
+        placement_id: { type: integer }
+        device_type: { type: integer }
+        candidates: { type: array, items: { type: object } }
+    AuctionResponse:
+      type: object
+      required: [auction_id, winning_ad_id, clearing_ecpm, ranked_ads]
+      properties:
+        auction_id: { type: string }
+        winning_ad_id: { type: integer }
+        clearing_ecpm: { type: number }
+        ranked_ads: { type: array, items: { type: object } }
+        latency_ms: { type: number }
+

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  soc-investigator:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    ports:
+      - "8006:8006"
+    environment:
+      - SIEM_ENDPOINT=http://mock-siem:9000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8006/health/liveness"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+

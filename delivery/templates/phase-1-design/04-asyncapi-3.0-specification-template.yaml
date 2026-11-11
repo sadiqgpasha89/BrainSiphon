@@ -1,0 +1,119 @@
+asyncapi: 3.0.0
+info:
+  title: BrainSiphon Event-Driven AI & Decisions Stream
+  version: 1.0.0
+  description: Production AsyncAPI 3.0 specification for ingestion, decision broadcasting, and dead-letter queue topics.
+
+defaultContentType: application/json
+
+servers:
+  production-kafka:
+    host: kafka.brainsiphon.internal:9092
+    protocol: kafka
+    description: Production Apache Kafka cluster
+    security:
+      - $ref: '#/components/securitySchemes/saslScram512'
+
+channels:
+  rawEventsChannel:
+    address: 'brainsiphon.events.v1.raw'
+    messages:
+      RawEventMessage:
+        $ref: '#/components/messages/RawEventMessage'
+    description: Incoming stream of raw business events consumed by streaming feature extractors.
+
+  decisionsChannel:
+    address: 'brainsiphon.decisions.v1.scored'
+    messages:
+      DecisionEventMessage:
+        $ref: '#/components/messages/DecisionEventMessage'
+    description: Outgoing stream of model scoring decisions published via transactional outbox.
+
+  deadLetterChannel:
+    address: 'brainsiphon.dlq.v1.errors'
+    messages:
+      DeadLetterMessage:
+        $ref: '#/components/messages/DeadLetterMessage'
+    description: Dead-letter queue for unparseable or poison-pill events.
+
+operations:
+  consumeRawEvents:
+    action: receive
+    channel:
+      $ref: '#/channels/rawEventsChannel'
+    summary: Ingest raw business events for streaming aggregations
+
+  publishDecisions:
+    action: send
+    channel:
+      $ref: '#/channels/decisionsChannel'
+    summary: Broadcast real-time decisions to downstream consumers and the audit lakehouse
+
+components:
+  securitySchemes:
+    saslScram512:
+      type: scramSha512
+      description: SASL/SCRAM authentication with TLS in transit
+
+  messages:
+    RawEventMessage:
+      headers:
+        type: object
+        properties:
+          correlationId:
+            type: string
+            format: uuid
+          traceparent:
+            type: string
+      payload:
+        type: object
+        required: [eventId, entityId, timestamp, amount]
+        properties:
+          eventId:
+            type: string
+            format: uuid
+          entityId:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+          amount:
+            type: number
+
+    DecisionEventMessage:
+      payload:
+        type: object
+        required: [decisionId, eventId, score, disposition, evaluatedAt]
+        properties:
+          decisionId:
+            type: string
+            format: uuid
+          eventId:
+            type: string
+            format: uuid
+          score:
+            type: number
+          disposition:
+            type: string
+            enum: [ALLOW, REVIEW, BLOCK]
+          modelVersion:
+            type: string
+          evaluatedAt:
+            type: string
+            format: date-time
+
+    DeadLetterMessage:
+      payload:
+        type: object
+        required: [originalPayload, failureReason, timestamp, retryCount]
+        properties:
+          originalPayload:
+            type: string
+          failureReason:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+          retryCount:
+            type: integer
+

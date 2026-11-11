@@ -1936,6 +1936,200 @@ export const OWASP_LLM: { id: string; risk: string; control: string; steps: stri
   },
 ];
 
+/* ------------------------------------------------------------------------------------------------- templates */
+
+export interface DeliveryTemplateMeta {
+  code: string;
+  phaseId: PhaseId;
+  title: string;
+  ownerRole: RoleId | PartnerId;
+  file: string;
+  description: string;
+}
+
+export const DELIVERY_TEMPLATES: DeliveryTemplateMeta[] = [
+  {
+    code: 'BS-TMPL-SCOPE-01',
+    phaseId: 'p0',
+    title: 'Client Discovery Questionnaire',
+    ownerRole: 'business-analyst',
+    file: 'delivery/templates/phase-0-scope/01-client-discovery-questionnaire.md',
+    description:
+      '40-point standardized client interview questionnaire covering business context, decision cadence, stakeholders, and latency expectations.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-02',
+    phaseId: 'p0',
+    title: 'Business Requirements Document (BRD)',
+    ownerRole: 'business-analyst',
+    file: 'delivery/templates/phase-0-scope/02-business-requirements-document.md',
+    description:
+      'Production-grade BRD template with problem formulation, user stories, numerical targets, and acceptance criteria.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-03',
+    phaseId: 'p0',
+    title: 'Stakeholder Interview Guide',
+    ownerRole: 'business-analyst',
+    file: 'delivery/templates/phase-0-scope/03-stakeholder-interview-guide.md',
+    description:
+      'Role-specific interview scripts for Sponsors, Operators, Risk Officers, and Engineers.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-04',
+    phaseId: 'p0',
+    title: 'Process Mapping AS-IS vs TO-BE',
+    ownerRole: 'solution-architect',
+    file: 'delivery/templates/phase-0-scope/04-process-mapping-as-is-to-be.md',
+    description:
+      'Framework for mapping current manual workflows to AI-augmented workflows with quantitative cycle times.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-05',
+    phaseId: 'p0',
+    title: 'Requirements Traceability Matrix (RTM)',
+    ownerRole: 'solution-architect',
+    file: 'delivery/templates/phase-0-scope/05-requirements-traceability-matrix.md',
+    description:
+      'Matrix linking business objectives to ML metrics, system NFRs, implementation artifacts, and test cases.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-06',
+    phaseId: 'p0',
+    title: 'KPI Baseline & Financial ROI Workbook',
+    ownerRole: 'finance',
+    file: 'delivery/templates/phase-0-scope/06-kpi-baseline-roi-workbook.md',
+    description:
+      'Financial model calculating cost of false positives vs false negatives, payback period, and 3-year net ROI.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-07',
+    phaseId: 'p0',
+    title: 'Data Access & Security Pre-Flight Checklist',
+    ownerRole: 'risk-compliance',
+    file: 'delivery/templates/phase-0-scope/07-data-access-security-checklist.md',
+    description:
+      'Pre-flight checklist for data governance, PII identification, IAM access, and environment boundaries.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-08',
+    phaseId: 'p0',
+    title: 'AI Suitability Assessment Framework',
+    ownerRole: 'data-scientist',
+    file: 'delivery/templates/phase-0-scope/08-ai-suitability-assessment.md',
+    description:
+      'Decision tree and scoring matrix proving AI/ML necessity versus deterministic rules, heuristics, or solvers.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-09',
+    phaseId: 'p0',
+    title: 'PoC vs MVP vs Production Scope Boundary Matrix',
+    ownerRole: 'delivery-lead',
+    file: 'delivery/templates/phase-0-scope/09-poc-mvp-prod-decision-matrix.md',
+    description:
+      'Strict boundaries and exit gates defining deliverables across PoC, MVP, and full production services.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-10',
+    phaseId: 'p0',
+    title: 'Discovery Charter & Gate 0 Sign-Off',
+    ownerRole: 'delivery-lead',
+    file: 'delivery/templates/phase-0-scope/10-discovery-charter-signoff.md',
+    description:
+      'Formal charter document with named signers and approval gates authorizing Phase 1 architecture.',
+  },
+  {
+    code: 'BS-TMPL-DESIGN-01',
+    phaseId: 'p1',
+    title: 'C4 Architecture Model Suite',
+    ownerRole: 'solution-architect',
+    file: 'delivery/templates/phase-1-design/01-c4-architecture-suite.md',
+    description:
+      'Standard C4 Context, Container, Component, and Deployment topology diagrams.',
+  },
+  {
+    code: 'BS-TMPL-DESIGN-02',
+    phaseId: 'p1',
+    title: 'Nominal & Failure Sequence Diagrams',
+    ownerRole: 'solution-architect',
+    file: 'delivery/templates/phase-1-design/02-sequence-diagrams-failure-flows.md',
+    description:
+      'Explicit sequence diagrams modeling timeouts, circuit breaking, fallback degradation, and dead-letter queues.',
+  },
+  {
+    code: 'BS-TMPL-DESIGN-03',
+    phaseId: 'p1',
+    title: 'OpenAPI 3.1 Specification Template',
+    ownerRole: 'inference-engineer',
+    file: 'delivery/templates/phase-1-design/03-openapi-3.1-specification-template.yaml',
+    description:
+      'Production REST contract including error schemas, latency headers, and health probes.',
+  },
+  {
+    code: 'BS-TMPL-DESIGN-04',
+    phaseId: 'p1',
+    title: 'AsyncAPI 3.0 Specification Template',
+    ownerRole: 'data-engineer',
+    file: 'delivery/templates/phase-1-design/04-asyncapi-3.0-specification-template.yaml',
+    description:
+      'Kafka and event streaming contract with schema evolution rules and DLQ channels.',
+  },
+  {
+    code: 'BS-TMPL-DESIGN-05',
+    phaseId: 'p1',
+    title: 'OpenDataContract Specification Template',
+    ownerRole: 'data-engineer',
+    file: 'delivery/templates/phase-1-design/05-open-data-contract-template.yaml',
+    description:
+      'Standard data contract governing table schemas, freshness SLAs, nullability, and quality assertions.',
+  },
+  {
+    code: 'BS-TMPL-DESIGN-06',
+    phaseId: 'p1',
+    title: 'Architecture Decision Record (ADR) Template',
+    ownerRole: 'solution-architect',
+    file: 'delivery/templates/phase-1-design/06-architecture-decision-record-template.md',
+    description:
+      'Standard ADR structure capturing context, options, decision, trade-offs, and consequences.',
+  },
+  {
+    code: 'BS-TMPL-DESIGN-07',
+    phaseId: 'p1',
+    title: 'Measurable NFR Matrix',
+    ownerRole: 'platform-engineer',
+    file: 'delivery/templates/phase-1-design/07-nfr-matrix-template.md',
+    description:
+      'Quantifiable SLOs for P50/P95/P99 latency, throughput, availability, RTO/RPO, and degradation budgets.',
+  },
+  {
+    code: 'BS-TMPL-DESIGN-08',
+    phaseId: 'p1',
+    title: 'STRIDE & OWASP LLM Threat Model',
+    ownerRole: 'security-engineer',
+    file: 'delivery/templates/phase-1-design/08-stride-threat-model-template.md',
+    description:
+      'Comprehensive security threat matrix with architectural controls and verification tests.',
+  },
+  {
+    code: 'BS-TMPL-DATA-01',
+    phaseId: 'p2',
+    title: 'Source-to-Target Mapping (STTM)',
+    ownerRole: 'data-engineer',
+    file: 'delivery/templates/phase-2-data/source-to-target-mapping.md',
+    description:
+      'Field-level transformation specification with null handling and point-in-time leakage prevention.',
+  },
+  {
+    code: 'BS-TMPL-BUILD-01',
+    phaseId: 'p3',
+    title: 'FastAPI Low-Latency Serving Template',
+    ownerRole: 'inference-engineer',
+    file: 'delivery/templates/phase-3-build/fastapi-inference-service.py',
+    description:
+      'Microservice scaffolding with P99 < 15ms latency enforcement, health endpoints, and circuit breakers.',
+  },
+];
+
 /* ------------------------------------------------------------------------------------------------- glossary */
 
 export const GLOSSARY: { term: string; meaning: string }[] = [

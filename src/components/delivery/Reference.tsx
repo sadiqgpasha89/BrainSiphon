@@ -1,6 +1,7 @@
 import {
   ASSURANCE,
   DELIVERY_PHASES,
+  DELIVERY_TEMPLATES,
   FRAMEWORKS,
   FRAMEWORK_NOTE,
   GLOSSARY,
@@ -318,6 +319,39 @@ export function DeliveryReference() {
                   <td>{partyLabel(m.owner)}</td>
                   <td>{m.cadence}</td>
                   <td>{m.action}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Wrap>
+      </Block>
+
+      <Block
+        id="templates"
+        title="Executable delivery templates and implementation packages"
+        intro="Standardized, downloadable deliverables covering client discovery, production architecture contracts, data engineering pipelines, and low-latency serving microservices."
+      >
+        <Wrap>
+          <table className="bs-table min-w-[48rem]">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Phase</th>
+                <th>Deliverable Title</th>
+                <th>Owner</th>
+                <th>File Location</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {DELIVERY_TEMPLATES.map((t) => (
+                <tr key={t.code}>
+                  <td className="font-mono text-xs font-semibold !text-signal">{t.code}</td>
+                  <td>{t.phaseId}</td>
+                  <td className="font-medium !text-ink">{t.title}</td>
+                  <td>{partyLabel(t.ownerRole)}</td>
+                  <td className="font-mono text-xs text-mute">{t.file}</td>
+                  <td className="text-xs text-mute">{t.description}</td>
                 </tr>
               ))}
             </tbody>

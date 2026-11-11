@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # ── Core Inference Microservice (FastAPI) ──────────────────────────────────
+  inference-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: brainsiphon-inference
+    ports:
+      - '8000:8000'
+    environment:
+      - PORT=8000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/brainsiphon
+      - ACTIVE_MODEL_VERSION=v1.2.0-lgbm
+      - ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/health/readiness']
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - brainsiphon-net
+
+  # ── PostgreSQL with pgvector (Decisions Ledger & Hybrid Search) ─────────────
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: brainsiphon-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=brainsiphon
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - brainsiphon-net
+
+  # ── Redis Cluster (Low-Latency Feature Store & Semantic Cache) ──────────────
+  redis:
+    image: redis:7.2-alpine
+    container_name: brainsiphon-redis
+    ports:
+      - '6379:6379'
+    command:
+      ['redis-server', '--appendonly', 'yes', '--maxmemory', '512mb', '--maxmemory-policy', 'allkeys-lru']
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - brainsiphon-net
+
+  # ── Apache Kafka / Redpanda (Streaming Event Fabric) ───────────────────────
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.1.2
+    container_name: brainsiphon-streaming
+    ports:
+      - '9092:9092'
+      - '9644:9644'
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 1G
+      - --overprovisioned
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://localhost:9092
+    networks:
+      - brainsiphon-net
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  brainsiphon-net:
+    driver: bridge

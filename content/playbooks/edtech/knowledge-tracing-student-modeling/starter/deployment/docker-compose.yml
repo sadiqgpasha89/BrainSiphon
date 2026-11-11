@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  knowledge-tracing:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    ports:
+      - "8005:8005"
+    environment:
+      - REDIS_STATE_HOST=redis
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health/liveness"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6383:6379"
+
+volumes:
+  redis_data:
+

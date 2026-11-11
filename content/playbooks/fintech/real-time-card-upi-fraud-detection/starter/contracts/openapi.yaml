@@ -1,0 +1,102 @@
+openapi: 3.1.0
+info:
+  title: Payment Fraud Scoring API
+  description: Real-time decision service evaluating payment risk across card and UPI rails.
+  version: 1.2.0
+paths:
+  /v1/score:
+    post:
+      summary: Score transaction risk and determine action
+      operationId: scoreTransaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreRequest'
+      responses:
+        '200':
+          description: Risk decision generated within 15ms SLA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreResponse'
+        '400':
+          description: Invalid request payload
+        '503':
+          description: Circuit breaker active or service unavailable
+  /health/liveness:
+    get:
+      summary: Kubernetes liveness probe
+      responses:
+        '200':
+          description: Service process is active
+  /health/readiness:
+    get:
+      summary: Kubernetes readiness probe
+      responses:
+        '200':
+          description: Model weights loaded and Redis feature store connected
+components:
+  schemas:
+    ScoreRequest:
+      type: object
+      required:
+        - txn_id
+        - card_id
+        - amount
+        - merchant_id
+        - device_id
+        - rail
+      properties:
+        txn_id:
+          type: string
+          example: txn_89a01f4c2
+        card_id:
+          type: integer
+          example: 4111222233334444
+        amount:
+          type: number
+          format: float
+          example: 1250.50
+        merchant_id:
+          type: integer
+          example: 98124
+        device_id:
+          type: integer
+          example: 8472910
+        rail:
+          type: string
+          enum: [card, upi]
+          example: card
+    ScoreResponse:
+      type: object
+      required:
+        - txn_id
+        - decision
+        - p_fraud
+        - latency_ms
+        - model_version
+      properties:
+        txn_id:
+          type: string
+        decision:
+          type: string
+          enum: [ALLOW, STEP_UP, BLOCK]
+        p_fraud:
+          type: number
+          format: float
+          example: 0.042
+        latency_ms:
+          type: number
+          format: float
+          example: 4.82
+        decision_reason:
+          type: string
+        model_version:
+          type: string
+        fallback_applied:
+          type: boolean
+        audit_trace_id:
+          type: string
+

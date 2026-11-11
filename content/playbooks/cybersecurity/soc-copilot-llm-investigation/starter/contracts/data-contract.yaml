@@ -1,0 +1,25 @@
+apiVersion: opendatacontract.com/v2alpha1
+kind: DataContract
+id: urn:datacontract:cybersecurity:siem-investigation-cases
+info:
+  title: Security Incident Telemetry Contract
+  version: 1.2.0
+  owner: SecOps Platform Engineering
+  sla:
+    freshness: 5s
+    availability: 99.999%
+models:
+  incident_events:
+    description: Sanitized EDR/Firewall/Auth events for investigation
+    type: table
+    fields:
+      case_id: { type: string, primaryKey: true }
+      event_type: { type: string }
+      host: { type: string }
+      user: { type: string }
+      message: { type: string }
+      is_malicious: { type: integer }
+    quality:
+      - rule: length(case_id) > 0
+      - rule: is_malicious in (0, 1)
+

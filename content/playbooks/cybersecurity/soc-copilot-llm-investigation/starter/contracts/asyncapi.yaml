@@ -1,0 +1,33 @@
+asyncapi: 3.0.0
+info:
+  title: Security Incident Streaming Fabric
+  version: 1.2.0
+channels:
+  siem.alerts.raw:
+    address: siem.alerts.raw
+    messages:
+      alertReceived:
+        summary: Raw alert ingested from EDR or network IDS
+        payload:
+          type: object
+          properties:
+            incident_id: { type: string }
+            alert_name: { type: string }
+            severity: { type: string, enum: [LOW, MEDIUM, HIGH, CRITICAL] }
+            source_ip: { type: string }
+            destination_ip: { type: string }
+            timestamp: { type: number }
+  soc.containment.actions:
+    address: soc.containment.actions
+    messages:
+      actionExecuted:
+        summary: Immutable audit event of automated or approved containment execution
+        payload:
+          type: object
+          properties:
+            incident_id: { type: string }
+            action: { type: string }
+            receipt_id: { type: string }
+            dual_signoff: { type: boolean }
+            timestamp: { type: number }
+

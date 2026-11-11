@@ -185,11 +185,15 @@ function playbookMarkdown(pb: Playbook, L: string[]) {
   const c = pb.compatibility;
   const k = pb.completion;
   L.push('', '## Build playbook', '', pb.summary, '', '### What this playbook gives you, and where your platform starts', '');
-  L.push(`- **Starter kit verdict.** ${c.verdict === 'exact' ? 'Exact match' : c.verdict === 'adaptable' ? 'Adaptable match' : 'No compatible starter kit'}. ${c.statement}`);
-  L.push(`- **Problem type.** ${PROBLEM_LABEL[c.problemType]} (decided ${c.basis.charAt(0).toLowerCase()}${c.basis.slice(1)})`);
-  L.push(`- **Executable artifacts reach.** ${COMPLETION_META[k.reached].label}${k.conditional ? ' (only after the listed modifications)' : ''}. ${k.boundary}`, '');
-  L.push('| State | Status | Evidence | Still needed |', '|---|---|---|---|');
-  k.states.forEach((st) => L.push(`| ${COMPLETION_META[st.state].label} | ${st.status === 'conditional' ? 'after modifications' : st.status === 'reached' ? 'reached' : 'not reached'} | ${esc(st.evidence)} | ${esc(st.stillNeeded.join('; ') || 'nothing')} |`));
+  L.push('- **Starter kit verdict.** ' + (c.verdict === 'exact' ? 'Exact match' : c.verdict === 'adaptable' ? 'Adaptable match' : 'No compatible starter kit') + '. ' + c.statement);
+  L.push('- **Problem type.** ' + PROBLEM_LABEL[c.problemType] + ' (decided ' + c.basis.charAt(0).toLowerCase() + c.basis.slice(1) + ')');
+  L.push('- **Maturity level.** ' + COMPLETION_META[k.reached].levelName);
+  L.push('- **Executable artifacts reach.** ' + COMPLETION_META[k.reached].label + (k.conditional ? ' (only after the listed modifications)' : '') + '. ' + k.boundary, '');
+  L.push('| Level & State | Status | Evidence | Still needed |', '|---|---|---|---|');
+  k.states.forEach((st) => L.push(`| ${COMPLETION_META[st.state].levelCode} · ${COMPLETION_META[st.state].label} | ${st.status === 'conditional' ? 'after modifications' : st.status === 'reached' ? 'reached' : 'not reached'} | ${esc(st.evidence)} | ${esc(st.stillNeeded.join('; ') || 'nothing')} |`));
+  L.push('', '### FDE Implementation Gap Report', '');
+  L.push(`- **Supplied by this blueprint:** Problem formulation, loss function, high-signal features, HLD/LLD architecture, capacity model, and synthetic baseline.`);
+  L.push(`- **Required for production (Platform Engineer):** Production REST/OpenAPI 3.1 & AsyncAPI 3.0 specs, DB migrations (PostgreSQL), streaming feature pipelines (Feast/Kafka), cloud IaC (Terraform/Helm), and SRE incident runbooks.`);
   L.push('', '**What the artifact labels mean**', '', ...LEGEND, '', '### Fit with the starter kit', '', '| Dimension | This use case needs | The kit provides | Fit |', '|---|---|---|---|');
   c.dimensions.forEach((d) => L.push(`| ${d.dimension} | ${esc(d.needs)} | ${esc(d.provides)} | ${d.status}${d.change ? `: ${esc(d.change)}` : ''} |`));
   if (c.verdict === 'none') {

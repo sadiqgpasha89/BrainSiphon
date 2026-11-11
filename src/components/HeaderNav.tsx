@@ -46,6 +46,13 @@ export function HeaderNav() {
       >
         Delivery guide
       </Link>
+      <Link
+        href="/workspace"
+        aria-current={here('/workspace') ? 'page' : undefined}
+        className={`${LINK} hidden sm:block ${here('/workspace') ? 'text-signal' : 'text-mute hover:text-ink'}`}
+      >
+        Workspace
+      </Link>
       <div ref={wrap} className="sm:relative">
         <button
           type="button"
@@ -69,6 +76,12 @@ export function HeaderNav() {
             className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
           >
             Delivery guide
+          </Link>
+          <Link
+            href="/workspace"
+            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
+          >
+            Workspace
           </Link>
           <nav aria-label="Domains">
             <p className="px-3 pb-1 pt-1 font-mono text-[11px] uppercase tracking-wider text-dim">

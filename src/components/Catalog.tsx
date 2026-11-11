@@ -16,7 +16,8 @@ import {
   type Paradigm,
   type UseCaseIndexEntry,
 } from '../schemas/usecase.schema';
-import { DifficultyChip, LatencyChip, ParadigmChips } from './Badges';
+import type { ReachedState } from '../lib/artifacts';
+import { DifficultyChip, LatencyChip, MaturityChip, ParadigmChips } from './Badges';
 
 type Sort = 'relevance' | 'title' | 'complexity' | 'latency';
 const DIFF_RANK: Record<Difficulty, number> = {
@@ -308,6 +309,12 @@ export function Catalog({ entries, domainName }: { entries: UseCaseIndexEntry[];
                         <ParadigmChips paradigms={e.mlParadigms} />
                         <LatencyChip latency={e.latencySLA} />
                         <DifficultyChip difficulty={e.difficulty} />
+                        {e.starter?.reached && (
+                          <MaturityChip
+                            reached={e.starter.reached as ReachedState}
+                            conditional={e.starter.conditional}
+                          />
+                        )}
                         {e.playbook && (
                           <span
                             className={`chip ${e.starter?.verdict === 'exact' ? '!border-signal/50 !bg-signal-soft !text-signal' : e.starter?.verdict === 'adaptable' ? '!border-warn/40 !bg-warn/10 !text-warn' : ''}`}

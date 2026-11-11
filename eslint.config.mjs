@@ -9,6 +9,7 @@ const config = [
     ignores: [
       '.next/**',
       'out/**',
+      '.venv/**',
       'node_modules/**',
       'content/generated/**',
       'public/**',

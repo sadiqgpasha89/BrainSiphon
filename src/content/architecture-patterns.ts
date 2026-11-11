@@ -93,4 +93,21 @@ export const ARCHITECTURE_PATTERNS: ArchitecturePattern[] = [
     archetypes: ['tabular', 'forecast', 'optimize'],
     primitives: ['shadow-canary-mirroring', 'outbox-cdc', 'schema-evolution-dlq'],
   },
+  {
+    id: 'enterprise-agent-control-plane',
+    title: 'Enterprise agent control plane',
+    summary:
+      'A governed orchestration and policy fabric for autonomous AI agents with typed tool registries, OBO workload identity, policy guardrails, human approvals, and replayable execution ledgers.',
+    useWhen:
+      'AI agents execute multi-step workflows, call external APIs, inspect or modify production systems, or require enterprise auditability.',
+    tradeoff:
+      'Agent autonomy is bounded by explicit tool permissions and approval latency; state machine checkpointing requires durable storage.',
+    archetypes: ['llm-agent', 'llm-rag', 'nlp'],
+    primitives: [
+      'plan-preview-commit',
+      'spotlighting-policy-engine',
+      'wal-decision-ledger',
+      'obo-token-exchange',
+    ],
+  },
 ];

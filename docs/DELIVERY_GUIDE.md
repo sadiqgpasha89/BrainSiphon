@@ -1481,6 +1481,33 @@ The phases and gates stay the same. What changes is where the effort goes. Each 
 | **Bandits and reinforcement learning** | Design the exploration policy and its safety limits in Phase 1. Evaluate on logged data (replay or off-policy estimation) before any live traffic, then ramp with tight guardrails. |
 | **Optimisation and planning with a solver** | The “model” is the formulation: objective and constraints. Validate that every constraint holds and compare solution quality with the current plan. There is no retraining; instead decide how often to re-solve and what triggers it. |
 
+## Executable delivery templates and implementation packages
+
+Standardized, downloadable deliverables covering project discovery, production architecture contracts, data pipelines, and serving templates.
+
+| Code | Phase | Deliverable Title | Owner | File Location | Description |
+| --- | --- | --- | --- | --- | --- |
+| `BS-TMPL-SCOPE-01` | p0 | **Client Discovery Questionnaire** | Business Analyst | `delivery/templates/phase-0-scope/01-client-discovery-questionnaire.md` | 40-point standardized client interview questionnaire covering business context, decision cadence, stakeholders, and latency expectations. |
+| `BS-TMPL-SCOPE-02` | p0 | **Business Requirements Document (BRD)** | Business Analyst | `delivery/templates/phase-0-scope/02-business-requirements-document.md` | Production-grade BRD template with problem formulation, user stories, numerical targets, and acceptance criteria. |
+| `BS-TMPL-SCOPE-03` | p0 | **Stakeholder Interview Guide** | Business Analyst | `delivery/templates/phase-0-scope/03-stakeholder-interview-guide.md` | Role-specific interview scripts for Sponsors, Operators, Risk Officers, and Engineers. |
+| `BS-TMPL-SCOPE-04` | p0 | **Process Mapping AS-IS vs TO-BE** | Solution Architect | `delivery/templates/phase-0-scope/04-process-mapping-as-is-to-be.md` | Framework for mapping current manual workflows to AI-augmented workflows with quantitative cycle times. |
+| `BS-TMPL-SCOPE-05` | p0 | **Requirements Traceability Matrix (RTM)** | Solution Architect | `delivery/templates/phase-0-scope/05-requirements-traceability-matrix.md` | Matrix linking business objectives to ML metrics, system NFRs, implementation artifacts, and test cases. |
+| `BS-TMPL-SCOPE-06` | p0 | **KPI Baseline & Financial ROI Workbook** | Finance (FinOps) | `delivery/templates/phase-0-scope/06-kpi-baseline-roi-workbook.md` | Financial model calculating cost of false positives vs false negatives, payback period, and 3-year net ROI. |
+| `BS-TMPL-SCOPE-07` | p0 | **Data Access & Security Pre-Flight Checklist** | Risk, compliance, legal and privacy | `delivery/templates/phase-0-scope/07-data-access-security-checklist.md` | Pre-flight checklist for data governance, PII identification, IAM access, and environment boundaries. |
+| `BS-TMPL-SCOPE-08` | p0 | **AI Suitability Assessment Framework** | Data Scientist | `delivery/templates/phase-0-scope/08-ai-suitability-assessment.md` | Decision tree and scoring matrix proving AI/ML necessity versus deterministic rules, heuristics, or solvers. |
+| `BS-TMPL-SCOPE-09` | p0 | **PoC vs MVP vs Production Scope Boundary Matrix** | Delivery lead (project manager) | `delivery/templates/phase-0-scope/09-poc-mvp-prod-decision-matrix.md` | Strict boundaries and exit gates defining deliverables across PoC, MVP, and full production services. |
+| `BS-TMPL-SCOPE-10` | p0 | **Discovery Charter & Gate 0 Sign-Off** | Delivery lead (project manager) | `delivery/templates/phase-0-scope/10-discovery-charter-signoff.md` | Formal charter document with named signers and approval gates authorizing Phase 1 architecture. |
+| `BS-TMPL-DESIGN-01` | p1 | **C4 Architecture Model Suite** | Solution Architect | `delivery/templates/phase-1-design/01-c4-architecture-suite.md` | Standard C4 Context, Container, Component, and Deployment topology diagrams. |
+| `BS-TMPL-DESIGN-02` | p1 | **Nominal & Failure Sequence Diagrams** | Solution Architect | `delivery/templates/phase-1-design/02-sequence-diagrams-failure-flows.md` | Explicit sequence diagrams modeling timeouts, circuit breaking, fallback degradation, and dead-letter queues. |
+| `BS-TMPL-DESIGN-03` | p1 | **OpenAPI 3.1 Specification Template** | Inference Engineer | `delivery/templates/phase-1-design/03-openapi-3.1-specification-template.yaml` | Production REST contract including error schemas, latency headers, and health probes. |
+| `BS-TMPL-DESIGN-04` | p1 | **AsyncAPI 3.0 Specification Template** | Data Engineer | `delivery/templates/phase-1-design/04-asyncapi-3.0-specification-template.yaml` | Kafka and event streaming contract with schema evolution rules and DLQ channels. |
+| `BS-TMPL-DESIGN-05` | p1 | **OpenDataContract Specification Template** | Data Engineer | `delivery/templates/phase-1-design/05-open-data-contract-template.yaml` | Standard data contract governing table schemas, freshness SLAs, nullability, and quality assertions. |
+| `BS-TMPL-DESIGN-06` | p1 | **Architecture Decision Record (ADR) Template** | Solution Architect | `delivery/templates/phase-1-design/06-architecture-decision-record-template.md` | Standard ADR structure capturing context, options, decision, trade-offs, and consequences. |
+| `BS-TMPL-DESIGN-07` | p1 | **Measurable NFR Matrix** | Platform Engineer | `delivery/templates/phase-1-design/07-nfr-matrix-template.md` | Quantifiable SLOs for P50/P95/P99 latency, throughput, availability, RTO/RPO, and degradation budgets. |
+| `BS-TMPL-DESIGN-08` | p1 | **STRIDE & OWASP LLM Threat Model** | Security Engineer | `delivery/templates/phase-1-design/08-stride-threat-model-template.md` | Comprehensive security threat matrix with architectural controls and verification tests. |
+| `BS-TMPL-DATA-01` | p2 | **Source-to-Target Mapping (STTM)** | Data Engineer | `delivery/templates/phase-2-data/source-to-target-mapping.md` | Field-level transformation specification with null handling and point-in-time leakage prevention. |
+| `BS-TMPL-BUILD-01` | p3 | **FastAPI Low-Latency Serving Template** | Inference Engineer | `delivery/templates/phase-3-build/fastapi-inference-service.py` | Microservice scaffolding with P99 < 15ms latency enforcement, health endpoints, and circuit breakers. |
+
 ## Every deliverable, in order
 
 **Phase 0 · Discovery and business requirements**

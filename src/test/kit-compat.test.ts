@@ -148,15 +148,17 @@ describe('the fraud pilot: where the running code stops', () => {
     expect(pb.completion.reached).toBe('evaluation-ready');
     expect(pb.completion.conditional).toBe(false);
   });
-  it('shows the ladder: prototype and evaluation reached, shadow and production not, with what is still needed', () => {
+  it('shows the ladder: prototype and evaluation reached, integration, shadow and production not, with what is still needed', () => {
     expect(pb.completion.states.map((s) => [s.state, s.status])).toEqual([
       ['prototype-ready', 'reached'],
       ['evaluation-ready', 'reached'],
+      ['integration-ready', 'not-reached'],
       ['shadow-ready', 'not-reached'],
       ['production-ready', 'not-reached'],
     ]);
     expect(pb.completion.states[2]!.stillNeeded.join(' ')).toMatch(/M5/);
-    expect(pb.completion.states[3]!.stillNeeded.join(' ')).toMatch(/M6/);
+    expect(pb.completion.states[3]!.stillNeeded.join(' ')).toMatch(/M5/);
+    expect(pb.completion.states[4]!.stillNeeded.join(' ')).toMatch(/M6/);
   });
 });
 

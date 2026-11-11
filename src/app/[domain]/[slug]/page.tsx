@@ -2,7 +2,7 @@ import { Hammer, Route, TriangleAlert } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { DifficultyChip, LatencyChip, ParadigmChips } from '../../../components/Badges';
+import { DifficultyChip, LatencyChip, MaturityChip, ParadigmChips } from '../../../components/Badges';
 import { ReaderShell } from '../../../components/reader/ReaderShell';
 import { PlaybookSection, VERDICT_LABEL, VERDICT_TONE } from '../../../components/reader/Playbook';
 import { COMPLETION_META } from '../../../lib/artifacts';
@@ -153,6 +153,12 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
           >
             Pattern: {uc.pattern}
           </Link>
+          {uc.playbook && (
+            <MaturityChip
+              reached={uc.playbook.completion.reached}
+              conditional={uc.playbook.completion.conditional}
+            />
+          )}
           {uc.playbook && (
             <a
               href="#pb-status"

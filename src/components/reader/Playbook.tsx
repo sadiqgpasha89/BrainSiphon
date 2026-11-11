@@ -1,4 +1,5 @@
 import { CircleCheck, CircleDashed, CircleDot } from 'lucide-react';
+import Link from 'next/link';
 import { COMPLETION_META, DELIVERY_META } from '../../lib/artifacts';
 import { PROBLEM_LABEL } from '../../lib/problem-types';
 import type { Playbook } from '../../schemas/usecase.schema';
@@ -80,20 +81,25 @@ function ImplementationStatus({ pb }: { pb: Playbook }) {
 
       <div>
         <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-dim">
-          How far the executable artifacts get you
+          How far the executable artifacts get you (L0–L5 Maturity Scale)
         </p>
-        <ol className="grid gap-3 md:grid-cols-4" data-testid="completion-ladder">
+        <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5" data-testid="completion-ladder">
           {k.states.map((st) => (
             <li key={st.state} className="card p-3" data-state={st.state} data-status={st.status}>
               <p className="flex items-center gap-2 text-sm font-semibold text-ink">
                 {st.status === 'reached' ? (
-                  <CircleCheck size={16} className="text-signal" aria-hidden />
+                  <CircleCheck size={16} className="shrink-0 text-signal" aria-hidden />
                 ) : st.status === 'conditional' ? (
-                  <CircleDot size={16} className="text-warn" aria-hidden />
+                  <CircleDot size={16} className="shrink-0 text-warn" aria-hidden />
                 ) : (
-                  <CircleDashed size={16} className="text-dim" aria-hidden />
+                  <CircleDashed size={16} className="shrink-0 text-dim" aria-hidden />
                 )}
-                {COMPLETION_META[st.state].label}
+                <span>
+                  <span className="mr-1 font-mono text-xs font-bold text-signal">
+                    {COMPLETION_META[st.state].levelCode}
+                  </span>
+                  {COMPLETION_META[st.state].label}
+                </span>
               </p>
               <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-dim">
                 {st.status === 'reached'
@@ -119,7 +125,66 @@ function ImplementationStatus({ pb }: { pb: Playbook }) {
         </ol>
       </div>
 
+      <ImplementationGapReport pb={pb} />
+
       <ArtifactLegend />
+    </div>
+  );
+}
+
+function ImplementationGapReport({ pb }: { pb: Playbook }) {
+  const k = pb.completion;
+  const currentLevel = COMPLETION_META[k.reached];
+
+  return (
+    <div className="card border-signal/30 bg-signal-soft/10 p-4" data-testid="gap-report">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h4 className="flex items-center gap-2 text-sm font-semibold text-ink">
+            <span className="rounded bg-signal/20 px-1.5 py-0.5 font-mono text-xs font-bold uppercase text-signal">
+              FDE Implementation Gap Report
+            </span>
+            <span>Maturity: {currentLevel.levelName}</span>
+          </h4>
+          <p className="mt-1 text-xs text-mute">{k.boundary}</p>
+        </div>
+        <Link
+          href="/delivery"
+          className="flex items-center gap-1 font-mono text-xs text-signal hover:underline"
+        >
+          Delivery Guide & Templates →
+        </Link>
+      </div>
+
+      <div className="mt-3 grid gap-3 text-xs md:grid-cols-2">
+        <div className="bg-paper/60 rounded border border-signal/20 p-2.5">
+          <p className="flex items-center gap-1 font-semibold text-signal">
+            <CircleCheck size={14} className="text-signal" /> Supplied by this blueprint
+          </p>
+          <ul className="mt-1.5 list-disc space-y-1 pl-4 text-mute">
+            <li>End-to-end mathematical problem formulation and loss function</li>
+            <li>Feature engineering signals, noisy features, and leakage traps</li>
+            <li>Target architecture (HLD, LLD, sequence diagrams, and capacity model)</li>
+            {k.reached !== 'guidance-only' && (
+              <li>Executable reference code & synthetic data baseline (M1–M4)</li>
+            )}
+            <li>Governance guardrails, metrics catalogue, and risk controls</li>
+          </ul>
+        </div>
+
+        <div className="bg-paper/60 rounded border border-warn/30 p-2.5">
+          <p className="flex items-center gap-1 font-semibold text-warn">
+            <CircleDashed size={14} className="text-warn" /> Platform engineer responsibility
+          </p>
+          <ul className="mt-1.5 list-disc space-y-1 pl-4 text-mute">
+            <li>Production REST (OpenAPI 3.1) and event (AsyncAPI) contracts</li>
+            <li>Database schema models & migrations (e.g. PostgreSQL + pgvector)</li>
+            <li>Feature store & live streaming pipelines (Feast / Redis / Kafka)</li>
+            <li>Cloud IaC & orchestration (Terraform AWS/GCP/Azure, Kubernetes & Helm)</li>
+            <li>System verification: load testing (k6), chaos resilience, & 10 SRE runbooks</li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

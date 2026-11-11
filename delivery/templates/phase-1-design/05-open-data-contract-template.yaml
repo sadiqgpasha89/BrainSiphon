@@ -1,0 +1,91 @@
+# OpenDataContract Standard Specification
+dataContractSpecification: 0.9.3
+id: urn:datacontract:brainsiphon:payment_transactions
+info:
+  title: Payment Transactions & Features Data Contract
+  version: 1.0.0
+  description: Authoritative data contract governing transaction event schema, freshness SLAs, nullability, and quality assertions.
+  owner: Payments Ingestion Data Engineering Team
+  contact:
+    name: Lead Data Engineer
+    email: data-eng@brainsiphon.internal
+
+servers:
+  production-kafka:
+    type: kafka
+    host: kafka.brainsiphon.internal:9092
+    topic: brainsiphon.events.v1.raw
+  production-lakehouse:
+    type: s3
+    location: s3://brainsiphon-lakehouse-prod/events/transactions/
+    format: iceberg
+
+models:
+  transactions:
+    description: Individual point-of-sale and online payment transactions
+    type: table
+    fields:
+      transaction_id:
+        type: string
+        format: uuid
+        required: true
+        primaryKey: true
+        description: Unique idempotency key for transaction
+      user_id:
+        type: string
+        required: true
+        description: Customer account identifier
+      card_bin:
+        type: string
+        required: true
+        minLength: 6
+        maxLength: 8
+        description: Bank Identification Number
+      amount_cents:
+        type: integer
+        required: true
+        minimum: 1
+        description: Transaction amount in smallest currency unit
+      currency:
+        type: string
+        required: true
+        minLength: 3
+        maxLength: 3
+        pattern: '^[A-Z]{3}$'
+      event_timestamp:
+        type: timestamp
+        required: true
+        description: Strict UTC wall-clock time transaction occurred
+      ingest_timestamp:
+        type: timestamp
+        required: true
+        description: Time event was committed to Kafka broker
+
+serviceLevelAgreement:
+  freshness:
+    maxDelaySeconds: 5
+    description: Stream processing lag between event_timestamp and feature store write must be <= 5s
+  availability:
+    percentage: 99.95
+  retention:
+    periodDays: 2555
+    description: 7-year regulatory retention for financial transaction records
+
+qualityRules:
+  - name: unique_transaction_id
+    type: uniqueness
+    field: transaction_id
+    threshold: 1.0
+  - name: amount_strictly_positive
+    type: range
+    field: amount_cents
+    min: 1
+    threshold: 1.0
+  - name: zero_null_event_timestamp
+    type: nullability
+    field: event_timestamp
+    maxNullPercentage: 0.0
+  - name: max_clock_skew
+    type: customSql
+    query: "SELECT COUNT(*) FROM transactions WHERE event_timestamp > NOW() + INTERVAL '5 minutes'"
+    maxAllowedCount: 0

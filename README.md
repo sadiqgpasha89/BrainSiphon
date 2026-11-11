@@ -50,9 +50,26 @@ test checks that every role responsibility in `src/lib/roles.ts` is covered by a
 blueprint section the guide links to exists on blueprints of different kinds. Week numbers in the guide are a 16-week planning
 default, not a measurement.
 
-The site navigation follows the same idea: the header has four destinations (Delivery guide, Use cases, Patterns, Deployment),
+The site navigation follows the same idea: the header has five destinations (Delivery guide, Workspace, Use cases, Patterns, Deployment),
 the home page is "pick a use case, follow the guide, build from the blueprint", and inside a blueprint the 22 sections are grouped
 as Understand, Design, Prove, and Ship and run, with the role lens folded behind one button.
+
+## Guided Implementation Workspace & Golden Reference Implementations
+
+BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineering execution through dedicated implementation assets:
+
+- **Guided Implementation Workspace (`/workspace`):** Direct in-browser hub for Forward Deployed Engineers (FDEs). Select deployment profiles (Profile A: Local Dev, Profile B: Cloud-Native, Profile C: Private Cloud, Profile D: Regulated), review technology decision trees (Kafka vs SQS, Feast vs Redis, K8s vs Serverless, RAG vs Fine-tuning), and inspect operational incident runbooks.
+- **The 8 Golden Path Reference Implementations:** The 8 pilot use cases ship with executable serving microservices (FastAPI), OpenAPI 3.1 & AsyncAPI 3.0 contracts, OpenDataContract schemas, Docker Compose stacks, and test suites across major AI archetypes:
+  1. *FinTech: Real-Time Card & UPI Fraud Detection* — Sub-15ms inference service, three-action decision policy (ALLOW, STEP_UP, BLOCK), decisions WAL ledger with SHA-256 chaining.
+  2. *Healthcare: Sepsis Early Warning System* — HL7 FHIR v4 Observation adapter, TreeSHAP feature attribution, alert hysteresis refractory filter, clinician review queue.
+  3. *SaaS: Developer Documentation Assistant* — Guarded hybrid RAG (BM25 + dense retrieval), strict citation verification, Ragas offline evaluation.
+  4. *Supply Chain: Network Demand Sensing* — Multi-horizon demand sensing, order-book leading indicators, MinT/OLS hierarchical forecast reconciliation.
+  5. *Retail: Session-Based Next-Item Recommendations* — Two-stage retrieval + reranking, diversity guardrails, bot crawler traffic filter.
+  6. *EdTech: Knowledge Tracing & Student Modeling* — Bayesian knowledge tracing (BKT / PFA), mastery state tracker, Zone of Proximal Development (ZPD) item recommendation.
+  7. *Cybersecurity: SOC Copilot Investigation Agent* — ReAct autonomous triage, prompt injection defense, dual-authorization approval gate for destructive containment actions.
+  8. *AdTech: Real-Time CTR Prediction for Ads* — Ultra-low latency RTB scoring, Empirical Bayes smoothing for cold-start ads, eCPM second-price auction resolution.
+- **Phase 0 to Phase 3 Downloadable Implementation Packages:** Standardized templates in `delivery/templates/` for Client Discovery, Production BRDs, C4 Architecture Suites, Sequence Diagrams, OpenAPI/AsyncAPI contracts, Data Quality Suites, and FastAPI microservices.
+- **10 Production Operational Runbooks (`deployment/runbooks/`):** Battle-tested incident runbooks (RB-01 through RB-10) with exact Prometheus triggers, triage steps (<5m), mitigation actions (<15m), and diagnostic CLI commands.
 
 ## How it works
 
@@ -106,7 +123,7 @@ governance and production operations to a capacity/cost model for **10 million u
 | 9   | Archetype-driven low-level design | `systemDesign.lld`: one of nine solution archetypes picks the API contract, data model, event schema, core algorithm, failure and retry behaviour, security model and test scenarios; always labelled an illustrative scaffold unless a review is recorded |
 | 10  | An explicit verdict on agents | `agentic.decision`: why an agent is or is not better than a rules engine, a conventional model, an optimiser, RAG or a deterministic workflow, with cost, risk, fallback and when to revisit |
 | 11  | Metrics catalogue                | `metrics`: about 65 to 110 metrics per use case in up to 14 layers, each with a definition, a starting target, a cadence, an owner and what to do on a breach. Ten layers apply to every system (business, adoption and trust, model, data and features, system and reliability, cost and sustainability, responsible AI, security and compliance, MLOps and delivery, experimentation health); four appear only where the system has the component (RAG, LLM serving, agents, human review) and otherwise say why they do not apply. Also a metric tree, a monitor for each of the use case's own edge cases, and how each headline metric gets gamed (`src/content/metrics.ts`) |
-| 12  | Starter-kit compatibility, completion state and artifact labels | `playbook.compatibility`, `playbook.completion`, `systemDesign.lld.artifacts`: a starter kit is shipped only when it implements the same problem (exact, adaptable with named modifications, or none: guidance only), how far its executable artifacts get an engineer on a four-step ladder (prototype, evaluation, shadow, production), and a label on every code block saying what kind of artifact it is |
+| 12  | Starter-kit compatibility, maturity ladder and artifact labels | `playbook.compatibility`, `playbook.completion`, `systemDesign.lld.artifacts`: a starter kit is shipped only when it implements the same problem (exact, adaptable with named modifications, or none: guidance only), how far its executable artifacts get an engineer on the six-tier maturity ladder (L0 Guidance, L1 Prototype, L2 Evaluation, L3 Integration, L4 Shadow, L5 Production), the Forward Deployed Engineer (FDE) Implementation Gap Report detailing delivered code vs required platform responsibilities, and a label on every code block saying what kind of artifact it is |
 
 The enterprise layer is generated deterministically from each use case's own fields plus per-domain enterprise facts
 (`src/content/enterprise.ts`, `src/content/enterprise-domains.ts`). It is **not** expert-reviewed (see below).

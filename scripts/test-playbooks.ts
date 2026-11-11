@@ -5,6 +5,8 @@
  *   npm run test:playbooks -- fintech                # only kits under one domain
  */
 import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import {
   discoverKits,
   clearReport,
@@ -15,7 +17,10 @@ import {
 } from '../src/content/release-io';
 import { RELEASE_SCHEMA_VERSION, type KitResult } from '../src/content/release';
 
-const python = process.env.PYTHON ?? 'python3';
+const rawPython =
+  process.env.PYTHON ??
+  (existsSync(resolve(process.cwd(), '.venv/bin/python')) ? '.venv/bin/python' : 'python3');
+const python = rawPython.includes('/') ? resolve(process.cwd(), rawPython) : rawPython;
 const only = process.argv[2];
 
 const all = discoverKits();

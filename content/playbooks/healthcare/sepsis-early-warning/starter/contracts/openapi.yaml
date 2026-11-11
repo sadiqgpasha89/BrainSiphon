@@ -1,0 +1,68 @@
+openapi: 3.1.0
+info:
+  title: Clinical Sepsis Early Warning API
+  description: High-reliability sepsis prediction API with TreeSHAP explanations and clinician review queues.
+  version: 1.1.0
+paths:
+  /v1/predict:
+    post:
+      summary: Score patient vitals and detect sepsis trajectory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientVitalsRequest'
+      responses:
+        '200':
+          description: Risk score and clinical action recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SepsisAlertResponse'
+  /v1/review:
+    post:
+      summary: Clinician disposition and confirmation of clinical alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewSubmission'
+      responses:
+        '200':
+          description: Review acknowledged and logged in audit WAL
+components:
+  schemas:
+    PatientVitalsRequest:
+      type: object
+      required: [patient_id, encounter_id, hr, sbp, rr, temp, spo2]
+      properties:
+        patient_id: { type: string }
+        encounter_id: { type: string }
+        hour_of_stay: { type: integer }
+        hr: { type: number, description: "Heart rate (bpm)" }
+        sbp: { type: number, description: "Systolic blood pressure (mmHg)" }
+        rr: { type: number, description: "Respiratory rate (breaths/min)" }
+        temp: { type: number, description: "Core temperature (C)" }
+        spo2: { type: number, description: "Oxygen saturation (%)" }
+        lactate: { type: number, description: "Blood lactate (mmol/L)" }
+    SepsisAlertResponse:
+      type: object
+      required: [alert_id, patient_id, risk_score, alert_tier, hysteresis_suppressed]
+      properties:
+        alert_id: { type: string }
+        patient_id: { type: string }
+        risk_score: { type: number }
+        alert_tier: { type: string, enum: [LOW, MONITOR, CRITICAL] }
+        hysteresis_suppressed: { type: boolean }
+        recommended_actions: { type: array, items: { type: string } }
+    ReviewSubmission:
+      type: object
+      required: [alert_id, clinician_id, status]
+      properties:
+        alert_id: { type: string }
+        clinician_id: { type: string }
+        status: { type: string, enum: [CONFIRMED_SEPSIS, FALSE_POSITIVE, PENDING_LABS, DISMISSED] }
+        notes: { type: string }
+

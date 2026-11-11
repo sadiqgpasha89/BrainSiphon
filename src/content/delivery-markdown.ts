@@ -12,6 +12,7 @@ import {
   ASSURANCE,
   BLUEPRINT_ANCHORS,
   DELIVERY_PHASES,
+  DELIVERY_TEMPLATES,
   FRAMEWORKS,
   FRAMEWORK_NOTE,
   GLOSSARY,
@@ -253,6 +254,26 @@ export function deliveryMarkdown(siteUrl = 'https://sadiqgpasha89.github.io/Brai
     '',
   );
   add(...table(['Kind of use case', 'What changes'], VARIANTS.map((v) => [`**${v.kind}**`, v.changes])));
+  add('');
+
+  add('## Executable delivery templates and implementation packages', '');
+  add(
+    'Standardized, downloadable deliverables covering project discovery, production architecture contracts, data pipelines, and serving templates.',
+    '',
+  );
+  add(
+    ...table(
+      ['Code', 'Phase', 'Deliverable Title', 'Owner', 'File Location', 'Description'],
+      DELIVERY_TEMPLATES.map((t) => [
+        `\`${t.code}\``,
+        t.phaseId,
+        `**${t.title}**`,
+        partyLabel(t.ownerRole),
+        `\`${t.file}\``,
+        t.description,
+      ]),
+    ),
+  );
   add('');
 
   add('## Every deliverable, in order', '');

@@ -40,9 +40,29 @@ export function buildCompletion(compat: Compatibility, milestones: { id: string;
     proto = mk('prototype-ready', 'reached', `${kit} implements the same problem and runs end to end on synthetic data.`, ['Replace the synthetic data with a sample of yours and rename the columns']);
     evalr = mk('evaluation-ready', 'conditional', 'The kit\'s tests prove the method on its own synthetic data. They become evidence for this use case only when re-run on your data with your label and metrics.', ['Re-run the gates of M1 to M4 on your data']);
   }
-  const shadow = mk('shadow-ready', 'not-reached', 'Nothing here connects to production inputs. There is no scoring service, feature store integration, identity, deadline handling or live traffic.', platformNeeds('M5', ['Live data and identity integration', 'Security and privacy review']));
-  const prod = mk('production-ready', 'not-reached', 'No artifact is production code, and no rollout, monitoring, rollback or support ownership is supplied.', platformNeeds('M6', ['Approval from risk and operations', 'A named on-call owner and a rehearsed rollback']));
-  const states = [proto, evalr, shadow, prod];
+  const integ = mk(
+    'integration-ready',
+    'not-reached',
+    'Application APIs, database migrations, event publishers and external integration contracts require implementation.',
+    platformNeeds('M5', [
+      'Executable REST (OpenAPI 3.1) and event (AsyncAPI) contracts',
+      'Database schema models and migrations (e.g. Alembic / Prisma)',
+      'Feature store online/offline serving boundary',
+    ]),
+  );
+  const shadow = mk(
+    'shadow-ready',
+    'not-reached',
+    'Nothing here connects to production inputs. There is no scoring service, feature store integration, identity, deadline handling or live traffic.',
+    platformNeeds('M5', ['Live data and identity integration', 'Security and privacy review']),
+  );
+  const prod = mk(
+    'production-ready',
+    'not-reached',
+    'No artifact is production code, and no rollout, monitoring, rollback or support ownership is supplied.',
+    platformNeeds('M6', ['Approval from risk and operations', 'A named on-call owner and a rehearsed rollback']),
+  );
+  const states = [proto, evalr, integ, shadow, prod];
 
   const fullyReached = [...states].reverse().find((s) => s.status === 'reached');
   const conditional = [...states].reverse().find((s) => s.status === 'conditional');

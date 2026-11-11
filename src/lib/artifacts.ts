@@ -47,10 +47,11 @@ export const ARTIFACT_META: Record<
   },
 };
 
-/** How far a use case's executable artifacts get an engineer. The first four are the completion ladder; guidance-only means none. */
+/** How far a use case's executable artifacts get an engineer. The five states form the L1-L5 completion ladder; guidance-only is L0. */
 export const COMPLETION_STATES = [
   'prototype-ready',
   'evaluation-ready',
+  'integration-ready',
   'shadow-ready',
   'production-ready',
 ] as const;
@@ -58,25 +59,45 @@ export type CompletionState = (typeof COMPLETION_STATES)[number];
 export const REACHED_STATES = ['guidance-only', ...COMPLETION_STATES] as const;
 export type ReachedState = (typeof REACHED_STATES)[number];
 
-export const COMPLETION_META: Record<ReachedState, { label: string; meaning: string }> = {
+export const COMPLETION_META: Record<
+  ReachedState,
+  { label: string; meaning: string; levelCode: 'L0' | 'L1' | 'L2' | 'L3' | 'L4' | 'L5'; levelName: string }
+> = {
   'guidance-only': {
+    levelCode: 'L0',
+    levelName: 'L0 · Architecture Guidance',
     label: 'Guidance only',
     meaning: 'No executable artifact is supplied. The page gives architecture and implementation guidance.',
   },
   'prototype-ready': {
+    levelCode: 'L1',
+    levelName: 'L1 · Prototype-Ready',
     label: 'Prototype-ready',
     meaning: 'Synthetic data and an initial algorithm run end to end on a laptop.',
   },
   'evaluation-ready': {
+    levelCode: 'L2',
+    levelName: 'L2 · Evaluation-Ready',
     label: 'Evaluation-ready',
     meaning:
       'Reproducible experiments with baselines, a leak-proof split, metrics with intervals and tests that fail when the method is wrong.',
   },
+  'integration-ready': {
+    levelCode: 'L3',
+    levelName: 'L3 · Integration-Ready',
+    label: 'Integration-ready',
+    meaning:
+      'Executable service boundaries, database migrations, REST/OpenAPI, event schemas, and mock external dependencies.',
+  },
   'shadow-ready': {
+    levelCode: 'L4',
+    levelName: 'L4 · Shadow-Ready',
     label: 'Shadow-ready',
     meaning: 'Production-connected scoring that sees live traffic but changes no business decision.',
   },
   'production-ready': {
+    levelCode: 'L5',
+    levelName: 'L5 · Production-Ready',
     label: 'Production-ready',
     meaning: 'Approved live deployment with monitored operations, rollback and a named support owner.',
   },
