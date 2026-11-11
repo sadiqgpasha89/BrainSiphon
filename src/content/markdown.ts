@@ -1,6 +1,7 @@
 import { ARTIFACT_KINDS, ARTIFACT_META, COMPLETION_META, DELIVERY_META, type ArtifactKind } from '../lib/artifacts';
 import { PROBLEM_LABEL } from '../lib/problem-types';
 import { PRIMITIVE_BY_ID } from './primitives';
+import { evaluationPlan, guardrailPlan } from './assurance';
 import { blueprintStatuses, shortSha, type ReleaseManifest } from './release';
 import { LIFECYCLE_PHASES, ROLE_LIFECYCLE, ROLE_META, ROLE_OWNS } from '../lib/roles';
 import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook, type UseCase, ARCHETYPE_LABEL, isAgentic } from '../schemas/usecase.schema';
@@ -78,6 +79,7 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', relea
   u.evaluationAndMetrics.onlineBusinessMetrics.forEach((x) => L.push(`- ${x}`));
   L.push('', '**Offline→online gap traps.**', '');
   u.evaluationAndMetrics.offlineOnlineGapTraps.forEach((x) => L.push(`- ${x}`));
+  evaluationMarkdown(u, L);
   L.push('', '## Production edge cases', '', '| Scenario | Failure mode | Mitigation |', '|---|---|---|');
   u.productionEdgeCases.forEach((e) => L.push(`| ${esc(e.scenario)} | ${esc(e.failureMode)} | ${esc(e.mitigationStrategy)} |`));
   L.push('', '## Role lenses: production gaps by persona', '');
@@ -319,6 +321,38 @@ function enterpriseMarkdown(u: UseCase, L: string[]) {
   L.push('', `**Recommendation.** ${e.buildBuy.recommendation}`, '');
 }
 
+/** The full evaluation plan, gathered from the statistical-validation, metrics, agentic and MLOps fields (see assurance.ts). */
+function evaluationMarkdown(u: UseCase, L: string[]) {
+  const e = evaluationPlan(u);
+  L.push('', '### What the evaluation has to prove', '', `**${e.question}**`, '', e.estimand);
+  L.push('', '### Offline protocol', '', '| Step | How to run it |', '|---|---|');
+  e.protocol.forEach((p) => L.push(`| ${esc(p.item)} | ${esc(p.how)} |`));
+  L.push('', '**Report every metric on these slices.**', '');
+  e.slices.forEach((x) => L.push(`- ${x}`));
+  L.push('', '### Release thresholds', '', '| Metric | Target | Checked | If it is missed |', '|---|---|---|---|');
+  e.thresholds.forEach((t) => L.push(`| ${esc(t.metric)} | ${esc(t.target)} | ${esc(t.cadence)} | ${esc(t.onBreach)} |`));
+  L.push('', `*${e.thresholdBasis}*`);
+  if (e.aiQuality.length) {
+    L.push('', '### LLM and agent evaluation', '', '| What | Metric | Target | How |', '|---|---|---|---|');
+    e.aiQuality.forEach((a) => L.push(`| ${esc(a.what)} | ${esc(a.metric)} | ${esc(a.target)} | ${esc(a.how)} |`));
+  }
+  L.push('', '### Online evaluation', '', '| Decision | For this use case |', '|---|---|');
+  L.push(`| Design | ${esc(e.online.design.replace(/-/g, ' '))} |`, `| Unit | ${esc(e.online.unit)} |`);
+  L.push(`| Why this design | ${esc(e.online.why)} |`, `| Primary metric | ${esc(e.online.primary)} |`);
+  L.push('', '**Guardrail metrics: must not get worse.**', '');
+  e.online.guardrails.forEach((x) => L.push(`- ${x}`));
+  L.push('', '**Stopping rules: fixed before launch.**', '');
+  e.online.stopping.forEach((x) => L.push(`- ${x}`));
+  L.push('', '### After launch: evaluation does not stop', '', '**What triggers a re-evaluation or retrain.**', '');
+  e.continuous.triggers.forEach((x) => L.push(`- ${x}`));
+  L.push('', `**Champion and challenger.** ${e.continuous.championChallenger}`);
+  L.push('', `**Train and score only on matured data.** ${e.continuous.dataMaturity}`);
+  if (e.tests.length) {
+    L.push('', '### Executable checks', '', '| Test | Passes when |', '|---|---|');
+    e.tests.forEach((t) => L.push(`| ${esc(t.test)} | ${esc(t.pass)} |`));
+  }
+}
+
 function governanceMarkdown(u: UseCase, L: string[]) {
   const g = u.governance;
   const ctl = (rows: { area: string; control: string; evidence: string }[]) => {
@@ -327,6 +361,11 @@ function governanceMarkdown(u: UseCase, L: string[]) {
   };
   L.push('', '## Security, governance and responsible AI', '', `**Risk tier: ${g.riskTier}.** ${g.rationale} Treatment: ${g.treatment}`, '', '**Approval path**', '');
   g.approvalPath.forEach((x) => L.push(`- ${x}`));
+  const gp = guardrailPlan(u);
+  L.push('', '### Guardrails: what must not happen, and what enforces it', '');
+  if (gp.noAgentNote) L.push(gp.noAgentNote, '');
+  L.push('| Layer | Guardrail | Enforced by |', '|---|---|---|');
+  gp.rows.forEach((r) => L.push(`| ${r.layer} | ${esc(r.guardrails.join('; '))} | ${esc(r.enforcedBy.join('; '))} |`));
   L.push('', '### Data governance', '');
   ctl(g.data);
   L.push('', '### Model governance', '');

@@ -483,3 +483,90 @@ test('a blueprint links to the delivery guide with itself selected, and its sect
   await expect(page).toHaveURL(/\/delivery\?uc=healthcare/);
   await expect(page.getByTestId('guide-uc')).toHaveValue('healthcare/sepsis-early-warning');
 });
+
+test('the Evaluation section is a full plan and guardrails have their own place, on every kind of blueprint', async ({
+  page,
+}) => {
+  // an LLM product with agents
+  await page.goto('/saas/in-app-ai-copilot');
+  const plan = page.getByTestId('evaluation-plan');
+  for (const id of [
+    'ev-question',
+    'ev-offline',
+    'ev-thresholds',
+    'ev-ai',
+    'ev-online',
+    'ev-continuous',
+    'ev-tests',
+  ])
+    await expect(page.locator(`#${id}`)).toBeVisible();
+  await expect(plan.locator('#ev-thresholds')).toContainText('Task success on golden tasks');
+  await expect(plan.locator('#ev-ai')).toContainText('Evidence validity');
+  await expect(plan.locator('#ev-online')).toContainText('Stopping rules');
+  const guard = page.getByTestId('guardrails');
+  await expect(guard).toHaveAttribute('data-agent-controls', 'true');
+  for (const layer of [
+    'Hard constraint',
+    'Runtime control',
+    'Outcome guardrail',
+    'Human oversight',
+    'Degradation',
+  ])
+    await expect(guard).toContainText(layer);
+  await expect(guard).toContainText('Prompt injection');
+  await expect(page.getByTestId('guardrails-no-agent')).toHaveCount(0);
+  await expect(page.locator('nav[aria-label="On this page"]')).toContainText('Governance & guardrails');
+
+  // a batch forecast with no agent: no LLM evaluation, and the guardrails say why there are no prompt or tool controls
+  await page.goto('/retail/demand-forecasting-sku-store');
+  await expect(page.locator('#ev-thresholds')).toContainText('WAPE and weighted pinball loss');
+  await expect(page.locator('#ev-online')).toContainText('rolling origin backtest');
+  await expect(page.locator('#ev-ai')).toHaveCount(0);
+  await expect(page.getByTestId('guardrails')).toHaveAttribute('data-agent-controls', 'false');
+  await expect(page.getByTestId('guardrails-no-agent')).toContainText('no language model or agent');
+  await expect(page.getByTestId('guardrails')).not.toContainText('Runtime control');
+
+  const md = await (await page.request.get('/retail/demand-forecasting-sku-store.md')).text();
+  expect(md).toContain('### Release thresholds');
+  expect(md).toContain('### Guardrails: what must not happen, and what enforces it');
+});
+
+test('delivery guide indexes evaluation, guardrails and governance and maps the frameworks', async ({
+  page,
+}) => {
+  await page.goto('/delivery?uc=saas/in-app-ai-copilot');
+  const index = page.getByTestId('assurance-table');
+  for (const c of [
+    'Evaluation',
+    'Guardrails',
+    'Governance and approvals',
+    'Responsible AI',
+    'Security',
+    'Monitoring',
+  ])
+    await expect(index.getByRole('cell', { name: c, exact: true })).toBeVisible();
+  // with a use case chosen, the index links straight into that blueprint
+  await expect(
+    index
+      .getByRole('row', { name: /^Guardrails/ })
+      .locator('a[href*="/saas/in-app-ai-copilot"][href$="#gov-guardrails"]'),
+  ).toHaveCount(1);
+  const frameworks = page.getByTestId('frameworks-table');
+  for (const f of [
+    'EU AI Act',
+    'NIST AI Risk Management Framework',
+    'ISO/IEC 42001',
+    'OWASP Top 10',
+    'Article 35',
+  ])
+    await expect(frameworks).toContainText(f);
+  await expect(page.getByTestId('owasp-table').getByRole('row')).toHaveCount(11);
+
+  // a step link in the index opens that step, even when a role filter was hiding it
+  await page.getByTestId('guide-party').selectOption('finance');
+  await expect(page.getByTestId('step-3.9')).toHaveCount(0);
+  await index.getByRole('link', { name: '3.9', exact: true }).first().click();
+  await expect(page.getByTestId('delivery-guide')).toHaveAttribute('data-party', 'all');
+  await expect(page.getByTestId('step-3.9')).toContainText('Evaluation harness in CI');
+  await expect(page.getByTestId('step-3.9')).toBeInViewport();
+});

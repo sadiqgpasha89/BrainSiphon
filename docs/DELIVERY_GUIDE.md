@@ -20,6 +20,8 @@ Interactive version, with your use case selected and a progress checklist: https
 - [Phase 5 · Release and deployment](#phase-5--release-and-deployment)
 - [Phase 6 · Operate, monitor and improve](#phase-6--operate-monitor-and-improve)
 - [Meeting rhythm](#meeting-rhythm)
+- [Evaluation, guardrails and governance: where each is covered](#evaluation-guardrails-and-governance-where-each-is-covered)
+- [Frameworks and regulations: a crosswalk](#frameworks-and-regulations-a-crosswalk)
 - [Monitoring after go-live](#monitoring-after-go-live)
 - [Adapting to your team](#adapting-to-your-team)
 - [Adapting to the kind of use case](#adapting-to-the-kind-of-use-case)
@@ -464,7 +466,7 @@ Called by: Delivery lead (project manager). Signed by: Executive sponsor, Produc
   2. Define the fallback ladder: what the system returns when each dependency fails, down to a safe default.
   3. Walk the sequence diagram with the engineers and confirm the deadline is passed along every hop.
 - **Output:** High-level design, sequence diagram and fallback ladder.
-- **Read in the blueprint:** High-level design (`#hld`); Sequence diagram (`#sequence`); Production edge cases (`#edge-cases`)
+- **Read in the blueprint:** High-level design (`#hld`); Sequence diagram (`#sequence`); Security & governance · Guardrails (`#gov-guardrails`); Production edge cases (`#edge-cases`)
 
 ### 1.5 Write the low-level design
 
@@ -585,7 +587,7 @@ Called by: Delivery lead (project manager). Signed by: Solution Architect, AI Ar
 
 | Step | What | Owner | When | Output |
 | --- | --- | --- | --- | --- |
-| 2.1 | Get access and sign the agreements | Data Engineer | Week 3 | Access approvals, signed data contracts and the privacy assessment. |
+| 2.1 | Get access and sign the agreements | Data Engineer | Week 3 | Access approvals, signed data contracts and the privacy impact assessment. |
 | 2.2 | Profile the data | Data Analyst | Weeks 3–4 | Data profiling report and a quality issues log. |
 | 2.3 | Write the source-to-target mapping | Data Analyst | Week 4 | Source-to-target mapping that reconciles to a trusted report. |
 | 2.4 | Define the label and the prediction point | Data Scientist | Week 4 | Label specification approved by the domain expert. |
@@ -602,10 +604,10 @@ Called by: Delivery lead (project manager). Signed by: Solution Architect, AI Ar
 - **When:** Week 3
 - **How:**
   1. Request access to each source with the purpose stated.
-  2. Complete a privacy assessment wherever personal data is involved.
+  2. Complete a privacy impact assessment wherever personal data is involved (under GDPR, a data protection impact assessment).
   3. Sign the data contract with each producing team.
   4. Use service accounts with the least privilege that works.
-- **Output:** Access approvals, signed data contracts and the privacy assessment.
+- **Output:** Access approvals, signed data contracts and the privacy impact assessment.
 - **Read in the blueprint:** Security & governance · Data governance (`#gov-data`); Enterprise context · Data architecture and data contract (`#ent-data`); Build playbook · Before you start (`#pb-prereqs`)
 
 ### 2.2 Profile the data
@@ -693,7 +695,7 @@ Called by: Delivery lead (project manager). Signed by: Solution Architect, AI Ar
   2. Hold out the most recent period as the final test set and touch it once.
   3. Record the dataset version, date range, row count and label rate.
 - **Output:** Versioned datasets with a dataset card, reproducible from code.
-- **Read in the blueprint:** Statistical validation · Labels, sampling and data quality (`#xp-data`); Evaluation (`#evaluation`)
+- **Read in the blueprint:** Evaluation · Offline protocol (`#ev-offline`); Statistical validation · Labels, sampling and data quality (`#xp-data`)
 
 ### 2.9 Explore the data and confirm the signal
 
@@ -798,7 +800,7 @@ Called by: Delivery lead (project manager). Signed by: Data owner (data steward)
   2. Check calibration, and check every slice that matters, including fairness.
   3. Choose the threshold from the cost of a false positive against a false negative. This is the decision owner’s call, not the data scientist’s.
 - **Output:** Evaluation report and an operating point signed by the decision owner.
-- **Read in the blueprint:** Evaluation (`#evaluation`); Statistical validation · Calibration, uncertainty and slices (`#xp-model`); Statistical validation · Metrics, power and stopping (`#xp-metrics`)
+- **Read in the blueprint:** Evaluation · Release thresholds (`#ev-thresholds`); Evaluation · Offline protocol (`#ev-offline`); Statistical validation · Calibration, uncertainty and slices (`#xp-model`)
 
 ### 3.5 Package the model and build the training pipeline
 
@@ -861,7 +863,7 @@ Called by: Delivery lead (project manager). Signed by: Data owner (data steward)
   2. Add input and output guardrails: validation, filters for personal data and, for LLMs, prompt-injection checks.
   3. Set thresholds that block promotion when they are missed.
 - **Output:** Evaluation harness in CI and guardrails in the request path.
-- **Read in the blueprint:** Evaluation (`#evaluation`); Security & governance · Responsible AI (`#gov-rai`); Security & governance · AI security threats (`#gov-security`)
+- **Read in the blueprint:** Evaluation (`#evaluation`); Security & governance · Guardrails (`#gov-guardrails`); Security & governance · AI security threats (`#gov-security`)
 
 ### 3.10 Write the model card
 
@@ -1109,7 +1111,7 @@ Called by: Delivery lead (project manager). Signed by: QA / Test Engineer, Secur
   3. Size the sample and the duration from the power calculation.
   4. Plan how the new path coexists with the legacy one, and have the solution architect approve it.
 - **Output:** Rollout and experiment plan, written before any traffic moves.
-- **Read in the blueprint:** Statistical validation · Experimental design (`#xp-design`); Statistical validation · Metrics, power and stopping (`#xp-metrics`); Production operations (`#operations`)
+- **Read in the blueprint:** Evaluation · Online evaluation (`#ev-online`); Statistical validation · Experimental design (`#xp-design`); Statistical validation · Metrics, power and stopping (`#xp-metrics`)
 
 ### 5.3 Hold the go/no-go review
 
@@ -1272,7 +1274,7 @@ Called by: Delivery lead (project manager). Signed by: Product owner (decision o
   2. Check slices, fairness and calibration.
   3. Watch the human override rate: a rising rate means users have stopped trusting the output.
 - **Output:** Weekly model performance review.
-- **Read in the blueprint:** Evaluation (`#evaluation`); Metrics catalogue (`#metrics`); Statistical validation · Calibration, uncertainty and slices (`#xp-model`)
+- **Read in the blueprint:** Evaluation · After launch (`#ev-continuous`); Metrics catalogue (`#metrics`); Statistical validation · Calibration, uncertainty and slices (`#xp-model`)
 
 ### 6.4 Track business value and adoption
 
@@ -1322,7 +1324,7 @@ Called by: Delivery lead (project manager). Signed by: Product owner (decision o
   3. Promote through the same gates (shadow, canary) and roll back on regression.
   4. Have the AI architect check drift findings against the original design assumptions.
 - **Output:** Retraining record: a new champion, or a documented rejection.
-- **Read in the blueprint:** MLOps · Retraining, champion/challenger and rollback (`#mlops-retraining`); MLOps & LLMOps (`#mlops`)
+- **Read in the blueprint:** MLOps · Retraining, champion/challenger and rollback (`#mlops-retraining`); Evaluation · After launch (`#ev-continuous`); MLOps & LLMOps (`#mlops`)
 - **Variation:** LLM systems: prompts, indexes and tool contracts are release artifacts too. A change to any of them goes through the same evaluation and promotion.
 
 ### 6.8 Keep security and compliance current
@@ -1398,6 +1400,51 @@ Called by: Product owner (decision owner). Signed by: Product owner (decision ow
 | **Post-incident review** | Within five working days of an incident | Everyone involved, led by SRE | Blameless account of what happened, and actions that prevent a repeat. |
 | **Service and value review** | Quarterly in Phase 6 | Product owner, sponsor, AI architect, finance | Gate 6: continue, invest, re-scope or retire. |
 
+## Evaluation, guardrails and governance: where each is covered
+
+The concerns people ask about by name. Each row lists the steps that deal with it and the blueprint sections that hold the detail. It is an index over the steps above, not extra work.
+
+| Concern | The question it answers | Guide steps | Read in the blueprint |
+| --- | --- | --- | --- |
+| **Evaluation** | Does it work, and how do we know? | 2.8, 3.2, 3.4, 3.9, 5.5, 5.7, 6.3 | Evaluation (`#evaluation`); Evaluation · Release thresholds (`#ev-thresholds`); Evaluation · Online evaluation (`#ev-online`); Statistical validation (`#experimentation`); Metrics catalogue (`#metrics`) |
+| **Guardrails** | What must it never do, and what stops it? | 1.4, 3.6, 3.8, 3.9, 4.5, 5.6 | Security & governance · Guardrails (`#gov-guardrails`); Agentic solution (or a reasoned “no agent”) (`#agentic`); Production edge cases (`#edge-cases`) |
+| **Governance and approvals** | Who allowed this, and on what evidence? | 0.7, 1.11, 3.10, 4.7, 5.3, 6.8, 6.10 | Security & governance · Risk tier (`#governance`); Security & governance · Approval path (`#gov-approvals`); Security & governance · Model governance (`#gov-model`); Security & governance · Obligation to control to evidence (`#gov-regulatory`); Validation (`#validation`) |
+| **Responsible AI** | Is it fair, explainable and overseen by people? | 1.3, 2.9, 3.4, 4.7, 6.3 | Security & governance · Responsible AI (`#gov-rai`); Statistical validation · Calibration, uncertainty and slices (`#xp-model`); Enterprise context · AI decision matrix (`#ent-decision`) |
+| **Security** | How could it be attacked or misused, and what prevents that? | 0.7, 1.7, 4.1, 4.6, 6.8 | Security & governance · AI security threats (`#gov-security`); Enterprise context · Technology and security (`#ent-technology`); Security & governance · Guardrails (`#gov-guardrails`) |
+| **Privacy and data** | May we use this data, and is it fit to use? | 0.7, 1.6, 2.1, 2.6 | Security & governance · Data governance (`#gov-data`); Enterprise context · Data architecture and data contract (`#ent-data`); Statistical validation · Labels, sampling and data quality (`#xp-data`) |
+| **Monitoring** | How will we know when it stops working? | 1.9, 4.3, 6.1, 6.2, 6.3 | Metrics catalogue (`#metrics`); Metrics catalogue · Monitors for this system’s edge cases (`#mt-failure-monitors`); Production operations (`#operations`); Evaluation · After launch (`#ev-continuous`) |
+| **Reliability and rollback** | What happens when something fails? | 1.4, 4.5, 4.9, 4.10, 5.6, 6.6 | Production operations (`#operations`); MLOps · Retraining, champion/challenger and rollback (`#mlops-retraining`); Production edge cases (`#edge-cases`) |
+| **Cost** | What does a decision cost, and is it worth it? | 1.8, 3.7, 6.5 | Scale & capacity (with the sizing calculator) (`#scale`); Phase 0 · Business case and ROI measurement (`#disc-case`) |
+
+## Frameworks and regulations: a crosswalk
+
+What the main AI frameworks ask for, and where this guide and the blueprints already do it. Each blueprint adds the obligations of its own industry in its governance section.
+
+| Framework | What it is | What it asks for | Guide steps | Read in the blueprint |
+| --- | --- | --- | --- | --- |
+| **EU AI Act (Regulation (EU) 2024/1689)** | Law. Applies when a system is placed on the EU market or its output is used in the EU. | Classify the system by risk. A high-risk system needs a risk management system, data governance, technical documentation, logging, information for those who deploy it, human oversight, and accuracy, robustness and cybersecurity (Articles 9 to 15). Systems that talk to people or generate content carry transparency duties (Article 50). | 0.7, 1.3, 1.7, 3.10, 4.7, 6.8 | Security & governance · Risk tier (`#governance`); Security & governance · Guardrails (`#gov-guardrails`); Security & governance · Responsible AI (`#gov-rai`); Security & governance · Model governance (`#gov-model`); Security & governance · Obligation to control to evidence (`#gov-regulatory`) |
+| **NIST AI Risk Management Framework 1.0** | Voluntary framework, widely used as a common language for AI risk. | Four functions. Govern: policies, roles and accountability. Map: context, intended use and who is affected. Measure: test and track the risks. Manage: prioritise, respond and keep monitoring. Its Generative AI Profile adds the risks specific to LLM systems. | 0.6, 0.7, 0.9, 3.4, 4.7, 6.3, 6.10 | Enterprise context · AI decision matrix (`#ent-decision`); Security & governance · Risk tier (`#governance`); Evaluation (`#evaluation`); Metrics catalogue (`#metrics`) |
+| **ISO/IEC 42001:2023** | Management-system standard an organisation can be certified against. | Run AI through a management system: an AI policy, defined roles, risk and impact assessment, controls across the lifecycle, internal audit, management review and continual improvement. | 0.9, 1.11, 3.10, 5.9, 6.8, 6.10 | Security & governance · Model governance (`#gov-model`); Security & governance · Approval path (`#gov-approvals`); MLOps & LLMOps (`#mlops`); Validation (`#validation`) |
+| **GDPR data protection impact assessment (Article 35)** | Law. Applies when personal data of people in the EU is processed. | Before processing that is likely to put people at high risk, describe the processing, assess whether it is necessary and what could go wrong for the people concerned, and record the measures that reduce those risks. | 0.7, 2.1, 4.7 | Security & governance · Data governance (`#gov-data`); Enterprise context · Data architecture and data contract (`#ent-data`); Security & governance · Obligation to control to evidence (`#gov-regulatory`) |
+| **OWASP Top 10 for LLM Applications (2025)** | Community security list. For any system with a language model or agent. | Ten risks to design and test against, itemised in the next table. | 1.7, 3.9, 4.6 | Security & governance · AI security threats (`#gov-security`); Security & governance · Guardrails (`#gov-guardrails`); Agentic solution (or a reasoned “no agent”) (`#agentic`) |
+
+### OWASP Top 10 for LLM Applications, item by item
+
+| Item | Risk | Control used here | Guide steps |
+| --- | --- | --- | --- |
+| LLM01 | **Prompt injection** | Treat retrieved text and tool output as untrusted data, keep tools typed and narrow, and replay planted-instruction attacks on every release. | 1.7, 3.9, 4.6 |
+| LLM02 | **Sensitive information disclosure** | Mask personal data in tool results, logs and traces, scope caches to the caller, and filter outputs. | 0.7, 3.9 |
+| LLM03 | **Supply chain** | Pin and scan base models and dependencies, sign artifacts and keep a bill of materials. | 4.2, 4.6 |
+| LLM04 | **Data and model poisoning** | Record provenance for datasets and documents, validate at ingestion, audit labels and keep a holdout the pipeline cannot write to. | 2.5, 2.6, 2.8 |
+| LLM05 | **Improper output handling** | Validate model output against a schema before anything downstream uses it, and never execute it directly. | 1.5, 3.9 |
+| LLM06 | **Excessive agency** | Least-privilege tools, approval for every write action, and an autonomy ladder climbed one gate at a time. | 1.3, 3.8 |
+| LLM07 | **System prompt leakage** | Keep secrets and authorisation rules out of prompts; enforce permissions in code, where a leaked prompt changes nothing. | 1.7, 3.9 |
+| LLM08 | **Vector and embedding weaknesses** | Filter retrieval by tenant and permission, version the index with its embedding model, and validate what is ingested. | 2.5, 3.6 |
+| LLM09 | **Misinformation** | Check that answers are grounded in cited sources, abstain or escalate when they are not, and score against a golden set. | 2.4, 3.4, 3.9 |
+| LLM10 | **Unbounded consumption** | Budgets for steps, tokens and cost enforced outside the model, with rate limits and spend alerts. | 3.8, 6.5 |
+
+A reading map, not legal advice. Which of these apply to your system, and how, is settled with risk and compliance in step 0.7. Article numbers and item names refer to the published texts named here; check the current version before relying on them.
+
 ## Monitoring after go-live
 
 Uptime is one layer of seven. A model can be available, fast and wrong, so each layer has its own owner and its own response. The blueprint’s Metrics catalogue lists the specific metrics, targets and alerts for the use case.
@@ -1467,7 +1514,7 @@ The phases and gates stay the same. What changes is where the effort goes. Each 
 
 **Phase 2 · Data**
 
-- [ ] 2.1 Access approvals, signed data contracts and the privacy assessment. (Data Engineer)
+- [ ] 2.1 Access approvals, signed data contracts and the privacy impact assessment. (Data Engineer)
 - [ ] 2.2 Data profiling report and a quality issues log. (Data Analyst)
 - [ ] 2.3 Source-to-target mapping that reconciles to a trusted report. (Data Analyst)
 - [ ] 2.4 Label specification approved by the domain expert. (Data Scientist)

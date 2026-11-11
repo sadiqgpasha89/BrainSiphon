@@ -1,7 +1,11 @@
 import {
+  ASSURANCE,
   DELIVERY_PHASES,
+  FRAMEWORKS,
+  FRAMEWORK_NOTE,
   GLOSSARY,
   MONITORING,
+  OWASP_LLM,
   PARTNERS,
   PARTNER_IDS,
   PARTY_IDS,
@@ -14,6 +18,7 @@ import {
   type Raci,
 } from '../../content/delivery';
 import { ROLE_IDS, ROLE_META, ROLE_OWNS } from '../../lib/roles';
+import { BlueprintRefs, StepLinks } from './GuideLinks';
 
 const RACI_TONE: Record<Raci, string> = {
   A: 'bg-accent-soft text-accent',
@@ -56,6 +61,116 @@ const Wrap = ({ children, testid }: { children: React.ReactNode; testid?: string
 export function DeliveryReference() {
   return (
     <>
+      <Block
+        id="assurance"
+        title="Evaluation, guardrails and governance: where each is covered"
+        intro="The concerns people ask about by name. Each row lists the steps that deal with it and the blueprint sections that hold the detail for your use case. It is an index over the steps above, not extra work."
+      >
+        <Wrap testid="assurance-table">
+          <table className="bs-table min-w-[48rem]">
+            <thead>
+              <tr>
+                <th>Concern</th>
+                <th>The question it answers</th>
+                <th>Guide steps</th>
+                <th>Read in the blueprint</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ASSURANCE.map((a) => (
+                <tr key={a.concern}>
+                  <td className="font-medium !text-ink">{a.concern}</td>
+                  <td>{a.question}</td>
+                  <td>
+                    <span className="flex flex-wrap gap-1">
+                      <StepLinks ids={a.steps} />
+                    </span>
+                  </td>
+                  <td>
+                    <span className="flex flex-wrap gap-1">
+                      <BlueprintRefs anchors={a.read} />
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Wrap>
+      </Block>
+
+      <Block
+        id="frameworks"
+        title="Frameworks and regulations: a crosswalk"
+        intro="What the main AI frameworks ask for, and where this guide and the blueprints already do it. Each blueprint adds the obligations of its own industry in its governance section."
+      >
+        <Wrap testid="frameworks-table">
+          <table className="bs-table min-w-[52rem]">
+            <thead>
+              <tr>
+                <th>Framework</th>
+                <th>What it is</th>
+                <th>What it asks for</th>
+                <th>Guide steps</th>
+                <th>Read in the blueprint</th>
+              </tr>
+            </thead>
+            <tbody>
+              {FRAMEWORKS.map((f) => (
+                <tr key={f.id}>
+                  <td className="font-medium !text-ink">{f.name}</td>
+                  <td>{f.kind}</td>
+                  <td>{f.asks}</td>
+                  <td>
+                    <span className="flex flex-wrap gap-1">
+                      <StepLinks ids={f.steps} />
+                    </span>
+                  </td>
+                  <td>
+                    <span className="flex flex-wrap gap-1">
+                      <BlueprintRefs anchors={f.read} />
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Wrap>
+        <div>
+          <h3 className="font-mono text-[11px] uppercase tracking-wider text-dim">
+            OWASP Top 10 for LLM Applications, item by item
+          </h3>
+          <div className="mt-2">
+            <Wrap testid="owasp-table">
+              <table className="bs-table min-w-[40rem]">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Risk</th>
+                    <th>Control used here</th>
+                    <th>Guide steps</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {OWASP_LLM.map((o) => (
+                    <tr key={o.id}>
+                      <td className="font-mono text-xs">{o.id}</td>
+                      <td className="font-medium !text-ink">{o.risk}</td>
+                      <td>{o.control}</td>
+                      <td>
+                        <span className="flex flex-wrap gap-1">
+                          <StepLinks ids={o.steps} />
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Wrap>
+          </div>
+        </div>
+        <p className="text-sm text-mute">{FRAMEWORK_NOTE}</p>
+      </Block>
+
       <Block
         id="people"
         title="Who is involved"

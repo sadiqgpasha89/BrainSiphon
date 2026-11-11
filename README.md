@@ -29,6 +29,21 @@ read; every phase ends in a gate with named signers.
 
 ![Delivery guide with a use case selected: Phase 0 steps, one opened to show who, when, how and the output](docs/screenshots/07-delivery-guide.png)
 
+**Evaluation, guardrails and governance.** These are covered on every blueprint, and the guide and the blueprints now say
+where:
+
+- Each blueprint's **Evaluation** section is a full plan: what has to be proven, the offline protocol, release thresholds, LLM
+  and agent evaluation where there are agents, the online experiment with its guardrail metrics and stopping rules, what keeps
+  evaluating after launch, and the executable checks. It is gathered from the statistical-validation, metrics, agentic and MLOps
+  fields the blueprint already has (`src/content/assurance.ts`), so nothing is stated twice in the source.
+- Each blueprint's governance section has a **Guardrails** table in six layers (hard constraints, runtime controls, outcome
+  guardrails, human oversight, degradation, stop and roll back). A design with no language model or agent says so instead of
+  leaving a gap; a test fails if any LLM blueprint lacks runtime controls.
+- The guide has an **index** from each concern (evaluation, guardrails, governance, responsible AI, security, privacy,
+  monitoring, reliability, cost) to its steps and blueprint sections, and a **framework crosswalk** for the EU AI Act, NIST AI
+  RMF, ISO/IEC 42001, the GDPR impact assessment and the OWASP Top 10 for LLM Applications. The crosswalk is a reading map, not
+  legal advice. Per-industry obligations stay in each blueprint and are still per domain, not per use case.
+
 The guide has one source, `src/content/delivery.ts`. The page, the markdown and the RACI are all derived from it: edit that file,
 run `npm run guide:build`, and commit the regenerated `docs/DELIVERY_GUIDE.md` (a unit test fails if the two disagree). The same
 test checks that every role responsibility in `src/lib/roles.ts` is covered by a step, and an end-to-end test checks that every

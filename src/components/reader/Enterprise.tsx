@@ -4,6 +4,7 @@ import { CodeBlock } from '../Code';
 import { MermaidDiagram } from '../Mermaid';
 import { List, Section, TableWrap } from './Sections';
 import { ReleaseLine } from './ValidationStatus';
+import { GuardrailsBlock } from './Assurance';
 import {
   blueprintStatuses,
   kitKeyFor,
@@ -427,7 +428,7 @@ export function GovernanceSection({ uc }: { uc: UseCase }) {
     <Section
       id="governance"
       title="Security, governance and responsible AI"
-      kicker="Risk tier first, then the controls and the evidence that prove them"
+      kicker="Risk tier first, then the guardrails, the controls and the evidence that prove them"
     >
       <div className="flex flex-wrap items-center gap-2" data-testid="risk-tier">
         <span
@@ -449,6 +450,7 @@ export function GovernanceSection({ uc }: { uc: UseCase }) {
           TIER_COPY[t],
         ])}
       />
+      <GuardrailsBlock uc={uc} />
       <Sub id="gov-approvals" title="Approval path for this tier">
         <List items={g.approvalPath} />
       </Sub>

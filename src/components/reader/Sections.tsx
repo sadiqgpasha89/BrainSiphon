@@ -11,6 +11,7 @@ import { MathBlock } from '../Math';
 import { MermaidDiagram } from '../Mermaid';
 import { SymbolText } from './SymbolText';
 import { CapacityCalculator } from './CapacityCalculator';
+import { EvaluationDetail } from './Assurance';
 import { ROLE_META, rolesForSection } from '../../lib/roles';
 import { PRIMITIVE_BY_ID } from '../../content/primitives';
 
@@ -76,7 +77,7 @@ export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?
   { id: 'evaluation', label: 'Evaluation' },
   { id: 'edge-cases', label: 'Edge cases' },
   { id: 'role-lenses', label: 'Role lenses' },
-  { id: 'governance', label: 'Security & governance' },
+  { id: 'governance', label: 'Governance & guardrails' },
   { id: 'experimentation', label: 'Statistical validation' },
   { id: 'metrics', label: 'Metrics catalogue' },
   { id: 'mlops', label: 'MLOps & LLMOps' },
@@ -607,7 +608,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
       <Section
         id="evaluation"
         title="Evaluation & metrics"
-        kicker="Offline, online, and the traps between them"
+        kicker="What to measure, how to run it, the thresholds to ship on, and what keeps checking after launch"
       >
         <div className="grid gap-4 md:grid-cols-3">
           <div className="card p-4">
@@ -625,6 +626,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
             <List items={uc.evaluationAndMetrics.offlineOnlineGapTraps} tone="noise" />
           </div>
         </div>
+        <EvaluationDetail uc={uc} />
       </Section>
 
       <Section id="edge-cases" title="Production edge cases" kicker="Scenario → failure mode → mitigation">

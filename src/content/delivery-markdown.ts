@@ -9,11 +9,15 @@ import {
 } from '../lib/roles';
 import {
   ALL_STEPS,
+  ASSURANCE,
   BLUEPRINT_ANCHORS,
   DELIVERY_PHASES,
+  FRAMEWORKS,
+  FRAMEWORK_NOTE,
   GLOSSARY,
   HOW_TO_USE,
   MONITORING,
+  OWASP_LLM,
   PARTNERS,
   PARTNER_IDS,
   PARTY_IDS,
@@ -45,6 +49,8 @@ const phaseHeading = (p: { n: number; name: string }) => `Phase ${p.n} · ${p.na
 export function deliveryMarkdown(siteUrl = 'https://sadiqgpasha89.github.io/BrainSiphon'): string {
   const out: string[] = [];
   const add = (...lines: string[]) => out.push(...lines);
+  const refs = (anchors: readonly (keyof typeof BLUEPRINT_ANCHORS)[]) =>
+    anchors.map((a) => `${BLUEPRINT_ANCHORS[a]} (\`#${a}\`)`).join('; ');
 
   add(
     '# BrainSiphon delivery guide: from project scoping to deployment and monitoring',
@@ -63,6 +69,8 @@ export function deliveryMarkdown(siteUrl = 'https://sadiqgpasha89.github.io/Brai
     '- [RACI by phase](#raci-by-phase)',
     ...DELIVERY_PHASES.map((p) => `- [${phaseHeading(p)}](#${anchor(phaseHeading(p))})`),
     '- [Meeting rhythm](#meeting-rhythm)',
+    '- [Evaluation, guardrails and governance: where each is covered](#evaluation-guardrails-and-governance-where-each-is-covered)',
+    '- [Frameworks and regulations: a crosswalk](#frameworks-and-regulations-a-crosswalk)',
     '- [Monitoring after go-live](#monitoring-after-go-live)',
     '- [Adapting to your team](#adapting-to-your-team)',
     '- [Adapting to the kind of use case](#adapting-to-the-kind-of-use-case)',
@@ -165,7 +173,7 @@ export function deliveryMarkdown(siteUrl = 'https://sadiqgpasha89.github.io/Brai
       add(`- **Owner:** ${partyLabel(s.owner)}`, `- **With:** ${names(s.with)}`, `- **When:** ${s.when}`, '- **How:**');
       s.how.forEach((h, i) => add(`  ${i + 1}. ${h}`));
       add(`- **Output:** ${s.output}`);
-      add(`- **Read in the blueprint:** ${s.read.map((a) => `${BLUEPRINT_ANCHORS[a]} (\`#${a}\`)`).join('; ')}`);
+      add(`- **Read in the blueprint:** ${refs(s.read)}`);
       if (s.note) add(`- **Variation:** ${s.note}`);
       add('');
     }
@@ -188,6 +196,39 @@ export function deliveryMarkdown(siteUrl = 'https://sadiqgpasha89.github.io/Brai
     ),
   );
   add('');
+
+  add('## Evaluation, guardrails and governance: where each is covered', '');
+  add(
+    'The concerns people ask about by name. Each row lists the steps that deal with it and the blueprint sections that hold the detail. It is an index over the steps above, not extra work.',
+    '',
+  );
+  add(
+    ...table(
+      ['Concern', 'The question it answers', 'Guide steps', 'Read in the blueprint'],
+      ASSURANCE.map((a) => [`**${a.concern}**`, a.question, a.steps.join(', '), refs(a.read)]),
+    ),
+  );
+  add('');
+
+  add('## Frameworks and regulations: a crosswalk', '');
+  add(
+    'What the main AI frameworks ask for, and where this guide and the blueprints already do it. Each blueprint adds the obligations of its own industry in its governance section.',
+    '',
+  );
+  add(
+    ...table(
+      ['Framework', 'What it is', 'What it asks for', 'Guide steps', 'Read in the blueprint'],
+      FRAMEWORKS.map((f) => [`**${f.name}**`, f.kind, f.asks, f.steps.join(', '), refs(f.read)]),
+    ),
+  );
+  add('', '### OWASP Top 10 for LLM Applications, item by item', '');
+  add(
+    ...table(
+      ['Item', 'Risk', 'Control used here', 'Guide steps'],
+      OWASP_LLM.map((o) => [o.id, `**${o.risk}**`, o.control, o.steps.join(', ')]),
+    ),
+  );
+  add('', FRAMEWORK_NOTE, '');
 
   add('## Monitoring after go-live', '');
   add(
