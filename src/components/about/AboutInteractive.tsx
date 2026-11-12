@@ -467,7 +467,7 @@ export function AboutInteractive() {
               href="/delivery"
               className="inline-flex items-center gap-1.5 text-xs text-mute hover:text-ink"
             >
-              <span>View full 14-role RACI in the Delivery Guide</span>
+              <span>View full 15-role RACI in the Delivery Guide</span>
               <ArrowRight size={12} />
             </Link>
           </div>

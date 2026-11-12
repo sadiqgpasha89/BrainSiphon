@@ -157,7 +157,7 @@ test('the starter-kit verdict, the completion ladder and the artifact labels are
   await page.goto('/fintech/real-time-card-upi-fraud-detection');
   await expect(page.getByTestId('header-boundary')).toContainText('M1–M4');
   await expect(page.getByTestId('reached-state')).toContainText('Evaluation-ready');
-  await expect(page.getByTestId('completion-ladder').locator(':scope > li')).toHaveCount(4);
+  await expect(page.getByTestId('completion-ladder').locator(':scope > li')).toHaveCount(5);
   const delivery = page.getByTestId('milestone-delivery');
   await expect(delivery.nth(1)).toHaveAttribute('data-delivery', 'executable-reference');
   await expect(delivery.nth(5)).toHaveAttribute('data-delivery', 'your-platform');
@@ -227,7 +227,7 @@ test('role lens keys add and remove roles, 0 resets, and several roles combine i
   // the lens buttons are folded away until asked for; the keys work either way
   await expect(page.getByTestId('role-lens')).toBeHidden();
   await page.getByTestId('role-lens-toggle').click();
-  await expect(page.getByTestId('role-lens').getByRole('button')).toHaveCount(15); // All + 14 roles
+  await expect(page.getByTestId('role-lens').getByRole('button')).toHaveCount(16); // All + 15 roles
   await page.getByTestId('role-lens-toggle').click();
   await expect(page.getByTestId('role-lens')).toBeHidden();
   await page.keyboard.press('a');
@@ -384,8 +384,8 @@ test('review hardening: a forecast gets a forecast LLD, workload-based sizing an
 
 test('deployment modes page explains what the static site leaves out', async ({ page }) => {
   await page.goto('/deployment');
-  await expect(page.getByTestId('deployment-table')).toContainText('Static documentation site');
-  await expect(page.getByTestId('deployment-table')).toContainText('Full-stack Docker');
+  await expect(page.getByTestId('deployment-table')).toContainText('Static Export (Pages)');
+  await expect(page.getByTestId('deployment-table')).toContainText('Full-Stack Docker');
 });
 
 test('home page leads a newcomer from a use case to the delivery guide', async ({ page }) => {
@@ -407,7 +407,7 @@ test('delivery guide: steps, gates, a role filter, progress and links into the c
     await expect(page.getByTestId(`guide-${p}`)).toBeVisible();
     await expect(page.getByTestId(`gate-${p}`)).toContainText('Signed by');
   }
-  await expect(page.getByTestId('raci-table').getByRole('row')).toHaveCount(24); // header + 9 partners + 14 roles
+  await expect(page.getByTestId('raci-table').getByRole('row')).toHaveCount(25); // header + 9 partners + 15 roles
   await expect(page.getByTestId('monitoring-table')).toContainText('Drift');
 
   // a step opens to show who, when, how and the output; without a use case the blueprint references are plain labels

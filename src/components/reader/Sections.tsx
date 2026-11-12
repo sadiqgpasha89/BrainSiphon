@@ -655,7 +655,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
       <Section
         id="role-lenses"
         title="Role lenses: production gaps by persona"
-        kicker="What each of the fourteen roles must additionally check, specialised to this system. Pick one or more roles in the Lens bar to filter the page and combine their responsibilities."
+        kicker="What each of the fifteen roles must additionally check, specialised to this system. Pick one or more roles in the Lens bar to filter the page and combine their responsibilities."
       >
         <div className="grid gap-4 lg:grid-cols-2">
           {uc.roleLenses.map((r) => (
