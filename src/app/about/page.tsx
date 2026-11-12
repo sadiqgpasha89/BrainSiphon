@@ -1,20 +1,23 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
+  AlertTriangle,
   ArrowRight,
   Bot,
+  Calculator,
   CheckCircle2,
+  Code2,
+  Compass,
+  ExternalLink,
   Gauge,
+  GitBranch,
   Layers,
+  Mail,
+  Server,
   Shield,
   Terminal,
   Workflow,
   Zap,
-  ExternalLink,
-  Server,
-  Calculator,
-  Compass,
-  AlertTriangle,
 } from 'lucide-react';
 import { AboutInteractive } from '../../components/about/AboutInteractive';
 import { withBase } from '../../lib/site';
@@ -76,6 +79,9 @@ export default function AboutPage() {
           </a>
           <a href="#agent-first" className="btn !py-1 text-xs no-underline">
             AI Assistant Integration
+          </a>
+          <a href="#author" className="btn !py-1 text-xs no-underline">
+            About the Creator
           </a>
           <a href="#faqs" className="btn !py-1 text-xs no-underline">
             FAQ
@@ -743,40 +749,126 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Section: Provenance & Creator ── */}
-      <section className="card flex flex-col items-start justify-between gap-6 border-line bg-panel p-6 sm:p-8 md:flex-row md:items-center">
-        <div className="max-w-2xl space-y-2">
-          <p className="font-mono text-xs uppercase tracking-wider text-signal">
-            Provenance &amp; Open Source
-          </p>
-          <h3 className="text-xl font-semibold text-ink">Crafted by Sadiq Pasha</h3>
-          <p className="text-sm leading-relaxed text-mute">
-            BrainSiphon is an independent, open-source initiative created by{' '}
-            <strong className="text-ink">Sadiq Pasha</strong> (
+      {/* ── Section: About the Creator & Provenance ── */}
+      <section
+        id="author"
+        aria-labelledby="author-heading"
+        className="card scroll-mt-20 space-y-6 border-line bg-panel p-6 sm:p-10"
+      >
+        <div className="flex flex-col gap-6 border-b border-line pb-6 md:flex-row md:items-start md:justify-between">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-signal-line bg-signal-soft px-3 py-1 font-mono text-xs font-medium text-signal">
+              <Code2 size={12} aria-hidden />
+              <span>Creator &amp; Systems Architect</span>
+            </div>
+            <h2 id="author-heading" className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              Sadiq G Pasha
+            </h2>
+            <p className="font-mono text-xs text-mute">
+              AI Systems Architect · ML Platform Engineer · Open Source Creator
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5">
             <a
               href="https://github.com/sadiqgpasha89"
               target="_blank"
               rel="noreferrer"
-              className="text-signal hover:underline"
+              className="btn inline-flex items-center gap-2 text-xs no-underline hover:text-signal"
             >
-              @sadiqgpasha89
+              <ExternalLink size={13} aria-hidden /> GitHub (@sadiqgpasha89)
             </a>
-            ). Built with Next.js 15, React 19, TypeScript, Tailwind CSS, Lucide icons, KaTeX, and Mermaid.js.
-            Deploys statically with zero user tracking or data harvesting.
-          </p>
+            <a
+              href="mailto:sadiqgpasha89@gmail.com"
+              className="btn inline-flex items-center gap-2 text-xs no-underline hover:text-signal"
+            >
+              <Mail size={13} aria-hidden /> sadiqgpasha89@gmail.com
+            </a>
+            <a
+              href="https://github.com/sadiqgpasha89/BrainSiphon"
+              target="_blank"
+              rel="noreferrer"
+              className="btn inline-flex items-center gap-2 !border-signal !bg-signal-soft text-xs !text-signal no-underline"
+            >
+              <GitBranch size={13} aria-hidden /> GitHub Repository
+            </a>
+          </div>
         </div>
-        <div className="flex shrink-0 flex-wrap gap-3">
-          <a
-            href="https://github.com/sadiqgpasha89/BrainSiphon"
-            target="_blank"
-            rel="noreferrer"
-            className="btn inline-flex items-center gap-2 no-underline"
-          >
-            <ExternalLink size={14} /> GitHub Repository
-          </a>
-          <Link href="/deployment" className="btn no-underline">
-            Deployment Modes
-          </Link>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="space-y-3 text-sm leading-relaxed text-mute md:col-span-2">
+            <h3 className="text-base font-semibold text-ink">Background &amp; Mission</h3>
+            <p>
+              Sadiq G Pasha is an AI systems architect and builder dedicated to bridging the gap between
+              theoretical machine learning and mission-critical production engineering. Frustrated by the
+              proliferation of superficial vendor marketing, single-prompt toy demos, and academic prototypes
+              that ignore latency budgets, failure ladders, and schema drift, he designed{' '}
+              <strong className="text-ink">BrainSiphon</strong> to give engineering teams an open,
+              transparent, and mathematically grounded blueprint reference.
+            </p>
+            <p>
+              His work focuses on high-throughput streaming architectures (Kafka, Flink, Debezium CDC),
+              low-latency feature stores, ReAct agentic harnesses with prompt-injection defense, and
+              regulatory AI compliance under supervisory frameworks like Federal Reserve SR 11-7 and the EU AI
+              Act.
+            </p>
+            <p>
+              Beyond BrainSiphon, Sadiq actively develops open-source solutions across financial crime
+              detection (Sentinel AML), clinical early-warning systems, conversational intelligence, and local
+              privacy-preserving LLM applications.
+            </p>
+          </div>
+
+          <div className="card space-y-3 bg-raised/50 p-4 text-xs">
+            <h4 className="font-mono text-[11px] font-semibold uppercase tracking-wider text-signal">
+              Core Engineering Focus
+            </h4>
+            <ul className="space-y-2 text-mute">
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
+                <span>
+                  <strong className="text-ink">Ultra-Low Latency Serving:</strong> Microservices optimized for
+                  sub-15ms P99 SLAs with circuit breakers and fallback degradation.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
+                <span>
+                  <strong className="text-ink">Agentic AI Governance:</strong> Guarded ReAct state machines
+                  with two-person human approval gates for disruptive actions.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
+                <span>
+                  <strong className="text-ink">Data Lineage &amp; Contracts:</strong> Point-in-time
+                  correctness, outbox CDC patterns, and automated Great Expectations data quality suites.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
+                <span>
+                  <strong className="text-ink">FinOps &amp; Capacity Modeling:</strong> Realistic GPU VRAM
+                  sizing, KV-cache budgets, and cost-per-decision optimization.
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line/60 pt-4 text-xs text-dim">
+          <span>Static Next.js 15 deployment · Zero user tracking · MIT Licensed</span>
+          <div className="flex gap-4">
+            <Link href="/deployment" className="hover:text-ink">
+              Deployment Guide
+            </Link>
+            <Link href="/delivery" className="hover:text-ink">
+              Delivery Framework
+            </Link>
+            <Link href="/workspace" className="hover:text-ink">
+              Workspace
+            </Link>
+          </div>
         </div>
       </section>
 
