@@ -1,5 +1,5 @@
 /**
- * The fourteen reader personas, in the order the work reaches them: business first, operations and assurance last.
+ * The fifteen reader personas, in the order the work reaches them: business first, forward deployment, operations and assurance.
  * Client-safe (plain data): used by the reader shell, the section wrapper and the generator.
  */
 export const ROLE_IDS = [
@@ -14,13 +14,14 @@ export const ROLE_IDS = [
   'mlops-engineer',
   'inference-engineer',
   'platform-engineer',
+  'forward-deployed-engineer',
   'sre-devops-engineer',
   'security-engineer',
   'qa-test-engineer',
 ] as const;
 export type RoleId = (typeof ROLE_IDS)[number];
 
-/** Keyboard key per role: 1 to 9, then a to e. */
+/** Keyboard key per role: 1 to 9, then a to f. */
 export const ROLE_META: Record<RoleId, { label: string; key: string; focus: string }> = {
   'business-analyst': {
     label: 'Business Analyst',
