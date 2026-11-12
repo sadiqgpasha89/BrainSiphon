@@ -86,6 +86,7 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
 | **MLOps Engineer** | Industrialises model development, deployment and ongoing operations | Experiment tracking, registry, CI/CD/CT, deployment, drift monitoring, retraining, rollback and governance automation. |
 | **Inference Engineer** | Optimises model execution, runtimes and serving performance | Runtime optimisation, GPU/CPU allocation, quantisation, batching, memory management and latency. |
 | **Platform Engineer** | Provides the cloud, cluster, network, identity and pipeline foundations | Cloud infrastructure, Kubernetes, networking, IAM, secrets, Terraform, CI/CD infrastructure and platform services. |
+| **Forward Deployed Engineer** | Bridges customer enterprise reality and the reference blueprint: integrations, VPC/auth enablement, deployment, and day-2 customer troubleshooting | Customer discovery, enterprise integration, environment configuration, deployment, user adoption, and production feedback. |
 | **SRE / DevOps Engineer** | Keeps the service reliable and recoverable, and owns on-call and runbooks | SLOs, observability, incident response, reliability, disaster recovery, capacity planning and runbooks. |
 | **Security Engineer** | Threat-models the system and signs off its security and privacy controls | Threat modelling, IAM, vulnerability management, encryption, privacy, data access and security sign-off. |
 | **QA / Test Engineer** | Proves the system meets its requirements before and after every release | Functional, integration, contract, regression, performance, fault-injection and acceptance testing. |
@@ -171,6 +172,16 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
 - Phase 5: Provides the environments and the deployment mechanics.
 - Phase 6: Runs the platform services and keeps them patched.
 
+**Forward Deployed Engineer**
+
+- Phase 0: Conducts customer discovery, identifies target infrastructure/network/auth constraints, and secures data-access enablement.
+- Phase 1: Maps customer enterprise security controls, private endpoints, API gateways, and custom identity federation to solution architecture.
+- Phase 2: Configures customer data sources, enterprise CDC/event pipelines, and validates compliance with customer data governance.
+- Phase 3: Customises business logic, model hooks, and customer application integration points to fit enterprise workflows.
+- Phase 4: Executes customer-environment pre-flight checklists, IAM policies, and integration contract validation.
+- Phase 5: Leads customer-side staging and production rollout, smoke tests, failover rehearsal, and initial user onboarding.
+- Phase 6: Drives day-2 customer troubleshooting, user adoption telemetry, and feeds real-world edge cases back to core engineering.
+
 **SRE / DevOps Engineer**
 
 - Phase 1: Sets SLOs, error budgets, recovery objectives and the observability design.
@@ -220,6 +231,7 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
 | MLOps Engineer | I | R | C | R | R | R | R |
 | Inference Engineer | I | R | · | R | C | I | R |
 | Platform Engineer | C | C | C | C | R | C | C |
+| Forward Deployed Engineer | C | C | C | C | C | C | C |
 | SRE / DevOps Engineer | I | C | I | I | R | R | R |
 | Security Engineer | R | R | C | C | R | C | R |
 | QA / Test Engineer | C | R | I | C | R | C | C |
@@ -250,7 +262,7 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
 ### 0.1 Pick the use case and read its blueprint once, end to end
 
 - **Owner:** Delivery lead (project manager)
-- **With:** Business Analyst, Solution Architect, AI Architect
+- **With:** Business Analyst, Solution Architect, AI Architect, Forward Deployed Engineer
 - **When:** Week 1, day 1
 - **How:**
   1. Open the domain page, follow its “Start here” path or a track, and choose the blueprint closest to your problem.
@@ -422,7 +434,7 @@ Called by: Delivery lead (project manager). Signed by: Executive sponsor, Produc
 ### 1.1 Place the system in your enterprise landscape
 
 - **Owner:** Solution Architect
-- **With:** Platform Engineer, Data Engineer, Business Analyst
+- **With:** Platform Engineer, Data Engineer, Business Analyst, Forward Deployed Engineer
 - **When:** Week 2
 - **How:**
   1. Start from the blueprint’s context and container diagrams and replace every generic system with your real system of record.
@@ -600,7 +612,7 @@ Called by: Delivery lead (project manager). Signed by: Solution Architect, AI Ar
 ### 2.1 Get access and sign the agreements
 
 - **Owner:** Data Engineer
-- **With:** Data owner (data steward), Security Engineer, Risk, compliance, legal and privacy
+- **With:** Data owner (data steward), Security Engineer, Risk, compliance, legal and privacy, Forward Deployed Engineer
 - **When:** Week 3
 - **How:**
   1. Request access to each source with the purpose stated.
@@ -755,7 +767,7 @@ Called by: Delivery lead (project manager). Signed by: Data owner (data steward)
 ### 3.1 Set up the repository, CI and experiment tracking
 
 - **Owner:** MLOps Engineer
-- **With:** ML Engineer, Platform Engineer
+- **With:** ML Engineer, Platform Engineer, Forward Deployed Engineer
 - **When:** Week 5
 - **How:**
   1. Create the repository with branch protection and a code-review rule.
@@ -924,7 +936,7 @@ Called by: Delivery lead (project manager). Signed by: AI Architect, Product own
 ### 4.1 Provision the environments as code
 
 - **Owner:** Platform Engineer
-- **With:** SRE / DevOps Engineer, Security Engineer
+- **With:** SRE / DevOps Engineer, Security Engineer, Forward Deployed Engineer
 - **When:** Weeks 8–9
 - **How:**
   1. Define network, cluster, storage and identity as infrastructure code.
@@ -1091,7 +1103,7 @@ Called by: Delivery lead (project manager). Signed by: QA / Test Engineer, Secur
 ### 5.1 Prepare the business change
 
 - **Owner:** Business Analyst
-- **With:** Product owner (decision owner), End users and process owners, Support and service desk
+- **With:** Product owner (decision owner), End users and process owners, Support and service desk, Forward Deployed Engineer
 - **When:** Week 12
 - **How:**
   1. Train the users and update the procedures and policies that change.
@@ -1243,7 +1255,7 @@ Called by: Delivery lead (project manager). Signed by: Product owner (decision o
 ### 6.1 Watch service health
 
 - **Owner:** SRE / DevOps Engineer
-- **With:** Platform Engineer, Support and service desk
+- **With:** Platform Engineer, Support and service desk, Forward Deployed Engineer
 - **When:** Continuously, reviewed daily
 - **How:**
   1. Track the indicators against their SLOs and the remaining error budget.
@@ -1505,8 +1517,25 @@ Standardized, downloadable deliverables covering project discovery, production a
 | `BS-TMPL-DESIGN-06` | p1 | **Architecture Decision Record (ADR) Template** | Solution Architect | `delivery/templates/phase-1-design/06-architecture-decision-record-template.md` | Standard ADR structure capturing context, options, decision, trade-offs, and consequences. |
 | `BS-TMPL-DESIGN-07` | p1 | **Measurable NFR Matrix** | Platform Engineer | `delivery/templates/phase-1-design/07-nfr-matrix-template.md` | Quantifiable SLOs for P50/P95/P99 latency, throughput, availability, RTO/RPO, and degradation budgets. |
 | `BS-TMPL-DESIGN-08` | p1 | **STRIDE & OWASP LLM Threat Model** | Security Engineer | `delivery/templates/phase-1-design/08-stride-threat-model-template.md` | Comprehensive security threat matrix with architectural controls and verification tests. |
-| `BS-TMPL-DATA-01` | p2 | **Source-to-Target Mapping (STTM)** | Data Engineer | `delivery/templates/phase-2-data/source-to-target-mapping.md` | Field-level transformation specification with null handling and point-in-time leakage prevention. |
+| `BS-TMPL-DATA-01` | p2 | **Source-to-Target Mapping (STTM)** | Data Engineer | `delivery/templates/phase-2-data/source-to-target-mapping.md` | Field-level transformation specification with null handling, point-in-time leakage prevention, JSON/Avro schemas, and backfill protocols. |
+| `BS-TMPL-DATA-02` | p2 | **Production Streaming Ingestion Pipeline** | Data Engineer | `delivery/templates/phase-2-data/streaming-ingestion-pipeline.py` | Kafka/Flink streaming consumer with sliding window aggregations, watermark tracking, and DLQ routing. |
+| `BS-TMPL-DATA-03` | p2 | **Batch Ingestion & Feature Store Loader** | Data Engineer | `delivery/templates/phase-2-data/batch-ingestion-pipeline.py` | Distributed batch ETL loader with partition validation, schema enforcement, and point-in-time snapshot joins. |
+| `BS-TMPL-DATA-04` | p2 | **Automated Data Quality & Validation Suite** | Data Engineer | `delivery/templates/phase-2-data/data-quality-suite.py` | Data quality testing framework (Great Expectations style) asserting null bounds, distribution checks, and contract adherence. |
+| `BS-TMPL-DATA-05` | p2 | **Dead-Letter Queue (DLQ) & Poison Message Handler** | Data Engineer | `delivery/templates/phase-2-data/dead-letter-queue-handler.py` | Resilient poison-pill quarantine, alert dispatcher, and backfill replay utility for malformed messages. |
 | `BS-TMPL-BUILD-01` | p3 | **FastAPI Low-Latency Serving Template** | Inference Engineer | `delivery/templates/phase-3-build/fastapi-inference-service.py` | Microservice scaffolding with P99 < 15ms latency enforcement, health endpoints, and circuit breakers. |
+| `BS-TMPL-BUILD-02` | p3 | **MLflow Experiment Tracking & Registry Pipeline** | ML Engineer | `delivery/templates/phase-3-build/mlflow-tracking-registry.py` | Standardized model lineage, hyperparameter logging, PR-AUC tracking, artifact signing, and stage promotion. |
+| `BS-TMPL-BUILD-03` | p3 | **OAuth2 & mTLS Zero-Trust Serving Middleware** | Security Engineer | `delivery/templates/phase-3-build/oauth2-jwt-middleware.py` | Inference authorization middleware with JWT validation, RBAC claims inspection, and rate limiting. |
+| `BS-TMPL-BUILD-04` | p3 | **Production Model Card Specification** | Data Scientist | `delivery/templates/phase-3-build/model-card-template.md` | Comprehensive model documentation covering architecture, slice evaluation, TreeSHAP interpretability, and ethical guardrails. |
+| `BS-TMPL-BUILD-05` | p3 | **Production Dataset Card Specification** | Data Engineer | `delivery/templates/phase-3-build/dataset-card-template.md` | Dataset lineage document detailing sampling method, label delay windows, censoring handling, and PII redaction. |
+| `BS-TMPL-VRFY-01` | p4 | **Master Test Strategy & Verification Pyramid** | QA / Test Engineer | `delivery/templates/phase-4-verify/master-test-strategy.md` | Complete multi-tier testing framework spanning unit, contract, load/stress, adversarial perturbations, and release gates. |
+| `BS-TMPL-VRFY-02` | p4 | **User Acceptance Testing (UAT) Plan** | Business Analyst | `delivery/templates/phase-4-verify/uat-plan-template.md` | Business operator test scenarios, blind evaluation rubrics, and formal gate acceptance criteria. |
+| `BS-TMPL-VRFY-03` | p4 | **Independent Model Validation Report (SR 11-7 / EU AI Act)** | Risk, compliance, legal and privacy | `delivery/templates/phase-4-verify/independent-model-validation-report.md` | Independent supervisory audit template assessing conceptual soundness, mathematical rigor, stress testing, and fairness. |
+| `BS-TMPL-REL-01` | p5 | **Production Release Checklist (Gate 5 Go-Live)** | Platform Engineer | `delivery/templates/phase-5-release/production-release-checklist.md` | Comprehensive pre-deployment checklist, multi-stakeholder sign-off matrix, canary milestones, and hypercare schedule. |
+| `BS-TMPL-REL-02` | p5 | **Rehearsed Rollback Plan & Rapid Recovery Guide** | Platform Engineer | `delivery/templates/phase-5-release/rehearsed-rollback-plan.md` | Step-by-step automated and manual rollback runbook with < 60s RTO execution commands and zero data loss safeguards. |
+| `BS-TMPL-REL-03` | p5 | **Phase Gate Evidence Pack Template** | Forward Deployed Engineer | `delivery/templates/phase-5-release/phase-gate-evidence-pack.md` | Standardized evidence bundle structure compiling signed test logs, architecture reviews, and regulatory audit trails. |
+| `BS-TMPL-OPS-01` | p6 | **SRE Operational Runbook & Incident Response Guide** | Platform Engineer | `delivery/templates/phase-6-operate/sre-operational-runbook-template.md` | Tier 1 incident response playbooks for P99 latency breach, feature staleness, score collapse, and service degradation. |
+| `BS-TMPL-OPS-02` | p6 | **Blameless Post-Incident Review (PIR) Template** | Platform Engineer | `delivery/templates/phase-6-operate/post-incident-review-pir-template.md` | Structured post-mortem document with 5 Whys analysis, timeline reconstruction, and tracked CAPA corrective actions. |
+| `BS-TMPL-OPS-03` | p6 | **Quarterly Service Review & Realized ROI Tracker** | Business Analyst | `delivery/templates/phase-6-operate/service-review-roi-tracker.md` | Executive performance scorecard measuring actual dollar benefit vs baseline, cost per 1k decisions, and technical debt backlog. |
 
 ## Every deliverable, in order
 

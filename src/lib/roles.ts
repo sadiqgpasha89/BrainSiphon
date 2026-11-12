@@ -88,6 +88,12 @@ export const ROLE_META: Record<RoleId, { label: string; key: string; focus: stri
     focus:
       'Cloud infrastructure, Kubernetes, networking, IAM, secrets, Terraform, CI/CD infrastructure and platform services.',
   },
+  'forward-deployed-engineer': {
+    label: 'Forward Deployed Engineer',
+    key: 'f',
+    focus:
+      'Customer discovery, enterprise integration, environment configuration, deployment, user adoption, and production feedback.',
+  },
   'sre-devops-engineer': {
     label: 'SRE / DevOps Engineer',
     key: 'c',
@@ -121,6 +127,8 @@ export const ROLE_OWNS: Record<RoleId, string> = {
   'mlops-engineer': 'Industrialises model development, deployment and ongoing operations',
   'inference-engineer': 'Optimises model execution, runtimes and serving performance',
   'platform-engineer': 'Provides the cloud, cluster, network, identity and pipeline foundations',
+  'forward-deployed-engineer':
+    'Bridges customer enterprise reality and the reference blueprint: integrations, VPC/auth enablement, deployment, and day-2 customer troubleshooting',
   'sre-devops-engineer': 'Keeps the service reliable and recoverable, and owns on-call and runbooks',
   'security-engineer': 'Threat-models the system and signs off its security and privacy controls',
   'qa-test-engineer': 'Proves the system meets its requirements before and after every release',
@@ -325,6 +333,23 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'governance',
     'role-lenses',
   ],
+  'forward-deployed-engineer': [
+    'discovery',
+    'enterprise',
+    'problem',
+    'hld',
+    'sequence',
+    'lld',
+    'e2e',
+    'scale',
+    'evaluation',
+    'edge-cases',
+    'operations',
+    'governance',
+    'role-lenses',
+    'playbook',
+    'validation',
+  ],
   'sre-devops-engineer': [
     'discovery',
     'hld',
@@ -460,6 +485,15 @@ export const ROLE_LIFECYCLE: Record<RoleId, Lifecycle> = {
     p5: 'Provides the environments and the deployment mechanics.',
     p6: 'Runs the platform services and keeps them patched.',
   },
+  'forward-deployed-engineer': {
+    p0: 'Conducts customer discovery, identifies target infrastructure/network/auth constraints, and secures data-access enablement.',
+    p1: 'Maps customer enterprise security controls, private endpoints, API gateways, and custom identity federation to solution architecture.',
+    p2: 'Configures customer data sources, enterprise CDC/event pipelines, and validates compliance with customer data governance.',
+    p3: 'Customises business logic, model hooks, and customer application integration points to fit enterprise workflows.',
+    p4: 'Executes customer-environment pre-flight checklists, IAM policies, and integration contract validation.',
+    p5: 'Leads customer-side staging and production rollout, smoke tests, failover rehearsal, and initial user onboarding.',
+    p6: 'Drives day-2 customer troubleshooting, user adoption telemetry, and feeds real-world edge cases back to core engineering.',
+  },
   'sre-devops-engineer': {
     p1: 'Sets SLOs, error budgets, recovery objectives and the observability design.',
     p4: 'Builds telemetry, alerting, runbooks and the failure drills.',
@@ -591,6 +625,22 @@ export const ROLE_HANDOFFS: { from: RoleId; to: RoleId; artefact: string }[] = [
     artefact: 'Security sign-off and the controls a release must carry',
   },
   { from: 'qa-test-engineer', to: 'mlops-engineer', artefact: 'Test-evidence verdict that gates promotion' },
+  {
+    from: 'solution-architect',
+    to: 'forward-deployed-engineer',
+    artefact: 'Customer integration boundaries, private endpoint topology, and auth federation architecture',
+  },
+  {
+    from: 'forward-deployed-engineer',
+    to: 'platform-engineer',
+    artefact: 'Customer environment pre-flight findings, network constraints, and identity provider configs',
+  },
+  {
+    from: 'forward-deployed-engineer',
+    to: 'sre-devops-engineer',
+    artefact:
+      'Customer site runbook adjustments, localized telemetry mappings, and day-2 support escalation paths',
+  },
   {
     from: 'sre-devops-engineer',
     to: 'business-analyst',

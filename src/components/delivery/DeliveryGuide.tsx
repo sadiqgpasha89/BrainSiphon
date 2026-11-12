@@ -40,6 +40,7 @@ const REFERENCE_TOC = [
   { id: 'raci', label: 'RACI by phase' },
   { id: 'rhythm', label: 'Meeting rhythm' },
   { id: 'monitoring', label: 'Monitoring' },
+  { id: 'templates', label: 'Templates & artifacts' },
   { id: 'adapt', label: 'Adapting the guide' },
   { id: 'glossary', label: 'Glossary' },
 ];

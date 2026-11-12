@@ -1,0 +1,81 @@
+replicaCount: 3
+
+image:
+  repository: ghcr.io/brainsiphon/ai-serving-node
+  pullPolicy: IfNotPresent
+  tag: '1.0.0'
+
+serviceAccount:
+  create: true
+  name: 'ai-serving-sa'
+  annotations:
+    eks.amazonaws.com/role-arn: 'arn:aws:iam::123456789012:role/aiml-serving-irsa'
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: 'alb'
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+  hosts:
+    - host: scoring.internal.enterprise.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  limits:
+    cpu: '4000m'
+    memory: '8Gi'
+  requests:
+    cpu: '2000m'
+    memory: '4Gi'
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 18
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+env:
+  ENVIRONMENT: production
+  LOG_LEVEL: info
+  REDIS_HOST: redis.aiml.internal
+  REDIS_PORT: '6379'
+  DATABASE_URL: postgresql://aiml_app@db.aiml.internal:5432/aiml_solution_db
+  MODEL_CHECKPOINT_PATH: /models/champion-v1.safetensors
+  LATENCY_BUDGET_MS: '15'
+
+livenessProbe:
+  httpGet:
+    path: /health/liveness
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+readinessProbe:
+  httpGet:
+    path: /health/readiness
+    port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 3

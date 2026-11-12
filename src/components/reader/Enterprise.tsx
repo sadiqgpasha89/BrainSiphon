@@ -3,9 +3,10 @@ import { RISK_TIERS, type RiskTier, type UseCase, type ValidationLevel } from '.
 import { CodeBlock } from '../Code';
 import { MermaidDiagram } from '../Mermaid';
 import { List, Section, TableWrap } from './Sections';
-import { ReleaseLine } from './ValidationStatus';
+import { ReleaseLine, MaturityScorecardPanel, FeasibilityWarningsPanel } from './ValidationStatus';
 import { GuardrailsBlock } from './Assurance';
 import {
+  blueprintMaturityScorecard,
   blueprintStatuses,
   kitKeyFor,
   shortSha,
@@ -821,13 +822,18 @@ const STATE_MEANS: Record<string, string> = {
 export function ValidationSection({ uc, release }: { uc: UseCase; release: ReleaseManifest | null }) {
   const v = uc.validation;
   const statuses = blueprintStatuses(uc, release);
+  const scorecard = blueprintMaturityScorecard(uc, release);
   return (
     <Section
       id="validation"
-      title="Validation and architecture review"
-      kicker="Five separate kinds of evidence, each shown on its own: automated checks are not expert review, and neither is production evidence"
+      title="Validation, maturity scorecard and architecture review"
+      kicker="Explicit maturity classification, 7-level scorecard, automated schema & feasibility checks, test logs, and reviewer profiles"
     >
       <ProvenancePanel uc={uc} />
+      <div className="mb-6">
+        <MaturityScorecardPanel scorecard={scorecard} />
+      </div>
+      <Label>Automated validation status</Label>
       <ol className="space-y-2" data-testid="validation-levels">
         {statuses.map((l) => (
           <li
@@ -902,6 +908,11 @@ export function ValidationSection({ uc, release }: { uc: UseCase; release: Relea
         A blueprint does not pass because every section exists: its numbers must also agree with each other.
         The same checks run in <code>npm run validate:content</code> and fail the build.
       </p>
+      {scorecard.warnings.length > 0 && (
+        <div className="mt-6">
+          <FeasibilityWarningsPanel warnings={scorecard.warnings} />
+        </div>
+      )}
     </Section>
   );
 }

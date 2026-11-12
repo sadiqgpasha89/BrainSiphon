@@ -1,0 +1,20 @@
+replicaCount: 6
+
+resources:
+  limits:
+    cpu: '8000m'
+    memory: '16Gi'
+  requests:
+    cpu: '4000m'
+    memory: '8Gi'
+
+autoscaling:
+  enabled: true
+  minReplicas: 6
+  maxReplicas: 24
+  targetCPUUtilizationPercentage: 65
+
+env:
+  ENVIRONMENT: production
+  LOG_LEVEL: info
+  LATENCY_BUDGET_MS: '15'

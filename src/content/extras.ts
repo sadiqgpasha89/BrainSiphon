@@ -485,6 +485,20 @@ export function buildRoleLenses(
         primitive: batch ? undefined : 'adaptive-concurrency-shedding',
       },
     ],
+    'forward-deployed-engineer': [
+      {
+        title: 'Customer environment pre-flight & private connectivity',
+        detail: `Inspect customer enterprise network and deployment topology for ${raw.title}: verify private endpoints (AWS PrivateLink / Azure Private Endpoint), transit gateway routing, egress proxy whitelist for telemetry, and on-premise firewall holes for Kafka or CDC streaming.`,
+      },
+      {
+        title: 'Identity federation & on-behalf-of authorization',
+        detail: `Integrate with customer Okta/Azure AD enterprise identity provider: configure OIDC/SAML token exchange, map active directory groups to ${raw.title} RBAC scopes, validate audit trail logging of user identity, and verify credential rotation without service downtime.`,
+      },
+      {
+        title: 'Prototype-to-production enterprise transition & day-2 telemetry',
+        detail: `Transition the prototype into the customer-controlled VPC via automated Terraform/Helm: run shadow-mode replay against live customer data streams, verify zero-leakage constraints, train customer operators on runbooks, and monitor adoption metrics and false-positive feedback loops.`,
+      },
+    ],
   };
 
   return ROLE_IDS.map((role) => ({ role, focus: ROLE_META[role].focus, items: L[role] }));

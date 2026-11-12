@@ -20,10 +20,11 @@ const bySlug = (s: string) => all.find((u) => u.slug === s)!;
 
 describe('MLOps Engineer lens', () => {
   it('is a distinct role from the inference engineer and the ML engineer, on key 9', () => {
-    expect(ROLE_IDS).toHaveLength(14);
+    expect(ROLE_IDS).toHaveLength(15);
     expect(ROLE_META['mlops-engineer'].key).toBe('9');
     expect(ROLE_IDS).toContain('ml-engineer');
     expect(ROLE_IDS).toContain('inference-engineer');
+    expect(ROLE_IDS).toContain('forward-deployed-engineer');
   });
   it('gives every blueprint an MLOps lens that links the registry and drift primitives', () => {
     for (const u of all) {

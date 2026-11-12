@@ -261,7 +261,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         id: '0.1',
         title: 'Pick the use case and read its blueprint once, end to end',
         owner: 'delivery-lead',
-        with: ['business-analyst', 'solution-architect', 'ai-architect'],
+        with: ['business-analyst', 'solution-architect', 'ai-architect', 'forward-deployed-engineer'],
         when: 'Week 1, day 1',
         how: [
           'Open the domain page, follow its “Start here” path or a track, and choose the blueprint closest to your problem.',
@@ -446,7 +446,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         id: '1.1',
         title: 'Place the system in your enterprise landscape',
         owner: 'solution-architect',
-        with: ['platform-engineer', 'data-engineer', 'business-analyst'],
+        with: ['platform-engineer', 'data-engineer', 'business-analyst', 'forward-deployed-engineer'],
         when: 'Week 2',
         how: [
           'Start from the blueprint’s context and container diagrams and replace every generic system with your real system of record.',
@@ -641,7 +641,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         id: '2.1',
         title: 'Get access and sign the agreements',
         owner: 'data-engineer',
-        with: ['data-owner', 'security-engineer', 'risk-compliance'],
+        with: ['data-owner', 'security-engineer', 'risk-compliance', 'forward-deployed-engineer'],
         when: 'Week 3',
         how: [
           'Request access to each source with the purpose stated.',
@@ -808,7 +808,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         id: '3.1',
         title: 'Set up the repository, CI and experiment tracking',
         owner: 'mlops-engineer',
-        with: ['ml-engineer', 'platform-engineer'],
+        with: ['ml-engineer', 'platform-engineer', 'forward-deployed-engineer'],
         when: 'Week 5',
         how: [
           'Create the repository with branch protection and a code-review rule.',
@@ -991,7 +991,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         id: '4.1',
         title: 'Provision the environments as code',
         owner: 'platform-engineer',
-        with: ['sre-devops-engineer', 'security-engineer'],
+        with: ['sre-devops-engineer', 'security-engineer', 'forward-deployed-engineer'],
         when: 'Weeks 8–9',
         how: [
           'Define network, cluster, storage and identity as infrastructure code.',
@@ -1173,7 +1173,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         id: '5.1',
         title: 'Prepare the business change',
         owner: 'business-analyst',
-        with: ['product-owner', 'end-users', 'support'],
+        with: ['product-owner', 'end-users', 'support', 'forward-deployed-engineer'],
         when: 'Week 12',
         how: [
           'Train the users and update the procedures and policies that change.',
@@ -1345,7 +1345,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         id: '6.1',
         title: 'Watch service health',
         owner: 'sre-devops-engineer',
-        with: ['platform-engineer', 'support'],
+        with: ['platform-engineer', 'support', 'forward-deployed-engineer'],
         when: 'Continuously, reviewed daily',
         how: [
           'Track the indicators against their SLOs and the remaining error budget.',
@@ -2117,7 +2117,43 @@ export const DELIVERY_TEMPLATES: DeliveryTemplateMeta[] = [
     ownerRole: 'data-engineer',
     file: 'delivery/templates/phase-2-data/source-to-target-mapping.md',
     description:
-      'Field-level transformation specification with null handling and point-in-time leakage prevention.',
+      'Field-level transformation specification with null handling, point-in-time leakage prevention, JSON/Avro schemas, and backfill protocols.',
+  },
+  {
+    code: 'BS-TMPL-DATA-02',
+    phaseId: 'p2',
+    title: 'Production Streaming Ingestion Pipeline',
+    ownerRole: 'data-engineer',
+    file: 'delivery/templates/phase-2-data/streaming-ingestion-pipeline.py',
+    description:
+      'Kafka/Flink streaming consumer with sliding window aggregations, watermark tracking, and DLQ routing.',
+  },
+  {
+    code: 'BS-TMPL-DATA-03',
+    phaseId: 'p2',
+    title: 'Batch Ingestion & Feature Store Loader',
+    ownerRole: 'data-engineer',
+    file: 'delivery/templates/phase-2-data/batch-ingestion-pipeline.py',
+    description:
+      'Distributed batch ETL loader with partition validation, schema enforcement, and point-in-time snapshot joins.',
+  },
+  {
+    code: 'BS-TMPL-DATA-04',
+    phaseId: 'p2',
+    title: 'Automated Data Quality & Validation Suite',
+    ownerRole: 'data-engineer',
+    file: 'delivery/templates/phase-2-data/data-quality-suite.py',
+    description:
+      'Data quality testing framework (Great Expectations style) asserting null bounds, distribution checks, and contract adherence.',
+  },
+  {
+    code: 'BS-TMPL-DATA-05',
+    phaseId: 'p2',
+    title: 'Dead-Letter Queue (DLQ) & Poison Message Handler',
+    ownerRole: 'data-engineer',
+    file: 'delivery/templates/phase-2-data/dead-letter-queue-handler.py',
+    description:
+      'Resilient poison-pill quarantine, alert dispatcher, and backfill replay utility for malformed messages.',
   },
   {
     code: 'BS-TMPL-BUILD-01',
@@ -2127,6 +2163,123 @@ export const DELIVERY_TEMPLATES: DeliveryTemplateMeta[] = [
     file: 'delivery/templates/phase-3-build/fastapi-inference-service.py',
     description:
       'Microservice scaffolding with P99 < 15ms latency enforcement, health endpoints, and circuit breakers.',
+  },
+  {
+    code: 'BS-TMPL-BUILD-02',
+    phaseId: 'p3',
+    title: 'MLflow Experiment Tracking & Registry Pipeline',
+    ownerRole: 'ml-engineer',
+    file: 'delivery/templates/phase-3-build/mlflow-tracking-registry.py',
+    description:
+      'Standardized model lineage, hyperparameter logging, PR-AUC tracking, artifact signing, and stage promotion.',
+  },
+  {
+    code: 'BS-TMPL-BUILD-03',
+    phaseId: 'p3',
+    title: 'OAuth2 & mTLS Zero-Trust Serving Middleware',
+    ownerRole: 'security-engineer',
+    file: 'delivery/templates/phase-3-build/oauth2-jwt-middleware.py',
+    description:
+      'Inference authorization middleware with JWT validation, RBAC claims inspection, and rate limiting.',
+  },
+  {
+    code: 'BS-TMPL-BUILD-04',
+    phaseId: 'p3',
+    title: 'Production Model Card Specification',
+    ownerRole: 'data-scientist',
+    file: 'delivery/templates/phase-3-build/model-card-template.md',
+    description:
+      'Comprehensive model documentation covering architecture, slice evaluation, TreeSHAP interpretability, and ethical guardrails.',
+  },
+  {
+    code: 'BS-TMPL-BUILD-05',
+    phaseId: 'p3',
+    title: 'Production Dataset Card Specification',
+    ownerRole: 'data-engineer',
+    file: 'delivery/templates/phase-3-build/dataset-card-template.md',
+    description:
+      'Dataset lineage document detailing sampling method, label delay windows, censoring handling, and PII redaction.',
+  },
+  {
+    code: 'BS-TMPL-VRFY-01',
+    phaseId: 'p4',
+    title: 'Master Test Strategy & Verification Pyramid',
+    ownerRole: 'qa-test-engineer',
+    file: 'delivery/templates/phase-4-verify/master-test-strategy.md',
+    description:
+      'Complete multi-tier testing framework spanning unit, contract, load/stress, adversarial perturbations, and release gates.',
+  },
+  {
+    code: 'BS-TMPL-VRFY-02',
+    phaseId: 'p4',
+    title: 'User Acceptance Testing (UAT) Plan',
+    ownerRole: 'business-analyst',
+    file: 'delivery/templates/phase-4-verify/uat-plan-template.md',
+    description:
+      'Business operator test scenarios, blind evaluation rubrics, and formal gate acceptance criteria.',
+  },
+  {
+    code: 'BS-TMPL-VRFY-03',
+    phaseId: 'p4',
+    title: 'Independent Model Validation Report (SR 11-7 / EU AI Act)',
+    ownerRole: 'risk-compliance',
+    file: 'delivery/templates/phase-4-verify/independent-model-validation-report.md',
+    description:
+      'Independent supervisory audit template assessing conceptual soundness, mathematical rigor, stress testing, and fairness.',
+  },
+  {
+    code: 'BS-TMPL-REL-01',
+    phaseId: 'p5',
+    title: 'Production Release Checklist (Gate 5 Go-Live)',
+    ownerRole: 'platform-engineer',
+    file: 'delivery/templates/phase-5-release/production-release-checklist.md',
+    description:
+      'Comprehensive pre-deployment checklist, multi-stakeholder sign-off matrix, canary milestones, and hypercare schedule.',
+  },
+  {
+    code: 'BS-TMPL-REL-02',
+    phaseId: 'p5',
+    title: 'Rehearsed Rollback Plan & Rapid Recovery Guide',
+    ownerRole: 'platform-engineer',
+    file: 'delivery/templates/phase-5-release/rehearsed-rollback-plan.md',
+    description:
+      'Step-by-step automated and manual rollback runbook with < 60s RTO execution commands and zero data loss safeguards.',
+  },
+  {
+    code: 'BS-TMPL-REL-03',
+    phaseId: 'p5',
+    title: 'Phase Gate Evidence Pack Template',
+    ownerRole: 'forward-deployed-engineer',
+    file: 'delivery/templates/phase-5-release/phase-gate-evidence-pack.md',
+    description:
+      'Standardized evidence bundle structure compiling signed test logs, architecture reviews, and regulatory audit trails.',
+  },
+  {
+    code: 'BS-TMPL-OPS-01',
+    phaseId: 'p6',
+    title: 'SRE Operational Runbook & Incident Response Guide',
+    ownerRole: 'platform-engineer',
+    file: 'delivery/templates/phase-6-operate/sre-operational-runbook-template.md',
+    description:
+      'Tier 1 incident response playbooks for P99 latency breach, feature staleness, score collapse, and service degradation.',
+  },
+  {
+    code: 'BS-TMPL-OPS-02',
+    phaseId: 'p6',
+    title: 'Blameless Post-Incident Review (PIR) Template',
+    ownerRole: 'platform-engineer',
+    file: 'delivery/templates/phase-6-operate/post-incident-review-pir-template.md',
+    description:
+      'Structured post-mortem document with 5 Whys analysis, timeline reconstruction, and tracked CAPA corrective actions.',
+  },
+  {
+    code: 'BS-TMPL-OPS-03',
+    phaseId: 'p6',
+    title: 'Quarterly Service Review & Realized ROI Tracker',
+    ownerRole: 'business-analyst',
+    file: 'delivery/templates/phase-6-operate/service-review-roi-tracker.md',
+    description:
+      'Executive performance scorecard measuring actual dollar benefit vs baseline, cost per 1k decisions, and technical debt backlog.',
   },
 ];
 

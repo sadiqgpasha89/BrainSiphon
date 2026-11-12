@@ -1,0 +1,19 @@
+replicaCount: 2
+
+resources:
+  limits:
+    cpu: '2000m'
+    memory: '4Gi'
+  requests:
+    cpu: '1000m'
+    memory: '2Gi'
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+
+env:
+  ENVIRONMENT: staging
+  LOG_LEVEL: info
+  LATENCY_BUDGET_MS: '20'

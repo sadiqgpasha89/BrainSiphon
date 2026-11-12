@@ -1,0 +1,17 @@
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: '1000m'
+    memory: '2Gi'
+  requests:
+    cpu: '500m'
+    memory: '1Gi'
+
+autoscaling:
+  enabled: false
+
+env:
+  ENVIRONMENT: dev
+  LOG_LEVEL: debug
+  LATENCY_BUDGET_MS: '50'

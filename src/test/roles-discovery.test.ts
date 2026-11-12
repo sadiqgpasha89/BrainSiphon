@@ -15,24 +15,25 @@ import {
 
 const all = loadAllUseCases();
 
-describe('the fourteen-role model', () => {
-  it('has exactly the fourteen roles, each with a unique key', () => {
-    expect(ROLE_IDS).toHaveLength(14);
+describe('the delivery role model', () => {
+  it('has exactly the delivery roles, each with a unique key', () => {
+    expect(ROLE_IDS).toHaveLength(15);
     expect(ROLE_IDS).toEqual(
       expect.arrayContaining([
         'business-analyst',
         'data-analyst',
         'ml-engineer',
         'platform-engineer',
+        'forward-deployed-engineer',
         'sre-devops-engineer',
         'security-engineer',
         'qa-test-engineer',
       ]),
     );
     const keys = ROLE_IDS.map((r) => ROLE_META[r].key);
-    expect(new Set(keys).size).toBe(14);
+    expect(new Set(keys).size).toBe(15);
     expect(keys).not.toContain('0');
-    expect(keys.filter((k) => !/^[1-9a-e]$/.test(k))).toEqual([]);
+    expect(keys.filter((k) => !/^[1-9a-f]$/.test(k))).toEqual([]);
   });
 
   it('gives every role at least three specialised items on every blueprint', () => {
