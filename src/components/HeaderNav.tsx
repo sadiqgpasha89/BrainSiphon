@@ -83,6 +83,12 @@ export function HeaderNav() {
           >
             Workspace
           </Link>
+          <Link
+            href="/about"
+            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
+          >
+            About
+          </Link>
           <nav aria-label="Domains">
             <p className="px-3 pb-1 pt-1 font-mono text-[11px] uppercase tracking-wider text-dim">
               {DOMAINS.length} domains · 50 use cases each
@@ -109,6 +115,9 @@ export function HeaderNav() {
             <Link href="/deployment" className={`${LINK} text-mute hover:text-ink`}>
               Deployment
             </Link>
+            <Link href="/about" className={`${LINK} text-mute hover:text-ink sm:hidden`}>
+              About
+            </Link>
           </div>
         </div>
       </div>
@@ -125,6 +134,13 @@ export function HeaderNav() {
         className={`${LINK} hidden md:block ${here('/deployment') ? 'text-signal' : 'text-mute hover:text-ink'}`}
       >
         Deployment
+      </Link>
+      <Link
+        href="/about"
+        aria-current={here('/about') ? 'page' : undefined}
+        className={`${LINK} hidden sm:block ${here('/about') ? 'text-signal' : 'text-mute hover:text-ink'}`}
+      >
+        About
       </Link>
     </nav>
   );

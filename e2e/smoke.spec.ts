@@ -570,3 +570,18 @@ test('delivery guide indexes evaluation, guardrails and governance and maps the 
   await expect(page.getByTestId('step-3.9')).toContainText('Evaluation harness in CI');
   await expect(page.getByTestId('step-3.9')).toBeInViewport();
 });
+
+test('about page explains the platform, blueprint anatomy, role guides, and navigation', async ({ page }) => {
+  await page.goto('/');
+  const aboutLink = page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'About' });
+  await expect(aboutLink.first()).toBeVisible();
+  await aboutLink.first().click();
+  await expect(page).toHaveURL(/\/about$/);
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Signal in.');
+  await expect(page.getByTestId('about-stats')).toContainText('500');
+  await expect(page.getByRole('heading', { name: 'What is BrainSiphon?' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'What Every Single Blueprint Contains' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'How to Read BrainSiphon by Role' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Signal vs. Noise Across Archetypes' })).toBeVisible();
+});

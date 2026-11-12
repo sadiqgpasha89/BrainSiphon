@@ -32,6 +32,12 @@ export async function SiteFooter() {
           <p className="font-semibold text-ink">Guides, and files for agents</p>
           <ul className="mt-2 space-y-1">
             <li>
+              <Link href="/about" className="font-medium text-ink hover:text-ink">
+                About BrainSiphon
+              </Link>{' '}
+              — what this site is, how to use it, and engineering philosophy
+            </li>
+            <li>
               <a href={withBase('/llms.txt')} className="hover:text-ink">
                 /llms.txt
               </a>{' '}

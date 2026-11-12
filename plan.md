@@ -1,332 +1,480 @@
-# Implementation Plan: Transforming BrainSiphon into an End-to-End AI Engineering Delivery Platform
+# Master Implementation Plan: Transforming BrainSiphon into an End-to-End AI Engineering Delivery Platform
 
-**Document Version:** 1.0.0  
+**Document Version:** 2.0.0  
 **Target Platform:** BrainSiphon ([GitHub Pages](https://sadiqgpasha89.github.io/BrainSiphon/) & Docker Full-Stack)  
-**Status:** Ready for User Review  
+**Status:** Ready for User Review & Formal Sign-off  
 
 ---
 
-## 1. Executive Summary & Strategic Intent
+## 1. Executive Summary & Assessment Reconciliation
 
-### 1.1 The Context & The Gap
-BrainSiphon has established itself as an outstanding repository of 500 AI/ML solution architectures across 10 domains, supported by a 7-phase delivery guide, transparent capacity models, role-based filtering, and architectural primitives. 
+### 1.1 Context & Strategic Imperative
+BrainSiphon represents an extraordinary engineering achievement: an architectural repository spanning **500 AI/ML solution blueprints** across **10 industries**, supported by a 7-phase delivery guide (69 steps), transparent capacity models, role-based filtering, and architectural primitives.
 
-However, an independent implementation readiness assessment identified a fundamental structural boundary:
-* **Current State:** BrainSiphon excels at **Architecture Guidance (L0)** and **Evaluation-Ready Starters (L2)** on synthetic data (milestones M1–M4). For serving, integration, cloud deployment, and production operations (M5–M6), the blueprints currently state: *"serving and rollout need your platform."* Zero blueprints reach shadow-ready or production-ready status.
-* **The Forward Deployed Engineer (FDE) Standard:** An engineer should be able to start with a client business problem, navigate discovery, design the implementable architecture, build a working solution with executable contracts and code, deploy it to a realistic cloud/Kubernetes environment, verify it with automated tests and security gates, and hand it over to operations with complete runbooks—with minimal undocumented guesswork.
+However, an exhaustive independent readiness assessment highlighted a vital distinction:
+* **The Distinction:** *Implementation Guidance* (explaining what to build, why, and how components interact) is not identical to *Implementation Assets* (executable code, Infrastructure as Code, API contracts, automated tests, deployment configurations, and operational runbooks).
+* **Current Scorecard Finding:** BrainSiphon currently functions as a **high-fidelity AI/ML engineering playbook with selected evaluation-ready starters on synthetic data (milestones M1–M4)**. Serving, enterprise integration, cloud infrastructure, and live operations (M5–M6) currently default to *"serving and rollout need your platform."* Zero blueprints currently report independent domain-expert reviews or live production evidence.
+* **The Forward Deployed Engineer (FDE) Benchmark:** A solution engineer or cross-functional delivery team must be able to take an enterprise customer from business problem discovery, through architecture selection and data contracts, to runnable containerized services, multi-cloud IaC provisioning, continuous evaluation, and production incident response with zero guesswork.
 
-### 1.2 Transformation Charter
-This plan systematically addresses every critique, gap, and recommendation in the assessment. It evolves BrainSiphon from an architecture knowledge base into a **complete AI engineering delivery and execution platform**, without sacrificing its existing mathematical rigor, schema validation, or content integrity.
+### 1.2 Summary Scorecard & Target Transformation
+| Assessment Area | Baseline State | Evaluation Target (BrainSiphon 3.0) |
+| :--- | :--- | :--- |
+| **Business Discovery & Scoping** | Strong (good discovery questions) | **Executable Scope Workspace**: 10 downloadable discovery templates (BRD, interview packs, traceability, ROI workbook) |
+| **Use-Case Coverage** | Strong (500 blueprints, 10 domains) | **Maintained Breadth with Depth Anchors**: 500 blueprints categorized via 4-dimensional taxonomy; 8 Golden Paths |
+| **Solution Architecture** | Strong (HLD, C4, ADRs, sequences) | **DAG Pipelines & Selection Matrix**: Multi-branch DAGs, consolidated architecture selection matrix |
+| **Low-Level Design (LLD)** | Good (contracts/pseudocode) | **Integration-Ready Contracts**: Standard OpenAPI 3.1, AsyncAPI 3.0, and OpenDataContract specifications |
+| **Data Engineering** | Strong design guidance | **Data Integration Packs**: Outbox CDC, Faust/Kafka stream ingestion, schema evolution, Great Expectations quality suites |
+| **Data Science & ML** | Strong design guidance | **Common Evaluation Framework**: Standard offline baselines, leakage checks, calibration, drift detection |
+| **Generative AI & Agents** | Good design guidance | **Live Agent Execution Layer**: Provider abstractions, tool sandboxes, OBO token exchange, human approvals |
+| **Application Engineering** | Partial (boundary descriptions) | **Standard Application Services**: Production FastAPI serving, DB migrations (Alembic), Redis session state |
+| **Security & Governance** | Good conceptual design | **Executable Security Packs**: OAuth2/OIDC middleware, tenant isolation, STRIDE threat models, regulatory mapping |
+| **Testing & Quality Assurance** | Strong methodology | **Complete Test Pyramid**: Contract, unit, integration, model evaluation, k6 performance, and Toxiproxy chaos tests |
+| **MLOps & LLMOps** | Good design, partial execution | **Reproducible Pipelines**: MLflow tracking/registry, Dagster/Airflow templates, Ragas/TruLens evaluation harnesses |
+| **Infrastructure & Deployment** | Partial (knowledge platform only) | **Multi-Cloud Solution Deployment**: Terraform for AWS/Azure/GCP, Helm 3 charts, Argo Rollouts canary workflows |
+| **Production Readiness Evidence** | Weak (0 reviews, 0 production records)| **Structured Review Programme**: 7 review types with formal records; published validation slices for Golden Pilots |
+| **Developer Usability** | Strong (role lenses, markdown) | **Guided Implementation Workspace UI**: Interactive project configurator, package bundler, decision assistant |
 
 ---
 
-## 2. Core Architectural Pillars of the Transformation
+## 2. Core Architectural Framework
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                       BRAINSIPHON 3.0 ARCHITECTURE                                      │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- ┌──────────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐  ┌───────────────────────┐
- │   MATURITY LADDER    │  │ 8 GOLDEN REFERENCE  │  │  DELIVERY ARTIFACTS  │  │  PLATFORM & RUNBOOKS  │
- │       (L0-L5)        │  │   IMPLEMENTATIONS    │  │     (PHASES 0-6)     │  │   (IaC, Helm, SRE)    │
- ├──────────────────────┤  ├──────────────────────┤  ├──────────────────────┤  ├───────────────────────┤
- │ • L0: Architecture   │  │ 1. Card & UPI Fraud  │  │ • 10 Phase 0 Scope   │  │ • 4 Deploy Profiles   │
- │ • L1: Prototype      │  │ 2. Demand Sensing    │  │   Downloadable Kits  │  │   (A: Local, B: Cloud,│
- │ • L2: Evaluation     │  │ 3. Next-Item Recs    │  │ • Phase 1 Arch Specs │  │    C: Private, D: Reg)│
- │ • L3: Integration-Rdy│  │ 4. Sepsis Alert (HITL)│ │   (OpenAPI, AsyncAPI,│  │ • Multi-Cloud Terraform│
- │ • L4: Shadow-Ready   │  │ 5. CV Defect Edge    │  │    Data Contracts)   │  │ • Kubernetes & Helm   │
- │ • L5: Production-Rdy │  │ 6. Enterprise RAG    │  │ • Phase 2 Pipelines  │  │ • 10 Production       │
- │ • Prominent Badges   │  │ 7. SOC Copilot Agent │  │   (CDC, Batch, Feast)│  │   Incident Runbooks   │
- │ • Gap Reports        │  │ 8. In-App SaaS Agent │  │ • Phase 3 API/FastAPI│  │ • Chaos & k6 Suites   │
- └──────────────────────┘  └──────────────────────┘  └──────────────────────┘  └───────────────────────┘
-                                           │
-                                           ▼
- ┌───────────────────────────────────────────────────────────────────────────────────────────────────────┐
- │                                 GUIDED IMPLEMENTATION WORKSPACE UI                                     │
- │   • Interactive Project Configurator  • Downloadable Architecture ZIP  • Technology Decision Assistant│
- └───────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                           BRAINSIPHON 3.0 SYSTEM ARCHITECTURE                                   │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ ┌────────────────────────┐  ┌────────────────────────┐  ┌────────────────────────┐  ┌──────────────────────────┐
+ │   4-DIMENSION TAXONOMY │  │ 8 GOLDEN REFERENCE KITS│  │ DELIVERY ASSET ENGINE  │  │ PLATFORM & SRE PACKS     │
+ │ (Surfaced in Catalog)  │  │   (Full M0–M6 Stacks)  │  │   (Phases 0–6 Assets)  │  │ (Multi-Cloud & Runbooks) │
+ ├────────────────────────┤  ├────────────────────────┤  ├────────────────────────┤  ├──────────────────────────┤
+ │ 1. Content Authorship  │  │ 1. Card & UPI Fraud    │  │ • 10 Phase 0 Scope Pkts│  │ • 4 Deployment Profiles  │
+ │ 2. Implementation Comp.│  │ 2. Demand Sensing      │  │ • Phase 1 Arch Specs   │  │   (A: Local, B: Cloud,   │
+ │ 3. Execution Maturity  │  │ 3. Next-Item Recs      │  │   (C4, OpenAPI, Async) │  │    C: Private, D: Reg)   │
+ │    (L0 to L5 Continuum)│  │ 4. Sepsis HITL Alert   │  │ • Phase 2 Data Pkts    │  │ • Terraform (AWS/GCP/Az) │
+ │ 4. Independent Review  │  │ 5. CV Defect Inspection│  │   (CDC, Faust, Schema) │  │ • Helm 3 Chart & K8s Base│
+ │    (7-Specialist Gate) │  │ 6. Enterprise RAG      │  │ • Phase 3 Serving & DB │  │ • 10 Production Incident │
+ │ • Explicit Gap Reports │  │ 7. SOC Copilot Agent   │  │ • Common Eval Framework│  │   Runbooks (SRE standard)│
+ │ • Terminology Demyst.  │  │ 8. In-App SaaS Copilot │  │ • Client Overlay Specs │  │ • k6 & Toxiproxy Suites  │
+ └────────────────────────┘  └────────────────────────┘  └────────────────────────┘  └──────────────────────────┘
+                                              │
+                                              ▼
+ ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+ │                                   GUIDED SOLUTION ENGINEERING WORKSPACE UI                                      │
+ │   • Interactive Project Configurator  • Downloadable Implementation ZIP Bundler  • Architecture Decision Trees │
+ │   • 7 New Role Lenses (FDE Focus)     • Master Lifecycle Cross-Reference         • Implementation Diagnostic Mtx│
+ └────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 3. Workstream Breakdown
 
-### Workstream 1: Catalogue-Level Maturity Classification (L0–L5)
+### Workstream 1: 4-Dimensional Blueprint Classification & Terminology Demystification
 
-#### Objectives:
-Replace the 4-tier completion model with an explicit 6-tier maturity continuum across all 500 blueprints, making it impossible to confuse an architectural blueprint with a turnkey production solution.
+#### 1.1 The 4 Orthogonal Dimensions
+To eliminate the ambiguity where blueprints are labeled "production-grade" despite lacking production infrastructure, every blueprint will formally declare and display four independent dimensions:
 
-#### The 6-Level Maturity Standard:
-| Level | Name | Definition | Delivered Artifacts in BrainSiphon |
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                     THE 4 BLUEPRINT CLASSIFICATION DIMENSIONS                                   │
+├──────────────────────────┬──────────────────────────┬──────────────────────────┬────────────────────────────────┤
+│ 1. Content Authorship    │ 2. Implementation Comp.  │ 3. Execution Maturity    │ 4. Independent Validation      │
+├──────────────────────────┼──────────────────────────┼──────────────────────────┼────────────────────────────────┤
+│ • Hand-Authored          │ • Exact Reference Kit    │ • L0: Architecture (HLD) │ • Not Reviewed                 │
+│ • Expert-Authored        │ • Adaptable Reference Kit│ • L1: Prototype-Ready    │ • Domain-Specialist Reviewed   │
+│ • Deterministic Template │ • Guidance Only          │ • L2: Evaluation-Ready   │ • Security-Specialist Reviewed │
+│ • Adapted Specification  │                          │ • L3: Integration-Ready  │ • Production Evidence Reported │
+│                          │                          │ • L4: Shadow-Ready       │                                │
+│                          │                          │ • L5: Production-Ready   │                                │
+└──────────────────────────┴──────────────────────────┴──────────────────────────┴────────────────────────────────┘
+```
+
+#### 1.2 The Standardized 6-Level Execution Maturity Scale (L0–L5)
+* **L0: Architecture Guidance** — Conceptual architecture, C4 diagrams, sequence flows, ADRs, NFRs, and modeled capacity. No executable code.
+* **L1: Prototype-Ready** — Runnable standalone script on synthetic data demonstrating core mathematical/algorithmic feasibility.
+* **L2: Evaluation-Ready** — Offline train/val/test splits, statistical baselines, leakage tests, metric tracking, and pytest evaluation suite.
+* **L3: Integration-Ready (NEW)** — Standalone containerized service (FastAPI), OpenAPI 3.1 & AsyncAPI 3.0 contracts, DB schemas & migrations (Alembic), and mock client adapters.
+* **L4: Shadow-Ready** — Production-connected traffic mirroring pipeline, feature store integration (Feast), dual-scoring telemetry, and decision comparison loggers.
+* **L5: Production-Ready** — Complete multi-cloud Terraform, Helm chart, CI/CD pipeline, automated canary deployment, Prometheus alerts, and verified incident runbooks.
+
+#### 1.3 Terminology Demystification
+Blueprints will no longer conflate complexity with readiness:
+* **System Complexity:** Simple | Moderate | High | Distributed Real-Time
+* **Maturity Level:** Displayed exclusively via the L0–L5 badge
+* **Implementation Gap Report:** Embedded directly into every blueprint header and Markdown export, detailing:
+  - Artifacts included in BrainSiphon
+  - Platform prerequisites the engineering team must supply
+  - Specific gap checklist to advance from the current level to L5
+
+---
+
+### Workstream 2: Delivery Guide Transformation into an Executable Delivery Workspace
+
+The Delivery Guide (7 phases, 69 steps) is evolved from a checklist into an **asset generation engine**.
+
+#### 2.1 The 11 Core Delivery Asset Packs
+To address the missing items identified in the assessment, provide standardized, editable Markdown, YAML, and Python templates:
+
+| No. | Asset Pack | Location | Delivered Contents & Purpose |
 | :--- | :--- | :--- | :--- |
-| **L0** | **Architecture Guidance** | Complete conceptual & technical design | HLD, LLD, C4 diagrams, sequence diagrams, ADRs, NFRs, capacity model |
-| **L1** | **Prototype-Ready** | Runnable proof-of-concept on synthetic data | Local script, synthetic data generator, basic model/heuristic execution |
-| **L2** | **Evaluation-Ready** | Reproducible statistical evaluation | Offline train/test splits, baselines, leakage checks, metrics, pytest harness |
-| **L3** | **Integration-Ready** *(NEW)* | Executable contracts and application boundaries | FastAPI service, DB models & migrations, OpenAPI 3.1, AsyncAPI, data contracts |
-| **L4** | **Shadow-Ready** | Production-connected dual-scoring system | Live traffic mirroring pipeline, feature store integration, dual-scoring telemetry |
-| **L5** | **Production-Ready** | End-to-end deployable, secured, and operated | Multi-cloud Terraform, Helm chart, CI/CD, canary rollout, automated rollback, runbooks |
+| **1** | **Business Requirements Template (BRD/PRD)** | `delivery/templates/phase-0-scope/02-business-requirements-document.md` | Problem statement, stakeholder register, user personas, functional requirements, out-of-scope boundaries, and measurable business acceptance criteria with completed sample. |
+| **2** | **Discovery Workshop Pack** | `delivery/templates/phase-0-scope/01-discovery-workshop-pack.md` | 40-point client discovery questionnaire, role-specific interview scripts (Sponsor, Operator, Risk, Tech), workshop agenda, decision log, and evidence register. |
+| **3** | **User Stories & Acceptance Matrix** | `delivery/templates/phase-0-scope/05-user-stories-acceptance-matrix.md` | Epics, user stories, technical enabler stories, and Gherkin-formatted Given-When-Then business acceptance criteria linked to test assertions. |
+| **4** | **Backlog & Jira/ADO Work Items** | `delivery/templates/phase-0-scope/backlog-jira-work-items.csv` | Pre-populated epic/story work-item breakdown with milestone tags (M0–M6), dependencies, story point baselines, and sprint allocation. |
+| **5** | **Architecture Documentation Suite** | `delivery/templates/phase-1-design/01-architecture-suite.md` | Editable C4 context/container/component templates, nominal & failure sequence diagrams, ADR template, NFR target matrix, and STRIDE threat model. |
+| **6** | **Data Engineering Requirements** | `delivery/templates/phase-2-data/data-requirements-pack.md` | Source-to-target mapping sheets, data dictionary schemas, data lineage diagram, OpenDataContract specifications, and schema evolution rules. |
+| **7** | **API & Event Contract Suite** | `delivery/templates/phase-1-design/api-contracts/` | Standardized OpenAPI 3.1 REST specs (with RFC 7807 problem details) and AsyncAPI 3.0 event specs (with header envelopes and Dead Letter Queues). |
+| **8** | **Engineering Execution Guide** | `delivery/templates/phase-3-build/engineering-execution-guide.md` | Sprint cadence, velocity estimation rules, standard monorepo/polyrepo directory structures, branching strategies, and pre-commit hooks. |
+| **9** | **Test Management Suite** | `delivery/templates/phase-4-verify/test-management-suite.md` | Executable test plan template, Requirements Traceability Matrix (RTM) linking business KPIs to pytests, and regression test suites. |
+| **10** | **Go-Live & Cutover Pack** | `delivery/templates/phase-5-release/go-live-cutover-pack.md` | Hour-by-hour cutover runbook, rollback trigger criteria, operational acceptance checklist, and 14-day hypercare support protocol. |
+| **11** | **Project Closure & Decommissioning** | `delivery/templates/phase-6-operate/project-closure-pack.md` | Benefits realization audit tracker, lessons learned template, model drift retirement protocol, and infrastructure decommissioning checklist. |
 
-#### Code & Schema Updates:
-1. **`src/lib/artifacts.ts`**:
-   - Update `COMPLETION_STATES` and `REACHED_STATES` to include `'integration-ready'` (`'l0-guidance'`, `'l1-prototype'`, `'l2-evaluation'`, `'l3-integration'`, `'l4-shadow'`, `'l5-production'`).
-   - Define metadata, visual badge variants, and clear explanation of artifacts delivered vs platform requirements.
-2. **`src/schemas/usecase.schema.ts`**:
-   - Update `CompletionSchema` to validate the new levels and require an explicit `gapReport` field (stating exact missing integrations and infrastructure needed to reach L5).
-3. **`src/content/completion.ts`**:
-   - Adapt `buildCompletion` logic to map milestone deliveries (M1–M6):
-     - M0–M2: L1 (Prototype-Ready)
-     - M3–M4: L2 (Evaluation-Ready)
-     - M5a (API/DB/Events): L3 (Integration-Ready)
-     - M5b (Traffic mirroring/shadowing): L4 (Shadow-Ready)
-     - M6 (Release/Rollout/Runbooks/IaC): L5 (Production-Ready)
-4. **UI Components (`src/components/Badges.tsx`, `Playbook.tsx`, `Catalog.tsx`, `ReaderShell.tsx`)**:
-   - Prominently display L0–L5 maturity badges in the catalog table, blueprint headers, and role lens views.
-   - Add a dedicated **Implementation Gap Report** component to every blueprint page detailing what is included vs what must be built.
+#### 2.2 Customer-Specific Architecture Overlay Framework
+A dedicated overlay mechanism allowing engineers to inject client-specific constraints into any generic blueprint:
+* **Infrastructure Bindings:** Existing cloud vendor (AWS/GCP/Azure/On-Prem), VPC CIDR blocks, private subnet topologies.
+* **Platform Services:** Choice of event bus (Kafka vs AWS SQS/SNS vs GCP Pub/Sub), DB (Cloud SQL vs RDS vs Self-Hosted), Secrets (HashiCorp Vault vs AWS Secrets Manager).
+* **Identity & Governance:** Corporate IdP (Okta/Azure AD/Ping), Workload Identity bindings, data residency regions, and jurisdiction pins.
 
 ---
 
-### Workstream 2: The 8 Golden Reference Implementations (M1 to M6)
+### Workstream 3: The 8 Golden-Path Reference Implementations (M0–M6)
 
-Rather than attempting to build 500 complete production applications simultaneously, upgrade the **8 hand-written pilot use cases** into comprehensive, executable Golden Path reference solutions. These 8 serve as production-grade anchors representing the primary AI/ML archetypes:
+Rather than spreading implementation thin across 500 use cases, transform the **8 hand-written pilot use cases** into production-grade, end-to-end reference applications adhering to the standard implementation layout.
 
+#### 3.1 The 8 Reference Archetypes
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   THE 8 GOLDEN REFERENCE IMPLEMENTATIONS                               │
-├──────────────────────────┬───────────────────┬─────────────────────────────────────────────────────────┤
-│ Domain & Blueprint       │ Archetype         │ Core Engineering Capabilities Shipped                   │
-├──────────────────────────┼───────────────────┼─────────────────────────────────────────────────────────┤
-│ 1. FinTech: Card & UPI   │ Streaming Tabular │ • Streaming ingestion (Redpanda/Kafka), Outbox CDC      │
-│    Fraud Detection       │ Low-Latency Class.│ • Feast feature store (offline Parquet + online Redis)  │
-│                          │                   │ • High-performance FastAPI serving (P99 < 15ms)        │
-│                          │                   │ • Decisions WAL ledger, shadow-scoring traffic mirror   │
-├──────────────────────────┼───────────────────┼─────────────────────────────────────────────────────────┤
-│ 2. Supply Chain: Network │ Batch Hierarchical│ • Automated DAG pipeline (Dagster / Airflow)            │
-│    Demand Sensing        │ Time-Series       │ • Hierarchical forecast reconciliation (Bottom-Up/OLS)   │
-│                          │                   │ • Drift-triggered backtesting & automated retraining    │
-│                          │                   │ • Parquet lakehouse sink, ERP integration contract      │
-├──────────────────────────┼───────────────────┼─────────────────────────────────────────────────────────┤
-│ 3. Retail: Session-Based │ 2-Stage Retrieval │ • Clickstream event collector with Redis session state  │
-│    Next-Item Recs        │ & Online Ranking  │ • Bi-encoder candidate generation (pgvector / HNSW)     │
-│                          │                   │ • Cross-encoder reranker with diversity guardrails      │
-│                          │                   │ • Interleaving & A/B testing harness (P99 < 25ms)       │
-├──────────────────────────┼───────────────────┼─────────────────────────────────────────────────────────┤
-│ 4. Healthcare: Sepsis    │ High-Stakes HITL  │ • HL7 / FHIR v4 streaming data ingestion pipeline       │
-│    Early Warning System  │ Clinical Time-Ser.│ • TreeSHAP local clinical explanations per alert        │
-│                          │                   │ • Clinician review queue with alert hysteresis          │
-│                          │                   │ • HIPAA/audit logging ledger, dual physician sign-off   │
-├──────────────────────────┼───────────────────┼─────────────────────────────────────────────────────────┤
-│ 5. Manufacturing: CV     │ Computer Vision   │ • RTSP / Video frame capture & preprocessing pipeline   │
-│    Defect Inspection     │ Edge & Cloud Inf. │ • Triton / ONNX Runtime serving with GPU batching       │
-│                          │                   │ • Active learning feedback queue for low-confidence data│
-│                          │                   │ • Industrial edge deployment & sync to cloud lakehouse  │
-├──────────────────────────┼───────────────────┼─────────────────────────────────────────────────────────┤
-│ 6. SaaS: Developer Docs  │ Enterprise RAG    │ • Multi-format ingestion (Markdown, OpenAPI, PDF)       │
-│    Assistant             │ Hybrid Retrieval  │ • Semantic chunking + metadata preservation             │
-│                          │                   │ • Hybrid search (Dense vector + BM25) with BGE reranker │
-│                          │                   │ • Citation verifier, Ragas evaluation, document ACLs    │
-├──────────────────────────┼───────────────────┼─────────────────────────────────────────────────────────┤
-│ 7. Cybersecurity: SOC    │ Agentic AI        │ • Deterministic ReAct state machine with durable replay │
-│    Investigation Agent   │ Tool Governance   │ • Typed tool execution sandbox with least privilege     │
-│                          │                   │ • Human approval gate before disruptive containment     │
-│                          │                   │ • Immutable audit trail, prompt injection defenses      │
-├──────────────────────────┼───────────────────┼─────────────────────────────────────────────────────────┤
-│ 8. SaaS: In-App Copilot  │ Multi-Tenant      │ • Multi-tenant API gateway with tenant context isolation│
-│    with Action Tools     │ Contextual Agent  │ • OAuth2/OIDC On-Behalf-Of (OBO) token exchange         │
-│                          │                   │ • Token budget pacer, rate limiting, semantic caching   │
-│                          │                   │ • Graceful degradation & circuit breaker fallbacks      │
-└──────────────────────────┴───────────────────┴─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       THE 8 GOLDEN REFERENCE IMPLEMENTATIONS                                    │
+├──────────────────────────┬───────────────────┬──────────────────────────────────────────────────────────────────┤
+│ Domain & Blueprint       │ Archetype         │ Key Capabilities & Verification Target                          │
+├──────────────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────┤
+│ 1. FinTech: Real-Time    │ Streaming Tabular │ • Streaming ingestion (Kafka/Redpanda), Outbox CDC               │
+│    Card & UPI Fraud      │ Low-Latency Class.│ • Feast feature store (offline Parquet + online Redis)           │
+│                          │ (P99 < 15ms)      │ • FastAPI serving, WAL decision ledger, shadow traffic mirror    │
+├──────────────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────┤
+│ 2. Supply Chain: Network │ Batch Hierarchical│ • Dagster/Airflow DAG, automated reconciliation                  │
+│    Demand Sensing        │ Time-Series       │ • Drift-triggered backtesting, automated retraining pipeline     │
+│                          │                   │ • Parquet lakehouse sink, ERP integration schema                 │
+├──────────────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────┤
+│ 3. Retail: Session-Based │ 2-Stage Retrieval │ • Redis session state tracking, bi-encoder candidate retrieval   │
+│    Next-Item Recs        │ & Online Ranking  │ • Cross-encoder reranker, diversity guardrails, interleaving     │
+│                          │ (P99 < 25ms)      │ • A/B testing harness and latency budget compliance              │
+├──────────────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────┤
+│ 4. Healthcare: Sepsis    │ High-Stakes HITL  │ • HL7/FHIR v4 streaming data ingestion pipeline                  │
+│    Early Warning System  │ Clinical Time-Ser.│ • TreeSHAP local clinical explanations per alert                 │
+│                          │                   │ • Clinician review queue, alert hysteresis, dual physician sign  │
+├──────────────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────┤
+│ 5. Manufacturing: CV     │ Computer Vision   │ • RTSP/video frame capture & preprocessing pipeline              │
+│    Defect Inspection     │ Edge & Cloud Inf. │ • Triton / ONNX Runtime serving with GPU dynamic batching        │
+│                          │                   │ • Active learning feedback loop for edge-to-cloud retraining     │
+├──────────────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────┤
+│ 6. SaaS: Developer Docs  │ Enterprise RAG    │ • Multi-format ingestion (Markdown, OpenAPI, PDF)                │
+│    Assistant             │ Hybrid Retrieval  │ • Hybrid search (Dense vector + BM25) with BGE reranker          │
+│                          │                   │ • Groundedness verifier, citation checker, Ragas eval harness    │
+├──────────────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────┤
+│ 7. Cybersecurity: SOC    │ Agentic AI        │ • Deterministic ReAct state machine with durable replay          │
+│    Investigation Copilot │ Tool Governance   │ • Least-privilege tool execution sandbox, human approval gate    │
+│                          │                   │ • Immutable audit trail, prompt injection defenses               │
+├──────────────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────┤
+│ 8. SaaS: In-App Copilot  │ Multi-Tenant      │ • Multi-tenant API gateway with tenant context isolation         │
+│    with Action Tools     │ Contextual Agent  │ • OAuth2/OIDC On-Behalf-Of (OBO) token exchange                  │
+│                          │                   │ • Token budget pacer, rate limiting, semantic caching, fallbacks │
+└──────────────────────────┴───────────────────┴──────────────────────────────────────────────────────────────────┘
 ```
 
-#### Standard Deliverable Structure for Each Golden Reference Kit:
-For each pilot in `content/playbooks/<domain>/<use-case>/`:
-```
-content/playbooks/<domain>/<use-case>/
-├── playbook.yaml                  # Authored playbook metadata & exit gates
-├── starter/                       # Executable starter repository
-│   ├── README.md                  # Quickstart, local run, and test instructions
-│   ├── pyproject.toml / reqs.txt  # Pinned dependencies
-│   ├── src/
-│   │   ├── domain/                # Business logic, entities, and feature definitions
-│   │   ├── data/                  # Ingestion, synthetic generator, validation
-│   │   ├── models/                # Baseline & production model training
-│   │   ├── serving/               # FastAPI real-time scoring endpoint
-│   │   ├── integrations/          # External database, event, and cache clients
-│   │   └── security/              # Auth, validation, guardrails
-│   ├── contracts/
-│   │   ├── openapi.yaml           # OpenAPI 3.1 REST API specification
-│   │   ├── asyncapi.yaml          # AsyncAPI 3.0 event specification
-│   │   └── data-contract.yaml     # OpenDataContract schema
-│   ├── tests/
-│   │   ├── unit/                  # Fast deterministic logic tests
-│   │   ├── integration/           # API and database tests
-│   │   ├── evaluation/            # Model/RAG/Agent offline evaluation
-│   │   └── performance/           # k6 / Locust load testing script
-│   ├── deployment/
-│   │   ├── docker-compose.yml     # Standalone local stack (API + DB + Redis + Feast)
-│   │   ├── Dockerfile             # Multi-stage production container build
-│   │   └── k8s/                   # Kubernetes deployment & service manifests
-│   └── runbooks/                  # Scenario-specific operational runbooks
-```
-
----
-
-### Workstream 3: Seven-Phase Delivery Guide Enhancement & Downloadable Assets
-
-Transform the Delivery Guide from a list of steps into an **asset delivery engine**.
-
-#### Phase 0: Scope & Discovery (10 Standard Downloadable Deliverables)
-Location: `delivery/templates/phase-0-scope/`
-1. `01-client-discovery-questionnaire.md`: 40-point standardized client interview questionnaire covering business context, decision cadence, stakeholders, and latency expectations.
-2. `02-business-requirements-document.md`: Production-grade BRD template with problem formulation, user stories, and acceptance criteria.
-3. `03-stakeholder-interview-guide.md`: Role-specific interview scripts for Sponsors, Operators, Risk Officers, and Engineers.
-4. `04-process-mapping-as-is-to-be.md`: Framework for mapping current manual workflows to AI-augmented workflows with cycle times.
-5. `05-requirements-traceability-matrix.md`: Matrix linking business objectives to ML metrics, system NFRs, and test cases.
-6. `06-kpi-baseline-roi-workbook.md`: Financial ROI calculator (cost of false positive vs false negative, payback period, net value).
-7. `07-data-access-security-checklist.md`: Pre-flight checklist for data governance, PII identification, IAM access, and environment boundaries.
-8. `08-ai-suitability-assessment.md`: Decision tree scoring whether AI/ML is required versus heuristic rules, linear programming, or deterministic databases.
-9. `09-poc-mvp-prod-decision-matrix.md`: Clear scope and exit criteria defining what belongs in a PoC, MVP, and Full Production release.
-10. `10-discovery-charter-signoff.md`: Formal discovery sign-off template with RACI signers and approval gates.
-
-#### Phase 1: Architecture & System Design (Standard Architecture Deliverable Suite)
-Location: `delivery/templates/phase-1-design/`
-1. **C4 Diagrams Suite**: Standard templates for Context (C1), Container (C2), Component (C3), and Deployment (C4).
-2. **Nominal & Failure Sequence Diagrams**: Explicit sequence diagrams modeling timeouts, circuit breaking, fallback degradation, and dead-letter queues.
-3. **OpenAPI 3.1 Specification**: Standardized schema including error responses (RFC 7807), rate limits, and idempotency headers.
-4. **AsyncAPI 3.0 Specification**: Kafka / event stream contracts with schema evolution rules and header metadata.
-5. **Data Contract Specification**: OpenDataContract standard definition including ownership, schema, SLA, freshness, and quality constraints.
-6. **Architecture Decision Records (ADR)**: Structured template capturing Context, Options Considered, Decision, Consequences, and Review Date.
-7. **NFR Matrix**: Concrete, measurable target tables for Latency (P50/P95/P99), Throughput, Availability (SLO/SLA), MTTR, RPO, and RTO.
-8. **Threat Modeling Matrix**: Comprehensive STRIDE and OWASP LLM Top 10 threat model with specific mitigation controls.
-
-#### Phase 2: Data Engineering Implementation Templates
-Location: `delivery/templates/phase-2-data/`
-1. `source-to-target-mapping.md`: Comprehensive field-level transformation specification.
-2. `batch-ingestion-pipeline.py`: Robust batch pipeline template with partition management and validation.
-3. `streaming-ingestion-pipeline.py`: Kafka/Faust streaming processor with watermarking and late-data handling.
-4. `outbox-cdc-pattern.sql` & `.py`: Transactional outbox table + Debezium CDC ingestion example.
-5. `schema-evolution-governance.md`: Rules for backward/forward compatibility and Avro/JSON schema registry.
-6. `data-quality-suite.py`: Automated data validation checks (schema conformance, null rates, distribution bounds).
-7. `data-reconciliation-auditor.py`: Daily batch reconciliation checking source vs target row counts and checksums.
-8. `backfill-replay-script.py`: Idempotent backfill executor with rate limiting and progress tracking.
-9. `dead-letter-queue-handler.py`: DLQ consumer with retry policies, inspection API, and reprocessing logic.
-
-#### Phase 3: Model & Application Development
-Location: `delivery/templates/phase-3-build/`
-1. `fastapi-inference-service.py`: Standard inference server with `/health/liveness`, `/health/readiness`, `/metrics`, and `/predict`.
-2. `database-migrations-alembic/`: Complete Alembic migration setup for PostgreSQL + pgvector.
-3. `feast-feature-store/`: Feature repository definition with online Redis and offline Parquet storage.
-4. `mlflow-tracking-registry.py`: Standard experiment logging, model artifact signature, and registry promotion code.
-5. `oauth2-jwt-middleware.py`: Token validation, scope checking, and RBAC enforcement middleware.
-
----
-
-### Workstream 4: Infrastructure, Platform Engineering & Multi-Cloud Deployment
-
-#### 4 Deployment Profiles
-Provide explicit, turnkey deployment definitions across 4 standard enterprise deployment profiles:
+#### 3.2 Target Blueprint Implementation Bundle Structure (`brainsiphon-implementation/`)
+Every Golden Reference implementation follows this standardized repository layout:
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                     THE 4 DEPLOYMENT PROFILES                                          │
-├─────────────────────────┬─────────────────────────┬─────────────────────────┬──────────────────────────┤
-│ Profile A: Local Dev    │ Profile B: Cloud-Native │ Profile C: Private Cloud│ Profile D: Regulated     │
-├─────────────────────────┼─────────────────────────┼─────────────────────────┼──────────────────────────┤
-│ • Docker Compose        │ • AWS / GCP / Azure     │ • Private VPC / VNet    │ • Air-gapped / Local DB  │
-│ • Local PostgreSQL      │ • Managed EKS/GKE/AKS   │ • Private Endpoints     │ • Data Residency Pinned  │
-│ • Local Redis & Feast   │ • Managed RDS/Cloud SQL │ • Self-hosted LLM (vLLM)│ • Full Audit WAL Ledger  │
-│ • Synthetic Mock APIs   │ • Cloud Secrets & IAM   │ • Internal Model Reg.   │ • FIPS / Encrypted state │
-│ • Instant `docker up`   │ • Managed Kafka / MSK   │ • Restricted Egress     │ • Immutable Backups      │
-└─────────────────────────┴─────────────────────────┴─────────────────────────┴──────────────────────────┘
+brainsiphon-implementation/
+├── 01-business/
+│   ├── problem-statement.md
+│   ├── business-requirements.md
+│   ├── user-stories.md
+│   ├── acceptance-criteria.md
+│   └── business-case.md
+├── 02-architecture/
+│   ├── architecture-overview.md
+│   ├── c4-context.mmd
+│   ├── c4-container.mmd
+│   ├── sequence-diagram.mmd
+│   ├── architecture-decisions/
+│   └── nfr.md
+├── 03-data/
+│   ├── data-dictionary/
+│   ├── source-to-target-mapping/
+│   ├── data-contracts/
+│   ├── ingestion/
+│   ├── transformations/
+│   ├── feature-engineering/
+│   └── data-quality-tests/
+├── 04-ml-ai/
+│   ├── training/
+│   ├── inference/
+│   ├── model-evaluation/
+│   ├── prompts/
+│   ├── agents/
+│   ├── retrieval/
+│   └── guardrails/
+├── 05-application/
+│   ├── backend/
+│   ├── frontend/
+│   ├── api-contracts/
+│   ├── authentication/
+│   └── integrations/
+├── 06-infrastructure/
+│   ├── terraform/
+│   ├── docker/
+│   ├── kubernetes/
+│   ├── helm/
+│   ├── networking/
+│   └── secrets/
+├── 07-testing/
+│   ├── unit/
+│   ├── integration/
+│   ├── contract/
+│   ├── model-evaluation/
+│   ├── security/
+│   ├── performance/
+│   └── end-to-end/
+├── 08-mlops-llmops/
+│   ├── pipelines/
+│   ├── registry/
+│   ├── evaluation-gates/
+│   ├── monitoring/
+│   └── retraining/
+├── 09-deployment/
+│   ├── development/
+│   ├── staging/
+│   ├── production/
+│   ├── ci-cd/
+│   └── rollback/
+├── 10-operations/
+│   ├── dashboards/
+│   ├── alerts/
+│   ├── runbooks/
+│   ├── incident-management/
+│   └── disaster-recovery/
+├── evidence/
+│   ├── architecture-review/
+│   ├── security-review/
+│   ├── domain-review/
+│   ├── test-reports/
+│   └── production-results/
+├── .env.example
+├── Makefile
+├── pyproject.toml
+└── README.md
 ```
 
-#### Dedicated Executable Infrastructure Layout:
-Create a centralized, reusable `deployment/` directory in the repository:
-```
-deployment/
-├── docker/
-│   ├── Dockerfile.production
-│   └── docker-compose.fullstack.yml
-├── terraform/
-│   ├── modules/
-│   │   ├── networking/            # VPC, Subnets, Security Groups, NAT Gateways
-│   │   ├── compute-k8s/           # EKS / GKE cluster provisioning
-│   │   ├── database/              # RDS / Cloud SQL PostgreSQL + pgvector
-│   │   ├── cache-redis/           # ElastiCache / Memorystore
-│   │   └── secrets-iam/           # Secrets Manager & Workload Identity
-│   └── environments/
-│       ├── dev/                   # Development environment vars & main.tf
-│       ├── staging/               # Staging environment with canary support
-│       └── production/            # Multi-AZ HA production environment
-├── kubernetes/
-│   ├── base/
-│   │   ├── deployment.yaml        # Deployment with resource limits, probes, securityContext
-│   │   ├── service.yaml           # ClusterIP service
-│   │   ├── hpa.yaml               # Horizontal Pod Autoscaler (CPU, memory, custom metrics)
-│   │   ├── network-policy.yaml    # Least-privilege ingress/egress NetworkPolicy
-│   │   └── configmap-secrets.yaml # ExternalSecrets / Vault integration
-│   ├── overlays/
-│   │   ├── dev/
-│   │   └── production/
-│   └── helm/
-│       └── brainsiphon-service/   # Standardized Helm 3 chart for AI microservices
-├── ci-cd/
-│   └── github-actions/
-│       ├── build-scan-publish.yml # Docker build, Trivy scan, SBOM (Syft), push
-│       ├── terraform-plan-apply.yml # IaC pipeline with checkov static security checks
-│       └── model-canary-deploy.yml # Argo Rollouts / Flagger canary promotion workflow
-├── security/
-│   ├── trivy-scan.sh              # Container image and filesystem vulnerability scanner
-│   ├── sbom-generator.sh          # CycloneDX / Syft SBOM generator
-│   └── vault-secret-loader.py     # HashiCorp Vault dynamic secret injector
-├── monitoring/
-│   ├── prometheus-alerts.yaml     # Production alerting rules (latency P99, error rate, drift)
-│   ├── grafana-dashboard.json     # Standard Grafana dashboard for AI/ML services
-│   └── otel-collector-config.yaml # OpenTelemetry Collector configuration
-└── runbooks/                      # The 10 production operational incident runbooks
+#### 3.3 The Standard Executable Developer Journey
+Every starter kit supports the standard terminal workflow:
+```bash
+# 1. Clone & environment setup
+git clone <repo> && cd <repo> && cp .env.example .env
+make install
+
+# 2. Spin up local containerized infrastructure (Postgres, Redis, Redpanda)
+make infra-up
+
+# 3. Generate synthetic data & run migrations
+make data
+
+# 4. Train baseline and challenger models
+make train
+
+# 5. Execute statistical model evaluation
+make evaluate
+
+# 6. Execute full test pyramid (unit, integration, contract)
+make test
+
+# 7. Launch FastAPI serving service
+make serve
+
+# 8. Verify service health and readiness
+make health
+
+# 9. Execute load & latency performance tests
+make test-perf
+
+# 10. Deploy to staging via Terraform/Helm
+make deploy-staging
 ```
 
 ---
 
-### Workstream 5: Testing, Quality Engineering & Verification Suites
+### Workstream 4: Generative AI, LLMs & Agent Implementation Layer
 
-Implement concrete test suites spanning both deterministic software tests and AI-specific statistical tests:
+The review correctly noted that extractive readers and scripted planners in current starters do not constitute complete LLM applications. This workstream delivers the full execution layer:
 
 ```
-tests/
-├── unit/                          # Component-level tests (isolated, fast, mock-free where possible)
-├── integration/                   # Service-to-service, database, and cache integration tests
-├── contract/                      # Consumer-driven contract tests using Pact / OpenAPI validators
-├── data_quality/                  # Great Expectations / pytest-data schema and distribution checks
-├── model_evaluation/              # Offline metric evaluation, calibration curves, leakage checks
-├── llm_evaluation/                # Ragas / TruLens groundness, citation verification, safety tests
-├── agent_evaluation/              # Trajectory evaluation, tool-use validation, permission checks
-├── performance/                   # k6 load, stress, and soak tests with SLA assertion gates
-├── resilience/                    # Toxiproxy / chaos test scripts simulating latency and network partitions
-├── security/                      # OWASP ZAP automated API scans, dependency vulnerability scans
-└── acceptance/                    # End-to-end BDD / Cucumber business acceptance tests
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       LLM & AGENT APPLICATION RUNTIME LAYER                                     │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ ┌──────────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐  ┌────────────────────────┐
+ │ MODEL INTEGRATION    │  │ TOOL EXECUTION       │  │ RESILIENCE & BUDGET  │  │ OBSERVABILITY & EVAL   │
+ ├──────────────────────┤  ├──────────────────────┤  ├──────────────────────┤  ├────────────────────────┤
+ │ • Multi-Provider     │  │ • Strict JSON Schema │  │ • Semantic Caching   │  │ • OpenTelemetry Traces │
+ │   Abstraction (OAI,  │    Tool Contracts       │    (Redis vector cache) │    (span per LLM/tool call│
+ │   Anthropic, Gemini, │  │ • Least-Privilege    │  │ • Token Budget Pacer │  │ • Cost & Latency Acc.  │
+ │   vLLM / Local)      │    Execution Sandbox    │    & Sliding Window Lim.│  │ • Ragas Groundedness,  │
+ │ • Prompt Versioning  │  │ • Webhook Human Gate │  │ • Automatic Fallback │    Faithfulness & Context │
+ │   (Jinja2 + GitOps)  │    for High-Risk Writes │    (Tier 1 -> Tier 2)   │  │ • Adversarial Prompt   │
+ │ • Streaming SSE Resp.│  │ • Immutable Decision │  │ • Exponential Backoff│    Injection Test Suite   │
+ │ • State Persistence  │    WAL Audit Trail      │    & Circuit Breaking   │  │ • Tool Misuse Tests    │
+ └──────────────────────┘  └──────────────────────┘  └──────────────────────┘  └────────────────────────┘
+```
+
+1. **Model-Provider Abstraction:** Unified async client supporting OpenAI, Anthropic, Gemini, and local vLLM/Ollama endpoints.
+2. **State & Conversation Persistence:** Redis/Postgres conversation memory with TTL, token compaction, and session isolation.
+3. **Structured Tool Calling & Sandboxing:** Pydantic-validated tool inputs, execution sandboxes, and dry-run preview capabilities.
+4. **Human-in-the-Loop Approval:** Asynchronous webhook approval suspension and resumption for irreversible actions.
+5. **LLM Evaluation Harness:** Offline golden-dataset evaluation using Ragas (faithfulness, answer relevance, context precision).
+6. **Adversarial & Security Testing:** Automated red-teaming scripts verifying resistance against prompt injection, jailbreaking, and data exfiltration.
+
+---
+
+### Workstream 5: Multi-Cloud Infrastructure & Solution Deployment Engineering
+
+Move beyond BrainSiphon's platform deployment to provide turnkey deployment assets for the AI solutions themselves.
+
+#### 5.1 The 4 Deployment Profiles
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                           THE 4 DEPLOYMENT PROFILES                                             │
+├─────────────────────────┬─────────────────────────┬─────────────────────────┬───────────────────────────────────┤
+│ Profile A: Local Dev    │ Profile B: Cloud-Native │ Profile C: Private Cloud│ Profile D: Regulated Air-Gapped   │
+├─────────────────────────┼─────────────────────────┼─────────────────────────┼───────────────────────────────────┤
+│ • Docker Compose        │ • AWS / GCP / Azure     │ • Private VPC / VNet    │ • Air-gapped / Local DB           │
+│ • Local PostgreSQL 16   │ • Managed EKS/GKE/AKS   │ • Private Endpoints     │ • Data Residency Pinning          │
+│ • Local Redis & Feast   │ • Managed RDS/Cloud SQL │ • Self-hosted vLLM      │ • Full WAL Audit Ledger           │
+│ • Redpanda Streaming    │ • Cloud Secrets & IAM   │ • Internal Model Reg.   │ • FIPS 140-2 / Encrypted State    │
+│ • Instant `docker up`   │ • Managed Kafka / MSK   │ • Restricted Egress     │ • Immutable Backups               │
+└─────────────────────────┴─────────────────────────┴─────────────────────────┴───────────────────────────────────┘
+```
+
+#### 5.2 Multi-Cloud Reference Stacks
+Provide concrete Terraform / OpenTofu modules for the 3 major cloud providers:
+* **AWS Reference Stack:** EKS (Kubernetes 1.30+), S3 (Parquet lakehouse), MSK (Kafka), RDS PostgreSQL 16 with pgvector, ElastiCache Redis, SageMaker inference endpoints, AWS Secrets Manager, CloudWatch/Grafana.
+* **Azure Reference Stack:** AKS, ADLS Gen2, Azure Event Hubs (Kafka protocol), Azure Database for PostgreSQL Flexible Server, Azure Managed Redis, Azure ML, Azure Key Vault.
+* **GCP Reference Stack:** GKE, Google Cloud Storage, Cloud Pub/Sub, Cloud SQL for PostgreSQL with pgvector, Memorystore Redis, Vertex AI endpoints, Secret Manager.
+
+#### 5.3 Kubernetes & Helm Packaging
+* **Helm 3 Chart (`deployment/kubernetes/helm/brainsiphon-service`):** Configurable chart supporting CPU/GPU resource allocations, horizontal pod autoscaling (HPA) on latency and QPS, readiness/liveness probes, least-privilege `securityContext`, and Prometheus ServiceMonitors.
+* **Argo Rollouts Canary Configuration:** Automated canary promotion with analysis templates executing automated rollback if P99 latency > target or HTTP 5xx error rate > 0.5%.
+
+---
+
+### Workstream 6: Expanded Role Lenses & The Forward Deployed Engineer (FDE) Workflow
+
+To bridge the gap between architectural theory and enterprise delivery, expand the role lenses from 14 to **21 roles**, with dedicated filtering, delivery checklists, and workflows.
+
+#### 6.1 The 7 Additional Dedicated Roles
+1. **Forward Deployed Engineer (FDE):** Customer-facing solution delivery, rapid prototyping, bespoke enterprise integration, field deployment, and stakeholder alignment.
+2. **Backend Engineer:** High-performance REST/gRPC microservices, transactional state machines, connection pooling, and distributed consensus.
+3. **Frontend Engineer:** Enterprise AI user interfaces, streaming SSE responses, latency masking, human review queues, and accessibility (WCAG 2.1 AA).
+4. **Product Manager / Product Engineer:** Value hypothesis, feature prioritisation, user adoption metrics, product telemetry, and feedback loops.
+5. **Integration Engineer:** Enterprise connectors (SAP, Salesforce, Epic EHR), webhooks, legacy system coexistence, and anti-corruption layers.
+6. **Analytics Engineer:** Metric layer definitions (dbt), semantic data modeling, dimensional data marts, and executive BI dashboards.
+7. **Database Engineer (DBA):** Table partitioning, index tuning (HNSW/IVFFlat for vectors), replication topology, connection pooling (PgBouncer), and data lifecycles.
+
+#### 6.2 The FDE 8-Stage Delivery Workflow
+A dedicated interactive workflow embedded into the UI and delivery guide for customer-facing teams:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                     THE FORWARD DEPLOYED ENGINEER (FDE) WORKFLOW                                 │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+  [1. Discovery] ──────► [2. Workflow Analysis] ──► [3. Systems Mapping] ─────► [4. Feasibility Gate]
+  • 40-pt questionnaire    • As-Is process mapping    • Network & DB topology     • Baseline vs AI test
+  • Stakeholder RACI       • Cycle time baselines     • Security & IAM bounds     • Go/No-Go Decision
+                                                                                         │
+                                                                                         ▼
+  [8. Continuous Iteration] ◄── [7. Outcomes Measurement] ◄── [6. Hardening & Deploy] ◄── [5. Rapid POC Slice]
+  • Feedback capture loops      • Business KPI audit         • Helm / Terraform apply    • Working vertical slice
+  • Model retraining triggers   • Drift & latency tracking   • Canary traffic ramp       • Synthetic data eval
 ```
 
 ---
 
-### Workstream 6: Production Operations & The 10 Incident Runbooks
+### Workstream 7: Enterprise Architecture Patterns & Selection Decision Matrix
 
-Create 10 standardized, comprehensive, and actionable operational incident runbooks in `deployment/runbooks/`.
+#### 7.1 Expansion of Enterprise Architecture Patterns
+In addition to the 8 existing L2 patterns, add the 8 proposed enterprise patterns identified in the assessment:
+1. **Edge AI / On-Device Inference:** Industrial IoT, mobile AI, offline-first execution, and quantization/ONNX runtimes.
+2. **Federated Learning Platform:** Decentralized training on sensitive client data without centralizing raw datasets.
+3. **Multimodal AI Platform:** Unified ingestion, embedding, and alignment across text, images, audio, video, and tabular data.
+4. **Model Training & Fine-Tuning Fabric:** Multi-tenant distributed training (PyTorch FSDP / DeepSpeed), experiment tracking, and model artifact registry.
+5. **Streaming Feature Platform:** Stateful, real-time feature computation across multiple distributed stream consumers.
+6. **GPU Inference Platform:** Multi-model serving, dynamic continuous batching (vLLM/Triton), GPU scheduling, and cost pacing.
+7. **Common Evaluation Platform:** Unified evaluation harness spanning tabular classification, RAG retrieval quality, and agentic multi-turn workflows.
+8. **Enterprise Agent Runtime & Control Plane:** Governed execution fabric with tool registries, permission boundaries, durable checkpoints, and audit trails.
 
-#### Standard Runbook Structure:
-Each runbook follows an industry-standard SRE template:
-1. **Metadata:** Severity (P1/P2/P3), Affected Services, Alert Rule Trigger, On-Call Owner.
-2. **Detection & Triage (< 5 minutes):** Exact Prometheus query, metric thresholds, initial dashboard checks.
-3. **Immediate Mitigation (< 15 minutes):** Rollback command, traffic shedding, fallback enabling, or cache flush.
-4. **Diagnostic Workflow:** Step-by-step root-cause isolation commands (kubectl, logs, DB locks).
-5. **Permanent Recovery:** Safe database reconciliation, model swap, or cluster rebalancing.
-6. **Verification Steps:** Post-incident health checks and canary verification.
-7. **Post-Mortem & Prevention:** Blameless post-mortem template and recurring prevention checklist.
+#### 7.2 Consolidated Architecture Selection Matrix
+An interactive decision matrix directly answering the 10 core architectural trade-offs:
 
-#### The 10 Operational Runbooks:
-1. `RB-01-model-performance-degradation.md`: Accuracy / PR-AUC drop, concept drift, or calibration collapse.
-2. `RB-02-data-pipeline-failure-consumer-lag.md`: Kafka consumer lag spike, schema mismatch, dead-letter overflow.
+| Decision Axis | Architectural Options | Key Evaluation Criteria & Selection Rule |
+| :--- | :--- | :--- |
+| **1. Execution Mode** | Synchronous vs Asynchronous | Sync if user waits for response (<1s); Async if batch, streaming, or >5s workflow |
+| **2. Latency SLA** | Sub-15ms vs <100ms vs <2s vs Hours | Sub-15ms requires in-memory/C++ serving & Redis; <2s permits LLM streaming |
+| **3. State Model** | Stateless vs Stateful Session | Stateful requires distributed Redis session cache or Postgres WAL |
+| **4. Feature Store** | In-Memory Cache vs Feature Store | Feature store (Feast) required if sharing features across training & real-time serving |
+| **5. Vector Database** | pgvector vs Dedicated Vector DB | pgvector if <5M vectors with relational filters; Milvus/Qdrant if >10M vectors |
+| **6. Human Oversight** | Fully Autonomous vs Review Queue | Review queue (HITL) mandatory if high financial/clinical risk or irreversible writes |
+| **7. Event Backbone** | Kafka / Redpanda vs SQS/PubSub | Kafka required if event replay, partition ordering, or streaming joins are needed |
+| **8. Compute Hardware** | CPU vs GPU / Cloud TPU | GPU required if LLM inference, embedding generation, or real-time vision |
+| **9. Deployment Scope** | Single-Region vs Multi-Region | Multi-Region required if 99.99% availability or strict cross-border data residency |
+| **10. Multi-Tenancy** | Schema-per-tenant vs Row-level (RLS)| Shared DB with RLS for cost-efficiency; Schema/DB isolation for regulated tiers |
+
+---
+
+### Workstream 8: Executable Security Engineering & Regulatory Crosswalk
+
+Transform security guidance into verifiable code and policy assets.
+
+#### 8.1 Executable Security Packs
+* **Identity & Authentication:** OAuth 2.0 / OIDC middleware, JWT validation, Workload Identity federation, and mTLS service-to-service communication.
+* **Authorization:** Role-Based (RBAC) and Attribute-Based (ABAC) policy enforcement, tenant isolation checks, and Open Policy Agent (OPA) gatekeeper policies.
+* **Data Privacy:** Automated PII masking (Presidio), tokenization pipelines, customer-managed encryption keys (CMEK), and cryptographic deletion protocols.
+* **LLM & Model Security:** Prompt injection defense filters, tool execution sandboxes, model artifact cryptographic signing, and SBOM generation (Syft/CycloneDX).
+
+#### 8.2 The 6-Stage Regulatory Compliance Crosswalk
+For regulated industries (Healthcare, BFSI, FinTech), every blueprint provides a verifiable traceability chain:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       REGULATORY TRACEABILITY CROSSWALK                                          │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ [Regulatory Obligation]  ──► [System Control]      ──► [Technical Implementation]
+ (e.g. HIPAA §164.312(b))     (Immutable Audit Trail)   (PostgreSQL Append-Only WAL + HMAC Signing)
+                                                                    │
+                                                                    ▼
+ [Responsible Role Owner] ◄── [Audit Evidence]      ◄── [Automated Test]
+ (Chief Security Officer)     (Cryptographic Hash Log)  (pytest-security audit assertion)
+```
+*Blueprints explicitly distinguish high-level regulatory guidance from an organization-specific verified compliance audit.*
+
+---
+
+### Workstream 9: Production Operations & The 10 Incident Runbooks
+
+Author 10 battle-tested, standardized SRE operational incident runbooks in `deployment/runbooks/`.
+
+#### 9.1 Standard SRE Runbook Structure
+Every runbook follows a strict time-to-mitigate template:
+1. **Metadata:** Severity (P1/P2/P3), Affected Services, Alert Rule Trigger, On-Call Escalation Path.
+2. **Detection & Triage (< 5 minutes):** Exact Prometheus PromQL queries, metric thresholds, log queries.
+3. **Immediate Mitigation (< 15 minutes):** Specific bash/kubectl mitigation commands (traffic shedding, cache flush, model rollback, fallback toggle).
+4. **Diagnostic Workflow:** Step-by-step root-cause isolation commands (inspecting connection pools, deadlocks, drift).
+5. **Permanent Recovery:** Database reconciliation, model hot-swap, partition rebalancing.
+6. **Verification Steps:** Synthetic smoke checks and canary validation.
+7. **Post-Mortem Template:** Blameless post-mortem format with root cause analysis and action item tracking.
+
+#### 9.2 The 10 Production Incident Runbooks
+1. `RB-01-model-performance-degradation.md`: Accuracy / PR-AUC collapse, concept drift, calibration decay.
+2. `RB-02-data-pipeline-failure-consumer-lag.md`: Kafka consumer lag spike, schema mismatch, DLQ overflow.
 3. `RB-03-inference-latency-spike.md`: P99 breach, thread starvation, connection pool exhaustion, load shedding.
-4. `RB-04-llm-provider-outage.md`: Provider 500s / rate limits, multi-provider failover, graceful degradation.
+4. `RB-04-llm-provider-outage.md`: Provider 500s / rate limits, multi-provider automatic failover, graceful degradation.
 5. `RB-05-vector-db-failure.md`: Vector search OOM, index corruption, fallback to BM25 keyword search.
 6. `RB-06-agent-tool-failure.md`: Tool API failure, schema contract breach, idempotent compensation & abort.
 7. `RB-07-covariate-concept-drift.md`: Distribution shift, automated shadow validation, champion-challenger swap.
@@ -336,200 +484,194 @@ Each runbook follows an industry-standard SRE template:
 
 ---
 
-### Workstream 7: Patterns, DAG Pipeline Representation & Enterprise Agent Control Plane
+### Workstream 10: Master Lifecycle Cross-Reference & Capacity Rigor
 
-#### 1. Runnable Code for the 8 L2 Enterprise Architecture Patterns
-In `content/patterns/enterprise/`:
-Provide code snippets, architecture diagrams, and Docker Compose configurations for:
-- Online Inference Service (synchronous, deadline propagation, circuit breakers)
-- Event-Driven AI (asynchronous, outbox CDC, Kafka)
-- Batch Scoring Pipeline (immutable partitions, atomic publish)
-- Human-in-the-Loop Decisioning (three-action review queue, alert hysteresis)
-- Multi-Tenant AI Platform (tenant scoping, isolated adapters)
-- LLM Gateway & RAG Platform (routing, semantic caching, guardrails)
-- Jurisdiction-Pinned State (active-active inference, localized storage)
-- Strangler Coexistence (shadowing legacy systems, anti-corruption layer)
+#### 10.1 Master Lifecycle Cross-Reference
+Resolve the methodology confusion between the **7 Delivery Phases**, the **10 Solution Phases**, and the **Build Milestones (M0–M6)** by publishing a unified cross-reference matrix:
 
-#### 2. DAG-Based Pipeline Representation
-- Upgrade blueprint pipeline modeling from purely linear stages to true Directed Acyclic Graphs (DAGs).
-- Support fan-out (e.g. single event triggering parallel feature extraction), fan-in (combining model scores), conditional branching (review queue vs auto-approval), and dead-letter paths.
-- Update Mermaid generator in `src/components/Mermaid.tsx` and `src/content/design.ts` to render expressive DAG architectures.
+| Delivery Phase (Weeks) | Solution Blueprint Section | Build Milestone | Delivered Engineering Artifact | Exit Criteria / Quality Gate |
+| :--- | :--- | :--- | :--- | :--- |
+| **Phase 0: Scope** (W1–2) | Understand: Phase 0 Discovery | **M0: Scope Charter** | BRD, RTM, Feasibility Assessment, Scope Sign-off | Formal business sign-off; baseline ROI confirmed |
+| **Phase 1: Design** (W2–4) | Design: HLD, LLD, ADRs, NFRs | **M1: Architecture Pack** | C4 Diagrams, OpenAPI/AsyncAPI Specs, Data Contracts | Architecture & Security Review approval |
+| **Phase 2: Data** (W3–7) | Design: Feature Engineering & Ingestion | **M2: Data Pipeline** | Ingestion DAGs, Outbox CDC, Feature Store Repo, Great Expectations | Data contract verification; zero train/serve leakage |
+| **Phase 3: Build** (W5–10) | Ship & Run: Build Playbook | **M3: Model & Serving** | Trained Models, FastAPI Server, Alembic DB Migrations | Model evaluation gate passed; PR-AUC > baseline |
+| **Phase 4: Verify** (W8–12) | Prove: Evaluation & Validation | **M4: Validation Harness** | Multi-Cloud Terraform, Helm Charts, Test Suites, k6 Tests | All tests green; P99 latency SLA verified under load |
+| **Phase 5: Release** (W12–14)| Ship & Run: Production Operations | **M5: Deployment & Canary**| Shadow Traffic Mirror, Argo Rollout Canary, Secrets Config | Shadow-scoring parity verified; canary promotion clean |
+| **Phase 6: Operate** (Continuous)| Ship & Run: MLOps / Operations | **M6: SRE & Monitoring** | 10 Incident Runbooks, Prometheus Alerts, Grafana Dashboards | SLO adherence; automated drift alerting active |
 
-#### 3. Enterprise Agent Control Plane Pattern
-Add a dedicated, comprehensive enterprise architecture pattern and starter kit for governing agents:
-- **Agent Registry:** Central catalogue of authorized agents, versions, capabilities, and system prompts.
-- **Agent Identity & Delegation:** Workload identity and On-Behalf-Of (OBO) user authorization.
-- **Tool Registry & Policy Engine:** Strict OpenAPI tool schemas, least-privilege tool RBAC, and Open Policy Agent (OPA) validation.
-- **Durable Orchestrator:** State machine with checkpointing, pause/resume, and compensation transactions.
-- **Human Approval Service:** Interactive approval webhooks for sensitive or irreversible actions.
-- **Evaluation & Audit Ledger:** W3C distributed tracing, token accounting, and tamper-evident execution logs.
+#### 10.2 Benchmark-Backed Capacity Rigor
+Replace general 10-million-user claims with rigorous, reproducible engineering capacity models displaying 8 mandatory facets:
+1. **Explicit Input Assumptions:** Daily active users (DAU), peak-to-average ratio, read/write ratio, payload sizes.
+2. **Mathematical Formulas:** Little's Law concurrency calculations, memory sizing formulas, bandwidth equations.
+3. **Hardware & Instance Mappings:** Concrete cloud SKU mappings (e.g. AWS `c6i.2xlarge`, `g5.2xlarge`, RDS `db.r6g.xlarge`).
+4. **Expected Throughput:** Peak Requests Per Second (RPS) and events per second.
+5. **Utilization & Headroom:** Sizing for 60% nominal load to accommodate 40% sudden traffic spikes without throttling.
+6. **Cost Sensitivity Analysis:** Total monthly cloud spend broken down by compute, memory, storage, and networking.
+7. **Benchmark Evidence:** Synthetic k6 load testing results validating the calculated throughput and latency targets.
+8. **Actual vs Modeled Disclosures:** Explicit statement distinguishing theoretical modeled targets from measured benchmarks.
 
 ---
 
-### Workstream 8: Reproducible Engineering Sizing & Capacity Tooling
+### Workstream 11: Structured Review Programme & Independent Validation
 
-#### Objectives:
-Upgrade the existing back-of-the-envelope capacity model into a rigorous, reproducible engineering sizing tool.
+Address the highest-priority credibility gap (currently 0 domain reviews and 0 production evidence across 500 blueprints) through a structured, multi-specialist review programme.
 
-#### Component-Level Capacity Modeling:
-Expand `src/content/scale.ts` and `workload-profiles.ts` to calculate precise requirements across 12 infrastructure components:
-1. **API Gateway:** RPS, peak concurrency, payload bytes, TLS termination CPU.
-2. **Streaming Ingestion:** Events/sec, partition count, network throughput, disk retention bytes.
-3. **Primary Database:** Read/Write QPS, connection pool sizing, IOPS, table bloat & vacuum headroom.
-4. **Feature Store:** Read/Write QPS, latency budget (P99 < 5ms), memory footprint in Redis.
-5. **Vector Database:** Total vectors, dimensionality, index type (HNSW/IVF-PQ), RAM/VRAM footprint, search QPS.
-6. **Model Serving:** Throughput (req/s), latency (P95/P99), batch size, replica count, CPU/GPU core allocation.
-7. **LLM Serving:** Input/Output tokens/sec, KV cache memory footprint, context window concurrency.
-8. **GPU Infrastructure:** Model parameter size, precision (FP16/INT8/FP8), VRAM requirement, memory bandwidth.
-9. **Workflow Engine:** DAG executions/day, task concurrency, state database load.
-10. **Object Storage:** Raw data ingestion, compaction lifecycle, retention tiering, egress bandwidth.
-11. **Network & Queues:** Queue depth, backpressure limits, retry amplification buffer.
-12. **Cache Sizing:** Hit ratio assumptions, TTL decay, eviction policy memory requirements.
+#### 11.1 The 7 Specialist Review Gates
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       THE 7 SPECIALIST REVIEW GATES                                             │
+├──────────────────────────┬──────────────────────────┬───────────────────────────────────────────────────────────┤
+│ Review Type              │ Responsible Specialist   │ Mandatory Evidence Required for Sign-off                  │
+├──────────────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────┤
+│ 1. Business Review       │ Product Owner / Business │ Validated business process, measurable acceptance criteria│
+│                          │ Domain Expert            │ and positive net business ROI model.                      │
+├──────────────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────┤
+│ 2. Domain Review         │ Industry Specialist      │ Clinically/financially valid labels, correct edge cases,   │
+│                          │ (e.g. Clinician, AML Off)│ and adherence to industry operational realities.          │
+├──────────────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────┤
+│ 3. Architecture Review   │ Principal AI Solution    │ C4 completeness, NFR compliance, latency feasibility,     │
+│                          │ Architect                │ and verified failure sequence degradation paths.          │
+├──────────────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────┤
+│ 4. Data Engineering Rev. │ Lead Data Engineer       │ Validated data contracts, point-in-time correct features, │
+│                          │                          │ zero leakage, and tested CDC backfill procedures.         │
+├──────────────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────┤
+│ 5. ML/AI Review          │ Independent Staff MLE    │ Model baseline superiority, statistical calibration,      │
+│                          │                          │ evaluation metric robustness, and drift mitigation plans. │
+├──────────────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────┤
+│ 6. Security & Gov. Rev.  │ Security Specialist /    │ STRIDE threat model sign-off, least-privilege RBAC,       │
+│                          │ Compliance Officer       │ PII masking verification, and OWASP Top 10 defenses.      │
+├──────────────────────────┼──────────────────────────┼───────────────────────────────────────────────────────────┤
+│ 7. Production Review     │ Staff Site Reliability   │ Disaster recovery rehearsal, Prometheus alert coverage,   │
+│                          │ Engineer (SRE)           │ verified incident runbooks, and k6 load test sign-off.    │
+└──────────────────────────┴──────────────────────────┴───────────────────────────────────────────────────────────┘
+```
 
-#### Load Test Generator:
-Generate automated k6 load-testing scripts directly calibrated to the blueprint's calculated P50/P95/P99 latency and throughput targets.
+#### 11.2 Initial Execution on the 8 Golden Pilots
+Execute and publish formal review records and vertical slice evidence for the 8 Golden Path implementations, establishing true production credibility before scaling across the catalogue.
 
 ---
 
-### Workstream 9: Engineer Experience & Guided Implementation Workspace
+### Workstream 12: Guided Solution Engineering Workspace UI (`/workspace`)
 
-#### Implementation Workspace UI (`/workspace`):
-Introduce a dedicated, interactive Guided Implementation Workspace directly within the web application:
-1. **Step 1: Project Setup:** Select industry, blueprint, and desired Deployment Profile (Local, Cloud-Native, Private Cloud, Regulated).
-2. **Step 2: Architecture Package Generator:** Click to download a tailored, complete Architecture Package (ZIP) containing:
-   - C4 Diagrams & Sequence Diagrams (SVG + Mermaid)
-   - OpenAPI 3.1 & AsyncAPI 3.0 contracts
-   - Data Contracts & DB Migration scripts
-   - Multi-cloud Terraform & Kubernetes manifests
-   - Starter code & test suites
-   - Relevant operational runbooks
-3. **Step 3: Interactive Technology Decision Assistant:**
-   - Visual decision trees guiding key engineering trade-offs:
-     - *Why Kafka vs Managed SQS/PubSub?*
-     - *Why Feast vs Redis alone?*
-     - *Why Kubernetes vs Serverless Container?*
-     - *Why RAG vs Fine-tuning?*
-     - *Why Boosted Trees vs Deep Learning for Tabular?*
+Transform the web platform from a documentation site into an **interactive AI delivery workbench**:
+
+1. **Step 1: Solution Configurator:**
+   - Select industry domain, specific blueprint, target cloud provider (AWS / GCP / Azure / On-Prem), and Deployment Profile (A, B, C, D).
+2. **Step 2: Interactive Technology Decision Assistant:**
+   - Visual decision trees guiding key engineering trade-offs (e.g. Feast vs Redis, Kafka vs SQS, Boosted Trees vs Deep Learning, RAG vs Fine-tuning).
+3. **Step 3: Downloadable Implementation Bundle Generator:**
+   - One-click browser generation of a complete, customized ZIP package containing:
+     - Architecture documentation & C4 Mermaid files
+     - OpenAPI 3.1 & AsyncAPI 3.0 contracts
+     - Multi-cloud Terraform modules & Kubernetes Helm charts
+     - Executable starter code & test suites
+     - Relevant operational incident runbooks
 4. **Step 4: Implementation Troubleshooting Matrix:**
-   - Searchable matrix of common implementation failure modes, diagnostic bash commands, expected outputs, and exact remediation steps for each archetype.
+   - Searchable diagnostic table mapping symptoms (e.g. consumer lag spike, latency breach, GPU OOM) to bash/kubectl diagnostic commands and remediation procedures.
+5. **Step 5: Delivery Project Backlog Exporter:**
+   - Export pre-populated Jira CSV / Azure DevOps work items with milestone tags, dependencies, and story points.
 
 ---
 
-### Workstream 10: New Domain: Enterprise AI & Data Platform
+## 4. Comprehensive Roadmap Aligned to Reviewer's Priorities
 
-Add an 11th domain to the catalogue to address the critical platform engineering gap identified in the review:
-* **Domain Name:** `enterprise-platform` ("Enterprise AI & Data Platforms")
-* **Initial 5 Foundational Platform Blueprints:**
-  1. `enterprise-ml-platform`: Centralized model training, experiment tracking, and model registry fabric.
-  2. `enterprise-feature-store-platform`: Dual-storage (offline Parquet + online Redis) enterprise feature platform with automated lineage.
-  3. `enterprise-llm-gateway`: Multi-provider LLM gateway with semantic caching, dynamic model routing, and token budget enforcement.
-  4. `enterprise-vector-search-infra`: High-scale distributed vector search infrastructure with hybrid BM25 indexing and document ACLs.
-  5. `enterprise-agent-control-plane`: Governed multi-agent orchestration fabric with tool sandboxing, human approvals, and audit ledgers.
-
----
-
-## 4. Phased Implementation Roadmap
-
-To maintain build stability, code quality, and strict validation throughout development, the implementation is organized into **5 sequential phases**:
+The roadmap directly incorporates all 22 improvements recommended in the independent assessment:
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                       PHASED IMPLEMENTATION TIMELINE                                   │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- [Sprint 1: Foundations] ────────► [Sprint 2: 8 Golden Pilots] ────► [Sprint 3: Platform & IaC]
-   • L0-L5 Maturity Ladder           • Real-Time Fraud Starter (M1-M6)   • Terraform AWS/GCP/Azure
-   • Schema & Validator Updates      • Sepsis HITL Starter (M1-M6)       • Kubernetes & Helm Base
-   • 10 Phase 0 Scope Templates      • Enterprise RAG Starter (M1-M6)    • 10 Incident Runbooks
-   • Phase 1 Design Deliverables     • 5 Remaining Golden Pilots         • Testing Matrix & k6 Suites
-                                                                                     │
-                                                                                     ▼
- [Sprint 5: Product & Polish] ◄─── [Sprint 4: Agent Plane & Patterns] ◄──────────────┘
-   • Guided Workspace UI (/workspace)• Enterprise Agent Control Plane
-   • Downloadable Package Generator  • 8 L2 Architecture Patterns
-   • 5 Enterprise Platform Blueprints• DAG-based Pipeline Rendering
-   • Static Export & Deploy Verify   • Technology Decision Assistant
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       BRAINSIPHON 3.0 IMPLEMENTATION TIMELINE                                   │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+  [Phase 1: Foundations & Trust (P0)] ─────► [Phase 2: The 8 Golden Paths (P0)] ──► [Phase 3: Core Eng. (P1)]
+  • L0–L5 Maturity Taxonomy                  • Fraud Detection M0–M6                 • API & Event Contracts
+  • 4-Dimension Catalogue Classification     • Sepsis HITL Alert M0–M6               • Data Integration Packs
+  • Terminology Demystification              • Developer Docs RAG M0–M6              • 7 New Role Lenses (FDE)
+  • Structured Review Programme Schemas      • 5 Remaining Golden Pilots             • Master Lifecycle Matrix
+                                                                                                │
+                                                                                                ▼
+  [Phase 5: Platform Evolution (P2)] ◄────── [Phase 4: Multi-Cloud IaC & SRE (P1)] ◄────────────┘
+  • Guided Workspace UI (/workspace)         • AWS / GCP / Azure Terraform Modules
+  • Project Bundle ZIP Generator             • Kubernetes Base & Helm Chart
+  • Decision Trees & Diagnostic Matrix       • 10 SRE Incident Runbooks
+  • Jira / Azure DevOps Work-Item Export     • Benchmark-Backed Capacity Models
 ```
 
-### Sprint 1: Foundations, Maturity Ladder & Trust (Immediate Priority)
-- Update `src/lib/artifacts.ts`, `src/schemas/usecase.schema.ts`, and `src/content/completion.ts` to support the full **L0–L5 maturity scale**.
-- Update catalogue cards, filter bars, blueprint headers, and markdown exports to display L0–L5 badges and explicit **Implementation Gap Reports**.
-- Author the **10 Phase 0 Scope & Discovery templates** in `delivery/templates/phase-0-scope/`.
-- Author the **Phase 1 Architecture Deliverable specifications** (C4 diagrams, OpenAPI, AsyncAPI, Data Contracts, ADRs, NFRs, STRIDE) in `delivery/templates/phase-1-design/`.
-- Update `scripts/validate-content.ts` and ensure all tests pass.
+### Phase 1: Foundations, Maturity Ladder & Trust (P0 Priority)
+* **Item 1: Standardise implementation maturity across all blueprints (P0 #1)** — Formalize L0–L5 scale and update schema validators.
+* **Item 4: Introduce independent domain and architecture reviews (P0 #4)** — Build review schemas and records into the release metadata.
+* **Item 6: Clarify the meaning of production-grade labels (P0 #6)** — Split complexity from maturity and add explicit Implementation Gap Reports.
+* **Item 10: Master lifecycle cross-reference (P1 #10)** — Publish the master matrix aligning Delivery Phases, Solution Phases, and M0–M6 milestones.
 
-### Sprint 2: The 8 Golden-Path Reference Implementations
-- Expand `content/playbooks/fintech/real-time-card-upi-fraud-detection/starter` to full M1–M6 implementation:
-  - Add real-time FastAPI inference service, Redis/Feast feature integration, Alembic migrations, traffic shadowing, and k6 load tests.
-- Expand `content/playbooks/healthcare/sepsis-early-warning/starter` to M1–M6:
-  - Add FHIR streaming handler, TreeSHAP explanation service, clinician review queue API, and audit logger.
-- Expand `content/playbooks/saas/developer-docs-assistant/starter` to M1–M6:
-  - Add multi-format parser, hybrid vector+BM25 search, BGE reranker, citation verifier, and Ragas evaluation suite.
-- Upgrade the remaining 5 pilots (Demand Sensing, Session Recs, CV Defect, SOC Agent, In-App Copilot) with complete M1–M6 starters, contracts, and Docker Compose environments.
-- Verify all starter suites with `npm run test:playbooks`.
+### Phase 2: The 8 Golden-Path Reference Implementations (P0 Priority)
+* **Item 2: Create complete reference implementations for selected pilot use cases (P0 #2)** — Upgrade the 8 pilot use cases to full M0–M6 stacks with runnable code, FastAPI serving, DB migrations, and tests.
+* **Item 5: Add production evidence where available (P0 #5)** — Publish verified test execution slices and performance benchmarks for the 8 pilots.
+* **Item 12: Common evaluation framework (P1 #12)** — Implement standard evaluation harness for tabular ML, RAG, and multi-turn agents.
 
-### Sprint 3: Platform Engineering, Multi-Cloud IaC & Operational Runbooks
-- Build the `deployment/` structure:
-  - Multi-cloud Terraform modules (AWS, GCP, Azure) for VPC, EKS/GKE, RDS/Postgres, Redis, and Secrets.
-  - Kubernetes manifests and production Helm chart (`brainsiphon-service`).
-  - Docker Compose full-stack definitions.
-- Author the **10 Production Operational Incident Runbooks** in `deployment/runbooks/` with exact triage, mitigation, recovery, and post-mortem procedures.
-- Build the standard testing suites (`tests/performance/`, `tests/resilience/`, `tests/contract/`).
-- Set up GitHub Actions CI/CD workflows for container scanning, SBOM generation, and canary releases.
+### Phase 3: Major Engineering Assets & Role Lenses (P1 Priority)
+* **Item 7: API and event contract repository (P1 #7)** — Author OpenAPI 3.1, AsyncAPI 3.0, and OpenDataContract templates for all reference architectures.
+* **Item 8: Complete data integration packs (P1 #8)** — Build outbox CDC, streaming ingestion, and Great Expectations quality suites.
+* **Item 9: FDE and application engineering role lenses (P1 #9)** — Implement the 7 new role lenses (FDE, Backend, Frontend, PM, Integration, Analytics, DBA) and the FDE 8-stage workflow.
+* **Item 11: Executable security packs (P1 #11)** — Deliver OAuth2/OIDC middleware, tenant isolation policies, and STRIDE threat models.
 
-### Sprint 4: AI Engineering, Patterns & Enterprise Agent Control Plane
-- Author and implement the **Enterprise Agent Control Plane** pattern and reference code.
-- Implement runnable code and Docker Compose environments for the **8 L2 Enterprise Architecture Patterns**.
-- Upgrade pipeline visualizations from linear representations to **expressive DAGs** supporting fan-out, fan-in, and retry loops.
-- Build the **Technology Decision Assistant** and **Implementation Troubleshooting Matrix**.
+### Phase 4: Platform Engineering, Multi-Cloud IaC & SRE (P1 Priority)
+* **Item 3: Add real cloud deployment packs (P0 #3)** — Deliver production Terraform modules for AWS, Azure, and GCP.
+* **Item 13: Reproducible infrastructure and CI/CD templates (P1 #13)** — Ship the standardized Helm chart, Kubernetes manifests, and GitHub Actions canary workflows.
+* **Item 14: Benchmark-backed capacity models (P1 #14)** — Upgrade the capacity calculator with hardware mappings, cost sensitivity, and k6 benchmark evidence.
+* **Production Operations:** Finalize the **10 SRE Incident Runbooks** with exact detection, triage, mitigation, and post-mortem procedures.
 
-### Sprint 5: Product Experience, Enterprise Platform Domain & Handover
-- Build the **Guided Implementation Workspace UI** (`src/app/workspace/page.tsx`):
-  - Interactive project configuration, blueprint selection, and deployment profile picker.
-  - In-browser downloadable architecture package bundler (exporting all contracts, IaC, and runbooks).
-- Author the new **Enterprise AI & Data Platform** domain with its 5 foundational blueprints.
-- Update `README.md`, `DELIVERY_GUIDE.md`, and static documentation pages.
-- Run complete verification: `npm run validate:content`, `npm test`, `npm run typecheck`, `npm run build:static`, `npm run verify:static`.
+### Phase 5: Solution Engineering Workspace & Platform Evolution (P2 Priority)
+* **Item 15: Interactive solution architect workspace (P2 #15)** — Launch the `/workspace` interactive app.
+* **Item 16: Downloadable delivery documentation packs (P2 #16)** — Deliver the 11 Phase 0–6 deliverable packs.
+* **Item 17: Automated repository generation (P2 #17)** — Enable in-browser generation of tailored starter repo ZIP bundles.
+* **Item 18: Integration with Jira / Azure DevOps (P2 #18)** — Pre-populated work-item CSV exports.
+* **Item 19: Architecture decision assistant (P2 #19)** — Embed interactive decision trees into the workspace.
+* **Item 20: Blueprint review and contribution workflow (P2 #20)** — Provide formal community review and verification submission guidelines.
+* **Item 21: Release-to-release regression reporting (P2 #21)** — Automated CI regression report comparing performance and schema validation across releases.
+* **Item 22: Reference implementation benchmark portal (P2 #22)** — Publish live benchmark metrics for all reference implementations.
 
 ---
 
-## 5. Verification, Quality Gates & Definition of Done
+## 5. Automated Verification Gates & Definition of Done
 
-To ensure absolute adherence to BrainSiphon's engineering standards, every implementation phase must satisfy the following automated verification gates:
+Every stage of implementation must satisfy BrainSiphon's strict verification gates before landing:
 
-1. **Content & Schema Gate:**
-   ```bash
-   npm run validate:content
-   ```
-   *Strict Zod schema validation across all blueprints, KaTeX syntax, Mermaid syntax, and slug history.*
-2. **Type Safety & Code Quality:**
-   ```bash
-   npm run typecheck
-   npm run lint
-   npm run format
-   ```
-   *Zero TypeScript errors, zero ESLint warnings, 100% Prettier compliance.*
-3. **Automated Unit & Integration Tests:**
-   ```bash
-   npm test
-   ```
-   *All Vitest suites pass, including role lens tests, delivery step tests, and schema validators.*
-4. **Starter Kit & Python Playbook Tests:**
-   ```bash
-   npm run test:playbooks
-   ```
-   *Every Python starter kit executes and passes pytest assertions across synthetic data, baselines, and APIs.*
-5. **Static Export & GitHub Pages Integrity:**
-   ```bash
-   npm run build:static
-   npm run verify:static
-   ```
-   *Complete static HTML export generated with zero broken links, valid MiniSearch indexes, and verified release metadata.*
+```bash
+# 1. Content & Schema Integrity Gate
+npm run validate:content
+# Must pass with 0 errors across all 500 blueprints, KaTeX equations, Mermaid blocks, and L0–L5 schemas.
+
+# 2. Type Safety & Code Quality Gate
+npm run typecheck
+npm run lint
+npm run format
+# Zero TypeScript errors, zero ESLint warnings, 100% Prettier compliance.
+
+# 3. Unit, Integration & Delivery Test Gate
+npm test
+# All Vitest suites pass across delivery steps, role lenses, and middleware.
+
+# 4. Python Starter Kit & Playbook Test Gate
+npm run test:playbooks
+# All Python reference implementations pass pytest across synthetic generation, training, serving, and API assertions.
+
+# 5. Static Export & Deployment Verification Gate
+npm run build:static
+npm run verify:static
+# Flawless static export with zero broken links and valid search indexes.
+```
 
 ---
 
-## 6. Review Request & Next Steps
+## 6. Current Implementation Status & Immediate Next Actions
 
-This plan establishes a clear, phased, and executable path to transform BrainSiphon into a battle-tested AI engineering delivery platform that satisfies the most demanding Forward Deployed Engineer standards.
+### 6.1 What Has Already Been Built & Committed
+* **Maturity Foundation:** L0–L5 classification constants, badges, and validation logic added to `src/lib/artifacts.ts` and `src/content/completion.ts`.
+* **Workspace Engine:** Interactive Guided Implementation Workspace implemented at `src/app/workspace/page.tsx`.
+* **Delivery Asset Templates:** Initial Phase 0–3 templates created in `delivery/templates/`.
+* **Infrastructure & Runbooks:** Kubernetes manifests, Docker Compose, Terraform skeleton, and the 10 SRE runbooks authored in `deployment/`.
+* **Playbook Starters:** Starter code and contracts created for the 8 pilot playbooks; `npm run test:playbooks` passes 19 starter kits.
 
-**Action Required:** Please review this `plan.md`. Once you approve or provide any refinements, we will proceed immediately with Sprint 1 execution.
-
+### 6.2 Immediate Action Required
+Please review and approve this `plan.md`. Upon approval, we will proceed with:
+1. Surfacing the full **4-Dimensional Classification** and **Implementation Gap Reports** across the catalog and blueprint header UI components.
+2. Enriching the **7 new role lenses** (including the FDE workflow) in `src/lib/roles.ts` and role filtering components.
+3. Finalizing the **downloadable package bundler** in `/workspace` to export the complete `brainsiphon-implementation/` bundle.
