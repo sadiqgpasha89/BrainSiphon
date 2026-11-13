@@ -12,7 +12,7 @@
  */
 import type { UseCase } from '../schemas/usecase.schema';
 
-export const RELEASE_SCHEMA_VERSION = 1;
+export const RELEASE_SCHEMA_VERSION = 2;
 
 export type RunStatus = 'passed' | 'failed' | 'not-run';
 
@@ -21,6 +21,12 @@ export interface KitResult {
   name: string;
   status: 'passed' | 'failed';
   seconds: number;
+  /** counts from the pytest summary line; absent in reports written before they were recorded */
+  tests?: { passed: number; failed: number; skipped: number };
+  /** line coverage of the kit's code in percent; null when pytest-cov was not installed for the run */
+  coveragePct?: number | null;
+  /** the end of the pytest output. Kept in the kit report only: content:build publishes it as a text file and drops it from the manifest. */
+  log?: string;
 }
 
 /** Written by validate:content, and only when it passes. */
@@ -31,7 +37,7 @@ export interface ValidationReport {
   contentDigest: string;
   validatedAt: string;
   useCases: number;
-  feasibility: { checks: number; pass: number; warn: number; fail: number };
+  feasibility: { checks: number; pass: number; notApplicable: number; warn: number; fail: number };
   warnings: number;
 }
 
@@ -61,11 +67,22 @@ export interface ReleaseManifest {
   deployedAt: string | null;
   checks: {
     schema: { status: RunStatus; useCases: number };
-    feasibility: { status: RunStatus; checks: number; pass: number; warn: number; fail: number };
+    feasibility: {
+      status: RunStatus;
+      checks: number;
+      pass: number;
+      notApplicable: number;
+      warn: number;
+      fail: number;
+      /** every warning, with the blueprint it affects and what to do about it */
+      warnings: FeasibilityWarning[];
+    };
     executable: { status: RunStatus; ranAt: string | null; kits: KitResult[] };
     domainExpert: { reviewed: number; total: number };
     productionEvidence: { claimed: number; total: number };
   };
+  /** how many blueprints meet, and are classified at, each of the seven maturity levels */
+  maturity: MaturitySummaryRow[];
 }
 
 export const shortSha = (sha: string | null) => (sha ? sha.slice(0, 7) : 'unknown');
@@ -189,266 +206,342 @@ export interface ManifestInput {
   deployment: boolean;
 }
 
+/* ------------------------------------------------------------------ feasibility warnings */
+
 export interface FeasibilityWarning {
   slug: string;
-  blueprintTitle: string;
-  category: 'Model memory vs serving hardware' | 'Cost vs expected traffic';
+  title: string;
+  /** the name of the feasibility check that raised the warning */
+  check: string;
   detail: string;
   remediation: string;
 }
 
-export const FEASIBILITY_WARNINGS: FeasibilityWarning[] = [
-  {
-    slug: 'fintech/transaction-monitoring-alert-triage-llm',
-    blueprintTitle: 'Transaction Monitoring Alert Triage (LLM)',
-    category: 'Model memory vs serving hardware',
-    detail:
-      '70B parameters need about 140 GB at FP16 against H100-class 80 GB. Does not fit one device with KV-cache room: quantise (INT8/FP8: about 70 GB) or shard with tensor parallelism across 3+ GPUs and size the table accordingly.',
-    remediation:
-      'Quantise model weights to INT8/FP8 (~70 GB VRAM required) or shard via Tensor Parallelism (tp=2 or tp=4) across 2-4 NVIDIA H100/A100 GPUs. Alternatively, adopt a model cascade using an 8B screening model and 70B escalation only on high-ambiguity alerts.',
-  },
-  {
-    slug: 'healthcare/pathology-slide-cancer-detection',
-    blueprintTitle: 'Pathology Slide Cancer Detection',
-    category: 'Cost vs expected traffic',
-    detail:
-      '$219,387/month for 30,000 events/day = $243.76 per 1,000 decisions (very high: a fixed fleet floor or heavy per-event compute dominates at this volume; check the minimum node count, batching and the model cascade).',
-    remediation:
-      'Implement a two-stage tile cascade: a fast, lightweight cellular density filter discards 80%+ of normal tiles, routing only suspicious tissue to the heavy ensemble. Transition from warm dedicated GPU nodes to spot autoscaling with asynchronous PACS queue batching.',
-  },
-  {
-    slug: 'healthcare/genomic-variant-pathogenicity-classification',
-    blueprintTitle: 'Genomic Variant Pathogenicity Classification',
-    category: 'Cost vs expected traffic',
-    detail:
-      '$1,852/month for 150 events/day = $411.51 per 1,000 decisions (very high: a fixed fleet floor or heavy per-event compute dominates at this volume; check the minimum node count, batching and the model cascade).',
-    remediation:
-      'Replace warm dedicated serving nodes with event-driven serverless container jobs (e.g. Google Cloud Run or AWS Batch) that scale to zero when sequencing batches are not pending.',
-  },
-  {
-    slug: 'healthcare/polygenic-risk-scoring',
-    blueprintTitle: 'Polygenic Risk Scoring',
-    category: 'Cost vs expected traffic',
-    detail:
-      '$1,615/month for 60 events/day = $897.48 per 1,000 decisions (very high: a fixed fleet floor or heavy per-event compute dominates at this volume; check the minimum node count, batching and the model cascade).',
-    remediation:
-      'Execute PRS calculations as scheduled nightly batch pipelines on preemptible CPU compute, rather than keeping idle online microservices waiting for low-volume episodic events.',
-  },
-  {
-    slug: 'healthcare/single-cell-rna-cell-type-annotation',
-    blueprintTitle: 'Single-cell RNA Cell-type Annotation',
-    category: 'Cost vs expected traffic',
-    detail:
-      '$1,616/month for 30 events/day = $1795.39 per 1,000 decisions (very high: a fixed fleet floor or heavy per-event compute dominates at this volume; check the minimum node count, batching and the model cascade).',
-    remediation:
-      'Process scRNA samples in batch mode on spot GPU worker fleets; cache high-dimensional reference atlas embeddings in a vector store to avoid recomputing manifold graphs per run.',
-  },
-  {
-    slug: 'healthcare/surgical-video-phase-recognition',
-    blueprintTitle: 'Surgical Video Phase Recognition',
-    category: 'Cost vs expected traffic',
-    detail:
-      '$219,387/month for 30,000 events/day = $243.76 per 1,000 decisions (very high: a fixed fleet floor or heavy per-event compute dominates at this volume; check the minimum node count, batching and the model cascade).',
-    remediation:
-      'Shift inference to on-premise hospital operating theater edge workstations (e.g. NVIDIA IGX/RTX 6000), downsample from 60fps continuous processing to 1fps keyframe sampling, and compile models with TensorRT INT8.',
-  },
-  {
-    slug: 'healthcare/radiotherapy-autocontouring',
-    blueprintTitle: 'Radiotherapy Organs-at-Risk Autocontouring',
-    category: 'Cost vs expected traffic',
-    detail:
-      '$94,717/month for 30,000 events/day = $105.24 per 1,000 decisions (very high: a fixed fleet floor or heavy per-event compute dominates at this volume; check the minimum node count, batching and the model cascade).',
-    remediation:
-      'Queue volumetric DICOM CT series to an asynchronous worker queue, apply TensorRT quantization to 3D U-Net backbones, and dynamically autoscale worker replicas based on treatment planning clinic shifts.',
-  },
-];
+/** What to do about a warning of each kind when no blueprint-specific remediation is written. Keyed by the check's name. */
+const REMEDIATION_BY_CHECK: Record<string, string> = {
+  'Model memory vs serving hardware':
+    'Quantise the model so it fits one device with room for the KV cache, or shard it across GPUs with tensor parallelism, and re-size the capacity table for the result.',
+  'Cost vs expected traffic':
+    'The fixed fleet floor dominates at this volume: move to scale-to-zero or scheduled batch compute, or put a cheap filter in front of the expensive model, then re-run the capacity model.',
+};
+const REMEDIATION_FALLBACK =
+  'Read the check detail, change the design or the stated workload until the numbers agree, and re-run npm run validate:content.';
 
-export type MaturityLevelId =
-  | 'conceptually-reviewed'
-  | 'schema-validated'
-  | 'architecture-feasibility-validated'
-  | 'synthetic-data-tested'
-  | 'domain-expert-validated'
-  | 'platform-integrated'
-  | 'production-deployed';
+/**
+ * Blueprint-specific remediation, keyed `<slug>::<check name>`. A key that no longer matches a live warning fails
+ * validate:content (`staleRemediations`), so this text cannot outlive the warning it was written for.
+ */
+export const REMEDIATION_OVERRIDES: Record<string, string> = {
+  'fintech/transaction-monitoring-alert-triage-llm::Model memory vs serving hardware':
+    'Quantise the 70B model to INT8/FP8 (about 70 GB) and serve it across two 80 GB GPUs so the KV cache has room, or keep FP16 and shard across four. Alternatively screen alerts with an 8B model and escalate only the ambiguous ones to the 70B model. Re-size the capacity table for whichever is chosen.',
+  'healthcare/pathology-slide-cancer-detection::Cost vs expected traffic':
+    'Add a cheap tissue and cell-density filter that discards normal tiles before the heavy ensemble, and replace the always-warm GPU nodes with autoscaled workers fed from the PACS queue.',
+  'healthcare/genomic-variant-pathogenicity-classification::Cost vs expected traffic':
+    'Replace the always-on serving nodes with jobs that start when a sequencing batch arrives and scale to zero between batches.',
+  'healthcare/polygenic-risk-scoring::Cost vs expected traffic':
+    'Run scoring as a scheduled batch on preemptible CPU instead of an online service that waits for about 60 events a day.',
+  'healthcare/single-cell-rna-cell-type-annotation::Cost vs expected traffic':
+    'Process samples in batches on spot GPU workers and cache the reference-atlas embeddings so they are not recomputed per run.',
+  'healthcare/surgical-video-phase-recognition::Cost vs expected traffic':
+    'Move inference to a workstation in the operating theatre, sample keyframes instead of every frame, and quantise the model; cloud GPU is then needed only for retraining.',
+  'healthcare/radiotherapy-autocontouring::Cost vs expected traffic':
+    'Queue CT series to asynchronous workers, quantise the 3D segmentation model, and scale the workers with the planning clinic\'s hours instead of keeping the fleet warm.',
+};
+
+const remediationKey = (slug: string, check: string) => `${slug}::${check}`;
+
+/** Every feasibility warning in the given blueprints, read from the checks themselves, with a remediation for each. */
+export function feasibilityWarnings(useCases: Pick<UseCase, 'slug' | 'title' | 'validation'>[]): FeasibilityWarning[] {
+  return useCases.flatMap((u) =>
+    u.validation.feasibility
+      .filter((f) => f.status === 'warn')
+      .map((f) => ({
+        slug: u.slug,
+        title: u.title,
+        check: f.check,
+        detail: f.detail,
+        remediation: REMEDIATION_OVERRIDES[remediationKey(u.slug, f.check)] ?? REMEDIATION_BY_CHECK[f.check] ?? REMEDIATION_FALLBACK,
+      })),
+  );
+}
+
+/** Remediation entries written for a warning that no longer exists. */
+export function staleRemediations(useCases: Pick<UseCase, 'slug' | 'title' | 'validation'>[]): string[] {
+  const live = new Set(feasibilityWarnings(useCases).map((w) => remediationKey(w.slug, w.check)));
+  return Object.keys(REMEDIATION_OVERRIDES).filter((k) => !live.has(k));
+}
+
+/* ------------------------------------------------------------------ maturity scorecard */
+
+/**
+ * Seven maturity levels, lowest first. Each is a different kind of evidence, and a lower one never implies a higher one:
+ * a schema pass says the page is complete, not that anything on it works.
+ */
+export const MATURITY_LEVELS = [
+  {
+    id: 'conceptual-architecture',
+    label: 'Conceptually reviewed architecture',
+    short: 'Conceptual architecture',
+    meaning: 'The problem, loss, pipeline and system design are written down and the maintainers have read them. Nobody independent has.',
+  },
+  {
+    id: 'schema-validated',
+    label: 'Schema-validated blueprint',
+    short: 'Schema-validated',
+    meaning: 'Every required section is present and well-typed. This proves the page is complete; it proves nothing about whether the design works.',
+  },
+  {
+    id: 'feasibility-validated',
+    label: 'Architecture-feasibility validated blueprint',
+    short: 'Feasibility-validated',
+    meaning: 'The blueprint\'s own numbers agree with each other: stage budgets, capacity, availability, storage, cost, recovery and model memory. The numbers are modelled, not measured.',
+  },
+  {
+    id: 'synthetic-tested',
+    label: 'Synthetic-data tested implementation',
+    short: 'Synthetic-data tested',
+    meaning: 'Starter code for this exact problem runs end to end on generated data and passes its tests. It has never seen real data.',
+  },
+  {
+    id: 'expert-validated',
+    label: 'Domain-expert validated implementation',
+    short: 'Domain-expert validated',
+    meaning: 'A named specialist in the domain has reviewed the content, with the scope of the review recorded.',
+  },
+  {
+    id: 'platform-integrated',
+    label: 'Platform-integrated implementation',
+    short: 'Platform-integrated',
+    meaning: 'The implementation is connected to real source systems, identity, a feature store and a serving platform.',
+  },
+  {
+    id: 'production-evidenced',
+    label: 'Production-deployed and production-evidenced solution',
+    short: 'Production-evidenced',
+    meaning: 'It runs in production and measured results from that deployment are recorded.',
+  },
+] as const;
+
+export type MaturityLevelId = (typeof MATURITY_LEVELS)[number]['id'];
+export type MaturityState = 'met' | 'met-with-warnings' | 'partial' | 'not-met' | 'not-run' | 'failed' | 'not-applicable';
+
+export const MATURITY_STATE_TEXT: Record<MaturityState, string> = {
+  met: 'Met',
+  'met-with-warnings': 'Met, with open warnings',
+  partial: 'Partly met',
+  'not-met': 'Not met',
+  'not-run': 'Not run in this build',
+  failed: 'Failed',
+  'not-applicable': 'No starter kit',
+};
+
+const counts = (state: MaturityState) => state === 'met' || state === 'met-with-warnings';
 
 export interface MaturityItem {
   id: MaturityLevelId;
-  order: number;
+  /** 1 to 7 */
+  level: number;
   label: string;
-  status: 'passed' | 'conditional' | 'pending' | 'failed' | 'not-applicable';
   meaning: string;
+  state: MaturityState;
+  /** what stands behind the state, in one or two sentences */
   evidence: string;
-  testCommand?: string;
-  testCoverage?: string;
-  reviewer?: string;
-  reviewDate?: string;
-  outstandingIssues?: string[];
+  /** the command that reproduces the check, when one exists */
+  command?: string;
+  /** a published log of the run, as a site-relative path */
+  log?: string;
+  /** what the tests cover, when tests exist */
+  coverage?: string;
+  /** who reviewed, and for which organisation; says so plainly when nobody did */
+  reviewer: string;
+  /** date of the run or the review; null when there was none */
+  date: string | null;
+  outstanding: string[];
 }
 
 export interface MaturityScorecard {
   slug: string;
-  score: number;
-  maxScore: number;
-  readinessLabel: string;
-  isHighRisk: boolean;
-  highRiskNotice?: string;
+  /** the highest level reached with every level below it also met; 0 when not even the first is */
+  level: number;
+  classification: MaturityLevelId | null;
+  classificationLabel: string;
+  /** the first level not met, and why the classification stops there */
+  blockedBy: string | null;
+  highRisk: boolean;
   items: MaturityItem[];
   warnings: FeasibilityWarning[];
 }
 
-export function blueprintMaturityScorecard(
-  uc: Pick<UseCase, 'slug' | 'domain' | 'pattern' | 'playbook' | 'validation' | 'governance'>,
-  release: ReleaseManifest | null,
-): MaturityScorecard {
-  const levels = uc.validation.levels;
-  const claimed = (l: string) => levels.find((x) => x.level === l)?.state === 'passed';
-  const fails = uc.validation.feasibility.filter((f) => f.status === 'fail').length;
-  const warns = uc.validation.feasibility.filter((f) => f.status === 'warn').length;
+type ScorecardInput = Pick<UseCase, 'slug' | 'title' | 'pattern' | 'playbook' | 'validation' | 'governance'>;
+
+const day = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : null);
+const kitLogPath = (name: string) => `/release/kit-logs/${name.replace(/\//g, '--')}.txt`;
+
+/**
+ * The maturity scorecard of one blueprint. Every state is derived from recorded evidence: the checks stored on the blueprint,
+ * the release manifest for this build, and content/reviews.json. Nothing is asserted by hand, and the classification is the
+ * highest level reached without skipping one, so a later level cannot lift a blueprint past an earlier gap.
+ */
+export function blueprintMaturityScorecard(uc: ScorecardInput, release: ReleaseManifest | null): MaturityScorecard {
+  const p = uc.validation.provenance;
+  const levelRow = (l: string) => uc.validation.levels.find((x) => x.level === l);
+  const claimed = (l: string) => levelRow(l)?.state === 'passed';
+  const feas = uc.validation.feasibility;
+  const n = (s: string) => feas.filter((f) => f.status === s).length;
+  const warnings = feasibilityWarnings([uc]);
+  const synthetic = blueprintStatuses(uc, release).find((s) => s.id === 'synthetic')!;
+  const verdict = uc.playbook?.compatibility.verdict;
   const key = kitKeyFor(uc);
   const exec = release?.checks.executable;
-  const kitResult = exec?.status === 'not-run' ? undefined : exec?.kits.find((k) => k.name === key);
+  const kit = exec?.status === 'not-run' ? undefined : exec?.kits.find((k) => k.name === key);
+  const need = (state: string) => uc.playbook?.completion.states.find((s) => s.state === state)?.stillNeeded ?? [];
+  const handAuthored = p.sections.filter((s) => s.origin === 'hand-authored').length;
+  const validated = release?.validatedAt ?? null;
 
-  const warnings = FEASIBILITY_WARNINGS.filter((w) => w.slug === uc.slug);
+  const meta = (id: MaturityLevelId) => {
+    const i = MATURITY_LEVELS.findIndex((l) => l.id === id);
+    return { id, level: i + 1, label: MATURITY_LEVELS[i]!.label, meaning: MATURITY_LEVELS[i]!.meaning };
+  };
 
-  const isHighRisk =
-    uc.domain === 'healthcare' ||
-    uc.domain === 'bfsi' ||
-    uc.domain === 'fintech' ||
-    uc.domain === 'cybersecurity' ||
-    uc.governance.riskTier === 'high' ||
-    uc.governance.riskTier === 'critical';
+  const syntheticState: MaturityState =
+    synthetic.state === 'not-available'
+      ? 'not-applicable'
+      : synthetic.state === 'failed'
+        ? 'failed'
+        : synthetic.state === 'passed'
+          ? verdict === 'adaptable'
+            ? 'partial'
+            : 'met'
+          : 'not-run';
 
   const items: MaturityItem[] = [
     {
-      id: 'conceptually-reviewed',
-      order: 1,
-      label: 'Conceptually Reviewed Architecture',
-      status: 'passed',
-      meaning: 'Problem formulation, loss function, latency envelope, HLD, sequence, and component boundaries mathematically sound.',
-      evidence: 'Full system architecture blueprint defined with verified Mermaid C4/sequence models and SLA latency budgeting.',
-      reviewDate: '2026-11-12',
-      reviewer: 'BrainSiphon Architecture Advisory Committee',
+      ...meta('conceptual-architecture'),
+      state: 'met',
+      evidence: `Written and read through by the maintainers: ${handAuthored} of ${p.sections.length} section groups are hand-authored for this use case and the rest are generated from its specification or a shared template (see provenance above). No independent architecture review is recorded.`,
+      reviewer: `${p.owner} (the authors; not an independent review)`,
+      date: p.generatedAt,
+      outstanding: ['An architecture review by someone other than the authors'],
     },
     {
-      id: 'schema-validated',
-      order: 2,
-      label: 'Schema-Validated Blueprint',
-      status: 'passed',
-      meaning: 'Blueprint content satisfies strict runtime Zod schemas with complete enterprise context and role lenses.',
-      evidence: 'Passed strict schema validation during CI build (100% of required sections and type contracts present).',
-      testCommand: 'npm run validate:content',
-      testCoverage: '100% schema field validation',
-      reviewDate: release?.validatedAt?.slice(0, 10) ?? '2026-11-12',
+      ...meta('schema-validated'),
+      state: 'met',
+      evidence: `The blueprint parsed against the strict schema when this page was built; a missing or malformed section fails the build. ${validated ? `The full content gate last passed for this content on ${day(validated)}.` : 'The full content gate has not been run for this exact content in this build.'}`,
+      command: 'npm run validate:content',
+      log: '/release',
+      coverage: 'Every required section and field of the blueprint schema. Structure only: no statement on the page is checked for being true.',
+      reviewer: 'Automated check; no human reviewer',
+      date: day(validated),
+      outstanding: [],
     },
     {
-      id: 'architecture-feasibility-validated',
-      order: 3,
-      label: 'Architecture-Feasibility Validated',
-      status: fails ? 'failed' : warns ? 'conditional' : 'passed',
-      meaning: 'Stage latency budgets, memory consumption vs serving hardware, network reserves, and throughput sanity verified.',
-      evidence: warns
-        ? `${warnings.length} feasibility warning(s) flagged: ${warnings[0]?.category ?? 'cost or hardware memory check requires remediation'}.`
-        : 'All 10 architecture-feasibility checks passed (stage budgets sum within p99 SLA, memory fits hardware).',
-      outstandingIssues: warns ? warnings.map((w) => `${w.category}: ${w.remediation}`) : undefined,
+      ...meta('feasibility-validated'),
+      state: n('fail') ? 'failed' : warnings.length ? 'met-with-warnings' : 'met',
+      evidence: `${feas.length} checks on this blueprint: ${n('pass')} passed, ${n('n/a')} not applicable, ${n('warn')} warning, ${n('fail')} failed. Each result and its arithmetic is in the table below. The inputs are modelled figures, so a pass means the design is internally consistent, not that it has been measured.`,
+      command: 'npm run validate:content',
+      log: '/release#feasibility-warnings',
+      coverage: 'Latency envelope, stage budgets, throughput against capacity, availability against redundancy, storage against retention, cost, recovery objectives and model memory.',
+      reviewer: 'Automated check; no human reviewer',
+      date: day(validated),
+      outstanding: [
+        ...feas.filter((f) => f.status === 'fail').map((f) => `Failed: ${f.check}`),
+        ...warnings.map((w) => `${w.check}: ${w.remediation}`),
+      ],
     },
     {
-      id: 'synthetic-data-tested',
-      order: 4,
-      label: 'Synthetic-Data Tested Implementation',
-      status:
-        !claimed('synthetic-data-tested') || uc.playbook?.compatibility.verdict === 'none'
-          ? 'not-applicable'
-          : kitResult?.status === 'passed'
-            ? uc.playbook?.compatibility.verdict === 'adaptable'
-              ? 'conditional'
-              : 'passed'
-            : kitResult?.status === 'failed'
-              ? 'failed'
-              : 'pending',
-      meaning: 'Starter code runs end-to-end on synthetic data generator and passes automated pytest exit gate test suites.',
-      evidence:
-        uc.playbook?.compatibility.verdict === 'none'
-          ? 'No starter kit applicable to this specific problem.'
-          : kitResult?.status === 'passed'
-            ? `${key} passed automated test suite in ${kitResult.seconds.toFixed(1)}s (${uc.playbook?.compatibility.verdict === 'adaptable' ? 'adaptable reference kit' : 'exact reference kit'}).`
-            : 'Starter kit has not been executed in the current build.',
-      testCommand: `npm run test:playbooks -- ${key}`,
-      testCoverage: 'End-to-end synthetic pipeline (M1-M4)',
-      outstandingIssues:
-        uc.playbook?.compatibility.verdict === 'adaptable'
-          ? uc.playbook.compatibility.modifications.slice(0, 3)
-          : undefined,
+      ...meta('synthetic-tested'),
+      state: syntheticState,
+      evidence: synthetic.detail,
+      ...(syntheticState === 'not-applicable' ? {} : { command: `npm run test:playbooks`, coverage: kitCoverage(kit) }),
+      ...(kit ? { log: kitLogPath(kit.name) } : {}),
+      reviewer: 'Automated test run; no human reviewer',
+      date: kit ? day(exec?.ranAt) : null,
+      outstanding:
+        syntheticState === 'not-applicable'
+          ? ['Write a first end-to-end run for this problem: no compatible starter kit exists']
+          : syntheticState === 'partial'
+            ? (uc.playbook?.compatibility.modifications ?? [])
+            : syntheticState === 'met'
+              ? ['Repeat the starter\'s milestones on your own data: synthetic results do not carry over']
+              : syntheticState === 'not-run'
+                ? ['Run the starter kits for this content (npm run test:playbooks)']
+                : [`Fix the failing tests in ${key}`],
     },
     {
-      id: 'domain-expert-validated',
-      order: 5,
-      label: 'Domain-Expert Validated Implementation',
-      status: claimed('domain-expert-reviewed') ? 'passed' : 'pending',
-      meaning: 'Independent clinical, financial risk, or certified security specialists have audited the decision rules, feature definitions, and loss trade-offs.',
+      ...meta('expert-validated'),
+      state: claimed('domain-expert-reviewed') ? 'met' : 'not-met',
       evidence: claimed('domain-expert-reviewed')
-        ? (levels.find((x) => x.level === 'domain-expert-reviewed')?.evidence ?? 'Independent domain review completed.')
-        : '0/500 blueprints currently have recorded independent domain expert reviews.',
-      reviewer: 'Pending Independent Reviewer (e.g. Clinical Intensivist / PCI-DSS QSA / CISSP Auditor)',
-      outstandingIssues: [
-        'Engage certified domain specialist to audit clinical/financial ground truth assumptions.',
-        'Validate label delay and false-decline/false-positive operational cost matrix with business owners.',
-      ],
+        ? (levelRow('domain-expert-reviewed')?.evidence ?? 'A review is recorded in content/reviews.json.')
+        : 'No review is recorded: content/reviews.json has no entry for this blueprint.',
+      reviewer: p.reviewer ?? 'None',
+      date: p.reviewedAt,
+      outstanding: claimed('domain-expert-reviewed')
+        ? ['Anything outside the recorded review scope is still unreviewed']
+        : ['Review by a named domain specialist, recorded in content/reviews.json with reviewer, organisation, date and scope'],
     },
     {
-      id: 'platform-integrated',
-      order: 6,
-      label: 'Platform-Integrated Implementation',
-      status: 'pending',
-      meaning: 'Connected to live enterprise source systems, transactional CDC/Kafka brokers, customer IAM/Okta federation, and online feature store clusters.',
-      evidence: 'Platform integration is not provisioned by the repository; target cloud VPC/VNet and data lakehouse connection required.',
-      outstandingIssues: [
-        'Provision customer cloud VPC/VNet with private endpoints and IAM Workload Identity.',
-        'Connect real-time CDC or Kafka streaming source to Feast/Redis feature store.',
-        'Configure OAuth2/OIDC SSO federation and audit logging pipeline.',
-      ],
+      ...meta('platform-integrated'),
+      state: 'not-met',
+      evidence: 'Nothing in this repository connects this use case to a source system, identity provider, feature store or serving platform, and the project records no integration for any blueprint.',
+      reviewer: 'None',
+      date: null,
+      outstanding: need('integration-ready').length ? [...need('integration-ready'), ...need('shadow-ready').slice(1)] : ['Integration with your data sources, identity and serving platform'],
     },
     {
-      id: 'production-deployed',
-      order: 7,
-      label: 'Production-Deployed & Evidenced Solution',
-      status: claimed('production-evidence') ? 'passed' : 'pending',
-      meaning: 'Deployed to live user-facing production environment with measured business lift, canary ramp telemetry, and active SRE on-call rotation.',
+      ...meta('production-evidenced'),
+      state: claimed('production-evidence') ? 'met' : 'not-met',
       evidence: claimed('production-evidence')
-        ? (levels.find((x) => x.level === 'production-evidence')?.evidence ?? 'Production telemetry recorded.')
-        : '0/500 blueprints have live customer production telemetry recorded in this repository.',
-      outstandingIssues: [
-        'Deploy canary rollout (1% -> 5% -> 25% -> 100%) with automated false-decline rollback guardrails.',
-        'Rehearse quarterly disaster recovery and regional failover drills with RPO=0 and RTO < 5m.',
-        'Establish permanent held-out control group to track realized business ROI.',
-      ],
+        ? (levelRow('production-evidence')?.evidence ?? 'Production evidence is recorded.')
+        : 'No deployment of this blueprint is known to the project and no figure on this page was measured in production.',
+      reviewer: 'None',
+      date: null,
+      outstanding: need('production-ready').length ? need('production-ready') : ['A monitored production deployment with measured results'],
     },
   ];
 
-  const passedCount = items.filter((i) => i.status === 'passed').length;
-  const readinessLabel =
-    passedCount >= 6
-      ? 'Production Ready'
-      : passedCount >= 4
-        ? 'Prototype Validated (Synthetic)'
-        : passedCount >= 3
-          ? 'Architecture Feasibility Validated'
-          : 'Blueprint Validated (Conceptual)';
-
-  const highRiskNotice = isHighRisk
-    ? 'HIGH-RISK REGULATED WORKLOAD: Real-world production deployment is strictly blocked until domain-expert validation (Level 5), platform integration (Level 6), and shadow canary verification (Level 7) are completed and signed off by qualified clinical, financial, or security stakeholders.'
-    : undefined;
+  const firstGap = items.findIndex((i) => !counts(i.state));
+  const level = firstGap === -1 ? items.length : firstGap;
+  const top = level ? items[level - 1]! : null;
+  const gap = firstGap === -1 ? null : items[firstGap]!;
 
   return {
     slug: uc.slug,
-    score: passedCount,
-    maxScore: items.length,
-    readinessLabel,
-    isHighRisk,
-    highRiskNotice,
+    level,
+    classification: top?.id ?? null,
+    classificationLabel: top ? `${top.label}${top.state === 'met-with-warnings' ? ' (open warnings)' : ''}` : 'Unclassified',
+    blockedBy: gap ? `Level ${gap.level}, ${gap.label.toLowerCase()}: ${MATURITY_STATE_TEXT[gap.state].toLowerCase()}.` : null,
+    highRisk: uc.governance.riskTier === 'high' || uc.governance.riskTier === 'critical',
     items,
     warnings,
   };
+}
+
+function kitCoverage(kit: KitResult | undefined): string {
+  const scope = 'The kit\'s own pipeline on generated data (data, baseline, model and evaluation gates). No test touches real data, serving or integration.';
+  if (!kit) return scope;
+  const tests = kit.tests ? `${kit.tests.passed} tests passed, ${kit.tests.failed} failed, ${kit.tests.skipped} skipped. ` : '';
+  const lines = typeof kit.coveragePct === 'number' ? `Line coverage of the kit's code: ${kit.coveragePct}%. ` : 'Line coverage was not measured in this run. ';
+  return `${tests}${lines}${scope}`;
+}
+
+export interface MaturitySummaryRow {
+  id: MaturityLevelId;
+  level: number;
+  label: string;
+  /** blueprints whose own evidence meets this level, whatever the levels below say */
+  met: number;
+  /** blueprints classified exactly at this level */
+  classified: number;
+}
+
+export function maturitySummary(cards: MaturityScorecard[]): MaturitySummaryRow[] {
+  return MATURITY_LEVELS.map((l, i) => ({
+    id: l.id,
+    level: i + 1,
+    label: l.label,
+    met: cards.filter((c) => counts(c.items[i]!.state)).length,
+    classified: cards.filter((c) => c.level === i + 1).length,
+  }));
 }
 
 export function buildManifest(i: ManifestInput): ReleaseManifest {
@@ -461,7 +554,7 @@ export function buildManifest(i: ManifestInput): ReleaseManifest {
   const reviewed = i.useCases.filter((u) => u.validation.levels.some((l) => l.level === 'domain-expert-reviewed' && l.state === 'passed')).length;
   const production = i.useCases.filter((u) => u.validation.levels.some((l) => l.level === 'production-evidence' && l.state === 'passed')).length;
 
-  return {
+  const manifest: ReleaseManifest = {
     schemaVersion: RELEASE_SCHEMA_VERSION,
     sourceCommit: i.commit,
     sourceDirty: i.dirty,
@@ -475,18 +568,31 @@ export function buildManifest(i: ManifestInput): ReleaseManifest {
       feasibility: {
         status: fail ? 'failed' : 'passed',
         checks: checks.length,
-        pass: count('pass') + count('n/a'),
+        pass: count('pass'),
+        notApplicable: count('n/a'),
         warn: count('warn'),
         fail,
+        warnings: feasibilityWarnings(i.useCases),
       },
       executable: kits
-        ? { status: kits.kits.every((k) => k.status === 'passed') ? 'passed' : 'failed', ranAt: kits.ranAt, kits: kits.kits }
+        ? {
+            status: kits.kits.every((k) => k.status === 'passed') ? 'passed' : 'failed',
+            ranAt: kits.ranAt,
+            // the log is published as its own file (kitLogFile); the manifest stays small
+            kits: kits.kits.map((k) => ({ ...k, log: undefined })),
+          }
         : { status: 'not-run', ranAt: null, kits: [] },
       domainExpert: { reviewed, total: i.useCases.length },
       productionEvidence: { claimed: production, total: i.useCases.length },
     },
+    maturity: [],
   };
+  manifest.maturity = maturitySummary(i.useCases.map((u) => blueprintMaturityScorecard(u, manifest)));
+  return manifest;
 }
+
+/** Where content:build publishes the log of one kit run, relative to the site root. */
+export const kitLogFile = kitLogPath;
 
 export interface GateInput {
   manifest: ReleaseManifest;
@@ -535,4 +641,79 @@ export function releaseProblems(g: GateInput): string[] {
   if (m.checks.executable.status !== 'passed') p.push(`executable test status is "${m.checks.executable.status}" in the manifest`);
 
   return p;
+}
+
+/* ------------------------------------------------------------------ release report */
+
+const pct = (n: number, total: number) => (total ? `${n} of ${total}` : '0');
+
+/** Outstanding issues of the release as a whole, derived from the manifest: what a reader must not assume. */
+export function releaseOutstanding(m: ReleaseManifest): string[] {
+  const c = m.checks;
+  const total = c.schema.useCases;
+  const out: string[] = [];
+  const at = (id: MaturityLevelId) => m.maturity.find((r) => r.id === id)?.met ?? 0;
+  if (c.domainExpert.reviewed < total)
+    out.push(`${total - c.domainExpert.reviewed} of ${total} blueprints have no domain-expert review.`);
+  if (c.productionEvidence.claimed < total)
+    out.push(`${total - c.productionEvidence.claimed} of ${total} blueprints have no production evidence, and none is integrated with a real platform.`);
+  if (c.feasibility.warn) out.push(`${c.feasibility.warn} architecture-feasibility warnings are open; each is listed below with its remediation.`);
+  if (c.feasibility.fail) out.push(`${c.feasibility.fail} architecture-feasibility checks fail.`);
+  if (c.executable.status === 'not-run') out.push('The starter kits were not run for this content, so no synthetic-data result is claimed.');
+  else {
+    const failed = c.executable.kits.filter((k) => k.status !== 'passed');
+    if (failed.length) out.push(`${failed.length} starter kits fail their tests: ${failed.map((k) => k.name).join(', ')}.`);
+    if (c.executable.kits.some((k) => typeof k.coveragePct !== 'number')) out.push('Line coverage was not measured for every starter kit.');
+    out.push(`${total - at('synthetic-tested')} of ${total} blueprints have no tested starter for their exact problem: they either reuse a kit built for a neighbouring problem or have none.`);
+  }
+  if (!m.validatedAt) out.push('The content gate (npm run validate:content) has not passed for exactly this content.');
+  return out;
+}
+
+export function releaseReportMarkdown(m: ReleaseManifest, origin: string): string {
+  const c = m.checks;
+  const total = c.schema.useCases;
+  const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/\n/g, ' ');
+  const L: string[] = [
+    '# BrainSiphon release report',
+    '',
+    `Release ${m.contentVersion}, commit ${m.sourceCommit ?? 'unknown'}${m.sourceDirty ? ' (uncommitted changes)' : ''}.`,
+    `Generated ${m.generatedAt}; content gate ${m.validatedAt ? `passed ${m.validatedAt}` : 'not run for this content'}; ${m.deployedAt ? `deployed ${m.deployedAt}` : 'not a deployment build'}.`,
+    '',
+    'This report says what has been checked for the published blueprints and what has not. A level never implies the one above it.',
+    '',
+    '## Maturity of the blueprints',
+    '',
+    '| Level | Classification | Blueprints meeting it | Blueprints classified here |',
+    '| --- | --- | --- | --- |',
+    ...m.maturity.map((r) => `| ${r.level} | ${r.label} | ${pct(r.met, total)} | ${r.classified} |`),
+    '',
+    'A blueprint is classified at the highest level it reaches without skipping one.',
+    '',
+    '## Checks',
+    '',
+    '| Check | Result | How to reproduce |',
+    '| --- | --- | --- |',
+    `| Schema validation | ${c.schema.useCases} blueprints parsed | \`npm run validate:content\` |`,
+    `| Architecture feasibility | ${c.feasibility.checks} checks: ${c.feasibility.pass} passed, ${c.feasibility.notApplicable} not applicable, ${c.feasibility.warn} warnings, ${c.feasibility.fail} failed | \`npm run validate:content\` |`,
+    `| Executable starter kits | ${c.executable.status === 'not-run' ? 'not run for this content' : `${c.executable.kits.filter((k) => k.status === 'passed').length} of ${c.executable.kits.length} passed on synthetic data (${c.executable.ranAt})`} | \`npm run test:playbooks\` |`,
+    `| Domain-expert review | ${c.domainExpert.reviewed} of ${c.domainExpert.total} blueprints | \`content/reviews.json\` |`,
+    `| Production evidence | ${c.productionEvidence.claimed} of ${c.productionEvidence.total} blueprints | none recorded |`,
+    '',
+  ];
+  if (c.executable.kits.length) {
+    L.push('## Starter-kit runs', '', '| Kit | Result | Tests | Line coverage | Seconds | Log |', '| --- | --- | --- | --- | --- | --- |');
+    for (const k of c.executable.kits)
+      L.push(
+        `| ${k.name} | ${k.status} | ${k.tests ? `${k.tests.passed} passed, ${k.tests.failed} failed, ${k.tests.skipped} skipped` : 'not recorded'} | ${typeof k.coveragePct === 'number' ? `${k.coveragePct}%` : 'not measured'} | ${k.seconds} | ${origin}${kitLogFile(k.name)} |`,
+      );
+    L.push('');
+  }
+  L.push(`## Architecture-feasibility warnings (${c.feasibility.warnings.length})`, '');
+  if (!c.feasibility.warnings.length) L.push('None.', '');
+  for (const w of c.feasibility.warnings)
+    L.push(`### ${w.title}`, '', `- Blueprint: ${origin}/${w.slug}`, `- Check: ${w.check}`, `- Finding: ${cell(w.detail)}`, `- Recommended remediation: ${cell(w.remediation)}`, '');
+  L.push('## Outstanding issues', '', ...releaseOutstanding(m).map((x) => `- ${x}`), '');
+  L.push(`Machine-readable: ${origin}/release.json`, '');
+  return L.join('\n');
 }

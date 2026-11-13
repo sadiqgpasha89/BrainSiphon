@@ -72,7 +72,7 @@ off: Calibration at matured labels ; Log-loss on mature cohorts
 on: Cost per acquisition after full attribution ; Spend efficiency
 gap: Evaluating on immature labels ; Dropping late conversions from evaluation sets
 
-== budget-pacing-controller | Campaign Budget Pacing | reinforcement-learning,time-series | sub-10ms | production-grade | a=40 k=1
+== budget-pacing-controller | Campaign Budget Pacing | reinforcement-learning,time-series | sub-10ms | advanced | a=40 k=1
 obj: Spread campaign spend smoothly over the flight so budgets neither exhaust early nor underdeliver, adapting to traffic fluctuations.
 loss: \min\;\sum_t\left(S_t-S^*_t\right)^2+\lambda\,\mathrm{ThrottleVariance}
 con: Overspend tolerance under 1% ; Decision on every bid ; Multi-campaign interactions ; Distributed counters
@@ -112,7 +112,7 @@ off: Surplus per impression in replay ; Win-price likelihood
 on: Cost per won impression at equal win rate ; Surplus uplift
 gap: Training on win prices only ; Replay assumes competitors do not react
 
-== floor-price-optimization-publisher | Publisher Floor-Price Optimisation | tabular,reinforcement-learning | sub-100ms | production-grade | a=30 k=1
+== floor-price-optimization-publisher | Publisher Floor-Price Optimisation | tabular,reinforcement-learning | sub-100ms | advanced | a=30 k=1
 obj: Set per-impression floor prices to raise publisher yield without suppressing fill or driving buyers away.
 loss: \max_{f}\;\mathbb{E}\!\left[\max(\text{bid}_{(1)},\text{bid}_{(2)},f)\cdot\mathbb{1}[\text{bid}_{(1)}\ge f]\right]
 con: Latency 30 ms ; Buyer fairness ; Header-bidding complexity ; Avoid long-term demand loss
@@ -132,7 +132,7 @@ off: Simulated revenue under logged-bid distributions ; Calibration of top-bid q
 on: Revenue per thousand impressions ; Fill rate
 gap: Counterfactual revenue using bids from different floors ; Ignoring bidder adaptation
 
-== audience-lookalike-modeling | Lookalike Audience Modelling | tabular,recommender | batch | production-grade | a=0.1 k=3
+== audience-lookalike-modeling | Lookalike Audience Modelling | tabular,recommender | batch | advanced | a=0.1 k=3
 obj: Find users who resemble a seed audience at scale for acquisition campaigns, with privacy-safe features.
 loss: \mathcal{L}=\mathrm{BCE}(\text{seed vs non-seed})+\lambda\,\mathrm{Calibration}
 con: Privacy and consent ; Seed size variation ; Daily refresh for 1B users ; Avoid sensitive attributes
@@ -172,7 +172,7 @@ off: Link precision and recall on deterministic holdout ; Cluster purity
 on: Match rate ; Frequency capping accuracy
 gap: Evaluating on deterministic links that inflate probabilistic accuracy ; Ignoring household effects
 
-== contextual-targeting-page-classification | Contextual Targeting & Page Classification | nlp | sub-100ms | production-grade | a=30 k=4
+== contextual-targeting-page-classification | Contextual Targeting & Page Classification | nlp | sub-100ms | advanced | a=30 k=4
 obj: Classify page and video content into IAB topics and sentiment in real time to target ads without user identifiers.
 loss: \mathcal{L}=\sum_k\mathrm{BCE}(y_k,p_k)
 con: Classification latency under 50 ms with caching ; Multilingual ; New pages constantly ; Brand-safety coupling
@@ -192,7 +192,7 @@ off: Macro-F1 on IAB taxonomy ; Cache hit rate
 on: Contextual campaign CPA vs behavioural ; Addressable inventory share
 gap: Evaluating on clean article pages only ; Taxonomy version mismatch
 
-== brand-safety-content-classification | Brand-Safety Content Classification | nlp,computer-vision | sub-100ms | production-grade | a=30 k=40
+== brand-safety-content-classification | Brand-Safety Content Classification | nlp,computer-vision | sub-100ms | advanced | a=30 k=40
 obj: Detect unsafe or unsuitable content (violence, hate, adult, misinformation) near ads at page, video and stream level with fine-grained brand controls.
 loss: \mathcal{L}=\sum_k w_k\,\mathrm{BCE}(y_k,p_k)
 con: Advertiser-defined suitability tiers ; Video frames and audio ; Precision to avoid over-blocking publishers ; Appeals
@@ -212,7 +212,7 @@ off: Per-category precision and recall ; False block rate on news
 on: Brand-safety incident rate ; Publisher revenue retention
 gap: Training on keyword-labelled data ; Test sets lacking news edge cases
 
-== invalid-traffic-detection | Invalid Traffic (IVT) Detection | tabular,graph | sub-100ms | production-grade | a=40 k=2
+== invalid-traffic-detection | Invalid Traffic (IVT) Detection | tabular,graph | sub-100ms | advanced | a=40 k=2
 obj: Identify bot, hijacked-device and click-farm traffic across impressions and clicks before billing and bidding on it.
 loss: \mathcal{L}=\mathrm{FL}(p,y)+\lambda\,\mathrm{Calibration}
 con: Pre-bid decision in 5 ms ; Post-bid refunds ; MRC accreditation standards ; Adversarial adaptation
@@ -232,7 +232,7 @@ off: Precision and recall at fixed spend blocked ; Refund accuracy
 on: Invalid traffic rate ; Advertiser refund requests
 gap: Labels only from detected fraud ; Training on stale tactics
 
-== click-fraud-and-bot-detection-search | Click Fraud Detection for Search Ads | tabular,time-series | sub-100ms | production-grade | a=2 k=2
+== click-fraud-and-bot-detection-search | Click Fraud Detection for Search Ads | tabular,time-series | sub-100ms | advanced | a=2 k=2
 obj: Detect competitor clicking and click farms on paid search to protect advertisers' budgets and keep trust.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)\cdot w(\text{CPC})
 con: Real-time filtering within billing ; Appeals ; Low false positives for genuine users ; Advertiser reporting
@@ -252,7 +252,7 @@ off: Precision at fixed recall of confirmed fraud ; Spend saved
 on: Filtered spend share ; Advertiser complaint rate
 gap: Confirmed fraud sample biased to obvious cases ; Features computed after billing
 
-== creative-optimization-bandits | Creative Optimisation with Bandits | reinforcement-learning | sub-100ms | production-grade | a=10 k=1
+== creative-optimization-bandits | Creative Optimisation with Bandits | reinforcement-learning | sub-100ms | advanced | a=10 k=1
 obj: Choose which creative variant to show each user to maximise conversions, learning quickly while exploring new variants.
 loss: \text{regret}_T=\sum_{t=1}^T\left(\mu^*_{x_t}-\mu_{a_t,x_t}\right)
 con: Few impressions per variant ; Creative fatigue ; Brand guidelines ; Fast learning
@@ -272,7 +272,7 @@ off: Offline replay regret ; Posterior calibration
 on: Conversion rate lift vs rotation ; Creative refresh cycle
 gap: Replay with non-uniform logging ; Ignoring non-stationarity
 
-== genai-creative-generation | GenAI Ad Creative Generation | llm-agents,computer-vision | seconds | production-grade | a=0.05 k=500 s=3 t=300
+== genai-creative-generation | GenAI Ad Creative Generation | llm-agents,computer-vision | seconds | advanced | a=0.05 k=500 s=3 t=300
 obj: Generate on-brand headlines, copy and image variants at scale and filter them by predicted performance and policy.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{brief})+\lambda\,\mathrm{PolicyViolation}
 con: Brand voice consistency ; Ad policy compliance ; IP safety ; Human approval for new brand templates
@@ -292,7 +292,7 @@ off: Policy pass rate ; Predicted CTR rank correlation with realised
 on: Creative production time ; CTR vs human baseline
 gap: Predicted CTR trained on human-made creatives ; Measuring volume instead of lift
 
-== pre-launch-creative-performance-prediction | Pre-Launch Creative Performance Prediction | computer-vision,tabular | seconds | production-grade | a=0.05 k=800
+== pre-launch-creative-performance-prediction | Pre-Launch Creative Performance Prediction | computer-vision,tabular | seconds | advanced | a=0.05 k=800
 obj: Predict how well an image or video creative will perform before spending, so weak creatives are fixed or dropped.
 loss: \mathcal{L}=\mathrm{Huber}(\text{CTR},\widehat{\text{CTR}})+\lambda\,\mathrm{RankLoss}
 con: Cold-start creatives ; Rank-ordering accuracy matters ; Explainable feedback to designers ; Creative formats vary
@@ -372,7 +372,7 @@ off: Placebo test false positive rate ; Pre-period fit
 on: Decision agreement with later tests ; Test cost per decision
 gap: Using post-period information in matching ; Ignoring spillover
 
-== uplift-modeling-campaign | Uplift Modelling for Campaigns | tabular | batch | production-grade | a=0.3 k=2
+== uplift-modeling-campaign | Uplift Modelling for Campaigns | tabular | batch | advanced | a=0.3 k=2
 obj: Target ads or offers only to users whose conversion probability rises because of the treatment, to maximise incremental conversions.
 loss: \hat\tau(x)=\mu_1(x)-\mu_0(x),\quad\text{policy: treat if }\hat\tau(x)>c
 con: Randomised control required ; Budget ; Consent ; Fairness
@@ -412,7 +412,7 @@ off: Normalised Gini of LTV ranking ; Cohort calibration error
 on: Realised LTV to CAC ratio ; Payback period
 gap: Immature labels in evaluation ; Training on one season
 
-== frequency-cap-optimization | Frequency Cap & Exposure Optimisation | tabular,reinforcement-learning | sub-100ms | production-grade | a=15 k=1
+== frequency-cap-optimization | Frequency Cap & Exposure Optimisation | tabular,reinforcement-learning | sub-100ms | advanced | a=15 k=1
 obj: Decide how often to show ads to each user to maximise conversions while limiting wasted impressions and annoyance.
 loss: \max_{f}\;\sum_i \text{conv}_i(f_i)-\lambda\,\text{cost}(f_i)-\mu\,\text{annoyance}(f_i)
 con: Cross-device counting ; Consent ; Real-time counters ; Publisher caps
@@ -472,7 +472,7 @@ off: Click-prediction AUC ; Off-policy value estimate
 on: Click-through and conversion rate ; Unsubscribe rate
 gap: Training on opens ; Ignoring deliverability effects
 
-== search-ads-keyword-generation-llm | Search Ads Keyword & Copy Generation | llm-agents,nlp | seconds | production-grade | a=0.05 k=10 s=3 t=250
+== search-ads-keyword-generation-llm | Search Ads Keyword & Copy Generation | llm-agents,nlp | seconds | advanced | a=0.05 k=10 s=3 t=250
 obj: Generate keyword sets, match types and ad copy for search campaigns from a landing page and goal, with quality and policy controls.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{page})+\lambda\,\mathrm{PolicyViolation}
 con: Keyword relevance and negative keywords ; Trademark rules ; Budget awareness ; Search policy compliance
@@ -492,7 +492,7 @@ off: Relevance precision ; CPA of generated vs manual keywords
 on: Time to launch ; Cost per acquisition
 gap: Evaluating on volume without conversions ; Ignoring negative keywords
 
-== query-ad-relevance-matching | Query–Ad Relevance Matching | nlp,recommender | sub-100ms | production-grade | a=10 k=2
+== query-ad-relevance-matching | Query–Ad Relevance Matching | nlp,recommender | sub-100ms | advanced | a=10 k=2
 obj: Score semantic relevance between queries and ads to gate eligibility and improve quality scores.
 loss: \mathcal{L}=\mathrm{BCE}(y,\sigma(f(q,a)))+\lambda\,\mathrm{Distillation}
 con: 10 ms scoring with cached ad embeddings ; Multi-language ; Click-labelled bias ; Explainable to advertisers

@@ -26,7 +26,7 @@ export const ML_PARADIGMS = [
   'reinforcement-learning',
 ] as const;
 export const LATENCY_SLAS = ['sub-10ms', 'sub-100ms', 'seconds', 'batch'] as const;
-export const DIFFICULTIES = ['foundational', 'production-grade', 'staff-principal'] as const;
+export const DIFFICULTIES = ['foundational', 'advanced', 'staff-principal'] as const;
 
 export const PATTERN_IDS = [
   'tabular',

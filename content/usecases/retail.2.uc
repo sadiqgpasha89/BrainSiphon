@@ -19,7 +19,7 @@ off: Qini and AUUC ; Intervention calibration
 on: Checkout completion rate ; Margin per recovered cart
 gap: Non-random past interventions ; Counting recovered carts that would have converted anyway
 
-== send-time-optimization | Notification Send-Time & Frequency Optimisation | reinforcement-learning,time-series | batch | production-grade | a=2 k=1
+== send-time-optimization | Notification Send-Time & Frequency Optimisation | reinforcement-learning,time-series | batch | advanced | a=2 k=1
 obj: Choose when and how often to send push, email and SMS per user to maximise engagement without driving opt-outs.
 loss: \max_\pi\;\mathbb{E}\!\left[\sum_t \gamma^t\,(r^{\text{engage}}_t-\kappa\,\mathbb{1}_{\text{optout},t})\right]
 con: Quiet hours and regulation ; Per-channel caps ; Opt-out is permanent loss ; 10M users nightly
@@ -39,7 +39,7 @@ off: Off-policy estimate of engagement and opt-out ; Calibration of hazard
 on: Engaged sessions per message ; Unsubscribe rate
 gap: Optimising opens inflated by privacy-proxy pre-fetch ; Logged policy lacks exploration
 
-== loyalty-offer-optimization | Loyalty Programme Offer Optimisation | reinforcement-learning,recommender | batch | production-grade | a=0.1 k=2
+== loyalty-offer-optimization | Loyalty Programme Offer Optimisation | reinforcement-learning,recommender | batch | advanced | a=0.1 k=2
 obj: Choose personalised points, tier and reward offers that raise lifetime value subject to a programme cost budget.
 loss: \max_\pi\;\mathbb{E}\!\left[\sum_t\gamma^t(\text{margin}_t-\text{cost}_t)\right]\ \text{s.t. cost}\le B
 con: Programme liability accounting ; Fairness across tiers ; Offer expiry rules ; Weekly cadence
@@ -59,7 +59,7 @@ off: Off-policy value (FQE) ; Incremental spend in holdout
 on: Incremental margin per programme dollar ; Active member retention
 gap: Logged data lacks randomisation ; Measuring redemption not lift
 
-== shelf-monitoring-vision | Shelf Monitoring & Planogram Compliance | computer-vision | seconds | production-grade | a=0.05 k=2000
+== shelf-monitoring-vision | Shelf Monitoring & Planogram Compliance | computer-vision | seconds | advanced | a=0.05 k=2000
 obj: Detect out-of-stock, misplaced and non-compliant products from shelf photos and robot images to cut lost sales.
 loss: \mathcal{L}=\mathcal{L}_{\text{det}}+\mathcal{L}_{\text{cls}}+\lambda\,\mathcal{L}_{\text{planogram}}
 con: Works on phone and robot images ; New SKUs weekly ; Edge inference in store ; Task creation within minutes
@@ -119,7 +119,7 @@ off: Hourly WAPE ; Service-level breach simulation
 on: Labour cost percent of sales ; Wait time breaches
 gap: Using actual weather instead of forecast ; Evaluating at daily instead of hourly level
 
-== competitor-price-intelligence | Competitor Price Intelligence & Matching | nlp,computer-vision | batch | production-grade | a=0.02 k=10
+== competitor-price-intelligence | Competitor Price Intelligence & Matching | nlp,computer-vision | batch | advanced | a=0.02 k=10
 obj: Continuously match own SKUs to competitor listings and track prices and availability reliably for pricing teams.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{AttributeConflict}
 con: Legal scraping boundaries ; Match precision above 98% ; Daily refresh for 5M SKUs ; Handle variants and bundles
@@ -139,7 +139,7 @@ off: Match precision and recall ; Extraction field accuracy
 on: Price-index coverage ; Pricing action accuracy
 gap: Precision measured on GTIN-matched easy pairs ; Stale prices counted as fresh
 
-== search-relevance-llm-judge-evaluation | Search Relevance Evaluation with LLM Judges | llm-agents,nlp | batch | production-grade | a=0.001 k=20
+== search-relevance-llm-judge-evaluation | Search Relevance Evaluation with LLM Judges | llm-agents,nlp | batch | advanced | a=0.001 k=20
 obj: Replace expensive human relevance labelling with calibrated LLM judges to evaluate ranking changes daily at scale.
 loss: \mathcal{L}=-\sum_i\log p_\theta(r_i\mid q_i,d_i)+\lambda\,\mathrm{Calibration}(\hat r,r_{\text{human}})
 con: Agreement with human raters ; Bias auditing (position, verbosity) ; Cost per judgement ; Reproducibility
@@ -179,7 +179,7 @@ off: Log-loss and calibration error ; Relevance-gated NDCG
 on: Ad revenue per search ; Advertiser ROAS
 gap: Click logs shaped by the incumbent auction ; Miscalibration by traffic segment
 
-== out-of-stock-substitution | Out-of-Stock Substitution Recommendations | recommender | sub-100ms | production-grade | a=1 k=3
+== out-of-stock-substitution | Out-of-Stock Substitution Recommendations | recommender | sub-100ms | advanced | a=1 k=3
 obj: Offer the best in-stock substitute when a grocery or retail item is unavailable, preserving the order and customer trust.
 loss: \mathcal{L}=\mathrm{BPR}(u,i,j)+\lambda\,\mathrm{AcceptanceCalibration}
 con: Dietary and allergy constraints ; Price tolerance ; Real-time stock ; Pickers need instant decisions
@@ -199,7 +199,7 @@ off: Top-1 acceptance prediction ; Constraint violation rate
 on: Substitution acceptance rate ; Refunds due to substitutions
 gap: Acceptance logged only for offered items ; Safety constraints not tested separately
 
-== fresh-produce-waste-forecasting | Fresh Produce Waste & Order Forecasting | time-series,tabular | batch | production-grade | a=1 k=1
+== fresh-produce-waste-forecasting | Fresh Produce Waste & Order Forecasting | time-series,tabular | batch | advanced | a=1 k=1
 obj: Forecast daily demand and shelf-life decay for perishables to cut waste while keeping availability above target.
 loss: \mathcal{L}=\sum_t\left[c_w(\hat q_t-y_t)^+ +c_s(y_t-\hat q_t)^+\right]+\lambda\,\mathrm{ShelfLifePenalty}
 con: Shelf-life windows ; Supplier delivery cut-offs ; Markdown rules ; Store-level orders daily
@@ -279,7 +279,7 @@ off: FID and identity similarity ; Human preference on fit realism
 on: Return rate of try-on users ; Conversion lift
 gap: Evaluated on studio models only ; Realism rated by internal staff
 
-== voice-shopping | Voice Shopping (ASR + NLU) | nlp | seconds | production-grade | a=0.5 k=60
+== voice-shopping | Voice Shopping (ASR + NLU) | nlp | seconds | advanced | a=0.5 k=60
 obj: Understand spoken shopping requests, resolve products and handle reorders reliably across accents and noisy environments.
 loss: \mathcal{L}=\mathcal{L}_{\text{CTC}}+\mathrm{CE}_{\text{intent}}+\lambda\,\mathrm{CE}_{\text{slot}}
 con: Under 1.5 s response ; 12 languages and accents ; Privacy of audio ; Confirmation before purchase
@@ -299,7 +299,7 @@ off: WER on entity spans ; Intent and slot F1
 on: Voice order success rate ; Correction rate
 gap: Test audio recorded in quiet rooms ; WER averaged over non-entity words
 
-== category-page-ranking | Category & Browse Page Ranking | recommender | sub-100ms | production-grade | a=8 k=4
+== category-page-ranking | Category & Browse Page Ranking | recommender | sub-100ms | advanced | a=8 k=4
 obj: Order products on category and browse pages to maximise conversion, balancing popularity, personalisation, margin and new-item exposure.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{ListwisePenalty}
 con: Merchandising pins and bans ; 40 ms ; Fair exposure to new sellers ; Stable ordering (no flicker)
@@ -319,7 +319,7 @@ off: Debiased NDCG ; Interleaving sensitivity
 on: Category conversion rate ; Revenue per visit
 gap: Position bias unaddressed ; Offline metric favours incumbent ranker
 
-== buy-box-seller-ranking | Buy-Box & Seller Offer Ranking | tabular,recommender | sub-100ms | production-grade | a=4 k=2
+== buy-box-seller-ranking | Buy-Box & Seller Offer Ranking | tabular,recommender | sub-100ms | advanced | a=4 k=2
 obj: Select which seller wins the featured offer for each product based on price, speed, reliability and customer-experience.
 loss: \mathcal{L}=\mathrm{BCE}(\text{conversion},p)+\lambda\,\mathrm{FairnessPenalty}
 con: Transparent seller policy ; Anti-gaming ; 30 ms ; Regulatory fairness
@@ -379,7 +379,7 @@ off: Simulated total cost-to-serve ; Cancellation rate prediction
 on: Cost per order ; On-time delivery rate
 gap: Simulator uses perfect inventory ; Ignoring split-shipment customer experience
 
-== pre-purchase-return-risk | Pre-Purchase Return Risk & Prevention | tabular,recommender | sub-100ms | production-grade | a=2 k=2
+== pre-purchase-return-risk | Pre-Purchase Return Risk & Prevention | tabular,recommender | sub-100ms | advanced | a=2 k=2
 obj: Predict the likelihood a specific order line will be returned and use gentle interventions (fit info, alternate size) to prevent avoidable returns.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)\cdot w(\text{return cost})
 con: Do not discourage genuine purchases ; Transparent nudges ; 50 ms ; Fairness
@@ -399,7 +399,7 @@ off: Reason-level AUC ; Uplift on return rate
 on: Net revenue after returns ; Avoidable-return rate
 gap: Training on observational nudges ; Ignoring conversion cost of nudges
 
-== ugc-content-moderation-marketplace | Marketplace UGC Moderation | computer-vision,nlp | sub-100ms | production-grade | a=1 k=100
+== ugc-content-moderation-marketplace | Marketplace UGC Moderation | computer-vision,nlp | sub-100ms | advanced | a=1 k=100
 obj: Block prohibited listings, images and messages at submission while minimising wrongful removals.
 loss: \mathcal{L}=\sum_k\mathrm{BCE}(y_k,p_k)+\lambda\,\mathrm{Calibration}
 con: Policy per country ; Appeals within 48 hours ; Multi-modal content ; 80 ms synchronous gate

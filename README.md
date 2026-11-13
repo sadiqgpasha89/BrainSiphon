@@ -69,7 +69,7 @@ BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineeri
   7. *Cybersecurity: SOC Copilot Investigation Agent* — ReAct autonomous triage, prompt injection defense, dual-authorization approval gate for destructive containment actions.
   8. *AdTech: Real-Time CTR Prediction for Ads* — Ultra-low latency RTB scoring, Empirical Bayes smoothing for cold-start ads, eCPM second-price auction resolution.
 - **Phase 0 to Phase 3 Downloadable Implementation Packages:** Standardized templates in `delivery/templates/` for Client Discovery, Production BRDs, C4 Architecture Suites, Sequence Diagrams, OpenAPI/AsyncAPI contracts, Data Quality Suites, and FastAPI microservices.
-- **10 Production Operational Runbooks (`deployment/runbooks/`):** Battle-tested incident runbooks (RB-01 through RB-10) with exact Prometheus triggers, triage steps (<5m), mitigation actions (<15m), and diagnostic CLI commands.
+- **10 Production Operational Runbooks (`deployment/runbooks/`):** Reference incident runbooks (RB-01 through RB-10) with exact Prometheus triggers, triage steps (<5m), mitigation actions (<15m), and diagnostic CLI commands.
 
 ## How it works
 
@@ -144,8 +144,34 @@ evidence and a reader needs to see exactly which have been earned:
 | Production evidence        | Not available                         | Evidence from a real deployment or production dataset                | not claimed for any blueprint                  |
 
 "Passed" for the starter is shown only when a kit report exists for **exactly this content**; a build that did not run the kits says
-"Not run". To record an expert review, add `{"<domain>/<slug>": {"reviewer": "...", "date": "YYYY-MM-DD", "scope": "..."}}` to
+"Not run". To record an expert review, add `{"<domain>/<slug>": {"reviewer": "...", "organisation": "...", "date": "YYYY-MM-DD", "scope": "..."}}` to
 `content/reviews.json`.
+
+### Maturity scorecard and the release report
+
+Passing the schema shows a page is complete; it is not evidence that an implementation is ready. So every blueprint also carries a
+**seven-level maturity scorecard** (`blueprintMaturityScorecard` in `src/content/release.ts`), and no page uses a label such as
+"production-grade":
+
+| Level | Classification                                        | Met when                                                                    |
+| ----- | ----------------------------------------------------- | --------------------------------------------------------------------------- |
+| 1     | Conceptually reviewed architecture                    | written and read through by the maintainers (no independent review)         |
+| 2     | Schema-validated blueprint                            | the blueprint parses against the strict schema                              |
+| 3     | Architecture-feasibility validated blueprint          | no feasibility check fails (open warnings are shown on the level)           |
+| 4     | Synthetic-data tested implementation                  | a starter for the **exact** problem passed its tests for this content       |
+| 5     | Domain-expert validated implementation                | a review is recorded in `content/reviews.json`                              |
+| 6     | Platform-integrated implementation                    | never, in this repository: it records no integration                        |
+| 7     | Production-deployed and production-evidenced solution | production evidence is recorded (none is)                                   |
+
+A blueprint is classified at the highest level it reaches **without skipping one**. Each level shows its state, the evidence, the
+command that reproduces it, test counts and line coverage with a link to the published pytest output, the reviewer (or "None") and
+date, and what is outstanding. Every state is derived from recorded evidence; no reviewer, date or count is typed by hand.
+
+`/release` is the **release report**, generated from the manifest: how many blueprints meet each level, every starter-kit run with its
+log (`/release/kit-logs/*.txt`), every architecture-feasibility warning with the blueprint it affects and the recommended remediation,
+and the outstanding issues. The same report is published as `/release-report.md`. Warnings are read from the checks; a
+blueprint-specific remediation lives in `REMEDIATION_OVERRIDES` and `validate:content` fails if one outlives its warning. The home
+and about pages take their figures from the manifest too.
 
 ### Release provenance and the deploy gate
 
@@ -158,8 +184,9 @@ and summarised in the header of each blueprint's `.md` twin):
 | `contentVersion` / `contentDigest`        | `<package version>+<12 hex>` and the sha256 over every content input (`content/`, `src/content/`, `src/schemas/`) |
 | `validatedAt`                             | When `validate:content` last passed for exactly this content (null if no matching report)         |
 | `deployedAt`                              | When the deployment artefact was built (null for a build that is not a deployment)                |
-| `checks.schema` / `checks.feasibility`    | Status of the schema and architecture-feasibility checks across all 500 blueprints                |
-| `checks.executable`                       | Starter-kit results (one entry per kit) and when they ran                                         |
+| `checks.schema` / `checks.feasibility`    | Status of the schema and architecture-feasibility checks across all 500 blueprints; feasibility counts passed, not applicable, warnings and failures separately and lists every warning with its remediation |
+| `checks.executable`                       | Starter-kit results (one entry per kit: status, test counts, line coverage, seconds) and when they ran |
+| `maturity`                                | For each of the seven maturity levels, how many blueprints meet it and how many are classified at it |
 | `checks.domainExpert` / `checks.productionEvidence` | How many blueprints have a recorded expert review / production evidence (both 0 today)  |
 
 A report is only used when its content digest equals the build's, so a validation or kit run from earlier content can never vouch for

@@ -1,5 +1,5 @@
 # Retail & E-Commerce, part 1 (use cases 1-25)
-== personalized-search-ranking | Personalised Product Search Ranking | recommender,nlp | sub-100ms | production-grade | a=10 k=6
+== personalized-search-ranking | Personalised Product Search Ranking | recommender,nlp | sub-100ms | advanced | a=10 k=6
 obj: Rank search results to maximise purchases per search session while preserving relevance and catalogue fairness to sellers.
 loss: \mathcal{L}=\sum_{q}\sum_{(i,j):y_i>y_j}\log\left(1+e^{-(s_i-s_j)}\right)\left|\Delta\mathrm{NDCG}_{ij}\right|
 con: p99 under 80 ms including retrieval ; 100M-item catalogue ; Position-bias-aware training ; Query-level explainability for merchandisers ; Serviceability by pincode or dark store applied before ranking ; Sellers keep a guaranteed exposure floor
@@ -24,7 +24,7 @@ off: NDCG@10 with propensity weighting ; Recall@200 of retrieval
 on: Search conversion rate ; Revenue per search
 gap: Training on clicks from the current ranker ; Evaluating only on head queries
 
-== query-understanding-and-spell-correction | Query Understanding & Spell Correction | nlp | sub-10ms | production-grade | a=10 k=1
+== query-understanding-and-spell-correction | Query Understanding & Spell Correction | nlp | sub-10ms | advanced | a=10 k=1
 obj: Normalise, correct and classify user queries into intents and attributes within a few milliseconds before retrieval.
 loss: \mathcal{L}=\mathrm{CE}_{\text{intent}}+\lambda\,\mathrm{CE}_{\text{NER}}
 con: Under 5 ms ; 20 languages and code-mixed text ; Safe against over-correction of brand names ; Updates daily
@@ -44,7 +44,7 @@ off: Correction accuracy at 99% precision ; NER F1
 on: Zero-result rate ; Search conversion
 gap: Test queries are clean while production is noisy ; Reformulation labels include accidental clicks
 
-== homepage-feed-recommendations | Homepage Feed Recommendations | recommender | sub-100ms | production-grade | a=15 k=5
+== homepage-feed-recommendations | Homepage Feed Recommendations | recommender | sub-100ms | advanced | a=15 k=5
 obj: Fill a personalised homepage feed that maximises long-term engagement and purchases for 10M users while managing diversity and freshness.
 loss: \mathcal{L}=-\sum_{(u,i)}\log\frac{e^{s(u,i)/\tau}}{\sum_{j\in\mathcal N_u}e^{s(u,j)/\tau}}
 con: 60 ms feed assembly ; Frequency capping per item ; Diversity constraints ; Explore/exploit slots
@@ -64,7 +64,7 @@ off: NDCG and calibration of purchase head ; Coverage of catalogue
 on: Purchases per user session ; 7-day return rate
 gap: Training on logged policy without propensities ; Offline hits vs online diversity effects
 
-== session-based-next-item-recommendation | Session-Based Next-Item Recommendation | recommender,time-series | sub-100ms | production-grade | a=12 k=3
+== session-based-next-item-recommendation | Session-Based Next-Item Recommendation | recommender,time-series | sub-100ms | advanced | a=12 k=3
 obj: Recommend the next item for anonymous or logged-in sessions in real time, using only in-session behaviour when history is absent.
 loss: \mathcal{L}=-\sum_t\log\frac{e^{s(h_t,i_{t+1})}}{\sum_j e^{s(h_t,j)}}
 con: Works for anonymous users ; State updated per click ; 50 ms ; Privacy-friendly (no cross-site tracking)
@@ -91,7 +91,7 @@ off: HitRate@20 and MRR on time-split ; Catalogue coverage
 on: Click-through on recommendations ; Add-to-cart rate
 gap: Random session splits leak popularity ; Test sessions from the same day as training
 
-== similar-and-complementary-product-recs | Similar & Complementary Product Recommendations | recommender,graph | sub-100ms | production-grade | a=8 k=3
+== similar-and-complementary-product-recs | Similar & Complementary Product Recommendations | recommender,graph | sub-100ms | advanced | a=8 k=3
 obj: Show substitutes on out-of-stock or low-fit items and complements at cart, lifting basket size without cannibalising margin.
 loss: \mathcal{L}=\mathrm{InfoNCE}(i,i^+)+\lambda\,\mathrm{GraphReg}
 con: Compatibility correctness (phone case fits phone) ; 40 ms ; Brand/legal exclusions ; Explainable reason strings
@@ -111,7 +111,7 @@ off: Complement HitRate@10 ; Compatibility violation rate
 on: Attach rate ; Average order value
 gap: Co-view mistaken for complement ; Offline metric blind to compatibility errors
 
-== visual-search-shop-the-look | Visual Search & Shop-the-Look | computer-vision,recommender | sub-100ms | production-grade | a=1 k=400
+== visual-search-shop-the-look | Visual Search & Shop-the-Look | computer-vision,recommender | sub-100ms | advanced | a=1 k=400
 obj: Let shoppers photograph or upload an image and retrieve visually matching sellable items, including per-garment matches in a scene.
 loss: \mathcal{L}=\mathrm{Triplet}(f(a),f(p),f(n))+\lambda\,\mathcal{L}_{\text{det}}
 con: 100 ms end-to-end including detection ; Index of 200M images ; Safe-content filtering ; Mobile bandwidth
@@ -151,7 +151,7 @@ off: Demand model WAPE ; Optimiser uplift on holdout stores
 on: Gross margin dollars ; Price perception index
 gap: Elasticities estimated from observational price changes ; Offline simulation uses the same demand model that picks prices
 
-== markdown-clearance-optimization | Markdown & Clearance Optimisation | tabular,reinforcement-learning | batch | production-grade | a=0.1 k=2
+== markdown-clearance-optimization | Markdown & Clearance Optimisation | tabular,reinforcement-learning | batch | advanced | a=0.1 k=2
 obj: Choose markdown depth and timing to sell through end-of-season stock at maximum recovery before a cut-off date.
 loss: \max_{m_{1:T}}\;\mathbb{E}\!\left[\sum_t (p_0(1-m_t)-c)\,q_t(m_t)\right]\ \text{s.t. }\sum_t q_t\ge S
 con: Terminal inventory target ; Markdown cadence rules ; Store-level execution ; Brand price floors
@@ -171,7 +171,7 @@ off: Revenue recovery vs baseline in backtest ; Sell-through forecast MAPE
 on: Recovery rate ; Terminal stock units
 gap: Backtests using realised future stock ; Ignoring cannibalisation in simulation
 
-== promotion-uplift-and-coupon-targeting | Promotion Uplift & Coupon Targeting | tabular | batch | production-grade | a=0.3 k=2
+== promotion-uplift-and-coupon-targeting | Promotion Uplift & Coupon Targeting | tabular | batch | advanced | a=0.3 k=2
 obj: Send coupons only to customers whose purchase probability rises because of the coupon, maximising incremental margin per promotion dollar.
 loss: \mathcal{L}=\sum_i\left(Y_i-\mu_{W_i}(X_i)\right)^2\ \text{(T-learner)};\ \text{policy}=\mathbb{1}[\hat\tau(x)>c]
 con: Promotion budget ; Fairness across loyalty tiers ; Coupon abuse prevention ; Weekly campaigns
@@ -191,7 +191,7 @@ off: Qini coefficient and AUUC ; Policy value via doubly-robust estimator
 on: Incremental margin per coupon dollar ; Redemption by control group
 gap: Training on non-randomised past promotions ; Measuring redemption rather than incrementality
 
-== demand-forecasting-sku-store | SKU-Store Demand Forecasting | time-series | batch | production-grade | a=1 k=1
+== demand-forecasting-sku-store | SKU-Store Demand Forecasting | time-series | batch | advanced | a=1 k=1
 obj: Forecast daily demand for millions of SKU-store pairs to drive replenishment with calibrated uncertainty and promo awareness.
 loss: \mathcal{L}=\sum_{t}\sum_{q}\rho_q\!\left(y_t-\hat y_t^{(q)}\right)\quad\text{(quantile / pinball)}
 con: 5M series nightly ; Intermittent demand ; Promotion and price covariates ; Explainable overrides
@@ -211,7 +211,7 @@ off: WAPE and weighted pinball loss ; Bias at SKU-store level
 on: In-stock rate ; Waste and markdown rate
 gap: Random CV over time ; Future promo plans used before they were decided
 
-== new-product-cold-start-forecasting | New Product Cold-Start Forecasting | time-series,tabular | batch | production-grade | a=0.2 k=1
+== new-product-cold-start-forecasting | New Product Cold-Start Forecasting | time-series,tabular | batch | advanced | a=0.2 k=1
 obj: Forecast demand for products with no sales history using attributes, images and analogues to set first buys and launch allocation.
 loss: \mathcal{L}=\sum_t\rho_q\!\left(y_t-\hat y_t^{(q)}\right)+\lambda\,\mathrm{Analogue}\ \mathrm{Consistency}
 con: Buy decisions months ahead ; Small initial samples ; Explainable analogue selection ; Merchandiser overrides
@@ -311,7 +311,7 @@ off: Differential response (lift) between segments ; Stability (adjusted Rand) m
 on: Campaign lift by segment ; Use of segments by teams
 gap: Evaluating clusters only on internal metrics ; No test of actionable difference
 
-== conversational-shopping-assistant | Conversational Shopping Assistant | llm-agents,recommender | seconds | production-grade | a=1 k=14 s=4 t=350
+== conversational-shopping-assistant | Conversational Shopping Assistant | llm-agents,recommender | seconds | advanced | a=1 k=14 s=4 t=350
 obj: Let shoppers describe needs in natural language and get grounded, buyable product recommendations with comparisons and follow-ups.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x,\text{catalogue})+\lambda\,\mathrm{OutOfCatalogue}
 con: Never recommend unavailable or non-existent products ; p95 under 5 s first answer ; Brand safety ; Cost per session cap
@@ -331,7 +331,7 @@ off: Grounding precision ; Constraint satisfaction rate on golden queries
 on: Assisted conversion rate ; Cost per assisted session
 gap: Golden queries written by developers ; Judging with an LLM that shares the model's biases
 
-== product-catalog-attribute-extraction-llm | Catalogue Attribute Extraction with LLMs | nlp,llm-agents | batch | production-grade | a=0.02 k=20
+== product-catalog-attribute-extraction-llm | Catalogue Attribute Extraction with LLMs | nlp,llm-agents | batch | advanced | a=0.02 k=20
 obj: Fill and normalise product attributes (size, material, compatibility) from titles, descriptions and images to power search, filters and recommendations.
 loss: \mathcal{L}=\mathrm{CE}_{\text{token}}+\lambda\,\mathrm{SchemaViolation}
 con: Strict JSON schema output ; 200M products ; Human audit sampling ; Cost per item under a fraction of a cent
@@ -351,7 +351,7 @@ off: Attribute-level F1 ; Schema violation rate
 on: Filter coverage ; Search conversion in enriched categories
 gap: Gold set from easy categories ; Evaluating only exact string matches
 
-== product-matching-and-deduplication | Product Matching & Deduplication | nlp,computer-vision | batch | production-grade | a=0.02 k=15
+== product-matching-and-deduplication | Product Matching & Deduplication | nlp,computer-vision | batch | advanced | a=0.02 k=15
 obj: Identify identical products across sellers and sources to merge listings, power price comparison and avoid catalogue bloat.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{TransitiveClosurePenalty}
 con: Billions of candidate pairs ; Precision above 99% for merges ; GTIN not always present ; Explainable merges
@@ -391,7 +391,7 @@ off: Per-policy precision and recall ; Explanation fidelity
 on: Image rejection appeal overturn rate ; Seller time to listing
 gap: Training on moderator labels with inconsistent policy interpretation ; Test images from one region
 
-== fake-review-detection | Fake Review & Review-Manipulation Detection | nlp,graph | batch | production-grade | a=0.3 k=4
+== fake-review-detection | Fake Review & Review-Manipulation Detection | nlp,graph | batch | advanced | a=0.3 k=4
 obj: Detect fake, incentivised and coordinated reviews that distort ratings, protecting buyers and honest sellers.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{GraphReg}
 con: Fast takedown within 24 hours ; Fair treatment of genuine reviewers ; Legal evidence trail ; Adversarial adaptation
@@ -411,7 +411,7 @@ off: Precision at moderator capacity ; Ring recall
 on: Fake review prevalence from audits ; Seller appeal overturn rate
 gap: Known fake rings are easiest to detect ; Time leakage when graph built with later takedowns
 
-== return-fraud-and-abuse-detection | Return Fraud & Policy Abuse Detection | tabular,graph | sub-100ms | production-grade | a=0.5 k=2
+== return-fraud-and-abuse-detection | Return Fraud & Policy Abuse Detection | tabular,graph | sub-100ms | advanced | a=0.5 k=2
 obj: Decide at return initiation whether to auto-approve, require inspection or deny, catching wardrobing, empty-box and serial abusers.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)\cdot w(\text{item value})
 con: Genuine customers must not be punished ; Instant refund promise for trusted users ; Decision in 80 ms ; Policy fairness
@@ -431,7 +431,7 @@ off: PR-AUC and expected loss prevented ; Inspection yield
 on: Return abuse losses ; Customer complaint rate
 gap: Labels only from inspected returns ; Feature leakage via post-return refund status
 
-== checkout-payment-risk-ecommerce | E-Commerce Checkout Risk (Card-Not-Present) | tabular,graph | sub-100ms | production-grade | a=2 k=4
+== checkout-payment-risk-ecommerce | E-Commerce Checkout Risk (Card-Not-Present) | tabular,graph | sub-100ms | advanced | a=2 k=4
 obj: Approve genuine orders instantly and block fraudulent card-not-present orders before fulfilment, optimising profit not just fraud rate.
 loss: \mathcal{L}=\sum_i c_{\text{FN}}\,y_i(1-p_i)+c_{\text{FP}}(1-y_i)p_i\quad\text{with calibrated }p
 con: Decision under 70 ms ; Chargeback ratio under scheme limits ; 3DS step-up budget ; Explainable manual review
@@ -451,7 +451,7 @@ off: PR-AUC and profit curve ; Calibration by merchant
 on: Fraud losses as percent of GMV ; Approval rate
 gap: Training on approved orders only ; Review decisions treated as ground truth
 
-== seller-fraud-marketplace-onboarding | Marketplace Seller Fraud Detection | tabular,graph,nlp | seconds | production-grade | a=0.01 k=40
+== seller-fraud-marketplace-onboarding | Marketplace Seller Fraud Detection | tabular,graph,nlp | seconds | advanced | a=0.01 k=40
 obj: Detect fraudulent or high-risk sellers at registration and early lifecycle to stop scams, counterfeits and non-delivery.
 loss: \mathcal{L}=\mathrm{FL}(p,y)+\lambda\,\mathrm{GraphReg}
 con: Onboarding SLA hours not days ; Legal KYB requirements ; Appeals ; Sellers in 100 countries
@@ -491,7 +491,7 @@ off: Precision and recall per brand ; Evidence pack acceptance by brands
 on: Counterfeit listing prevalence ; Brand complaints
 gap: Fakes in training from easy known sellers ; Brand references differ from real packaging
 
-== delivery-promise-estimation | Delivery Promise (ETA) Estimation | time-series,tabular | sub-100ms | production-grade | a=8 k=2
+== delivery-promise-estimation | Delivery Promise (ETA) Estimation | time-series,tabular | sub-100ms | advanced | a=8 k=2
 obj: Show accurate delivery dates at browse and checkout, balancing conversion (earlier promises) with on-time reliability.
 loss: \mathcal{L}=\sum_i\left[\alpha\,(y_i-\hat q_i)^+ +(1-\alpha)(\hat q_i-y_i)^+\right],\ \alpha=0.9
 con: 40 ms per promise ; Late delivery penalty ; Carrier capacity constraints ; Pin-code granularity
@@ -511,7 +511,7 @@ off: On-time rate at promised quantile ; Pinball loss
 on: Late delivery rate ; Conversion lift from faster promises
 gap: Evaluating on delivered orders only (survivorship) ; Mean error reported instead of tail error
 
-== size-and-fit-recommendation | Size & Fit Recommendation | recommender,tabular | sub-100ms | production-grade | a=2 k=2
+== size-and-fit-recommendation | Size & Fit Recommendation | recommender,tabular | sub-100ms | advanced | a=2 k=2
 obj: Recommend the right size per item and shopper to cut size-related returns without discouraging purchase.
 loss: \mathcal{L}=\mathrm{CE}(\text{fit class},p)+\lambda\,\mathrm{OrdinalPenalty}
 con: Brand-specific sizing ; Privacy of body measurements ; Under 50 ms ; New-brand cold start
@@ -531,7 +531,7 @@ off: Fit-class accuracy ; Ordinal macro-F1
 on: Size-related return rate ; Conversion on items with recommendation
 gap: Using kept items as correct without checking wear ; Return reasons mis-selected by users
 
-== review-summarization-and-q-and-a | Review Summarisation & Product Q&A | llm-agents,nlp | seconds | production-grade | a=1 k=10 s=2 t=250
+== review-summarization-and-q-and-a | Review Summarisation & Product Q&A | llm-agents,nlp | seconds | advanced | a=1 k=10 s=2 t=250
 obj: Summarise thousands of reviews into balanced pros/cons and answer product questions with citations from reviews and specs.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{AspectCoverage}
 con: Balanced, not cherry-picked ; Cite review IDs ; Cost per product page cached ; Spam-resistant
@@ -551,7 +551,7 @@ off: Faithfulness and aspect recall ; Human preference vs baseline
 on: Time on page to decision ; Conversion lift
 gap: Summaries judged for fluency not support ; Evaluating on well-reviewed products only
 
-== customer-service-ticket-routing-and-response | Customer Service Ticket Routing & Draft Replies | nlp,llm-agents | seconds | production-grade | a=0.3 k=6 s=3 t=250
+== customer-service-ticket-routing-and-response | Customer Service Ticket Routing & Draft Replies | nlp,llm-agents | seconds | advanced | a=0.3 k=6 s=3 t=250
 obj: Route tickets to the right queue, detect urgency and draft policy-correct replies so agents resolve contacts faster.
 loss: \mathcal{L}=\mathrm{CE}_{\text{route}}+\lambda\left(-\sum_t\log p_\theta(y_t\mid y_{<t},x)\right)
 con: Policy-accurate refunds ; PII masked ; Agent final approval ; p95 under 4 s

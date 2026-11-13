@@ -1,5 +1,5 @@
 # Supply Chain & Logistics, part 1 (use cases 1-25)
-== network-demand-sensing-short-term | Short-Term Demand Sensing | time-series,tabular | batch | production-grade | a=1 k=1
+== network-demand-sensing-short-term | Short-Term Demand Sensing | time-series,tabular | batch | advanced | a=1 k=1
 obj: Blend point-of-sale, order and external signals into 1-14 day demand forecasts that react to what is actually happening this week.
 loss: \mathcal{L}=\sum_{h=1}^{14}\sum_q\rho_q\!\left(y_{t+h}-\hat y_{t+h}^{(q)}\right)
 con: Nightly refresh for 5M series ; Latency of POS feeds ; Hierarchical consistency ; Planner overrides audited
@@ -26,7 +26,7 @@ off: Weighted MAPE at 1-14 day horizons ; Forecast value added vs baseline
 on: Forecast accuracy at lag 2 ; Expedite shipments avoided
 gap: Training with signals that arrive after the forecast time ; Evaluating at aggregate level only
 
-== eta-prediction-for-shipments | Shipment ETA Prediction | time-series,tabular | sub-100ms | production-grade | a=6 k=2
+== eta-prediction-for-shipments | Shipment ETA Prediction | time-series,tabular | sub-100ms | advanced | a=6 k=2
 obj: Predict arrival times for in-transit shipments with calibrated uncertainty so customers and planners can act before delays hit.
 loss: \mathcal{L}=\sum_i\rho_{0.5}(y_i-\hat q^{50}_i)+\rho_{0.9}(y_i-\hat q^{90}_i)
 con: ETA refresh on every scan or ping ; 50 ms API ; Multimodal journeys ; Explainable delay reasons
@@ -106,7 +106,7 @@ off: Simulated average delivery time and courier idle time ; Acceptance model ca
 on: Delivery time P90 ; Courier earnings per hour
 gap: Simulators that assume independent couriers ; Offline policy evaluation without propensities
 
-== warehouse-slotting-optimization | Warehouse Slotting Optimisation | tabular | batch | production-grade | a=0.05 k=3
+== warehouse-slotting-optimization | Warehouse Slotting Optimisation | tabular | batch | advanced | a=0.05 k=3
 obj: Assign SKUs to pick locations to cut travel time and congestion, adapting to demand and affinity patterns.
 loss: \min_{x}\;\sum_{s}\sum_{l}f_s\,d_l\,x_{sl}+\lambda\sum_{(s,s')}a_{ss'}\,\mathrm{dist}(x_s,x_{s'})
 con: Heavy items low ; Hazmat segregation ; Re-slotting labour cost ; Weekly cadence
@@ -126,7 +126,7 @@ off: Simulated travel distance reduction ; Pick-time estimate accuracy
 on: Lines picked per labour hour ; Travel distance per order
 gap: Travel savings ignoring congestion ; Using current slots to infer demand
 
-== pick-path-and-wave-planning | Pick-Path & Wave Planning | reinforcement-learning,tabular | seconds | production-grade | a=0.2 k=3
+== pick-path-and-wave-planning | Pick-Path & Wave Planning | reinforcement-learning,tabular | seconds | advanced | a=0.2 k=3
 obj: Group orders into waves and sequence picks to meet cut-off times with minimal labour and congestion.
 loss: \min\;\sum_{w}\mathrm{PathLength}(w)+\lambda\,\mathrm{Lateness}+\mu\,\mathrm{Congestion}
 con: Carrier cut-offs ; Zone capacity ; Pick-station balance ; Re-plan every few minutes
@@ -186,7 +186,7 @@ off: Damage detection recall at 1% false stop ; Severity accuracy
 on: Damage claims resolved with evidence ; Damage rate trend
 gap: Training on staged damage ; Not testing different shifts
 
-== parcel-sorting-barcode-ocr | Parcel Sorting: Label Reading & Address OCR | computer-vision,nlp | sub-100ms | production-grade | a=2 k=800
+== parcel-sorting-barcode-ocr | Parcel Sorting: Label Reading & Address OCR | computer-vision,nlp | sub-100ms | advanced | a=2 k=800
 obj: Read barcodes and address text from parcels on fast conveyors with high first-pass read rate to reduce manual coding.
 loss: \mathcal{L}=\mathcal{L}_{\text{det}}+\mathcal{L}_{\text{CTC}}
 con: 99.5% read rate ; 100 ms per parcel ; Damaged and curved labels ; Multi-language addresses
@@ -206,7 +206,7 @@ off: First-pass read rate ; Address validation precision
 on: Manual keying rate ; Misroute rate
 gap: Test images with clean labels ; Not measuring misroutes downstream
 
-== pallet-and-load-dimensioning-vision | Pallet Dimensioning & Load Verification | computer-vision | seconds | production-grade | a=0.1 k=4000
+== pallet-and-load-dimensioning-vision | Pallet Dimensioning & Load Verification | computer-vision | seconds | advanced | a=0.1 k=4000
 obj: Measure dimensions, weight proxies and load shape from 3D cameras to verify freight declarations and optimise trailer space.
 loss: \mathcal{L}=\mathrm{Huber}(\text{dims},\widehat{\text{dims}})+\lambda\,\mathrm{ShapeConsistency}
 con: Accuracy within 1 cm ; Throughput on dock ; Revenue dispute evidence ; Calibration drift
@@ -246,7 +246,7 @@ off: Rehandle count in simulation ; Dwell-time prediction error
 on: Vessel turnaround time ; Moves per crane hour
 gap: Simulator with perfect information ; Ignoring customs variance
 
-== container-dwell-time-prediction | Container Dwell-Time Prediction | tabular,time-series | batch | production-grade | a=0.02 k=3
+== container-dwell-time-prediction | Container Dwell-Time Prediction | tabular,time-series | batch | advanced | a=0.02 k=3
 obj: Predict how long import containers stay in port to plan yard capacity, trucking and demurrage exposure.
 loss: \mathcal{L}=-\sum_i\left[\delta_i\log h(t_i)-H(t_i)\right]
 con: Censoring for still-in-yard containers ; Daily refresh ; Interpretable for terminal planners ; Data from multiple parties
@@ -266,7 +266,7 @@ off: Concordance index ; Calibration of dwell quantiles
 on: Yard utilisation forecast error ; Demurrage costs
 gap: Training on completed containers only ; Using clearance time as a feature before it happens
 
-== freight-rate-prediction-and-pricing | Freight Rate Prediction & Pricing | tabular,time-series | sub-100ms | production-grade | a=1 k=2
+== freight-rate-prediction-and-pricing | Freight Rate Prediction & Pricing | tabular,time-series | sub-100ms | advanced | a=1 k=2
 obj: Quote spot and contract freight rates instantly using lane market data, capacity and customer value, balancing win rate and margin.
 loss: \mathcal{L}=\mathrm{Huber}(\log r,\log\hat r)+\lambda\,\mathrm{WinProbCalibration}
 con: Quote in 100 ms ; Margin floors ; Volatile fuel and capacity ; Auditability of quotes
@@ -286,7 +286,7 @@ off: MAPE of rate ; Win-curve calibration
 on: Margin per load ; Quote win rate
 gap: Won quotes only in training ; Using final rate as feature
 
-== carrier-selection-and-tendering | Carrier Selection & Tendering | reinforcement-learning,tabular | seconds | production-grade | a=0.3 k=3
+== carrier-selection-and-tendering | Carrier Selection & Tendering | reinforcement-learning,tabular | seconds | advanced | a=0.3 k=3
 obj: Choose which carrier to tender each load to, using acceptance probability, cost and service history to cut failed tenders.
 loss: \min_a\;c_a+\lambda\,(1-p^{\text{accept}}_a)\,c^{\text{fail}}+\mu\,\text{service risk}_a
 con: Contract allocations ; Tender time limits ; Service-level agreements ; Fair distribution
@@ -326,7 +326,7 @@ off: Precision at top-k suppliers ; Lead time before disruption
 on: Disruption cost avoided ; Alternate sourcing lead time
 gap: Rare disruptions leave few labels ; Time leakage via news published after the disruption
 
-== supply-chain-news-event-monitoring-llm | Supply-Chain Event Monitoring with LLM Agents | llm-agents,nlp | seconds | production-grade | a=0.02 k=30 s=4 t=350
+== supply-chain-news-event-monitoring-llm | Supply-Chain Event Monitoring with LLM Agents | llm-agents,nlp | seconds | advanced | a=0.02 k=30 s=4 t=350
 obj: Monitor global news, port notices and weather to detect events affecting specific lanes and suppliers and propose mitigation actions.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{articles})+\lambda\,\mathrm{Unsupported}
 con: Source attribution ; False-alert rate low ; Multilingual sources ; Human approval for actions
@@ -406,7 +406,7 @@ off: Weighted tardiness vs baseline rules ; Schedule stability
 on: On-time delivery ; Changeover time
 gap: Using actual processing times known after the fact ; Ignoring maintenance windows
 
-== predictive-maintenance-fleet | Fleet Predictive Maintenance | time-series,tabular | batch | production-grade | a=24 k=5
+== predictive-maintenance-fleet | Fleet Predictive Maintenance | time-series,tabular | batch | advanced | a=24 k=5
 obj: Predict component failures from telematics and service history to schedule maintenance before breakdowns.
 loss: \mathcal{L}=\mathrm{BCE}\text{(failure within horizon)}+\lambda\,\mathrm{CostWeighting}
 con: Downtime costs ; Telematics gaps ; Explainable component-level alerts ; Weekly planning
@@ -426,7 +426,7 @@ off: Time-dependent AUC ; Cost savings in simulation
 on: Unplanned breakdowns ; Maintenance cost per km
 gap: Treating replaced parts as non-failures ; Random split across vehicles over time
 
-== predictive-maintenance-warehouse-equipment | Warehouse Equipment Anomaly Detection | time-series | sub-100ms | production-grade | a=1440 k=1
+== predictive-maintenance-warehouse-equipment | Warehouse Equipment Anomaly Detection | time-series | sub-100ms | advanced | a=1440 k=1
 obj: Detect abnormal vibration, current and temperature in conveyors, sorters and AGVs in real time to prevent line stoppages.
 loss: \mathcal{L}=\|x-\mathrm{Dec}(\mathrm{Enc}(x))\|^2+\beta\,\mathrm{KL}
 con: Edge inference on PLC-adjacent hardware ; Few failure labels ; Low false alarms ; Explanation to technicians
@@ -446,7 +446,7 @@ off: Detection lead time before failure ; False-alarm rate per machine-month
 on: Unplanned stoppage minutes ; Maintenance cost
 gap: Seeded faults unlike real failures ; Evaluating on healthy periods only
 
-== cold-chain-temperature-excursion-prediction | Cold-Chain Excursion Prediction | time-series | sub-100ms | production-grade | a=96 k=1
+== cold-chain-temperature-excursion-prediction | Cold-Chain Excursion Prediction | time-series | sub-100ms | advanced | a=96 k=1
 obj: Predict temperature excursions in reefer trailers and pharma shipments minutes ahead so interventions save the load.
 loss: \mathcal{L}=\mathrm{BCE}(y_{t+h},p_t)+\lambda\,\mathrm{Huber}(T_{t+h},\hat T_{t+h})
 con: GDP / HACCP compliance ; Intervention lead time of 15-60 minutes ; Sensor drift ; Audit trail
@@ -466,7 +466,7 @@ off: Lead time at fixed precision ; Time-to-breach error
 on: Product loss from excursions ; Alerts acted upon
 gap: Excursion labels incomplete ; Evaluating on loaded routes only
 
-== fuel-consumption-and-eco-routing | Fuel Consumption Prediction & Eco-Routing | tabular,time-series | batch | production-grade | a=2 k=2
+== fuel-consumption-and-eco-routing | Fuel Consumption Prediction & Eco-Routing | tabular,time-series | batch | advanced | a=2 k=2
 obj: Predict vehicle fuel use per route segment and choose routes and speeds that cut fuel and emissions at acceptable time cost.
 loss: \mathcal{L}=\mathrm{Huber}(F,\hat F)
 con: Time-window feasibility ; Emission reporting ; Vehicle heterogeneity ; Monthly model refresh
@@ -486,7 +486,7 @@ off: MAPE of fuel per trip ; Realised savings in A/B routes
 on: Fuel per delivery ; CO2 per tonne-km
 gap: Training on fuel cards with timing error ; Ignoring payload variation
 
-== driver-behaviour-and-safety-scoring | Driver Behaviour & Safety Scoring | time-series | batch | production-grade | a=2 k=20
+== driver-behaviour-and-safety-scoring | Driver Behaviour & Safety Scoring | time-series | batch | advanced | a=2 k=20
 obj: Score driver safety from telematics and video events to target coaching and reduce accidents without unfair penalties.
 loss: \mathcal{L}=\mathrm{PoissonDeviance}(\text{incidents},\hat\lambda)
 con: Driver privacy ; Fair normalisation by route and vehicle ; Coaching programme integration ; Union agreements

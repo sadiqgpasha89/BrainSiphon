@@ -585,3 +585,80 @@ test('about page explains the platform, blueprint anatomy, role guides, and navi
   await expect(page.getByRole('heading', { name: 'How to Read BrainSiphon by Role' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Signal vs. Noise Across Archetypes' })).toBeVisible();
 });
+
+test('the home page states what has and has not been checked, from the release manifest', async ({
+  page,
+  request,
+}) => {
+  const m = await (await request.get('/release.json')).json();
+  await page.goto('/');
+  const strip = page.getByTestId('manifest-transparency');
+  await expect(strip.getByTestId('manifest-tile')).toHaveCount(5);
+  const f = m.checks.feasibility;
+  await expect(strip).toContainText(
+    `${f.pass.toLocaleString('en-US')} passed · ${f.warn} warnings · ${f.fail} failed`,
+  );
+  await expect(strip).toContainText(`${m.checks.domainExpert.reviewed} of 500`);
+  await expect(strip).toContainText(`${m.checks.productionEvidence.claimed} of 500`);
+  await expect(page.getByText(/production-grade|battle-tested/i)).toHaveCount(0);
+  await strip.getByTestId('release-report-link').click();
+  await expect(page).toHaveURL(/\/release$/);
+});
+
+test('the release report lists maturity levels, kit runs and every feasibility warning with its remediation', async ({
+  page,
+  request,
+}) => {
+  const m = await (await request.get('/release.json')).json();
+  await page.goto('/release');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('What has been checked');
+  await expect(page.getByTestId('release-identity')).toContainText(m.contentVersion);
+  await expect(page.getByTestId('maturity-ladder').locator('tbody tr')).toHaveCount(7);
+  await expect(page.getByTestId('ladder-expert-validated')).toContainText('0 of 500');
+  await expect(page.getByTestId('ladder-production-evidenced')).toContainText('0 of 500');
+
+  const warnings = page.getByTestId('feasibility-warning');
+  await expect(warnings).toHaveCount(m.checks.feasibility.warnings.length);
+  expect(m.checks.feasibility.warnings.length).toBeGreaterThan(0);
+  const first = m.checks.feasibility.warnings[0];
+  await expect(warnings.first()).toContainText(first.title);
+  await expect(warnings.first()).toContainText('Recommended remediation');
+  await expect(warnings.first()).toContainText(first.remediation);
+  await expect(page.getByTestId('release-outstanding').getByRole('listitem').first()).toContainText(
+    'no domain-expert review',
+  );
+
+  // a warning leads to the affected blueprint, whose scorecard carries the same remediation
+  await warnings.first().getByRole('link').click();
+  await expect(page).toHaveURL(new RegExp(`/${first.slug}#validation$`));
+  await expect(page.getByTestId('maturity-feasibility-validated')).toHaveAttribute(
+    'data-state',
+    'met-with-warnings',
+  );
+  await expect(page.getByTestId('maturity-feasibility-validated')).toContainText(first.remediation);
+  expect((await request.get('/release-report.md')).ok()).toBe(true);
+});
+
+test('every blueprint carries a seven-level maturity scorecard with evidence, reviewer and outstanding work', async ({
+  page,
+}) => {
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  const chip = page.getByTestId('maturity-classification');
+  await expect(chip).toContainText(/Maturity \d of 7/);
+  await expect(chip).not.toContainText(/production/i);
+  const card = page.getByTestId('maturity-scorecard');
+  await expect(card.locator('ol > li')).toHaveCount(7);
+  await expect(card.getByTestId('maturity-schema-validated')).toHaveAttribute('data-state', 'met');
+  for (const id of ['expert-validated', 'platform-integrated', 'production-evidenced']) {
+    const level = card.getByTestId(`maturity-${id}`);
+    await expect(level).toHaveAttribute('data-state', 'not-met');
+    await expect(level).toContainText('Reviewer: None');
+    await expect(level).toContainText('Outstanding');
+  }
+  await expect(card).toContainText('It does not show that the design has been built, reviewed or');
+
+  // without a tested starter for its exact problem, a blueprint stays at feasibility whatever else it has
+  await page.goto('/healthcare/polygenic-risk-scoring');
+  await expect(page.getByTestId('maturity-headline')).toContainText('Level 3 of 7');
+  await expect(page.locator('#feasibility-warnings')).toContainText('Recommended remediation');
+});

@@ -73,7 +73,11 @@ export async function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 pb-8" data-testid="release-footer">
         <ReleaseLine release={release} />
         <p className="mt-1 text-xs text-dim">
-          Each blueprint shows its own validation statuses.{' '}
+          Each blueprint shows its own maturity scorecard. The{' '}
+          <Link href="/release" className="hover:text-ink" data-testid="footer-release-report">
+            release report
+          </Link>{' '}
+          says what has and has not been checked, with every open warning.{' '}
           <a href={withBase('/release.json')} className="hover:text-ink">
             release.json
           </a>{' '}

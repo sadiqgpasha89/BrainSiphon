@@ -270,8 +270,8 @@ export default function WorkspacePage() {
             </h1>
             <p className="mt-2 max-w-3xl text-sm text-mute">
               Bridge the gap from architecture guidance to turnkey engineering delivery. Configure deployment
-              profiles, download production-ready deliverables, resolve technology trade-offs, and inspect
-              incident runbooks.
+              profiles, download delivery templates, resolve technology trade-offs, and inspect incident
+              runbooks.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -487,12 +487,11 @@ export default function WorkspacePage() {
               <span className="chip chip-signal text-[11px]">Phase 0 · Scope</span>
               <h3 className="mt-2 text-sm font-semibold text-ink">Business Requirements Document (BRD)</h3>
               <p className="mt-1 text-xs text-mute">
-                Production BRD template with numerical business targets, false decline ceilings, and
-                acceptance gates.
+                BRD template with numerical business targets, false decline ceilings, and acceptance gates.
               </p>
               <div className="mt-3 flex items-center justify-between border-t border-line pt-2 font-mono text-[11px] text-dim">
                 <span>02-business-requirements.md</span>
-                <span className="text-signal">Production Ready</span>
+                <span className="text-signal">Template</span>
               </div>
             </div>
 

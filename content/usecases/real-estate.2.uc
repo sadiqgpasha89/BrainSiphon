@@ -1,5 +1,5 @@
 # Real Estate & PropTech, part 2 (use cases 26-50): commercial, construction, smart buildings, risk and transactions
-== lease-abstraction-and-obligation-extraction | Lease Abstraction & Obligation Extraction | nlp,llm-agents | seconds | production-grade | a=0.02 k=900
+== lease-abstraction-and-obligation-extraction | Lease Abstraction & Obligation Extraction | nlp,llm-agents | seconds | advanced | a=0.02 k=900
 obj: Read commercial leases and amendments and extract the dates, rents, options, break clauses and obligations into a structured abstract with page citations.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every extracted field cites its page and clause so a lawyer can check it ; Critical dates and money fields are reviewed by a person before use ; Amendments are applied in date order to give the terms in force ; Leases stay inside the owner's tenancy and are never used to train shared models
@@ -23,7 +23,7 @@ off: Field accuracy ; Critical date recall
 on: Abstract time per lease ; Missed critical dates
 gap: Evaluation on clean, modern leases hides failures on the old scans that dominate real portfolios ; Template leakage when similar leases from one firm appear in both training and test
 
-== commercial-occupancy-and-rent-roll-forecasting | Commercial Occupancy & Rent-Roll Forecasting | time-series,tabular | batch | production-grade | a=1 k=5
+== commercial-occupancy-and-rent-roll-forecasting | Commercial Occupancy & Rent-Roll Forecasting | time-series,tabular | batch | advanced | a=1 k=5
 obj: Forecast occupancy and rental income by property from lease expiries, renewal behaviour and market demand.
 loss: \mathcal{L}=\sum_t\mathrm{Pinball}(\hat{q}_{0.5},y_t)+\lambda\,\mathrm{Huber}(\hat{r}-r)
 con: The forecast is built lease by lease and reconciles to the current rent roll ; Updated every quarter with a record of changes ; Downside, base and upside scenarios shown together ; Every property forecast traces to its lease and tenant assumptions
@@ -47,7 +47,7 @@ off: Occupancy error ; Income error
 on: Forecast accuracy ; Leasing decisions
 gap: A back-test through a strong market makes any renewal assumption look good ; Errors in the lease data feed straight through to the forecast and are mistaken for model error
 
-== investment-property-screening-and-underwriting | Investment Property Screening & Underwriting | tabular,llm-agents | seconds | production-grade | a=0.1 k=100
+== investment-property-screening-and-underwriting | Investment Property Screening & Underwriting | tabular,llm-agents | seconds | advanced | a=0.1 k=100
 obj: Screen listed investment properties against the fund's criteria and draft an underwriting summary with cash-flow assumptions.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{Huber}(\hat{r}-r)
 con: Every assumption such as rent growth, vacancy and exit yield is stated and editable ; An analyst approves every underwriting before it leaves the team ; Each figure in the summary cites its source document ; Deal information stays confidential and is never shared across clients
@@ -95,7 +95,7 @@ off: Risk forecast error ; Tracking error
 on: Risk-adjusted return ; Drawdown
 gap: Back-tests that use smoothed returns show low risk that does not exist ; A short history of a few cycles makes any estimate of correlation and tail risk fragile
 
-== commercial-tenant-credit-risk | Commercial Tenant Credit Risk | tabular,nlp | batch | production-grade | a=0.1 k=20
+== commercial-tenant-credit-risk | Commercial Tenant Credit Risk | tabular,nlp | batch | advanced | a=0.1 k=20
 obj: Predict the likelihood that commercial tenants default on rent so landlords price deposits, incentives and exposure.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Each score shows the factors behind it so an asset manager can explain it ; Refreshed monthly as rent ledgers close ; Data licences for vendor financials are respected ; Tenants of the same type are treated the same way
@@ -143,7 +143,7 @@ off: Count error ; Peak error
 on: Space released ; Cost saved
 gap: A short pilot period misses seasonal peaks and holidays ; Sensor bias, such as under-counting in doorways, makes the data look cleaner than the truth
 
-== site-selection-for-retail-and-logistics | Site Selection for Retail & Logistics | tabular,graph | batch | production-grade | a=0.02 k=200
+== site-selection-for-retail-and-logistics | Site Selection for Retail & Logistics | tabular,graph | batch | advanced | a=0.02 k=200
 obj: Rank candidate locations for a store or warehouse by expected revenue or cost, using demographics, mobility, competition and network fit.
 loss: \mathcal{L}=\mathrm{Huber}(\hat{y}-y)+\lambda\,\mathrm{GraphReg}(z)
 con: No protected attributes or close proxies in demand models ; Cannibalisation of the company's own sites is modelled and shown ; Data licences for mobility and demographic data are respected ; An analyst reviews every ranked site before a committee sees it
@@ -167,7 +167,7 @@ off: Revenue error ; Rank correlation
 on: New site performance ; Hit rate
 gap: Survivor sites are those that were opened and kept, so failed locations are missing from the data ; Selection bias because the company opened sites where it expected success
 
-== due-diligence-document-review | Real Estate Due-Diligence Document Review | llm-agents,nlp | seconds | production-grade | a=0.05 k=800 s=6 t=800
+== due-diligence-document-review | Real Estate Due-Diligence Document Review | llm-agents,nlp | seconds | advanced | a=0.05 k=800 s=6 t=800
 obj: Review data-room documents (title, leases, surveys, environmental, contracts) for a property acquisition, flag issues and draft a report with citations.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every issue in the report cites the document and page it comes from ; Lawyers review and approve every report ; Data-room documents stay confidential and are not used to train shared models ; Coverage is tracked against a per-transaction checklist
@@ -191,7 +191,7 @@ off: Issue recall ; Citation validity
 on: Review hours ; Missed issues
 gap: Past deals used for tuning are the easy ones that closed, so recall on hard deals is overstated ; Checklist bias, since the model finds what the checklist already asks for and misses the unusual
 
-== acquisition-deal-sourcing | Acquisition Deal Sourcing | graph,tabular | batch | production-grade | a=0.05 k=50
+== acquisition-deal-sourcing | Acquisition Deal Sourcing | graph,tabular | batch | advanced | a=0.05 k=50
 obj: Find off-market properties likely to sell by combining ownership, debt maturity, lease expiry and behaviour signals.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{GraphReg}(z)
 con: Data licences for ownership, debt and mobility sources are respected ; Owner contact follows fair and lawful practice ; Analysts review every list before outreach ; A fresh list each week
@@ -239,7 +239,7 @@ off: Error by stage ; Interval coverage
 on: Estimate vs final cost ; Estimator time
 gap: The final cost in the data includes changes, so it is not the cost of the plan as drawn ; Few similar projects mean any benchmark is built on a handful of cases
 
-== project-delay-and-overrun-prediction | Construction Project Delay & Overrun Prediction | tabular,time-series | batch | production-grade | a=1 k=10
+== project-delay-and-overrun-prediction | Construction Project Delay & Overrun Prediction | tabular,time-series | batch | advanced | a=1 k=10
 obj: Predict schedule and cost overruns on live projects from progress, supply and weather data so managers act early.
 loss: \mathcal{L}=\mathrm{Huber}(\hat{d}-d)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Forecasts refreshed weekly for every active project ; Each forecast shows the drivers behind it ; No scoring of individual people or blame ; Only data from official project systems is used
@@ -263,7 +263,7 @@ off: MAE of delay ; Early-warning recall
 on: Overrun days ; Cost overrun
 gap: Only completed projects are in the data, so cancelled or abandoned ones are missing ; Optimistic reports make early signals look healthier than they were
 
-== construction-site-safety-monitoring | Construction Site Safety Monitoring | computer-vision | seconds | production-grade | a=1 k=500
+== construction-site-safety-monitoring | Construction Site Safety Monitoring | computer-vision | seconds | advanced | a=1 k=500
 obj: Detect missing PPE, exclusion-zone entries and unsafe equipment proximity from site cameras and alert supervisors.
 loss: \mathcal{L}=\mathcal{L}_{\text{det}}+\lambda\,\mathrm{FL}(\hat{p},y)
 con: Alerts reach the supervisor within 5 seconds of a hazard ; Individual workers are not scored or ranked ; Faces blurred and footage retained only for incidents ; Compliance with union agreements and local legal rules
@@ -287,7 +287,7 @@ off: Recall of hazards ; Precision
 on: Incidents ; Near misses
 gap: Staged footage is clean and well lit and overstates accuracy on real, cluttered sites ; Site differences in layout, PPE and weather mean a test on one site overstates performance elsewhere
 
-== progress-monitoring-from-drone-imagery | Progress Monitoring from Drone Imagery | computer-vision | batch | production-grade | a=0.1 k=5000
+== progress-monitoring-from-drone-imagery | Progress Monitoring from Drone Imagery | computer-vision | batch | advanced | a=0.1 k=5000
 obj: Compare drone captures to the BIM or schedule to estimate progress by element and flag deviations.
 loss: \mathcal{L}=\mathcal{L}_{\text{seg}}+\lambda\,\mathrm{Huber}(\hat{p}-p)
 con: Drone capture weekly at the agreed flight times ; Accuracy reported for each element type ; Privacy rules followed for people and neighbouring properties ; Deviation tolerances defined per element
@@ -311,7 +311,7 @@ off: Element accuracy ; Registration error
 on: Report time ; Rework found
 gap: Training on one site hides failures on sites with different structures and materials ; Controlled flights under ideal conditions overstate accuracy in everyday use
 
-== permit-and-zoning-compliance-checking | Permit & Zoning Compliance Checking | nlp,llm-agents | seconds | production-grade | a=0.1 k=300
+== permit-and-zoning-compliance-checking | Permit & Zoning Compliance Checking | nlp,llm-agents | seconds | advanced | a=0.1 k=300
 obj: Check building plans and applications against zoning and code rules and give applicants and officers cited findings.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Findings are based on the official code text and nothing else ; The permit officer makes every decision ; Every finding cites the code section and the plan sheet ; Rules versioned so an application is checked against the code in force at submission
@@ -335,7 +335,7 @@ off: Rule accuracy ; Finding precision
 on: Review time ; Rework cycles
 gap: Easy applications are over-represented in the data, so unusual cases fail in use ; Code updates mean a test set from last year does not reflect today's rules
 
-== building-material-demand-and-procurement-forecast | Building Material Demand & Procurement Forecast | time-series,tabular | batch | production-grade | a=1 k=3
+== building-material-demand-and-procurement-forecast | Building Material Demand & Procurement Forecast | time-series,tabular | batch | advanced | a=1 k=3
 obj: Forecast material needs by project phase and plan purchases to avoid delays and excess stock.
 loss: \mathcal{L}=\sum_t\mathrm{Pinball}(\hat{q}_{0.9},y_t)+\lambda\,\mathrm{Huber}(\hat{c}-c)
 con: Lead times of each supplier are respected in the order plan ; Price volatility reflected in order timing and quantity ; On-site storage limits cap early ordering ; A weekly procurement plan for every active project
@@ -359,7 +359,7 @@ off: Quantity error ; Stock-out rate
 on: Delays from materials ; Excess stock
 gap: Plans differ from as-built quantities, so a forecast fitted to plans is biased ; Price shocks in the past are few and a model trained on calm periods fails in a shock
 
-== contractor-bid-evaluation | Contractor Bid Evaluation | tabular,nlp | seconds | production-grade | a=0.02 k=100
+== contractor-bid-evaluation | Contractor Bid Evaluation | tabular,nlp | seconds | advanced | a=0.02 k=100
 obj: Compare contractor bids on price, scope coverage, risk and track record to recommend a shortlist.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{Huber}(\hat{c}-c)
 con: Evaluation follows procurement rules and published criteria ; The scoring method is transparent to bidders on request ; A person makes the award decision ; Every step is auditable
@@ -407,7 +407,7 @@ off: Energy saved in simulation ; Comfort violations
 on: kWh ; Complaints
 gap: A simulator that does not match the real building gives gains that vanish on site ; A mild test season hides performance in extremes
 
-== building-energy-benchmarking-and-retrofit-targeting | Building Energy Benchmarking & Retrofit Targeting | tabular | batch | production-grade | a=0.1 k=10
+== building-energy-benchmarking-and-retrofit-targeting | Building Energy Benchmarking & Retrofit Targeting | tabular | batch | advanced | a=0.1 k=10
 obj: Benchmark building energy use against peers and rank buildings for retrofit by savings and payback.
 loss: \mathcal{L}=\mathrm{Huber}(\hat{y}-y)+\lambda\,\mathrm{MSE}(\hat{s},s)
 con: Energy use normalised for weather and occupancy before any comparison ; Peer groups defined so that like buildings compare with like ; Calculations traceable so a building owner or auditor can reproduce them ; Run annually after the full year of meter data is closed
@@ -479,7 +479,7 @@ off: Brier score ; Claims calibration
 on: Loss ratio ; Disputes
 gap: Claims come from a few events, so models fit those events and miss others ; Scenario uncertainty is wider than the differences between models, so validation on past data is a weak guide
 
-== title-and-deed-fraud-detection | Title & Deed Fraud Detection | graph,nlp | seconds | production-grade | a=0.1 k=50
+== title-and-deed-fraud-detection | Title & Deed Fraud Detection | graph,nlp | seconds | advanced | a=0.1 k=50
 obj: Detect forged deeds, owner impersonation and suspicious transfers before closing or recording.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{GraphReg}(z)
 con: A human investigator reviews every flagged case before action ; Every alert shows the evidence behind it ; False positives kept low so legitimate transfers are not delayed ; Recording deadlines respected, so alerts arrive within hours of filing
@@ -503,7 +503,7 @@ off: PR-AUC ; Recall
 on: Fraud prevented ; Delays
 gap: Few labelled cases and many undetected ones make the recall unknowable ; Hidden fraud, since detected cases are those that were easy to detect
 
-== roof-condition-from-aerial-imagery | Roof Condition from Aerial Imagery | computer-vision | batch | production-grade | a=0.05 k=4000
+== roof-condition-from-aerial-imagery | Roof Condition from Aerial Imagery | computer-vision | batch | advanced | a=0.05 k=4000
 obj: Classify roof material, age and damage from aerial imagery for underwriting, maintenance and valuation.
 loss: \mathcal{L}=\mathcal{L}_{\text{seg}}+\lambda\,\mathrm{Ordinal}(\hat{q},q)
 con: The date of the imagery is shown with every grade ; Results are for a single property and never a neighbourhood average ; A person reviews any adverse decision based on the grade ; Imagery licences are respected
@@ -551,7 +551,7 @@ off: PR-AUC ; Calibration
 on: On-time closings ; Coordinator time
 gap: Outcomes after action, because coordinators chase risky deals and thereby change the result ; Seasonality, since volumes and delays differ by month
 
-== rental-listing-scam-detection | Rental Listing Scam Detection | nlp,computer-vision,graph | sub-100ms | production-grade | a=2 k=60
+== rental-listing-scam-detection | Rental Listing Scam Detection | nlp,computer-vision,graph | sub-100ms | advanced | a=2 k=60
 obj: Detect fake rental listings and advance-fee scams at posting time using text, images, price and account behaviour.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Decision within 80 ms when a listing is submitted ; Legitimate listings are rarely blocked, with a stated false-block ceiling ; Landlords can appeal a block and get a human review ; Personal data used only to detect fraud and kept to a minimum
@@ -575,7 +575,7 @@ off: PR-AUC at fixed FPR ; Recall
 on: Scam exposure ; False blocks
 gap: The data contain reported scams only, which are the ones that victims noticed ; Adversarial drift, since scammers change patterns once they are caught
 
-== property-tax-assessment-anomaly-detection | Property Tax Assessment Anomaly Detection | tabular | batch | production-grade | a=1 k=5
+== property-tax-assessment-anomaly-detection | Property Tax Assessment Anomaly Detection | tabular | batch | advanced | a=1 k=5
 obj: Find properties whose assessed value is far from their expected market value so assessors fix inequity and appeal risk.
 loss: \mathcal{L}=\mathrm{Huber}(\log\hat{y}-\log y)+\lambda\,\mathrm{Pinball}(\hat{q}_{0.9},y)
 con: Assessments are equitable across areas and property types ; Each flagged anomaly has an explanation an assessor can check ; The owner's right to appeal is unaffected ; Run in the annual assessment cycle with time to correct before notices

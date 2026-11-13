@@ -2,7 +2,7 @@ import { ARTIFACT_KINDS, ARTIFACT_META, COMPLETION_META, DELIVERY_META, type Art
 import { PROBLEM_LABEL } from '../lib/problem-types';
 import { PRIMITIVE_BY_ID } from './primitives';
 import { evaluationPlan, guardrailPlan } from './assurance';
-import { blueprintStatuses, shortSha, type ReleaseManifest } from './release';
+import { MATURITY_STATE_TEXT, blueprintMaturityScorecard, blueprintStatuses, shortSha, type ReleaseManifest } from './release';
 import { LIFECYCLE_PHASES, ROLE_LIFECYCLE, ROLE_META, ROLE_OWNS } from '../lib/roles';
 import { DOMAIN_META, LATENCY_LABEL, PARADIGM_LABEL, type Agentic, type Playbook, type UseCase, ARCHETYPE_LABEL, isAgentic } from '../schemas/usecase.schema';
 
@@ -108,7 +108,7 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', relea
   metricsMarkdown(u, L);
   agenticMarkdown(u.agentic, L);
   if (u.playbook) playbookMarkdown(u.playbook, L);
-  validationMarkdown(u, L, release);
+  validationMarkdown(u, L, release, origin);
   return `${L.join('\n')}\n`;
 }
 
@@ -414,7 +414,7 @@ function operationsMarkdown(u: UseCase, L: string[]) {
   o.unitCost.forEach((c) => L.push(`| ${esc(c.unit)} | ${esc(c.value)} | ${esc(c.how)} |`));
 }
 
-function validationMarkdown(u: UseCase, L: string[], release: ReleaseManifest | null) {
+function validationMarkdown(u: UseCase, L: string[], release: ReleaseManifest | null, origin: string) {
   const pv = u.validation.provenance;
   L.push('', '## Validation and architecture review', '', `**Content status:** ${pv.status} · **Owner:** ${pv.owner} · **Reviewer:** ${pv.reviewer ? `${pv.reviewer}, ${pv.reviewedAt}` : 'none yet'} · **Generated:** ${pv.generatedAt}`, '', '### How each part was made', '', '| Section | Origin | Basis |', '|---|---|---|');
   pv.sections.forEach((x) => L.push(`| ${esc(x.section)} | ${x.origin} | ${esc(x.basis)} |`));
@@ -430,6 +430,16 @@ function validationMarkdown(u: UseCase, L: string[], release: ReleaseManifest | 
   blueprintStatuses(u, release).forEach((x) => L.push(`| ${x.label} | ${x.text} | ${esc(x.detail)} |`));
   if (release)
     L.push('', `**Release.** Version ${release.contentVersion} · source commit ${release.sourceCommit ?? 'unknown'}${release.sourceDirty ? ' (uncommitted changes)' : ''} · last successful validation ${release.validatedAt ?? 'none for this content'} · ${release.deployedAt ? `deployment built ${release.deployedAt}` : 'not a deployment build'}.`);
+  const card = blueprintMaturityScorecard(u, release);
+  L.push('', `### Maturity scorecard: level ${card.level} of ${card.items.length}, ${card.classificationLabel}`, '');
+  L.push(`A blueprint is classified at the highest level it reaches without skipping one. ${card.blockedBy ? `This one stops because of ${card.blockedBy}` : ''} A schema pass shows the page is complete, not that the design has been built, reviewed or run.`, '');
+  L.push('| Level | State | Evidence | Reviewer | Date | Outstanding |', '|---|---|---|---|---|---|');
+  card.items.forEach((x) => L.push(`| ${x.level}. ${x.label} | ${MATURITY_STATE_TEXT[x.state]} | ${esc(x.evidence)}${x.coverage ? ` Coverage: ${esc(x.coverage)}` : ''}${x.log?.endsWith('.txt') ? ` Log: ${origin}${x.log}` : ''} | ${esc(x.reviewer)} | ${x.date ?? 'none'} | ${esc(x.outstanding.join('; ')) || 'none'} |`));
+  if (card.warnings.length) {
+    L.push('', '**Open feasibility warnings**', '');
+    card.warnings.forEach((w) => L.push(`- ${w.check}: ${w.detail} Recommended remediation: ${w.remediation}`));
+  }
+  L.push('', `Release report: ${origin}/release`);
   L.push('', '| Feasibility check | Result | Detail |', '|---|---|---|');
   u.validation.feasibility.forEach((f) => L.push(`| ${esc(f.check)} | ${f.status} | ${esc(f.detail)} |`));
   L.push('', `Role ownership: ${(Object.keys(ROLE_META) as (keyof typeof ROLE_META)[]).map((r) => `${ROLE_META[r].label} (${ROLE_OWNS[r].toLowerCase()})`).join('; ')}.`);

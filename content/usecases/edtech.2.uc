@@ -1,5 +1,5 @@
 # EdTech, part 2 (use cases 26-50)
-== spaced-repetition-scheduling | Spaced Repetition Scheduling | time-series,reinforcement-learning | sub-100ms | production-grade | a=30 k=1
+== spaced-repetition-scheduling | Spaced Repetition Scheduling | time-series,reinforcement-learning | sub-100ms | advanced | a=30 k=1
 obj: Schedule reviews of vocabulary, facts and skills at the moment forgetting is likely, maximising retention per minute of study.
 loss: \mathcal{L}=-\sum_t\left[y_t\log R_t+(1-y_t)\log(1-R_t)\right],\ R_t=\exp\!\left(-\Delta t/S_t\right)
 con: Per-item memory state for millions of learners ; Scheduling in 20 ms ; Daily review caps ; Interpretable intervals
@@ -19,7 +19,7 @@ off: Log-loss and calibration of recall predictions ; Retention at fixed workloa
 on: Retention at 30 days ; Study minutes per retained item
 gap: Predicting recall on items that scheduling selected ; Ignoring review-order effects
 
-== lecture-video-segmentation-and-summarization | Lecture Video Segmentation & Summarisation | nlp,computer-vision | seconds | production-grade | a=0.2 k=20000
+== lecture-video-segmentation-and-summarization | Lecture Video Segmentation & Summarisation | nlp,computer-vision | seconds | advanced | a=0.2 k=20000
 obj: Segment lectures into topics, generate chapters, summaries and quiz points so learners can navigate and review efficiently.
 loss: \mathcal{L}=\mathrm{CE}_{\text{boundary}}+\lambda\left(-\sum_t\log p_\theta(y_t\mid y_{<t},x)\right)
 con: Long videos (2 hours) ; ASR noise on technical terms ; Faithful summaries ; Cost per hour of video
@@ -39,7 +39,7 @@ off: Boundary F1 ; Summary faithfulness rate
 on: Chapter navigation usage ; Time to find content
 gap: Evaluating on clean slides-only talks ; Judging summaries by fluency
 
-== multilingual-lecture-captioning | Multilingual Lecture Captioning & Translation | nlp | seconds | production-grade | a=0.5 k=5000
+== multilingual-lecture-captioning | Multilingual Lecture Captioning & Translation | nlp | seconds | advanced | a=0.5 k=5000
 obj: Provide accurate live and recorded captions and translations for lectures in many languages with technical vocabulary.
 loss: \mathcal{L}=\mathcal{L}_{\text{CTC}}+\lambda\,\mathcal{L}_{\text{translation}}
 con: Live latency under 3 s ; Accessibility standards ; Code-switching ; Domain vocabulary
@@ -59,7 +59,7 @@ off: Word error rate on domain terms ; Live latency and flicker rate
 on: Caption accuracy complaints ; Accessibility compliance
 gap: Test set lacks code-switching ; Technical terms excluded from WER
 
-== admissions-and-student-support-chatbot | Admissions & Student Support Assistant | llm-agents,nlp | seconds | production-grade | a=0.5 k=8 s=3 t=250
+== admissions-and-student-support-chatbot | Admissions & Student Support Assistant | llm-agents,nlp | seconds | advanced | a=0.5 k=8 s=3 t=250
 obj: Answer applicants' and students' questions about admissions, fees, deadlines and services accurately, escalating to staff when needed.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{KB})+\lambda\,\mathrm{PolicyError}
 con: Accuracy on deadlines and fees ; Version-aware policies ; Multilingual ; Sensitive cases escalated
@@ -119,7 +119,7 @@ off: NDCG on awarded scholarships ; Eligibility precision
 on: Funds awarded per student ; Application completion
 gap: Training on historical winners with bias ; Ignoring eligibility errors
 
-== learner-confusion-and-affect-detection | Learner Confusion & Affect Detection | time-series,computer-vision | sub-100ms | production-grade | a=10 k=20
+== learner-confusion-and-affect-detection | Learner Confusion & Affect Detection | time-series,computer-vision | sub-100ms | advanced | a=10 k=20
 obj: Infer confusion, frustration and boredom from interaction signals (and optional consented video) to adapt help in real time.
 loss: \mathcal{L}=\mathrm{CE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Privacy and consent (especially minors) ; Interaction-only default ; Cross-cultural validity ; Low false alarms
@@ -159,7 +159,7 @@ off: Simulated group value and balance ; Teacher acceptance rate
 on: Group task outcomes ; Peer-reported collaboration quality
 gap: Optimising averages ; No collaboration outcome data
 
-== discussion-forum-qa-and-moderation | Discussion Forum Q&A & Moderation | nlp,llm-agents | sub-100ms | production-grade | a=1 k=3
+== discussion-forum-qa-and-moderation | Discussion Forum Q&A & Moderation | nlp,llm-agents | sub-100ms | advanced | a=1 k=3
 obj: Auto-answer repeated questions with citations, surface expert answers, and moderate toxic or off-topic posts.
 loss: \mathcal{L}=\mathrm{BCE}(\text{toxic},p)+\lambda\,\mathrm{InfoNCE}(\text{question},\text{answer})
 con: Age-appropriate moderation ; Accuracy of answers ; Instructor control ; Low false removals
@@ -199,7 +199,7 @@ off: Routing accuracy and resolution time ; SLA breach rate
 on: Time to first response ; Resolution satisfaction
 gap: Teacher feedback biased ; Ignoring load fairness
 
-== gamification-reward-optimization | Gamification & Reward Optimisation | reinforcement-learning | batch | production-grade | a=2 k=1
+== gamification-reward-optimization | Gamification & Reward Optimisation | reinforcement-learning | batch | advanced | a=2 k=1
 obj: Tune badges, streaks and rewards to increase sustained learning effort without manipulative or anxiety-inducing design.
 loss: \max_\pi\;\mathbb{E}\!\left[\sum_t\gamma^t(\text{learning minutes}_t-\kappa\,\text{anxiety signals}_t)\right]
 con: Ethical design for minors ; Intrinsic motivation ; Fairness ; Long-term retention
@@ -219,7 +219,7 @@ off: Off-policy estimate of learning gain ; Guardrail violations
 on: Learning gain per active week ; 90-day retention
 gap: Rewarding time-on-app ; Short experiments only
 
-== placement-test-and-cold-start-onboarding | Placement Test & Cold-Start Onboarding | tabular,reinforcement-learning | sub-100ms | production-grade | a=0.3 k=2
+== placement-test-and-cold-start-onboarding | Placement Test & Cold-Start Onboarding | tabular,reinforcement-learning | sub-100ms | advanced | a=0.3 k=2
 obj: Estimate a new learner's level in a few questions to place them in the right starting content and initialise the learner model.
 loss: \min\;\mathbb{E}\!\left[(\hat\theta-\theta)^2\right]\ \text{subject to a question budget}
 con: Under 10 questions ; Frustration risk ; Multiple skills ; Cheating resistance
@@ -279,7 +279,7 @@ off: Qini or policy value on holdout ; CI coverage
 on: Learning gain per support hour ; Equity metrics
 gap: Using observational assignment data ; Ignoring spillover
 
-== accessibility-alt-text-and-captioning | Accessibility: Alt Text & Content Adaptation | computer-vision,nlp | seconds | production-grade | a=0.1 k=500
+== accessibility-alt-text-and-captioning | Accessibility: Alt Text & Content Adaptation | computer-vision,nlp | seconds | advanced | a=0.1 k=500
 obj: Generate high-quality alt text for educational images, diagrams and equations and adapt content for learners with disabilities.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{image,context})+\lambda\,\mathrm{Hallucination}
 con: WCAG compliance ; Accurate STEM diagram descriptions ; Human review for exams ; Multilingual
@@ -299,7 +299,7 @@ off: Human-rated description usefulness ; Numeric accuracy
 on: Accessibility issue backlog ; Learner feedback
 gap: Evaluated on photos not diagrams ; Judging fluency not accuracy
 
-== child-safe-content-filtering | Child-Safe Content Filtering | nlp,computer-vision | sub-100ms | production-grade | a=10 k=20
+== child-safe-content-filtering | Child-Safe Content Filtering | nlp,computer-vision | sub-100ms | advanced | a=10 k=20
 obj: Filter text, images and chat in learning environments for age-inappropriate and unsafe content, with low over-blocking of educational material.
 loss: \mathcal{L}=\sum_k w_k\,\mathrm{BCE}(y_k,p_k)
 con: Age bands ; Legal compliance (COPPA, GDPR-K) ; Educational context (biology, history) ; Fast inline decisions
@@ -419,7 +419,7 @@ off: Activity-classification accuracy ; Privacy audit (no re-identification)
 on: Teacher reflection usage ; Correlation with learning outcomes
 gap: Engagement proxies unvalidated ; Evaluating on staged classes
 
-== adaptive-reading-text-simplification | Adaptive Reading & Text Simplification | nlp,llm-agents | seconds | production-grade | a=1 k=5 s=2 t=300
+== adaptive-reading-text-simplification | Adaptive Reading & Text Simplification | nlp,llm-agents | seconds | advanced | a=1 k=5 s=2 t=300
 obj: Adapt reading passages to each learner's reading level while preserving meaning, with vocabulary supports and comprehension checks.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x,\text{level})+\lambda\,\mathrm{MeaningDrift}
 con: Meaning preservation ; Grade-level control ; Copyright ; Dyslexia-friendly formats
@@ -459,7 +459,7 @@ off: Prediction of held-out word knowledge ; Correlation with proficiency tests
 on: Text-difficulty match ; Learning gain
 gap: Frequency bands only ; No L1 variation
 
-== credential-fraud-verification | Credential & Certificate Fraud Detection | computer-vision,nlp,graph | seconds | production-grade | a=0.02 k=900
+== credential-fraud-verification | Credential & Certificate Fraud Detection | computer-vision,nlp,graph | seconds | advanced | a=0.02 k=900
 obj: Detect forged diplomas, transcripts and certificates in admissions and hiring flows by combining document forensics, issuer verification and network signals.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{GraphReg}
 con: Issuer database coverage ; Privacy ; Cross-border documents ; Low false positives for genuine applicants

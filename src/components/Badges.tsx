@@ -26,7 +26,7 @@ export function LatencyChip({ latency }: { latency: LatencySLA }) {
 
 const DIFF_STYLE: Record<Difficulty, string> = {
   foundational: 'chip',
-  'production-grade': 'chip chip-signal',
+  advanced: 'chip chip-signal',
   'staff-principal': 'chip border-warn/40 bg-warn/10 text-warn',
 };
 

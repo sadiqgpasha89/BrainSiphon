@@ -1,4 +1,4 @@
-"""Tests for the production-grade fraud scoring FastAPI service and audit ledger."""
+"""Tests for the reference fraud scoring FastAPI service and audit ledger."""
 
 import pytest
 from fastapi.testclient import TestClient
