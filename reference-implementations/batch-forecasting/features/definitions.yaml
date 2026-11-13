@@ -1,0 +1,20 @@
+# The feature registry. The order of `features` is the model's input signature. All features are computed by
+# features/build.py from data available at the forecast origin (plus the promotion plan, which is known in advance).
+entities:
+  series: {key: [store_id, sku], description: One product in one store}
+views:
+  demand_series_day:
+    description: One row per (series, forecast origin, horizon). The target is demand on origin + horizon divided by the series level.
+    owner: demand-planning-ml
+    features:
+      - {name: horizon, dtype: float, description: Days ahead (1 to 14)}
+      - {name: target_dow, dtype: float, description: Day of week of the target day (0 = Monday)}
+      - {name: target_on_promo, dtype: float, description: 1 when a promotion is planned for the target day}
+      - {name: seasonal_naive_ratio, dtype: float, description: Sales on the same weekday in the latest full week before the origin divided by the level}
+      - {name: same_dow_mean_ratio, dtype: float, description: Mean of the last 4 same-weekday sales divided by the level}
+      - {name: last7_ratio, dtype: float, description: Mean of the last 7 days divided by the level (short-term trend)}
+      - {name: promo_share_28d, dtype: float, description: Share of the last 28 days on promotion (how inflated the level is)}
+      - {name: stockout_share_28d, dtype: float, description: Share of the last 28 days out of stock}
+      - {name: log_level, dtype: float, description: log1p of the level (mean uncensored daily sales over 28 days)}
+      - {name: year_sin, dtype: float, description: Sine of the target day of year}
+      - {name: year_cos, dtype: float, description: Cosine of the target day of year}

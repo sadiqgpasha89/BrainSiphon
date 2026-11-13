@@ -1,0 +1,84 @@
+# GENERATED from monitoring/alerts.yaml by `python -m bsref.observability`. Do not edit.
+groups:
+- name: bsref
+  rules:
+  - alert: FraudFallbackRateHigh
+    expr: sum(rate(fraud_decisions_total{fallback="true"}[5m])) / sum(rate(fraud_decisions_total[5m])) > 0.02
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: More than 2% of decisions are answered by the rules fallback instead of the model
+      runbook: docs/RUNBOOK.md#fallback-rate-high
+  - alert: FraudBlockRateHigh
+    expr: sum(rate(fraud_decisions_total{action="BLOCK"}[10m])) / sum(rate(fraud_decisions_total[10m])) > 0.02
+    for: 10m
+    labels:
+      severity: page
+    annotations:
+      summary: The share of blocked payments is far above the planned false-decline budget
+      runbook: docs/RUNBOOK.md#block-rate-high
+  - alert: FraudScoringLatencyHigh
+    expr: histogram_quantile(0.99, sum(rate(fraud_scoring_duration_ms_bucket[5m])) by (le)) > 50
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: p99 scoring time is above the 50 ms deadline
+      runbook: docs/RUNBOOK.md#latency-high
+  - alert: FraudFeatureDrift
+    expr: fraud_max_feature_psi > 0.25
+    for: 1h
+    labels:
+      severity: ticket
+    annotations:
+      summary: A model input has drifted from its training distribution (PSI above 0.25)
+      runbook: docs/RUNBOOK.md#feature-drift
+  - alert: FraudLivePrecisionLow
+    expr: fraud_matured_pr_auc < 0.30
+    for: 1h
+    labels:
+      severity: ticket
+    annotations:
+      summary: PR-AUC on the newest matured labels has fallen below the promotion gate
+      runbook: docs/RUNBOOK.md#model-performance-low
+  - alert: FraudBlockOverturnRateHigh
+    expr: sum(increase(fraud_reviews_total{verdict="genuine"}[6h])) / sum(increase(fraud_reviews_total[6h])) > 0.5
+    for: 1h
+    labels:
+      severity: ticket
+    annotations:
+      summary: Analysts are releasing more than half of the blocked payments as genuine
+      runbook: docs/RUNBOOK.md#block-rate-high
+  - alert: IngestConsumerLag
+    expr: fraud_ingest_consumer_lag > 5000
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: Feature ingestion is more than 5000 events behind the source, so online features are stale
+      runbook: docs/RUNBOOK.md#ingestion-lag
+  - alert: IngestDeadLetters
+    expr: fraud_ingest_dead_letters > 0
+    for: 1m
+    labels:
+      severity: ticket
+    annotations:
+      summary: Events are in the dead-letter queue and need a person to look at them
+      runbook: docs/RUNBOOK.md#dead-letters
+  - alert: IngestQuarantineRateHigh
+    expr: fraud_ingest_quarantine_rate > 0.01
+    for: 15m
+    labels:
+      severity: ticket
+    annotations:
+      summary: More than 1% of source events violate the data contract
+      runbook: docs/RUNBOOK.md#quarantine-rate-high
+  - alert: ReviewsOverdue
+    expr: fraud_reviews_overdue > 0
+    for: 5m
+    labels:
+      severity: ticket
+    annotations:
+      summary: Blocked payments have passed their review SLA without a decision
+      runbook: docs/RUNBOOK.md#reviews-overdue

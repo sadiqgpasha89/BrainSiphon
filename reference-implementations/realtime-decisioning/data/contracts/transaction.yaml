@@ -1,0 +1,15 @@
+# Data contract for the txn.authorised event published by the payment switch. Owner: payments platform team.
+# The ingestion consumer validates every event against this file; a violating event is quarantined, not processed.
+dataset: transaction
+version: 1
+owner: payments-platform
+fields:
+  - {name: txn_id, type: string, pattern: "[A-Za-z0-9_-]{6,64}"}
+  - {name: card_id, type: integer, min: 1}
+  - {name: merchant_id, type: integer, min: 1}
+  - {name: device_id, type: integer, min: 1}
+  - {name: amount, type: number, min: 0.01, max: 1000000}
+  - {name: rail, type: string, enum: [card, upi]}
+  - {name: country, type: string, pattern: "[A-Z]{2}"}
+  - {name: event_time, type: number, min: 1000000000}
+additional_fields: forbid

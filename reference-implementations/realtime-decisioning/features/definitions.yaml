@@ -1,0 +1,26 @@
+# The feature registry. The order of `features` in a view is the model's input signature: serving refuses a model whose
+# signature differs from this file. Every feature is computed by features/transforms.py for both training and serving.
+entities:
+  card: {key: card_id, description: A payment card or UPI handle}
+  device: {key: device_id, description: A device fingerprint}
+  merchant: {key: merchant_id, description: A merchant account}
+views:
+  fraud_txn:
+    description: Features of one authorisation request, as known the instant before it is decided
+    owner: fraud-ml
+    features:
+      - {name: amount, dtype: float, description: Transaction amount}
+      - {name: log_amount, dtype: float, description: log1p of the amount}
+      - {name: card_txn_count_1h, dtype: float, description: Card transactions in the previous hour}
+      - {name: card_txn_count_24h, dtype: float, description: Card transactions in the previous 24 hours}
+      - {name: card_amount_sum_24h, dtype: float, description: Card spend in the previous 24 hours}
+      - {name: amount_to_card_avg_ratio, dtype: float, description: Amount divided by the card's running average amount}
+      - {name: secs_since_last_txn, dtype: float, description: "Seconds since the card's previous transaction, capped at 30 days"}
+      - {name: is_new_merchant_for_card, dtype: float, description: 1 when the card has not used this merchant before}
+      - {name: is_new_device_for_card, dtype: float, description: 1 when the card has not used this device before}
+      - {name: device_distinct_cards_7d, dtype: float, description: Distinct cards seen on this device in 7 days (mule signal)}
+      - {name: merchant_chargeback_rate, dtype: float, description: "Smoothed, time-decayed share of the merchant's transactions charged back, counting only chargebacks already filed"}
+      - {name: card_txn_total, dtype: float, description: "Transaction count of the card, capped at 10 (new-card signal)"}
+      - {name: rail_is_upi, dtype: float, description: 1 for UPI and 0 for card}
+      - {name: hour_of_day, dtype: float, description: UTC hour of the request}
+      - {name: country_mismatch, dtype: float, description: 1 when the country differs from the card's first-seen country}

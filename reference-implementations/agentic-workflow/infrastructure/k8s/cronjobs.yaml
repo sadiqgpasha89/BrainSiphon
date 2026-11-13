@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata: {name: monitoring}
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext: {runAsNonRoot: true, runAsUser: 10001, fsGroup: 10001}
+          containers:
+            - name: monitoring
+              image: agentic-workflow
+              command: ["python", "-m", "monitoring.job"]
+              envFrom: [{configMapRef: {name: app-config}}, {secretRef: {name: app-secrets}}]
+              volumeMounts: [{name: registry, mountPath: /registry, readOnly: true}]
+          volumes: [{name: registry, persistentVolumeClaim: {claimName: model-registry}}]
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata: {name: retrain}
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext: {runAsNonRoot: true, runAsUser: 10001, fsGroup: 10001}
+          containers:
+            - name: retrain
+              image: agentic-workflow
+              command: ["python", "-m", "training.retrain"]
+              envFrom: [{configMapRef: {name: app-config}}, {secretRef: {name: app-secrets}}]
+              resources: {requests: {cpu: "1", memory: 2Gi}, limits: {cpu: "2", memory: 4Gi}}
+              volumeMounts: [{name: registry, mountPath: /registry}]
+          volumes: [{name: registry, persistentVolumeClaim: {claimName: model-registry}}]

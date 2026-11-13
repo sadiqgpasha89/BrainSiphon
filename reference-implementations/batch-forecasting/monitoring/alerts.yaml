@@ -1,0 +1,93 @@
+# The single list of alert rules. `metric`/`op`/`threshold` are evaluated by monitoring/job.py; `promql` is for Prometheus
+# (the job's values are exported as gauges by your scheduler's pushgateway or scraped from the metric_snapshots table).
+rules:
+  - name: ForecastRunStale
+    metric: days_since_last_run
+    op: ">"
+    threshold: 1
+    severity: page
+    for: 1h
+    summary: No forecast run exists for the newest closed sales day, so consumers are reading an old forecast
+    runbook: docs/RUNBOOK.md#run-stale
+    promql: forecast_days_since_last_run > 1
+  - name: ForecastInputIncomplete
+    metric: origin_completeness
+    op: "<"
+    threshold: 0.90
+    severity: page
+    for: 30m
+    summary: Fewer than 90% of series have reported the newest sales day (late or missing store feeds)
+    runbook: docs/RUNBOOK.md#input-incomplete
+    promql: forecast_origin_completeness < 0.90
+  - name: ForecastLiveErrorHigh
+    metric: live_wape_ratio
+    op: ">"
+    threshold: 1.25
+    severity: ticket
+    for: 1d
+    summary: Live forecast error is more than 25% above the backtest error of the production model
+    runbook: docs/RUNBOOK.md#live-error-high
+    promql: forecast_live_wape_ratio > 1.25
+  - name: ForecastWorseThanBaseline
+    metric: live_forecast_value_added
+    op: "<"
+    threshold: 0
+    severity: page
+    for: 1d
+    summary: The published forecast is less accurate than the seasonal-naive baseline on live actuals
+    runbook: docs/RUNBOOK.md#live-error-high
+    promql: forecast_live_forecast_value_added < 0
+  - name: ForecastBandMiscalibrated
+    metric: live_coverage_gap
+    op: ">"
+    threshold: 0.15
+    severity: ticket
+    for: 1d
+    summary: The share of actuals inside the p10 to p90 band is more than 15 points away from the nominal 80%
+    runbook: docs/RUNBOOK.md#band-miscalibrated
+    promql: abs(forecast_live_coverage - 0.80) > 0.15
+  - name: ForecastFeatureDrift
+    metric: max_feature_psi
+    op: ">"
+    threshold: 0.25
+    severity: ticket
+    for: 1d
+    summary: A model input has drifted from its training distribution (PSI above 0.25)
+    runbook: docs/RUNBOOK.md#feature-drift
+    promql: forecast_max_feature_psi > 0.25
+  - name: ForecastOverridesHurting
+    metric: override_wape_delta
+    op: ">"
+    threshold: 0.05
+    severity: ticket
+    for: 7d
+    summary: Planner overrides are making the forecast worse than the model they replace
+    runbook: docs/RUNBOOK.md#overrides-hurting
+    promql: forecast_override_wape_delta > 0.05
+  - name: IngestDeadLetters
+    metric: dead_letters
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 1m
+    summary: Events are in the dead-letter queue and need a person to look at them
+    runbook: docs/RUNBOOK.md#dead-letters
+    promql: forecast_ingest_dead_letters > 0
+  - name: IngestQuarantineRateHigh
+    metric: quarantine_rate
+    op: ">"
+    threshold: 0.01
+    severity: ticket
+    for: 15m
+    summary: More than 1% of source rows violate the data contract
+    runbook: docs/RUNBOOK.md#quarantine-rate-high
+    promql: forecast_ingest_quarantine_rate > 0.01
+  - name: ReviewsOverdue
+    metric: reviews_overdue
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 5m
+    summary: Held series have passed their review SLA; consumers are still receiving the baseline for them
+    runbook: docs/RUNBOOK.md#reviews-overdue
+    promql: forecast_reviews_overdue > 0

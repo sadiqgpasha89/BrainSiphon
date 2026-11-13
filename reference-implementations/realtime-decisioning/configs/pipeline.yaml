@@ -1,0 +1,40 @@
+# Every tunable of the pipeline in one reviewed file. Environment-specific values (URLs, secrets) come from the environment.
+model_name: fraud-scorer
+feature_view: fraud_txn
+
+simulation:            # the simulated payment switch (data/source_system.py); replace with your real source system
+  seed: 7
+  cards: 800
+  days: 75
+  holdback_days: 8     # history is emitted up to (now - holdback); `make advance` emits the rest, to demonstrate retraining
+
+labels:
+  burn_in_days: 14      # the first days of history are dropped from training: the stateful features are still cold
+  maturity_days: 14    # a transaction with no chargeback after this long is treated as genuine; younger ones are unlabelled
+
+split:                 # chronological; never random
+  validation_days: 8
+  test_days: 10
+
+policy:                # the business constraint the thresholds are fitted to, on the validation window
+  max_false_decline_rate: 0.003   # share of genuine transactions that may be BLOCKed
+  max_step_up_rate: 0.02          # share of genuine transactions that may be sent to STEP_UP
+
+gates:                 # a candidate is promoted only if every gate holds on the held-out test window
+  min_pr_auc: 0.30
+  min_recall_at_block: 0.30
+  max_false_decline_rate: 0.006   # 2x the fitting target: thresholds are fitted on validation and checked on test
+  max_regression_vs_production: 0.02
+  auto_promote: true   # set false to require a human promotion through POST /v1/models/{version}/promote
+
+serving:
+  deadline_ms: 50
+  review_sla_seconds: 1800
+
+retrain:               # any one condition triggers a retraining run
+  min_new_labels: 40
+  max_model_age_days: 30
+  max_feature_psi: 0.25
+
+monitoring:
+  window_hours: 24

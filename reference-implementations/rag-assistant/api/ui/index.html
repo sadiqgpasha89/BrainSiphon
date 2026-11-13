@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kestrel docs assistant</title>
+<link rel="stylesheet" href="/_shared/app.css">
+</head>
+<body>
+<header><h1>Kestrel docs assistant</h1><div id="who" class="row"></div></header>
+<main>
+  <section id="login" class="card">
+    <h2>Sign in</h2>
+    <form id="login-form" class="row">
+      <input name="username" placeholder="username" autocomplete="username" required>
+      <input name="password" type="password" placeholder="password" autocomplete="current-password" required>
+      <button class="primary">Sign in</button>
+    </form>
+    <p class="mute">Users: <code>customer</code>, <code>employee</code>, <code>writer</code>, <code>ml-admin</code>; the passwords are in your <code>.env</code> file.</p>
+  </section>
+  <div id="app" class="hidden" style="display:grid;gap:16px">
+    <section class="card"><h2>Ask the documentation</h2>
+      <form id="ask" class="row"><input name="question" placeholder="How long are idempotency keys stored?" style="flex:1;min-width:220px" required maxlength="1000"><button class="primary">Ask</button></form>
+      <div id="answer"></div></section>
+    <section class="card hidden" id="staff"><h2>Documentation team: last 24 hours</h2><div id="stats" class="grid"></div><div id="alerts"></div>
+      <h2 style="margin-top:14px">Questions to review</h2>
+      <table><thead><tr><th>Question</th><th>Why</th><th>What the assistant said</th><th>Resolve</th></tr></thead><tbody id="queue"></tbody></table>
+      <h2 style="margin-top:14px">Index versions</h2>
+      <div class="row"><button id="rebuild" class="hidden">Rebuild and evaluate the index</button></div>
+      <table><thead><tr><th>Version</th><th>Stage</th><th>Chunks</th><th>Recall@5</th><th>Correct</th><th>Faithful</th><th>Declines correctly</th><th>Built</th></tr></thead><tbody id="versions"></tbody></table></section>
+  </div>
+</main>
+<div id="toast" role="status"></div>
+<script src="/_shared/app.js"></script>
+<script>
+const $ = (id) => document.getElementById(id), e = BS.esc, pct = (v) => (v * 100).toFixed(0) + "%";
+let last = null;
+$("ask").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  try {
+    last = await BS.api("/v1/ask", { method: "POST", json: { question: new FormData(ev.target).get("question") } });
+    const cls = last.status === "answered" ? "ok" : "warn";
+    $("answer").innerHTML = `<pre>${e(last.answer)}</pre><p><span class="pill ${cls}">${e(last.status)}</span>
+      <span class="mute">index ${e(last.index_version)} · ${e(last.provider)} · ${e(last.latency_ms)} ms</span></p>
+      ${last.citations.length ? "<p class='mute'>Sources: " + last.citations.map((c) => `<code>${e(c.chunk_id)}</code> ${e(c.title)} (v${e(c.doc_version)})`).join(" · ") + "</p>" : ""}
+      <div class="row"><button data-rate="up">Helpful</button><button data-rate="down">Not helpful</button></div>`;
+    if (BS.has("writer")) refresh();
+  } catch (err) { BS.toast(err.message); }
+});
+async function refresh() {
+  const staff = BS.has("writer");
+  $("staff").classList.toggle("hidden", !staff);
+  if (!staff) return;
+  const [sum, tasks, idx] = await Promise.all([BS.api("/v1/monitoring/summary"), BS.api("/v1/reviews"), BS.api("/v1/index")]);
+  $("rebuild").classList.toggle("hidden", !BS.has("ml-admin"));
+  const a = sum.answers_24h;
+  $("stats").innerHTML = [["Serving index", sum.index_version], ["Answered", a.answered], ["Declined", a.abstained], ["Thumbs up / down", `${sum.ratings_24h.up} / ${sum.ratings_24h.down}`],
+    ["Open reviews", sum.open_reviews], ["Documents", sum.documents], ["Evaluation examples", sum.eval_examples], ["Quarantined", sum.quarantined]]
+    .map(([k, v]) => `<div class="stat"><b>${e(v)}</b><span>${e(k)}</span></div>`).join("");
+  $("alerts").innerHTML = sum.alerts_firing.map((x) => `<p><span class="pill bad">${e(x.severity)}</span> ${e(x.message)}</p>`).join("");
+  $("queue").innerHTML = tasks.map((t) => `<tr><td>${e(t.payload.question)}<br><span class="mute">${e(t.payload.audience)} reader</span></td>
+    <td><span class="pill ${t.payload.reason === "thumbs_down" ? "bad" : "warn"}">${e(t.payload.reason)}</span></td><td>${e(t.payload.answer)}</td>
+    <td><div class="row"><button data-res="answerable" data-id="${t.id}">Docs answer it…</button><button data-res="not_answerable" data-id="${t.id}">Declining is right</button>
+    <button data-res="dismiss" data-id="${t.id}">Dismiss</button></div></td></tr>`).join("") || `<tr><td colspan="4" class="mute">Nothing to review.</td></tr>`;
+  $("versions").innerHTML = idx.versions.slice().reverse().map((m) => `<tr><td><code>${e(m.version)}</code></td>
+    <td>${m.stage === "production" ? '<span class="pill ok">production</span>' : '<span class="pill">candidate</span>'}</td><td class="num">${e(m.chunks)}</td>
+    <td class="num">${pct(m.metrics.recall_at_k)}</td><td class="num">${pct(m.metrics.answer_correctness)}</td><td class="num">${pct(m.metrics.faithfulness)}</td>
+    <td class="num">${pct(m.metrics.abstention_accuracy)}</td><td>${e(BS.time(m.created_at))}</td></tr>`).join("");
+}
+document.addEventListener("click", async (ev) => {
+  const b = ev.target.closest("button"); if (!b) return;
+  try {
+    if (b.dataset.rate && last) { await BS.api(`/v1/answers/${last.answer_id}/feedback`, { method: "POST", json: { rating: b.dataset.rate } }); BS.toast("Thanks for the feedback"); }
+    else if (b.dataset.res) { const json = { resolution: b.dataset.res };
+      if (b.dataset.res === "answerable") { json.expected_doc_id = prompt("Id of the document that answers it (for example idempotency)"); if (!json.expected_doc_id) return;
+        json.must_contain = prompt("A phrase the answer must contain (optional)") || ""; }
+      await BS.api(`/v1/reviews/${b.dataset.id}/decision`, { method: "POST", json }); }
+    else if (b.id === "rebuild") { const r = await BS.api("/v1/index/rebuild", { method: "POST" }); BS.toast(`${r.version}: ${r.promoted ? "promoted" : "not promoted: " + r.failed_gates.join("; ")}`); }
+    else return;
+    await refresh();
+  } catch (err) { BS.toast(err.message); }
+});
+BS.init();
+</script>
+</body>
+</html>

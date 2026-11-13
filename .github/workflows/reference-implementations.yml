@@ -1,0 +1,121 @@
+name: reference-implementations
+
+# The executable evidence for reference-implementations/: every implementation's tests on SQLite and PostgreSQL, its
+# end-to-end demo, and its container profile (image build, Compose stack, bootstrap, verification through the API).
+on:
+  push:
+    branches: [main]
+    paths: ['reference-implementations/**', '.github/workflows/reference-implementations.yml']
+  pull_request:
+    paths: ['reference-implementations/**', '.github/workflows/reference-implementations.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refimpl-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: reference-implementations
+
+jobs:
+  platform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          {
+            python-version: '3.13',
+            cache: pip,
+            cache-dependency-path: reference-implementations/requirements.txt,
+          }
+      - run: pip install -r requirements.txt
+      - name: Vendored platform copies match the source
+        run: python tools/sync_platform.py --check
+      - run: ruff check _platform tools
+      - name: Platform tests
+        run: cd _platform && python -m pytest -q
+
+  implementation:
+    needs: platform
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        impl: [realtime-decisioning, batch-forecasting, rag-assistant, agentic-workflow]
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env: { POSTGRES_USER: app, POSTGRES_PASSWORD: ci-only, POSTGRES_DB: app }
+        ports: ['5432:5432']
+        options: --health-cmd "pg_isready -U app" --health-interval 5s --health-timeout 3s --health-retries 20
+    defaults:
+      run:
+        working-directory: reference-implementations/${{ matrix.impl }}
+    env:
+      PYTHONPATH: .:src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: reference-implementations/${{ matrix.impl }}/requirements.txt
+      - run: pip install -r requirements.txt
+      - run: ruff check .
+      - name: Tests (SQLite)
+        run: python -m pytest -q
+      - name: Tests (PostgreSQL)
+        run: python -m pytest -q
+        env:
+          TEST_DATABASE_URL: postgresql+psycopg://app:ci-only@localhost:5432/app
+      - name: End-to-end demo (seed, pipeline, API, verification, closed loop)
+        run: python -m bsref.setup && python scripts/demo.py
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          {
+            name: 'api-log-${{ matrix.impl }}',
+            path: 'reference-implementations/${{ matrix.impl }}/var/api.log',
+            retention-days: 7,
+          }
+
+  container:
+    needs: implementation
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        impl: [realtime-decisioning, batch-forecasting, rag-assistant, agentic-workflow]
+    defaults:
+      run:
+        working-directory: reference-implementations/${{ matrix.impl }}
+    env:
+      COMPOSE: docker compose -f infrastructure/docker-compose.yml --env-file .env
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - name: Generate .env (secrets for this run only)
+        run: pip install -q pyyaml && PYTHONPATH=.:src python -c "from bsref import setup; setup.main()"
+      - name: Build and start the stack (API, worker, PostgreSQL, Prometheus, Grafana)
+        run: $COMPOSE up -d --build --wait
+      - name: Bootstrap (seed, pipeline, first model or index or agent version)
+        run: $COMPOSE run --rm job python scripts/bootstrap.py
+      - name: Extra data the verification expects
+        if: matrix.impl == 'realtime-decisioning' || matrix.impl == 'agentic-workflow'
+        run: $COMPOSE run --rm job sh -c "python -m data.source_system advance && python -m data.worker"
+      - name: Verify through the API
+        run: $COMPOSE run --rm -e API_URL=http://api:8000 job python scripts/verify.py
+      - name: Kubernetes manifests render
+        run: kubectl kustomize infrastructure/k8s > /dev/null
+      - name: Logs on failure
+        if: failure()
+        run: $COMPOSE logs --no-color --tail 200
+      - name: Teardown
+        if: always()
+        run: $COMPOSE down -v

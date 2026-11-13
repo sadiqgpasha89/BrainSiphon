@@ -585,3 +585,21 @@ test('about page explains the platform, blueprint anatomy, role guides, and navi
   await expect(page.getByRole('heading', { name: 'How to Read BrainSiphon by Role' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Signal vs. Noise Across Archetypes' })).toBeVisible();
 });
+
+test('reference implementations page lists the four systems and says what is not covered', async ({
+  page,
+}) => {
+  await page.goto('/implementations');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Reference implementations');
+  const list = page.getByTestId('implementations-list');
+  for (const dir of ['realtime-decisioning', 'batch-forecasting', 'rag-assistant', 'agentic-workflow']) {
+    await expect(list).toContainText(dir);
+  }
+  const coverage = page.getByTestId('implementations-coverage');
+  await expect(coverage.getByRole('row')).toHaveCount(10); // header + nine archetypes
+  await expect(coverage).toContainText('No reference implementation yet');
+  await expect(page.getByTestId('implementations-verified')).toContainText('Not run');
+  await expect(
+    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Implementations' }),
+  ).toBeVisible();
+});

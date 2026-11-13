@@ -1,0 +1,17 @@
+# Contract for the assembled training set. A failing dataset rule stops the training run.
+dataset: training_set
+version: 1
+owner: fraud-ml
+fields:
+  - {name: txn_id, type: string}
+  - {name: event_time, type: number}
+  - {name: label, type: integer, enum: [0, 1]}
+  - {name: amount, type: number, min: 0.01}
+  - {name: card_txn_count_1h, type: number, min: 0}
+  - {name: card_txn_count_24h, type: number, min: 0}
+  - {name: merchant_chargeback_rate, type: number, min: 0, max: 1}
+dataset_rules:
+  min_rows: 5000
+  max_bad_row_rate: 0.001
+  unique: [[txn_id]]
+  max_null_rate: {label: 0.0, amount: 0.0}

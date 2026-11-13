@@ -1,0 +1,13 @@
+# Who exists and what they may do. Passwords are NOT here: each comes from USER_<NAME>_PASSWORD in the environment
+# (`make setup` generates them into .env). With AUTH_MODE=oidc this file is unused and roles come from the token.
+users:
+  - username: svc-gateway     # the payment gateway, a machine caller
+    roles: [scorer]
+  - username: analyst
+    roles: [analyst]
+  - username: ml-admin
+    roles: [ml-admin, analyst]
+roles:
+  scorer: request decisions and report step-up outcomes
+  analyst: work the review queue, read decisions and monitoring
+  ml-admin: promote and roll back models

@@ -1,0 +1,12 @@
+# Data contract for doc.published / doc.updated events from the documentation CMS. Owner: developer-experience team.
+dataset: document
+version: 1
+owner: developer-experience
+fields:
+  - {name: doc_id, type: string, pattern: "[a-z0-9-]{3,80}"}
+  - {name: title, type: string, max_length: 200}
+  - {name: body, type: string, max_length: 100000}
+  - {name: version, type: integer, min: 1}
+  - {name: visibility, type: string, enum: [public, internal]}
+  - {name: updated_at, type: number, min: 1000000000}
+additional_fields: forbid
