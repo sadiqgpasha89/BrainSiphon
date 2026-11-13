@@ -22,7 +22,7 @@ import { DifficultyChip, LatencyChip, MaturityChip, ParadigmChips } from './Badg
 type Sort = 'relevance' | 'title' | 'complexity' | 'latency';
 const DIFF_RANK: Record<Difficulty, number> = {
   foundational: 0,
-  'production-grade': 1,
+  advanced: 1,
   'staff-principal': 2,
 };
 const LAT_RANK: Record<LatencySLA, number> = { 'sub-10ms': 0, 'sub-100ms': 1, seconds: 2, batch: 3 };

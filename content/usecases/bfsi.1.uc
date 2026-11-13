@@ -1,5 +1,5 @@
 # BFSI: Banking, Financial Services & Insurance, part 1 (use cases 1-25): lending, treasury and capital-markets operations
-== mortgage-underwriting-document-automation | Mortgage Underwriting Document Automation | nlp,computer-vision | seconds | production-grade | a=0.05 k=900
+== mortgage-underwriting-document-automation | Mortgage Underwriting Document Automation | nlp,computer-vision | seconds | advanced | a=0.05 k=900
 obj: Classify, extract and cross-check the documents in a mortgage file (payslips, bank statements, tax returns, ID, valuation) so underwriters review exceptions instead of retyping fields.
 loss: \mathcal{L}=\mathcal{L}_{\text{det}}+\mathcal{L}_{\text{CTC}}+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every extracted field links to its source page and box ; Income and identity fields never auto-accepted below the audit-agreed confidence ; Applicant data stays inside the bank tenancy ; Decision turnaround under 2 minutes per document pack
@@ -23,7 +23,7 @@ off: Field-level exact match per field type ; Document classification macro-F1
 on: Underwriter minutes per file ; Straight-through documents with no manual correction
 gap: Test files from the same broker as training inflate extraction accuracy ; Synthetic payslips are cleaner than real phone photos
 
-== mortgage-prepayment-and-default-risk | Mortgage Prepayment & Default Risk Modelling | tabular,time-series | batch | production-grade | a=1 k=3
+== mortgage-prepayment-and-default-risk | Mortgage Prepayment & Default Risk Modelling | tabular,time-series | batch | advanced | a=1 k=3
 obj: Forecast monthly prepayment and default for each mortgage so pricing, hedging, provisioning and servicing capacity use the right cash flows.
 loss: \mathcal{L}=-\sum_i\left[\delta_i\log h(t_i\mid x_i)-\int_0^{t_i}h(u\mid x_i)\,du\right]+\lambda\,\mathrm{Brier}(\hat{p},y)
 con: Competing risks, prepayment versus default, modelled jointly ; Rate-path scenarios from the treasury curve engine ; Monthly run under 3 hours for 4M loans ; Model passes independent validation
@@ -47,7 +47,7 @@ off: Calibration of cumulative CPR and CDR by vintage ; Time-dependent concordan
 on: Forecast error of monthly cash flow ; Provision movement explained by model drift
 gap: Random split leaks vintages across train and test ; Back-test in a calm rate year hides refinancing waves
 
-== commercial-loan-covenant-early-warning | Commercial Loan Covenant Breach Early Warning | tabular,time-series | batch | production-grade | a=0.1 k=40
+== commercial-loan-covenant-early-warning | Commercial Loan Covenant Breach Early Warning | tabular,time-series | batch | advanced | a=0.1 k=40
 obj: Predict which corporate borrowers will breach a financial covenant in the next two quarters so relationship managers act before the breach.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Predictions explainable to credit officers line by line ; Quarterly cycle after statements arrive ; No use of data the bank is not permitted to use for monitoring ; Full lineage for audit
@@ -95,7 +95,7 @@ off: Citation validity rate ; Figure exact-match rate
 on: Analyst hours per memo ; Committee rework requests per memo
 gap: Evaluating on memos the retriever has seen inflates grounding ; Edit distance rewards agreeable drafts
 
-== sme-financial-statement-spreading | SME Financial Statement Spreading | nlp,computer-vision | seconds | production-grade | a=0.1 k=600
+== sme-financial-statement-spreading | SME Financial Statement Spreading | nlp,computer-vision | seconds | advanced | a=0.1 k=600
 obj: Convert scanned or digital SME financial statements into standard spread lines so ratios and ratings use consistent definitions.
 loss: \mathcal{L}=\mathcal{L}_{\text{det}}+\lambda\,\mathrm{CE}(\hat{y},y)
 con: Totals must foot and balance, assets equal liabilities plus equity ; Each spread line traces to a statement cell ; Handles 12 accounting standards and 6 languages ; Under 90 seconds per statement
@@ -143,7 +143,7 @@ off: Calibration of PD by stage ; Stability of stage migration matrix
 on: Provision volatility relative to credit losses ; Late stage-3 recognitions
 gap: Random split ignores economic cycles ; Calibrating on benign years understates stage 2
 
-== loan-hardship-case-triage | Loan Hardship Case Triage | nlp,tabular | seconds | production-grade | a=0.2 k=12
+== loan-hardship-case-triage | Loan Hardship Case Triage | nlp,tabular | seconds | advanced | a=0.2 k=12
 obj: Route incoming hardship requests to the right treatment and priority, quickly and fairly, while spotting customers in vulnerable circumstances.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y_{\text{vulnerable}})
 con: Vulnerability flags reviewed by a trained human ; No automated refusal of hardship assistance ; Response within regulatory time limits ; Free-text stays inside the bank
@@ -167,7 +167,7 @@ off: Macro-F1 per category and language ; Recall of vulnerability cues
 on: Time to first response ; Share of vulnerable customers reached by a specialist
 gap: Offline labels come from past routing, which carries its own bias ; Language mix in tests differs from live traffic
 
-== collateral-valuation-and-haircut-monitoring | Collateral Valuation & Haircut Monitoring | tabular,time-series | batch | production-grade | a=1 k=5
+== collateral-valuation-and-haircut-monitoring | Collateral Valuation & Haircut Monitoring | tabular,time-series | batch | advanced | a=1 k=5
 obj: Revalue pledged collateral continuously and set haircuts so the bank is not under-secured when prices fall or liquidity dries up.
 loss: \mathcal{L}=\sum_t\mathrm{Huber}(y_t-\hat{y}_t)+\lambda\,\mathrm{Pinball}(\hat{q}_{0.05},y)
 con: Daily revaluation before the margin cut-off ; Haircuts follow the board-approved policy bounds ; Independent price sources for assets with no market ; Explainable to credit risk and audit
@@ -191,7 +191,7 @@ off: Coverage of the 95% quantile on back-tests ; Valuation error against realis
 on: Under-secured exposure days ; Margin calls disputed because of valuation
 gap: Back-test on calm markets misses stressed haircuts ; Sale prices selection bias, only defaulted loans are sold
 
-== corporate-obligor-rating-migration | Corporate Obligor Rating Migration Prediction | tabular | batch | production-grade | a=0.1 k=30
+== corporate-obligor-rating-migration | Corporate Obligor Rating Migration Prediction | tabular | batch | advanced | a=0.1 k=30
 obj: Predict the probability that a corporate borrower's internal rating moves up or down within 12 months to guide limits, pricing and watchlists.
 loss: \mathcal{L}=\mathrm{OrdinalCE}(\hat{y},y)+\lambda\,\mathrm{Calibration}(\hat{p})
 con: Ratings remain explainable and monotone in key drivers ; Credit committee override recorded ; Quarterly refresh ; Aligned to the regulatory rating scale
@@ -239,7 +239,7 @@ off: Win-probability calibration ; Realised RAROC against predicted RAROC
 on: Portfolio RAROC ; Win rate at or above the hurdle
 gap: Truncated quote data biases elasticity ; Past discounts reflect relationship-manager habits, not customer need
 
-== intraday-liquidity-forecasting | Intraday Liquidity Forecasting | time-series | seconds | production-grade | a=96 k=1
+== intraday-liquidity-forecasting | Intraday Liquidity Forecasting | time-series | seconds | advanced | a=96 k=1
 obj: Forecast intraday payment inflows and outflows by settlement system so treasury funds positions on time without holding excess buffers.
 loss: \mathcal{L}=\sum_{t}\mathrm{Pinball}(\hat{q}_{0.95},y_t)+\lambda\,\mathrm{MSE}(\hat{y}_t,y_t)
 con: Refresh every 15 minutes during operating hours ; Never under-forecast peak outflow by more than the agreed tolerance ; Fallback to historical profiles if feeds fail ; Explainable to the treasurer
@@ -287,7 +287,7 @@ off: Back-test of run-off by segment ; Coverage of the 95% quantile
 on: Liquidity buffer cost ; Forecast error in stressed months
 gap: Training on a rate-stable era understates sensitivity ; Customer-level splits leak households
 
-== net-interest-income-sensitivity-forecasting | Net Interest Income Sensitivity Forecasting | time-series,tabular | batch | production-grade | a=1 k=4
+== net-interest-income-sensitivity-forecasting | Net Interest Income Sensitivity Forecasting | time-series,tabular | batch | advanced | a=1 k=4
 obj: Forecast net interest income under rate scenarios using behavioural models for repricing, prepayment and deposits.
 loss: \mathcal{L}=\sum_t\mathrm{MSE}(\hat{y}_t,y_t)+\lambda\,\mathrm{Pinball}(\hat{q}_{0.9},y_t)
 con: Monthly ALCO pack ; Scenarios from the ALM policy ; Reconcile to finance within 1% ; Model assumptions documented
@@ -359,7 +359,7 @@ off: RWA saved per plan ; Income retained
 on: Capital ratio change ; Cost of execution
 gap: Counting reductions that cannot be executed ; Static prices make plans look cheaper
 
-== operational-risk-event-classification | Operational Risk Event Classification & Loss Forecasting | nlp,tabular | batch | production-grade | a=0.1 k=8
+== operational-risk-event-classification | Operational Risk Event Classification & Loss Forecasting | nlp,tabular | batch | advanced | a=0.1 k=8
 obj: Classify incident reports into the operational risk taxonomy and forecast loss severity so controls and capital reflect real event patterns.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{Huber}(\log\hat{s},\log s)
 con: Basel event types and business lines mapped ; Reviewer sign-off on high-severity events ; Reports retained under policy ; Weekly taxonomy updates
@@ -431,7 +431,7 @@ off: Mean absolute error versus engine ; 95th percentile coverage
 on: Pre-deal checks completed within 300 ms ; Limit breaches caught
 gap: Training on calm periods ; Test on trades similar to training trades
 
-== branch-cash-and-vault-optimisation | Branch Cash & Vault Optimisation | time-series,reinforcement-learning | batch | production-grade | a=1 k=2
+== branch-cash-and-vault-optimisation | Branch Cash & Vault Optimisation | time-series,reinforcement-learning | batch | advanced | a=1 k=2
 obj: Plan cash holdings and shipments for branch vaults so branches rarely run out and the bank does not hold idle cash.
 loss: \min\;\sum_{b}\left(c_{\text{hold}}\,I_b+c_{\text{ship}}\,S_b+c_{\text{out}}\,\mathbb{E}[\text{stockout}_b]\right)
 con: Insurance limits per vault ; Cash-in-transit schedules are fixed ; Weekly plan with daily adjustments ; Explainable to branch managers
@@ -455,7 +455,7 @@ off: Forecast pinball loss ; Stock-out rate
 on: Cash held per branch ; Stock-out events
 gap: Training on stocked-out days underestimates demand ; Static calendar in test
 
-== regulatory-change-impact-analysis | Regulatory Change Impact Analysis | llm-agents,nlp | seconds | production-grade | a=0.2 k=100 s=6 t=900
+== regulatory-change-impact-analysis | Regulatory Change Impact Analysis | llm-agents,nlp | seconds | advanced | a=0.2 k=100 s=6 t=900
 obj: Read new regulations and consultations, map them to the bank's policies, processes and systems, and draft an impact assessment for compliance owners.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every mapped obligation cites the regulatory paragraph ; Compliance owner approves the mapping ; Regulator documents only from official sources ; Audit log of drafts and decisions
@@ -479,7 +479,7 @@ off: Obligation precision and recall ; Citation validity
 on: Time from publication to impact assessment ; Missed obligations at audit
 gap: Evaluation on documents seen in prompts ; Gold links biased to common policies
 
-== settlement-fail-prediction | Settlement Fail Prediction | tabular | batch | production-grade | a=1 k=2
+== settlement-fail-prediction | Settlement Fail Prediction | tabular | batch | advanced | a=1 k=2
 obj: Predict which trades will fail to settle on the intended date so operations can chase the counterparty, borrow securities or fund early.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Predictions delivered by 04:00 for the settlement day ; Explanation per flagged trade ; Operations capacity of 500 chases a day ; No customer data outside the bank
@@ -503,7 +503,7 @@ off: PR-AUC at the chase capacity ; Calibration by market
 on: Fails avoided per day ; Penalty cost
 gap: Using post-cut-off status ; Operations intervention changes outcomes, labels mixed
 
-== corporate-actions-event-extraction | Corporate Actions Event Extraction | nlp | seconds | production-grade | a=0.2 k=40
+== corporate-actions-event-extraction | Corporate Actions Event Extraction | nlp | seconds | advanced | a=0.2 k=40
 obj: Extract corporate action events (dividends, splits, mergers, rights issues) and their terms from notices and vendor feeds into a golden source for downstream processing.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Accuracy above 99.5% on mandatory events ; Dual source verification for mandatory events ; Every field traces to a source ; Notices handled in 12 languages
@@ -527,7 +527,7 @@ off: Field-level accuracy ; Event-level exact match
 on: Manual touches per event ; Entitlement errors
 gap: Evaluating on a single vendor format ; Test set excludes late amendments
 
-== trade-break-exception-triage | Trade Break & Reconciliation Exception Triage | tabular,nlp | seconds | production-grade | a=2 k=6
+== trade-break-exception-triage | Trade Break & Reconciliation Exception Triage | tabular,nlp | seconds | advanced | a=2 k=6
 obj: Classify and route reconciliation breaks between internal records and counterparties or custodians to the right owner with a suggested fix.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y_{\text{auto}})
 con: Auto-resolve only breaks with a reversible fix ; Four-eyes check on any ledger change ; Break ageing targets by type ; Full audit trail
@@ -551,7 +551,7 @@ off: Cause accuracy ; Safe auto-fix precision
 on: Breaks aged beyond SLA ; Operator touches per break
 gap: Labels from past manual assignment ; Auto-fix feedback loop hides errors
 
-== custody-fee-billing-error-detection | Custody Fee & Billing Error Detection | tabular | batch | production-grade | a=1 k=3
+== custody-fee-billing-error-detection | Custody Fee & Billing Error Detection | tabular | batch | advanced | a=1 k=3
 obj: Detect incorrect custody and fund administration fees before invoices go out, protecting revenue and client trust.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{Huber}(\hat{f}-f)
 con: Review capacity of 300 invoices per cycle ; Explainable flags ; No changes to billing without approval ; Monthly cycle
@@ -575,7 +575,7 @@ off: Precision at review capacity ; Recall of known errors
 on: Revenue leakage recovered ; Invoice disputes
 gap: Training on past errors found by clients ; Contract data differs between train and test
 
-== securities-lending-recall-and-rate-prediction | Securities Lending Recall & Rate Prediction | tabular,time-series | batch | production-grade | a=1 k=4
+== securities-lending-recall-and-rate-prediction | Securities Lending Recall & Rate Prediction | tabular,time-series | batch | advanced | a=1 k=4
 obj: Predict lending demand, fee rates and recall risk per security so the lending desk prices loans and holds back what it expects to need.
 loss: \mathcal{L}=\mathrm{Huber}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y_{\text{recall}})
 con: Beneficial owner restrictions respected ; Daily run before market open ; Explainable to the desk ; Regulatory borrowing limits

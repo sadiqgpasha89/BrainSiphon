@@ -91,12 +91,40 @@ export function verifyStatic(
       for (const label of Object.values(STATUS_LABEL))
         if (!text.includes(label)) fail(`out/${u.slug}.md is missing the "${label}" status`);
     }
+    // 2c. the release report is published, lists every feasibility warning, and the home page shows the manifest's own figures
+    const report = join(out, 'release', 'index.html');
+    if (!nonEmpty(report)) fail('missing page out/release/index.html (the release report)');
+    else {
+      const html = readFileSync(report, 'utf8');
+      const shown = html.split('data-testid="feasibility-warning"').length - 1;
+      if (shown !== m.checks.feasibility.warnings.length)
+        fail(
+          `the release report shows ${shown} feasibility warnings, the manifest has ${m.checks.feasibility.warnings.length}`,
+        );
+      for (const w of m.checks.feasibility.warnings)
+        if (!html.includes(`/${w.slug}#validation`))
+          fail(`the release report does not link the warning on ${w.slug}`);
+    }
+    if (!nonEmpty(join(out, 'release-report.md'))) fail('out/release-report.md is missing');
+    for (const k of m.checks.executable.kits)
+      if (!nonEmpty(join(out, 'release', 'kit-logs', `${k.name.replace(/\//g, '--')}.txt`)))
+        fail(`the test log of ${k.name} is not published`);
+    const home = join(out, 'index.html');
+    if (nonEmpty(home)) {
+      const html = readFileSync(home, 'utf8');
+      if (!html.includes('data-testid="manifest-transparency"'))
+        fail('the home page does not show the release manifest summary');
+      if (/production-grade|battle-tested/i.test(html))
+        fail('the home page uses a readiness label that no evidence supports');
+    }
     const sampleSlug = all[0]?.slug;
     const samplePage = sampleSlug ? join(out, sampleSlug, 'index.html') : '';
     if (nonEmpty(samplePage)) {
       const html = readFileSync(samplePage, 'utf8');
       if (!html.includes(m.contentVersion))
         fail(`${sampleSlug} page does not show content version ${m.contentVersion}`);
+      if (!html.includes('data-testid="maturity-scorecard"'))
+        fail(`${sampleSlug} page has no maturity scorecard`);
       for (const id of Object.keys(STATUS_LABEL))
         if (!html.includes(`data-testid="status-${id}"`))
           fail(`${sampleSlug} page is missing the ${id} status`);

@@ -1,5 +1,5 @@
 # SaaS & Developer Platforms, part 2 (use cases 30-50)
-== enterprise-search-relevance | Enterprise Search Relevance | nlp,recommender | sub-100ms | production-grade | a=5 k=4
+== enterprise-search-relevance | Enterprise Search Relevance | nlp,recommender | sub-100ms | advanced | a=5 k=4
 obj: Return the right documents and answers across connected apps (drive, chat, wiki, tickets) respecting each user's permissions.
 loss: \mathcal{L}=\mathrm{ListNet}(s,y)+\lambda\,\mathrm{InfoNCE}(q,d^+)
 con: Permission-aware retrieval ; Heterogeneous sources ; Freshness within minutes ; Tenant isolation
@@ -19,7 +19,7 @@ off: NDCG on tenant query logs and judgments ; Permission-leak rate
 on: Search success rate ; Time to find
 gap: Training on click logs with position bias ; Ignoring permission checks in evaluation
 
-== document-workflow-classification-extraction | Document Workflow Classification & Extraction | nlp,computer-vision | seconds | production-grade | a=0.3 k=300
+== document-workflow-classification-extraction | Document Workflow Classification & Extraction | nlp,computer-vision | seconds | advanced | a=0.3 k=300
 obj: Classify and extract fields from uploaded documents (contracts, forms, invoices) to automate customer workflows.
 loss: \mathcal{L}=\mathrm{CE}_{\text{class}}+\lambda\,\mathrm{CE}_{\text{fields}}
 con: Per-tenant document types ; Few-shot onboarding ; Confidence and review loop ; Data isolation
@@ -99,7 +99,7 @@ off: Outcome separation (retention lift between segments) ; Stability across wee
 on: Lifecycle campaign lift by segment ; Segment usage by teams
 gap: Internal metrics only ; No outcome validation
 
-== free-trial-abuse-detection | Free-Trial & Promo Abuse Detection | tabular,graph | sub-100ms | production-grade | a=0.3 k=2
+== free-trial-abuse-detection | Free-Trial & Promo Abuse Detection | tabular,graph | sub-100ms | advanced | a=0.3 k=2
 obj: Detect repeat trials, referral fraud and credit farming at signup to protect revenue without blocking genuine users.
 loss: \mathcal{L}=\mathrm{FL}(y,p)+\lambda\,\mathrm{GraphReg}
 con: Decision at signup within 50 ms ; Low friction ; Privacy ; Appeals
@@ -119,7 +119,7 @@ off: Precision at fixed block rate ; Trial-abuse detection recall
 on: Trial abuse rate ; Conversion rate of genuine trials
 gap: Labels only from caught abuse ; Ignoring conversion cost
 
-== saas-account-security-anomalies | SaaS Account Security Anomaly Detection | tabular,time-series | sub-100ms | production-grade | a=5 k=2
+== saas-account-security-anomalies | SaaS Account Security Anomaly Detection | tabular,time-series | sub-100ms | advanced | a=5 k=2
 obj: Detect compromised end-user and admin accounts in a multi-tenant SaaS and offer tenants risk signals and automated responses.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Per-tenant privacy ; Real-time decisions ; Customer-configurable policies ; Explainable alerts
@@ -159,7 +159,7 @@ off: Weighted pinball loss ; Interval coverage
 on: Capacity-related incidents ; Quota complaints
 gap: Training on throttled usage as true demand ; Ignoring customer events
 
-== data-quality-anomaly-detection | Data Quality Anomaly Detection | time-series,tabular | batch | production-grade | a=1 k=2
+== data-quality-anomaly-detection | Data Quality Anomaly Detection | time-series,tabular | batch | advanced | a=1 k=2
 obj: Detect freshness, volume, schema and distribution problems in data pipelines before dashboards and models break.
 loss: \mathcal{L}=\sum_t\left[\log\sigma_t+\frac{(m_t-\mu_t)^2}{2\sigma_t^2}\right]
 con: Thousands of tables ; Low alert noise ; Lineage-aware impact ; Auto-generated checks
@@ -179,7 +179,7 @@ off: Detection precision on incident-linked alerts ; Detection delay
 on: Data incidents caught before consumers ; Alert noise
 gap: Injected anomalies only ; No lineage in evaluation
 
-== llm-schema-matching-data-integration | Schema Matching & Data Integration with LLMs | nlp,llm-agents | batch | production-grade | a=0.01 k=10 s=3 t=250
+== llm-schema-matching-data-integration | Schema Matching & Data Integration with LLMs | nlp,llm-agents | batch | advanced | a=0.01 k=10 s=3 t=250
 obj: Map columns between customer data sources and the product's canonical schema, generating validated transformations.
 loss: \mathcal{L}=\mathrm{InfoNCE}(\text{column},\text{target field})+\lambda\,\mathrm{ValidationFailure}
 con: Thousands of source systems ; Mapping correctness ; Transformation testing ; Human approval
@@ -239,7 +239,7 @@ off: Plan correctness on replayed incidents ; Unsafe-action rate
 on: Mean time to mitigate ; Toil hours saved
 gap: Replay incidents lacking novelty ; Measuring speed only
 
-== ml-platform-drift-monitoring | ML Platform: Drift & Quality Monitoring | tabular,time-series | batch | production-grade | a=1 k=3
+== ml-platform-drift-monitoring | ML Platform: Drift & Quality Monitoring | tabular,time-series | batch | advanced | a=1 k=3
 obj: Give every deployed model automatic monitoring for data drift, prediction drift and performance with label delay awareness.
 loss: \mathrm{PSI}=\sum_i(P_i-Q_i)\ln\frac{P_i}{Q_i}
 con: Thousands of models ; Delayed or missing labels ; Low-noise alerts ; Self-serve onboarding
@@ -279,7 +279,7 @@ off: Cost saved at equal quality on eval sets ; Router accuracy
 on: Cost per request ; Quality regressions
 gap: Router trained on judge scores with bias ; Cache evaluated on easy repeats
 
-== llm-app-eval-and-regression-testing | LLM Application Evals & Regression Testing | llm-agents,nlp | batch | production-grade | a=0.01 k=20
+== llm-app-eval-and-regression-testing | LLM Application Evals & Regression Testing | llm-agents,nlp | batch | advanced | a=0.01 k=20
 obj: Maintain golden datasets and automated evaluations so prompt, model and tool changes are gated on measured quality, safety and cost.
 loss: \text{score}=\frac{1}{N}\sum_i \mathrm{Judge}(x_i,y_i)\ \text{(calibrated against human labels)}
 con: CI-time evaluation ; Calibrated judges ; Coverage of failure modes ; Cost of evaluation
@@ -299,7 +299,7 @@ off: Judge-human agreement ; Regression detection power on seeded changes
 on: Bad releases prevented ; Time to ship prompt changes
 gap: Evaluating only on the tuned set ; Single aggregate metric
 
-== rag-quality-monitoring | RAG Quality Monitoring in Production | nlp,llm-agents | batch | production-grade | a=0.1 k=10
+== rag-quality-monitoring | RAG Quality Monitoring in Production | nlp,llm-agents | batch | advanced | a=0.1 k=10
 obj: Monitor retrieval relevance, groundedness and user outcomes of RAG apps in production, spotting content gaps and regressions.
 loss: \mathcal{L}=\mathrm{BCE}(\text{grounded},p)
 con: Online sampling cost ; Privacy of queries ; Per-tenant indexes ; Actionable diagnostics
@@ -319,7 +319,7 @@ off: Judge-human agreement ; Diagnosis accuracy on labelled failures
 on: Resolution rate ; Content gaps closed
 gap: Ratings used as quality ; Not separating retrieval from generation
 
-== ugc-moderation-saas | UGC Moderation as a Service | nlp,computer-vision | sub-100ms | production-grade | a=5 k=20
+== ugc-moderation-saas | UGC Moderation as a Service | nlp,computer-vision | sub-100ms | advanced | a=5 k=20
 obj: Offer customers configurable moderation of text, images and video with per-tenant policies and audit trails.
 loss: \mathcal{L}=\sum_k w_k\,\mathrm{BCE}(y_k,p_k)
 con: Per-tenant thresholds ; Latency inline ; Explainable decisions ; Regional laws
@@ -339,7 +339,7 @@ off: Per-category precision and recall ; Calibration per tenant
 on: Violating content exposure ; Review workload
 gap: Test data from one tenant ; Ignoring regional laws
 
-== cdp-identity-resolution-saas | Customer Data Platform Identity Resolution | graph,tabular | batch | production-grade | a=0.5 k=3
+== cdp-identity-resolution-saas | Customer Data Platform Identity Resolution | graph,tabular | batch | advanced | a=0.5 k=3
 obj: Resolve anonymous and known identifiers into unified customer profiles for analytics and activation with explainable merges.
 loss: \mathcal{L}=\mathrm{BCE}(\text{same person})+\lambda\,\mathrm{TransitivityPenalty}
 con: Deterministic first ; Privacy and consent ; Unmerge capability ; Scale to billions of events
@@ -359,7 +359,7 @@ off: Merge precision at fixed recall ; Unmerge rate
 on: Profile accuracy ; Activation match rate
 gap: Evaluating with deterministic links only ; Ignoring unmerge costs
 
-== developer-docs-assistant | Developer Documentation Assistant | llm-agents,nlp | seconds | production-grade | a=2 k=10 s=3 t=350
+== developer-docs-assistant | Developer Documentation Assistant | llm-agents,nlp | seconds | advanced | a=2 k=10 s=3 t=350
 obj: Answer developer questions about APIs and SDKs with correct, version-specific code snippets and links to authoritative docs.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{docs})+\lambda\,\mathrm{NonExistentAPI}
 con: Version-aware answers ; Code must compile ; No invented endpoints ; Low latency
@@ -406,7 +406,7 @@ off: Off-policy value for activation ; Template recommendation NDCG
 on: Time to first value ; Week-4 retention
 gap: Rewarding checklist completion ; Non-random step exposure
 
-== customer-success-qbr-agent | Customer Success QBR & Account Briefing Agent | llm-agents,tabular | seconds | production-grade | a=0.02 k=60 s=5 t=500
+== customer-success-qbr-agent | Customer Success QBR & Account Briefing Agent | llm-agents,tabular | seconds | advanced | a=0.02 k=60 s=5 t=500
 obj: Generate account briefs and quarterly business review drafts from usage, support, billing and CRM data with cited metrics.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{data})+\lambda\,\mathrm{NumericError}
 con: Numbers from tools not the model ; Data access by role ; Customer-confidential data ; CSM approval

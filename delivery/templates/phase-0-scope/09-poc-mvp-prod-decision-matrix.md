@@ -33,7 +33,7 @@ One of the primary causes of project failure is "PoC Creep"—attempting to buil
 | **Security & Auth** | Local environment variables | API Keys / OAuth2 JWT auth | mTLS, IAM Workload Identity, Vault |
 | **Decision Path** | Offline simulation only | Shadow traffic (0% live change) | 100% live traffic with canaries |
 | **Observability** | Console print statements / logs | OpenTelemetry traces & Prometheus| PagerDuty alerts, Grafana dashboards|
-| **Incident Runbooks** | None (ad-hoc debugging) | Core triage & rollback script | 10 battle-tested SRE runbooks |
+| **Incident Runbooks** | None (ad-hoc debugging) | Core triage & rollback script | 10 reference SRE runbooks |
 | **Exit Gate Requirement** | Statistically significant PR-AUC | P99 latency SLA & shadow match | 30 days zero-incident SLA hold |
 
 ---

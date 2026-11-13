@@ -1,5 +1,5 @@
 # Cybersecurity, part 2 (use cases 26-50)
-== fake-account-creation-detection | Fake & Bulk Account Creation Detection | tabular,graph | sub-100ms | production-grade | a=1 k=2
+== fake-account-creation-detection | Fake & Bulk Account Creation Detection | tabular,graph | sub-100ms | advanced | a=1 k=2
 obj: Stop automated and farmed account registrations at signup, protecting downstream trust, promos and abuse systems.
 loss: \mathcal{L}=\mathrm{FL}(y,p)+\lambda\,\mathrm{GraphReg}
 con: Signup decision within 50 ms ; Low friction for genuine users ; Disposable-email and SMS farms ; Privacy
@@ -39,7 +39,7 @@ off: EER on telephony test sets ; Fraud-call recall at fixed FP
 on: Vishing losses ; Step-up rate for genuine callers
 gap: Test deepfakes from the same generators as training ; Clean audio evaluation
 
-== dark-web-threat-intel-nlp | Dark-Web & Underground Threat Intelligence | nlp,graph | batch | production-grade | a=0.01 k=20
+== dark-web-threat-intel-nlp | Dark-Web & Underground Threat Intelligence | nlp,graph | batch | advanced | a=0.01 k=20
 obj: Mine forums, marketplaces and chat channels for credential leaks, access sales and planned attacks relevant to the organisation.
 loss: \mathcal{L}=\mathrm{CE}_{\text{NER}}+\lambda\,\mathrm{CE}_{\text{relevance}}
 con: Legal and ethical collection ; Multilingual slang ; Source reliability ; Rapid takedown of sources
@@ -99,7 +99,7 @@ off: Cluster purity on analyst-vetted campaigns ; Calibration of confidence labe
 on: Analyst time saved ; Attribution reviews with revised outcomes
 gap: Ground truth is analyst opinion ; Ignoring deception
 
-== malware-family-clustering | Malware Family Clustering | tabular,graph | batch | production-grade | a=0.1 k=20
+== malware-family-clustering | Malware Family Clustering | tabular,graph | batch | advanced | a=0.1 k=20
 obj: Group millions of samples into families by behaviour and code to speed triage and track variants.
 loss: \mathcal{L}=\mathrm{Triplet}(a,p,n)+\lambda\,\mathrm{ClusterEntropy}
 con: Obfuscation and packing ; Scalable nearest neighbours ; Evolving families ; Analyst-readable cluster summaries
@@ -139,7 +139,7 @@ off: Recall@k across architectures ; Patched/unpatched discrimination accuracy
 on: Vulnerable components found in firmware ; Time to SBOM
 gap: Evaluation only on same-compiler pairs ; Treating patched variants as true matches
 
-== email-attachment-sandbox-triage | Attachment Sandbox Triage | computer-vision,tabular | seconds | production-grade | a=2 k=300
+== email-attachment-sandbox-triage | Attachment Sandbox Triage | computer-vision,tabular | seconds | advanced | a=2 k=300
 obj: Decide which attachments need expensive sandbox detonation, and classify them quickly using static and visual document features.
 loss: \mathcal{L}=\mathrm{CE}(y,p)+\lambda\,\mathrm{CostAwareDetonation}
 con: Sandbox cost and queue limits ; Delivery delay budget ; Evasive documents ; Zero-day documents
@@ -159,7 +159,7 @@ off: Detonation-worthy recall at fixed capacity ; Verdict latency
 on: Malicious attachments delivered ; Mail delay time
 gap: Training on labelled detonation outcomes only (selection bias) ; Static datasets without evasion
 
-== dlp-content-classification | DLP Content Classification | nlp,computer-vision | sub-100ms | production-grade | a=30 k=20
+== dlp-content-classification | DLP Content Classification | nlp,computer-vision | sub-100ms | advanced | a=30 k=20
 obj: Classify sensitive content (PII, source code, financial data) in documents and messages to enforce data-loss policies with low false positives.
 loss: \mathcal{L}=\sum_k\mathrm{BCE}(y_k,p_k)
 con: Inline latency ; Multilingual ; Images and scans ; Policy explainability for users
@@ -199,7 +199,7 @@ off: Recall of simulated exfil at fixed alerts/day ; Precision of top alerts
 on: Mean time to detect exfil ; Data volume leaked before containment
 gap: Synthetic exfil unlike real incidents ; Baselines contaminated by earlier exfil
 
-== privileged-access-session-anomaly | Privileged Access Session Anomaly Detection | time-series,nlp | sub-100ms | production-grade | a=5 k=5
+== privileged-access-session-anomaly | Privileged Access Session Anomaly Detection | time-series,nlp | sub-100ms | advanced | a=5 k=5
 obj: Monitor privileged sessions (SSH, RDP, DB consoles) for risky commands and behaviour changes and terminate or alert in real time.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Real-time command analysis ; Admin productivity ; Session recording privacy ; Break-glass handling
@@ -219,7 +219,7 @@ off: Recall of simulated attack sessions ; Alert rate per admin-hour
 on: Risky command terminations ; Admin friction hours
 gap: Lab attack sessions are too clean ; Context not included in evaluation
 
-== zero-trust-adaptive-authentication | Zero-Trust Adaptive Authentication | tabular | sub-100ms | production-grade | a=10 k=2
+== zero-trust-adaptive-authentication | Zero-Trust Adaptive Authentication | tabular | sub-100ms | advanced | a=10 k=2
 obj: Continuously score session risk and adapt authentication requirements per request using device, user and resource signals.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{FrictionCost}
 con: Decision under 30 ms ; Policy transparency ; Friction budget ; Privacy
@@ -259,7 +259,7 @@ off: AUC for compromise ; Remediation leverage
 on: Incidents per 1000 devices ; Time to remediate high-risk devices
 gap: Labels reflect detection capability not true compromise ; Using post-incident posture data
 
-== iot-anomaly-detection | IoT Device Anomaly Detection | time-series,tabular | sub-100ms | production-grade | a=1440 k=1
+== iot-anomaly-detection | IoT Device Anomaly Detection | time-series,tabular | sub-100ms | advanced | a=1440 k=1
 obj: Detect compromised or malfunctioning IoT devices from network and telemetry patterns with models light enough for gateways.
 loss: \mathcal{L}=\|x-\mathrm{Dec}(\mathrm{Enc}(x))\|^2
 con: Gateway CPU limits ; Millions of device types ; Intermittent connectivity ; Sparse labels
@@ -299,7 +299,7 @@ off: Detection of replayed attack scenarios ; False alarms per week
 on: Time to detect OT anomalies ; Operator disruption events
 gap: Testbed attacks lacking plant realism ; Overfitting to one plant
 
-== security-log-parsing-llm | Security Log Parsing & Normalisation with LLMs | nlp,llm-agents | batch | production-grade | a=1000 k=1
+== security-log-parsing-llm | Security Log Parsing & Normalisation with LLMs | nlp,llm-agents | batch | advanced | a=1000 k=1
 obj: Convert heterogeneous vendor logs to a common schema (OCSF/ECS) automatically, adapting to new formats with minimal engineer effort.
 loss: \mathcal{L}=\mathrm{CE}_{\text{field mapping}}+\lambda\,\mathrm{SchemaViolation}
 con: Trillions of log lines ; Cost per line near zero ; Deterministic outputs ; New log sources weekly
@@ -339,7 +339,7 @@ off: Compile rate and attack-hit rate ; FP rate on baseline
 on: Time from report to deployed detection ; Detections that fire in production
 gap: Evaluating compile success only ; Baseline telemetry unrepresentative
 
-== alert-correlation-and-deduplication | Alert Correlation & Deduplication | graph,time-series | sub-100ms | production-grade | a=500 k=2
+== alert-correlation-and-deduplication | Alert Correlation & Deduplication | graph,time-series | sub-100ms | advanced | a=500 k=2
 obj: Group related alerts into incidents and deduplicate repeats, cutting analyst queue size by an order of magnitude.
 loss: \mathcal{L}=\mathrm{Triplet}(\text{alert pairs})+\lambda\,\mathrm{ClusterPurity}
 con: Streaming grouping within seconds ; Explainable groupings ; Cross-tool alerts ; No cross-customer leakage
@@ -465,7 +465,7 @@ off: Unsafe action block rate and benign pass rate on red-team traces ; Decision
 on: Blocked unsafe actions ; Task completion rate
 gap: Red-team traces generated by builders ; Ignoring multi-agent delegation chains
 
-== model-extraction-and-abuse-detection-api | Model Extraction & Abuse Detection for ML APIs | tabular,time-series | sub-100ms | production-grade | a=2 k=2
+== model-extraction-and-abuse-detection-api | Model Extraction & Abuse Detection for ML APIs | tabular,time-series | sub-100ms | advanced | a=2 k=2
 obj: Detect model-extraction, scraping and membership-inference attempts on prediction APIs from query patterns while preserving customer experience.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Query-pattern analysis in real time ; Legitimate bulk users ; Low false positives ; Privacy

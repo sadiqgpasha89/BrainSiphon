@@ -1964,7 +1964,7 @@ export const DELIVERY_TEMPLATES: DeliveryTemplateMeta[] = [
     ownerRole: 'business-analyst',
     file: 'delivery/templates/phase-0-scope/02-business-requirements-document.md',
     description:
-      'Production-grade BRD template with problem formulation, user stories, numerical targets, and acceptance criteria.',
+      'BRD template with problem formulation, user stories, numerical targets, and acceptance criteria.',
   },
   {
     code: 'BS-TMPL-SCOPE-03',

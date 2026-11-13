@@ -32,7 +32,7 @@ off: Lead time at 0.5 alerts per 100 patient-days ; Positive predictive value at
 on: Time to antibiotics after alert ; Sepsis mortality and alert override rate
 gap: Labels set after the intervention are partly caused by it ; Retrospective validation on a single hospital ; Counting clinician-order features as early warning
 
-== icu-deterioration-prediction | ICU & Ward Deterioration Prediction | time-series | sub-100ms | production-grade | a=12 k=3
+== icu-deterioration-prediction | ICU & Ward Deterioration Prediction | time-series | sub-100ms | advanced | a=12 k=3
 obj: Predict cardiac arrest, ICU transfer or death within 12 hours for ward patients so rapid-response teams can intervene early.
 loss: \mathcal{L}=\mathrm{FL}(p_t,y_t)+\lambda\,\mathrm{Calibration}
 con: Hourly refresh ; Interpretable risk drivers ; Low false-alarm load ; Bedside latency under 1 s
@@ -92,7 +92,7 @@ off: Sensitivity at fixed specificity per site ; Calibration at deployment preva
 on: Time to report for critical findings ; Missed critical findings
 gap: Single-site training and testing ; Labels extracted from reports with NLP errors
 
-== diabetic-retinopathy-screening | Diabetic Retinopathy Screening | computer-vision | seconds | production-grade | a=0.02 k=5000
+== diabetic-retinopathy-screening | Diabetic Retinopathy Screening | computer-vision | seconds | advanced | a=0.02 k=5000
 obj: Screen fundus photographs for referable diabetic retinopathy in primary care, with a safe referral path for ungradable images.
 loss: \mathcal{L}=\mathrm{CE}(y_{\text{grade}},p)+\lambda\,\mathrm{Ordinal}
 con: Sensitivity above 90% and specificity above 85% ; Works with handheld cameras ; Offline-capable clinics ; Ungradable image handling
@@ -152,7 +152,7 @@ off: Entity-level F1 and laterality error rate ; Radiologist edit distance
 on: Reporting time per study ; Addendum rate
 gap: Reference reports contain errors too ; Test studies overlap with training patients
 
-== clinical-note-summarization-ambient-scribe | Ambient Clinical Scribe & Note Summarisation | llm-agents,nlp | seconds | production-grade | a=0.2 k=600 s=3 t=400
+== clinical-note-summarization-ambient-scribe | Ambient Clinical Scribe & Note Summarisation | llm-agents,nlp | seconds | advanced | a=0.2 k=600 s=3 t=400
 obj: Transcribe clinic visits and draft SOAP notes and patient instructions for clinician review, returning hours to clinicians each week.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{UnsupportedFact}
 con: Patient consent recorded ; Medical-term ASR accuracy ; Clinician edits every note ; HIPAA-compliant processing
@@ -172,7 +172,7 @@ off: Unsupported-statement rate ; Medical entity F1
 on: Documentation time per visit ; Clinician satisfaction
 gap: Judging notes by fluency ; Test visits from a single specialty
 
-== icd-cpt-medical-coding-automation | Medical Coding Automation (ICD-10 / CPT) | nlp | batch | production-grade | a=0.05 k=30
+== icd-cpt-medical-coding-automation | Medical Coding Automation (ICD-10 / CPT) | nlp | batch | advanced | a=0.05 k=30
 obj: Assign accurate diagnosis and procedure codes from clinical documentation to speed billing and cut denials, with coder oversight.
 loss: \mathcal{L}=\sum_{c}\mathrm{BCE}(y_c,p_c)\ \text{(extreme multi-label)}+\lambda\,\mathrm{HierarchyPenalty}
 con: 70,000 ICD-10 codes ; Auditable evidence spans ; Payer-specific rules ; Coder review for low confidence
@@ -192,7 +192,7 @@ off: Micro-F1 and macro-F1 on rare codes ; Audit-ready evidence precision
 on: First-pass acceptance rate ; Days in accounts receivable
 gap: Silver labels from past coding errors ; Evaluating on common codes only
 
-== prior-authorization-automation | Prior Authorization Automation | llm-agents,nlp | seconds | production-grade | a=0.02 k=80 s=4 t=350
+== prior-authorization-automation | Prior Authorization Automation | llm-agents,nlp | seconds | advanced | a=0.02 k=80 s=4 t=350
 obj: Assemble clinical evidence against payer policies to auto-approve straightforward prior authorisation requests and speed up the rest.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{policy},\text{chart})+\lambda\,\mathrm{PolicyViolation}
 con: Payer policy versions change monthly ; Evidence citations required ; Humans decide denials ; Turnaround under 24 hours
@@ -272,7 +272,7 @@ off: Calibration error and AUC ; Utilisation vs wait in simulation
 on: No-show rate ; Patient wait time
 gap: Ignoring that reminders change outcomes ; Evaluating on rank not calibration
 
-== or-scheduling-and-case-duration-prediction | OR Scheduling & Surgical Case Duration Prediction | tabular,time-series | batch | production-grade | a=0.1 k=3
+== or-scheduling-and-case-duration-prediction | OR Scheduling & Surgical Case Duration Prediction | tabular,time-series | batch | advanced | a=0.1 k=3
 obj: Predict surgical case durations and sequence operating-room blocks to cut overtime and idle time.
 loss: \mathcal{L}=\sum_i\rho_{0.7}(y_i-\hat q_i)
 con: Surgeon preferences ; Equipment availability ; Emergency add-ons ; Safety turnover times
@@ -292,7 +292,7 @@ off: Pinball loss ; Overtime minutes in simulation
 on: Overtime hours ; OR utilisation
 gap: Using actual durations booked after the fact ; Ignoring emergency cases in simulations
 
-== bed-capacity-and-ed-demand-forecasting | ED Demand & Bed Capacity Forecasting | time-series | batch | production-grade | a=1 k=2
+== bed-capacity-and-ed-demand-forecasting | ED Demand & Bed Capacity Forecasting | time-series | batch | advanced | a=1 k=2
 obj: Forecast ED arrivals, admissions and discharges hourly to staff, open beds and divert flow before crowding hits.
 loss: \mathcal{L}=\sum_{t}\sum_q\rho_q\!\left(y_t-\hat y_t^{(q)}\right)
 con: Hourly updates ; Surge scenarios ; Interpretable for bed managers ; Multiple sites
@@ -312,7 +312,7 @@ off: Hourly census WAPE ; Interval coverage
 on: ED boarding hours ; Diversion hours
 gap: Backtesting only in non-surge periods ; Using realised discharge info in forecasts
 
-== emergency-department-triage-nlp | ED Triage Acuity Assistant | nlp,tabular | seconds | production-grade | a=0.1 k=3
+== emergency-department-triage-nlp | ED Triage Acuity Assistant | nlp,tabular | seconds | advanced | a=0.1 k=3
 obj: Suggest ESI acuity levels from triage notes, vitals and history to reduce under-triage and variability between nurses.
 loss: \mathcal{L}=\mathrm{OrdinalCE}(y,p)+\lambda\,\mathrm{UnderTriagePenalty}
 con: Asymmetric cost (under-triage is worse) ; Nurse override always available ; Latency under 2 s ; Bias audit
@@ -352,7 +352,7 @@ off: AUROC on held-out interaction pairs ; Alert precision at severe tier
 on: Preventable adverse drug events ; Alert override rate
 gap: Held-out pairs share drugs with train pairs ; Labels from literature, not real-world outcomes
 
-== medication-adherence-prediction-and-nudges | Medication Adherence Prediction & Nudges | tabular,reinforcement-learning | batch | production-grade | a=0.5 k=2
+== medication-adherence-prediction-and-nudges | Medication Adherence Prediction & Nudges | tabular,reinforcement-learning | batch | advanced | a=0.5 k=2
 obj: Identify patients likely to stop therapy and choose the supportive nudge that most improves adherence within a contact budget.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)\;\text{and}\;\max_\pi\mathbb{E}[\text{adherence}]\ \text{s.t. contacts}\le B
 con: Consent for outreach ; Equity in nudges ; Contact fatigue ; Evidence-based messages
@@ -372,7 +372,7 @@ off: PDC prediction error ; Off-policy value of nudge policy
 on: Proportion of days covered ; Outreach cost per adherent patient
 gap: Missing fills at other pharmacies counted as non-adherence ; Non-random past outreach
 
-== clinical-trial-patient-matching | Clinical Trial Patient Matching | nlp,llm-agents | batch | production-grade | a=0.02 k=80 s=3 t=300
+== clinical-trial-patient-matching | Clinical Trial Patient Matching | nlp,llm-agents | batch | advanced | a=0.02 k=80 s=3 t=300
 obj: Match patients to eligible trials by reasoning over structured and unstructured records against inclusion and exclusion criteria.
 loss: \mathcal{L}=\sum_c\mathrm{BCE}(y_c,p_c)\ \text{(criterion-level)}+\lambda\,\mathrm{Calibration}
 con: Criterion-level explanations ; Patient privacy ; Recall priority with coordinator review ; Trial registry updates daily

@@ -162,7 +162,7 @@ const SKILLS: Record<Paradigm, string> = {
 
 const DAYS: Record<string, string[]> = {
   foundational: ['1-2', '3-4', '3-4', '2-3', '3-4', '5-6', '3-4'],
-  'production-grade': ['2-3', '3-4', '4-5', '2-3', '4-5', '6-8', '3-4'],
+  'advanced': ['2-3', '3-4', '4-5', '2-3', '4-5', '6-8', '3-4'],
   'staff-principal': ['2-3', '4-6', '5-7', '3-4', '5-7', '8-10', '4-6'],
 };
 
@@ -319,7 +319,7 @@ function knowledgeFor(raw: RawUseCase, domain: Domain, paradigms: Paradigm[], da
 }
 
 function milestonesFor(raw: RawUseCase, kit: Kit | undefined, compat: Compatibility, latency: LatencySLA, scale: ScaleResult, stages: Stage[], difficulty: string) {
-  const days = DAYS[difficulty] ?? DAYS['production-grade']!;
+  const days = DAYS[difficulty] ?? DAYS['advanced']!;
   const total = TOTAL_BUDGET_MS[latency];
   const sig = raw.sig;
   const north = raw.on[0] ?? 'the north-star metric';

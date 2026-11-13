@@ -20,7 +20,7 @@ import {
 } from '../../../components/reader/Enterprise';
 import { getIndex, getNeighbours, getRelease, getUseCase } from '../../../lib/content';
 import { ReleaseLine, ValidationStatusStrip } from '../../../components/reader/ValidationStatus';
-import { blueprintStatuses } from '../../../content/release';
+import { blueprintMaturityScorecard, blueprintStatuses } from '../../../content/release';
 import { toMarkdown } from '../../../content/markdown';
 import { IS_STATIC, SITE_URL } from '../../../lib/site';
 import { DOMAIN_META } from '../../../schemas/usecase.schema';
@@ -184,7 +184,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
           </Link>
         </div>
         <div className="mt-3 space-y-1.5" data-testid="validation-summary">
-          <ValidationStatusStrip statuses={statuses} />
+          <ValidationStatusStrip statuses={statuses} scorecard={blueprintMaturityScorecard(uc, release)} />
           <ReleaseLine release={release} />
           {stale && (
             <p className="flex items-center gap-1.5 text-xs text-warn">

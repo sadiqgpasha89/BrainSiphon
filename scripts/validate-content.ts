@@ -22,7 +22,7 @@ import {
   VALIDATION_REPORT,
   writeReport,
 } from '../src/content/release-io';
-import { RELEASE_SCHEMA_VERSION } from '../src/content/release';
+import { RELEASE_SCHEMA_VERSION, staleRemediations } from '../src/content/release';
 
 const MIN_PER_DOMAIN = Number(process.env.MIN_PER_DOMAIN ?? 50);
 const STALE_DAYS = 180;
@@ -366,6 +366,10 @@ async function main() {
   // starter-kit compatibility: a kit is shipped only for the problem it implements, and nothing claims to be production code
   errors.push(...checkKitCompatibility(all));
 
+  // a written remediation must belong to a warning that still exists, so the release report never advises on a fixed problem
+  for (const k of staleRemediations(all))
+    errors.push(`release: REMEDIATION_OVERRIDES["${k}"] matches no feasibility warning; remove or rename it`);
+
   warnings.forEach((w) => console.warn(`⚠ ${w}`));
   if (errors.length) {
     errors.slice(0, 60).forEach((e) => console.error(`✖ ${e}`));
@@ -392,14 +396,15 @@ async function main() {
     useCases: all.length,
     feasibility: {
       checks: feas.length,
-      pass: feas.filter((f) => f.status === 'pass' || f.status === 'n/a').length,
+      pass: feas.filter((f) => f.status === 'pass').length,
+      notApplicable: feas.filter((f) => f.status === 'n/a').length,
       warn: feas.filter((f) => f.status === 'warn').length,
       fail: feas.filter((f) => f.status === 'fail').length,
     },
     warnings: warnings.length,
   });
   console.log(
-    `validate:content ✔ ${all.length} use cases, ${all.length * 9} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${all.length * 10} feasibility checks`,
+    `validate:content ✔ ${all.length} use cases, ${all.length * 9} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${feas.length} feasibility checks`,
   );
 }
 

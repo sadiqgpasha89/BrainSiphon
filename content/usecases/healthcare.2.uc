@@ -19,7 +19,7 @@ off: Variance explained and AUC by ancestry ; Calibration slope
 on: Uptake of preventive screening ; Reclassification net benefit
 gap: Validating in the same biobank used for GWAS ; Ignoring ancestry differences
 
-== single-cell-rna-cell-type-annotation | Single-Cell RNA Cell-Type Annotation | tabular,graph | batch | production-grade | a=0.00001 k=2000
+== single-cell-rna-cell-type-annotation | Single-Cell RNA Cell-Type Annotation | tabular,graph | batch | advanced | a=0.00001 k=2000
 obj: Annotate millions of cells with cell types automatically, flagging novel populations for biologists.
 loss: \mathcal{L}=\mathrm{CE}(y,p)+\lambda\,\mathrm{MMD}(Z_{\text{batch}_a},Z_{\text{batch}_b})
 con: Batch effects across labs ; Novel cell types ; Reference atlas versions ; Reproducibility
@@ -39,7 +39,7 @@ off: Macro-F1 across cell types ; Novelty detection AUROC
 on: Annotation time per dataset ; Curator corrections
 gap: Test batches seen in training ; Cell-type labels derived from same clustering
 
-== wearable-arrhythmia-detection-ecg | Wearable Arrhythmia Detection (ECG/PPG) | time-series | sub-100ms | production-grade | a=1440 k=1
+== wearable-arrhythmia-detection-ecg | Wearable Arrhythmia Detection (ECG/PPG) | time-series | sub-100ms | advanced | a=1440 k=1
 obj: Detect atrial fibrillation and other arrhythmias from wearable signals continuously while limiting false alarms and battery drain.
 loss: \mathcal{L}=\mathrm{FL}(y,p)+\lambda\,\mathrm{Calibration}
 con: On-device inference under 1 mW budget ; Motion artefacts ; Regulatory clearance ; Alert false positives low
@@ -59,7 +59,7 @@ off: Episode sensitivity and PPV ; Alerts per user-month
 on: Confirmed AF detection rate ; Alert-induced clinic visits
 gap: Test data from clean lab recordings ; Window-level splits sharing patients
 
-== remote-patient-monitoring-anomaly-detection | Remote Patient Monitoring Anomaly Detection | time-series | sub-100ms | production-grade | a=24 k=1
+== remote-patient-monitoring-anomaly-detection | Remote Patient Monitoring Anomaly Detection | time-series | sub-100ms | advanced | a=24 k=1
 obj: Detect clinically meaningful changes in home-monitoring data (weight, BP, glucose, SpO2) and escalate to care teams with minimal noise.
 loss: \mathcal{L}=\sum_t\left[\log\sigma_t+\frac{(x_t-\mu_t)^2}{2\sigma_t^2}\right]
 con: Personal baselines ; Missing and irregular measurements ; Care-team capacity ; Patient-friendly alerts
@@ -99,7 +99,7 @@ off: Crisis recall at high risk ; Policy violation rate on red-team set
 on: Appropriate escalation rate ; User-reported helpfulness with safety audit
 gap: Red-team set written by builders only ; Measuring engagement as success
 
-== symptom-checker-and-care-navigation | Symptom Checker & Care Navigation | llm-agents,tabular | seconds | production-grade | a=0.3 k=6 s=4 t=300
+== symptom-checker-and-care-navigation | Symptom Checker & Care Navigation | llm-agents,tabular | seconds | advanced | a=0.3 k=6 s=4 t=300
 obj: Guide users from symptoms to the right level of care (self-care, GP, urgent, emergency) safely and consistently.
 loss: \mathcal{L}=\mathrm{OrdinalCE}(\text{disposition},p)+\lambda\,\mathrm{UnderTriagePenalty}
 con: Under-triage minimised ; Clinical protocol alignment ; No diagnosis claims ; Audit of every pathway
@@ -139,7 +139,7 @@ off: Calibration and top-decile capture ; Fairness gaps in selection
 on: Avoidable admissions in programme vs control ; Programme cost per outcome
 gap: Using cost as proxy for need ; Training on enrolled patients only
 
-== ckd-progression-forecasting | Chronic Kidney Disease Progression Forecasting | time-series,tabular | batch | production-grade | a=0.02 k=10
+== ckd-progression-forecasting | Chronic Kidney Disease Progression Forecasting | time-series,tabular | batch | advanced | a=0.02 k=10
 obj: Forecast eGFR trajectories and kidney failure risk to trigger timely nephrology referral and therapy.
 loss: \mathcal{L}=-\sum_i\log p(\text{eGFR}_{i,1:T}\mid x_i)+\lambda\,\mathrm{Survival}
 con: Irregular labs ; Explainability for clinicians ; Fairness across race-free equations ; Monthly refresh
@@ -199,7 +199,7 @@ off: Melanoma sensitivity by Fitzpatrick group ; Calibration by group
 on: Time to specialist for urgent lesions ; Unnecessary referrals
 gap: Public datasets with artefacts ; Validation only on biopsied lesions
 
-== dental-xray-caries-detection | Dental X-Ray Caries & Pathology Detection | computer-vision | seconds | production-grade | a=0.1 k=2000
+== dental-xray-caries-detection | Dental X-Ray Caries & Pathology Detection | computer-vision | seconds | advanced | a=0.1 k=2000
 obj: Highlight caries, bone loss and periapical lesions on dental radiographs to improve diagnostic consistency and patient communication.
 loss: \mathcal{L}=\mathcal{L}_{\text{det}}+\mathcal{L}_{\text{seg}}
 con: Dentist final decision ; Multi-vendor sensors ; Low latency chairside ; Explainable overlays
@@ -259,7 +259,7 @@ off: Measurement error vs expert ; View classification accuracy
 on: Scan success rate by novice operators ; Time per exam
 gap: Training on expert-acquired scans only ; Evaluating after view selection
 
-== patient-similarity-cohort-search | Patient Similarity & Cohort Search | nlp,recommender | seconds | production-grade | a=0.05 k=40
+== patient-similarity-cohort-search | Patient Similarity & Cohort Search | nlp,recommender | seconds | advanced | a=0.05 k=40
 obj: Let clinicians and researchers find similar patients and build cohorts from structured data and notes using natural-language queries.
 loss: \mathcal{L}=\mathrm{InfoNCE}(z_p,z_{p^+})
 con: Privacy and access control ; Query explanations ; Cohort definitions reproducible ; Fast over 10M patients
@@ -299,7 +299,7 @@ off: Citation entailment rate ; Expert-graded answer accuracy
 on: Time to answer ; Clinician adoption and override rate
 gap: Benchmarks leak into training data ; Grading answers without checking citations
 
-== patient-portal-message-triage | Patient Portal Message Triage & Drafts | nlp,llm-agents | seconds | production-grade | a=0.3 k=4 s=2 t=250
+== patient-portal-message-triage | Patient Portal Message Triage & Drafts | nlp,llm-agents | seconds | advanced | a=0.3 k=4 s=2 t=250
 obj: Classify urgency and route inbound patient messages, drafting safe replies for staff review to cut inbox burden.
 loss: \mathcal{L}=\mathrm{OrdinalCE}(\text{urgency},p)+\lambda\left(-\sum_t\log p_\theta(y_t\mid y_{<t},x)\right)
 con: Never auto-reply to urgent clinical questions ; Staff approval ; PHI controls ; Response time SLAs
@@ -359,7 +359,7 @@ off: Weighted pinball loss ; Stock-out probability calibration
 on: Critical stock-outs ; Expired inventory value
 gap: Censored demand during stock-outs ; Ignoring substitutions
 
-== pharmacy-demand-and-expiry-forecasting | Pharmacy Demand & Expiry Forecasting | time-series,tabular | batch | production-grade | a=1 k=1
+== pharmacy-demand-and-expiry-forecasting | Pharmacy Demand & Expiry Forecasting | time-series,tabular | batch | advanced | a=1 k=1
 obj: Forecast drug demand and manage expiry across pharmacy locations to balance availability and waste, including cold-chain items.
 loss: \mathcal{L}=\sum_{t}\rho_q(y_t-\hat y_t)+\lambda\,\mathrm{ExpiryRisk}
 con: Controlled substances rules ; Cold-chain handling ; Expiry date tracking ; Shortage substitutions
@@ -399,7 +399,7 @@ off: Simulated response-time percentiles by priority ; Coverage metrics
 on: 90th percentile response time ; Cardiac arrest survival
 gap: Simulation uses historical calls ignoring policy effects ; Optimising mean rather than tail
 
-== nurse-scheduling-optimization | Nurse Scheduling Optimisation | reinforcement-learning,tabular | batch | production-grade | a=0.1 k=2
+== nurse-scheduling-optimization | Nurse Scheduling Optimisation | reinforcement-learning,tabular | batch | advanced | a=0.1 k=2
 obj: Generate fair shift schedules that meet predicted patient demand and skill mix while respecting preferences and labour rules.
 loss: \min\;\sum_s \text{understaffing}_s+\lambda\,\text{preference violations}+\mu\,\text{overtime}
 con: Labour regulations ; Skill mix and licensure ; Fairness in preferences ; Last-minute changes
@@ -419,7 +419,7 @@ off: Understaffing hours ; Preference satisfaction distribution
 on: Overtime cost ; Nurse turnover
 gap: Evaluating only on forecast demand ; Ignoring real-world call-outs
 
-== risk-adjustment-hcc-coding | Risk Adjustment & HCC Capture | nlp,tabular | batch | production-grade | a=0.05 k=30
+== risk-adjustment-hcc-coding | Risk Adjustment & HCC Capture | nlp,tabular | batch | advanced | a=0.05 k=30
 obj: Identify undocumented but clinically supported chronic conditions to ensure accurate risk adjustment, within compliance rules.
 loss: \mathcal{L}=\sum_c\mathrm{BCE}(y_c,p_c)+\lambda\,\mathrm{ComplianceRisk}
 con: Audit and compliance (RADV) ; Clinician attestation required ; No upcoding ; Documentation evidence
@@ -439,7 +439,7 @@ off: Precision of supported suggestions ; Audit pass rate in samples
 on: Accurate HCC capture ; RADV audit findings
 gap: Success measured by revenue rather than correctness ; Positive labels from prior unaudited coding
 
-== dicom-image-deidentification | Medical Image De-Identification (DICOM) | computer-vision,nlp | batch | production-grade | a=0.02 k=50000
+== dicom-image-deidentification | Medical Image De-Identification (DICOM) | computer-vision,nlp | batch | advanced | a=0.02 k=50000
 obj: Remove PHI from DICOM headers and burned-in pixel text (and facial features in head scans) at scale for research sharing.
 loss: \mathcal{L}=\mathcal{L}_{\text{OCR-det}}+\mathcal{L}_{\text{segmentation}}
 con: Zero PHI leakage tolerance ; Preserve clinical information ; Audit of de-id decisions ; Throughput of millions of studies

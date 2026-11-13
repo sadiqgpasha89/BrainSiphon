@@ -45,7 +45,7 @@ const LLD_ARTIFACTS: Record<'apiContract' | 'dataModelDDL' | 'eventSchema' | 'cl
 const ASSUMED_RETENTION_DAYS = 400;
 
 const reviewFiles = new Map<string, Record<string, Review>>();
-/** Domain-expert reviews recorded by maintainers in content/reviews.json ({ "<slug>": { reviewer, date, scope } }). Empty by default. */
+/** Domain-expert reviews recorded by maintainers in content/reviews.json ({ "<slug>": { reviewer, organisation?, date, scope } }). Empty by default. */
 function reviewsFor(root: string): Record<string, Review> {
   let r = reviewFiles.get(root);
   if (!r) {
@@ -69,7 +69,7 @@ const DEFAULT_LOSS: Record<Paradigm, string> = {
 
 const REQUIRED_ENUMS = {
   latency: ['sub-10ms', 'sub-100ms', 'seconds', 'batch'],
-  difficulty: ['foundational', 'production-grade', 'staff-principal'],
+  difficulty: ['foundational', 'advanced', 'staff-principal'],
 };
 
 export function uuidFor(slug: string): string {

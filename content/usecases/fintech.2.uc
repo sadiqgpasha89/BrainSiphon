@@ -19,7 +19,7 @@ off: Net Sharpe after costs ; Deflated Sharpe ratio
 on: Live vs backtest slippage gap ; Information coefficient decay
 gap: Look-ahead via restated fundamentals ; Hyperparameters tuned on the test period
 
-== portfolio-optimization-risk-parity | Robo-Advisor Portfolio Optimization | reinforcement-learning,tabular | batch | production-grade | a=0.05 k=3
+== portfolio-optimization-risk-parity | Robo-Advisor Portfolio Optimization | reinforcement-learning,tabular | batch | advanced | a=0.05 k=3
 obj: Construct and rebalance goal-based portfolios for millions of retail users that stay within each user's risk tolerance while minimising taxes and costs.
 loss: \min_w\; w^\top\Sigma w-\lambda\,\mu^\top w+\kappa\,\|w-w_0\|_1
 con: Suitability rules per jurisdiction ; Fractional shares ; Tax-lot awareness ; Rebalance 10M portfolios nightly
@@ -39,7 +39,7 @@ off: Out-of-sample volatility vs target ; After-tax return in simulation
 on: Goal-achievement probability ; Tracking error to target
 gap: Backtest ignores taxes and transaction costs ; Risk questionnaire answers treated as true risk capacity
 
-== market-regime-detection | Market Regime Detection | time-series | batch | production-grade | a=1 k=2
+== market-regime-detection | Market Regime Detection | time-series | batch | advanced | a=1 k=2
 obj: Identify volatility and correlation regimes early so risk limits and strategy weights adapt before drawdowns compound.
 loss: \log p(x_{1:T})=\log\sum_{s_{1:T}}\prod_t p(s_t\mid s_{t-1})\,p(x_t\mid s_t)
 con: Decision lag under 1 day ; Interpretable regime labels ; Low false switching ; Regime history reproducible
@@ -59,7 +59,7 @@ off: Regime-conditional return separation ; Switching frequency
 on: Drawdown reduction vs static ; Turnover cost of regime switching
 gap: Using smoothed state probabilities in backtests ; Regimes defined with hindsight
 
-== volatility-forecasting | Volatility Forecasting for Risk & Options | time-series | batch | production-grade | a=2 k=2
+== volatility-forecasting | Volatility Forecasting for Risk & Options | time-series | batch | advanced | a=2 k=2
 obj: Forecast 1-day to 3-month volatility per instrument for VaR, margining and options pricing with calibrated coverage.
 loss: \mathcal{L}=\sum_t\left[\log\hat\sigma_t^2+\frac{r_t^2}{\hat\sigma_t^2}\right]
 con: Coverage tests for VaR (Kupiec) ; Nightly for 50k instruments ; Intraday refresh for top 500 ; Model governance
@@ -119,7 +119,7 @@ off: Sharpe in market-replay simulation ; Fill toxicity calibration
 on: PnL per unit risk ; Adverse selection cost
 gap: Replay ignores queue position effects ; Overfitting to a single instrument
 
-== credit-card-offer-personalization | Credit Card Offer Personalisation | recommender,tabular | sub-100ms | production-grade | a=3 k=3
+== credit-card-offer-personalization | Credit Card Offer Personalisation | recommender,tabular | sub-100ms | advanced | a=3 k=3
 obj: Show each customer the card or reward offer with the highest expected lifetime value subject to eligibility and risk policy.
 loss: \mathcal{L}=-\sum_{(u,o)}\left[c_{uo}\log\sigma(s_{uo})+(1-c_{uo})\log(1-\sigma(s_{uo}))\right]
 con: Pre-approval eligibility filters ; Fair-lending rules ; Offer must be explainable ; 60 ms
@@ -139,7 +139,7 @@ off: Offer ranking NDCG on profit-weighted conversions ; Approval-rate calibrati
 on: Booked accounts per impression ; Profit per offer shown
 gap: Training on clicks ignores approval outcome ; Selection bias from past rules-based targeting
 
-== insurance-claims-fraud-detection | Insurance Claims Fraud Detection | tabular,graph,nlp | batch | production-grade | a=0.05 k=40
+== insurance-claims-fraud-detection | Insurance Claims Fraud Detection | tabular,graph,nlp | batch | advanced | a=0.05 k=40
 obj: Triage incoming claims by fraud likelihood to route investigators to the highest recovery opportunities while paying genuine claims fast.
 loss: \mathcal{L}=\mathrm{CE}(y,p)\cdot v(\text{claim amount})
 con: Straight-through payment for low-risk claims ; Evidence preserved for litigation ; Fair claims handling regulations ; Daily scoring
@@ -159,7 +159,7 @@ off: PR-AUC and recovery-weighted gain ; Precision at SIU capacity
 on: Fraud recovery per investigator hour ; Genuine claim cycle time
 gap: Labels only from investigated claims ; Fraud found years later leaks from later closed claims
 
-== insurance-claim-damage-estimation-vision | Vehicle Damage Estimation from Photos | computer-vision,tabular | seconds | production-grade | a=0.05 k=3000
+== insurance-claim-damage-estimation-vision | Vehicle Damage Estimation from Photos | computer-vision,tabular | seconds | advanced | a=0.05 k=3000
 obj: Estimate repair cost from customer photos within seconds, enabling instant settlement of simple claims.
 loss: \mathcal{L}=\mathcal{L}_{\text{seg}}+\mathcal{L}_{\text{cls}}+\lambda\,\mathrm{Huber}(\text{cost},\widehat{\text{cost}})
 con: Settlement accuracy within 10% ; Photo fraud detection ; Works with phone photos in poor light ; Human override
@@ -179,7 +179,7 @@ off: Mean absolute percentage error vs final repair cost ; Part-level IoU
 on: Straight-through settlement rate ; Supplement (re-estimate) rate
 gap: Training on estimates instead of final invoices ; Only easy claims in test set
 
-== insurance-underwriting-risk-pricing | Insurance Underwriting & Risk Pricing | tabular | sub-100ms | production-grade | a=0.02 k=10
+== insurance-underwriting-risk-pricing | Insurance Underwriting & Risk Pricing | tabular | sub-100ms | advanced | a=0.02 k=10
 obj: Price policies at quote time so premiums match expected loss and competitor-aware conversion within regulatory rate rules.
 loss: \mathcal{L}=\mathrm{Deviance}_{\text{Tweedie}}(y,\hat\mu)=2\left[\frac{y^{2-p}}{(1-p)(2-p)}-\frac{y\hat\mu^{1-p}}{1-p}+\frac{\hat\mu^{2-p}}{2-p}\right]
 con: Rating factors must be filed with regulators ; No prohibited attributes ; Quote in 80 ms ; Rate changes need actuarial sign-off
@@ -199,7 +199,7 @@ off: Gini and lift by decile ; Out-of-time Tweedie deviance
 on: Loss ratio by cohort ; Conversion rate at target margin
 gap: Immature claims in training window ; Rating factors not permitted in production slipped into features
 
-== telematics-usage-based-insurance-scoring | Telematics Usage-Based Insurance Scoring | time-series,tabular | batch | production-grade | a=2 k=50
+== telematics-usage-based-insurance-scoring | Telematics Usage-Based Insurance Scoring | time-series,tabular | batch | advanced | a=2 k=50
 obj: Score driving behaviour from phone and device sensors to offer fair, behaviour-based premiums and reduce claims through feedback.
 loss: \mathcal{L}=\mathrm{PoissonDeviance}(\text{claims},\hat\lambda)+\lambda\,\mathrm{Fairness}
 con: Battery impact on phones ; Trip detection accuracy ; Privacy of location data ; Score stability over time
@@ -239,7 +239,7 @@ off: Qini and uplift at top decile ; AUC for churn
 on: Retained revenue net of offer cost ; Save rate in treated vs control
 gap: Predicting churn and treating without holdout ; Features computed after the churn event began
 
-== customer-lifetime-value-prediction | Customer Lifetime Value Prediction | tabular,time-series | batch | production-grade | a=1 k=2
+== customer-lifetime-value-prediction | Customer Lifetime Value Prediction | tabular,time-series | batch | advanced | a=1 k=2
 obj: Predict 12-month and 36-month customer value at acquisition and over time to steer marketing spend and servicing tiers.
 loss: \mathcal{L}=\sum_i\mathrm{ZILN}(y_i;\pi_i,\mu_i,\sigma_i)=-\sum_i\left[\mathbb{1}_{y_i=0}\log\pi_i+\mathbb{1}_{y_i>0}\left(\log(1-\pi_i)+\log\mathcal{LN}(y_i;\mu_i,\sigma_i)\right)\right]
 con: Calibrated across cohorts ; Refresh weekly ; Used in bid decisions so must not leak cost data ; Explainable to finance
@@ -259,7 +259,7 @@ off: Normalised Gini of value ranking ; Cohort-level calibration error
 on: Marketing ROI by channel ; Value captured in top decile
 gap: Using full-history features for young customers ; Evaluating without censoring-aware metrics
 
-== payment-ops-anomaly-detection | Payments Operations Anomaly Detection | time-series | sub-100ms | production-grade | a=1 k=1
+== payment-ops-anomaly-detection | Payments Operations Anomaly Detection | time-series | sub-100ms | advanced | a=1 k=1
 obj: Detect abnormal drops in success rate, latency or volume across thousands of payment dimensions within minutes of onset.
 loss: \mathcal{L}=\sum_t\left[\log\hat\sigma_t+\frac{(y_t-\hat\mu_t)^2}{2\hat\sigma_t^2}\right]
 con: Alert latency under 3 minutes ; 50k dimension combinations ; False alerts under 1 per day per team ; Root-cause hints
@@ -279,7 +279,7 @@ off: Detection delay at fixed false-alarm rate ; Precision on postmortem-confirm
 on: Mean time to detect ; Alert fatigue (pages per incident)
 gap: Synthetic injected anomalies unlike real outages ; Training on periods containing undetected incidents
 
-== reconciliation-matching-automation | Payment & Ledger Reconciliation Matching | nlp,tabular | batch | production-grade | a=2 k=3
+== reconciliation-matching-automation | Payment & Ledger Reconciliation Matching | nlp,tabular | batch | advanced | a=2 k=3
 obj: Automatically match bank, processor and ledger entries to close books faster with 98% auto-match and clear exceptions.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{ManyToManyConsistency}
 con: Auditable matches ; Day-end close deadline ; Handle one-to-many and many-to-many ; Tolerate rounding and FX
@@ -299,7 +299,7 @@ off: Auto-match precision at 98% recall ; Group match accuracy
 on: Days to close ; Manual touches per 1000 entries
 gap: Training on already-reconciled easy matches ; Evaluating on one bank format
 
-== regulatory-reporting-rag-copilot | Regulatory Reporting RAG Copilot | llm-agents,nlp | seconds | production-grade | a=0.05 k=30 s=3 t=500
+== regulatory-reporting-rag-copilot | Regulatory Reporting RAG Copilot | llm-agents,nlp | seconds | advanced | a=0.05 k=30 s=3 t=500
 obj: Answer compliance questions and pre-fill regulatory reports from rule books and internal data with exact citations.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{retrieved})+\lambda\,\mathrm{CitationError}
 con: Every answer cites the rule paragraph ; Version-aware (effective dates) ; Private deployment ; Reviewer sign-off
@@ -319,7 +319,7 @@ off: Clause recall at k ; Answer support rate
 on: Time to prepare report ; Reviewer edit rate
 gap: Test questions copied from document headings ; Counting plausible answers without clause verification
 
-== earnings-call-sentiment-and-esg-signals | Earnings-Call Sentiment & ESG Signal Extraction | nlp | batch | production-grade | a=1 k=60
+== earnings-call-sentiment-and-esg-signals | Earnings-Call Sentiment & ESG Signal Extraction | nlp | batch | advanced | a=1 k=60
 obj: Convert filings, calls and news into structured, point-in-time signals for research analysts and quant models.
 loss: \mathcal{L}=\mathrm{CE}(y,p)+\lambda\,\mathrm{ConsistencyAcrossParaphrase}
 con: Timestamp accuracy to the second ; Reproducible model versions ; Licence compliance for transcripts ; Cover 10k issuers
@@ -359,7 +359,7 @@ off: Recall on historical enforcement cases ; False-positive rate per million me
 on: Cases opened per month ; Analyst review time
 gap: Few labelled cases drawn from enforcement bias ; Test period overlaps market-structure changes
 
-== cross-border-fx-pricing-optimization | Cross-Border Payment FX & Fee Pricing | tabular,reinforcement-learning | sub-100ms | production-grade | a=0.3 k=2
+== cross-border-fx-pricing-optimization | Cross-Border Payment FX & Fee Pricing | tabular,reinforcement-learning | sub-100ms | advanced | a=0.3 k=2
 obj: Price FX markup and fees per corridor and customer segment to maximise revenue subject to conversion and fairness constraints.
 loss: \max_p\;\mathbb{E}\!\left[(p-c)\cdot\Pr(\text{convert}\mid p,x)\right]
 con: Price transparency regulations ; No discriminatory pricing ; Live FX rate volatility ; Quote validity window of 30 s
@@ -419,7 +419,7 @@ off: Qini on randomised holdout ; AUC of drop-off
 on: Completion rate ; Cost per activated account
 gap: Intervention data from non-random triggers ; Sessions with no outcome treated as dropped
 
-== bnpl-risk-decisioning | BNPL Instant Risk Decisioning | tabular | sub-100ms | production-grade | a=0.5 k=3
+== bnpl-risk-decisioning | BNPL Instant Risk Decisioning | tabular | sub-100ms | advanced | a=0.5 k=3
 obj: Approve or decline buy-now-pay-later at checkout in under 100 ms with loss targets per merchant cohort and fair outcomes.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)\cdot w(\text{order value})+\lambda\,\mathrm{Calibration}
 con: 100 ms total checkout budget ; Responsible-lending affordability checks ; Adverse action reasons ; Merchant-specific loss agreements
@@ -459,7 +459,7 @@ off: Evidence link validity ; Disposition match on replayed cases
 on: Investigation time per case ; Analyst-approved suggestion rate
 gap: Replay set contains cases the model was tuned on ; Judging by analyst satisfaction instead of correctness
 
-== credit-model-drift-and-fairness-monitoring | Credit Model Drift & Fairness Monitoring | tabular | batch | production-grade | a=1 k=2
+== credit-model-drift-and-fairness-monitoring | Credit Model Drift & Fairness Monitoring | tabular | batch | advanced | a=1 k=2
 obj: Continuously monitor credit models for performance decay, population shift and disparate impact, with automated retraining triggers and audit reports.
 loss: \mathcal{L}=\mathrm{PSI}(P,Q)=\sum_i(P_i-Q_i)\ln\frac{P_i}{Q_i}
 con: Regulator-grade documentation ; Delayed outcomes ; Protected-class data governance ; Monthly governance committee
