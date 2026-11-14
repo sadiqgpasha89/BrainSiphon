@@ -19,7 +19,7 @@ off: Precision at security desk capacity ; Detection lead time
 on: Cargo loss value ; Carrier onboarding time
 gap: Few labelled thefts with bias to detected cases ; Features computed after incident reports
 
-== customs-hs-code-classification | Customs HS-Code Classification | nlp | sub-100ms | production-grade | a=0.5 k=3
+== customs-hs-code-classification | Customs HS-Code Classification | nlp | sub-100ms | advanced | a=0.5 k=3
 obj: Classify goods into Harmonised System codes from descriptions and invoices to accelerate clearance and avoid duties disputes.
 loss: \mathcal{L}=\sum_{\ell}\mathrm{CE}_{\ell}+\lambda\,\mathrm{HierarchyConsistency}
 con: 6-10 digit codes by country ; Tariff updates annually ; Explainability for brokers ; Penalties for misclassification
@@ -39,7 +39,7 @@ off: Top-1 accuracy at 6 and 8 digits ; Calibration for auto-accept
 on: Auto-classification rate ; Duty adjustments from audits
 gap: Training on past broker mistakes ; Ignoring tariff version differences
 
-== trade-compliance-denied-party-screening | Trade Compliance: Denied-Party & Export Control Screening | nlp,graph | sub-100ms | production-grade | a=0.5 k=3
+== trade-compliance-denied-party-screening | Trade Compliance: Denied-Party & Export Control Screening | nlp,graph | sub-100ms | advanced | a=0.5 k=3
 obj: Screen shipment parties, vessels and end users against restricted lists and ownership chains with high recall and manageable false hits.
 loss: \mathcal{L}=\mathrm{Triplet}+\lambda\,\mathrm{BCE}
 con: Near-100% recall on listed parties ; 50% ownership rule ; List updates within hours ; Evidence retention
@@ -79,7 +79,7 @@ off: Overcharge detection precision ; Recovered amount per audited invoice
 on: Recovery rate ; Dispute cycle time
 gap: Training on invoices already audited ; Ignoring carrier dispute outcomes
 
-== reverse-logistics-returns-flow-optimization | Reverse Logistics Disposition Optimisation | tabular,reinforcement-learning | batch | production-grade | a=0.2 k=3
+== reverse-logistics-returns-flow-optimization | Reverse Logistics Disposition Optimisation | tabular,reinforcement-learning | batch | advanced | a=0.2 k=3
 obj: Decide for each returned item whether to restock, refurbish, liquidate, donate or recycle, maximising recovered value.
 loss: \max_{a}\;\mathbb{E}[\text{recovery}(a\mid x)]-\text{cost}(a)
 con: Grading consistency ; Warehouse capacity ; Brand and safety policies ; Time-to-shelf
@@ -99,7 +99,7 @@ off: Recovery value uplift vs rules ; Grade accuracy
 on: Recovery rate ; Days to resale
 gap: Resale prices assumed constant ; Ignoring grade disagreement
 
-== delivery-time-slot-optimization | Delivery Time-Slot Pricing & Allocation | reinforcement-learning,tabular | sub-100ms | production-grade | a=1 k=2
+== delivery-time-slot-optimization | Delivery Time-Slot Pricing & Allocation | reinforcement-learning,tabular | sub-100ms | advanced | a=1 k=2
 obj: Offer and price delivery slots at checkout to steer demand toward cheaper-to-serve slots without hurting conversion.
 loss: \max_{p}\;\mathbb{E}\!\left[\text{conv}(p)\cdot(\text{margin}-\text{cost}(\text{slot}))\right]
 con: Capacity per slot ; Fairness in pricing ; 50 ms ; Customer experience
@@ -139,7 +139,7 @@ off: AUC and calibration ; Uplift on failure rate
 on: First-attempt success rate ; Cost per redelivery avoided
 gap: Interventions not randomised ; Counting rescheduled deliveries as failures
 
-== address-parsing-and-geocoding | Address Parsing & Geocoding | nlp | sub-100ms | production-grade | a=2 k=1
+== address-parsing-and-geocoding | Address Parsing & Geocoding | nlp | sub-100ms | advanced | a=2 k=1
 obj: Convert messy free-text addresses into structured, geocoded locations with confidence for routing and delivery.
 loss: \mathcal{L}=\mathrm{CE}_{\text{BIO}}+\lambda\,\mathrm{Haversine}(\hat x,x)
 con: Multi-script addresses ; 30 ms ; Landmark-based addressing ; Privacy
@@ -159,7 +159,7 @@ off: Component F1 ; Geocode error percentile distances
 on: Failed delivery due to address ; Time spent searching for the address
 gap: Test set with clean addresses ; Using geocoder output as labels
 
-== proof-of-delivery-photo-verification | Proof-of-Delivery Photo Verification | computer-vision | seconds | production-grade | a=0.5 k=1500
+== proof-of-delivery-photo-verification | Proof-of-Delivery Photo Verification | computer-vision | seconds | advanced | a=0.5 k=1500
 obj: Verify delivery photos (parcel at door, correct location, no sensitive content) to prevent fraud and disputes.
 loss: \mathcal{L}=\mathrm{BCE}+\lambda\,\mathrm{Contrastive}
 con: Fast feedback to driver ; Privacy of homes and people ; Duplicate photo detection ; Offline capture
@@ -219,7 +219,7 @@ off: KPI reproduction error ; Back-test of disruption responses
 on: Policy decisions informed ; Realised vs simulated improvements
 gap: Calibration and validation on same period ; Ignoring behavioural responses
 
-== control-tower-anomaly-detection | Supply-Chain Control Tower Anomaly Detection | time-series,graph | sub-100ms | production-grade | a=1 k=2
+== control-tower-anomaly-detection | Supply-Chain Control Tower Anomaly Detection | time-series,graph | sub-100ms | advanced | a=1 k=2
 obj: Detect abnormal events across orders, shipments and inventory in real time and prioritise by business impact.
 loss: \mathcal{L}=\sum_t\left[\log\hat\sigma_t+\frac{(y_t-\hat\mu_t)^2}{2\hat\sigma_t^2}\right]
 con: Millions of entities ; Alert dedup ; Impact ranking ; Self-serve rules for planners
@@ -239,7 +239,7 @@ off: Precision at top alerts by impact ; Incident clustering purity
 on: Time to detect disruptions ; Revenue protected
 gap: Labels from alerts people acted upon ; No evaluation on correlated bursts
 
-== order-promising-atp-optimization | Order Promising (ATP/CTP) Optimisation | tabular,reinforcement-learning | sub-100ms | production-grade | a=2 k=3
+== order-promising-atp-optimization | Order Promising (ATP/CTP) Optimisation | tabular,reinforcement-learning | sub-100ms | advanced | a=2 k=3
 obj: Commit delivery dates and inventory to orders in real time, balancing profitability, priority customers and fulfilment feasibility.
 loss: \max\;\sum_o v_o\,\mathbb{1}[\text{promise}_o]\ \text{s.t. inventory and capacity}
 con: Decision in 100 ms ; Priority tiers ; Allocation rules ; Partial fulfilment policy
@@ -259,7 +259,7 @@ off: Simulated revenue and service level ; Promise accuracy
 on: On-time-in-full rate ; Revenue from priority orders
 gap: Simulations without demand uncertainty ; Counting promises not fulfilled
 
-== cross-dock-scheduling | Cross-Dock Door & Wave Scheduling | reinforcement-learning | batch | production-grade | a=0.05 k=3
+== cross-dock-scheduling | Cross-Dock Door & Wave Scheduling | reinforcement-learning | batch | advanced | a=0.05 k=3
 obj: Assign inbound and outbound trucks to doors and sequence handling to minimise dwell and labour in cross-dock facilities.
 loss: \min\;\sum_{t}\text{dwell}_t+\lambda\,\text{walking}+\mu\,\text{lateness}
 con: Door capacity ; Truck arrival uncertainty ; Labour shifts ; Departure deadlines
@@ -299,7 +299,7 @@ off: Weighted pinball loss on hours ; Overtime hours in simulation
 on: Overtime percentage ; Labour cost per unit
 gap: Forecasting hours that were constrained by staffing ; Ignoring productivity ramp
 
-== load-consolidation-and-bin-packing | Load Consolidation & 3D Bin Packing | reinforcement-learning | batch | production-grade | a=0.1 k=5
+== load-consolidation-and-bin-packing | Load Consolidation & 3D Bin Packing | reinforcement-learning | batch | advanced | a=0.1 k=5
 obj: Pack orders into containers and trailers to minimise empty space while respecting weight, stacking and delivery order.
 loss: \min\;\#\text{containers}+\lambda\,\text{unload penalties}
 con: Axle weight limits ; Fragile and stacking rules ; Delivery sequence ; Solve in seconds
@@ -319,7 +319,7 @@ off: Container count vs baseline ; Constraint violation rate
 on: Trailer utilisation ; Loading time
 gap: Benchmarks with random boxes ; Ignoring unloading sequence
 
-== supplier-quality-defect-prediction | Supplier Quality & Defect Prediction | tabular | batch | production-grade | a=0.1 k=5
+== supplier-quality-defect-prediction | Supplier Quality & Defect Prediction | tabular | batch | advanced | a=0.1 k=5
 obj: Predict incoming lot defect risk to focus inspections and supplier development on the lots and suppliers that matter.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)\cdot w(\text{impact})
 con: Inspection capacity ; Regulatory traceability ; Supplier confidentiality ; Lot-level decisions
@@ -339,7 +339,7 @@ off: Defect capture rate at fixed inspection effort ; Calibration
 on: Escaped defects ; Inspection cost
 gap: Defects only observed for inspected lots ; Using post-inspection information
 
-== visual-quality-inspection-line | Visual Quality Inspection on the Production Line | computer-vision | sub-100ms | production-grade | a=1 k=2000
+== visual-quality-inspection-line | Visual Quality Inspection on the Production Line | computer-vision | sub-100ms | advanced | a=1 k=2000
 obj: Detect surface defects and assembly errors on products at line speed with minimal false rejects.
 loss: \mathcal{L}=\mathcal{L}_{\text{recon}}+\lambda\,\mathcal{L}_{\text{feature-distance}}
 con: Line speed of 10 parts/s ; Few defect examples ; Stable lighting ; Explainable reject decisions
@@ -359,7 +359,7 @@ off: Defect recall at 0.5% false reject ; Localisation accuracy
 on: Escape rate ; Scrap and rework cost
 gap: Test defects staged not natural ; Normal samples from one lighting setup
 
-== bom-and-part-matching-llm | BOM Parsing & Part Matching with LLMs | nlp,llm-agents | batch | production-grade | a=0.02 k=25
+== bom-and-part-matching-llm | BOM Parsing & Part Matching with LLMs | nlp,llm-agents | batch | advanced | a=0.02 k=25
 obj: Normalise bills of materials and match parts to approved suppliers and alternatives to speed sourcing and cut errors.
 loss: \mathcal{L}=\mathrm{InfoNCE}(\text{part},\text{catalogue part})+\lambda\,\mathrm{SchemaViolation}
 con: Parametric correctness (a 10k resistor is not 1k) ; Traceability ; Millions of parts ; Engineer sign-off
@@ -379,7 +379,7 @@ off: Match precision at 99% ; Parameter extraction accuracy
 on: BOM processing time ; Mismatch incidents
 gap: Test BOMs cleaner than production ; Exact-match labels only
 
-== procurement-price-forecasting | Procurement Price & Commodity Cost Forecasting | time-series | batch | production-grade | a=1 k=1
+== procurement-price-forecasting | Procurement Price & Commodity Cost Forecasting | time-series | batch | advanced | a=1 k=1
 obj: Forecast input costs (commodities, freight, components) to time purchases, hedges and contract negotiations.
 loss: \mathcal{L}=\sum_{h}\sum_q\rho_q\!\left(p_{t+h}-\hat p_{t+h}^{(q)}\right)
 con: Regime changes ; Few observations for custom parts ; Scenario support ; Audit trail
@@ -419,7 +419,7 @@ off: Level-3 accuracy and macro-F1 ; Coverage at 95% precision
 on: Spend classified automatically ; Analyst hours saved
 gap: Training labels from earlier rule-based mappings ; Ignoring class imbalance
 
-== contract-intelligence-llm | Contract Intelligence & Obligation Extraction | llm-agents,nlp | seconds | production-grade | a=0.02 k=100 s=3 t=400
+== contract-intelligence-llm | Contract Intelligence & Obligation Extraction | llm-agents,nlp | seconds | advanced | a=0.02 k=100 s=3 t=400
 obj: Extract clauses, obligations, prices and renewal dates from supplier and logistics contracts and answer questions with citations.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{clauses})+\lambda\,\mathrm{ClauseMiss}
 con: Citations to page and clause ; Confidential data stays private ; Version history ; Lawyer review for high-risk clauses

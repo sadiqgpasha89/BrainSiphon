@@ -1,5 +1,5 @@
 # EdTech, part 1 (use cases 1-25)
-== knowledge-tracing-student-modeling | Knowledge Tracing & Student Modelling | time-series,tabular | sub-100ms | production-grade | a=25 k=1
+== knowledge-tracing-student-modeling | Knowledge Tracing & Student Modelling | time-series,tabular | sub-100ms | advanced | a=25 k=1
 obj: Estimate each learner's evolving mastery per skill from their answer history to drive practice selection and progress reports.
 loss: \mathcal{L}=-\sum_t\left[y_t\log \hat p_t+(1-y_t)\log(1-\hat p_t)\right]
 con: Update after every answer in under 30 ms ; Millions of learners ; Interpretable mastery per skill ; Cold-start for new skills
@@ -26,7 +26,7 @@ off: AUC and RMSE on next-response prediction (student-split) ; Calibration by s
 on: Learning gain per hour ; Practice efficiency
 gap: Predicting next answers with student leakage ; Ignoring that practice choice depends on the model
 
-== adaptive-learning-path-recommendation | Adaptive Learning Path Recommendation | recommender,reinforcement-learning | sub-100ms | production-grade | a=20 k=2
+== adaptive-learning-path-recommendation | Adaptive Learning Path Recommendation | recommender,reinforcement-learning | sub-100ms | advanced | a=20 k=2
 obj: Recommend the next activity for each learner that maximises mastery gain while sustaining engagement and respecting prerequisites.
 loss: \max_\pi\;\mathbb{E}\!\left[\sum_t \gamma^t\,\Delta\text{mastery}_t\right]\ \text{s.t. prerequisites}
 con: Prerequisite graph ; Curriculum standards ; 50 ms ; Explainable to teachers
@@ -66,7 +66,7 @@ off: Standard error of ability at test length ; Item fit statistics
 on: Test length for target precision ; Score validity evidence
 gap: Calibrating on self-selected samples ; Ignoring DIF
 
-== automated-essay-scoring | Automated Essay Scoring | nlp | seconds | production-grade | a=0.05 k=6
+== automated-essay-scoring | Automated Essay Scoring | nlp | seconds | advanced | a=0.05 k=6
 obj: Score essays against rubrics with human-level agreement and give actionable feedback, with transparency and fairness.
 loss: \mathcal{L}=\mathrm{OrdinalMSE}(y,\hat y)+\lambda\,\mathrm{RubricTraitLoss}
 con: Agreement with expert raters (QWK) ; Bias auditing across groups ; Gaming resistance ; Teacher override
@@ -86,7 +86,7 @@ off: Quadratic weighted kappa vs raters ; Subgroup score differences
 on: Teacher time saved ; Student revision quality
 gap: Training on single-rater scores ; Not testing bias across dialects
 
-== short-answer-grading-llm | Short-Answer Grading with LLMs | llm-agents,nlp | seconds | production-grade | a=0.2 k=3 s=2 t=200
+== short-answer-grading-llm | Short-Answer Grading with LLMs | llm-agents,nlp | seconds | advanced | a=0.2 k=3 s=2 t=200
 obj: Grade free-text answers against rubrics with explanations, giving consistent scoring and instant feedback at scale.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{rubric},\text{answer})
 con: Consistency across runs ; Rubric-grounded reasoning ; Teacher audit ; Student appeals
@@ -106,7 +106,7 @@ off: Agreement (QWK) vs teachers ; Run-to-run consistency
 on: Time to feedback ; Appeal rate
 gap: Rubrics too vague to test ; Calibration data from easy questions
 
-== programming-assignment-feedback-llm | Programming Assignment Feedback | llm-agents,nlp | seconds | production-grade | a=0.3 k=10 s=3 t=300
+== programming-assignment-feedback-llm | Programming Assignment Feedback | llm-agents,nlp | seconds | advanced | a=0.3 k=10 s=3 t=300
 obj: Give students hints and explanations on code submissions that guide learning without revealing full solutions.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{code,tests})+\lambda\,\mathrm{SolutionLeak}
 con: Do not give the full solution ; Reproducible tests ; Safe code execution ; Fast feedback
@@ -166,7 +166,7 @@ off: Step-level accuracy ; First-error localisation accuracy
 on: Revision rate after feedback ; Teacher grading time
 gap: Test problems from training distribution ; Judging only final answers
 
-== handwritten-exam-ocr-grading | Handwritten Exam OCR & Grading Assistance | computer-vision,nlp | seconds | production-grade | a=0.05 k=1500
+== handwritten-exam-ocr-grading | Handwritten Exam OCR & Grading Assistance | computer-vision,nlp | seconds | advanced | a=0.05 k=1500
 obj: Digitise handwritten exam scripts and assist graders by locating answers, reading text and pre-scoring objective parts.
 loss: \mathcal{L}=\mathcal{L}_{\text{CTC}}+\lambda\,\mathcal{L}_{\text{layout}}
 con: Handwriting diversity ; Strict accuracy for marks ; Grader review ; Privacy of student scripts
@@ -186,7 +186,7 @@ off: Word error rate by writer group ; Marks agreement with graders
 on: Grading turnaround ; Re-mark rate
 gap: Test handwriting from few writers ; Not testing messy scans
 
-== pronunciation-assessment-speech | Pronunciation & Speaking Assessment | nlp,time-series | seconds | production-grade | a=1 k=300
+== pronunciation-assessment-speech | Pronunciation & Speaking Assessment | nlp,time-series | seconds | advanced | a=1 k=300
 obj: Assess spoken language for pronunciation, fluency and prosody with phoneme-level feedback for learners across accents.
 loss: \mathcal{L}=\mathcal{L}_{\text{CTC}}+\lambda\,\mathrm{GOP\ regression}
 con: Accent fairness ; Noisy environments ; Low latency feedback ; Child speech
@@ -206,7 +206,7 @@ off: Correlation with human raters by accent group ; Phoneme error detection F1
 on: Speaking improvement per month ; Learner retention
 gap: Training mostly on native speakers ; Rater disagreement ignored
 
-== conversational-language-practice-agent | Conversational Language Practice Agent | llm-agents,nlp | seconds | production-grade | a=2 k=6 s=2 t=200
+== conversational-language-practice-agent | Conversational Language Practice Agent | llm-agents,nlp | seconds | advanced | a=2 k=6 s=2 t=200
 obj: Provide a patient conversation partner that adapts to the learner's level, corrects errors gently and tracks vocabulary growth.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{level,goal})
 con: CEFR-level control ; Correction without discouraging ; Cultural sensitivity ; Safe content for minors
@@ -226,7 +226,7 @@ off: Level-appropriateness rating ; Error detection F1
 on: Proficiency gains ; Weekly active practice
 gap: Judging by fluency of the bot ; Measuring minutes not proficiency
 
-== reading-fluency-assessment-asr | Reading Fluency Assessment for Children | nlp,time-series | seconds | production-grade | a=0.3 k=200
+== reading-fluency-assessment-asr | Reading Fluency Assessment for Children | nlp,time-series | seconds | advanced | a=0.3 k=200
 obj: Measure oral reading fluency (words correct per minute, accuracy) from child audio to identify struggling readers early.
 loss: \mathcal{L}=\mathcal{L}_{\text{CTC}}+\lambda\,\mathrm{Alignment}
 con: Child speech ASR ; Classroom noise ; Privacy of minors ; Teacher-friendly reports
@@ -246,7 +246,7 @@ off: WCPM correlation with teacher scores ; Miscue detection F1
 on: Early identification of reading difficulty ; Intervention rate
 gap: Adult speech used for evaluation ; Single dialect test set
 
-== student-dropout-early-warning | Student Dropout & Attrition Early Warning | tabular,time-series | batch | production-grade | a=0.1 k=3
+== student-dropout-early-warning | Student Dropout & Attrition Early Warning | tabular,time-series | batch | advanced | a=0.1 k=3
 obj: Identify learners at risk of dropping out weeks ahead and trigger supportive interventions that actually help.
 loss: \mathcal{L}=-\sum_i\left[\delta_i\log h(t_i)-H(t_i)\right]
 con: Equity (avoid labelling disadvantaged students) ; Explainable to advisors ; Intervention capacity ; Privacy
@@ -266,7 +266,7 @@ off: Time-dependent AUC and calibration ; Subgroup error parity
 on: Retention rate in treated vs control ; Advisor contacts per saved student
 gap: Interventions confound labels ; Using demographic proxies
 
-== course-recommendation-career-paths | Course & Career Path Recommendation | recommender,graph | sub-100ms | production-grade | a=2 k=3
+== course-recommendation-career-paths | Course & Career Path Recommendation | recommender,graph | sub-100ms | advanced | a=2 k=3
 obj: Recommend courses and learning paths aligned with learner goals and labour-market skills, balancing interest and career outcomes.
 loss: \mathcal{L}=\mathrm{BPR}+\lambda\,\mathrm{GoalAlignment}
 con: Diversity and fairness ; Prerequisites ; Up-to-date skills data ; Explainable
@@ -286,7 +286,7 @@ off: NDCG and completion-weighted hit rate ; Fairness gaps
 on: Completion rate ; Career outcome follow-up
 gap: Training on enrolments that reflect past recommendations ; Ignoring fairness drift
 
-== skill-graph-and-job-matching | Skill Graph Extraction & Job Matching | nlp,graph | batch | production-grade | a=0.1 k=10
+== skill-graph-and-job-matching | Skill Graph Extraction & Job Matching | nlp,graph | batch | advanced | a=0.1 k=10
 obj: Build a skill graph from courses, resumes and job postings, and match learners to roles with explainable skill overlaps.
 loss: \mathcal{L}=\mathrm{CE}_{\text{NER}}+\lambda\,\mathrm{InfoNCE}(\text{person},\text{role})
 con: Taxonomy mapping (ESCO/O*NET) ; Bias in job data ; Privacy of resumes ; Fresh skills
@@ -326,7 +326,7 @@ off: RMSE vs IRT difficulty ; Rank correlation
 on: Placement accuracy ; Learner frustration rate
 gap: Calibration on one population ; Ignoring DIF
 
-== question-generation-llm | Question Generation with LLMs | llm-agents,nlp | seconds | production-grade | a=0.05 k=5 s=3 t=250
+== question-generation-llm | Question Generation with LLMs | llm-agents,nlp | seconds | advanced | a=0.05 k=5 s=3 t=250
 obj: Generate curriculum-aligned questions with correct answers, plausible distractors and difficulty tags for teacher review.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{objective,context})+\lambda\,\mathrm{Unanswerable}
 con: Factual correctness ; Alignment to learning objectives ; Bias and sensitivity ; Teacher approval
@@ -366,7 +366,7 @@ off: Distractor selection-rate coverage ; Ambiguity detection recall
 on: Item discrimination index ; Teacher edit rate
 gap: Evaluating by fluency ; No pilot data
 
-== ai-text-and-plagiarism-detection | Plagiarism & AI-Generated Text Detection | nlp | seconds | production-grade | a=0.05 k=8
+== ai-text-and-plagiarism-detection | Plagiarism & AI-Generated Text Detection | nlp | seconds | advanced | a=0.05 k=8
 obj: Detect copied and AI-generated submissions with calibrated confidence and evidence, minimising wrongful accusations.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: False accusations are harmful ; Non-native writer fairness ; Evidence-based process ; Student appeal
@@ -386,7 +386,7 @@ off: Calibration and subgroup FPR ; Source recall
 on: Confirmed cases per flagged ; Appeal overturn rate
 gap: Training on AI text from older models ; Ignoring subgroup effects
 
-== proctoring-cheating-detection | Remote Proctoring & Cheating Detection | computer-vision,tabular | seconds | production-grade | a=0.05 k=5000
+== proctoring-cheating-detection | Remote Proctoring & Cheating Detection | computer-vision,tabular | seconds | advanced | a=0.05 k=5000
 obj: Detect suspicious behaviour during remote exams (second person, devices, impersonation) with human review of flagged segments, protecting privacy and fairness.
 loss: \mathcal{L}=\sum_k\mathrm{BCE}(y_k,p_k)
 con: Privacy and consent ; Bias across skin tones and disabilities ; Human review of all flags ; Bandwidth constraints
@@ -406,7 +406,7 @@ off: Flag precision by subgroup ; Review-time per flag
 on: Confirmed integrity violations ; Student complaint rate
 gap: Test set staged cheating ; Ignoring subgroup false-positive rates
 
-== exam-timetabling-optimization | Exam Timetabling Optimisation | reinforcement-learning | batch | production-grade | a=0.001 k=5
+== exam-timetabling-optimization | Exam Timetabling Optimisation | reinforcement-learning | batch | advanced | a=0.001 k=5
 obj: Schedule exams across rooms and slots to minimise student clashes and back-to-back loads while satisfying room capacity and accessibility needs.
 loss: \min\;\sum_{s}\text{clashes}_s+\lambda\,\text{consecutive exams}_s+\mu\,\text{room cost}
 con: Hard constraints (no clashes, capacity) ; Accessibility rooms ; Invigilator availability ; Run in minutes
@@ -426,7 +426,7 @@ off: Clash count and student-load fairness ; Solve time
 on: Complaints from clashes ; Manual repair hours
 gap: Hard constraints missing from test data ; Ignoring late changes
 
-== classroom-allocation-and-timetable | Course Timetabling & Classroom Allocation | reinforcement-learning | batch | production-grade | a=0.001 k=5
+== classroom-allocation-and-timetable | Course Timetabling & Classroom Allocation | reinforcement-learning | batch | advanced | a=0.001 k=5
 obj: Allocate courses to times and rooms to maximise utilisation and student/teacher preferences under capacity and accessibility constraints.
 loss: \min\;\text{preference violations}+\lambda\,\text{room waste}+\mu\,\text{gaps}
 con: Hard constraints ; Multi-campus travel ; Enrolment forecasts ; Term-planning timelines
@@ -446,7 +446,7 @@ off: Preference satisfaction and room utilisation ; Forecast MAPE
 on: Utilisation rate ; Student gap hours
 gap: Optimising on forecasts without uncertainty ; Ignoring accessibility needs
 
-== teacher-copilot-lesson-planning | Teacher Copilot for Lesson Planning | llm-agents | seconds | production-grade | a=0.2 k=10 s=3 t=500
+== teacher-copilot-lesson-planning | Teacher Copilot for Lesson Planning | llm-agents | seconds | advanced | a=0.2 k=10 s=3 t=500
 obj: Draft lesson plans, differentiated materials and rubrics aligned with standards, saving teacher prep time while keeping teachers in control.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{standards,context})+\lambda\,\mathrm{StandardMisalign}
 con: Standards alignment ; Age-appropriate content ; Teacher editing ; Copyright
@@ -486,7 +486,7 @@ off: Precision and recall at k per level ; Reviewer acceptance
 on: Tagging cost per item ; Search success
 gap: Test content similar to training ; Ignoring version differences
 
-== engagement-prediction-notifications | Learner Engagement Prediction & Notifications | tabular,reinforcement-learning | batch | production-grade | a=1 k=1
+== engagement-prediction-notifications | Learner Engagement Prediction & Notifications | tabular,reinforcement-learning | batch | advanced | a=1 k=1
 obj: Predict lapse risk and send the right reminder at the right time to keep learners practising, without notification fatigue.
 loss: \max_\pi\;\mathbb{E}\!\left[\sum_t\gamma^t(\text{practice}_t-\kappa\,\text{optout}_t)\right]
 con: Frequency caps ; Wellbeing considerations for minors ; Consent ; Streak design ethics

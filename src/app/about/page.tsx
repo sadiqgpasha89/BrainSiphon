@@ -20,6 +20,8 @@ import {
   Zap,
 } from 'lucide-react';
 import { AboutInteractive } from '../../components/about/AboutInteractive';
+import { ManifestSummary, MaturityLadder } from '../../components/ReleaseReport';
+import { getRelease } from '../../lib/content';
 import { withBase } from '../../lib/site';
 import { DOMAINS, DOMAIN_META } from '../../schemas/usecase.schema';
 
@@ -31,7 +33,8 @@ export const metadata: Metadata = {
     'Learn what BrainSiphon is, the Signal vs. Noise engineering philosophy, blueprint anatomy, role-based usage guides, and how to deliver production AI systems that survive 10 million users.',
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const release = await getRelease();
   return (
     <div className="mx-auto max-w-6xl space-y-16 px-4 py-10 sm:py-14">
       {/* ── Hero Section ── */}
@@ -163,7 +166,7 @@ export default function AboutPage() {
             </h3>
             <p className="text-sm leading-relaxed text-mute">
               BrainSiphon provides{' '}
-              <strong className="text-ink">battle-tested, zero-noise engineering blueprints</strong>. Every
+              <strong className="text-ink">zero-noise engineering reference blueprints</strong>. Every
               blueprint bridges the chasm between business intent and production delivery:
             </p>
             <ul className="space-y-2 text-sm text-ink">
@@ -193,174 +196,28 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Section: 7-Level Implementation Maturity Framework & Validation Transparency ── */}
+      {/* ── Section: maturity levels and what has been checked (every figure comes from the release manifest) ── */}
       <section id="maturity-framework" className="scroll-mt-20 space-y-6">
         <div>
-          <p className="font-mono text-xs uppercase tracking-wider text-signal">Validation Rigour</p>
+          <p className="font-mono text-xs uppercase tracking-wider text-signal">Evidence, not labels</p>
           <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-            7-Level Implementation Maturity Framework
+            Seven maturity levels
           </h2>
           <p className="mt-2 max-w-3xl text-sm text-mute">
-            BrainSiphon explicitly rejects ambiguous labels such as &ldquo;production-grade&rdquo; where live
-            production evidence does not exist. A schema validation pass is never conflated with
-            implementation readiness. Every use case is classified against seven strict maturity levels:
+            A blueprint here is a reference design, not a deployed system. Instead of a label such as
+            &ldquo;production-grade&rdquo;, every blueprint is classified on seven levels, each backed by a
+            different kind of evidence. A schema pass shows a page is complete; it is never read as proof that
+            an implementation is ready. A blueprint is classified at the highest level it reaches without
+            skipping one.
           </p>
         </div>
-
-        <div className="grid gap-3 font-mono text-xs sm:grid-cols-2 lg:grid-cols-4">
-          <div className="card border-signal/40 bg-signal/5 p-3">
-            <span className="font-bold text-signal">L1 · Conceptual Architecture</span>
-            <p className="mt-1 text-[11px] text-mute">
-              Mathematical loss formulation, component boundaries, and SLA envelopes verified.
-            </p>
-            <span className="mt-2 inline-block font-semibold text-signal">500 / 500 Passed</span>
-          </div>
-          <div className="card border-signal/40 bg-signal/5 p-3">
-            <span className="font-bold text-signal">L2 · Schema Validation</span>
-            <p className="mt-1 text-[11px] text-mute">
-              100% compliant with strict TypeScript Zod type contracts in CI builds.
-            </p>
-            <span className="mt-2 inline-block font-semibold text-signal">500 / 500 Passed</span>
-          </div>
-          <div className="card border-signal/40 bg-signal/5 p-3">
-            <span className="font-bold text-signal">L3 · Architecture Feasibility</span>
-            <p className="mt-1 text-[11px] text-mute">
-              4,781 structural constraints checked (budgets, hardware memory, cost sanity).
-            </p>
-            <span className="mt-2 inline-block font-semibold text-signal">4,774 Pass · 7 Warn</span>
-          </div>
-          <div className="card border-signal/40 bg-signal/5 p-3">
-            <span className="font-bold text-signal">L4 · Synthetic Implementation</span>
-            <p className="mt-1 text-[11px] text-mute">
-              End-to-end runnable starters and pattern kits tested in automated pytest CI.
-            </p>
-            <span className="mt-2 inline-block font-semibold text-signal">11 Kits · 8 Pilot Apps</span>
-          </div>
-          <div className="card bg-surface border-line p-3">
-            <span className="font-bold text-mute">L5 · Domain Expert Review</span>
-            <p className="mt-1 text-[11px] text-dim">
-              Clinical intensivist, PCI-DSS QSA, or certified CISSP auditor sign-off.
-            </p>
-            <span className="mt-2 inline-block font-semibold text-mute">0 / 500 (Unreviewed)</span>
-          </div>
-          <div className="card bg-surface border-line p-3">
-            <span className="font-bold text-mute">L6 · Platform Integration</span>
-            <p className="mt-1 text-[11px] text-dim">
-              Customer enterprise VPC, CDC streaming, and identity provider federation.
-            </p>
-            <span className="mt-2 inline-block font-semibold text-mute">Target Infrastructure Needed</span>
-          </div>
-          <div className="card bg-surface border-line p-3">
-            <span className="font-bold text-mute">L7 · Production Deployed</span>
-            <p className="mt-1 text-[11px] text-dim">
-              Live customer traffic, canary rollout telemetry, and measured business ROI.
-            </p>
-            <span className="mt-2 inline-block font-semibold text-mute">
-              0 / 500 (Requires Customer Rollout)
-            </span>
-          </div>
-          <div className="card border-warn/40 bg-warn/10 p-3">
-            <span className="font-bold text-warn">High-Risk Safeguard</span>
-            <p className="mt-1 text-[11px] text-ink/80">
-              Clinical and financial systems are blocked from live deployment until L5–L7 sign-off.
-            </p>
-            <span className="mt-2 inline-block font-semibold text-warn">Mandatory Policy Gate</span>
-          </div>
-        </div>
-
-        {/* The 7 Feasibility Warnings Registry */}
-        <div className="card bg-surface space-y-3 border-warn/30 p-5">
-          <div className="flex items-center justify-between">
-            <h3 className="flex items-center gap-2 text-base font-semibold text-ink">
-              <AlertTriangle size={18} className="text-warn" /> The 7 Feasibility Warnings &amp; Recommended
-              Remediation
-            </h3>
-            <span className="font-mono text-xs text-dim">Automated Feasibility Engine Audit</span>
-          </div>
-          <p className="text-xs text-mute">
-            The release validator caught 7 designs where default assumptions require explicit engineering
-            remediation before production:
-          </p>
-          <div className="overflow-x-auto">
-            <table className="bs-table w-full text-xs">
-              <thead>
-                <tr>
-                  <th>Blueprint</th>
-                  <th>Category</th>
-                  <th>Observed Constraint</th>
-                  <th>Recommended Remediation</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="font-mono text-ink">fintech/transaction-monitoring-alert-triage-llm</td>
-                  <td>Model memory vs serving hardware</td>
-                  <td>70B FP16 requires ~140 GB; does not fit single 80 GB GPU.</td>
-                  <td>
-                    Quantise weights to INT8/FP8 (~70 GB VRAM) or shard via Tensor Parallelism (tp=2 or tp=4)
-                    across 2-4 GPUs, or implement an 8B screening cascade.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="font-mono text-ink">healthcare/pathology-slide-cancer-detection</td>
-                  <td>Cost vs expected traffic</td>
-                  <td>$243.76 per 1,000 decisions at 30k events/day ($219k/mo).</td>
-                  <td>
-                    Implement a two-stage tile cascade with low-res normal tile filtering, asynchronous PACS
-                    queue batching, and spot GPU autoscaling.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="font-mono text-ink">
-                    healthcare/genomic-variant-pathogenicity-classification
-                  </td>
-                  <td>Cost vs expected traffic</td>
-                  <td>$411.51 per 1,000 decisions for 150 events/day.</td>
-                  <td>
-                    Shift from warm dedicated nodes to event-driven serverless container workers (Cloud Run /
-                    AWS Batch) scaling to zero when idle.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="font-mono text-ink">healthcare/polygenic-risk-scoring</td>
-                  <td>Cost vs expected traffic</td>
-                  <td>$897.48 per 1,000 decisions for 60 events/day.</td>
-                  <td>
-                    Execute PRS variant calculations as scheduled nightly batch pipelines on preemptible CPU
-                    compute instead of idle online services.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="font-mono text-ink">healthcare/single-cell-rna-cell-type-annotation</td>
-                  <td>Cost vs expected traffic</td>
-                  <td>$1,795.39 per 1,000 decisions for 30 events/day.</td>
-                  <td>
-                    Run scRNA samples in batch mode on spot GPU worker fleets; cache high-dimensional
-                    reference atlas embeddings in a vector store.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="font-mono text-ink">healthcare/surgical-video-phase-recognition</td>
-                  <td>Cost vs expected traffic</td>
-                  <td>$243.76 per 1,000 decisions at 30k events/day.</td>
-                  <td>
-                    Shift inference to on-premise hospital edge workstations (NVIDIA IGX/RTX 6000), downsample
-                    to 1fps keyframe sampling, and compile TensorRT INT8.
-                  </td>
-                </tr>
-                <tr>
-                  <td className="font-mono text-ink">healthcare/radiotherapy-autocontouring</td>
-                  <td>Cost vs expected traffic</td>
-                  <td>$105.24 per 1,000 decisions at 30k events/day.</td>
-                  <td>
-                    Queue volumetric DICOM CT series to asynchronous worker queues, apply TensorRT
-                    quantization to 3D U-Net, and autoscale based on clinic hours.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <MaturityLadder release={release} />
+        <ManifestSummary release={release} />
+        <p className="max-w-3xl text-sm text-mute">
+          The <Link href="/release">release report</Link> lists every starter-kit test run with its log, each
+          open architecture-feasibility warning with the blueprint it affects and the recommended remediation,
+          and the issues still outstanding for the release as a whole.
+        </p>
       </section>
 
       {/* ── Section: The Blueprint Anatomy (6 Pillars) ── */}
@@ -727,8 +584,7 @@ export default function AboutPage() {
             500 Use Cases Across 10 Industries
           </h2>
           <p className="mt-1 text-sm text-mute">
-            Each domain features exactly 50 production-grade blueprints, grouped into specialized industry
-            tracks:
+            Each domain has 50 reference blueprints, grouped into specialized industry tracks:
           </p>
         </div>
 

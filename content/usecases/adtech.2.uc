@@ -1,5 +1,5 @@
 # AdTech & Marketing, part 2 (use cases 26-50)
-== landing-page-quality-score | Ad Quality Score & Landing-Page Experience | nlp,computer-vision | sub-100ms | production-grade | a=10 k=4
+== landing-page-quality-score | Ad Quality Score & Landing-Page Experience | nlp,computer-vision | sub-100ms | advanced | a=10 k=4
 obj: Score expected landing-page experience and ad quality to rank and price ads, protecting users from deceptive or slow pages.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{RankLoss}
 con: Page scores cached and refreshed ; Crawler politeness ; Advertiser appeals ; Transparent policy
@@ -19,7 +19,7 @@ off: AUC on policy-labelled pages ; Rank correlation with satisfaction
 on: User complaint rate ; Revenue per search
 gap: Labels reflect only reported pages ; Crawler view differs from user view
 
-== video-ad-placement-optimization | Video Ad Placement & Pod Optimisation | reinforcement-learning,tabular | sub-100ms | production-grade | a=5 k=2
+== video-ad-placement-optimization | Video Ad Placement & Pod Optimisation | reinforcement-learning,tabular | sub-100ms | advanced | a=5 k=2
 obj: Choose ad slots, pod length and creatives in streaming video to maximise revenue and completion while limiting viewer abandonment.
 loss: \max\;\mathbb{E}\!\left[\text{revenue}-\lambda\,\text{abandonment cost}\right]
 con: Latency before playback ; Ad-load policies ; Content-sensitive breaks ; Viewer experience
@@ -59,7 +59,7 @@ off: Surrogate-index prediction of long-term impact ; Simulated slate value
 on: Long-term revenue per user ; Session frequency
 gap: A/B tests too short to see retention effects ; Optimising impressions rather than value
 
-== app-install-prediction | Mobile App Install & Post-Install Prediction | tabular | sub-100ms | production-grade | a=20 k=1
+== app-install-prediction | Mobile App Install & Post-Install Prediction | tabular | sub-100ms | advanced | a=20 k=1
 obj: Predict install probability and early post-install value for mobile campaigns to bid efficiently under privacy limits.
 loss: \mathcal{L}=\mathrm{BCE}(\text{install})+\lambda\,\mathrm{BCE}(\text{day-1 purchase})
 con: Limited identifiers ; Delayed postbacks ; Fraudulent installs ; Cold-start apps
@@ -79,7 +79,7 @@ off: AUC and calibration of installs and D1 value ; Source ranking accuracy
 on: Cost per retained user ; Day-7 ROAS
 gap: Training on installs from fraudulent sources ; Delayed postbacks excluded
 
-== mobile-retention-roas-prediction | Mobile Retention & ROAS Prediction | tabular,time-series | batch | production-grade | a=1 k=2
+== mobile-retention-roas-prediction | Mobile Retention & ROAS Prediction | tabular,time-series | batch | advanced | a=1 k=2
 obj: Predict day-30 to day-365 retention and revenue from early cohort signals to steer user-acquisition budgets.
 loss: \mathcal{L}=\sum_t\left(r_t-\hat r_t\right)^2+\lambda\,\mathrm{CurveMonotonicity}
 con: Cohorts with limited maturity ; Platform privacy aggregation ; Daily budget decisions ; Interpretable curves
@@ -99,7 +99,7 @@ off: Forecast error at D180 ; Interval coverage
 on: Realised vs predicted ROAS ; Payback accuracy
 gap: Early curves extrapolated beyond observed range ; Ignoring survivor effects
 
-== guaranteed-inventory-forecasting | Guaranteed Inventory & Delivery Forecasting | time-series | batch | production-grade | a=1 k=1
+== guaranteed-inventory-forecasting | Guaranteed Inventory & Delivery Forecasting | time-series | batch | advanced | a=1 k=1
 obj: Forecast available impressions by audience and placement to sell guaranteed deals without under- or over-delivery.
 loss: \mathcal{L}=\sum_t\rho_{0.2}(y_t-\hat y_t)
 con: Overbooking penalties ; Audience overlap ; Seasonality ; Contract flight dates
@@ -119,7 +119,7 @@ off: Quantile loss at 20th percentile ; Delivery success rate in backtest
 on: Under-delivery rate ; Sell-through rate
 gap: Ignoring overlap between audiences ; Backtesting without bookings
 
-== ctv-ad-avails-forecasting | Connected-TV Ad Avails & Reach Forecasting | time-series,graph | batch | production-grade | a=1 k=2
+== ctv-ad-avails-forecasting | Connected-TV Ad Avails & Reach Forecasting | time-series,graph | batch | advanced | a=1 k=2
 obj: Forecast ad avails and campaign reach on connected TV across apps and household devices.
 loss: \mathcal{L}=\sum_t\rho_q\!\left(y_t-\hat y_t^{(q)}\right)
 con: Household-level counting ; Live-event spikes ; Panel calibration ; Contracts with guarantees
@@ -159,7 +159,7 @@ off: Detection delay at fixed false alarms ; Precision of top alerts
 on: Mean time to detect ; Wasted spend before action
 gap: Synthetic anomaly tests only ; Ignoring reporting delays
 
-== ad-spend-forecasting-and-allocation | Ad Spend Forecasting & Budget Allocation | time-series,reinforcement-learning | batch | production-grade | a=1 k=1
+== ad-spend-forecasting-and-allocation | Ad Spend Forecasting & Budget Allocation | time-series,reinforcement-learning | batch | advanced | a=1 k=1
 obj: Forecast spend and outcomes by campaign and allocate budgets across campaigns to maximise return under constraints.
 loss: \max_{b}\;\sum_c R_c(b_c)\ \text{s.t. }\sum_c b_c\le B
 con: Minimum commitments ; Response curves ; Daily rebalance ; Explainability
@@ -259,7 +259,7 @@ off: Match rate and precision ; Lift estimate error
 on: Time to insight ; Advertiser adoption
 gap: Evaluating match rate without precision ; Ignoring leakage tests
 
-== influencer-matching-and-fraud | Influencer Matching & Fake-Follower Detection | graph,recommender | batch | production-grade | a=0.02 k=10
+== influencer-matching-and-fraud | Influencer Matching & Fake-Follower Detection | graph,recommender | batch | advanced | a=0.02 k=10
 obj: Match brands to authentic creators with audiences that fit, and detect inflated followings and engagement pods.
 loss: \mathcal{L}=\mathrm{BCE}(\text{fake})+\lambda\,\mathrm{InfoNCE}(\text{brand},\text{creator})
 con: Audience demographics privacy ; Content brand safety ; Fraud adaptation ; Disclosure rules
@@ -279,7 +279,7 @@ off: Fraud detection precision ; Match quality NDCG
 on: Cost per engagement on authentic audience ; Campaign ROI
 gap: Platform-provided signals manipulated ; Labels from small audits
 
-== content-virality-prediction | Content Virality & Engagement Prediction | time-series,graph | sub-100ms | production-grade | a=5 k=3
+== content-virality-prediction | Content Virality & Engagement Prediction | time-series,graph | sub-100ms | advanced | a=5 k=3
 obj: Predict early whether a post or video will go viral to allocate promotion budget and inform creators.
 loss: \mathcal{L}=\mathrm{Huber}(\log N_T,\log\hat N_T)
 con: Heavy-tailed outcomes ; Predictions from first minutes ; Fairness to creators ; Manipulation resistance
@@ -299,7 +299,7 @@ off: Spearman correlation on final reach ; Top-k precision of viral posts
 on: Promotion ROI ; Creator satisfaction
 gap: Using future engagement leaked into features ; Evaluating on already-viral samples
 
-== ad-copy-compliance-moderation | Ad Copy & Creative Compliance Moderation | nlp,computer-vision | sub-100ms | production-grade | a=0.2 k=10
+== ad-copy-compliance-moderation | Ad Copy & Creative Compliance Moderation | nlp,computer-vision | sub-100ms | advanced | a=0.2 k=10
 obj: Detect policy-violating ads (misleading claims, prohibited products, restricted categories) at submission time with advertiser-facing explanations.
 loss: \mathcal{L}=\sum_k w_k\,\mathrm{BCE}(y_k,p_k)
 con: Region-specific rules ; Appeals within 24 hours ; Review latency under minutes ; Explainable rejections
@@ -319,7 +319,7 @@ off: Per-policy precision and recall ; Time to decision
 on: Policy violation exposure ; Wrongful rejection rate
 gap: Labels from past inconsistent reviewers ; Static adversarial test set
 
-== dynamic-product-ads-feed-recs | Dynamic Product Ads & Feed Recommendations | recommender | sub-100ms | production-grade | a=20 k=3
+== dynamic-product-ads-feed-recs | Dynamic Product Ads & Feed Recommendations | recommender | sub-100ms | advanced | a=20 k=3
 obj: Select and rank products in dynamic ads from the advertiser catalogue per user to maximise conversions.
 loss: \mathcal{L}=-\sum_{(u,i)}\log\frac{e^{s(u,i)}}{\sum_{j}e^{s(u,j)}}
 con: Catalogue freshness and stock ; Privacy ; 30 ms ; Advertiser brand rules
@@ -359,7 +359,7 @@ off: Hazard calibration ; Incremental lift on holdout
 on: Incremental ROAS ; Wasted impressions on converters
 gap: Observational lift inflated by selection ; No holdout
 
-== viewability-and-attention-prediction | Viewability & Attention Prediction | tabular,computer-vision | sub-100ms | production-grade | a=30 k=2
+== viewability-and-attention-prediction | Viewability & Attention Prediction | tabular,computer-vision | sub-100ms | advanced | a=30 k=2
 obj: Predict whether an ad impression will be viewable and attended to, to bid on quality inventory and verify delivery.
 loss: \mathcal{L}=\mathrm{BCE}(\text{viewable},p)+\lambda\,\mathrm{Huber}(\text{attention time})
 con: Pre-bid prediction ; MRC viewability standard ; Publisher fairness ; Privacy of sensors
@@ -399,7 +399,7 @@ off: Held-out panel reach error ; Calibration of intervals
 on: Cross-platform reach accuracy vs benchmarks ; Advertiser adoption
 gap: Panel evaluated on itself ; Ignoring non-response
 
-== ooh-footfall-attribution | Out-of-Home Footfall Attribution | time-series,graph | batch | production-grade | a=0.05 k=3
+== ooh-footfall-attribution | Out-of-Home Footfall Attribution | time-series,graph | batch | advanced | a=0.05 k=3
 obj: Attribute store visits to out-of-home ad exposure using mobility data and control groups with privacy safeguards.
 loss: \hat\tau=\bar Y_{\text{exposed}}-\bar Y_{\text{matched control}}
 con: Location privacy ; Panel bias ; Exposure estimation error ; Control matching
@@ -439,7 +439,7 @@ off: Sentiment macro-F1 ; Lift estimate CI width
 on: Brand lift per spend ; Decision usage
 gap: Social data not representative ; Pre/post designs without controls
 
-== conversational-ads-assistant | Conversational Ads & Brand Assistant | llm-agents | seconds | production-grade | a=0.5 k=8 s=3 t=250
+== conversational-ads-assistant | Conversational Ads & Brand Assistant | llm-agents | seconds | advanced | a=0.5 k=8 s=3 t=250
 obj: Serve interactive brand assistants inside ad units that answer product questions truthfully and hand off to purchase or lead capture.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{brand KB})+\lambda\,\mathrm{ClaimViolation}
 con: Only approved claims ; Disclosure as advertising ; Child safety ; Cost per session cap
@@ -479,7 +479,7 @@ off: SQL execution accuracy on golden questions ; Number faithfulness
 on: Time to insight ; Analyst escalations
 gap: Golden questions simpler than real ; Judging narrative not numbers
 
-== bid-traffic-shaping-and-qps-throttling | Bid Traffic Shaping & QPS Throttling | reinforcement-learning,tabular | sub-10ms | production-grade | a=40 k=1
+== bid-traffic-shaping-and-qps-throttling | Bid Traffic Shaping & QPS Throttling | reinforcement-learning,tabular | sub-10ms | advanced | a=40 k=1
 obj: Decide which bid requests to process or drop at ingestion to cut infrastructure cost while retaining most of the value.
 loss: \max_{\pi}\;\sum_r v_r\,\mathbb{1}[\text{process}_r]-\lambda\,\text{cost}\ \text{s.t. QPS}\le Q
 con: Decision under 0.5 ms ; Hundreds of millions of requests per second across exchanges ; Value estimates stale ; Exchange rate limits

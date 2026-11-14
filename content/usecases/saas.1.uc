@@ -1,5 +1,5 @@
 # SaaS & Developer Platforms, part 1 (use cases 1-25)
-== b2b-saas-churn-prediction | B2B SaaS Churn Prediction | tabular,time-series | batch | production-grade | a=0.5 k=3
+== b2b-saas-churn-prediction | B2B SaaS Churn Prediction | tabular,time-series | batch | advanced | a=0.5 k=3
 obj: Predict account-level churn and contraction 90 days ahead and recommend the intervention that actually retains revenue.
 loss: \mathcal{L}=-\sum_i\left[\delta_i\log h(t_i)-H(t_i)\right]\ \text{(account-level survival)}
 con: Contract renewal cycles ; Few accounts relative to users ; Explainable to CSMs ; Weekly refresh
@@ -59,7 +59,7 @@ off: Precision at top-k accounts ; Value-weighted lift
 on: Expansion ARR per rep ; Win rate on model-sourced opportunities
 gap: Using signals recorded after sales engagement ; Ignoring capacity limits
 
-== b2b-lead-scoring | B2B Lead & Account Scoring | tabular | sub-100ms | production-grade | a=0.2 k=3
+== b2b-lead-scoring | B2B Lead & Account Scoring | tabular | sub-100ms | advanced | a=0.2 k=3
 obj: Score inbound leads and target accounts by likelihood to convert so sales time goes to the best opportunities.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Real-time routing within seconds ; Fairness across regions ; Explainable factors ; Data enrichment latency
@@ -79,7 +79,7 @@ off: PR-AUC and lift at top decile ; Calibration by region
 on: Pipeline created per SDR hour ; Closed-won rate
 gap: Training on MQL conversion not revenue ; Features logged after sales contact
 
-== lead-to-account-matching | Lead-to-Account Matching & Entity Resolution | nlp,tabular | batch | production-grade | a=0.2 k=3
+== lead-to-account-matching | Lead-to-Account Matching & Entity Resolution | nlp,tabular | batch | advanced | a=0.2 k=3
 obj: Match leads, contacts and accounts across CRM and marketing systems, deduplicating entities for reliable routing and analytics.
 loss: \mathcal{L}=\mathrm{BCE}(\text{same entity})+\lambda\,\mathrm{TransitivityPenalty}
 con: Millions of records ; Precision above 99% for merges ; Domain and name variations ; Audit trail
@@ -99,7 +99,7 @@ off: Pairwise precision at 99% ; Cluster purity
 on: Duplicate rate ; Routing conflicts
 gap: Positive labels only from exact matches ; Ignoring hierarchy in evaluation
 
-== plg-activation-prediction | Product-Led Growth Activation Prediction | tabular,time-series | sub-100ms | production-grade | a=1 k=2
+== plg-activation-prediction | Product-Led Growth Activation Prediction | tabular,time-series | sub-100ms | advanced | a=1 k=2
 obj: Predict which new signups will activate and convert to paid, and trigger in-product guidance or sales assist for those on the edge.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)\ \text{and uplift }\tau(x)
 con: Real-time within sessions ; Privacy ; Low-friction nudges ; Experimentation
@@ -139,7 +139,7 @@ off: Backtested revenue under counterfactual prices ; Choice model calibration
 on: Net revenue retention after change ; Conversion at new prices
 gap: Observational prices confounded by deal size ; Ignoring cannibalisation
 
-== usage-based-billing-anomaly | Usage-Based Billing Anomaly Detection | time-series | batch | production-grade | a=1 k=2
+== usage-based-billing-anomaly | Usage-Based Billing Anomaly Detection | time-series | batch | advanced | a=1 k=2
 obj: Detect billing errors, metering bugs and bill-shock before invoices go out, protecting trust and revenue.
 loss: \mathcal{L}=\sum_t\left[\log\sigma_t+\frac{(x_t-\mu_t)^2}{2\sigma_t^2}\right]
 con: Invoice cut-off deadlines ; High precision for customer-facing holds ; Meter reconciliation ; Auditable
@@ -159,7 +159,7 @@ off: Detection of injected billing errors ; Precision of held invoices
 on: Billing disputes ; Revenue leakage recovered
 gap: Injected errors unlike real bugs ; Evaluation without reconciliation sources
 
-== revenue-and-pipeline-forecasting | Revenue & Pipeline Forecasting | time-series,tabular | batch | production-grade | a=1 k=3
+== revenue-and-pipeline-forecasting | Revenue & Pipeline Forecasting | time-series,tabular | batch | advanced | a=1 k=3
 obj: Forecast bookings and ARR by quarter at deal and segment level with calibrated ranges for planning.
 loss: \mathcal{L}=\sum_q\rho_q\!\left(y-\hat y^{(q)}\right)+\mathrm{BCE}(\text{deal win})
 con: Sparse deals relative to rows ; Rep optimism bias ; Reproducible commits ; Weekly updates
@@ -179,7 +179,7 @@ off: Calibration of deal win probabilities ; Quarter forecast error and interval
 on: Forecast accuracy at week 6 ; Commit accuracy
 gap: Using stage at close in features ; Evaluating total-only not deal-level
 
-== sales-call-summarization-and-coaching | Sales Call Summarisation & Coaching | llm-agents,nlp | seconds | production-grade | a=1 k=400 s=3 t=350
+== sales-call-summarization-and-coaching | Sales Call Summarisation & Coaching | llm-agents,nlp | seconds | advanced | a=1 k=400 s=3 t=350
 obj: Transcribe calls, extract next steps, objections and competitor mentions and deliver coaching insights, writing back to CRM.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{transcript})+\lambda\,\mathrm{UnsupportedFact}
 con: Call consent and legal rules ; CRM write-back accuracy ; Speaker diarisation ; Coaching fairness
@@ -199,7 +199,7 @@ off: Field-level extraction accuracy ; Faithfulness rate
 on: Rep admin time saved ; CRM completeness
 gap: Evaluating summaries not field accuracy ; Coaching signals not tied to outcomes
 
-== customer-support-copilot | Customer Support Agent Copilot | llm-agents,nlp | seconds | production-grade | a=0.2 k=10 s=3 t=300
+== customer-support-copilot | Customer Support Agent Copilot | llm-agents,nlp | seconds | advanced | a=0.2 k=10 s=3 t=300
 obj: Draft grounded replies, summarise threads and surface relevant articles and past tickets so support agents resolve faster with consistent quality.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{ticket,KB})+\lambda\,\mathrm{PolicyViolation}
 con: Answers grounded in KB and account data ; PII controls ; Tone consistency ; Agent in control
@@ -219,7 +219,7 @@ off: Citation support rate ; Draft acceptance without major edit
 on: Handle time ; First-contact resolution
 gap: Judging fluency; ignoring correctness ; Using resolved tickets with wrong answers as truth
 
-== help-center-deflection-rag | Help-Centre Deflection with RAG | llm-agents,nlp | seconds | production-grade | a=1 k=8 s=2 t=250
+== help-center-deflection-rag | Help-Centre Deflection with RAG | llm-agents,nlp | seconds | advanced | a=1 k=8 s=2 t=250
 obj: Resolve customer questions in self-service with a grounded assistant, deflecting tickets while keeping satisfaction and escalation safe.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{docs})+\lambda\,\mathrm{Hallucination}
 con: Deflection without satisfaction loss ; Docs versioned per product release ; Escalation with context ; Cost per conversation
@@ -305,7 +305,7 @@ off: Task success on golden tasks ; Tool-call validity
 on: Feature adoption via copilot ; Support tickets avoided
 gap: Golden tasks too easy ; Ignoring permission edge cases
 
-== natural-language-to-sql | Natural Language to SQL for Analytics | llm-agents,nlp | seconds | production-grade | a=1 k=5 s=4 t=300
+== natural-language-to-sql | Natural Language to SQL for Analytics | llm-agents,nlp | seconds | advanced | a=1 k=5 s=4 t=300
 obj: Let business users ask questions in plain language and receive correct SQL and results using a governed semantic layer.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{schema})+\lambda\,\mathrm{ExecutionMismatch}
 con: Row-level security ; Read-only ; Correct metric definitions ; Query cost limits
@@ -345,7 +345,7 @@ off: Exact match and execution-based benchmarks ; Latency percentiles
 on: Persisted accepted characters ; Developer-reported productivity
 gap: Public benchmarks contaminated ; Measuring raw acceptance
 
-== automated-code-review-assistant | Automated Code Review Assistant | llm-agents,nlp | seconds | production-grade | a=10 k=15 s=4 t=350
+== automated-code-review-assistant | Automated Code Review Assistant | llm-agents,nlp | seconds | advanced | a=10 k=15 s=4 t=350
 obj: Review pull requests for bugs, risks and style, posting high-signal comments that developers act on.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},\text{diff,context})+\lambda\,\mathrm{FalsePositive}
 con: Low noise (developers mute noisy bots) ; Repo context ; Security of code ; PR latency minutes
@@ -385,7 +385,7 @@ off: Pass rate and mutation score ; Developer acceptance rate
 on: Defects caught by generated tests ; Test maintenance cost
 gap: Rewarding coverage ; Ignoring flaky outcomes
 
-== aiops-incident-detection | AIOps Incident Detection | time-series | sub-100ms | production-grade | a=1000 k=1
+== aiops-incident-detection | AIOps Incident Detection | time-series | sub-100ms | advanced | a=1000 k=1
 obj: Detect production incidents from metrics, traces and logs within minutes, with low alert noise and clear scope.
 loss: \mathcal{L}=\sum_t\left[\log\hat\sigma_t+\frac{(y_t-\hat\mu_t)^2}{2\hat\sigma_t^2}\right]
 con: Millions of time series ; Seasonality ; Alert budget per team ; Explainable alerts
@@ -425,7 +425,7 @@ off: Top-3 root cause accuracy on past incidents ; Time to localise
 on: Mean time to diagnose ; Incident duration
 gap: Evaluation on injected faults only ; Postmortem labels subjective
 
-== log-anomaly-detection | Log Anomaly Detection | nlp,time-series | sub-100ms | production-grade | a=10000 k=1
+== log-anomaly-detection | Log Anomaly Detection | nlp,time-series | sub-100ms | advanced | a=10000 k=1
 obj: Detect abnormal log patterns (new error templates, rate shifts) at scale without manual rules.
 loss: \mathcal{L}=-\log p(\text{template sequence})\ \text{(next-template prediction)}
 con: Billions of lines per day ; Log format drift ; Low alert noise ; Cost per GB
@@ -445,7 +445,7 @@ off: Detection of injected failures ; Precision on incident-linked alerts
 on: Incidents detected via logs first ; Alert fatigue
 gap: Logs from one service only ; Labels from alert history
 
-== alert-noise-reduction | Alert Noise Reduction & Routing | graph,tabular | sub-100ms | production-grade | a=100 k=2
+== alert-noise-reduction | Alert Noise Reduction & Routing | graph,tabular | sub-100ms | advanced | a=100 k=2
 obj: Deduplicate, correlate and route alerts to the right on-call, cutting pages per engineer without missing real incidents.
 loss: \mathcal{L}=\mathrm{BCE}(\text{actionable},p)+\lambda\,\mathrm{ClusterPurity}
 con: Never suppress true critical alerts ; Explainable suppression ; Ownership mapping ; Real-time
@@ -465,7 +465,7 @@ off: Precision of suppression at zero missed critical ; Page reduction
 on: Pages per on-call shift ; Mean time to acknowledge
 gap: Treating un-acked alerts as noise ; Evaluating without critical-miss audit
 
-== capacity-forecasting-and-autoscaling | Capacity Forecasting & Predictive Autoscaling | time-series,reinforcement-learning | sub-100ms | production-grade | a=1000 k=1
+== capacity-forecasting-and-autoscaling | Capacity Forecasting & Predictive Autoscaling | time-series,reinforcement-learning | sub-100ms | advanced | a=1000 k=1
 obj: Forecast load and scale infrastructure ahead of demand to meet SLOs at lowest cost.
 loss: \mathcal{L}=\sum_t\rho_{0.95}(y_t-\hat y_t)+\lambda\,\text{cost}(\text{capacity})
 con: Warm-up time of new nodes ; SLO of p99 latency ; Cost targets ; Bursty traffic
@@ -525,7 +525,7 @@ off: Precision of flaky labels vs manual review ; Quarantine impact on CI pass r
 on: CI time wasted on retries ; Flaky test count
 gap: Treating all failures as flakiness ; Not controlling for code changes
 
-== predictive-test-selection | Predictive Test Selection | tabular,graph | seconds | production-grade | a=20 k=3
+== predictive-test-selection | Predictive Test Selection | tabular,graph | seconds | advanced | a=20 k=3
 obj: Select the subset of tests most likely to fail for a code change, cutting CI time dramatically while catching nearly all regressions.
 loss: \mathcal{L}=\mathrm{BCE}(\text{test fails}\mid\text{change,test})
 con: Catch 99%+ of failures ; Compute budget ; Fresh test-failure history ; Always run critical suites
@@ -545,7 +545,7 @@ off: Recall of failing tests at budget ; CI time saved
 on: Escaped regressions ; CI minutes per commit
 gap: Evaluating with selected-only outcomes ; History of past selection biases data
 
-== deployment-risk-prediction | Deployment Risk Prediction | tabular | sub-100ms | production-grade | a=5 k=3
+== deployment-risk-prediction | Deployment Risk Prediction | tabular | sub-100ms | advanced | a=5 k=3
 obj: Predict the risk that a deployment causes an incident and apply stricter rollout policies (canary size, bake time) accordingly.
 loss: \mathcal{L}=\mathrm{BCE}(\text{incident},p)\cdot w(\text{blast radius})
 con: Decision at merge or deploy time ; Explainable factors ; Low friction ; Few incident labels

@@ -33,7 +33,7 @@ Every AI/ML Use Case MUST strictly validate against a Zod schema before build or
 - `domain`: Enum (`fintech`, `retail`, `healthcare`, `supply-chain`, `adtech`, `cybersecurity`, `edtech`, `saas`)
 - `mlParadigms`: Array of Enums (`tabular`, `time-series`, `nlp`, `llm-agents`, `recommender`, `graph`, `computer-vision`, `reinforcement-learning`)
 - `latencySLA`: Enum (`sub-10ms`, `sub-100ms`, `seconds`, `batch`)
-- `difficulty`: Enum (`foundational`, `production-grade`, `staff-principal`)
+- `difficulty`: Enum (`foundational`, `advanced`, `staff-principal`)
 - `lastVerifiedAt`: ISO Date String
 - `signalVsNoiseMatrix`: Array of objects `{ concept: string, trueSignal: string, commonNoise: string, whyEngineersFail: string }`
 - `problemFormulation`:
@@ -104,7 +104,7 @@ Do NOT write placeholder stubs or `// TODO` comments. Execute in the following o
 
 - **Phase 1: Project Initialization & Tooling.** Initialize Next.js (App Router, TS, Tailwind), install dependencies (Zod, Drizzle/Prisma, Pino, Lucide, Shiki, KaTeX, Mermaid, Vitest, Playwright), and configure strict TS and ESLint rules.
 - **Phase 2: Schema, Database & Content Ingestion Engine.** Create the Drizzle/Prisma schema, the strict Zod Use-Case validation schema, the build-time static search index generator, and the CLI validator (`npm run validate:content`).
-- **Phase 3: High-Signal Seed Content.** Generate 6 complete, production-grade sample use cases across 3 domains (`FinTech`, `Retail & E-Commerce`, `Healthcare`) with deep, realistic ML details (loss functions, feature leakage traps, latency budgets, Mermaid pipelines, and production drift edge cases).
+- **Phase 3: High-Signal Seed Content.** Generate 6 complete sample use cases across 3 domains (`FinTech`, `Retail & E-Commerce`, `Healthcare`) with deep, realistic ML details (loss functions, feature leakage traps, latency budgets, Mermaid pipelines, and production drift edge cases).
 - **Phase 4: Core UI & Engineer UX.** Build the responsive Domain Sidebar/Top Menu, the Use-Case Filter Grid, the `Cmd+K` Command Palette, and the Use-Case Reader with the "Pure Signal Mode" toggle and isolated Error Boundaries.
 - **Phase 5: Search API with Circuit Breaker.** Implement the hybrid search route (`/api/search`), Redis rate limiter, and automatic fallback to the static index on DB timeout.
 - **Phase 6: Production Ops, Docker & CI/CD.** Implement `/api/health/*`, OpenTelemetry, Pino logger middleware, security headers, `.md` raw export route, multi-stage `Dockerfile`, `docker-compose.yml`, and `.github/workflows/ci-cd.yml`.

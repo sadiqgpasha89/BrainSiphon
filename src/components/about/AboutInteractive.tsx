@@ -322,7 +322,7 @@ interface FaqItem {
 const FAQS: FaqItem[] = [
   {
     q: 'What is BrainSiphon and why was it created?',
-    a: 'BrainSiphon is a zero-noise, production-ready engineering reference platform for AI/ML systems. It was built to solve a critical industry failure: most AI content is either simplistic 5-minute toy tutorials or abstract academic papers that completely ignore enterprise realities like 10M-user concurrency, P99 latency budgets, cloud compute costs, data quality contracts, compliance frameworks (EU AI Act), and operational failure runbooks. BrainSiphon provides 500 complete, end-to-end blueprints that bridge the gap from business problem to reliable production deployment.',
+    a: 'BrainSiphon is a zero-noise engineering reference for AI/ML systems. Its blueprints are reference designs: checked for completeness and internal consistency, not reviewed by domain specialists and not run in production. It was built to solve a critical industry failure: most AI content is either simplistic 5-minute toy tutorials or abstract academic papers that completely ignore enterprise realities like 10M-user concurrency, P99 latency budgets, cloud compute costs, data quality contracts, compliance frameworks (EU AI Act), and operational failure runbooks. BrainSiphon provides 500 complete, end-to-end blueprints that bridge the gap from business problem to reliable production deployment.',
   },
   {
     q: 'How are the 500 blueprints generated and validated?',

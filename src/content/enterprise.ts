@@ -48,6 +48,8 @@ export interface EntCtx {
 
 export interface Review {
   reviewer: string;
+  /** the organisation the reviewer acted for, when there is one */
+  organisation?: string;
   date: string;
   scope: string;
 }

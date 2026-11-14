@@ -5,6 +5,7 @@ import { MermaidDiagram } from '../Mermaid';
 import { List, Section, TableWrap } from './Sections';
 import { ReleaseLine, MaturityScorecardPanel, FeasibilityWarningsPanel } from './ValidationStatus';
 import { GuardrailsBlock } from './Assurance';
+import { withBase } from '../../lib/site';
 import {
   blueprintMaturityScorecard,
   blueprintStatuses,
@@ -826,8 +827,8 @@ export function ValidationSection({ uc, release }: { uc: UseCase; release: Relea
   return (
     <Section
       id="validation"
-      title="Validation, maturity scorecard and architecture review"
-      kicker="Explicit maturity classification, 7-level scorecard, automated schema & feasibility checks, test logs, and reviewer profiles"
+      title="Validation and maturity"
+      kicker="What has been checked for this blueprint, the evidence behind each check, and what has not been done"
     >
       <ProvenancePanel uc={uc} />
       <div className="mb-6">
@@ -876,7 +877,8 @@ export function ValidationSection({ uc, release }: { uc: UseCase; release: Relea
             <dd className="text-xs">
               {release.checks.domainExpert.reviewed} domain-expert reviewed ·{' '}
               {release.checks.productionEvidence.claimed} with production evidence ·{' '}
-              {release.checks.feasibility.fail} feasibility failures
+              {release.checks.feasibility.fail} feasibility failures ·{' '}
+              <a href={withBase('/release')}>release report</a>
             </dd>
           </dl>
         ) : (
@@ -909,7 +911,8 @@ export function ValidationSection({ uc, release }: { uc: UseCase; release: Relea
         The same checks run in <code>npm run validate:content</code> and fail the build.
       </p>
       {scorecard.warnings.length > 0 && (
-        <div className="mt-6">
+        <div id="feasibility-warnings" className="scroll-mt-24">
+          <Label>Open feasibility warnings and recommended remediation</Label>
           <FeasibilityWarningsPanel warnings={scorecard.warnings} />
         </div>
       )}

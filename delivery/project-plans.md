@@ -1,6 +1,6 @@
 # Delivery Project Plans: Standard Schedules & WBS
 
-BrainSiphon provides three distinct, battle-tested project plan archetypes tailored to organization maturity, risk profile, and regulatory requirements:
+BrainSiphon provides three distinct project plan archetypes tailored to organization maturity, risk profile, and regulatory requirements:
 1. **Track A: 4-Week Rapid Proof of Concept (PoC)** — Rapid feasibility, baseline model development, and offline evaluation on historical customer data.
 2. **Track B: 16-Week Standard Enterprise Production** — Complete end-to-end delivery: streaming data pipelines, feature store, serving microservice, canary deployment, and hypercare.
 3. **Track C: 24-Week Regulated High-Risk Production Deployment** — Complete banking / healthcare grade lifecycle: independent model validation (SR 11-7 / EU AI Act), failover drills, penetration testing, dual-run shadow evaluation, and regulatory sign-offs.

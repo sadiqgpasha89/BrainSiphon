@@ -47,7 +47,7 @@ off: Net loss tail error ; Capital change accuracy
 on: Reinsurance spend per unit of capital relief ; Earnings volatility
 gap: Optimising against one simulation set ; Historical prices
 
-== medical-claims-coding-and-payment-integrity | Medical Claims Coding & Payment Integrity | nlp,tabular | seconds | production-grade | a=0.3 k=15
+== medical-claims-coding-and-payment-integrity | Medical Claims Coding & Payment Integrity | nlp,tabular | seconds | advanced | a=0.3 k=15
 obj: Check submitted health claims for coding errors, unbundling and duplicate billing before payment.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{CE}(\hat{y},y)
 con: Providers can appeal ; Edits follow published rules ; Reviewers see rule or evidence ; Payment within statutory time
@@ -95,7 +95,7 @@ off: Out-of-sample log mortality error ; Coverage
 on: Reserve movement from assumptions ; Pricing margin
 gap: A back-test through stable years makes any trend model look accurate ; Revisions to published death counts mean the data used at the time differ from today's
 
-== agent-policy-document-assistant | Insurance Agent Policy Document Assistant | llm-agents,nlp | seconds | production-grade | a=4 k=60 s=4 t=600
+== agent-policy-document-assistant | Insurance Agent Policy Document Assistant | llm-agents,nlp | seconds | advanced | a=4 k=60 s=4 t=600
 obj: Answer agents' and brokers' questions about product features, exclusions and underwriting rules from the insurer's current documents, with citations.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every answer cites the clause and the version of the document ; The assistant makes no quote, no coverage promise and no binding statement ; Questions about coverage decisions go to a human underwriter ; Answers respect the jurisdiction of the policy
@@ -119,7 +119,7 @@ off: Citation validity ; Escalation F1
 on: Underwriter queries deflected ; Wrong-version incidents
 gap: Testing only on current documents hides failures on older versions agents still sell ; Easy questions in the test set overstate performance on exclusions and endorsements
 
-== commercial-submission-intake-and-risk-extraction | Commercial Insurance Submission Intake & Risk Extraction | nlp,llm-agents | seconds | production-grade | a=0.1 k=500
+== commercial-submission-intake-and-risk-extraction | Commercial Insurance Submission Intake & Risk Extraction | nlp,llm-agents | seconds | advanced | a=0.1 k=500
 obj: Read broker submissions (emails, ACORD forms, spreadsheets, loss runs) and extract structured risk data so underwriters can quote faster.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every extracted field links to its source page or cell ; An underwriter confirms the data before any quote is issued ; Broker data kept confidential and separated by broker ; Initial response to the broker within 4 hours
@@ -143,7 +143,7 @@ off: Field accuracy ; Triage precision
 on: Time to first quote ; Underwriter keying time
 gap: Clean test submissions are better formatted than live ones ; Broker overlap, since the same brokers appear in training and in test and the model learns their templates
 
-== contact-centre-call-qa-and-summarisation | Contact-Centre Call QA & Summarisation | nlp,llm-agents | seconds | production-grade | a=1 k=120 s=3 t=500
+== contact-centre-call-qa-and-summarisation | Contact-Centre Call QA & Summarisation | nlp,llm-agents | seconds | advanced | a=1 k=120 s=3 t=500
 obj: Transcribe, summarise and score calls against the quality and compliance checklist so supervisors review the right calls and agents spend less time on notes.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{CE}(\hat{y},y)
 con: The summary is faithful to the transcript and adds nothing ; Mandatory disclosures are detected with the exact span ; Customer account and card data redacted from transcripts and summaries ; Supervisors see the evidence for every score
@@ -167,7 +167,7 @@ off: Item F1 ; Summary faithfulness
 on: QA coverage ; After-call work time
 gap: Supervisor labels are inconsistent between reviewers, so the ceiling is lower than it appears ; Speech recognition tested on clean audio overstates accuracy on real calls
 
-== complaint-root-cause-mining | Complaint Root-Cause Mining | nlp | batch | production-grade | a=0.2 k=10
+== complaint-root-cause-mining | Complaint Root-Cause Mining | nlp | batch | advanced | a=0.2 k=10
 obj: Classify complaints and cluster them by root cause so the bank fixes processes and meets regulatory complaint-handling duties.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{Contrastive}(z)
 con: Every complaint maps to the regulator's official categories ; A reviewer signs off the classification and the root-cause report ; A root-cause report goes to product owners every week ; Complaint text retained and deleted according to the retention policy
@@ -215,7 +215,7 @@ off: Pinball loss ; Peak error
 on: Wait time ; Overtime hours
 gap: Closed days in the history look like zero demand and bias the forecast ; A calm test period hides the peaks that matter for staffing
 
-== corporate-relationship-manager-lead-prioritisation | Corporate Relationship Manager Lead Prioritisation | tabular,recommender | batch | production-grade | a=0.2 k=20
+== corporate-relationship-manager-lead-prioritisation | Corporate Relationship Manager Lead Prioritisation | tabular,recommender | batch | advanced | a=0.2 k=20
 obj: Rank corporate clients and prospects for relationship-manager outreach by the likelihood and value of a product need.
 loss: \mathcal{L}=\mathrm{BPR}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: The reason for each ranking can be explained in plain terms to the manager ; Output sized to a capacity of 30 calls a week per manager ; Clients under conflict-of-interest restrictions never appear ; Refreshed weekly with the latest events
@@ -239,7 +239,7 @@ off: NDCG ; Hit rate
 on: Pipeline created ; Win rate
 gap: Past calls were not random, so outcomes reflect who was called and not who needed a product ; Weak outcome data, since closed deals are few and slow
 
-== kyc-periodic-review-automation | KYC Periodic Review Automation & Risk Re-rating | nlp,tabular | seconds | production-grade | a=0.05 k=40
+== kyc-periodic-review-automation | KYC Periodic Review Automation & Risk Re-rating | nlp,tabular | seconds | advanced | a=0.05 k=40
 obj: Automate periodic KYC refreshes by checking customer files against fresh data and re-rating risk, escalating changes to analysts.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{CE}(\hat{y},y)
 con: An analyst decides every change to a high-risk rating ; Every check and its source logged with a timestamp ; Review frequency set by risk tier ; Privacy rules limit the data collected from the customer

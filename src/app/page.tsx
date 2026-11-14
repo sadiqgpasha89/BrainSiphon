@@ -12,7 +12,8 @@ import Link from 'next/link';
 import { SearchTrigger } from '../components/SearchTrigger';
 import { tocFor } from '../components/reader/Sections';
 import { ALL_STEPS, DELIVERY_PHASES } from '../content/delivery';
-import { getIndex } from '../lib/content';
+import { ManifestSummary } from '../components/ReleaseReport';
+import { getIndex, getRelease } from '../lib/content';
 import { ROLE_IDS, ROLE_META, ROLE_OWNS, SECTION_GROUPS } from '../lib/roles';
 import { DOMAINS, DOMAIN_META, PARADIGM_LABEL, type Paradigm } from '../schemas/usecase.schema';
 
@@ -29,6 +30,7 @@ const FEATURED = [
 
 export default async function Home() {
   const all = await getIndex();
+  const release = await getRelease();
   const featured = FEATURED.map((s) => all.find((e) => e.slug === s)).filter(
     (e): e is NonNullable<typeof e> => Boolean(e),
   );
@@ -65,55 +67,14 @@ export default async function Home() {
           Signal in. <span className="text-noise line-through decoration-2">Noise</span> out.
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-mute">
-          {all.length} validated enterprise blueprints across {DOMAINS.length} industries (schema &amp;
-          architecture-feasibility verified with 7-level maturity scorecards), and{' '}
-          <strong className="text-ink">one delivery guide</strong> that takes any of them from scoping to
-          monitored production.
+          {all.length} reference blueprints for AI/ML systems across {DOMAINS.length} industries, and{' '}
+          <strong className="text-ink">one delivery guide</strong> for taking one from scoping to monitored
+          production. Each blueprint is checked for completeness and internal consistency and says what
+          evidence it has; none has been reviewed by a domain specialist or run in production yet.
         </p>
 
-        {/* Validation Transparency Strip */}
-        <div
-          className="bg-surface/60 mt-8 rounded-lg border border-line p-4 text-xs"
-          data-testid="manifest-transparency"
-        >
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line/60 pb-2">
-            <span className="font-mono font-medium uppercase tracking-wider text-signal">
-              Validation Manifest &amp; Provenance Transparency
-            </span>
-            <span className="font-mono text-dim">Audited against 7-Stage Maturity Framework</span>
-          </div>
-          <div className="mt-3 grid gap-3 font-mono text-[11px] sm:grid-cols-2 lg:grid-cols-5">
-            <div className="rounded bg-raised/50 p-2.5">
-              <span className="block text-dim">Schema Validation</span>
-              <span className="font-semibold text-signal">500 / 500 Passed</span>
-              <p className="mt-0.5 text-[10px] text-mute">Strict Zod type contract</p>
-            </div>
-            <div className="rounded bg-raised/50 p-2.5">
-              <span className="block text-dim">Architecture Feasibility</span>
-              <span className="font-semibold text-signal">4,774 Passed · 7 Warn</span>
-              <p className="mt-0.5 text-[10px] text-mute">0 Hard Failures</p>
-            </div>
-            <div className="rounded bg-raised/50 p-2.5">
-              <span className="block text-dim">Executable Validation</span>
-              <span className="font-semibold text-signal">11 Kits + 8 Starters</span>
-              <p className="mt-0.5 text-[10px] text-mute">Automated pytest CI runs</p>
-            </div>
-            <div className="rounded bg-raised/50 p-2.5">
-              <span className="block text-dim">Domain Expert Review</span>
-              <span className="font-semibold text-mute">0 / 500 Claimed</span>
-              <p className="mt-0.5 text-[10px] text-mute">Explicit Profiles Required</p>
-            </div>
-            <div className="rounded bg-raised/50 p-2.5">
-              <span className="block text-dim">Production Evidence</span>
-              <span className="font-semibold text-mute">0 / 500 Claimed</span>
-              <p className="mt-0.5 text-[10px] text-mute">Requires Customer Canary</p>
-            </div>
-          </div>
-          <p className="mt-2 text-[11px] text-mute">
-            No blueprint makes unsubstantiated claims of production-readiness. Every design provides an
-            explicit 7-level maturity scorecard, distinguishing conceptual architecture from executable
-            prototypes and customer production evidence.
-          </p>
+        <div className="mt-8">
+          <ManifestSummary release={release} />
         </div>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Link
@@ -168,9 +129,9 @@ export default async function Home() {
           NFRs, failure modes, data contracts, and capacity sizing from scratch.
         </p>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-mute">
-          <strong className="text-ink">BrainSiphon is the engineering antidote</strong>: an open, verified
-          reference platform containing 500 complete AI/ML system blueprints, a universal 7-phase delivery
-          guide, measurable non-functional requirements (NFRs), and executable starter kits tested in CI.
+          <strong className="text-ink">BrainSiphon is the engineering antidote</strong>: an open reference
+          platform containing {all.length} AI/ML system blueprints, a universal 7-phase delivery guide,
+          measurable non-functional requirements (NFRs), and executable starter kits tested in CI.
         </p>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -189,7 +150,7 @@ export default async function Home() {
           <div className="card p-5">
             <div className="flex items-center gap-2.5 text-signal">
               <Layers size={18} aria-hidden />
-              <h3 className="font-semibold text-ink">Production Contracts</h3>
+              <h3 className="font-semibold text-ink">Machine-Readable Contracts</h3>
             </div>
             <p className="mt-2.5 text-xs leading-relaxed text-mute">
               Downloadable, machine-readable specifications: OpenAPI 3.1 REST APIs, AsyncAPI 3.0 event streams
@@ -231,9 +192,9 @@ export default async function Home() {
               <h3 className="font-semibold text-ink">Transparent Maturity</h3>
             </div>
             <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              No fake &ldquo;production-ready&rdquo; claims. Every blueprint carries an audited 7-level
-              maturity scorecard and surfaces concrete hardware and FinOps feasibility warnings with
-              actionable remediations.
+              Every blueprint carries a seven-level maturity scorecard with the evidence behind each level,
+              from schema validation to production evidence. The <Link href="/release">release report</Link>{' '}
+              lists what has not been done, including every open feasibility warning and its remediation.
             </p>
           </div>
 

@@ -205,9 +205,10 @@ export default function DeploymentPage() {
             Multi-Cloud AI/ML Production Reference Architectures
           </h2>
           <p className="mt-1 text-sm text-mute">
-            Production-grade Infrastructure as Code (IaC) templates for AWS, Azure, and GCP. Every
-            architecture provides multi-AZ high availability, private network isolation, CMEK encryption, and
-            automated failover.
+            Reference Infrastructure as Code (IaC) templates for AWS, Azure, and GCP. Each is written for
+            multi-AZ high availability, private network isolation, CMEK encryption, and automated failover.
+            They are starting points: none has been applied to a live cloud account by this project, so review
+            and test them in your own before relying on them.
           </p>
         </div>
 

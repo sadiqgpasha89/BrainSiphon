@@ -1,5 +1,5 @@
 # Real Estate & PropTech, part 1 (use cases 1-25): valuation, listings, leasing and property management
-== automated-valuation-model | Automated Valuation Model (AVM) | tabular,computer-vision | seconds | production-grade | a=0.05 k=40
+== automated-valuation-model | Automated Valuation Model (AVM) | tabular,computer-vision | seconds | advanced | a=0.05 k=40
 obj: Estimate the market value of a home from its attributes, location, nearby sales and photos, with a confidence range, for lenders, portals and owners.
 loss: \mathcal{L}=\mathrm{Huber}(\log\hat{y}-\log y)+\lambda\,\mathrm{Pinball}(\hat{q}_{0.1},y)
 con: Median error under 6% with a published confidence score ; Valuation must not use protected attributes or their proxies ; Explainable comparable set for every value ; Re-valuation of a whole market overnight
@@ -47,7 +47,7 @@ off: MAPE ; Interval coverage
 on: Listing price changes after estimate ; Time to lease
 gap: Asking rents leak into labels ; Same landlord in train and test
 
-== comparable-sales-selection | Comparable Sales Selection | tabular,recommender | sub-100ms | production-grade | a=0.05 k=20
+== comparable-sales-selection | Comparable Sales Selection | tabular,recommender | sub-100ms | advanced | a=0.05 k=20
 obj: Select and rank the most similar recent sales for a subject property and adjust them, so valuations and appraisals are defensible.
 loss: \mathcal{L}=\mathrm{Triplet}(a,p,n)+\lambda\,\mathrm{Huber}(\hat{y}-y)
 con: Comparable set explainable to an appraiser ; Only closed sales before the valuation date ; Response under 100 ms ; Adjustments bounded by policy
@@ -71,7 +71,7 @@ off: Agreement with appraiser-chosen comps ; Valuation error from selected comps
 on: Appraiser time per report ; Revisions requested
 gap: Appraiser comps are biased toward familiar sales ; Future sales leak
 
-== listing-price-recommendation-and-time-to-sell | Listing Price Recommendation & Time-to-Sell | tabular,time-series | seconds | production-grade | a=0.05 k=30
+== listing-price-recommendation-and-time-to-sell | Listing Price Recommendation & Time-to-Sell | tabular,time-series | seconds | advanced | a=0.05 k=30
 obj: Recommend a listing price and predict the days to sell at different prices so sellers and agents can trade price against time.
 loss: \mathcal{L}=-\sum_i\left[\delta_i\log h(t_i\mid x_i,p_i)-\int_0^{t_i}h(u\mid x_i,p_i)\,du\right]
 con: Recommendations are advice not valuations ; Price-time curves shown with intervals ; Sellers decide ; No use of protected attributes
@@ -95,7 +95,7 @@ off: Concordance ; Calibration of days to sell
 on: Median days on market ; Sale-to-list ratio
 gap: Withdrawn listings dropped ; Price chosen by agents affects outcomes
 
-== appraisal-review-and-valuation-anomaly-detection | Appraisal Review & Valuation Anomaly Detection | tabular,nlp | seconds | production-grade | a=0.05 k=60
+== appraisal-review-and-valuation-anomaly-detection | Appraisal Review & Valuation Anomaly Detection | tabular,nlp | seconds | advanced | a=0.05 k=60
 obj: Flag appraisals that look inflated, inconsistent or non-compliant before a lender relies on them.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{Huber}(\hat{v}-v)
 con: Reviewer sees the evidence ; Appraiser independence rules ; Review capacity ; Fair treatment of appraisers
@@ -119,7 +119,7 @@ off: Precision at review capacity ; Recall on confirmed issues
 on: Valuation losses avoided ; Review turnaround
 gap: Confirmed issues are those that defaulted ; Reviewer bias
 
-== neighbourhood-quality-scoring | Neighbourhood Quality Scoring | tabular,computer-vision | batch | production-grade | a=0.02 k=100
+== neighbourhood-quality-scoring | Neighbourhood Quality Scoring | tabular,computer-vision | batch | advanced | a=0.02 k=100
 obj: Score each neighbourhood on walkability, amenities, safety perception, noise and change so buyers and investors can compare areas.
 loss: \mathcal{L}=\mathrm{MSE}(\hat{y},y)+\lambda\,\mathrm{GraphReg}(z)
 con: No score may use race, ethnicity, religion or any proxy for them ; Method and inputs published so a resident can challenge a score ; Quarterly refresh without rank churn from noise alone ; Fair-housing and legal review before any score is shown to buyers
@@ -143,7 +143,7 @@ off: Rank correlation with survey ratings ; Stability across refreshes
 on: Search engagement with area filters ; Complaints about scores
 gap: Survey calibration data covers wealthy and responsive areas better than others ; Proxy features that correlate with protected classes pass offline tests and fail the fairness audit
 
-== price-index-and-market-trend-forecasting | House Price Index & Market Trend Forecasting | time-series | batch | production-grade | a=1 k=2
+== price-index-and-market-trend-forecasting | House Price Index & Market Trend Forecasting | time-series | batch | advanced | a=1 k=2
 obj: Produce repeat-sales and hedonic price indices by area and forecast price movement for the next quarters.
 loss: \mathcal{L}=\sum_t\mathrm{Pinball}(\hat{q}_{0.9},y_t)+\lambda\,\mathrm{MSE}(\hat{y}_t,y_t)
 con: Published on a fixed monthly date with the revision policy stated up front ; Every figure shown with a prediction interval, never a bare number ; Methodology reproducible from the same inputs by an outside analyst ; Thin markets pooled or flagged rather than published with false precision
@@ -215,7 +215,7 @@ off: Room accuracy ; Quality rank correlation
 on: Listing engagement ; Agent reshoot rate
 gap: Training mostly on professional photos hides failures on the phone pictures that most agents upload ; Quality labels from a few raters are noisy and cap how well the model can do
 
-== virtual-staging-and-photo-enhancement | Virtual Staging & Photo Enhancement | computer-vision | seconds | production-grade | a=0.1 k=3000
+== virtual-staging-and-photo-enhancement | Virtual Staging & Photo Enhancement | computer-vision | seconds | advanced | a=0.1 k=3000
 obj: Furnish empty rooms and enhance photos with generative models, clearly labelled, to help buyers imagine the space.
 loss: \mathcal{L}=\mathcal{L}_{\text{recon}}+\lambda\,\mathcal{L}_{\text{perceptual}}+\mu\,\mathcal{L}_{\text{adv}}
 con: Every staged image carries a visible label and the original is always one click away ; Walls, windows, fixtures and views are never altered ; Disclosure text shown to buyers wherever the image appears ; Written seller consent recorded before any edit
@@ -239,7 +239,7 @@ off: Structure similarity ; Human realism ratings
 on: Listing views ; Buyer complaints about staging
 gap: Evaluating only on easy, simple rooms hides failures in cluttered or oddly shaped ones ; Taste differs by market, so raters from one region approve images that buyers elsewhere dislike
 
-== listing-description-generation-with-fair-housing-checks | Listing Description Generation with Fair-Housing Checks | llm-agents,nlp | seconds | production-grade | a=0.1 k=15 s=3 t=400
+== listing-description-generation-with-fair-housing-checks | Listing Description Generation with Fair-Housing Checks | llm-agents,nlp | seconds | advanced | a=0.1 k=15 s=3 t=400
 obj: Draft accurate listing descriptions from structured facts and photos and block language that could breach fair-housing rules.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every factual claim must come from the verified property record and nowhere else ; Phrases that could steer buyers by protected characteristics are blocked and logged ; A licensed agent approves each description before it is published ; Rule sets are applied per jurisdiction and versioned with the law
@@ -263,7 +263,7 @@ off: Fact accuracy ; Prohibited phrase recall
 on: Listing quality ; Complaints
 gap: Training on past listings copies the biased language those listings contain ; Rules and enforcement change, so a checker that passed last year can fail now
 
-== home-search-ranking | Home Search Ranking | recommender,tabular | sub-100ms | production-grade | a=15 k=6
+== home-search-ranking | Home Search Ranking | recommender,tabular | sub-100ms | advanced | a=15 k=6
 obj: Rank homes for a buyer's search by the likelihood of engagement and fit, balancing relevance, freshness and seller fairness.
 loss: \mathcal{L}=\mathrm{ListNet}(s,y)+\lambda\,\mathrm{BPR}(\hat{y},y)
 con: Under 80 ms at the 99th percentile including retrieval and re-rank ; Every filter the buyer sets is respected exactly and never traded for relevance ; No steering by protected attributes or their proxies in features or exposure ; New listings appear in results within one minute
@@ -287,7 +287,7 @@ off: NDCG@10 ; Calibration of CTR
 on: Saves and enquiries per session ; Time to first enquiry
 gap: Position bias in click logs means top results look better than they are ; Offline replay cannot reproduce how buyers would respond to a different ranking
 
-== property-recommendation-for-cold-start-buyers | Property Recommendation for Cold-Start Buyers | recommender | seconds | production-grade | a=2 k=10
+== property-recommendation-for-cold-start-buyers | Property Recommendation for Cold-Start Buyers | recommender | seconds | advanced | a=2 k=10
 obj: Recommend homes to new buyers from a few early actions or a short questionnaire and refine as signals arrive.
 loss: \mathcal{L}=\mathrm{InfoNCE}(u,i)+\lambda\,\mathrm{BPR}(\hat{y},y)
 con: Usable recommendations after three actions or a short questionnaire ; No inference of sensitive attributes from behaviour ; Every recommendation shows a plain reason ; The buyer can opt out and clear their profile at any time
@@ -311,7 +311,7 @@ off: Hit rate@20 ; Coverage
 on: Enquiry rate for new users ; Return visits
 gap: Historical logs are dominated by popular homes so offline scores favour popularity ; New users behave differently from established ones, so a test on old users overstates cold-start quality
 
-== floor-plan-extraction-from-images | Floor-Plan Extraction from Images | computer-vision | seconds | production-grade | a=0.05 k=1500
+== floor-plan-extraction-from-images | Floor-Plan Extraction from Images | computer-vision | seconds | advanced | a=0.05 k=1500
 obj: Convert floor-plan images into structured rooms, dimensions and layouts for search, valuation and 3D tours.
 loss: \mathcal{L}=\mathcal{L}_{\text{seg}}+\lambda\,\mathcal{L}_{\text{CTC}}
 con: Total area within 3 percent of the stated area on supported plans ; Every extracted room carries a label and a confidence ; Both metric and imperial dimensions read correctly ; Low-confidence plans go to a human correction tool and not to publication
@@ -335,7 +335,7 @@ off: Room IoU ; Area error
 on: Manual tracing hours saved ; 3D tour conversion
 gap: Training on clean CAD exports hides failures on the hand-drawn and scanned plans that most listings contain ; Template leakage when the same architect's drawings appear in both training and test
 
-== duplicate-listing-detection-across-portals | Duplicate Listing Detection Across Portals | graph,computer-vision | batch | production-grade | a=1 k=50
+== duplicate-listing-detection-across-portals | Duplicate Listing Detection Across Portals | graph,computer-vision | batch | advanced | a=1 k=50
 obj: Identify the same property listed by several agents and portals so search shows one entry and statistics count it once.
 loss: \mathcal{L}=\mathrm{Contrastive}(z_i,z_j)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: A false merge is treated as worse than a missed duplicate ; Every merged listing keeps links to its source portals ; Runs daily across all feeds in a fixed window ; Each match comes with the evidence that supports it
@@ -359,7 +359,7 @@ off: Pair F1 ; Cluster purity
 on: Duplicate rate in search ; Complaints
 gap: Labelled pairs are easy cases chosen by reviewers, so the test overstates accuracy on hard pairs ; The same agents and addresses in train and test leak identity information
 
-== buyer-lead-scoring-and-routing | Buyer Lead Scoring & Routing | tabular | sub-100ms | production-grade | a=0.5 k=8
+== buyer-lead-scoring-and-routing | Buyer Lead Scoring & Routing | tabular | sub-100ms | advanced | a=0.5 k=8
 obj: Score portal enquiries by likelihood to transact and route them to the agent best placed to convert them quickly.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Scoring and routing finish within 80 ms of the enquiry ; Leads are distributed fairly among agents and teams within stated rules ; No protected attributes or proxies in scoring or routing ; Buyers who opt out of contact are never routed
@@ -383,7 +383,7 @@ off: PR-AUC ; Calibration
 on: Lead-to-viewing rate ; Time to first contact
 gap: Outcomes are observed only for leads that were contacted, so the model cannot learn from the rest ; Agent quality confounds results, since a strong agent converts weak leads and flatters the score
 
-== tenant-screening-and-affordability-assessment | Tenant Screening & Affordability Assessment | tabular,nlp | seconds | production-grade | a=0.05 k=40
+== tenant-screening-and-affordability-assessment | Tenant Screening & Affordability Assessment | tabular,nlp | seconds | advanced | a=0.05 k=40
 obj: Assess whether a rental applicant can afford a unit and is likely to pay and care for it, using verified income and history, in a fair and explainable way.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{EqualisedOdds}(\hat{p})
 con: Complies with fair-housing and credit-reporting law in each jurisdiction ; Every decline or adverse action comes with specific, accurate reasons ; No protected attributes or close proxies in features ; Applicants can see their data, dispute it and have a human re-review
@@ -407,7 +407,7 @@ off: AUC ; Group error rates
 on: Delinquency rate ; Approval equity
 gap: Outcomes are seen only for applicants who were accepted, so the model never learns about the rejected ones ; Proxy features that look neutral reproduce group differences in the data
 
-== rent-delinquency-prediction | Rent Delinquency Prediction | tabular,time-series | batch | production-grade | a=1 k=3
+== rent-delinquency-prediction | Rent Delinquency Prediction | tabular,time-series | batch | advanced | a=1 k=3
 obj: Predict which tenants will miss rent in the next month so property managers can reach out early with payment plans.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Outreach is supportive and offers help, never a threat ; No eviction or legal decision is taken from a score ; Each score shows the factors behind it ; Refreshed weekly so managers act before the due date
@@ -431,7 +431,7 @@ off: PR-AUC ; Calibration
 on: Rent collected on time ; Payment plans accepted
 gap: Outreach changes outcomes, so a tenant helped by a plan looks like a false alarm ; Autopay hides risk until a card fails, which distorts the timing signal
 
-== lease-renewal-and-churn-prediction | Lease Renewal & Tenant Churn Prediction | tabular | batch | production-grade | a=0.2 k=5
+== lease-renewal-and-churn-prediction | Lease Renewal & Tenant Churn Prediction | tabular | batch | advanced | a=0.2 k=5
 obj: Predict which tenants will renew so managers can set renewal offers that keep good tenants without leaving rent on the table.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Renewal offers follow every local rent-control and notice rule ; Offers are consistent and fair between comparable tenants ; The decision is made 120 days before expiry to leave room to react ; Each recommendation shows the factors behind it
@@ -455,7 +455,7 @@ off: PR-AUC ; Calibration
 on: Renewal rate ; Net effective rent
 gap: Past offers were not random, so renewals reflect the offer chosen and not the tenant ; Seasonality in leases confuses year-to-year comparison
 
-== maintenance-request-triage-and-dispatch | Maintenance Request Triage & Dispatch | nlp,tabular | seconds | production-grade | a=0.3 k=20
+== maintenance-request-triage-and-dispatch | Maintenance Request Triage & Dispatch | nlp,tabular | seconds | advanced | a=0.3 k=20
 obj: Classify tenant maintenance requests by urgency and trade and dispatch the right technician with the right parts.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{OrdinalCE}(\hat{u},u)
 con: Emergencies receive a technician or a response within 1 hour ; Safety and habitability cases always escalate to a person ; Tenants get status updates at each step ; Every decision and dispatch is logged for audit
@@ -479,7 +479,7 @@ off: Urgency recall ; Trade accuracy
 on: First-visit fix rate ; Emergency response time
 gap: Labels come from staff habits and may reflect past dispatch practice and not need ; Missing photos for some requests make the evaluation optimistic about the multimodal model
 
-== predictive-maintenance-for-building-equipment | Predictive Maintenance for Building Equipment | time-series | batch | production-grade | a=24 k=1
+== predictive-maintenance-for-building-equipment | Predictive Maintenance for Building Equipment | time-series | batch | advanced | a=24 k=1
 obj: Predict failures of building equipment such as chillers, boilers and lifts from sensor data so repairs happen before breakdowns.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{Huber}(\hat{t}-t)
 con: Alerts raised with at least 7 days of lead time ; Safety-critical equipment such as lifts and fire pumps takes priority ; Each alert shows the sensors and trend behind it ; Work scheduled inside agreed maintenance windows
@@ -527,7 +527,7 @@ off: Revenue lift in simulation ; Demand forecast error
 on: Revenue per available unit ; Occupancy
 gap: A simulated demand curve is optimistic about how tenants react to price ; Past prices were not set at random, so the effect of price cannot be read from history
 
-== short-term-rental-pricing-and-occupancy | Short-Term Rental Pricing & Occupancy Forecasting | time-series,tabular | batch | production-grade | a=1 k=4
+== short-term-rental-pricing-and-occupancy | Short-Term Rental Pricing & Occupancy Forecasting | time-series,tabular | batch | advanced | a=1 k=4
 obj: Recommend nightly prices and forecast occupancy for short-term rentals around events and seasons.
 loss: \mathcal{L}=\sum_t\mathrm{Pinball}(\hat{q}_{0.5},y_t)+\lambda\,\mathrm{Huber}(\hat{p}-p)
 con: Local limits on rental nights are loaded and obeyed ; Host-set minimum prices are never undercut ; Prices refresh daily for the next 365 nights ; Each price change is explained to the host
@@ -551,7 +551,7 @@ off: Occupancy error ; Revenue vs baseline
 on: RevPAR ; Occupancy
 gap: Past prices are partly caused by the hosts' own expectations, so demand and price are tangled ; Event noise from one-off festivals produces peaks the model cannot repeat
 
-== tenant-query-assistant | Property Manager Assistant for Tenant Queries | llm-agents,nlp | seconds | production-grade | a=1 k=30 s=4 t=500
+== tenant-query-assistant | Property Manager Assistant for Tenant Queries | llm-agents,nlp | seconds | advanced | a=1 k=30 s=4 t=500
 obj: Answer tenants' questions about leases, rules, payments and repairs from the manager's documents and systems and escalate what needs a person.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every answer cites the lease clause or policy it comes from ; No legal advice is given ; Account and payment data are shown only to the verified tenant ; Disputes and complaints are escalated to a person
@@ -575,7 +575,7 @@ off: Citation validity ; Escalation F1
 on: Deflection rate ; Response time
 gap: A test set of easy, common questions hides failures on unusual ones ; Lease variants between buildings mean a test on one lease overstates accuracy on others
 
-== move-out-damage-assessment-from-photos | Move-Out Damage Assessment from Photos | computer-vision | seconds | production-grade | a=0.05 k=4000
+== move-out-damage-assessment-from-photos | Move-Out Damage Assessment from Photos | computer-vision | seconds | advanced | a=0.05 k=4000
 obj: Compare move-in and move-out photos to identify damage beyond normal wear and estimate repair cost for deposit decisions.
 loss: \mathcal{L}=\mathcal{L}_{\text{det}}+\lambda\,\mathrm{Ordinal}(\hat{s},s)
 con: A tenant can dispute any deduction with the same evidence the manager sees ; Normal wear is separated from damage using a documented rule ; Move-in and move-out photos are matched by room and view ; A person signs off every deduction before it is applied

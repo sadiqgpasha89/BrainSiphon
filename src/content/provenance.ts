@@ -31,7 +31,7 @@ export function buildProvenance(i: ProvenanceInput): Provenance {
   return {
     status,
     owner: 'BrainSiphon maintainers',
-    reviewer: i.review?.reviewer ?? null,
+    reviewer: i.review ? [i.review.reviewer, i.review.organisation].filter(Boolean).join(', ') : null,
     reviewedAt: i.review?.date ?? null,
     generatedAt: i.generatedAt,
     sections: [

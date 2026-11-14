@@ -2,10 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { loadAllUseCases } from '../content/load';
 import { toMarkdown } from '../content/markdown';
 import {
+  blueprintMaturityScorecard,
   blueprintStatuses,
   buildManifest,
+  feasibilityWarnings,
   kitKeyFor,
+  MATURITY_LEVELS,
+  releaseOutstanding,
   releaseProblems,
+  releaseReportMarkdown,
+  staleRemediations,
   STATUS_LABEL,
   type GateInput,
   type KitReport,
@@ -20,22 +26,29 @@ const SHA = 'b'.repeat(40);
 const requiredKits = discoverKits().map((k) => k.name);
 
 const validation: ValidationReport = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   commit: SHA,
   dirty: false,
   contentDigest: DIGEST,
   validatedAt: '2026-11-09T10:00:00.000Z',
   useCases: all.length,
-  feasibility: { checks: 10, pass: 10, warn: 0, fail: 0 },
+  feasibility: { checks: 10, pass: 10, notApplicable: 0, warn: 0, fail: 0 },
   warnings: 0,
 };
 const kits: KitReport = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   commit: SHA,
   dirty: false,
   contentDigest: DIGEST,
   ranAt: '2026-11-09T10:05:00.000Z',
-  kits: requiredKits.map((name) => ({ name, status: 'passed' as const, seconds: 1 })),
+  kits: requiredKits.map((name) => ({
+    name,
+    status: 'passed' as const,
+    seconds: 1,
+    tests: { passed: 4, failed: 0, skipped: 0 },
+    coveragePct: 91,
+    log: `4 passed in 1.00s (${name})`,
+  })),
 };
 const manifest = (v: ValidationReport | null = validation, k: KitReport | null = kits, deployment = true) =>
   buildManifest({
@@ -234,5 +247,140 @@ describe('release gate', () => {
     });
     expect(releaseProblems(noCommit).join('\n')).toMatch(/no source commit/);
     expect(releaseProblems({ ...noCommit, strict: false })).toEqual([]);
+  });
+});
+
+describe('maturity scorecard', () => {
+  const card = (slug: string, m = manifest()) =>
+    blueprintMaturityScorecard(
+      all.find((u) => u.slug === slug)!,
+      m,
+    );
+  const cards = all.map((u) => blueprintMaturityScorecard(u, manifest()));
+
+  it('has the same seven levels, in order, on every blueprint', () => {
+    for (const c of cards) expect(c.items.map((i) => i.id)).toEqual(MATURITY_LEVELS.map((l) => l.id));
+  });
+
+  it('never reads a schema pass as implementation readiness', () => {
+    // with no kit run, schema and feasibility still pass, and the classification stays below "tested implementation"
+    for (const u of all) {
+      const c = blueprintMaturityScorecard(u, manifest(validation, null));
+      expect(c.items[1]!.state, u.slug).toBe('met');
+      expect(c.level, u.slug).toBeLessThanOrEqual(3);
+      expect(c.classificationLabel, u.slug).not.toMatch(/implementation|production/i);
+    }
+  });
+
+  it('classifies no blueprint above synthetic-data tested while no review or production evidence is recorded', () => {
+    for (const c of cards) {
+      expect(c.level, c.slug).toBeLessThanOrEqual(4);
+      expect(
+        c.items.slice(4).map((i) => i.state),
+        c.slug,
+      ).toEqual(['not-met', 'not-met', 'not-met']);
+      expect(c.classificationLabel).not.toMatch(/production/i);
+    }
+  });
+
+  it('reaches level 4 only with a tested starter for the exact problem', () => {
+    expect(card('fintech/real-time-card-upi-fraud-detection').level).toBe(4);
+    for (const u of all) {
+      const c = blueprintMaturityScorecard(u, manifest());
+      const verdict = u.playbook?.compatibility.verdict;
+      if (verdict === 'adaptable') expect(c.items[3]!.state, u.slug).toBe('partial');
+      if (verdict === 'none') expect(c.items[3]!.state, u.slug).toBe('not-applicable');
+      if (verdict !== 'exact') expect(c.level, u.slug).toBeLessThanOrEqual(3);
+    }
+  });
+
+  it('names no reviewer who does not exist', () => {
+    for (const c of cards)
+      for (const i of c.items) {
+        expect(i.reviewer, `${c.slug} ${i.id}`).not.toMatch(/committee|board|auditor|pending/i);
+        if (i.id === 'expert-validated') expect(i.reviewer).toBe('None');
+      }
+  });
+
+  it('gives every unmet level something outstanding and says why the classification stops', () => {
+    for (const c of cards) {
+      expect(c.blockedBy, c.slug).toBeTruthy();
+      for (const i of c.items)
+        if (i.state !== 'met') expect(i.outstanding.length, `${c.slug} ${i.id}`).toBeGreaterThan(0);
+    }
+  });
+
+  it('carries test counts, coverage and a log for a tested starter', () => {
+    const item = card('fintech/real-time-card-upi-fraud-detection').items[3]!;
+    expect(item.coverage).toMatch(/4 tests passed, 0 failed, 0 skipped/);
+    expect(item.coverage).toMatch(/Line coverage of the kit's code: 91%/);
+    expect(item.log).toBe('/release/kit-logs/fintech--real-time-card-upi-fraud-detection.txt');
+    expect(item.date).toBe('2026-11-09');
+  });
+
+  it('says coverage was not measured when the run did not measure it', () => {
+    const noCov = manifest(validation, {
+      ...kits,
+      kits: kits.kits.map((k) => ({ ...k, coveragePct: undefined })),
+    });
+    expect(blueprintMaturityScorecard(fraud, noCov).items[3]!.coverage).toMatch(
+      /Line coverage was not measured/,
+    );
+  });
+
+  it('marks a blueprint with a feasibility warning and lists the remediation as outstanding', () => {
+    const c = card('healthcare/polygenic-risk-scoring');
+    expect(c.items[2]!.state).toBe('met-with-warnings');
+    expect(c.warnings).toHaveLength(1);
+    expect(c.items[2]!.outstanding.join(' ')).toContain(c.warnings[0]!.remediation);
+    expect(c.classificationLabel).toMatch(/open warnings/);
+  });
+});
+
+describe('feasibility warnings and the release report', () => {
+  const live = feasibilityWarnings(all);
+
+  it('reads the warnings from the checks, with a remediation for each', () => {
+    const fromChecks = all.flatMap((u) => u.validation.feasibility.filter((f) => f.status === 'warn'));
+    expect(live).toHaveLength(fromChecks.length);
+    expect(live.length).toBeGreaterThan(0);
+    for (const w of live) {
+      expect(w.remediation.length, w.slug).toBeGreaterThan(40);
+      expect(all.some((u) => u.slug === w.slug && u.title === w.title)).toBe(true);
+    }
+  });
+
+  it('keeps no remediation for a warning that no longer exists', () => {
+    expect(staleRemediations(all)).toEqual([]);
+    expect(staleRemediations(all.filter((u) => u.domain !== 'healthcare')).length).toBeGreaterThan(0);
+  });
+
+  it('puts every warning and the per-level counts in the manifest, and no log text', () => {
+    const m = manifest();
+    const f = m.checks.feasibility;
+    expect(f.warnings).toEqual(live);
+    expect(f.warn).toBe(live.length);
+    expect(f.pass + f.notApplicable + f.warn + f.fail).toBe(f.checks);
+    expect(m.maturity.map((r) => r.id)).toEqual(MATURITY_LEVELS.map((l) => l.id));
+    expect(m.maturity[1]!.met).toBe(all.length);
+    expect(m.maturity.slice(4).map((r) => r.met)).toEqual([0, 0, 0]);
+    expect(m.maturity.reduce((a, r) => a + r.classified, 0)).toBe(all.length);
+    expect(JSON.stringify(m.checks.executable.kits)).not.toContain('"log"');
+  });
+
+  it('writes a report that lists each warning with its blueprint and remediation, and what is outstanding', () => {
+    const m = manifest();
+    const md = releaseReportMarkdown(m, 'https://example.test');
+    for (const w of live) {
+      expect(md).toContain(`https://example.test/${w.slug}`);
+      expect(md).toContain(w.remediation);
+    }
+    expect(md).toContain(`Domain-expert review | 0 of ${all.length} blueprints`);
+    expect(md).toContain(`Production evidence | 0 of ${all.length} blueprints`);
+    expect(md).toContain('https://example.test/release/kit-logs/kits--tabular.txt');
+    const out = releaseOutstanding(m).join('\n');
+    expect(out).toMatch(new RegExp(`${all.length} of ${all.length} blueprints have no domain-expert review`));
+    expect(out).toMatch(/no production evidence/);
+    expect(releaseOutstanding(manifest(validation, null)).join('\n')).toMatch(/starter kits were not run/);
   });
 });

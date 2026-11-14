@@ -1,5 +1,5 @@
 # BFSI: Banking, Financial Services & Insurance, part 2 (use cases 26-50): capital-markets ops, wealth, insurance, customer operations
-== collateral-margin-call-dispute-prediction | Collateral Margin Call Dispute Prediction | tabular | batch | production-grade | a=1 k=3
+== collateral-margin-call-dispute-prediction | Collateral Margin Call Dispute Prediction | tabular | batch | advanced | a=1 k=3
 obj: Predict which margin calls a counterparty will dispute so the collateral team resolves valuation differences before the call deadline.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Scores ready before the morning call cycle ; Explanation per flagged call ; Dispute handling follows the legal agreement ; No client data leaves the bank
@@ -23,7 +23,7 @@ off: PR-AUC at team capacity ; Calibration by counterparty group
 on: Disputes resolved before deadline ; Days of unsettled margin
 gap: Features captured after the reply ; Counterparty overlap across train and test
 
-== fund-nav-break-detection | Fund NAV Break Detection | tabular,time-series | batch | production-grade | a=1 k=4
+== fund-nav-break-detection | Fund NAV Break Detection | tabular,time-series | batch | advanced | a=1 k=4
 obj: Detect errors in daily fund net asset value before publication so administrators fix pricing and accrual errors first.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{Huber}(\hat{r}-r)
 con: Check completes within 30 minutes of the pricing cut-off ; Every flag names the likely line item ; Tolerance bands set by fund type ; Auditable
@@ -47,7 +47,7 @@ off: Recall of known breaks at fixed review load ; Precision of flags
 on: NAV errors published ; Review time per fund
 gap: Labels only for breaks found later ; Calm-period tuning
 
-== advisor-next-best-conversation-copilot | Wealth Advisor Next-Best-Conversation Copilot | llm-agents,recommender | seconds | production-grade | a=2 k=40 s=5 t=600
+== advisor-next-best-conversation-copilot | Wealth Advisor Next-Best-Conversation Copilot | llm-agents,recommender | seconds | advanced | a=2 k=40 s=5 t=600
 obj: Suggest which clients an advisor should contact and why, with a drafted talking-points note built from the client's own records.
 loss: \mathcal{L}=\mathrm{BPR}(\hat{y},y)+\lambda\,\mathrm{CE}(\hat{y},y)
 con: Every suggestion cites client data ; Advisor decides and sends ; Suitability rules checked before any product mention ; Client data stays in the bank tenancy
@@ -71,7 +71,7 @@ off: NDCG on past advisor actions ; Citation validity
 on: Meaningful conversations per advisor-week ; Client assets retained
 gap: Past actions reflect advisor taste ; Features computed after the contact
 
-== suitability-and-mis-selling-detection | Suitability & Mis-Selling Detection | nlp,tabular | batch | production-grade | a=0.2 k=30
+== suitability-and-mis-selling-detection | Suitability & Mis-Selling Detection | nlp,tabular | batch | advanced | a=0.2 k=30
 obj: Review advised sales and call records to find products that do not fit the client's profile or were sold with misleading statements.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{CE}(\hat{y},y)
 con: Reviewers see evidence for each flag ; Review capacity of 400 cases a week ; Records retained under conduct rules ; No automatic customer redress
@@ -119,7 +119,7 @@ off: After-tax tracking error ; Tax saved versus naive
 on: Net-of-tax return ; Turnover
 gap: Back-test ignores lot constraints ; Static prices
 
-== mutual-fund-flow-forecasting | Mutual Fund Flow Forecasting | time-series | batch | production-grade | a=1 k=2
+== mutual-fund-flow-forecasting | Mutual Fund Flow Forecasting | time-series | batch | advanced | a=1 k=2
 obj: Forecast daily subscriptions and redemptions per fund so portfolio managers hold the right cash and treasury can plan liquidity.
 loss: \mathcal{L}=\sum_t\mathrm{Pinball}(\hat{q}_{0.9},y_t)+\lambda\,\mathrm{MSE}(\hat{y}_t,y_t)
 con: Forecast by 06:00 ; Intervals required ; Explainable drivers ; Large-flow events flagged
@@ -143,7 +143,7 @@ off: Pinball loss ; Coverage of the 90% interval
 on: Cash drag ; Forced sales
 gap: Using final data instead of as-known data ; Calm-year back-test
 
-== private-wealth-client-attrition | Private Wealth Client Attrition Early Warning | tabular | batch | production-grade | a=0.1 k=15
+== private-wealth-client-attrition | Private Wealth Client Attrition Early Warning | tabular | batch | advanced | a=0.1 k=15
 obj: Identify high-net-worth clients likely to move assets away in the next 6 months so the relationship team can act.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Rank only, no automatic action ; Explainable reasons ; Advisor capacity 50 calls a week ; Data from internal systems only
@@ -167,7 +167,7 @@ off: PR-AUC ; Calibration
 on: Assets retained ; Save rate of called clients
 gap: Retention actions change labels ; Random split leaks households
 
-== investment-research-qa-copilot | Investment Research Q&A Copilot | llm-agents,nlp | seconds | production-grade | a=3 k=70 s=5 t=700
+== investment-research-qa-copilot | Investment Research Q&A Copilot | llm-agents,nlp | seconds | advanced | a=3 k=70 s=5 t=700
 obj: Answer analysts' questions from the firm's research notes, filings and data with citations and clear abstention.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every claim cites a document and its publication date ; An analyst sees only the research they are entitled to, enforced at retrieval ; Restricted-list and information-barrier rules are applied before any text is retrieved ; No document or question leaves the firm's environment
@@ -191,7 +191,7 @@ off: Citation validity ; Retrieval recall at 10
 on: Analyst time saved per question ; Thumbs-down rate
 gap: Evaluating on questions where the relevant notes are known flatters retrieval ; Entitlements differ by tester, so a test run by a senior user hides access failures
 
-== fund-factsheet-generation-with-compliance-review | Fund Factsheet Generation with Compliance Review | llm-agents,nlp | seconds | production-grade | a=0.1 k=60 s=4 t=800
+== fund-factsheet-generation-with-compliance-review | Fund Factsheet Generation with Compliance Review | llm-agents,nlp | seconds | advanced | a=0.1 k=60 s=4 t=800
 obj: Generate monthly fund factsheet commentary from portfolio data and manager notes, checked by a compliance verifier before review.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Figures come from the performance system ; Forbidden phrases and forward-looking claims blocked ; Compliance signs every factsheet ; Version history kept
@@ -215,7 +215,7 @@ off: Figure exact match ; Banned phrase recall
 on: Time to publish ; Compliance rework
 gap: Test notes are cleaner than real ones ; Rules change between test and live
 
-== life-accelerated-underwriting | Life Insurance Accelerated Underwriting | tabular | seconds | production-grade | a=0.02 k=30
+== life-accelerated-underwriting | Life Insurance Accelerated Underwriting | tabular | seconds | advanced | a=0.02 k=30
 obj: Approve eligible life insurance applicants instantly using data already available, referring the rest to full underwriting.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{Brier}(\hat{p},y)
 con: Mortality-slippage budget set by the actuary ; Fair-treatment rules ; Explainable declines ; Regulatory data restrictions
@@ -239,7 +239,7 @@ off: AUC and referral rate ; Mortality ratio by decile
 on: Instant decision share ; Mortality slippage
 gap: Labels only for accepted applicants ; Long claim delay
 
-== policy-lapse-and-persistency-prediction | Policy Lapse & Persistency Prediction | tabular,time-series | batch | production-grade | a=1 k=3
+== policy-lapse-and-persistency-prediction | Policy Lapse & Persistency Prediction | tabular,time-series | batch | advanced | a=1 k=3
 obj: Predict which policies will lapse so retention teams and the actuary can plan interventions and reserves.
 loss: \mathcal{L}=-\sum_i\left[\delta_i\log h(t_i\mid x_i)-\int_0^{t_i}h(u\mid x_i)\,du\right]
 con: Retention offers within conduct rules ; Monthly scoring ; Explainable ; Actuarial assumptions updated yearly
@@ -263,7 +263,7 @@ off: Concordance ; Calibration by duration
 on: Persistency uplift ; Retention cost per saved policy
 gap: Contacted customers differ ; Ignoring censoring
 
-== claims-triage-and-straight-through-processing | Claims Triage & Straight-Through Processing | tabular,nlp | seconds | production-grade | a=0.1 k=40
+== claims-triage-and-straight-through-processing | Claims Triage & Straight-Through Processing | tabular,nlp | seconds | advanced | a=0.1 k=40
 obj: Route each insurance claim to straight-through payment, standard handling or a specialist based on complexity and risk.
 loss: \mathcal{L}=\mathrm{CE}(\hat{y},y)+\lambda\,\mathrm{BCE}(\hat{p},y_{\text{stp}})
 con: Automatic payment only for claims below a set value and risk limit ; Fair-treatment and vulnerable-customer rules applied at triage ; Every routing decision explained in words the handler can read ; A full audit trail from first notice to payment
@@ -287,7 +287,7 @@ off: Routing accuracy ; STP leakage rate
 on: STP share ; Cycle time
 gap: Labels come from past routing decisions, so the model learns the old process and its biases ; Fraud found later is missing from the labels at training time
 
-== subrogation-recovery-detection | Subrogation Recovery Detection | nlp,tabular | batch | production-grade | a=0.05 k=30
+== subrogation-recovery-detection | Subrogation Recovery Detection | nlp,tabular | batch | advanced | a=0.05 k=30
 obj: Find paid claims where another party is liable so the insurer recovers money it would otherwise lose.
 loss: \mathcal{L}=\mathrm{BCE}(\hat{p},y)+\lambda\,\mathrm{Huber}(\hat{r}-r)
 con: Statute-of-limitations dates tracked for every candidate and shown to the reviewer ; A reviewer sees the evidence behind every flag ; Recovery effort weighed against the expected net value ; Privacy rules followed when sharing information with other insurers

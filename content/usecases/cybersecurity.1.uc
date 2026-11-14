@@ -1,5 +1,5 @@
 # Cybersecurity, part 1 (use cases 1-25)
-== network-intrusion-detection-flow-anomaly | Network Intrusion Detection via Flow Anomalies | tabular,time-series | sub-100ms | production-grade | a=2000 k=1
+== network-intrusion-detection-flow-anomaly | Network Intrusion Detection via Flow Anomalies | tabular,time-series | sub-100ms | advanced | a=2000 k=1
 obj: Detect lateral movement, scanning and command-and-control from network flow metadata at line rate, including in encrypted traffic.
 loss: \mathcal{L}=\|x-\mathrm{Dec}(\mathrm{Enc}(x))\|^2+\lambda\,\mathrm{SemiSupervisedBCE}
 con: 100 Gbps links ; Encrypted payloads invisible ; Alert precision for SOC ; Edge sensor CPU limits
@@ -39,7 +39,7 @@ off: TPR at 0.001% FPR on goodware ; Time-split detection rate
 on: Detections per 1M files ; False positive incidents
 gap: Random splits with near-duplicate samples ; Goodware corpus unrepresentative of enterprise software
 
-== phishing-url-and-email-detection | Phishing URL & Email Detection | nlp,tabular | sub-100ms | production-grade | a=20 k=20
+== phishing-url-and-email-detection | Phishing URL & Email Detection | nlp,tabular | sub-100ms | advanced | a=20 k=20
 obj: Block phishing emails and links at delivery and click time, catching novel campaigns before blocklists update.
 loss: \mathcal{L}=\mathrm{FL}(p,y)+\lambda\,\mathrm{Calibration}
 con: Delivery latency under 100 ms ; Zero tolerance for blocking business-critical mail ; Multilingual ; Campaigns live for minutes
@@ -99,7 +99,7 @@ off: Recall of known insider cases ; Precision at investigator capacity
 on: Investigated cases with findings ; Time to detection
 gap: Very few true insider labels ; Evaluating with synthetic insiders
 
-== identity-threat-detection-sso | Identity Threat Detection in SSO Logs | tabular,graph | sub-100ms | production-grade | a=10 k=3
+== identity-threat-detection-sso | Identity Threat Detection in SSO Logs | tabular,graph | sub-100ms | advanced | a=10 k=3
 obj: Detect token theft, MFA fatigue attacks and suspicious sign-ins in identity-provider logs in real time and trigger step-up or session revocation.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Decision during authentication within 50 ms ; Step-up friction budget ; Privacy ; Global workforce travel
@@ -119,7 +119,7 @@ off: Detection recall at fixed step-up rate ; Time to revoke
 on: Account takeovers per 100k users ; Step-up rate for legitimate users
 gap: Labels from confirmed incidents only ; Simulated attacks lacking real token behaviours
 
-== siem-alert-triage-ml | SIEM Alert Triage & Prioritisation | tabular | seconds | production-grade | a=500 k=3
+== siem-alert-triage-ml | SIEM Alert Triage & Prioritisation | tabular | seconds | advanced | a=500 k=3
 obj: Score and prioritise the flood of SIEM alerts so analysts spend time on the 2% that matter.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{RankLoss}
 con: Millions of alerts per day ; Explainable priorities ; Feedback loop from analysts ; SLA for critical alerts
@@ -186,7 +186,7 @@ off: Query validity and hit-rate ; Coverage gain
 on: Detections created per hunt ; Hunter hours saved
 gap: No ground truth for negative hunts ; Counting hypotheses not validated outcomes
 
-== vulnerability-prioritization-exploit-prediction | Vulnerability Prioritisation & Exploit Prediction | tabular,nlp | batch | production-grade | a=0.1 k=5
+== vulnerability-prioritization-exploit-prediction | Vulnerability Prioritisation & Exploit Prediction | tabular,nlp | batch | advanced | a=0.1 k=5
 obj: Predict which CVEs will be exploited in the wild and prioritise patching by exploit likelihood and asset exposure.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)\quad y=\text{exploited within 30 days}
 con: 20k+ new CVEs a year ; Patch capacity limits ; Asset context ; Explainable priority
@@ -246,7 +246,7 @@ off: Path coverage vs red-team findings ; Remediation leverage
 on: Reachable crown-jewel paths ; Mean time to break top paths
 gap: Validation lacking red-team ground truth ; Static graph snapshots
 
-== dns-tunneling-and-dga-detection | DNS Tunnelling & DGA Detection | nlp,tabular | sub-100ms | production-grade | a=500 k=1
+== dns-tunneling-and-dga-detection | DNS Tunnelling & DGA Detection | nlp,tabular | sub-100ms | advanced | a=500 k=1
 obj: Detect data exfiltration over DNS and algorithmically generated domains used by malware, at resolver scale.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Billions of queries per day ; Under 1 ms per query ; Very low false positives ; Privacy
@@ -326,7 +326,7 @@ off: Privilege reduction without breakage in shadow ; Anomaly precision
 on: Excess permissions removed ; Privilege-escalation findings
 gap: Short usage windows ; No labelled escalation events
 
-== container-runtime-anomaly-detection | Container Runtime Anomaly Detection | time-series,tabular | sub-100ms | production-grade | a=1000 k=1
+== container-runtime-anomaly-detection | Container Runtime Anomaly Detection | time-series,tabular | sub-100ms | advanced | a=1000 k=1
 obj: Detect compromised containers via syscalls, process trees and network behaviour with low overhead.
 loss: \mathcal{L}=\|x-\mathrm{Dec}(\mathrm{Enc}(x))\|^2
 con: Under 3% overhead ; Ephemeral workloads ; Sparse labelled attacks ; Kubernetes-native
@@ -346,7 +346,7 @@ off: Detection of simulated exploits at low FP ; Profile coverage
 on: Container compromise dwell time ; False quarantines
 gap: Simulated attacks lacking realism ; Profiles learned during an already-compromised period
 
-== malicious-package-detection | Malicious Open-Source Package Detection | nlp,tabular | batch | production-grade | a=0.1 k=20
+== malicious-package-detection | Malicious Open-Source Package Detection | nlp,tabular | batch | advanced | a=0.1 k=20
 obj: Detect malicious packages (typosquats, install-script malware, dependency confusion) in package registries and CI before they run.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Millions of packages ; New versions published constantly ; Low false positives for maintainers ; Real-time CI gating
@@ -426,7 +426,7 @@ off: Unique crashes and new edges per CPU hour ; Triage precision
 on: Bugs found per fuzz month ; Time to find regression
 gap: Counting duplicate crashes as separate bugs ; Benchmarks on toy targets
 
-== waf-ml-attack-detection | ML Web Application Firewall | nlp,tabular | sub-10ms | production-grade | a=100 k=2
+== waf-ml-attack-detection | ML Web Application Firewall | nlp,tabular | sub-10ms | advanced | a=100 k=2
 obj: Detect injection, XSS and logic attacks in HTTP requests inline with very low latency and very few false positives.
 loss: \mathcal{L}=\mathrm{FL}(p,y)+\lambda\,\mathrm{Calibration}
 con: Under 1 ms inline ; False positives block revenue ; Per-application tuning ; Encrypted payload decoding
@@ -446,7 +446,7 @@ off: Detection rate at 1e-5 FPR ; Latency overhead
 on: Blocked attack requests ; False-block incidents
 gap: Training on attack toolkits only ; Replay traffic from a single app
 
-== api-abuse-and-bot-detection | API Abuse & Bot Detection | tabular,time-series | sub-100ms | production-grade | a=20 k=1
+== api-abuse-and-bot-detection | API Abuse & Bot Detection | tabular,time-series | sub-100ms | advanced | a=20 k=1
 obj: Detect scraping, enumeration and business-logic abuse on APIs while preserving legitimate integrations.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Sub-20 ms decisions ; Partner integrations must not break ; Adaptive attackers ; Privacy-safe fingerprints
@@ -466,7 +466,7 @@ off: Detection rate at fixed false-block rate ; Challenge success for humans
 on: Scraped records per day ; Legitimate user friction
 gap: Labels only from detected bots ; Bot behaviours simulated naively
 
-== ddos-detection-and-mitigation | DDoS Detection & Mitigation | time-series,tabular | sub-10ms | production-grade | a=10000 k=1
+== ddos-detection-and-mitigation | DDoS Detection & Mitigation | time-series,tabular | sub-10ms | advanced | a=10000 k=1
 obj: Detect volumetric and application-layer DDoS within seconds and drive mitigation without dropping legitimate traffic.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{DetectionDelay}
 con: Terabit-scale traffic ; Mitigation decision in seconds ; Collateral damage minimised ; Always-on
@@ -486,7 +486,7 @@ off: Detection delay at fixed FPR ; Collateral drop rate
 on: Time to mitigate ; Customer impact minutes
 gap: Lab floods unlike real attacks ; Mitigation tested at low rates
 
-== credential-stuffing-detection | Credential Stuffing Detection | tabular,time-series | sub-100ms | production-grade | a=5 k=2
+== credential-stuffing-detection | Credential Stuffing Detection | tabular,time-series | sub-100ms | advanced | a=5 k=2
 obj: Detect automated credential-stuffing attempts on login endpoints and block them while sparing real users who forget passwords.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Login decision within 30 ms ; Low friction for real users ; Distributed low-and-slow attacks ; Privacy-safe breach corpora use

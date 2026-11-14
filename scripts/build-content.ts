@@ -13,7 +13,7 @@ import { ALL_STEPS, DELIVERY_PHASES } from '../src/content/delivery';
 import { deliveryMarkdown } from '../src/content/delivery-markdown';
 import { loadTracksFile, resolveTracks, type ResolvedDomainTracks } from '../src/content/tracks';
 import { readFileSync } from 'node:fs';
-import { buildManifest } from '../src/content/release';
+import { buildManifest, kitLogFile, releaseReportMarkdown } from '../src/content/release';
 import {
   computeContentDigest,
   gitInfo,
@@ -37,6 +37,7 @@ const all = loadAllUseCases(root);
 
 // release provenance: which commit and content this build is, and which checks have been run for exactly this content
 const git = gitInfo(root);
+const kitReport = readKitReport(root);
 const manifest = buildManifest({
   commit: git.commit,
   dirty: git.dirty,
@@ -45,7 +46,7 @@ const manifest = buildManifest({
   now: new Date().toISOString(),
   useCases: all,
   validation: readValidationReport(root),
-  kits: readKitReport(root),
+  kits: kitReport,
   deployment: process.env.BS_DEPLOY === '1',
 });
 
@@ -57,6 +58,12 @@ for (const u of all) {
 }
 write(join(gen, 'release.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 write(join(pub, 'release.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+// the release report: the same manifest as prose, plus the log of every kit run the manifest vouches for
+write(join(pub, 'release-report.md'), releaseReportMarkdown(manifest, origin));
+rmSync(join(pub, 'release'), { recursive: true, force: true });
+if (manifest.checks.executable.status !== 'not-run')
+  for (const k of kitReport?.kits ?? [])
+    write(join(pub, kitLogFile(k.name)), `${k.log ?? 'No output was recorded for this run.'}\n`);
 const index = all.map(toIndexEntry);
 
 // tracks: group each domain's use cases (in authored order) into sub-areas and name the ones to read first
