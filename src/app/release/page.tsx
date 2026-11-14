@@ -5,7 +5,6 @@ import {
   KitRunsTable,
   ManifestSummary,
   MaturityLadder,
-  ReviewProgramme,
 } from '../../components/ReleaseReport';
 import { FeasibilityWarningsPanel } from '../../components/reader/ValidationStatus';
 import { releaseOutstanding } from '../../content/release';
@@ -48,9 +47,8 @@ export default async function ReleasePage() {
         </h1>
         <p className="mt-4 max-w-3xl text-mute">
           The {c.schema.useCases} blueprints on this site are reference designs. All of them pass automated
-          checks for completeness and internal consistency. {c.domainExpert.reviewed} have been reviewed by a
-          domain specialist and {c.productionEvidence.claimed} carry evidence from a production deployment.
-          This page is generated from the same manifest the site was built from.
+          checks for completeness and internal consistency. They are starting points to adapt and test in your
+          own environment. This page is generated from the same manifest the site was built from.
         </p>
         <dl
           className="mt-6 grid gap-x-8 gap-y-1 text-sm sm:grid-cols-[auto_1fr]"
@@ -81,7 +79,7 @@ export default async function ReleasePage() {
 
       <section aria-labelledby="layers" className="space-y-3">
         <h2 id="layers" className="scroll-mt-24 text-xl font-semibold">
-          Documentation, tested code and operational solutions are different things
+          Documentation and tested code are different things
         </h2>
         <p className="max-w-3xl text-sm text-mute">
           Every blueprint is documentation. A small number also have tested starter code. None is an
@@ -128,13 +126,6 @@ export default async function ReleasePage() {
         ) : (
           <p className="text-sm text-mute">No warnings are open.</p>
         )}
-      </section>
-
-      <section aria-labelledby="review-programme" className="space-y-3">
-        <h2 id="review-programme" className="scroll-mt-24 text-xl font-semibold">
-          Independent review programme
-        </h2>
-        <ReviewProgramme />
       </section>
 
       <section aria-labelledby="outstanding" className="space-y-3">

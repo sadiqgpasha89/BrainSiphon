@@ -174,11 +174,19 @@ export function verifyStatic(
   for (const b of DOWNLOAD_BUNDLES)
     if (!nonEmpty(join(out, 'downloads', b.zip))) fail(`out/downloads/${b.zip} is missing`);
   if (!nonEmpty(join(out, 'downloads', 'manifest.json'))) fail('out/downloads/manifest.json is missing');
+  {
+    const start = join(out, 'start', 'index.html');
+    if (!nonEmpty(start) || !readFileSync(start, 'utf8').includes('data-testid="start-guide"'))
+      fail('the start guide page is missing');
+    const first = all[0];
+    const bp = first ? join(out, first.slug, 'index.html') : '';
+    if (nonEmpty(bp) && !readFileSync(bp, 'utf8').includes('data-testid="cloud-tabs-hld"'))
+      fail(`${first!.slug} has no platform tabs on its topology diagram`);
+  }
   for (const [page, marker] of [
     ['deployment', 'data-testid="version-registry"'],
     ['deployment', 'data-testid="recovery-tiers"'],
     ['deployment', 'data-testid="compliance-notice"'],
-    ['release', 'data-testid="review-programme"'],
     ['release', 'data-testid="evidence-layers"'],
   ] as const) {
     const f = join(out, page, 'index.html');

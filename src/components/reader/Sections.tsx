@@ -9,6 +9,8 @@ import { ArtifactLegend, KindLine } from '../ArtifactKind';
 import { CodeBlock } from '../Code';
 import { MathBlock } from '../Math';
 import { MermaidDiagram } from '../Mermaid';
+import { viewInputOf } from '../../content/cloud-views';
+import { CloudDiagramTabs } from './CloudTabs';
 import { SymbolText } from './SymbolText';
 import { CapacityCalculator } from './CapacityCalculator';
 import { EvaluationDetail } from './Assurance';
@@ -313,7 +315,13 @@ export async function Sections({ uc }: { uc: UseCase }) {
             <List items={d.topology.notes} />
           </div>
         </div>
-        <MermaidDiagram code={d.hld.mermaid} label="Deployment topology" />
+        <CloudDiagramTabs
+          kind="hld"
+          label="Deployment topology"
+          code={d.hld.mermaid}
+          input={viewInputOf(uc)}
+          details
+        />
         <TableWrap>
           <table className="bs-table">
             <thead>
@@ -377,7 +385,12 @@ export async function Sections({ uc }: { uc: UseCase }) {
         title="Sequence diagram"
         kicker="Request path with deadline propagation and the degradation branch"
       >
-        <MermaidDiagram code={d.sequence.mermaid} label="Request sequence" />
+        <CloudDiagramTabs
+          kind="sequence"
+          label="Request sequence"
+          code={d.sequence.mermaid}
+          input={viewInputOf(uc)}
+        />
         <div data-prose>
           <List items={d.sequence.notes} />
         </div>
@@ -390,16 +403,12 @@ export async function Sections({ uc }: { uc: UseCase }) {
       >
         <div className="flex flex-wrap items-center gap-2" data-testid="lld-status">
           <span className="chip chip-signal">{ARCHETYPE_LABEL[d.lld.archetype]}</span>
-          <span className={`chip ${d.lld.status === 'expert-reviewed' ? 'chip-signal' : 'chip-noise'}`}>
-            {d.lld.status === 'expert-reviewed' ? 'Expert reviewed' : 'Illustrative scaffold'}
+          <span className="chip chip-noise">Illustrative scaffold</span>
+          <span className="text-sm text-mute">
+            Generated from the {ARCHETYPE_LABEL[d.lld.archetype].toLowerCase()} template and this use
+            case&apos;s own fields: it shows the right shape of API, schema and failure model. The hot-path
+            code is pseudocode and the rest is architectural illustration: nothing here is production code.
           </span>
-          {d.lld.status !== 'expert-reviewed' && (
-            <span className="text-sm text-mute">
-              Generated from the {ARCHETYPE_LABEL[d.lld.archetype].toLowerCase()} template and this use
-              case&apos;s own fields: it shows the right shape of API, schema and failure model. The hot-path
-              code is pseudocode and the rest is architectural illustration: nothing here is production code.
-            </span>
-          )}
         </div>
         <ArtifactLegend />
         <div className="card p-4">

@@ -1,5 +1,6 @@
 import { type Agentic, isAgentic } from '../../schemas/usecase.schema';
-import { MermaidDiagram } from '../Mermaid';
+import { CloudDiagramTabs } from './CloudTabs';
+import type { ViewInput } from '../../content/cloud-views';
 import { List, Section, TableWrap } from './Sections';
 
 const Label = ({ children }: { children: React.ReactNode }) => (
@@ -94,7 +95,7 @@ function DecisionBlock({ ag }: { ag: Agentic }) {
 }
 
 /** Agentic solutioning: where agents belong, what they may do, how autonomy is earned and how they are evaluated. */
-export function AgenticSection({ ag }: { ag: Agentic }) {
+export function AgenticSection({ ag, input }: { ag: Agentic; input: ViewInput }) {
   const fit = FIT[ag.fit];
   return (
     <Section
@@ -115,8 +116,18 @@ export function AgenticSection({ ag }: { ag: Agentic }) {
 
       {!isAgentic(ag.fit) && (
         <Sub id="ag-fallback" title="Recommended architecture without agents">
-          <MermaidDiagram code={ag.architecture} label="Architecture without agents" />
-          <MermaidDiagram code={ag.sequence} label="Sequence without agents" />
+          <CloudDiagramTabs
+            kind="agent-architecture"
+            label="Architecture without agents"
+            code={ag.architecture}
+            input={input}
+          />
+          <CloudDiagramTabs
+            kind="agent-sequence"
+            label="Sequence without agents"
+            code={ag.sequence}
+            input={input}
+          />
           <div className="card p-4">
             <Label>When not to add an agent here</Label>
             <List items={ag.whenNotToUse} tone="noise" />
@@ -153,8 +164,18 @@ export function AgenticSection({ ag }: { ag: Agentic }) {
                 </tbody>
               </table>
             </TableWrap>
-            <MermaidDiagram code={ag.architecture} label="Agent architecture" />
-            <MermaidDiagram code={ag.sequence} label="Agent sequence: investigate, verify, approve, act" />
+            <CloudDiagramTabs
+              kind="agent-architecture"
+              label="Agent architecture"
+              code={ag.architecture}
+              input={input}
+            />
+            <CloudDiagramTabs
+              kind="agent-sequence"
+              label="Agent sequence: investigate, verify, approve, act"
+              code={ag.sequence}
+              input={input}
+            />
           </Sub>
 
           <Sub id="ag-tools" title="Typed tools and permissions">

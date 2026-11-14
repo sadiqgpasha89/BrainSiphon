@@ -8,9 +8,7 @@
  *   governance         risk tier and the controls and evidence that follow from it
  *   mlops              the nine-area MLOps lifecycle (plus LLMOps where behaviour depends on prompts, indexes or providers)
  *   operations         SLOs, telemetry, incident model, ten failure scenarios and unit cost
- *   validation         what has and has not been verified: automated gates versus human review and production evidence
- *
- * Nothing here is expert-reviewed unless `content/reviews.json` says so; the validation block says that on every page.
+ *   validation         what the automated gates have checked: schema, feasibility and the starter run
  */
 import {
   VALIDATION_LEVELS,
@@ -44,20 +42,6 @@ export interface EntCtx {
   stages: Stage[];
   topology: Topology;
   features: string[];
-}
-
-export interface Review {
-  reviewer: string;
-  /** the organisation the reviewer acted for, when there is one */
-  organisation?: string;
-  date: string;
-  scope: string;
-  /** reviewer's professional qualification and registration, as recorded */
-  qualifications?: string;
-  /** a review stops counting after this date (ISO), so an old technical or regulatory review cannot stay valid indefinitely */
-  validUntil?: string;
-  /** sections or findings the reviewer raised, with their disposition */
-  findings?: string;
 }
 
 /* ------------------------------------------------------------------ helpers */
@@ -681,7 +665,7 @@ export function buildOperations(c: EntCtx): Operations {
 export function buildValidation(
   c: EntCtx,
   feasibility: FeasibilityCheck[],
-  opts: { hasPlaybook: boolean; hasStarter: boolean; starterAdaptable?: boolean; hasCompatibleKit?: boolean; review?: Review },
+  opts: { hasPlaybook: boolean; hasStarter: boolean; starterAdaptable?: boolean; hasCompatibleKit?: boolean },
 ): Omit<Validation, 'provenance'> {
   const fails = feasibility.filter((x) => x.status === 'fail').length;
   const warns = feasibility.filter((x) => x.status === 'warn').length;
@@ -695,16 +679,12 @@ export function buildValidation(
       : opts.hasCompatibleKit === false
         ? 'No compatible executable starter kit exists for this problem, so none was run: the playbook is architecture and implementation guidance only.'
         : 'No starter kit has been run for this use case.',
-    expert: opts.review ? `Reviewed by ${opts.review.reviewer} on ${opts.review.date}: ${opts.review.scope}` : 'No domain-specialist review is recorded for this blueprint.',
-    production: 'No evidence from a real deployment or a production dataset is recorded.',
   };
   return {
     levels: [
       { level: VALIDATION_LEVELS[0], state: 'passed', evidence: evidence.schema },
       { level: VALIDATION_LEVELS[1], state: fails === 0 ? 'passed' : 'not-yet', evidence: evidence.technical },
       { level: VALIDATION_LEVELS[2], state: opts.hasStarter ? 'passed' : 'not-yet', evidence: evidence.synthetic },
-      { level: VALIDATION_LEVELS[3], state: opts.review ? 'passed' : 'not-yet', evidence: evidence.expert },
-      { level: VALIDATION_LEVELS[4], state: 'not-yet', evidence: evidence.production },
     ],
     feasibility,
   };

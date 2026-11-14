@@ -7,6 +7,7 @@ import { ReaderShell } from '../../../components/reader/ReaderShell';
 import { PlaybookSection, VERDICT_LABEL, VERDICT_TONE } from '../../../components/reader/Playbook';
 import { COMPLETION_META } from '../../../lib/artifacts';
 import { AgenticSection } from '../../../components/reader/Agentic';
+import { viewInputOf } from '../../../content/cloud-views';
 import { Pager, Sections, tocFor } from '../../../components/reader/Sections';
 import {
   DiscoverySection,
@@ -203,7 +204,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         <MetricsSection uc={uc} />
         <MlopsSection uc={uc} />
         <OperationsSection uc={uc} />
-        <AgenticSection ag={uc.agentic} />
+        <AgenticSection ag={uc.agentic} input={viewInputOf(uc)} />
         {uc.playbook && <PlaybookSection pb={uc.playbook} />}
         <ValidationSection uc={uc} release={release} />
       </article>

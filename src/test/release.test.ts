@@ -101,8 +101,6 @@ describe('manifest', () => {
     expect(m.checks.schema.status).toBe('passed');
     expect(m.checks.feasibility.status).toBe('passed');
     expect(m.checks.executable.status).toBe('passed');
-    expect(m.checks.domainExpert.reviewed).toBe(0);
-    expect(m.checks.productionEvidence.claimed).toBe(0);
   });
 
   it('ignores a report that was produced for different content', () => {
@@ -121,15 +119,13 @@ describe('manifest', () => {
 });
 
 describe('per-blueprint statuses', () => {
-  it('shows five separate statuses, never one combined verdict', () => {
+  it('shows three separate statuses, never one combined verdict', () => {
     const s = blueprintStatuses(fraud, manifest());
     expect(s.map((x) => x.label)).toEqual(Object.values(STATUS_LABEL));
     expect(Object.fromEntries(s.map((x) => [x.id, x.text]))).toEqual({
       schema: 'Passed',
       feasibility: 'Passed',
       synthetic: 'Passed',
-      expert: 'Not reviewed',
-      production: 'Not available',
     });
   });
 
@@ -175,14 +171,6 @@ describe('per-blueprint statuses', () => {
     for (const u of all) {
       const id = u.playbook?.starter?.kitId;
       if (id && u.playbook?.provenance !== 'authored') expect(kitKeyFor(u), u.slug).toBe(`kits/${id}`);
-    }
-  });
-
-  it('never reports expert review or production evidence for a blueprint without a recorded one', () => {
-    for (const u of all) {
-      const s = blueprintStatuses(u, manifest());
-      expect(s.find((x) => x.id === 'expert')?.state).toBe('not-reviewed');
-      expect(s.find((x) => x.id === 'production')?.state).toBe('not-available');
     }
   });
 
@@ -258,7 +246,7 @@ describe('maturity scorecard', () => {
     );
   const cards = all.map((u) => blueprintMaturityScorecard(u, manifest()));
 
-  it('has the same seven levels, in order, on every blueprint', () => {
+  it('has the same five levels, in order, on every blueprint', () => {
     for (const c of cards) expect(c.items.map((i) => i.id)).toEqual(MATURITY_LEVELS.map((l) => l.id));
   });
 
@@ -272,13 +260,13 @@ describe('maturity scorecard', () => {
     }
   });
 
-  it('classifies no blueprint above synthetic-data tested while no review or production evidence is recorded', () => {
+  it('classifies no blueprint above synthetic-data tested, because none is integrated with a real platform', () => {
     for (const c of cards) {
       expect(c.level, c.slug).toBeLessThanOrEqual(4);
       expect(
         c.items.slice(4).map((i) => i.state),
         c.slug,
-      ).toEqual(['not-met', 'not-met', 'not-met']);
+      ).toEqual(['not-met']);
       expect(c.classificationLabel).not.toMatch(/production/i);
     }
   });
@@ -292,14 +280,6 @@ describe('maturity scorecard', () => {
       if (verdict === 'none') expect(c.items[3]!.state, u.slug).toBe('not-applicable');
       if (verdict !== 'exact') expect(c.level, u.slug).toBeLessThanOrEqual(3);
     }
-  });
-
-  it('names no reviewer who does not exist', () => {
-    for (const c of cards)
-      for (const i of c.items) {
-        expect(i.reviewer, `${c.slug} ${i.id}`).not.toMatch(/committee|board|auditor|pending/i);
-        if (i.id === 'expert-validated') expect(i.reviewer).toBe('None');
-      }
   });
 
   it('gives every unmet level something outstanding and says why the classification stops', () => {
@@ -363,7 +343,7 @@ describe('feasibility warnings and the release report', () => {
     expect(f.pass + f.notApplicable + f.warn + f.fail).toBe(f.checks);
     expect(m.maturity.map((r) => r.id)).toEqual(MATURITY_LEVELS.map((l) => l.id));
     expect(m.maturity[1]!.met).toBe(all.length);
-    expect(m.maturity.slice(4).map((r) => r.met)).toEqual([0, 0, 0]);
+    expect(m.maturity.slice(4).map((r) => r.met)).toEqual([0]);
     expect(m.maturity.reduce((a, r) => a + r.classified, 0)).toBe(all.length);
     expect(JSON.stringify(m.checks.executable.kits)).not.toContain('"log"');
   });
@@ -375,12 +355,9 @@ describe('feasibility warnings and the release report', () => {
       expect(md).toContain(`https://example.test/${w.slug}`);
       expect(md).toContain(w.remediation);
     }
-    expect(md).toContain(`Domain-expert review | 0 of ${all.length} blueprints`);
-    expect(md).toContain(`Production evidence | 0 of ${all.length} blueprints`);
     expect(md).toContain('https://example.test/release/kit-logs/kits--tabular.txt');
     const out = releaseOutstanding(m).join('\n');
-    expect(out).toMatch(new RegExp(`${all.length} of ${all.length} blueprints have no domain-expert review`));
-    expect(out).toMatch(/no production evidence/);
+    expect(out).toMatch(/have no tested starter for their exact problem/);
     expect(releaseOutstanding(manifest(validation, null)).join('\n')).toMatch(/starter kits were not run/);
   });
 });

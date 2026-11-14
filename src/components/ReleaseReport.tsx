@@ -1,13 +1,11 @@
 import Link from 'next/link';
 import { MATURITY_LEVELS, kitLogFile, type ReleaseManifest } from '../content/release';
-import { REVIEW_CHECKLIST, REVIEW_PANELS, REVIEW_RECORD_FIELDS } from '../content/review-programme';
 import { withBase } from '../lib/site';
 
 const n = (x: number) => x.toLocaleString('en-US');
 
 /**
- * The release manifest in five figures. Every number is read from the manifest this build was made from; none is typed by hand,
- * and the two that are zero are shown as plainly as the ones that passed.
+ * The release manifest in three figures. Every number is read from the manifest this build was made from; none is typed by hand.
  */
 export function ManifestSummary({ release }: { release: ReleaseManifest | null }) {
   if (!release)
@@ -42,18 +40,6 @@ export function ManifestSummary({ release }: { release: ReleaseManifest | null }
       note: 'Run on synthetic data only. Most blueprints reuse a pattern kit rather than having their own code.',
       ok: c.executable.status === 'passed',
     },
-    {
-      label: 'Domain-expert review',
-      value: `${c.domainExpert.reviewed} of ${n(c.domainExpert.total)}`,
-      note: 'Blueprints reviewed by a named domain specialist.',
-      ok: c.domainExpert.reviewed > 0,
-    },
-    {
-      label: 'Production evidence',
-      value: `${c.productionEvidence.claimed} of ${n(c.productionEvidence.total)}`,
-      note: 'Blueprints with results measured in a real deployment.',
-      ok: c.productionEvidence.claimed > 0,
-    },
   ];
   return (
     <div className="rounded-lg border border-line p-4" data-testid="manifest-transparency">
@@ -69,7 +55,7 @@ export function ManifestSummary({ release }: { release: ReleaseManifest | null }
           Release report
         </Link>
       </div>
-      <dl className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <dl className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {tiles.map((t) => (
           <div key={t.label} className="rounded bg-raised/50 p-2.5" data-testid="manifest-tile">
             <dt className="font-mono text-[11px] text-dim">{t.label}</dt>
@@ -84,7 +70,7 @@ export function ManifestSummary({ release }: { release: ReleaseManifest | null }
   );
 }
 
-/** The seven maturity levels with how many blueprints meet each one, from the manifest. */
+/** The maturity levels with how many blueprints meet each one, from the manifest. */
 export function MaturityLadder({ release }: { release: ReleaseManifest | null }) {
   const total = release?.checks.schema.useCases ?? 0;
   return (
@@ -196,19 +182,9 @@ export function EvidenceLayers({ release }: { release: ReleaseManifest }) {
       count: met('synthetic-tested'),
     },
     {
-      name: 'Domain-reviewed',
-      what: 'A named, qualified specialist reviewed it, with scope and expiry recorded.',
-      count: met('expert-validated'),
-    },
-    {
       name: 'Platform-integrated',
       what: 'Connected to real source systems, identity and a serving platform.',
       count: met('platform-integrated'),
-    },
-    {
-      name: 'Operational (production-evidenced)',
-      what: 'Deployed, monitored, with results measured in production.',
-      count: met('production-evidenced'),
     },
   ];
   return (
@@ -237,87 +213,6 @@ export function EvidenceLayers({ release }: { release: ReleaseManifest }) {
           ))}
         </tbody>
       </table>
-    </div>
-  );
-}
-
-export function ReviewProgramme() {
-  return (
-    <div className="space-y-4 text-sm" data-testid="review-programme">
-      <p className="max-w-3xl text-mute">
-        A review is only recorded when a named, qualified person has done it and it is entered in{' '}
-        <code>content/reviews.json</code> against the schema{' '}
-        <a
-          href={withBase(
-            'https://github.com/sadiqgpasha89/BrainSiphon/blob/main/content/reviews.schema.json',
-          )}
-        >
-          reviews.schema.json
-        </a>
-        . A review expires on its <code>validUntil</code> date and the blueprint then returns to “not
-        reviewed”. This programme exists to recruit reviewers;{' '}
-        <strong>it has not completed any review yet</strong>, and the counts above say so.
-      </p>
-      <div className="overflow-x-auto">
-        <table className="bs-table w-full text-xs">
-          <thead>
-            <tr>
-              <th>Panel</th>
-              <th>Who is competent to review</th>
-              <th>Before any real-world deployment of a high-risk blueprint</th>
-            </tr>
-          </thead>
-          <tbody>
-            {REVIEW_PANELS.map((p) => (
-              <tr key={p.domain}>
-                <td className="align-top font-medium text-ink">{p.domain}</td>
-                <td className="align-top">{p.reviewers}</td>
-                <td className="align-top">
-                  {p.highRiskNeeds.length ? (
-                    <ul className="list-disc space-y-1 pl-4">
-                      {p.highRiskNeeds.map((x) => (
-                        <li key={x}>{x}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    'Not classed high-risk by default; the same review checklist applies.'
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <h3 className="font-semibold text-ink">Review checklist</h3>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-mute">
-            {REVIEW_CHECKLIST.map((c) => (
-              <li key={c}>{c}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="font-semibold text-ink">What a review record contains</h3>
-          <dl className="mt-1 space-y-1 text-mute">
-            {REVIEW_RECORD_FIELDS.map(([k, v]) => (
-              <div key={k}>
-                <dt className="inline font-mono text-xs text-ink">{k}</dt> <dd className="inline">{v}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="mt-3">
-            Found a problem in a blueprint?{' '}
-            <a
-              className="text-signal underline"
-              href="https://github.com/sadiqgpasha89/BrainSiphon/issues/new?template=blueprint-review.yml"
-            >
-              Raise a finding against that section
-            </a>
-            .
-          </p>
-        </div>
-      </div>
     </div>
   );
 }

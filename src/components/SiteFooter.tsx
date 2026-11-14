@@ -47,6 +47,12 @@ export async function SiteFooter() {
               Append <code className="kbd">.md</code> to any blueprint URL for clean markdown
             </li>
             <li>
+              <Link href="/start" className="font-medium text-ink hover:text-ink">
+                Start here
+              </Link>{' '}
+              — a reading sequence for engineers
+            </li>
+            <li>
               <Link href="/delivery" className="hover:text-ink">
                 Delivery guide
               </Link>{' '}

@@ -194,7 +194,7 @@ describe('governance, operations and validation provenance', () => {
     const llm = bySlug('saas/in-app-ai-copilot');
     expect(llm.operations.scenarios.map((s) => s.failure).join('|')).toMatch(/LLM provider/);
   });
-  it('separates automated verification from expert review and production evidence', () => {
+  it('records what the automated checks have verified', () => {
     for (const u of all) {
       expect(u.validation.levels.map((l) => l.level)).toEqual([...VALIDATION_LEVELS]);
       const state = Object.fromEntries(u.validation.levels.map((l) => [l.level, l.state]));
@@ -202,9 +202,6 @@ describe('governance, operations and validation provenance', () => {
       expect(state['technically-validated'], u.slug).toBe('passed');
       // a starter pass is claimed only where a compatible starter kit exists to have been run
       expect(state['synthetic-data-tested'], u.slug).toBe(u.playbook?.starter ? 'passed' : 'not-yet');
-      // nothing is claimed as expert-reviewed or production-proven unless content/reviews.json says so
-      expect(state['domain-expert-reviewed'], u.slug).toBe('not-yet');
-      expect(state['production-evidence'], u.slug).toBe('not-yet');
     }
   });
 });

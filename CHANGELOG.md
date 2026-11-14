@@ -4,6 +4,13 @@ Architecture, framework, version and implementation changes. Content changes to 
 
 ## Unreleased: evidence, versions and implementation packages
 
+### Added (guide and platform views)
+- `/start`: first hour, four-week reading and building sequence, reading order inside a blueprint, fast path per role, stuck table, trust notes. Linked from the header, home page and footer.
+- Platform tabs (Cloud-neutral, AWS, Azure, GCP, OpenStack) on the deployment topology, sequence, C4 container and agent diagrams, with a per-blueprint service map, connection walk-through and platform-specific design notes. Service map included in each blueprint's Markdown.
+
+### Removed
+- Domain-expert review and production evidence are no longer shown anywhere on the site: the two maturity levels (the scorecard is now five levels), their status chips, release-report counts, per-blueprint reviewer fields, the review programme and `content/reviews.json`.
+
 ### Changed (corrections)
 
 - **Kubernetes 1.30 removed.** It had passed the end of Amazon EKS extended support. The AWS and Azure stacks now default to 1.36 (a variable), GKE follows a release channel. Dates were read from the vendors' lifecycle pages on 2026-11-14.
@@ -23,12 +30,11 @@ Architecture, framework, version and implementation changes. Content changes to 
 - `/workspace` Architecture Packages: a working generator (recommendation with reasons and rejected alternatives, override recorded in an ADR, previews, ZIP download, saved configuration in the browser) producing tfvars, Helm values, env template, commands, ADR and a backlog generated from the 69 delivery steps (CSV plus a `gh issue create` script).
 - Downloads: every delivery template and the deployment kit as direct links and as ZIPs with a SHA-256 manifest (`/downloads/`).
 - New templates: production handover package (with a worked example), FDE customer-environment checklist, maturity-gap checklist, risk register CSV.
-- `/release`: evidence layers (documentation vs tested code vs operational) with percentages, independent review programme (panels, checklist, record schema `content/reviews.schema.json`, review expiry via `validUntil`), severity and owner on every feasibility warning (`content/warning-acks.json`).
-- High-risk blueprints now say plainly: not suitable for real-world deployment until independent validation is complete, with a link to raise a finding (`.github/ISSUE_TEMPLATE/blueprint-review.yml`).
+- `/release`: evidence layers (documentation vs tested code) with percentages, and severity and owner on every feasibility warning (`content/warning-acks.json`).
+- High-risk blueprints now say plainly: not suitable for real-world deployment as published.
 - `verify:static` now fails if any page's footer shows a different commit or content version than `release.json`, or if a listed template or bundle is missing.
 
 ### Not done (and why)
 
-- No independent domain-expert review exists. The programme is set up; a review is a person's work and is recorded only when one has happened.
 - No Terraform plan/apply, restore test or failover drill has been run: this project has no cloud account. The pages say so.
 - No new executable kits for the 489 blueprints without named use-case execution.

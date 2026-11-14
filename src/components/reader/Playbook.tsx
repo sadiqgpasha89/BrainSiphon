@@ -320,8 +320,8 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
             ) : (
               <>It has no starter kit: no reference kit is compatible with this use case.</>
             )}{' '}
-            It has not been reviewed by a domain expert; 8 pilot use cases have hand-written playbooks. Read
-            each section against your own data and decision.
+            8 pilot use cases have hand-written playbooks. Read each section against your own data and
+            decision.
           </>
         ) : (
           <>

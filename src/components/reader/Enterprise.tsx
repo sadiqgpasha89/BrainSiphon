@@ -2,6 +2,8 @@ import { CircleCheck, CircleDashed, ShieldAlert } from 'lucide-react';
 import { RISK_TIERS, type RiskTier, type UseCase, type ValidationLevel } from '../../schemas/usecase.schema';
 import { CodeBlock } from '../Code';
 import { MermaidDiagram } from '../Mermaid';
+import { viewInputOf } from '../../content/cloud-views';
+import { CloudDiagramTabs } from './CloudTabs';
 import { List, Section, TableWrap } from './Sections';
 import { ReleaseLine, MaturityScorecardPanel, FeasibilityWarningsPanel } from './ValidationStatus';
 import { GuardrailsBlock } from './Assurance';
@@ -245,7 +247,12 @@ export function EnterpriseSection({ uc }: { uc: UseCase }) {
           </div>
         </div>
         <MermaidDiagram code={e.c4Context} label="C4 level 1: system context" />
-        <MermaidDiagram code={e.c4Container} label="C4 level 2: containers and trust boundary" />
+        <CloudDiagramTabs
+          kind="c4"
+          label="C4 level 2: containers and trust boundary"
+          code={e.c4Container}
+          input={viewInputOf(uc)}
+        />
         <Label>Integration dependency matrix</Label>
         <Table
           head={['Boundary', 'Style', 'Contract', 'On failure']}
@@ -611,14 +618,6 @@ const LEVEL_LABEL: Record<ValidationLevel, { title: string; means: string }> = {
     title: 'Synthetic starter tested',
     means: 'A starter kit ran successfully against synthetic data',
   },
-  'domain-expert-reviewed': {
-    title: 'Domain expert reviewed',
-    means: 'A domain specialist reviewed the technical content',
-  },
-  'production-evidence': {
-    title: 'Production evidence',
-    means: 'Evidence exists from a real deployment or production dataset',
-  },
 };
 
 const CHECK_TONE = {
@@ -736,8 +735,6 @@ const NATURE_TONE: Record<string, string> = {
   modelled: '!border-warn/40 !text-warn',
   synthetic: '',
   'proposed-target': '',
-  'pilot-measured': 'chip-signal',
-  'production-measured': 'chip-signal',
 };
 
 function ProvenancePanel({ uc }: { uc: UseCase }) {
@@ -756,14 +753,8 @@ function ProvenancePanel({ uc }: { uc: UseCase }) {
           <p>{p.owner}</p>
         </div>
         <div>
-          <Label>Reviewer</Label>
-          <p data-testid="reviewer">
-            {p.reviewer ? `${p.reviewer}, ${p.reviewedAt}` : 'No named reviewer yet'}
-          </p>
-        </div>
-        <div>
           <Label>Generated</Label>
-          <p>{p.generatedAt} (a generation date, not a review date)</p>
+          <p>{p.generatedAt}</p>
         </div>
       </div>
       <div>
@@ -816,8 +807,6 @@ const STATE_MEANS: Record<string, string> = {
     'Diagrams parse, equations compile, and stage budgets, capacity, storage, cost and recovery numbers agree',
   synthetic:
     'The starter kit for this blueprint was run end to end on synthetic data for exactly this content',
-  expert: 'A named domain specialist reviewed the technical content (content/reviews.json)',
-  production: 'Evidence from a real deployment or production dataset is recorded',
 };
 
 export function ValidationSection({ uc, release }: { uc: UseCase; release: ReleaseManifest | null }) {
@@ -875,8 +864,6 @@ export function ValidationSection({ uc, release }: { uc: UseCase; release: Relea
             </dd>
             <dt className="text-mute">Across all {release.checks.schema.useCases} blueprints</dt>
             <dd className="text-xs">
-              {release.checks.domainExpert.reviewed} domain-expert reviewed ·{' '}
-              {release.checks.productionEvidence.claimed} with production evidence ·{' '}
               {release.checks.feasibility.fail} feasibility failures ·{' '}
               <a href={withBase('/release')}>release report</a>
             </dd>

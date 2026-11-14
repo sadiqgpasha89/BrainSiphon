@@ -307,8 +307,6 @@ export interface LLDInput {
   onMetrics: string[];
   steps: number;
   archetype: Archetype;
-  /** true only when a named reviewer has signed this blueprint off (content/reviews.json) */
-  reviewed: boolean;
 }
 
 export function buildLLD(i: LLDInput) {
@@ -393,7 +391,7 @@ privacy:
   const ladder = degradation(i.mode);
   return {
     archetype: i.archetype,
-    status: i.reviewed ? ('expert-reviewed' as const) : ('illustrative-scaffold' as const),
+    status: 'illustrative-scaffold' as const,
     apiContract,
     dataModelDDL,
     eventSchema: arch.eventSchema,

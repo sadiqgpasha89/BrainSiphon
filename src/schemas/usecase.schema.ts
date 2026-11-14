@@ -231,7 +231,7 @@ export const ARCHETYPE_LABEL: Record<Archetype, string> = {
 };
 
 /** How far a low-level design has been reviewed. Generated LLDs are scaffolds: they show the right shape, not production code. */
-export const LLD_STATUSES = ['illustrative-scaffold', 'expert-reviewed'] as const;
+export const LLD_STATUSES = ['illustrative-scaffold'] as const;
 
 export const SystemDesignSchema = z.object({
   mode: z.enum(['online', 'interactive', 'batch']),
@@ -1112,20 +1112,11 @@ export const VALIDATION_LEVELS = [
   'schema-validated',
   'technically-validated',
   'synthetic-data-tested',
-  'domain-expert-reviewed',
-  'production-evidence',
 ] as const;
 export type ValidationLevel = (typeof VALIDATION_LEVELS)[number];
 
 export const SECTION_ORIGINS = ['hand-authored', 'generated-from-spec', 'generated-from-template'] as const;
-export const NUMBER_NATURES = [
-  'illustrative',
-  'modelled',
-  'synthetic',
-  'proposed-target',
-  'pilot-measured',
-  'production-measured',
-] as const;
+export const NUMBER_NATURES = ['illustrative', 'modelled', 'synthetic', 'proposed-target'] as const;
 
 /**
  * Where a blueprint's content came from and what kind of evidence stands behind each number, recorded in the data rather than
@@ -1135,11 +1126,6 @@ export const ProvenanceSchema = z.object({
   /** the highest validation level reached; a generated blueprint is never above `technically-validated` on its own */
   status: z.enum(VALIDATION_LEVELS),
   owner: nonEmpty,
-  reviewer: nonEmpty.nullable(),
-  reviewedAt: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .nullable(),
   /** the date the content was last generated from the specification; not a review date */
   generatedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   sections: z.array(z.object({ section: nonEmpty, origin: z.enum(SECTION_ORIGINS), basis: nonEmpty })).min(8),
@@ -1147,7 +1133,7 @@ export const ProvenanceSchema = z.object({
   sources: z
     .array(
       z.object({
-        kind: z.enum(['specification', 'reference-kit', 'public-standard', 'review']),
+        kind: z.enum(['specification', 'reference-kit', 'public-standard']),
         ref: nonEmpty,
       }),
     )

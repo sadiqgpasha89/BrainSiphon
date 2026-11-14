@@ -23,7 +23,7 @@ describe('markdown export', () => {
       '## MLOps',
       '## Production operations and SRE',
       '## Metrics catalogue',
-      '## Validation and architecture review',
+      '## Validation',
     ])
       expect(md).toContain(h);
     expect((md.match(/```mermaid/g) ?? []).length).toBe(9);
