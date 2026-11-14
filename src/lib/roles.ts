@@ -1,5 +1,5 @@
 /**
- * The fifteen reader personas, in the order the work reaches them: business first, forward deployment, operations and assurance.
+ * The reader personas, in the order the work reaches them: business first, forward deployment, operations and assurance.
  * Client-safe (plain data): used by the reader shell, the section wrapper and the generator.
  */
 export const ROLE_IDS = [
@@ -20,6 +20,32 @@ export const ROLE_IDS = [
   'qa-test-engineer',
 ] as const;
 export type RoleId = (typeof ROLE_IDS)[number];
+
+const NUMBER_WORDS = [
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+  'eleven',
+  'twelve',
+  'thirteen',
+  'fourteen',
+  'fifteen',
+  'sixteen',
+  'seventeen',
+  'eighteen',
+  'nineteen',
+  'twenty',
+];
+/** The number of reader roles in words, so prose never disagrees with the list above. */
+export const ROLE_COUNT_WORD = NUMBER_WORDS[ROLE_IDS.length] ?? String(ROLE_IDS.length);
 
 /** Keyboard key per role: 1 to 9, then a to f. */
 export const ROLE_META: Record<RoleId, { label: string; key: string; focus: string }> = {
@@ -157,6 +183,7 @@ export const SECTION_IDS = [
   'operations',
   'agentic',
   'playbook',
+  'implementation',
   'validation',
 ] as const;
 
@@ -188,8 +215,9 @@ export const SECTION_GROUPS: { id: string; label: string; blurb: string; section
   {
     id: 'run',
     label: 'Ship and run',
-    blurb: 'Release, operations, agents where they fit, and a build playbook.',
-    sections: ['mlops', 'operations', 'agentic', 'playbook', 'validation'],
+    blurb:
+      'Release, operations, agents where they fit, a build playbook and the customer implementation playbook.',
+    sections: ['mlops', 'operations', 'agentic', 'playbook', 'implementation', 'validation'],
   },
 ];
 
@@ -223,6 +251,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'edge-cases',
     'governance',
     'operations',
+    'implementation',
     'metrics',
     'role-lenses',
     'validation',
@@ -266,6 +295,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'edge-cases',
     'role-lenses',
     'playbook',
+    'implementation',
   ],
   'data-scientist': [
     'discovery',
@@ -292,6 +322,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'metrics',
     'role-lenses',
     'playbook',
+    'implementation',
   ],
   'ai-engineer': [
     'discovery',
@@ -304,6 +335,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'mlops',
     'role-lenses',
     'playbook',
+    'implementation',
   ],
   'mlops-engineer': [
     'discovery',
@@ -319,6 +351,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'governance',
     'role-lenses',
     'playbook',
+    'implementation',
     'validation',
   ],
   'inference-engineer': ['discovery', 'hld', 'sequence', 'lld', 'scale', 'metrics', 'role-lenses'],
@@ -330,6 +363,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'scale',
     'mlops',
     'operations',
+    'implementation',
     'governance',
     'role-lenses',
   ],
@@ -348,6 +382,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'governance',
     'role-lenses',
     'playbook',
+    'implementation',
     'validation',
   ],
   'sre-devops-engineer': [
@@ -358,6 +393,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'metrics',
     'mlops',
     'operations',
+    'implementation',
     'governance',
     'role-lenses',
     'validation',
@@ -370,6 +406,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'edge-cases',
     'agentic',
     'governance',
+    'implementation',
     'operations',
     'role-lenses',
     'validation',
@@ -387,6 +424,7 @@ export const ROLE_SECTIONS: Record<RoleId, string[]> = {
     'operations',
     'role-lenses',
     'playbook',
+    'implementation',
     'validation',
   ],
 };

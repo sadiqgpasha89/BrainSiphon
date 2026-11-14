@@ -1,0 +1,64 @@
+{
+  "adapter": "zendesk",
+  "name": "zendesk-tickets",
+  "connection": {
+    "base_url": "${ZD_BASE_URL}",
+    "auth": {
+      "type": "basic",
+      "user_env": "ZD_USER",
+      "password_env": "ZD_API_TOKEN"
+    }
+  },
+  "read": {
+    "start_time": "1772000000",
+    "key_field": "id",
+    "event_time_field": "updated_at"
+  },
+  "write": {
+    "idempotency_fields": ["ticket_id", "decision_id"],
+    "tag_prefix": "bs_"
+  },
+  "mapping": {
+    "fields": {
+      "ticket_id": {
+        "from": "id",
+        "transform": ["to_str"],
+        "required": true
+      },
+      "subject": {
+        "from": "subject"
+      },
+      "text": {
+        "from": "description"
+      },
+      "status": {
+        "from": "status"
+      },
+      "priority": {
+        "from": "priority"
+      },
+      "organization_id": {
+        "from": "organization_id",
+        "transform": ["to_str"]
+      },
+      "requester_id": {
+        "from": "requester_id",
+        "transform": ["to_str"]
+      },
+      "updated_at": {
+        "from": "updated_at",
+        "transform": ["to_utc"]
+      },
+      "source": {
+        "value": "zendesk"
+      }
+    }
+  },
+  "contract": {
+    "type": "object",
+    "required": ["ticket_id", "subject", "updated_at"]
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

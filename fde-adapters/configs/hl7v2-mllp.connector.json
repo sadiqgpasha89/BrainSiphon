@@ -1,0 +1,28 @@
+{
+  "adapter": "hl7v2-mllp",
+  "name": "hl7-adt-oru",
+  "connection": {
+    "listen_host": "0.0.0.0",
+    "listen_port": 6661,
+    "send_host": "${HL7_SEND_HOST:-}",
+    "send_port": 6662,
+    "timeout": 5
+  },
+  "read": {
+    "crosswalk": {
+      "LACT": ["2524-7", "Lactate [Moles/volume] in Serum or Plasma", "mmol/L"],
+      "WBC": ["6690-2", "Leukocytes [#/volume] in Blood", "10*3/uL"],
+      "HR": ["8867-4", "Heart rate", "/min"]
+    },
+    "reference_ranges": {
+      "2524-7": {
+        "low": 0.5,
+        "high": 2.2
+      }
+    },
+    "late_after_seconds": 3600
+  },
+  "retry": {
+    "max_attempts": 3
+  }
+}

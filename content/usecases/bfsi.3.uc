@@ -193,6 +193,13 @@ gap: Labels from stressed staff vary with workload, so the training set is noisy
 
 == branch-footfall-and-staffing-forecast | Branch Footfall & Staffing Forecast | time-series | batch | foundational | a=1 k=2
 obj: Forecast branch visits by hour so rosters match demand and queues stay short.
+own: Branch operations analytics ; Workforce planning ; Retail banking data office
+host: Public or private cloud region for the nightly forecast job; branch data stays inside the bank's tenancy and no branch-edge compute is required
+sor: Branch queue-management system (tickets and wait times) ; Footfall counters and sensors ; Workforce-management and roster system ; HR system (employees, skills and contracts)
+up: Queue-management ticket and wait-time exports ; Footfall sensor counts with device health ; Appointment booking system ; Teller transaction volumes by branch and hour ; Branch calendar (opening hours, holidays, events, closures, refits)
+down: Roster and shift-scheduling system ; Branch-manager approval workflow for schedule changes ; Staffing recommendation and wait-time reporting ; Actuals and override feedback to the warehouse
+opt: Public-event and local-holiday calendars ; Digital-channel traffic as a leading indicator
+proto: scheduled file and API extracts from queue-management, footfall and teller systems, workforce-management and HR REST or file interfaces, and a forecast and recommendation contract written back as batch files or API calls
 loss: \mathcal{L}=\sum_t\mathrm{Pinball}(\hat{q}_{0.9},y_t)+\lambda\,\mathrm{MSE}(\hat{y}_t,y_t)
 con: Rosters are fixed three weeks ahead, so forecasts are needed for 3 to 6 weeks out ; Labour rules on hours and breaks are respected ; A service-level target for waiting time at each branch ; Every forecast explainable to a branch manager
 sn: Hourly | Demand at the hour level | Daily totals | Peaks drive queues, and a day with the right total can still have a lunchtime queue

@@ -28,6 +28,11 @@ gap: Training with signals that arrive after the forecast time ; Evaluating at a
 
 == eta-prediction-for-shipments | Shipment ETA Prediction | time-series,tabular | sub-100ms | advanced | a=6 k=2
 obj: Predict arrival times for in-transit shipments with calibrated uncertainty so customers and planners can act before delays hit.
+sor: Transportation management system (TMS) ; Warehouse management system (WMS) ; ERP (orders and shipments) ; Carrier and partner registry
+up: Carrier status and milestone feeds (EDI X12 214 and EDIFACT IFTSTA over AS2 or SFTP) ; Carrier tracking APIs and webhooks ; MQTT telematics and GPS pings from vehicles and devices ; Port, customs and weather disruption feeds
+down: Transport planning and dispatch ; Warehouse dock and labour scheduling ; Customer tracking and notification ; Exception-management queue and manual ETA override
+opt: Port community and customs systems ; Yard and dock-appointment systems
+proto: EDI X12 and EDIFACT file exchange over AS2 and SFTP (asynchronous), carrier REST APIs and signed webhooks, MQTT telemetry, and the internal ETA contract over gRPC or REST
 loss: \mathcal{L}=\sum_i\rho_{0.5}(y_i-\hat q^{50}_i)+\rho_{0.9}(y_i-\hat q^{90}_i)
 con: ETA refresh on every scan or ping ; 50 ms API ; Multimodal journeys ; Explainable delay reasons
 sn: Uncertainty | P50 and P90 ETAs | Single point ETA | A single ETA hides risk and is late half the time

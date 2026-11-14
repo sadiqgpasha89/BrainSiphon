@@ -1,0 +1,69 @@
+{
+  "customer": "acme-defence",
+  "environment": "air-gapped-production",
+  "offline": true,
+  "timeout": 5,
+  "ca_file": "/etc/pki/ca-trust/source/anchors/customer-root-ca.pem",
+  "notes": "No internet route. Everything resolves and connects inside the enclave. Mirrors replace public registries and package indexes.",
+  "dns": [
+    { "name": "registry", "host": "registry.enclave.example", "expect_cidrs": ["10.50.0.0/16"] },
+    { "name": "package-index", "host": "artifacts.enclave.example", "expect_cidrs": ["10.50.0.0/16"] },
+    { "name": "idp", "host": "login.enclave.example", "expect_cidrs": ["10.50.0.0/16"] }
+  ],
+  "tcp": [
+    {
+      "name": "registry",
+      "host": "registry.enclave.example",
+      "port": 443,
+      "purpose": "container images (private registry mirror)"
+    },
+    {
+      "name": "package-index",
+      "host": "artifacts.enclave.example",
+      "port": 443,
+      "purpose": "pip, npm and helm mirror"
+    },
+    { "name": "kafka", "host": "kafka-1.enclave.example", "port": 9093, "purpose": "event stream" }
+  ],
+  "tls": [
+    { "name": "registry", "host": "registry.enclave.example", "port": 443, "min_days_valid": 60 },
+    { "name": "artifacts", "host": "artifacts.enclave.example", "port": 443, "min_days_valid": 60 }
+  ],
+  "http": [
+    { "name": "registry-v2", "url": "https://registry.enclave.example/v2/", "expect_status": [200, 401] },
+    { "name": "pip-index", "url": "https://artifacts.enclave.example/simple/pip/", "expect_status": [200] }
+  ],
+  "idp": [
+    {
+      "name": "enclave-oidc",
+      "issuer": "https://login.enclave.example/realms/solution",
+      "require_grant_types": ["client_credentials", "authorization_code"]
+    }
+  ],
+  "databases": [
+    {
+      "name": "system-of-record",
+      "type": "postgres",
+      "host": "db.enclave.example",
+      "database": "analytics",
+      "user_env": "BS_DB_USER",
+      "password_env": "BS_DB_PASSWORD",
+      "tls": true
+    }
+  ],
+  "kafka": [
+    {
+      "name": "events",
+      "bootstrap": ["kafka-1.enclave.example:9093"],
+      "security_protocol": "SSL",
+      "topics": ["events.v1"]
+    }
+  ],
+  "egress_denied": [
+    { "host": "pypi.org", "port": 443 },
+    { "host": "registry-1.docker.io", "port": 443 },
+    { "host": "ghcr.io", "port": 443 },
+    { "host": "8.8.8.8", "port": 53 },
+    { "host": "example.com", "port": 443 }
+  ]
+}

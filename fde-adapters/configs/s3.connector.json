@@ -1,0 +1,46 @@
+{
+  "adapter": "s3",
+  "name": "s3-forecast-drops",
+  "connection": {
+    "endpoint": "${S3_ENDPOINT}",
+    "bucket": "forecasts",
+    "region": "us-east-1",
+    "path_style": true,
+    "access_key_env": "S3_ACCESS_KEY",
+    "secret_key_env": "S3_SECRET_KEY"
+  },
+  "read": {
+    "prefix": "inputs/sales/dt=2026-03-01/",
+    "format": "jsonl",
+    "require_manifest": true,
+    "suffix": ".jsonl"
+  },
+  "write": {
+    "prefix": "outputs/forecast/dt=2026-03-02/",
+    "format": "jsonl",
+    "manifest": true,
+    "idempotency_fields": ["forecast_key"]
+  },
+  "mapping": {
+    "fields": {
+      "sku_id": {
+        "from": "sku",
+        "required": true
+      },
+      "store_id": {
+        "from": "store",
+        "required": true
+      },
+      "units": {
+        "from": "units",
+        "transform": ["to_float"]
+      },
+      "business_date": {
+        "from": "date"
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

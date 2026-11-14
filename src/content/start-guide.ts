@@ -2,7 +2,8 @@
  * The getting-started guide: a reading and referring sequence for engineers new to the site. It is data, so a test can check that every
  * link resolves and every blueprint section it names exists, and the page cannot drift from the site it describes.
  */
-import type { SectionId } from '../lib/roles';
+import { ROLE_COUNT_WORD, type SectionId } from '../lib/roles';
+import { ALL_STEPS } from './delivery';
 
 /** The blueprint the examples point at. Readers swap it for their own use case. */
 export const EXAMPLE = 'fintech/real-time-card-upi-fraud-detection';
@@ -152,7 +153,7 @@ export const SECTION_PURPOSE: Record<SectionId, string> = {
   scale: 'The capacity and cost model you can re-run at your own traffic.',
   evaluation: 'What has to be proven and how: offline protocol, thresholds, online experiment, guardrails.',
   'edge-cases': 'The cases that break the system in production, and how you notice.',
-  'role-lenses': 'What each of the fifteen roles should take from this blueprint.',
+  'role-lenses': `What each of the ${ROLE_COUNT_WORD} roles should take from this blueprint.`,
   governance: 'Risk tier, guardrails in six layers, regulatory orientation. Not legal advice.',
   experimentation: 'The statistical design: estimand, power, selection bias, calibration, slices, stopping rules.',
   metrics: 'Every metric to track: business, model, data, system, cost and safety, with owners and actions.',
@@ -160,6 +161,7 @@ export const SECTION_PURPOSE: Record<SectionId, string> = {
   operations: 'SLOs, telemetry, incident classes and ten failure scenarios from detection to learning.',
   agentic: 'Whether agents belong here at all, and if so the tools, autonomy ladder and guardrails.',
   playbook: 'The build playbook: milestones, exit gates and the starter kit that matches.',
+  implementation: 'The customer implementation playbook for the forward deployed engineer: integrations in four layers, permissions, network, configuration, tests, rollout, troubleshooting, acceptance and handover.',
   validation: 'What was checked and what was not, with the evidence for each maturity level.',
 };
 
@@ -170,7 +172,7 @@ export interface StuckRow {
 
 export const STUCK: StuckRow[] = [
   { question: 'Is this the right use case for me?', where: [{ label: 'Domain pages and tracks', href: '/#domains' }, { label: 'Kit compatibility on a blueprint playbook', href: `/${EXAMPLE}#playbook` }] },
-  { question: 'Who does what, and in what order?', where: [{ label: 'Delivery guide: 7 phases, 69 steps, RACI', href: '/delivery' }] },
+  { question: 'Who does what, and in what order?', where: [{ label: `Delivery guide: 7 phases, ${ALL_STEPS.length} steps, RACI`, href: '/delivery' }] },
   { question: 'How big does it have to be, and what does it cost?', where: [{ label: 'Capacity and cost model with calculator', href: `/${EXAMPLE}#scale` }] },
   { question: 'Which cloud service plays which role?', where: [{ label: 'Cloud tabs on the high-level design', href: `/${EXAMPLE}#hld` }, { label: 'Same tabs on the sequence diagram', href: `/${EXAMPLE}#sequence` }] },
   { question: 'Does Kubernetes make sense for this?', where: [{ label: 'Workload variants', href: '/deployment#variants' }] },

@@ -41,6 +41,11 @@ gap: Random splits with near-duplicate samples ; Goodware corpus unrepresentativ
 
 == phishing-url-and-email-detection | Phishing URL & Email Detection | nlp,tabular | sub-100ms | advanced | a=20 k=20
 obj: Block phishing emails and links at delivery and click time, catching novel campaigns before blocklists update.
+sor: SIEM and security data lake ; Email gateway and mail-flow configuration ; Case and ticketing system (SOAR) ; Asset inventory and identity directory
+up: Email gateway verdict API (synchronous inspection) ; URL inspection and click-time rewrite service ; SIEM, EDR and mail-log events (syslog, CEF, OCSF) ; Threat-intelligence feeds (STIX 2.1 over TAXII 2.1) ; User-reported phish mailbox
+down: Gateway disposition (deliver, banner, quarantine) ; SOAR playbooks and containment actions (approval-gated) ; SIEM detections and enrichment ; Analyst feedback and allow-list management
+opt: Browser isolation and web proxy ; Endpoint containment (EDR) ; Security awareness training platform
+proto: email gateway inspection API (synchronous), syslog or CEF and OCSF event ingestion (asynchronous), STIX and TAXII for intelligence, and SOAR and EDR REST APIs for response (read-only by default)
 loss: \mathcal{L}=\mathrm{FL}(p,y)+\lambda\,\mathrm{Calibration}
 con: Delivery latency under 100 ms ; Zero tolerance for blocking business-critical mail ; Multilingual ; Campaigns live for minutes
 sn: Novelty | Features from page, domain age and infrastructure | URL blocklists | Phishing domains live for hours, lists lag

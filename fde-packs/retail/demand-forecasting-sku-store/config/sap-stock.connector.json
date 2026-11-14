@@ -1,0 +1,57 @@
+{
+  "adapter": "sap-odata",
+  "name": "sap-stock-and-material",
+  "connection": {
+    "base_url": "${SAP_BASE_URL}",
+    "service": "API_MATERIAL_STOCK_SRV",
+    "odata_version": "v2",
+    "sap_client": "100",
+    "auth": {
+      "type": "basic",
+      "user_env": "SAP_USER",
+      "password_env": "SAP_PASSWORD"
+    }
+  },
+  "read": {
+    "entity_set": "A_MatlStkInAcctMod",
+    "select": ["Material", "Plant", "StorageLocation", "MatlWrhsStkQtyInMatlBaseUnit", "MaterialBaseUnit"],
+    "page_size": 500,
+    "key_field": "Material"
+  },
+  "mapping": {
+    "fields": {
+      "sku": {
+        "from": "Material",
+        "transform": ["strip"],
+        "required": true
+      },
+      "store": {
+        "from": "Plant",
+        "required": true
+      },
+      "on_hand": {
+        "from": "MatlWrhsStkQtyInMatlBaseUnit",
+        "transform": ["to_float"]
+      },
+      "uom": {
+        "from": "MaterialBaseUnit"
+      },
+      "source": {
+        "value": "sap"
+      }
+    }
+  },
+  "contract": {
+    "type": "object",
+    "required": ["sku", "store", "on_hand"],
+    "properties": {
+      "on_hand": {
+        "type": "number",
+        "minimum": 0
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

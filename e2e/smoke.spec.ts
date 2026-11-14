@@ -399,7 +399,7 @@ test('delivery guide: steps, gates, a role filter, progress and links into the c
 }) => {
   await page.goto('/delivery');
   const guide = page.getByTestId('delivery-guide');
-  await expect(guide.locator('[data-testid^="step-"]')).toHaveCount(69);
+  await expect(guide.locator('[data-testid^="step-"]')).toHaveCount(73);
   for (const p of ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6']) {
     await expect(page.getByTestId(`guide-${p}`)).toBeVisible();
     await expect(page.getByTestId(`gate-${p}`)).toContainText('Signed by');

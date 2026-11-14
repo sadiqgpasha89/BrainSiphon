@@ -27,6 +27,11 @@ gap: Training only on won impressions ignores the censored losing bids ; Offline
 
 == ctr-prediction-ads | Ad Click-Through Rate Prediction | tabular,recommender | sub-10ms | staff-principal | a=40 k=1
 obj: Predict click probability for each ad candidate with calibrated outputs at millions of requests per second.
+sor: Campaign, budget and pacing ledger ; Billing and invoicing ; Identity graph and consent store (CMP) ; Exchange and partner registry
+up: Ad exchange and SSP bid requests (OpenRTB 2.5 or 3.0) ; Win, loss, impression and click notices ; Consent signals (TCF strings and regional frameworks) ; Creative and campaign metadata
+down: Bid response to the exchange (inside the exchange deadline) ; Budget, pacing and frequency-cap service ; Impression, click and conversion event stream ; Billing and reconciliation
+opt: Demand-side platform bidder integration ; Third-party measurement and verification
+proto: OpenRTB 2.5 and 3.0 over HTTP (JSON or Protobuf) with per-exchange extensions, signed win and loss notice callbacks, TCF consent strings, and the internal scoring contract over gRPC
 loss: \mathcal{L}=-\sum_i\left[y_i\log p_i+(1-y_i)\log(1-p_i)\right]
 con: 2 ms inference budget ; Sparse categorical features with billions of IDs ; Online learning for freshness ; Calibration by segment
 sn: Features | Feature crosses learned by DCN or DeepFM with hashed embeddings | Handcrafted crosses only | Manual crosses cannot cover billions of ID pairs

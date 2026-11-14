@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sadiqgpasha89.github.io/BrainSiphon/downloads/fde-toolkit/schema/readiness-report.schema.json",
+  "title": "BrainSiphon environment readiness report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "tool",
+    "generated_at",
+    "customer",
+    "environment",
+    "run",
+    "summary",
+    "checks"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": { "name": { "type": "string" }, "version": { "type": "string" } }
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "customer": { "type": "string" },
+    "environment": { "type": "string" },
+    "use_case": { "type": "string" },
+    "run": {
+      "type": "object",
+      "required": ["host", "offline", "timeout_seconds"],
+      "properties": {
+        "host": { "type": "string" },
+        "user": { "type": "string" },
+        "python": { "type": "string" },
+        "os": { "type": "string" },
+        "offline": { "type": "boolean" },
+        "proxy_configured": { "type": "boolean" },
+        "timeout_seconds": { "type": "number" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "readiness",
+        "total",
+        "passed",
+        "failed",
+        "warnings",
+        "skipped",
+        "blocking_failures",
+        "advisories"
+      ],
+      "properties": {
+        "readiness": { "enum": ["READY", "READY_WITH_WARNINGS", "NOT_READY"] },
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "warnings": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 },
+        "blocking_failures": { "type": "array", "items": { "type": "string" } },
+        "advisories": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "category",
+          "status",
+          "severity",
+          "target",
+          "message",
+          "remediation",
+          "owner_hint",
+          "duration_ms"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "category": {
+            "enum": [
+              "dns",
+              "network",
+              "tls",
+              "http",
+              "api_auth",
+              "identity",
+              "service_account",
+              "database",
+              "event_stream",
+              "object_storage",
+              "cloud_access",
+              "proxy",
+              "egress"
+            ]
+          },
+          "status": { "enum": ["pass", "fail", "warn", "skip"] },
+          "severity": { "enum": ["blocking", "advisory"] },
+          "target": { "type": "string" },
+          "message": { "type": "string" },
+          "details": { "type": "object" },
+          "remediation": { "type": "string" },
+          "owner_hint": { "type": "string" },
+          "duration_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

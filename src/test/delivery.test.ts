@@ -54,6 +54,7 @@ describe('delivery guide', () => {
       mt: 'metrics',
       mlops: 'mlops',
       pb: 'playbook',
+      impl: 'implementation',
     };
     for (const a of Object.keys(BLUEPRINT_ANCHORS)) {
       const section = sections.has(a) ? a : prefix[a.split('-')[0]!];

@@ -173,8 +173,8 @@ export default async function Home() {
             </div>
             <p className="mt-2.5 text-xs leading-relaxed text-mute">
               One coherent lifecycle from Phase 0 discovery and financial ROI models to Phase 6 SRE
-              operational runbooks. 69 actionable steps, each naming exactly who does it, with whom, and what
-              artifact is produced.
+              operational runbooks. {ALL_STEPS.length} actionable steps, each naming exactly who does it, with
+              whom, and what artifact is produced.
             </p>
           </div>
 
@@ -225,7 +225,7 @@ export default async function Home() {
             Read the full About &amp; Engineering Guide <ArrowRight size={13} aria-hidden />
           </Link>
           <Link href="/delivery" className="btn text-xs no-underline">
-            Explore 69-Step Delivery Guide
+            Explore {ALL_STEPS.length}-Step Delivery Guide
           </Link>
           <Link href="/patterns" className="btn text-xs no-underline">
             View Pattern Library

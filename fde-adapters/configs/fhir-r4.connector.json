@@ -1,0 +1,61 @@
+{
+  "adapter": "fhir-r4",
+  "name": "fhir-observations",
+  "connection": {
+    "base_url": "${FHIR_BASE_URL}",
+    "auth": {
+      "type": "oauth2_client_credentials",
+      "token_url": "${FHIR_TOKEN_URL}",
+      "client_id_env": "FHIR_CLIENT_ID",
+      "client_secret_env": "FHIR_CLIENT_SECRET",
+      "scope": "system/Observation.read system/Patient.read system/Encounter.read"
+    }
+  },
+  "read": {
+    "resource": "Observation",
+    "search": {
+      "category": "laboratory",
+      "_lastUpdated": "gt2026-03-01T00:00:00Z",
+      "code": "http://loinc.org|2524-7"
+    },
+    "page_size": 100,
+    "key_field": "id",
+    "event_time_field": "effectiveDateTime"
+  },
+  "write": {
+    "resource_type": "Observation",
+    "identifier_system": "urn:brainsiphon:sepsis-score",
+    "idempotency_fields": ["score_id"]
+  },
+  "mapping": {
+    "fields": {
+      "observation_id": {
+        "from": "id",
+        "required": true
+      },
+      "patient_ref": {
+        "from": "subject.reference"
+      },
+      "loinc": {
+        "from": "code.coding[0].code"
+      },
+      "value": {
+        "from": "valueQuantity.value",
+        "transform": ["to_float"]
+      },
+      "unit": {
+        "from": "valueQuantity.unit"
+      },
+      "effective_at": {
+        "from": "effectiveDateTime",
+        "transform": ["to_utc"]
+      },
+      "status": {
+        "from": "status"
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

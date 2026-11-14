@@ -1,6 +1,11 @@
 # FinTech & Payments, part 1 (use cases 1-25)
 == real-time-card-upi-fraud-detection | Real-Time Card & UPI Fraud Detection | tabular,graph | sub-10ms | advanced | a=8 k=2
 obj: Block fraudulent authorisations inside the payment auth path while keeping false declines under 0.3% of genuine volume.
+sor: Card management system and authorisation ledger ; Core banking ledger ; Customer identity and KYC (CIAM) ; HSM-backed token vault (PAN tokenisation)
+up: Payment switch (ISO 8583 over mTLS) ; NPCI UPI PSP gateway (collect and pay) ; Mobile and web device SDK ; Merchant and acquirer master data
+down: Authorisation response to the switch (approve, step-up, decline) ; Case-management and analyst tooling ; Customer step-up and notification channels ; Chargeback and dispute system
+opt: Rules or legacy decision engine kept as the fallback ; Consortium and network scoring services
+proto: ISO 8583 over mTLS to card switches and acquirers, NPCI UPI collect and pay APIs, the customer's internal transaction schema over gRPC, and ISO 20022 for settlement
 loss: \mathcal{L}=\sum_i w_i\,\mathrm{FL}(p_i)+\lambda\,\mathrm{ECE}(p)
 con: p99 under 8 ms inside the auth path ; PCI-DSS scope minimisation ; every decline needs a reason code ; 99.99% availability ; UPI collect and pay risk scoring inside a 15 to 25 ms switch budget ; Decision space is allow, step-up challenge or block, with the 0.3% false-decline ceiling measured across all three
 sn: Velocity | Rolling counts and sums per card, device and merchant over 1m/1h/24h | Lifetime averages and static account age | Lifetime aggregates dilute a burst that lasts 90 seconds

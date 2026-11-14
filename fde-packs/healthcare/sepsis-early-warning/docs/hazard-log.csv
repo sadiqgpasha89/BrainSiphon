@@ -1,0 +1,11 @@
+id,hazard,cause,effect,existing_control,severity,likelihood,residual_risk,owner,status,last_reviewed
+H1,Missed deterioration,Model false negative or alert suppressed by refractory window,Delayed treatment,Critical-delta re-alert inside refractory window; NEWS2 fallback; clinical judgement remains primary,Critical,Low,Medium,Clinical safety officer,Open,
+H2,Alert fatigue,Threshold too low or duplicate alerts,Alerts ignored,Burden budget; one open alert per encounter; burden cap flags the shift; staged threshold changes,Major,Medium,Medium,Ward clinical lead,Open,
+H3,Wrong patient,Identity mismatch or unhandled merge,Alert on the wrong chart,Authority-qualified identifiers; merge re-pointing; look-alikes to human review; visit-number matching,Critical,Low,Medium,Integration team,Open,
+H4,Stale or late data used as current,Lab reported hours after draw,Wrong risk estimate,Event-time semantics; delay recorded; staleness cap,Major,Medium,Low,Data engineer,Open,
+H5,Wrong units,New analyser reports mg/dL,Tenfold error in a feature,Unit normalisation with range checks; unconvertible units flagged,Major,Medium,Low,Laboratory informatics,Open,
+H6,Corrected result ignored,Final then corrected result,Decision on an outdated value,Corrected replaces final; a late preliminary never overwrites,Major,Low,Low,Integration team,Open,
+H7,Service unavailable,EHR link or inference down,No early warning,Heartbeats; DEGRADED and DOWNTIME states; ward banner; paper procedure rehearsed,Critical,Medium,Medium,Clinical informatics on-call,Open,
+H8,Unauthorised access,No care-team check or silent break-glass,Privacy breach,Relationship-based access; audited break-glass with privacy officer notification,Major,Low,Low,Privacy officer,Open,
+H9,Alert not acted on,No owner or escalation,Delayed treatment,Ownership; 15-minute escalation ladder to the rapid response team; acknowledgement metric,Critical,Low,Medium,Ward manager,Open,
+H10,Silent model drift,Case mix or practice change,Reduced sensitivity,Monitoring of burden, recall on adjudicated cases and subgroup performance; locked model versions; change control,Major,Medium,Medium,Model owner,Open,

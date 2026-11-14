@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "bs-preflight configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "customer": { "type": "string" },
+    "environment": { "type": "string" },
+    "use_case": { "type": "string" },
+    "notes": { "type": "string" },
+    "offline": {
+      "type": "boolean",
+      "description": "Skip every check marked requires_internet; the run never contacts a public host on its own."
+    },
+    "timeout": { "type": "number" },
+    "ca_file": {
+      "type": "string",
+      "description": "The customer's CA bundle, used for every TLS check unless an item overrides it."
+    },
+    "owner_contacts": { "type": "object" },
+    "proxy": {
+      "type": "object",
+      "properties": {
+        "http_proxy": { "type": "string" },
+        "https_proxy": { "type": "string" },
+        "no_proxy": { "type": ["string", "array"] }
+      }
+    },
+    "proxy_checks": { "type": "array" },
+    "dns": { "type": "array", "items": { "type": "object", "required": ["name", "host"] } },
+    "tcp": { "type": "array", "items": { "type": "object", "required": ["name", "host", "port"] } },
+    "tls": { "type": "array", "items": { "type": "object", "required": ["name", "host"] } },
+    "http": { "type": "array", "items": { "type": "object", "required": ["name", "url"] } },
+    "api_auth": { "type": "array", "items": { "type": "object", "required": ["name"] } },
+    "idp": { "type": "array", "items": { "type": "object", "required": ["name"] } },
+    "service_accounts": {
+      "type": "array",
+      "items": { "type": "object", "required": ["name", "base_url", "auth_ref"] }
+    },
+    "databases": { "type": "array", "items": { "type": "object", "required": ["name", "type", "host"] } },
+    "kafka": { "type": "array", "items": { "type": "object", "required": ["name", "bootstrap"] } },
+    "object_storage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "endpoint", "bucket", "access_key_env", "secret_key_env"]
+      }
+    },
+    "cloud_access": { "type": "array", "items": { "type": "object", "required": ["name", "command"] } },
+    "egress_denied": { "type": "array", "items": { "type": "object", "required": ["host"] } }
+  }
+}

@@ -241,6 +241,11 @@ gap: Counting abandonment as deflection ; Test questions from docs titles
 
 == support-ticket-triage-and-priority | Support Ticket Triage & Priority | nlp,tabular | sub-100ms | foundational | a=0.2 k=3
 obj: Classify ticket category, urgency and required skill at creation, and route to the right queue meeting SLA.
+sor: Ticketing platform (Zendesk, ServiceNow or Salesforce Service Cloud) ; CRM and customer entitlements (tier, subscription, contractual SLA) ; Tenant and entitlement service ; Knowledge base
+up: Ticketing platform webhooks and bulk export ; CRM account and entitlement reads ; Product events and application logs correlated by ticket id ; Customer chat and email channels
+down: Ticket write-back (priority, category, queue, assignee, tags, comment, status) ; Agent queues and escalation paths ; Incident linking and bulk handling ; Agent feedback and correction capture
+opt: Identity provider for on-behalf-of agent actions ; Business-hours and workforce calendar
+proto: REST APIs and signed webhooks of the ticketing platform (Zendesk, ServiceNow Table API, Salesforce Service Cloud), CRM REST, SCIM and OIDC for identity, and the internal triage contract over REST
 loss: \mathcal{L}=\mathrm{CE}_{\text{category}}+\lambda\,\mathrm{OrdinalCE}_{\text{urgency}}
 con: SLA tiers ; Multilingual ; Real-time routing ; Explainable
 sn: Context | Combine text with account tier, product and recent incidents | Text only | Priority depends on the customer and context

@@ -1,0 +1,88 @@
+{
+  "adapter": "servicenow",
+  "name": "servicenow-incidents",
+  "connection": {
+    "instance_url": "${SN_INSTANCE_URL}",
+    "auth": {
+      "type": "basic",
+      "user_env": "SN_USER",
+      "password_env": "SN_PASSWORD"
+    }
+  },
+  "read": {
+    "table": "incident",
+    "query": "active=true^ORDERBYsys_updated_on",
+    "fields": ["sys_id", "number", "short_description", "priority", "state", "sys_updated_on"],
+    "page_size": 100,
+    "key_field": "sys_id",
+    "event_time_field": "sys_updated_on"
+  },
+  "write": {
+    "table": "incident",
+    "idempotency_fields": ["ticket_id"]
+  },
+  "mapping": {
+    "fields": {
+      "ticket_id": {
+        "from": "number",
+        "required": true
+      },
+      "sys_id": {
+        "from": "sys_id"
+      },
+      "title": {
+        "from": "short_description"
+      },
+      "priority": {
+        "from": "priority",
+        "transform": ["map"],
+        "map": {
+          "1": "P1",
+          "2": "P2",
+          "3": "P3",
+          "4": "P4"
+        },
+        "default": "P3"
+      },
+      "updated_at": {
+        "from": "sys_updated_on",
+        "transform": ["to_utc"]
+      },
+      "source": {
+        "value": "servicenow"
+      }
+    }
+  },
+  "write_mapping": {
+    "fields": {
+      "short_description": {
+        "from": "title"
+      },
+      "priority": {
+        "from": "priority",
+        "transform": ["map"],
+        "map": {
+          "P1": "1",
+          "P2": "2",
+          "P3": "3",
+          "P4": "4"
+        }
+      }
+    }
+  },
+  "contract": {
+    "type": "object",
+    "required": ["ticket_id", "priority"],
+    "properties": {
+      "priority": {
+        "enum": ["P1", "P2", "P3", "P4"]
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  },
+  "timeouts": {
+    "read": 30
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "adapter": "kafka",
+  "name": "kafka-events",
+  "connection": {
+    "bootstrap_servers": "${KAFKA_BOOTSTRAP}",
+    "security_protocol": "SSL",
+    "ca_file": "${KAFKA_CA_FILE:-/etc/ssl/certs/customer-root-ca.pem}",
+    "mock": false
+  },
+  "read": {
+    "topic": "tx.events.v1",
+    "group_id": "brainsiphon-scoring",
+    "max_records": 200,
+    "dead_letter_topic": "tx.events.v1.dlq"
+  },
+  "write": {
+    "topic": "decisions.v1",
+    "key_field": "card_token",
+    "idempotency_fields": ["decision_id"]
+  },
+  "mapping": {
+    "fields": {
+      "event_id": {
+        "from": "value.event_id",
+        "required": true
+      },
+      "card_token": {
+        "from": "value.card_token"
+      },
+      "amount_minor": {
+        "from": "value.amount",
+        "transform": ["to_int"]
+      },
+      "event_time": {
+        "from": "value.ts",
+        "transform": ["to_utc"]
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

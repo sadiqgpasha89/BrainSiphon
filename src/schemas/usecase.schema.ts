@@ -1220,7 +1220,7 @@ export const UseCaseSchema = z
     }),
     productionEdgeCases: z.array(EdgeCaseSchema).min(2),
     systemDesign: SystemDesignSchema,
-    /** what each of the fourteen personas must additionally check, specialised to this use case */
+    /** what each of the reader personas (ROLE_IDS) must additionally check, specialised to this use case */
     roleLenses: z.array(RoleLensSchema).length(ROLE_IDS.length),
     /** canonical mechanisms this system leans on, explained once at /patterns/primitives/<id> */
     primitives: z.array(z.string().regex(/^[a-z0-9-]+$/)).min(1),

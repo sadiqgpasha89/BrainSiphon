@@ -11,8 +11,8 @@
  * open until the client has confirmed it.
  */
 import type { Discovery, EnterpriseContext, Governance } from '../schemas/usecase.schema';
-import { DOMAIN_ENTERPRISE } from './enterprise-domains';
-import { LABEL_DELAY, PROTOCOLS } from './extras';
+import { domainOf } from './enterprise-domains';
+import { LABEL_DELAY, protocolsOf } from './extras';
 import { TOTAL_BUDGET_MS } from './design';
 import { usd } from './scale';
 import type { EntCtx } from './enterprise';
@@ -22,7 +22,7 @@ const strip = (s: string) => s.trim().replace(/[.;]+$/, '');
 
 export function buildDiscovery(c: EntCtx, ent: EnterpriseContext, gov: Governance): Discovery {
   const { raw, domain, scale } = c;
-  const d = DOMAIN_ENTERPRISE[domain];
+  const d = domainOf(raw, domain);
   const batch = scale.mode === 'batch';
   const total = TOTAL_BUDGET_MS[c.latency];
   const llm = c.paradigms.includes('llm-agents') || c.pattern === 'llm-agent' || c.pattern === 'llm-rag';
@@ -65,7 +65,7 @@ export function buildDiscovery(c: EntCtx, ent: EnterpriseContext, gov: Governanc
     {
       id: 'consuming-application',
       question: 'Which application will consume the model or AI output?',
-      proposedAnswer: `${consumer} consumes the ${decision} ${batch ? 'once the run publishes' : within}; ${caseTool} receives the cases that need a person; ${d.systemsOfRecord[0]} stays the system of record. Confirm each consumer's interface (${PROTOCOLS[domain].split(',')[0]!.trim()}), change window and owner.`,
+      proposedAnswer: `${consumer} consumes the ${decision} ${batch ? 'once the run publishes' : within}; ${caseTool} receives the cases that need a person; ${d.systemsOfRecord[0]} stays the system of record. Confirm each consumer's interface (${protocolsOf(raw, domain).split(',')[0]!.trim()}), change window and owner.`,
       confirmWith: 'The application owners and the Solution Architect',
       evidence: 'An interface inventory naming each consuming application, its owner, protocol and release calendar',
     },

@@ -24,8 +24,8 @@ import {
   type RiskTier,
   type Validation,
 } from '../schemas/usecase.schema';
-import { CASCADE, LABEL_DELAY, PROTOCOLS, RESIDENCY, TAIL_COHORTS, type Stance, type Topology } from './extras';
-import { DOMAIN_ENTERPRISE } from './enterprise-domains';
+import { CASCADE, LABEL_DELAY, protocolsOf, RESIDENCY, TAIL_COHORTS, type Stance, type Topology } from './extras';
+import { domainOf } from './enterprise-domains';
 import { m, snake, TOTAL_BUDGET_MS, type Stage } from './design';
 import type { FeasibilityCheck } from './feasibility';
 import type { RawUseCase } from './parse';
@@ -112,7 +112,7 @@ export function drFor(c: EntCtx): { rpoSeconds: number; rtoSeconds: number; repl
 /* ------------------------------------------------------------------ enterprise context */
 
 function c4Context(c: EntCtx): string {
-  const d = DOMAIN_ENTERPRISE[c.domain];
+  const d = domainOf(c.raw, c.domain);
   const L = [
     'flowchart LR',
     `  U1["${m(d.stakeholders[0]!.who, 48)}"] -->|consumes decisions| SYS`,
@@ -128,7 +128,7 @@ function c4Context(c: EntCtx): string {
 }
 
 function c4Container(c: EntCtx): string {
-  const d = DOMAIN_ENTERPRISE[c.domain];
+  const d = domainOf(c.raw, c.domain);
   const sync = syncStages(c);
   const asyncS = c.stages.filter((s) => s.async);
   const L = ['flowchart TB', '  subgraph EXT["Enterprise landscape"]', `    UP["${m(d.upstream[0]!, 44)}"]`, `    SOR[("${m(d.systemsOfRecord[0]!, 44)}")]`, `    DN["${m(d.downstream[0]!, 44)}"]`, '  end', '  subgraph AI["AI service (trust boundary)"]'];
@@ -147,7 +147,7 @@ function c4Container(c: EntCtx): string {
 
 export function buildEnterpriseContext(c: EntCtx): EnterpriseContext {
   const { raw, domain, scale } = c;
-  const d = DOMAIN_ENTERPRISE[domain];
+  const d = domainOf(raw, domain);
   const sync = syncStages(c);
   const batch = isBatch(c);
   const dr = drFor(c);
@@ -199,7 +199,7 @@ on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 
   ];
 
   const trust = [
-    `Internet and partners to the edge gateway: WAF, authentication, per-key rate limits (${PROTOCOLS[domain].split(',')[0]!.trim()})`,
+    `Internet and partners to the edge gateway: WAF, authentication, per-key rate limits (${protocolsOf(raw, domain).split(',')[0]!.trim()})`,
     'Gateway to the inference plane: mTLS with workload identity, deadline propagation, no raw credentials',
     c.stance === 'residency-pinned' ? 'Inference plane to the state plane: jurisdiction-pinned shards, service identity per key range, no raw regulated data crossing regions' : c.stance === 'tenant-isolated' ? 'Inference plane to tenant cells: tenant-scoped keys, row-level security, per-tenant KMS keys' : 'Inference plane to feature and data stores: service identity with read-only scopes, per-region replicas',
     'Training and analytics plane to production: no direct writes; only signed registry artifacts cross the boundary',
@@ -248,7 +248,7 @@ on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 
       context: `${d.upstream[0]} and ${d.systemsOfRecord[0]} are owned by other teams and change on their own schedules.`,
       decision: batch ? 'Consume immutable partitions with row-count manifests and publish results atomically, so a failed run never exposes partial output.' : `Keep the decision path synchronous with the remaining deadline passed to every hop; publish decisions and outcomes as events through a transactional outbox so ${d.systemsOfRecord[0]} and the analytics plane stay consistent without dual writes.`,
       alternatives: ['Direct database reads from the owning system (couples release cycles)', 'Fully asynchronous decisions (cannot meet the response deadline)'],
-      consequences: `Every upstream gets its own timeout, retry budget and circuit breaker; protocol translation (${PROTOCOLS[domain].split(',')[0]!.trim()}) lives in an anti-corruption layer.`,
+      consequences: `Every upstream gets its own timeout, retry budget and circuit breaker; protocol translation (${protocolsOf(raw, domain).split(',')[0]!.trim()}) lives in an anti-corruption layer.`,
     },
     {
       id: 'ADR-004',
@@ -296,7 +296,7 @@ on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 
       upstream: d.upstream,
       downstream: d.downstream,
       integration: [
-        { boundary: `${d.upstream[0]} → ${raw.title}`, style: batch ? 'Immutable daily partition with a manifest and row counts' : 'Synchronous gRPC or REST with deadline propagation and an idempotency key', contract: `${PROTOCOLS[domain]}, terminated at an anti-corruption layer into one internal schema`, onFailure: 'Timeout falls to the degradation ladder; the service never blocks its caller beyond the caller\'s own SLA' },
+        { boundary: `${d.upstream[0]} → ${raw.title}`, style: batch ? 'Immutable daily partition with a manifest and row counts' : 'Synchronous gRPC or REST with deadline propagation and an idempotency key', contract: `${protocolsOf(raw, domain)}, terminated at an anti-corruption layer into one internal schema`, onFailure: 'Timeout falls to the degradation ladder; the service never blocks its caller beyond the caller\'s own SLA' },
         { boundary: `${raw.title} → ${d.downstream[0]}`, style: 'Decision event plus idempotent write-back through a transactional outbox', contract: 'Versioned decision schema: decision_id, action, reason codes, model and policy version', onFailure: 'Retry with the same decision_id, park poison messages in a dead-letter topic and reconcile nightly' },
         { boundary: `${d.systemsOfRecord[0]} ↔ feature pipelines`, style: 'Change-data-capture into Kafka, then stream or batch transforms', contract: 'Avro or Protobuf with registry compatibility BACKWARD_TRANSITIVE and a data contract', onFailure: 'Schema break or poison pill goes to quarantine; features are served stale with a flag' },
         { boundary: `${d.downstream[1]} ↔ ${raw.title}`, style: 'REST or GraphQL case API behind OIDC with RBAC', contract: 'Case, evidence and override schema; every override is a labelled outcome', onFailure: 'Queues persist; SLA timers escalate unreviewed items' },
@@ -369,7 +369,7 @@ const PARADIGM_WHY: Record<PatternId, { why: string; deep: [string, string]; llm
 
 export function buildDecisionMatrix(c: EntCtx): DecisionMatrix {
   const { raw, domain, scale } = c;
-  const d = DOMAIN_ENTERPRISE[domain];
+  const d = domainOf(raw, domain);
   const w = PARADIGM_WHY[c.pattern];
   const sn0 = raw.sn[0]!;
   const text = decisionText(c);
@@ -435,7 +435,7 @@ const APPROVALS: Record<RiskTier, string[]> = {
 };
 
 export function riskTierOf(c: EntCtx): { tier: RiskTier; drivers: string[] } {
-  const d = DOMAIN_ENTERPRISE[c.domain];
+  const d = domainOf(c.raw, c.domain);
   const text = decisionText(c);
   const drivers: string[] = [];
   const consequential = /credit|lend|underwrit|claim|aml|sanction|kyc|fraud|decline|block|diagnos|clinical|patient|sepsis|triage|deteriorat|proctor|grade|assessment|hiring|eviction|tenant screening|valuation|autonomous|safety/.test(text);
@@ -470,7 +470,7 @@ export function riskTierOf(c: EntCtx): { tier: RiskTier; drivers: string[] } {
 
 export function buildGovernance(c: EntCtx): Governance {
   const { domain } = c;
-  const d = DOMAIN_ENTERPRISE[domain];
+  const d = domainOf(c.raw, domain);
   const { tier, drivers } = riskTierOf(c);
   const llm = isLlm(c);
   const rag = c.pattern === 'llm-rag' || (llm && /rag|retriev|knowledge|docs|search/.test(decisionText(c)));
@@ -585,7 +585,7 @@ export function buildMlops(c: EntCtx): Mlops {
 
 export function buildOperations(c: EntCtx): Operations {
   const { raw, domain, scale } = c;
-  const d = DOMAIN_ENTERPRISE[domain];
+  const d = domainOf(raw, domain);
   const batch = isBatch(c);
   const total = TOTAL_BUDGET_MS[c.latency];
   const avail = availabilityOf(c);

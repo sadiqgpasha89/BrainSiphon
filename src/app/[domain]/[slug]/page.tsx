@@ -19,7 +19,8 @@ import {
   OperationsSection,
   ValidationSection,
 } from '../../../components/reader/Enterprise';
-import { getIndex, getNeighbours, getRelease, getUseCase } from '../../../lib/content';
+import { getImplementation, getIndex, getNeighbours, getRelease, getUseCase } from '../../../lib/content';
+import { ImplementationSection } from '../../../components/reader/Implementation';
 import { ReleaseLine, ValidationStatusStrip } from '../../../components/reader/ValidationStatus';
 import { blueprintMaturityScorecard, blueprintStatuses } from '../../../content/release';
 import { toMarkdown } from '../../../content/markdown';
@@ -63,6 +64,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
   if (!uc) notFound();
   const { prev, next, related } = await getNeighbours(full);
   const entry = (await getIndex()).find((e) => e.slug === full);
+  const implementation = await getImplementation(full);
 
   const ageDays = Math.floor((Date.now() - new Date(uc.lastVerifiedAt).getTime()) / 86_400_000);
   const stale = ageDays > STALE_DAYS;
@@ -128,6 +130,11 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
           >
             <Route size={14} aria-hidden /> Deliver this use case: step-by-step guide
           </Link>
+          {implementation && (
+            <a href="#implementation" className="btn no-underline" data-testid="implementation-link">
+              <Hammer size={14} aria-hidden /> Customer implementation playbook (FDE)
+            </a>
+          )}
           {uc.playbook && (
             <a href="#playbook" className="btn no-underline" data-testid="playbook-link">
               <Hammer size={14} aria-hidden />{' '}
@@ -206,6 +213,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         <OperationsSection uc={uc} />
         <AgenticSection ag={uc.agentic} input={viewInputOf(uc)} />
         {uc.playbook && <PlaybookSection pb={uc.playbook} />}
+        {implementation && <ImplementationSection pb={implementation} />}
         <ValidationSection uc={uc} release={release} />
       </article>
       <Pager prev={prev} next={next} related={related} />

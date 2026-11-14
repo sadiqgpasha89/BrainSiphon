@@ -1,0 +1,107 @@
+{
+  "adapter": "salesforce",
+  "name": "salesforce-cases",
+  "connection": {
+    "instance_url": "${SF_INSTANCE_URL}",
+    "api_version": "v60.0",
+    "auth": {
+      "type": "jwt_bearer",
+      "token_url": "${SF_LOGIN_URL:-https://login.salesforce.com}/services/oauth2/token",
+      "issuer_env": "SF_CONSUMER_KEY",
+      "subject_env": "SF_INTEGRATION_USER",
+      "audience": "https://login.salesforce.com",
+      "private_key_path_env": "SF_PRIVATE_KEY_PATH"
+    }
+  },
+  "read": {
+    "object": "Case",
+    "fields": ["Id", "Subject", "Priority", "Status", "AccountId", "LastModifiedDate"],
+    "where": "LastModifiedDate > {watermark}",
+    "watermark": "2026-01-01T00:00:00Z",
+    "order_by": "LastModifiedDate",
+    "batch_size": 200
+  },
+  "write": {
+    "object": "Case",
+    "external_id_field": "BS_Ticket_Id__c",
+    "idempotency_fields": ["ticket_id"]
+  },
+  "mapping": {
+    "fields": {
+      "ticket_id": {
+        "from": "Id",
+        "required": true
+      },
+      "title": {
+        "from": "Subject",
+        "required": true
+      },
+      "priority": {
+        "from": "Priority",
+        "transform": ["map"],
+        "map": {
+          "High": "P2",
+          "Medium": "P3",
+          "Low": "P4"
+        },
+        "default": "P3"
+      },
+      "status": {
+        "from": "Status"
+      },
+      "account_id": {
+        "from": "AccountId"
+      },
+      "updated_at": {
+        "from": "LastModifiedDate",
+        "transform": ["to_utc"]
+      },
+      "source": {
+        "value": "salesforce"
+      }
+    }
+  },
+  "write_mapping": {
+    "fields": {
+      "Priority": {
+        "from": "priority",
+        "transform": ["map"],
+        "map": {
+          "P2": "High",
+          "P3": "Medium",
+          "P4": "Low"
+        }
+      },
+      "Subject": {
+        "from": "title"
+      },
+      "BS_Ticket_Id__c": {
+        "from": "ticket_id",
+        "required": true
+      }
+    }
+  },
+  "contract": {
+    "type": "object",
+    "required": ["ticket_id", "title", "priority", "updated_at"],
+    "properties": {
+      "priority": {
+        "enum": ["P1", "P2", "P3", "P4"]
+      },
+      "updated_at": {
+        "type": "string",
+        "format": "date-time"
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4,
+    "base_delay": 0.2,
+    "max_delay": 10
+  },
+  "timeouts": {
+    "connect": 5,
+    "read": 30,
+    "deadline": 60
+  }
+}

@@ -16,6 +16,17 @@
  *   pipe:  Stage label @ tech ; Stage label @ tech
  *   edge:  scenario | failure mode | mitigation                         (repeatable)
  *   off:   metric ; metric          on: metric ; metric        gap: trap ; trap
+ *
+ * Optional integration overrides. The domain supplies default systems of record, upstream and downstream systems and
+ * protocols; a use case whose real landscape differs (a branch-staffing forecast does not depend on SWIFT or a credit
+ * bureau) states its own, and the blueprint, the discovery questions and the implementation playbook all follow it.
+ *   sor:   system of record ; system of record       (replaces the domain default)
+ *   up:    upstream system ; upstream system         (replaces the domain default)
+ *   down:  downstream system ; downstream system     (replaces the domain default)
+ *   opt:   optional system ; optional system         (useful where present, never a dependency)
+ *   proto: protocols and interfaces in one sentence  (replaces the domain default)
+ *   own:   data-owning team ; data-owning team       (replaces the domain default)
+ *   host:  where it runs, in one sentence            (replaces the domain default)
  */
 
 export interface RawStage {
@@ -46,10 +57,18 @@ export interface RawUseCase {
   off: string[];
   on: string[];
   gap: string[];
+  /** integration overrides (see the header): absent means "use the domain default" */
+  sor?: string[];
+  up?: string[];
+  down?: string[];
+  opt?: string[];
+  proto?: string;
+  own?: string[];
+  host?: string;
 }
 
-const SINGLE = new Set(['obj', 'loss', 'base', 'prod']);
-const LIST = new Set(['con', 'pipe', 'off', 'on', 'gap']);
+const SINGLE = new Set(['obj', 'loss', 'base', 'prod', 'proto', 'host']);
+const LIST = new Set(['con', 'pipe', 'off', 'on', 'gap', 'sor', 'up', 'down', 'opt', 'own']);
 const ROWS: Record<string, number> = { sn: 4, sig: 4, noise: 2, edge: 3 };
 
 const splitList = (v: string) =>
@@ -134,6 +153,11 @@ export function parseUseCaseFile(file: string, text: string): RawUseCase[] {
 }
 
 function finish(file: string, c: Partial<RawUseCase> & { line?: number }): RawUseCase {
+  for (const f of ['sor', 'up', 'down', 'own'] as const) {
+    const v = c[f];
+    if (v !== undefined && v.length < 2)
+      throw new Error(`${file}:${c.line}: use case "${c.key}" field "${f}" needs at least two systems separated by " ; "`);
+  }
   const need = ['obj', 'base', 'prod'] as const;
   for (const f of need) {
     if (!c[f]) throw new Error(`${file}:${c.line}: use case "${c.key}" missing required field "${f}"`);

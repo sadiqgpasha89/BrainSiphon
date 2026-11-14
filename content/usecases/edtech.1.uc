@@ -1,6 +1,11 @@
 # EdTech, part 1 (use cases 1-25)
 == knowledge-tracing-student-modeling | Knowledge Tracing & Student Modelling | time-series,tabular | sub-100ms | advanced | a=25 k=1
 obj: Estimate each learner's evolving mastery per skill from their answer history to drive practice selection and progress reports.
+sor: Learning management system (LMS) ; Student information system (SIS) ; Assessment platform and item bank ; Curriculum and skill taxonomy
+up: LTI 1.3 launches and deep links ; OneRoster 1.2 rostering (students, teachers, classes, enrolments) ; xAPI and Caliper learning events ; QTI assessment items and responses
+down: Adaptive practice and learning-path service ; Teacher dashboard, intervention and override workflow ; Learner and guardian progress reporting ; Official gradebook (read-only boundary: mastery never becomes a grade automatically)
+opt: Content-management system and OER repositories ; Offline learning apps with deferred sync
+proto: LTI 1.3 and LTI Advantage, OneRoster 1.2 REST and CSV, xAPI and Caliper event streams, QTI 2.1 and 3.0 items, and the internal mastery contract over gRPC
 loss: \mathcal{L}=-\sum_t\left[y_t\log \hat p_t+(1-y_t)\log(1-\hat p_t)\right]
 con: Update after every answer in under 30 ms ; Millions of learners ; Interpretable mastery per skill ; Cold-start for new skills
 sn: Model | Interpretable BKT/PFA or attention-based KT with skill mapping | Deep model without skill structure | Opaque models predict next answers but can't explain mastery

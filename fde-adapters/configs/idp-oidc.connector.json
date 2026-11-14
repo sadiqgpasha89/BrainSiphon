@@ -1,0 +1,30 @@
+{
+  "adapter": "idp-oidc",
+  "name": "enterprise-idp",
+  "connection": {
+    "issuer": "${OIDC_ISSUER}",
+    "audience": "api://brainsiphon",
+    "jwks_cache_seconds": 300,
+    "leeway_seconds": 60,
+    "machine_client_ids": ["svc-scoring", "svc-switch"],
+    "tenant_claim": "tid",
+    "groups_claim": "groups",
+    "role_mapping": {
+      "grp-fraud-analysts": "analyst",
+      "grp-fraud-leads": "approver",
+      "grp-platform": "operator"
+    },
+    "scim_base_url": "${SCIM_BASE_URL:-}"
+  },
+  "read": {
+    "resource": "Users",
+    "page_size": 100
+  },
+  "write": {
+    "resource": "Users",
+    "idempotency_fields": ["externalId"]
+  },
+  "retry": {
+    "max_attempts": 3
+  }
+}

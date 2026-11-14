@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScoreRequest",
+  "description": "Internal contract between the payment gateway adapter and the fraud scoring service. One schema for card and UPI.",
+  "type": "object",
+  "required": ["transaction_id", "channel", "card_token", "amount_minor", "currency", "event_time"],
+  "additionalProperties": true,
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "sha256 of the wire transaction key; stable across retransmissions"
+    },
+    "channel": {
+      "enum": ["card", "upi"]
+    },
+    "mti": {
+      "type": "string"
+    },
+    "card_token": {
+      "type": "string",
+      "pattern": "^k[0-9]+:[0-9a-f]{24}$",
+      "description": "tokenised PAN or VPA: never the clear value"
+    },
+    "bin": {
+      "type": "string",
+      "maxLength": 8
+    },
+    "amount_minor": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "amount": {
+      "type": "number",
+      "minimum": 0
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[0-9]{3}$"
+    },
+    "txn_type": {
+      "type": "string"
+    },
+    "entry_mode": {
+      "type": "string"
+    },
+    "pin_verified": {
+      "type": "boolean"
+    },
+    "mcc": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "terminal_id": {
+      "type": "string"
+    },
+    "acquirer_id": {
+      "type": ["string", "null"]
+    },
+    "rrn": {
+      "type": ["string", "null"]
+    },
+    "stan": {
+      "type": ["string", "null"]
+    },
+    "event_time": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "emv_present": {
+      "type": "boolean"
+    },
+    "ip": {
+      "type": ["string", "null"]
+    }
+  }
+}

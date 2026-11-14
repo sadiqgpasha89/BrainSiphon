@@ -1,6 +1,13 @@
 # Real Estate & PropTech, part 1 (use cases 1-25): valuation, listings, leasing and property management
 == automated-valuation-model | Automated Valuation Model (AVM) | tabular,computer-vision | seconds | advanced | a=0.05 k=40
 obj: Estimate the market value of a home from its attributes, location, nearby sales and photos, with a confidence range, for lenders, portals and owners.
+own: Valuation and collateral analytics ; Property data office ; Appraisal operations
+host: Public cloud region where the MLS and registry data licences allow processing (licence terms can pin the region), with a GPU pool for the photo-condition model; no building-edge infrastructure is needed for core valuation
+sor: Property registry, cadastre and assessor records ; Listing and MLS data (licensed) ; Transaction and deed records ; Appraisal and collateral-management system
+up: MLS data via RESO Web API (licensed access) ; Registry, cadastral and assessor extracts ; Deed, transaction and tax records ; Geospatial, zoning and photo data
+down: Appraisal review and challenge workflow ; Underwriting and collateral-management system ; Listing portals and agent tools (attribution rules apply) ; Portfolio and analyst reporting with licence-aware access
+opt: Building-management and IoT condition data (optional condition feature only) ; CRM and property-management systems ; Commercial income, rent and occupancy data (commercial valuation pack only)
+proto: RESO Web API (OData) with market-specific licensing, registry and cadastral extracts (file and API), deed and tax-record feeds, and valuation results delivered to appraisal, underwriting and collateral systems over REST
 loss: \mathcal{L}=\mathrm{Huber}(\log\hat{y}-\log y)+\lambda\,\mathrm{Pinball}(\hat{q}_{0.1},y)
 con: Median error under 6% with a published confidence score ; Valuation must not use protected attributes or their proxies ; Explainable comparable set for every value ; Re-valuation of a whole market overnight
 sn: Target | Sale price at the contract date, adjusted to a common date | Listing price or assessed value | Listing prices are aspirations and assessed values lag the market by years

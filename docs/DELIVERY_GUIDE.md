@@ -1,6 +1,6 @@
 # BrainSiphon delivery guide: from project scoping to deployment and monitoring
 
-> One path, 7 phases and 69 steps, that takes any BrainSiphon use case from a named business problem to a monitored production service. Every step says who does it, who takes part, when, how, what it produces and where to read in the blueprint.
+> One path, 7 phases and 73 steps, that takes any BrainSiphon use case from a named business problem to a monitored production service. Every step says who does it, who takes part, when, how, what it produces and where to read in the blueprint.
 
 Interactive version, with your use case selected and a progress checklist: https://sadiqgpasha89.github.io/BrainSiphon/delivery
 
@@ -231,7 +231,7 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
 | MLOps Engineer | I | R | C | R | R | R | R |
 | Inference Engineer | I | R | · | R | C | I | R |
 | Platform Engineer | C | C | C | C | R | C | C |
-| Forward Deployed Engineer | C | C | R | C | C | R | C |
+| Forward Deployed Engineer | R | R | R | C | R | R | R |
 | SRE / DevOps Engineer | I | C | I | I | R | C | R |
 | Security Engineer | R | R | C | C | R | C | R |
 | QA / Test Engineer | C | R | I | C | R | C | C |
@@ -258,6 +258,7 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
 | 0.8 | Write the requirements and acceptance criteria | Business Analyst | Week 2 | Approved requirements, testable acceptance criteria and a scope boundary. |
 | 0.9 | Agree the RACI, the team and the plan | Delivery lead (project manager) | Week 2 | RACI, staffing plan, dated delivery plan and risk register. |
 | 0.10 | Build the business case | Business Analyst | Week 2 | Business case with an ROI measurement plan. |
+| 0.11 | Discover the customer environment and open every access request | Forward Deployed Engineer | Week 1, in parallel with the interviews | Completed environment templates, a readiness report, an access and firewall request log with owners and tickets, and the agreed deployment mode. |
 
 ### 0.1 Pick the use case and read its blueprint once, end to end
 
@@ -368,7 +369,7 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
 - **When:** Week 2
 - **How:**
   1. Give every decision exactly one accountable person.
-  2. Map the fourteen roles to named people. One person may hold several roles: write that down.
+  2. Map the fifteen roles to named people. One person may hold several roles: write that down.
   3. Plan the seven phases with dates and a gate review at the end of each.
   4. Start a risk register with the ten biggest risks, each with an owner.
 - **Output:** RACI, staffing plan, dated delivery plan and risk register.
@@ -386,6 +387,19 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
   4. Add a sensitivity line: what if only half the expected uplift arrives?
 - **Output:** Business case with an ROI measurement plan.
 - **Read in the blueprint:** Phase 0 · Business case and ROI measurement (`#disc-case`); Scale & capacity (with the sizing calculator) (`#scale`); Statistical validation · Measuring business value (`#xp-value`)
+
+### 0.11 Discover the customer environment and open every access request
+
+- **Owner:** Forward Deployed Engineer
+- **With:** Solution Architect, Platform Engineer, Security Engineer, Data owner (data steward)
+- **When:** Week 1, in parallel with the interviews
+- **How:**
+  1. Complete the thirteen environment templates with the customer: network topology, VPC or VNet, firewall and ports, proxy, DNS and private endpoints, identity provider, service accounts, databases, Kafka, API gateway, secrets, data residency and cloud account access.
+  2. Run the pre-flight checks from inside the customer network (DNS, TCP, TLS, API authentication, databases) and keep the machine-readable readiness report.
+  3. File every firewall, DNS, identity and access request now. Approvals and network changes are the longest lead time in any customer delivery, so they must not wait for Phase 2.
+  4. Agree the deployment mode with the customer security team: their cloud, their Kubernetes, on-premises, hybrid, air-gapped or managed SaaS.
+- **Output:** Completed environment templates, a readiness report, an access and firewall request log with owners and tickets, and the agreed deployment mode.
+- **Read in the blueprint:** Customer implementation playbook (`#implementation`); Customer implementation playbook · Identity, permissions and network (`#impl-access`); Enterprise context · Technology and security (`#ent-technology`)
 
 ### Gate 0 · Scope approved
 
@@ -430,6 +444,7 @@ Called by: Delivery lead (project manager). Signed by: Executive sponsor, Produc
 | 1.9 | Define environments, the release path and the SLOs | MLOps Engineer | Weeks 3–4 | Release and environment design, and an SLO document. |
 | 1.10 | Write the test strategy | QA / Test Engineer | Week 4 | Test strategy with a traceability matrix. |
 | 1.11 | Record the decisions and hold the architecture review | Solution Architect | Week 4 | Decision records and architecture review minutes with actions. |
+| 1.12 | Specify every integration and prove the environment can carry it | Forward Deployed Engineer | Week 4 | An integration specification per hop with sequence diagrams and tests, the adapter selection, and a readiness report for the target environment. |
 
 ### 1.1 Place the system in your enterprise landscape
 
@@ -566,6 +581,19 @@ Called by: Delivery lead (project manager). Signed by: Executive sponsor, Produc
 - **Output:** Decision records and architecture review minutes with actions.
 - **Read in the blueprint:** Enterprise context · Architecture decision records (`#ent-adr`); Enterprise context · Build, buy or integrate (`#ent-buildbuy`)
 
+### 1.12 Specify every integration and prove the environment can carry it
+
+- **Owner:** Forward Deployed Engineer
+- **With:** Solution Architect, Data Engineer, Platform Engineer, Security Engineer
+- **When:** Week 4
+- **How:**
+  1. For each customer system write the hop in four layers: external protocol, connector and transformation, internal contract, acknowledgement. Include authentication, network path, retry, timeout and idempotency.
+  2. Choose the adapter for each system from the reusable set, or note what a customer-specific adapter must do, and run it against its mock.
+  3. Re-run the pre-flight checks against the final endpoints and attach the readiness report to the architecture review.
+  4. List every discovery question still unanswered, with an owner and a date.
+- **Output:** An integration specification per hop with sequence diagrams and tests, the adapter selection, and a readiness report for the target environment.
+- **Read in the blueprint:** Customer implementation playbook (`#implementation`); Customer implementation playbook · Integrations, layer by layer (`#impl-integrations`); Customer implementation playbook · Connectors, mocks and local development (`#impl-connectors`)
+
 ### Gate 1 · Design approved
 
 Called by: Delivery lead (project manager). Signed by: Solution Architect, AI Architect, Security Engineer, Product owner (decision owner). Every line is evidence that must exist.
@@ -615,7 +643,7 @@ Called by: Delivery lead (project manager). Signed by: Solution Architect, AI Ar
 - **With:** Data Engineer, Data owner (data steward), Security Engineer, Risk, compliance, legal and privacy
 - **When:** Week 3
 - **How:**
-  1. Request access to each source with the purpose stated, through the customer’s own access process, and track each request to closure.
+  1. Request access to each source with the purpose stated, through the customer’s own access process, and track each request to closure. The environment and access requests were opened in step 0.11: this step carries them to approval and signature.
   2. Work through the customer-environment checklist (network allow-lists, private endpoints, identity federation, API access, deployment permissions) and record what is still blocked and who owns the blocker.
   3. Complete a privacy impact assessment wherever personal data is involved (under GDPR, a data protection impact assessment).
   4. Sign the data contract with each producing team.
@@ -933,6 +961,7 @@ Called by: Delivery lead (project manager). Signed by: AI Architect, Product own
 | 4.8 | Run user acceptance testing | Business Analyst | Weeks 11–12 | Acceptance test report signed by the product owner. |
 | 4.9 | Write the runbooks and train support | SRE / DevOps Engineer | Weeks 11–12 | Runbooks, on-call rota and trained support. |
 | 4.10 | Rehearse rollback and disaster recovery | SRE / DevOps Engineer | Week 12 | Rollback and recovery rehearsal record, with timings. |
+| 4.11 | Run customer acceptance testing and plan adoption | Forward Deployed Engineer | Weeks 12–13 | Signed customer acceptance, a defect and exception log, training records and an adoption plan. |
 
 ### 4.1 Provision the environments as code
 
@@ -1058,6 +1087,19 @@ Called by: Delivery lead (project manager). Signed by: AI Architect, Product own
   3. Record both results.
 - **Output:** Rollback and recovery rehearsal record, with timings.
 - **Read in the blueprint:** MLOps · Retraining, champion/challenger and rollback (`#mlops-retraining`); Production operations (`#operations`); Enterprise context · Non-functional requirements (`#ent-nfr`)
+
+### 4.11 Run customer acceptance testing and plan adoption
+
+- **Owner:** Forward Deployed Engineer
+- **With:** Product owner (decision owner), End users and process owners, QA / Test Engineer, Support and service desk
+- **When:** Weeks 12–13
+- **How:**
+  1. Run the business acceptance scenarios with the customer’s own users in the customer environment, not only in staging.
+  2. Record every defect and every accepted exception with a named approver.
+  3. Train the users and the operators and record who completed it and how competence was checked.
+  4. Agree the adoption measures with the product owner: who uses the output, how often, and what they do when they disagree with it.
+- **Output:** Signed customer acceptance, a defect and exception log, training records and an adoption plan.
+- **Read in the blueprint:** Customer implementation playbook (`#implementation`); Customer implementation playbook · Acceptance and handover (`#impl-acceptance`); Build playbook · Test and acceptance plan (`#pb-tests`)
 
 ### Gate 4 · Ready for release
 
@@ -1253,6 +1295,7 @@ Called by: Delivery lead (project manager). Signed by: Product owner (decision o
 | 6.8 | Keep security and compliance current | Security Engineer | Continuous scanning, quarterly access review, periodic model review | Compliance evidence log. |
 | 6.9 | Collect feedback and manage the backlog | Product owner (decision owner) | Every sprint | Prioritised backlog. |
 | 6.10 | Review the service: continue, change or retire | Product owner (decision owner) | Quarterly | Quarterly service review decision. |
+| 6.11 | Coordinate customer-side incidents and change windows | Forward Deployed Engineer | Continuous, reviewed monthly | An incident and change log for customer-side events, current environment documentation and a monthly report to the product owner. |
 
 ### 6.1 Watch service health
 
@@ -1377,6 +1420,19 @@ Called by: Delivery lead (project manager). Signed by: Product owner (decision o
   4. If retiring: settle data retention, archive the model and tell the users.
 - **Output:** Quarterly service review decision.
 - **Read in the blueprint:** Enterprise context · AI decision matrix (`#ent-decision`); Phase 0 · Business case and ROI measurement (`#disc-case`); Validation (`#validation`)
+
+### 6.11 Coordinate customer-side incidents and change windows
+
+- **Owner:** Forward Deployed Engineer
+- **With:** SRE / DevOps Engineer, Support and service desk, Product owner (decision owner)
+- **When:** Continuous, reviewed monthly
+- **How:**
+  1. Be the single point of contact for incidents that touch customer systems: certificates, credentials, network changes, upstream schema changes.
+  2. Use the troubleshooting knowledge base to diagnose, then hand over or escalate within the agreed time with the evidence attached.
+  3. Agree change windows with the customer and re-run the pre-flight checks before and after every environment change.
+  4. Keep the customer configuration, certificates and access list current and record each change.
+- **Output:** An incident and change log for customer-side events, current environment documentation and a monthly report to the product owner.
+- **Read in the blueprint:** Customer implementation playbook (`#implementation`); Customer implementation playbook · Rollout, rollback and reconciliation (`#impl-rollout`); Production operations (`#operations`)
 
 ### Gate 6 · Quarterly service review
 
@@ -1558,6 +1614,7 @@ Standardized, downloadable deliverables covering project discovery, production a
 - [ ] 0.8 Approved requirements, testable acceptance criteria and a scope boundary. (Business Analyst)
 - [ ] 0.9 RACI, staffing plan, dated delivery plan and risk register. (Delivery lead (project manager))
 - [ ] 0.10 Business case with an ROI measurement plan. (Business Analyst)
+- [ ] 0.11 Completed environment templates, a readiness report, an access and firewall request log with owners and tickets, and the agreed deployment mode. (Forward Deployed Engineer)
 - [ ] Gate 0 · Scope approved, signed by Executive sponsor, Product owner (decision owner)
 
 **Phase 1 · Architecture and design**
@@ -1573,6 +1630,7 @@ Standardized, downloadable deliverables covering project discovery, production a
 - [ ] 1.9 Release and environment design, and an SLO document. (MLOps Engineer)
 - [ ] 1.10 Test strategy with a traceability matrix. (QA / Test Engineer)
 - [ ] 1.11 Decision records and architecture review minutes with actions. (Solution Architect)
+- [ ] 1.12 An integration specification per hop with sequence diagrams and tests, the adapter selection, and a readiness report for the target environment. (Forward Deployed Engineer)
 - [ ] Gate 1 · Design approved, signed by Solution Architect, AI Architect, Security Engineer, Product owner (decision owner)
 
 **Phase 2 · Data**
@@ -1614,6 +1672,7 @@ Standardized, downloadable deliverables covering project discovery, production a
 - [ ] 4.8 Acceptance test report signed by the product owner. (Business Analyst)
 - [ ] 4.9 Runbooks, on-call rota and trained support. (SRE / DevOps Engineer)
 - [ ] 4.10 Rollback and recovery rehearsal record, with timings. (SRE / DevOps Engineer)
+- [ ] 4.11 Signed customer acceptance, a defect and exception log, training records and an adoption plan. (Forward Deployed Engineer)
 - [ ] Gate 4 · Ready for release, signed by QA / Test Engineer, Security Engineer, SRE / DevOps Engineer, Product owner (decision owner)
 
 **Phase 5 · Release and deployment**
@@ -1641,6 +1700,7 @@ Standardized, downloadable deliverables covering project discovery, production a
 - [ ] 6.8 Compliance evidence log. (Security Engineer)
 - [ ] 6.9 Prioritised backlog. (Product owner (decision owner))
 - [ ] 6.10 Quarterly service review decision. (Product owner (decision owner))
+- [ ] 6.11 An incident and change log for customer-side events, current environment documentation and a monthly report to the product owner. (Forward Deployed Engineer)
 - [ ] Gate 6 · Quarterly service review, signed by Product owner (decision owner), Executive sponsor
 
 ## Glossary

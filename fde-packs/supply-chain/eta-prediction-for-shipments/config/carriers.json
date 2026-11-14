@@ -1,0 +1,69 @@
+{
+  "carriers": [
+    {
+      "id": "acme-freight",
+      "name": "Acme Freight (LTL)",
+      "integration": "as2",
+      "formats": ["X12-214", "X12-990", "X12-997"],
+      "endpoints": {
+        "as2": "https://as2.acme-freight.example/receive",
+        "as2_id": "ACMEFRT"
+      },
+      "auth": "mtls",
+      "credential_ref": "vault:secret/carriers/acme-freight/as2",
+      "rate_limit": "n/a (batch)",
+      "status": "live",
+      "tested_on": "",
+      "contact": "edi@acme-freight.example",
+      "cert_not_after": ""
+    },
+    {
+      "id": "fastparcel",
+      "name": "FastParcel (parcel)",
+      "integration": "webhook",
+      "formats": ["JSON tracking events"],
+      "endpoints": {
+        "webhook": "https://eta.example/hooks/fastparcel",
+        "api": "https://api.fastparcel.example/v2"
+      },
+      "auth": "hmac",
+      "credential_ref": "aws-sm:prod/carriers/fastparcel/webhook",
+      "rate_limit": "600 req/min",
+      "status": "live",
+      "tested_on": "",
+      "contact": "integrations@fastparcel.example"
+    },
+    {
+      "id": "oceanline",
+      "name": "OceanLine (ocean)",
+      "integration": "sftp",
+      "formats": ["EDIFACT-IFTSTA"],
+      "endpoints": {
+        "sftp": "sftp.oceanline.example:22",
+        "inbound_dir": "/outbound/iftsta"
+      },
+      "auth": "ssh_key",
+      "credential_ref": "vault:secret/carriers/oceanline/sftp",
+      "rate_limit": "n/a (batch, hourly)",
+      "status": "onboarding",
+      "tested_on": "",
+      "contact": "edi@oceanline.example"
+    },
+    {
+      "id": "trucktel",
+      "name": "TruckTel telematics",
+      "integration": "mqtt",
+      "formats": ["JSON position pings"],
+      "endpoints": {
+        "broker": "mqtts://mqtt.trucktel.example:8883",
+        "topic": "fleet/+/position"
+      },
+      "auth": "mtls",
+      "credential_ref": "vault:secret/carriers/trucktel/devices",
+      "rate_limit": "1 ping / 30 s / device",
+      "status": "sandbox",
+      "tested_on": "",
+      "contact": "devices@trucktel.example"
+    }
+  ]
+}

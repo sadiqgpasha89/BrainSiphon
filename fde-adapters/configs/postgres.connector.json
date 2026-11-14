@@ -1,0 +1,50 @@
+{
+  "adapter": "postgres",
+  "name": "postgres-orders",
+  "connection": {
+    "host": "db.internal.example",
+    "port": 5432,
+    "database": "analytics",
+    "user_env": "DB_USER",
+    "password_env": "DB_PASSWORD",
+    "tls": true,
+    "mock": false
+  },
+  "read": {
+    "query": "SELECT order_id, customer_id, amount, updated_at FROM orders_v",
+    "key_field": "order_id",
+    "page_size": 500,
+    "event_time_field": "updated_at"
+  },
+  "write": {
+    "table": "bs_decisions",
+    "key_column": "decision_id",
+    "columns": ["decision_id", "action", "model_version"],
+    "idempotency_fields": ["decision_id"]
+  },
+  "mapping": {
+    "fields": {
+      "order_id": {
+        "from": "order_id",
+        "required": true
+      },
+      "customer_id": {
+        "from": "customer_id"
+      },
+      "amount": {
+        "from": "amount",
+        "transform": ["to_float"]
+      },
+      "updated_at": {
+        "from": "updated_at",
+        "transform": ["to_utc"]
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  },
+  "timeouts": {
+    "read": 30
+  }
+}

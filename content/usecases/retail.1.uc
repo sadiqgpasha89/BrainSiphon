@@ -193,6 +193,12 @@ gap: Training on non-randomised past promotions ; Measuring redemption rather th
 
 == demand-forecasting-sku-store | SKU-Store Demand Forecasting | time-series | batch | advanced | a=1 k=1
 obj: Forecast daily demand for millions of SKU-store pairs to drive replenishment with calibrated uncertainty and promo awareness.
+own: Merchandise planning ; Supply-chain IT ; Master data team
+sor: Product information management (SKU and hierarchy master) ; Inventory management and warehouse management (stock and availability) ; POS transaction history ; Price and promotion calendar
+up: POS transaction feeds (store and e-commerce) ; Inventory and warehouse positions (SAP, Oracle Retail, WMS) ; Promotion, markdown and price-change calendar ; Store master, calendar and assortment data
+down: Replenishment planning and buyer approval workflow ; Procurement and supplier ordering (purchase-order proposals) ; Allocation and store-operations planning ; Planner override and feedback capture
+opt: Supplier portals and EDI order acknowledgements ; Workforce and store-operations scheduling ; Storefront and search availability signals
+proto: scheduled batch exports from SAP and Oracle Retail (IDoc, OData, database extracts), POS and OMS APIs and file drops to object storage, and forecast files or planning-system APIs written back for replenishment
 loss: \mathcal{L}=\sum_{t}\sum_{q}\rho_q\!\left(y_t-\hat y_t^{(q)}\right)\quad\text{(quantile / pinball)}
 con: 5M series nightly ; Intermittent demand ; Promotion and price covariates ; Explainable overrides
 sn: Intermittency | Count-aware or quantile outputs for intermittent demand | Gaussian MSE | MSE on lumpy demand gives meaningless negative or tiny forecasts

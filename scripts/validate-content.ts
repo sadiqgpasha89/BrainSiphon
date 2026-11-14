@@ -16,6 +16,8 @@ import { PRIMITIVE_BY_ID } from '../src/content/primitives';
 import { loadTracksFile, resolveTracks } from '../src/content/tracks';
 import { TOTAL_BUDGET_MS } from '../src/content/design';
 import { ROLE_IDS } from '../src/lib/roles';
+import { buildImplementationPlaybook } from '../src/content/fde/generate';
+import { ImplementationPlaybookSchema } from '../src/schemas/implementation.schema';
 import {
   clearReport,
   computeContentDigest,
@@ -139,6 +141,28 @@ async function main() {
         await mermaid.parse(code);
       } catch (e) {
         errors.push(`${u.slug}: Mermaid(${name}) — ${String((e as Error).message ?? e).split('\n')[0]}`);
+      }
+    }
+
+    // the customer implementation playbook: schema-valid, no unresolved placeholder, and every hop's sequence diagram parses
+    {
+      const impl = buildImplementationPlaybook(u);
+      const parsed = ImplementationPlaybookSchema.safeParse(impl);
+      if (!parsed.success)
+        errors.push(
+          `${u.slug}: implementation playbook — ${parsed.error.issues[0]?.path.join('.')}: ${parsed.error.issues[0]?.message}`,
+        );
+      // `${VAR}` is deliberate in the config files (shell and env substitution) and `${AUCTION_PRICE}` is an OpenRTB macro
+      if (/\b(undefined|NaN|Infinity)\b|\[object|\{\{/.test(JSON.stringify(impl)))
+        errors.push(`${u.slug}: implementation playbook contains an unresolved placeholder`);
+      for (const h of impl.integrations) {
+        try {
+          await mermaid.parse(h.sequence);
+        } catch (e) {
+          errors.push(
+            `${u.slug}: Mermaid(implementation ${h.id}) — ${String((e as Error).message ?? e).split('\n')[0]}`,
+          );
+        }
       }
     }
 

@@ -1,0 +1,142 @@
+{
+  "customer": "acme-bank",
+  "environment": "staging",
+  "use_case": "fintech/real-time-card-upi-fraud-detection",
+  "timeout": 5,
+  "ca_file": "/etc/ssl/certs/customer-root-ca.pem",
+  "proxy": {
+    "https_proxy": "http://proxy.corp.example:3128",
+    "no_proxy": [".corp.example", "10.0.0.0/8", "localhost"]
+  },
+  "proxy_checks": [
+    {
+      "connect_to": [{ "host": "login.corp.example", "port": 443 }],
+      "expect_bypass": ["scoring.internal.example"]
+    }
+  ],
+  "dns": [
+    {
+      "name": "feature-store",
+      "host": "features.internal.example",
+      "expect_cidrs": ["10.20.0.0/16"],
+      "private_endpoint": true,
+      "resolver": "10.20.0.2",
+      "expect_cname_contains": "privatelink"
+    },
+    { "name": "kafka-bootstrap", "host": "kafka-1.internal.example", "expect_cidrs": ["10.30.0.0/16"] }
+  ],
+  "tcp": [
+    {
+      "name": "feature-store",
+      "host": "features.internal.example",
+      "port": 6379,
+      "purpose": "online feature reads"
+    },
+    {
+      "name": "system-of-record-db",
+      "host": "db.internal.example",
+      "port": 5432,
+      "purpose": "CDC and batch extract"
+    }
+  ],
+  "tls": [
+    {
+      "name": "api-gateway",
+      "host": "api.internal.example",
+      "port": 443,
+      "min_days_valid": 30,
+      "min_version": "TLSv1.2"
+    },
+    {
+      "name": "partner-switch-mtls",
+      "host": "switch.partner.example",
+      "port": 8443,
+      "client_cert": "/etc/bs/certs/client.crt",
+      "client_key": "/etc/bs/certs/client.key",
+      "via_proxy": false
+    }
+  ],
+  "http": [
+    { "name": "gateway-health", "url": "https://api.internal.example/healthz", "expect_status": [200] }
+  ],
+  "idp": [
+    {
+      "name": "workforce-oidc",
+      "issuer": "https://login.corp.example/oauth2/default",
+      "require_grant_types": ["authorization_code"]
+    },
+    {
+      "name": "machine-oidc",
+      "issuer": "https://login.corp.example/oauth2/machine",
+      "require_grant_types": ["client_credentials"]
+    }
+  ],
+  "api_auth": [
+    {
+      "name": "scoring-client",
+      "auth_type": "oauth2_client_credentials",
+      "token_url": "https://login.corp.example/oauth2/machine/v1/token",
+      "client_id_env": "BS_SCORING_CLIENT_ID",
+      "client_secret_env": "BS_SCORING_CLIENT_SECRET",
+      "scope": "score:write",
+      "probe_url": "https://api.internal.example/v1/score/healthz"
+    }
+  ],
+  "service_accounts": [
+    {
+      "name": "scoring-client",
+      "base_url": "https://api.internal.example",
+      "auth_ref": "scoring-client",
+      "expect_allow": ["POST /v1/score/healthz"],
+      "expect_deny": ["GET /admin/users", "DELETE /v1/models/active"]
+    }
+  ],
+  "databases": [
+    {
+      "name": "features-pg",
+      "type": "postgres",
+      "host": "db.internal.example",
+      "port": 5432,
+      "database": "analytics",
+      "user_env": "BS_DB_USER",
+      "password_env": "BS_DB_PASSWORD",
+      "tls": true,
+      "query": "SELECT 1"
+    },
+    { "name": "ledger-sqlserver", "type": "sqlserver", "host": "ledger.internal.example", "port": 1433 },
+    { "name": "retail-oracle", "type": "oracle", "host": "rms.internal.example", "port": 1521 }
+  ],
+  "kafka": [
+    {
+      "name": "events",
+      "bootstrap": ["kafka-1.internal.example:9093"],
+      "security_protocol": "SSL",
+      "topics": ["tx.events.v1", "decisions.v1"]
+    }
+  ],
+  "object_storage": [
+    {
+      "name": "model-bucket",
+      "endpoint": "https://s3.internal.example",
+      "bucket": "models",
+      "region": "us-east-1",
+      "access_key_env": "BS_S3_ACCESS_KEY",
+      "secret_key_env": "BS_S3_SECRET_KEY",
+      "path_style": true,
+      "write_probe": false
+    }
+  ],
+  "cloud_access": [
+    {
+      "name": "aws-identity",
+      "command": ["aws", "sts", "get-caller-identity", "--output", "json"],
+      "expect_json": {}
+    },
+    {
+      "name": "cluster-deploy-permission",
+      "command": ["kubectl", "auth", "can-i", "create", "deployments", "-n", "solution-staging"],
+      "expect_contains": "yes"
+    }
+  ],
+  "egress_denied": []
+}

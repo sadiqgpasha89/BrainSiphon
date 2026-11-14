@@ -8,11 +8,11 @@
  *
  * Plain data, safe to import from client components.
  */
-import { ROLE_IDS, ROLE_META, type PhaseId, type RoleId } from '../lib/roles';
+import { ROLE_COUNT_WORD, ROLE_IDS, ROLE_META, type PhaseId, type RoleId } from '../lib/roles';
 
 /* ------------------------------------------------------------------------------------------------ people */
 
-/** People outside the fourteen delivery roles without whom a delivery does not finish. */
+/** People outside the delivery roles (see ROLE_IDS) without whom a delivery does not finish. */
 export const PARTNER_IDS = [
   'sponsor',
   'product-owner',
@@ -173,6 +173,14 @@ export const BLUEPRINT_ANCHORS = {
   operations: 'Production operations',
   agentic: 'Agentic solution (or a reasoned “no agent”)',
   playbook: 'Build playbook',
+  implementation: 'Customer implementation playbook',
+  'impl-discovery': 'Customer implementation playbook · Discovery questions for the customer',
+  'impl-integrations': 'Customer implementation playbook · Integrations, layer by layer',
+  'impl-access': 'Customer implementation playbook · Identity, permissions and network',
+  'impl-connectors': 'Customer implementation playbook · Connectors, mocks and local development',
+  'impl-testing': 'Customer implementation playbook · Tests',
+  'impl-rollout': 'Customer implementation playbook · Rollout, rollback and reconciliation',
+  'impl-acceptance': 'Customer implementation playbook · Acceptance and handover',
   'pb-prereqs': 'Build playbook · Before you start',
   'pb-domain': 'Build playbook · Domain knowledge',
   'pb-data': 'Build playbook · Data',
@@ -383,7 +391,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         when: 'Week 2',
         how: [
           'Give every decision exactly one accountable person.',
-          'Map the fourteen roles to named people. One person may hold several roles: write that down.',
+          `Map the ${ROLE_COUNT_WORD} roles to named people. One person may hold several roles: write that down.`,
           'Plan the seven phases with dates and a gate review at the end of each.',
           'Start a risk register with the ten biggest risks, each with an owner.',
         ],
@@ -404,6 +412,21 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         ],
         output: 'Business case with an ROI measurement plan.',
         read: ['disc-case', 'scale', 'xp-value'],
+      },
+      {
+        id: '0.11',
+        title: 'Discover the customer environment and open every access request',
+        owner: 'forward-deployed-engineer',
+        with: ['solution-architect', 'platform-engineer', 'security-engineer', 'data-owner'],
+        when: 'Week 1, in parallel with the interviews',
+        how: [
+          'Complete the thirteen environment templates with the customer: network topology, VPC or VNet, firewall and ports, proxy, DNS and private endpoints, identity provider, service accounts, databases, Kafka, API gateway, secrets, data residency and cloud account access.',
+          'Run the pre-flight checks from inside the customer network (DNS, TCP, TLS, API authentication, databases) and keep the machine-readable readiness report.',
+          'File every firewall, DNS, identity and access request now. Approvals and network changes are the longest lead time in any customer delivery, so they must not wait for Phase 2.',
+          'Agree the deployment mode with the customer security team: their cloud, their Kubernetes, on-premises, hybrid, air-gapped or managed SaaS.',
+        ],
+        output: 'Completed environment templates, a readiness report, an access and firewall request log with owners and tickets, and the agreed deployment mode.',
+        read: ['implementation', 'impl-access', 'ent-technology'],
       },
     ],
     gate: {
@@ -599,6 +622,21 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         output: 'Decision records and architecture review minutes with actions.',
         read: ['ent-adr', 'ent-buildbuy'],
       },
+      {
+        id: '1.12',
+        title: 'Specify every integration and prove the environment can carry it',
+        owner: 'forward-deployed-engineer',
+        with: ['solution-architect', 'data-engineer', 'platform-engineer', 'security-engineer'],
+        when: 'Week 4',
+        how: [
+          'For each customer system write the hop in four layers: external protocol, connector and transformation, internal contract, acknowledgement. Include authentication, network path, retry, timeout and idempotency.',
+          'Choose the adapter for each system from the reusable set, or note what a customer-specific adapter must do, and run it against its mock.',
+          'Re-run the pre-flight checks against the final endpoints and attach the readiness report to the architecture review.',
+          'List every discovery question still unanswered, with an owner and a date.',
+        ],
+        output: 'An integration specification per hop with sequence diagrams and tests, the adapter selection, and a readiness report for the target environment.',
+        read: ['implementation', 'impl-integrations', 'impl-connectors'],
+      },
     ],
     gate: {
       convenedBy: 'delivery-lead',
@@ -644,7 +682,7 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         with: ['data-engineer', 'data-owner', 'security-engineer', 'risk-compliance'],
         when: 'Week 3',
         how: [
-          'Request access to each source with the purpose stated, through the customer’s own access process, and track each request to closure.',
+          'Request access to each source with the purpose stated, through the customer’s own access process, and track each request to closure. The environment and access requests were opened in step 0.11: this step carries them to approval and signature.',
           'Work through the customer-environment checklist (network allow-lists, private endpoints, identity federation, API access, deployment permissions) and record what is still blocked and who owns the blocker.',
           'Complete a privacy impact assessment wherever personal data is involved (under GDPR, a data protection impact assessment).',
           'Sign the data contract with each producing team.',
@@ -1134,6 +1172,21 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         output: 'Rollback and recovery rehearsal record, with timings.',
         read: ['mlops-retraining', 'operations', 'ent-nfr'],
       },
+      {
+        id: '4.11',
+        title: 'Run customer acceptance testing and plan adoption',
+        owner: 'forward-deployed-engineer',
+        with: ['product-owner', 'end-users', 'qa-test-engineer', 'support'],
+        when: 'Weeks 12–13',
+        how: [
+          'Run the business acceptance scenarios with the customer’s own users in the customer environment, not only in staging.',
+          'Record every defect and every accepted exception with a named approver.',
+          'Train the users and the operators and record who completed it and how competence was checked.',
+          'Agree the adoption measures with the product owner: who uses the output, how often, and what they do when they disagree with it.',
+        ],
+        output: 'Signed customer acceptance, a defect and exception log, training records and an adoption plan.',
+        read: ['implementation', 'impl-acceptance', 'pb-tests'],
+      },
     ],
     gate: {
       convenedBy: 'delivery-lead',
@@ -1488,6 +1541,21 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
         ],
         output: 'Quarterly service review decision.',
         read: ['ent-decision', 'disc-case', 'validation'],
+      },
+      {
+        id: '6.11',
+        title: 'Coordinate customer-side incidents and change windows',
+        owner: 'forward-deployed-engineer',
+        with: ['sre-devops-engineer', 'support', 'product-owner'],
+        when: 'Continuous, reviewed monthly',
+        how: [
+          'Be the single point of contact for incidents that touch customer systems: certificates, credentials, network changes, upstream schema changes.',
+          'Use the troubleshooting knowledge base to diagnose, then hand over or escalate within the agreed time with the evidence attached.',
+          'Agree change windows with the customer and re-run the pre-flight checks before and after every environment change.',
+          'Keep the customer configuration, certificates and access list current and record each change.',
+        ],
+        output: 'An incident and change log for customer-side events, current environment documentation and a monthly report to the product owner.',
+        read: ['implementation', 'impl-rollout', 'operations'],
       },
     ],
     gate: {

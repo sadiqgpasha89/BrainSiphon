@@ -1,0 +1,71 @@
+{
+  "market": "us-reso",
+  "description": "United States: MLS data via the RESO Web API, county parcel numbers, appraisal rules from the lender's guidelines (USPAP applies to appraisers).",
+  "identifiers": {
+    "parcel": {
+      "pattern": "^\\d{2}-\\d{3}-\\d{3}$",
+      "note": "Parcel numbers (APN) differ by county. Replace the pattern per county in `parcel_overrides`."
+    },
+    "parcel_overrides": {
+      "cook-il": "^\\d{2}-\\d{2}-\\d{3}-\\d{3}-\\d{4}$"
+    },
+    "listing_key": "ListingKey",
+    "mls_number": "ListingId"
+  },
+  "licence": {
+    "onboarding": [
+      "Apply to the MLS (or the MLS-aggregator) as a data licensee: the intended use is automated valuation",
+      "Sign the data licence: record permitted uses, display rules, attribution text, redistribution, retention and audit rights",
+      "Obtain RESO Web API credentials (OAuth client credentials or a bearer token) and the replication limits",
+      "Confirm whether closed (sold) data may be used for model training, and for how long it may be stored",
+      "Name the MLS compliance contact; agree how audits and takedown requests work"
+    ],
+    "uses": ["valuation", "model_training"],
+    "fields_by_use": {
+      "valuation": [
+        "ListingKey",
+        "ClosePrice",
+        "CloseDate",
+        "LivingArea",
+        "LivingAreaUnits",
+        "BedroomsTotal",
+        "BathroomsTotalInteger",
+        "YearBuilt",
+        "PropertyType",
+        "PropertySubType",
+        "UnparsedAddress",
+        "Latitude",
+        "Longitude",
+        "ParcelNumber",
+        "ModificationTimestamp"
+      ],
+      "model_training": [
+        "ClosePrice",
+        "CloseDate",
+        "LivingArea",
+        "BedroomsTotal",
+        "BathroomsTotalInteger",
+        "YearBuilt",
+        "PropertyType",
+        "Latitude",
+        "Longitude"
+      ]
+    },
+    "attribution": "Listing data courtesy of the local MLS. Information deemed reliable but not guaranteed.",
+    "redistribute": false,
+    "retention_days": 730
+  },
+  "comparables": {
+    "max_distance_km_urban": 3,
+    "max_distance_km_rural": 15,
+    "max_age_days": 270,
+    "gross_adjustment_cap": 0.25,
+    "net_adjustment_cap": 0.15,
+    "min_usable": 3
+  },
+  "confidence": {
+    "max_range_pct": 0.2,
+    "max_model_gap": 0.12,
+    "min_comps": 3
+  }
+}
