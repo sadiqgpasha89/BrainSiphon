@@ -62,6 +62,15 @@ export async function SiteFooter() {
               </a>
             </li>
             <li>
+              <Link href="/fde" className="hover:text-ink">
+                FDE hub
+              </Link>{' '}
+              — customer workspaces, plans, toolkit; see also the{' '}
+              <Link href="/workspace" className="hover:text-ink">
+                architecture workspace
+              </Link>
+            </li>
+            <li>
               <Link href="/patterns" className="hover:text-ink">
                 Patterns &amp; primitives
               </Link>{' '}

@@ -89,7 +89,8 @@ jobs:
   # ── Stage 3b2: FDE toolkit, adapters, evidence tools and the ten use-case packs (standard library plus pytest) ──
   # These are mock- and fixture-tested only: no vendor sandbox or customer environment is contacted.
   fde-python:
-    runs-on: ubuntu-latest
+    # pinned: ubuntu-latest moved to 26.04, which has no Python 3.9 build for setup-python
+    runs-on: ubuntu-24.04
     needs: content-gate
     strategy:
       fail-fast: false
