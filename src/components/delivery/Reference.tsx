@@ -19,6 +19,8 @@ import {
   type Raci,
 } from '../../content/delivery';
 import { ROLE_IDS, ROLE_META, ROLE_OWNS } from '../../lib/roles';
+import { withBase } from '../../lib/site';
+import { DOWNLOAD_BUNDLES } from '../../content/downloads-meta';
 import { BlueprintRefs, StepLinks } from './GuideLinks';
 
 const RACI_TONE: Record<Raci, string> = {
@@ -331,6 +333,28 @@ export function DeliveryReference() {
         title="Executable delivery templates and implementation packages"
         intro="Standardized, downloadable deliverables covering client discovery, production architecture contracts, data engineering pipelines, and low-latency serving microservices."
       >
+        <ul className="mb-3 flex flex-wrap gap-3 text-sm" data-testid="template-bundles">
+          {DOWNLOAD_BUNDLES.map((b) => (
+            <li key={b.id} className="card p-3">
+              <a
+                className="font-semibold text-signal underline"
+                href={withBase(`/downloads/${b.zip}`)}
+                download
+              >
+                {b.title} (.zip)
+              </a>
+              <p className="mt-1 max-w-xs text-xs text-mute">{b.note}</p>
+            </li>
+          ))}
+          <li className="card p-3">
+            <a className="font-semibold text-signal underline" href={withBase('/downloads/manifest.json')}>
+              File manifest with SHA-256 checksums
+            </a>
+            <p className="mt-1 max-w-xs text-xs text-mute">
+              Verify any download against the manifest of this release.
+            </p>
+          </li>
+        </ul>
         <Wrap>
           <table className="bs-table min-w-[48rem]">
             <thead>
@@ -350,7 +374,11 @@ export function DeliveryReference() {
                   <td>{t.phaseId}</td>
                   <td className="font-medium !text-ink">{t.title}</td>
                   <td>{partyLabel(t.ownerRole)}</td>
-                  <td className="font-mono text-xs text-mute">{t.file}</td>
+                  <td className="font-mono text-xs">
+                    <a className="text-signal underline" href={withBase(`/downloads/${t.file}`)} download>
+                      {t.file.replace('delivery/templates/', '')}
+                    </a>
+                  </td>
                   <td className="text-xs text-mute">{t.description}</td>
                 </tr>
               ))}

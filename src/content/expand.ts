@@ -50,7 +50,10 @@ function reviewsFor(root: string): Record<string, Review> {
   let r = reviewFiles.get(root);
   if (!r) {
     const f = join(root, 'content', 'reviews.json');
-    r = existsSync(f) ? (JSON.parse(readFileSync(f, 'utf8')) as Record<string, Review>) : {};
+    const all = existsSync(f) ? (JSON.parse(readFileSync(f, 'utf8')) as Record<string, Review>) : {};
+    // an expired review is dropped: the blueprint goes back to "not reviewed" until it is renewed
+    const today = new Date().toISOString().slice(0, 10);
+    r = Object.fromEntries(Object.entries(all).filter(([, v]) => !v.validUntil || v.validUntil >= today));
     reviewFiles.set(root, r);
   }
   return r;

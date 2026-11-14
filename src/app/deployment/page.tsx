@@ -1,5 +1,14 @@
 import type { Metadata } from 'next';
 import { CheckCircle2, Cpu, FileCode, Server } from 'lucide-react';
+import {
+  ComplianceNotice,
+  EnvironmentMatrix,
+  InfraValidationStatus,
+  RecoveryTiers,
+  VersionRegistryTable,
+  WorkloadVariants,
+} from '../../components/deployment/Sections';
+import { withBase } from '../../lib/site';
 
 export const revalidate = 86400;
 export const metadata: Metadata = {
@@ -229,7 +238,8 @@ export default function DeploymentPage() {
                 • <strong>VPC:</strong> 3 AZs with public, private app, and isolated data subnets.
               </li>
               <li>
-                • <strong>Compute:</strong> Amazon EKS 1.30 with IRSA workload identity.
+                • <strong>Compute:</strong> Amazon EKS 1.36 with IRSA workload identity (version tracked in
+                the registry below).
               </li>
               <li>
                 • <strong>Feature Store:</strong> ElastiCache Redis 7.2 Multi-AZ with Auto-Failover.
@@ -248,7 +258,8 @@ export default function DeploymentPage() {
               <p className="text-dim"># Bootstrap AWS Stack</p>
               <code>
                 cd deployment/terraform/aws && terraform init && terraform apply
-                -var-file=../environments/prod.tfvars
+                -var-file=../environments/prod.tfvars # see the commands section for the full, per-environment
+                sequence
               </code>
             </div>
           </div>
@@ -288,7 +299,8 @@ export default function DeploymentPage() {
               <p className="text-dim"># Bootstrap Azure Stack</p>
               <code>
                 cd deployment/terraform/azure && terraform init && terraform apply
-                -var-file=../environments/prod.tfvars
+                -var-file=../environments/prod.tfvars # see the commands section for the full, per-environment
+                sequence
               </code>
             </div>
           </div>
@@ -328,7 +340,8 @@ export default function DeploymentPage() {
               <p className="text-dim"># Bootstrap GCP Stack</p>
               <code>
                 cd deployment/terraform/gcp && terraform init && terraform apply
-                -var-file=../environments/prod.tfvars
+                -var-file=../environments/prod.tfvars # see the commands section for the full, per-environment
+                sequence
               </code>
             </div>
           </div>
@@ -387,37 +400,66 @@ export default function DeploymentPage() {
         </div>
       </section>
 
-      {/* ── Disaster Recovery, RTO & RPO ── */}
-      <section className="space-y-4">
-        <div>
-          <span className="font-mono text-xs uppercase tracking-wider text-signal">Business Continuity</span>
-          <h2 className="text-2xl font-semibold text-ink">Disaster Recovery, RTO &amp; RPO Objectives</h2>
-        </div>
+      <ComplianceNotice />
+      <EnvironmentMatrix />
+      <WorkloadVariants />
+      <RecoveryTiers />
+      <VersionRegistryTable />
+      <InfraValidationStatus />
 
-        <div className="grid gap-4 font-mono text-xs sm:grid-cols-3">
-          <div className="card bg-surface space-y-2 border-signal/40 p-4">
-            <span className="font-bold uppercase text-signal">Recovery Point Objective (RPO)</span>
-            <p className="text-2xl font-bold text-ink">RPO = 0</p>
-            <p className="text-[11px] text-mute">
-              Synchronous standby replication in-country for financial ledgers; zero committed transactions
-              lost.
-            </p>
-          </div>
-          <div className="card bg-surface space-y-2 border-signal/40 p-4">
-            <span className="font-bold uppercase text-signal">Recovery Time Objective (RTO)</span>
-            <p className="text-2xl font-bold text-ink">RTO &lt; 5m</p>
-            <p className="text-[11px] text-mute">
-              Automated DNS cutover and regional failover drills rehearsed quarterly via runbooks.
-            </p>
-          </div>
-          <div className="card bg-surface space-y-2 border-signal/40 p-4">
-            <span className="font-bold uppercase text-signal">High Availability SLA</span>
-            <p className="text-2xl font-bold text-ink">99.95%</p>
-            <p className="text-[11px] text-mute">
-              Multi-AZ deployment with N+1 node redundancy and automatic horizontal pod autoscaling.
-            </p>
-          </div>
+      {/* ── Deploy and tear down ── */}
+      <section className="space-y-4" id="commands" data-testid="deploy-commands">
+        <div>
+          <span className="font-mono text-xs uppercase tracking-wider text-signal">Commands</span>
+          <h2 className="text-2xl font-semibold text-ink">Deploy, verify and tear down one environment</h2>
+          <p className="mt-1 max-w-3xl text-sm text-mute">
+            Replace <code>ENV</code> with <code>dev</code>, <code>staging</code>, <code>preprod</code> or{' '}
+            <code>production</code> (the variable file for production is <code>prod.tfvars</code>). The image
+            in the Helm values is a placeholder: build it from{' '}
+            <code>reference-implementations/realtime-decisioning</code> and set <code>image.repository</code>{' '}
+            and <code>image.tag</code>, and replace the placeholder IRSA role ARN. Nothing below has been run
+            against a live cloud account by this project.
+          </p>
         </div>
+        <pre className="overflow-x-auto rounded border border-line bg-raised/50 p-4 font-mono text-[11px] leading-relaxed">
+          {`# 0. once per environment: remote state with locking and encryption (AWS; Azure and GCP use native backends)
+ENV=dev REGION=us-east-1 ./deployment/terraform/bootstrap-state.sh
+cp deployment/terraform/backend.example.hcl deployment/terraform/aws/backend.dev.hcl   # edit the names it printed
+
+# 1. validate with no credentials
+npm run validate:infra && npm run check:versions
+terraform -chdir=deployment/terraform/aws fmt -check -recursive
+terraform -chdir=deployment/terraform/aws init -backend=false && terraform -chdir=deployment/terraform/aws validate
+tflint --chdir deployment/terraform/aws
+checkov -d deployment/terraform/aws --config-file deployment/policy/checkov.yaml
+
+# 2. plan, review, apply (the plan file is what gets reviewed and applied)
+terraform -chdir=deployment/terraform/aws init -backend-config=backend.dev.hcl
+terraform -chdir=deployment/terraform/aws plan  -var-file=../environments/dev.tfvars -out=dev.plan
+terraform -chdir=deployment/terraform/aws apply dev.plan
+
+# 3. deploy the workload and verify policy first
+aws eks update-kubeconfig --name dev-aiml-cluster --region us-east-1
+helm template aiml deployment/helm/ai-solution -f deployment/helm/ai-solution/values-dev.yaml | conftest test --policy deployment/policy -
+helm upgrade --install aiml deployment/helm/ai-solution -f deployment/helm/ai-solution/values-dev.yaml -n aiml-dev --create-namespace --atomic --timeout 5m
+
+# 4. smoke test: liveness, readiness, a real prediction against the contract, latency against the budget
+bash deployment/smoke-test.sh https://YOUR-ENDPOINT 50
+
+# rollback of the workload (the previous Helm revision) and teardown of the infrastructure
+helm rollback aiml 0 -n aiml-dev
+helm uninstall aiml -n aiml-dev
+terraform -chdir=deployment/terraform/aws destroy -var-file=../environments/dev.tfvars   # dev and staging only; production has deletion protection on`}
+        </pre>
+        <p className="text-sm text-mute">
+          Azure: <code>deployment/terraform/azure</code> with <code>az aks get-credentials</code>. GCP:{' '}
+          <code>deployment/terraform/gcp</code> with <code>gcloud container clusters get-credentials</code>.
+          The whole kit is one{' '}
+          <a className="text-signal underline" href={withBase('/downloads/brainsiphon-deployment-kit.zip')}>
+            download
+          </a>
+          .
+        </p>
       </section>
     </div>
   );

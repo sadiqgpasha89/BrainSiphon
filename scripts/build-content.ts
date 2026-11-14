@@ -13,6 +13,7 @@ import { ALL_STEPS, DELIVERY_PHASES } from '../src/content/delivery';
 import { deliveryMarkdown } from '../src/content/delivery-markdown';
 import { loadTracksFile, resolveTracks, type ResolvedDomainTracks } from '../src/content/tracks';
 import { readFileSync } from 'node:fs';
+import { DOWNLOAD_BUNDLES, bundleZip, collectDownloads } from '../src/content/downloads';
 import { buildManifest, kitLogFile, releaseReportMarkdown } from '../src/content/release';
 import {
   computeContentDigest,
@@ -64,6 +65,19 @@ rmSync(join(pub, 'release'), { recursive: true, force: true });
 if (manifest.checks.executable.status !== 'not-run')
   for (const k of kitReport?.kits ?? [])
     write(join(pub, kitLogFile(k.name)), `${k.log ?? 'No output was recorded for this run.'}\n`);
+// downloadable implementation artefacts: every template and deployment file as a direct link, plus one ZIP per bundle
+rmSync(join(pub, 'downloads'), { recursive: true, force: true });
+const dl = collectDownloads(root);
+for (const f of dl.files) {
+  mkdirSync(dirname(join(pub, 'downloads', f.path)), { recursive: true });
+  writeFileSync(join(pub, 'downloads', f.path), dl.data.get(f.path)!);
+}
+for (const b of DOWNLOAD_BUNDLES)
+  writeFileSync(join(pub, 'downloads', b.zip), bundleZip(b.id, dl.files, dl.data));
+write(
+  join(pub, 'downloads', 'manifest.json'),
+  `${JSON.stringify({ contentVersion: manifest.contentVersion, bundles: DOWNLOAD_BUNDLES, files: dl.files }, null, 2)}\n`,
+);
 const index = all.map(toIndexEntry);
 
 // tracks: group each domain's use cases (in authored order) into sub-areas and name the ones to read first

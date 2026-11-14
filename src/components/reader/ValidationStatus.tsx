@@ -1,3 +1,4 @@
+import { HIGH_RISK_NOTICE } from '../../content/review-programme';
 import {
   AlertTriangle,
   CircleAlert,
@@ -14,7 +15,9 @@ import {
 import {
   MATURITY_STATE_TEXT,
   shortSha,
+  warningSeverity,
   type FeasibilityWarning,
+  type WarningAck,
   type MaturityScorecard,
   type MaturityState,
   type ReleaseManifest,
@@ -170,9 +173,20 @@ export function MaturityScorecardPanel({ scorecard }: { scorecard: MaturityScore
         >
           <ShieldAlert className="mt-0.5 shrink-0 text-warn" size={18} aria-hidden />
           <p className="text-sm text-ink/90">
-            <strong className="text-ink">High-risk use case.</strong> Nothing on this page has been reviewed
-            by a domain specialist or run in production. Treat it as a design to review, not as an approved
-            implementation, until levels 5 to 7 below are met in your own organisation.
+            <strong className="text-ink">High-risk use case. {HIGH_RISK_NOTICE}</strong> Nothing on this page
+            has been reviewed by a domain specialist or run in production. Treat it as a design to review, not
+            as an approved implementation, until levels 5 to 7 below are met in your own organisation.{' '}
+            <a className="underline" href={withBase('/release#review-programme')}>
+              What a review has to cover
+            </a>
+            {' · '}
+            <a
+              className="underline"
+              href="https://github.com/sadiqgpasha89/BrainSiphon/issues/new?template=blueprint-review.yml"
+            >
+              Raise a finding on this blueprint
+            </a>
+            .
           </p>
         </aside>
       )}
@@ -243,9 +257,11 @@ export function MaturityScorecardPanel({ scorecard }: { scorecard: MaturityScore
 export function FeasibilityWarningsPanel({
   warnings,
   linkBlueprints = false,
+  acks = {},
 }: {
   warnings: FeasibilityWarning[];
   linkBlueprints?: boolean;
+  acks?: Record<string, WarningAck>;
 }) {
   return (
     <div className="space-y-3" data-testid="feasibility-warnings-panel">
@@ -263,8 +279,14 @@ export function FeasibilityWarningsPanel({
             ) : (
               <span className="font-medium text-ink">{w.title}</span>
             )}
-            <span className="rounded bg-warn/15 px-2 py-0.5 font-mono text-[11px] text-warn">{w.check}</span>
+            <span className="rounded bg-warn/15 px-2 py-0.5 font-mono text-[11px] text-warn">
+              {warningSeverity(w.check).severity} · {w.check}
+            </span>
           </div>
+          <p className="text-ink/90" data-testid="warning-severity">
+            <span className="font-mono text-[11px] uppercase text-dim">Severity </span>
+            {warningSeverity(w.check).meaning}
+          </p>
           <p className="text-ink/90">
             <span className="font-mono text-[11px] uppercase text-dim">Finding </span>
             {w.detail}
@@ -272,6 +294,12 @@ export function FeasibilityWarningsPanel({
           <p className="text-ink/90">
             <span className="font-mono text-[11px] uppercase text-dim">Recommended remediation </span>
             {w.remediation}
+          </p>
+          <p className="text-ink/90" data-testid="warning-owner">
+            <span className="font-mono text-[11px] uppercase text-dim">Owner and status </span>
+            {acks[`${w.slug}::${w.check}`]
+              ? `${acks[`${w.slug}::${w.check}`]!.decision} by ${acks[`${w.slug}::${w.check}`]!.owner} on ${acks[`${w.slug}::${w.check}`]!.date}${acks[`${w.slug}::${w.check}`]!.note ? `: ${acks[`${w.slug}::${w.check}`]!.note}` : ''}`
+              : 'Open. No named owner has acknowledged it yet (acknowledgements are recorded in content/warning-acks.json).'}
           </p>
         </article>
       ))}

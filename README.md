@@ -99,6 +99,17 @@ BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineeri
 - **Phase 0 to Phase 3 Downloadable Implementation Packages:** Standardized templates in `delivery/templates/` for Client Discovery, Production BRDs, C4 Architecture Suites, Sequence Diagrams, OpenAPI/AsyncAPI contracts, Data Quality Suites, and FastAPI microservices.
 - **10 Production Operational Runbooks (`deployment/runbooks/`):** Reference incident runbooks (RB-01 through RB-10) with exact Prometheus triggers, triage steps (<5m), mitigation actions (<15m), and diagnostic CLI commands.
 
+## Evidence, versions and infrastructure validation
+
+- **Versions are tracked, not asserted.** [`content/version-registry.json`](content/version-registry.json) lists every pinned version with its support end, review date and whether the dates were read from the vendor's page. `npm run check:versions` fails when a version passes support, a quarterly review is overdue, or a file no longer matches. Kubernetes 1.30 (EKS) was removed because it was out of support; the stacks default to 1.36.
+- **Environments.** `deployment/terraform/environments/` has dev, staging, pre-production and production variable files, and `deployment/helm/ai-solution/` has a values file for each. Pre-production is production-shaped on purpose.
+- **Infrastructure validation.** `npm run validate:infra` (static, no cloud) runs in the content gate. CI also runs `terraform fmt/init/validate`, `tflint`, Checkov, `helm lint/template`, `kubeconform` and conftest policies (`deployment/policy/`), and attaches the reports to the run. **Nothing has been applied to a cloud account, and no restore or failover drill has been run.** Recovery targets are per workload class and are targets.
+- **Not everything needs Kubernetes.** `/deployment#variants` gives the runtime, hardware and sizing rule per workload class.
+- **Compliance.** The profiles are architecture designed to support technical controls. They are not a certification and not legal advice.
+- **Review programme.** Independent review is recorded in `content/reviews.json` (schema: `content/reviews.schema.json`) with reviewer, qualifications, scope and an expiry. None exists yet.
+- **Downloads.** Every delivery template and the deployment kit are published under `/downloads/`, with a checksum manifest. The workspace's package generator builds environment-specific files and a backlog from the delivery guide in the browser.
+- **Changes** are listed in [`CHANGELOG.md`](CHANGELOG.md).
+
 ## How it works
 
 Screenshots of the live site, using one blueprint (Real-Time Card & UPI Fraud Detection) as the example.

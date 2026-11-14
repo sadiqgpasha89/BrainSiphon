@@ -1,0 +1,10 @@
+# Checkov configuration for the Terraform and Kubernetes files. Skips are explicit and each one has a reason.
+framework:
+  - terraform
+  - kubernetes
+  - helm
+quiet: true
+compact: true
+skip-check:
+  # Reason: the reference stacks use one customer-managed key per environment, not one per resource; split keys per data class in your own account
+  - CKV_AWS_7

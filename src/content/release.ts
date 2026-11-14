@@ -224,6 +224,29 @@ const REMEDIATION_BY_CHECK: Record<string, string> = {
   'Cost vs expected traffic':
     'The fixed fleet floor dominates at this volume: move to scale-to-zero or scheduled batch compute, or put a cheap filter in front of the expensive model, then re-run the capacity model.',
 };
+/** How serious a warning of each kind is: whether the design can be built as written, or only costs more than it should. */
+export type WarningSeverity = 'high' | 'medium' | 'low';
+const SEVERITY_BY_CHECK: Record<string, { severity: WarningSeverity; meaning: string }> = {
+  'Model memory vs serving hardware': {
+    severity: 'high',
+    meaning: 'The design cannot be built as written: the model does not fit the hardware the blueprint names. Needs remediation before anyone builds it.',
+  },
+  'Cost vs expected traffic': {
+    severity: 'medium',
+    meaning: 'The design works but the fixed cost floor dwarfs the traffic. Acceptable for a prototype; needs the remediation before a business case is written on these numbers.',
+  },
+};
+export const warningSeverity = (check: string) =>
+  SEVERITY_BY_CHECK[check] ?? { severity: 'low' as WarningSeverity, meaning: 'Unclassified. Read the finding.' };
+
+/** A named owner's decision about one warning, recorded in content/warning-acks.json keyed `<slug>::<check>`. */
+export interface WarningAck {
+  owner: string;
+  date: string;
+  decision: 'accepted' | 'remediation-planned' | 'fixed';
+  note?: string;
+}
+
 const REMEDIATION_FALLBACK =
   'Read the check detail, change the design or the stated workload until the numbers agree, and re-run npm run validate:content.';
 

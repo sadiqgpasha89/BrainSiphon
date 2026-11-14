@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sadiqgpasha89.github.io/BrainSiphon/reviews.schema.json",
+  "title": "BrainSiphon domain-expert review records",
+  "description": "content/reviews.json maps a blueprint slug to the independent review it received. A review that is past validUntil stops counting.",
+  "type": "object",
+  "additionalProperties": { "$ref": "#/$defs/review" },
+  "$defs": {
+    "review": {
+      "type": "object",
+      "required": ["reviewer", "date", "scope", "qualifications", "validUntil"],
+      "additionalProperties": false,
+      "properties": {
+        "reviewer": { "type": "string", "minLength": 3, "description": "Name of the independent reviewer" },
+        "organisation": { "type": "string" },
+        "qualifications": { "type": "string", "minLength": 10, "description": "Professional qualification, registration or role that makes this person competent to review this domain" },
+        "date": { "type": "string", "format": "date" },
+        "validUntil": { "type": "string", "format": "date", "description": "Review expiry. Recommended: 12 months, or sooner when a regulation or the model changes" },
+        "scope": { "type": "string", "minLength": 20, "description": "Exactly what was reviewed: business assumptions, data assumptions, model selection, thresholds, operational risks. Anything outside is unreviewed" },
+        "findings": { "type": "string", "description": "Findings raised and their disposition (link to issues)" }
+      }
+    }
+  }
+}

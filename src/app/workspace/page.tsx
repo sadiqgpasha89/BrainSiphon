@@ -2,6 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { PackageGenerator } from '../../components/workspace/PackageGenerator';
+import { DELIVERY_TEMPLATES } from '../../content/delivery';
+import { DOWNLOAD_BUNDLES } from '../../content/downloads-meta';
+import { withBase } from '../../lib/site';
 import {
   Server,
   Shield,
@@ -86,15 +90,15 @@ const PROFILES: DeploymentProfile[] = [
   {
     id: 'profile-d',
     name: 'Profile D: Regulated & Jurisdiction-Pinned',
-    badge: 'Regulated / FIPS',
+    badge: 'Regulated (FIPS 140-3)',
     description:
-      'Zero-trust architecture meeting HIPAA, PCI-DSS, SOC 2 Type II, and data sovereignty regulations.',
+      'Zero-trust architecture designed to support the technical controls that HIPAA, PCI DSS, SOC 2 and data-residency rules ask for. Choosing it does not make you compliant: that takes your own controls, evidence and assessment.',
     idealFor: 'Banking payments, clinical diagnostics, and jurisdiction-pinned patient records.',
     infrastructure: [
-      'FIPS 140-2 validated cryptographic modules',
+      'FIPS 140-3 validated cryptographic modules (140-2 certificates are historical since 21 Sep 2026)',
       'Jurisdiction-pinned state stores with localized standby',
       'Append-only Write-Ahead Log (WAL) with SHA-256 hash chains',
-      'Automated disaster recovery with RPO=0 and RTO < 5m',
+      'Disaster recovery to the Tier 3 targets (RPO 0 in-region, ≤ 1 min cross-region; RTO < 5 min per AZ, ≤ 30 min per region): targets, not measured results',
     ],
     securityControls: [
       'Dual physician / dual analyst four-eyes authorization gate',
@@ -456,94 +460,59 @@ export default function WorkspacePage() {
         </section>
       )}
 
-      {/* TAB 2: ARCHITECTURE DELIVERABLES */}
+      {/* TAB 2: ARCHITECTURE PACKAGES: a generator, then the real downloadable templates */}
       {activeTab === 'artifacts' && (
-        <section className="mt-8 space-y-6">
+        <section className="mt-8 space-y-8">
           <div>
-            <h2 className="text-xl font-semibold text-ink">
-              Standardized Architecture Deliverables & Code Assets
-            </h2>
-            <p className="mt-1 text-sm text-mute">
-              All deliverables follow industry specifications (OpenAPI 3.1, AsyncAPI 3.0, OpenDataContract, C4
-              Model, STRIDE Threat Modeling).
+            <h2 className="text-xl font-semibold text-ink">Architecture package generator</h2>
+            <p className="mt-1 max-w-3xl text-sm text-mute">
+              Choose a solution family, cloud, environment and recovery tier. You get a recommendation with
+              the reasons and the rejected alternatives, then a preview of the files it generates: variable
+              file, Helm values, environment template, deploy and teardown commands, an architecture decision
+              record, and a backlog built from the 69-step delivery guide. Everything is produced in your
+              browser; nothing is sent anywhere.
             </p>
           </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="card rounded-lg p-4">
-              <span className="chip chip-signal text-[11px]">Phase 0 · Scope</span>
-              <h3 className="mt-2 text-sm font-semibold text-ink">Client Discovery Questionnaire</h3>
-              <p className="mt-1 text-xs text-mute">
-                40-point standardized interview script covering decision cadence, stakeholders, and latency
-                expectations.
-              </p>
-              <div className="mt-3 flex items-center justify-between border-t border-line pt-2 font-mono text-[11px] text-dim">
-                <span>01-client-discovery.md</span>
-                <span className="text-signal">40 Questions</span>
-              </div>
-            </div>
-
-            <div className="card rounded-lg p-4">
-              <span className="chip chip-signal text-[11px]">Phase 0 · Scope</span>
-              <h3 className="mt-2 text-sm font-semibold text-ink">Business Requirements Document (BRD)</h3>
-              <p className="mt-1 text-xs text-mute">
-                BRD template with numerical business targets, false decline ceilings, and acceptance gates.
-              </p>
-              <div className="mt-3 flex items-center justify-between border-t border-line pt-2 font-mono text-[11px] text-dim">
-                <span>02-business-requirements.md</span>
-                <span className="text-signal">Template</span>
-              </div>
-            </div>
-
-            <div className="card rounded-lg p-4">
-              <span className="chip chip-signal text-[11px]">Phase 1 · Design</span>
-              <h3 className="mt-2 text-sm font-semibold text-ink">C4 Architecture Specification Suite</h3>
-              <p className="mt-1 text-xs text-mute">
-                Complete C1 Context, C2 Container, C3 Component, and C4 Deployment Mermaid diagram models.
-              </p>
-              <div className="mt-3 flex items-center justify-between border-t border-line pt-2 font-mono text-[11px] text-dim">
-                <span>01-c4-architecture-suite.md</span>
-                <span className="text-signal">Mermaid Models</span>
-              </div>
-            </div>
-
-            <div className="card rounded-lg p-4">
-              <span className="chip chip-signal text-[11px]">Phase 1 · Design</span>
-              <h3 className="mt-2 text-sm font-semibold text-ink">OpenAPI 3.1 & AsyncAPI 3.0 Specs</h3>
-              <p className="mt-1 text-xs text-mute">
-                Production REST and streaming contracts including RFC 7807 error models and schema evolution
-                rules.
-              </p>
-              <div className="mt-3 flex items-center justify-between border-t border-line pt-2 font-mono text-[11px] text-dim">
-                <span>contracts/openapi.yaml</span>
-                <span className="text-signal">OpenAPI 3.1</span>
-              </div>
-            </div>
-
-            <div className="card rounded-lg p-4">
-              <span className="chip chip-signal text-[11px]">Phase 2 · Data</span>
-              <h3 className="mt-2 text-sm font-semibold text-ink">Transactional Outbox & CDC Pattern</h3>
-              <p className="mt-1 text-xs text-mute">
-                PostgreSQL outbox table DDL and Debezium change data capture configuration preventing
-                dual-write inconsistency.
-              </p>
-              <div className="mt-3 flex items-center justify-between border-t border-line pt-2 font-mono text-[11px] text-dim">
-                <span>outbox-cdc-pattern.sql</span>
-                <span className="text-signal">Zero Dual-Write</span>
-              </div>
-            </div>
-
-            <div className="card rounded-lg p-4">
-              <span className="chip chip-signal text-[11px]">Phase 3 · Build</span>
-              <h3 className="mt-2 text-sm font-semibold text-ink">High-Performance Serving Microservice</h3>
-              <p className="mt-1 text-xs text-mute">
-                Sub-15ms FastAPI service with circuit breaking, deadline propagation, and Prometheus metrics.
-              </p>
-              <div className="mt-3 flex items-center justify-between border-t border-line pt-2 font-mono text-[11px] text-dim">
-                <span>fastapi-inference-service.py</span>
-                <span className="text-signal">P99 &lt; 15ms</span>
-              </div>
-            </div>
+          <PackageGenerator />
+          <div>
+            <h2 className="text-xl font-semibold text-ink">Downloadable templates</h2>
+            <p className="mt-1 max-w-3xl text-sm text-mute">
+              Every template in the delivery guide as a direct download, or all of them in one archive, with
+              checksums in the manifest.
+            </p>
+            <p className="mt-2 flex flex-wrap gap-4 text-sm">
+              {DOWNLOAD_BUNDLES.map((b) => (
+                <a
+                  key={b.id}
+                  className="font-semibold text-signal underline"
+                  href={withBase(`/downloads/${b.zip}`)}
+                  download
+                >
+                  {b.title} (.zip)
+                </a>
+              ))}
+              <Link className="text-signal underline" href="/delivery#templates">
+                All templates in the delivery guide
+              </Link>
+            </p>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {DELIVERY_TEMPLATES.map((t) => (
+                <li key={t.code} className="card rounded-lg p-4">
+                  <span className="chip chip-signal text-[11px]">
+                    {t.phaseId.toUpperCase()} · {t.code}
+                  </span>
+                  <h3 className="mt-2 text-sm font-semibold text-ink">{t.title}</h3>
+                  <p className="mt-1 text-xs text-mute">{t.description}</p>
+                  <a
+                    className="mt-3 block border-t border-line pt-2 font-mono text-[11px] text-signal underline"
+                    href={withBase(`/downloads/${t.file}`)}
+                    download
+                  >
+                    {t.file.split('/').pop()}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       )}

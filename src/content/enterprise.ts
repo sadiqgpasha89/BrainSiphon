@@ -52,6 +52,12 @@ export interface Review {
   organisation?: string;
   date: string;
   scope: string;
+  /** reviewer's professional qualification and registration, as recorded */
+  qualifications?: string;
+  /** a review stops counting after this date (ISO), so an old technical or regulatory review cannot stay valid indefinitely */
+  validUntil?: string;
+  /** sections or findings the reviewer raised, with their disposition */
+  findings?: string;
 }
 
 /* ------------------------------------------------------------------ helpers */

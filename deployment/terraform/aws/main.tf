@@ -7,7 +7,7 @@
  */
 
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.9.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -20,10 +20,26 @@ terraform {
   }
 }
 
+variable "kubernetes_version" {
+  type        = string
+  description = "EKS Kubernetes minor version. Must be in standard support: see content/version-registry.json (checked by npm run check:versions)."
+  default     = "1.36"
+}
+
 variable "environment" {
   type        = string
   description = "Target deployment environment (dev, staging, preprod, production)"
   default     = "production"
+
+  validation {
+    condition     = contains(["dev", "staging", "preprod", "production"], var.environment)
+    error_message = "environment must be one of: dev, staging, preprod, production."
+  }
+}
+
+locals {
+  # preprod is deliberately production-shaped (multi-AZ, HA database, private endpoints) so that what it proves carries over to production
+  prod_like = contains(["preprod", "production"], var.environment)
 }
 
 variable "region" {
@@ -183,12 +199,13 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 resource "aws_eks_cluster" "cluster" {
   name     = "${var.environment}-aiml-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
-  version  = "1.30"
+  version  = var.kubernetes_version
 
   vpc_config {
     subnet_ids              = aws_subnet.private[*].id
     endpoint_private_access = true
-    endpoint_public_access  = true
+    # the API server is private everywhere except the throw-away dev environment
+    endpoint_public_access  = var.environment == "dev"
   }
 
   encryption_config {
@@ -234,12 +251,12 @@ resource "aws_eks_node_group" "serving_nodes" {
   node_group_name = "inference-serving-pool"
   node_role_arn   = aws_iam_role.eks_node_role.arn
   subnet_ids      = aws_subnet.private[*].id
-  instance_types  = [var.environment == "production" ? "c6i.4xlarge" : "c6i.xlarge"]
+  instance_types  = [local.prod_like ? "c6i.4xlarge" : "c6i.xlarge"]
 
   scaling_config {
-    desired_size = var.environment == "production" ? 6 : 2
-    max_size     = var.environment == "production" ? 18 : 4
-    min_size     = var.environment == "production" ? 3 : 1
+    desired_size = local.prod_like ? 6 : 2
+    max_size     = local.prod_like ? 18 : 4
+    min_size     = local.prod_like ? 3 : 1
   }
 
   update_config {
@@ -262,24 +279,28 @@ resource "aws_db_subnet_group" "aurora" {
 resource "aws_rds_cluster" "aurora" {
   cluster_identifier      = "${var.environment}-aiml-aurora-cluster"
   engine                  = "aurora-postgresql"
-  engine_version          = "16.2"
+  # major version only: AWS selects its current default minor; pinning a minor (for example 16.2) breaks when that minor is retired
+  engine_version          = "16"
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
   database_name           = "aiml_solution_db"
   master_username         = "aiml_admin"
   manage_master_user_password = true
   db_subnet_group_name    = aws_db_subnet_group.aurora.name
   kms_key_id              = aws_kms_key.solution_key.arn
   storage_encrypted       = true
-  deletion_protection     = var.environment == "production"
-  skip_final_snapshot     = var.environment != "production"
+  deletion_protection     = local.prod_like
+  skip_final_snapshot     = !local.prod_like
 
   serverlessv2_scaling_configuration {
-    min_capacity = var.environment == "production" ? 2 : 0.5
-    max_capacity = var.environment == "production" ? 32 : 4
+    min_capacity = local.prod_like ? 2 : 0.5
+    max_capacity = local.prod_like ? 32 : 4
   }
 }
 
 resource "aws_rds_cluster_instance" "aurora_instances" {
-  count               = var.environment == "production" ? 3 : 1
+  count               = local.prod_like ? 3 : 1
   cluster_identifier  = aws_rds_cluster.aurora.id
   instance_class      = "db.serverless"
   engine              = aws_rds_cluster.aurora.engine
@@ -296,13 +317,13 @@ resource "aws_elasticache_subnet_group" "redis" {
 resource "aws_elasticache_replication_group" "feature_cache" {
   replication_group_id       = "${var.environment}-aiml-feature-store"
   description                = "Low-latency Feast online feature store and token bucket rate limiter"
-  node_type                  = var.environment == "production" ? "cache.m6g.xlarge" : "cache.t4g.medium"
+  node_type                  = local.prod_like ? "cache.m6g.xlarge" : "cache.t4g.medium"
   port                       = 6379
   parameter_group_name       = "default.redis7"
   subnet_group_name          = aws_elasticache_subnet_group.redis.name
   automatic_failover_enabled = true
   multi_az_enabled           = true
-  num_cache_clusters         = var.environment == "production" ? 3 : 1
+  num_cache_clusters         = local.prod_like ? 3 : 1
   at_rest_encryption_enabled = true
   transit_encryption_enabled = true
   kms_key_id                 = aws_kms_key.solution_key.arn
@@ -311,7 +332,7 @@ resource "aws_elasticache_replication_group" "feature_cache" {
 # 6. S3 Data Lakehouse Bucket with CMEK & Object Versioning
 resource "aws_s3_bucket" "lakehouse" {
   bucket        = "aiml-solution-lakehouse-${var.environment}-${var.region}"
-  force_destroy = var.environment != "production"
+  force_destroy = !local.prod_like
 }
 
 resource "aws_s3_bucket_versioning" "lakehouse" {
