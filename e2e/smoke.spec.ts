@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { ALL_STEPS } from '../src/content/delivery';
 
 test('domain → filter → open blueprint → Pure Signal toggle', async ({ page }) => {
   await page.goto('/');
@@ -399,7 +400,7 @@ test('delivery guide: steps, gates, a role filter, progress and links into the c
 }) => {
   await page.goto('/delivery');
   const guide = page.getByTestId('delivery-guide');
-  await expect(guide.locator('[data-testid^="step-"]')).toHaveCount(73);
+  await expect(guide.locator('[data-testid^="step-"]')).toHaveCount(ALL_STEPS.length);
   for (const p of ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6']) {
     await expect(page.getByTestId(`guide-${p}`)).toBeVisible();
     await expect(page.getByTestId(`gate-${p}`)).toContainText('Signed by');
@@ -426,10 +427,10 @@ test('delivery guide: steps, gates, a role filter, progress and links into the c
 
   // progress is ticked per step and survives a reload
   await step.getByRole('checkbox').check();
-  await expect(page.getByTestId('guide-progress')).toContainText('1 of 69 steps done');
+  await expect(page.getByTestId('guide-progress')).toContainText(`1 of ${ALL_STEPS.length} steps done`);
   await page.reload();
   await expect(page.getByTestId('guide-uc')).toHaveValue('fintech/real-time-card-upi-fraud-detection');
-  await expect(page.getByTestId('guide-progress')).toContainText('1 of 69 steps done');
+  await expect(page.getByTestId('guide-progress')).toContainText(`1 of ${ALL_STEPS.length} steps done`);
   await expect(page.getByTestId('step-0.3').getByRole('checkbox')).toBeChecked();
 
   // a role keeps only its own steps and says what that role does in each phase
@@ -439,7 +440,7 @@ test('delivery guide: steps, gates, a role filter, progress and links into the c
   await expect(page.getByTestId('step-0.3')).toHaveCount(0);
   await expect(page.getByTestId('guide-p2-yours')).toContainText('ingestion');
   await page.getByTestId('guide-party').selectOption('');
-  await expect(guide.locator('[data-testid^="step-"]')).toHaveCount(69);
+  await expect(guide.locator('[data-testid^="step-"]')).toHaveCount(ALL_STEPS.length);
 
   // the markdown twin
   const md = await (await page.request.get('/delivery.md')).text();
