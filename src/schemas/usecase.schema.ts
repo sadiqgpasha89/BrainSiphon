@@ -521,13 +521,16 @@ export const PlaybookBase = z.object({
         .min(3),
     })
     .optional(),
-  workedExample: z.object({
-    /** `reference-kit`: run on the starter kit's synthetic data. `blueprint-only`: a walk-through built from the blueprint with no run and no numbers. */
-    basis: z.enum(['reference-kit', 'blueprint-only']),
-    scenario: nonEmpty,
-    steps: z.array(z.object({ stage: nonEmpty, detail: nonEmpty })).min(4),
-    outcome: nonEmpty,
-  }),
+  /** present only on the free worked example; every other use case has it in BrainSiphon Pro (see content/pro.json) */
+  workedExample: z
+    .object({
+      /** `reference-kit`: run on the starter kit's synthetic data. `blueprint-only`: a walk-through built from the blueprint with no run and no numbers. */
+      basis: z.enum(['reference-kit', 'blueprint-only']),
+      scenario: nonEmpty,
+      steps: z.array(z.object({ stage: nonEmpty, detail: nonEmpty })).min(4),
+      outcome: nonEmpty,
+    })
+    .optional(),
   tests: z.array(z.object({ test: nonEmpty, tool: nonEmpty, pass: nonEmpty })).min(6),
   decisions: z
     .array(
@@ -555,7 +558,7 @@ export const PlaybookSchema = PlaybookBase.superRefine((pb, ctx) => {
     if (hasKit) bad('verdict "none": the playbook must not ship a starter kit');
     if (pb.data.synthetic || pb.data.sample)
       bad('verdict "none": the playbook must not ship synthetic data or a sample');
-    if (pb.workedExample.basis !== 'blueprint-only')
+    if (pb.workedExample && pb.workedExample.basis !== 'blueprint-only')
       bad('verdict "none": the worked example cannot be run on a kit');
   } else {
     if (!hasKit) bad(`verdict "${c.verdict}": the playbook needs its starter kit`);

@@ -7,7 +7,7 @@
  *   2. shared domain and paradigm knowledge pools (content/domain-knowledge) and a curated, link-checked dataset registry
  *      (content/dataset-registry.json), selected by relevance to the use case;
  *   3. a tested reference starter kit for the paradigm (content/kits/<id>), run on synthetic data in CI.
- * Everything here is deterministic. The page says it is generated; the 8 pilot playbooks are authored by hand.
+ * Everything here is deterministic. The page says it is generated; only the free worked example's playbook is authored by hand.
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -496,10 +496,10 @@ export function generatePlaybook(root: string, raw: RawUseCase, domain: Domain, 
   const knowledge = `shared ${DOMAIN_META[domain].short} and ${paradigms.map((p) => PARADIGM_LABEL[p]).join(' / ')} knowledge`;
   const own = `this blueprint's own signals, constraints and traps`;
   const summary = !kit
-    ? `${NO_KIT_STATEMENT} A build plan for "${raw.title}", assembled from ${own} and ${knowledge}. It has milestones, exit gates, a test plan, decisions and pitfalls, but no runnable code and no synthetic data: every milestone up to M4 is guidance, and M5 and M6 need your platform. The 8 pilot playbooks are written by hand; this one is generated, so read each section against your own data and decision.`
+    ? `${NO_KIT_STATEMENT} A build plan for "${raw.title}", assembled from ${own} and ${knowledge}. It has milestones, exit gates, a test plan, decisions and pitfalls, but no runnable code and no synthetic data: every milestone up to M4 is guidance, and M5 and M6 need your platform. Only one playbook, the free worked example, is written by hand; this one is generated, so read each section against your own data and decision.`
     : adaptable
-      ? `A build plan for "${raw.title}", assembled from ${own}, ${knowledge}, and the "${kit.label}" reference kit. That kit implements a neighbouring problem, not this one: it supplies reusable parts, and it becomes this system's starter only after the modifications listed under "Fit with the starter kit". ${kit.summary} The 8 pilot playbooks are written by hand; this one is generated, so read each section against your own data and decision.`
-      : `A build plan for "${raw.title}", assembled from ${own}, ${knowledge}, and the "${kit.label}" reference kit, which implements the same problem, runs on synthetic data and is tested in CI. ${kit.summary} The 8 pilot playbooks are written by hand; this one is generated, so read each section against your own data and decision.`;
+      ? `A build plan for "${raw.title}", assembled from ${own}, ${knowledge}, and the "${kit.label}" reference kit. That kit implements a neighbouring problem, not this one: it supplies reusable parts, and it becomes this system's starter only after the modifications listed under "Fit with the starter kit". ${kit.summary} Only one playbook, the free worked example, is written by hand; this one is generated, so read each section against your own data and decision.`
+      : `A build plan for "${raw.title}", assembled from ${own}, ${knowledge}, and the "${kit.label}" reference kit, which implements the same problem, runs on synthetic data and is tested in CI. ${kit.summary} Only one playbook, the free worked example, is written by hand; this one is generated, so read each section against your own data and decision.`;
 
   const labelText = !kit
     ? `For "${raw.title}": ${sentence(raw.obj)} No reference kit models this label, so define it exactly as in M1. Design around this trap first: ${sentence(raw.gap[0]!)}`

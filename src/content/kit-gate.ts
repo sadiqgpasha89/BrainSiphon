@@ -15,7 +15,6 @@ export const KNOWN_CASES: Record<string, { verdict: 'exact' | 'adaptable' | 'non
   'retail/personalized-search-ranking': { verdict: 'adaptable', problemType: 'search-ranking', kitId: 'recommender' },
   'saas/in-app-ai-copilot': { verdict: 'adaptable', problemType: 'agentic-write-actions', kitId: 'llm-agent' },
   'fintech/real-time-card-upi-fraud-detection': { verdict: 'exact', problemType: 'binary-event-classification', source: 'authored-starter' },
-  'retail/session-based-next-item-recommendation': { verdict: 'exact', problemType: 'next-item-recommendation', source: 'authored-starter' },
   'fintech/atm-cash-demand-forecasting': { verdict: 'exact', problemType: 'forecasting', kitId: 'forecast' },
   'retail/demand-forecasting-sku-store': { verdict: 'adaptable', problemType: 'forecasting', kitId: 'forecast' },
   'adtech/uplift-modeling-campaign': { verdict: 'adaptable', problemType: 'uplift-causal-effect', kitId: 'bandit' },

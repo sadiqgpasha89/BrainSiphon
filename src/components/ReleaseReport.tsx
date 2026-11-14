@@ -36,7 +36,7 @@ export function ManifestSummary({ release }: { release: ReleaseManifest | null }
       value:
         c.executable.status === 'not-run'
           ? 'Not run in this build'
-          : `${patternKits} pattern kits · ${kits.length - patternKits} use-case starters`,
+          : `${patternKits} pattern kits · ${kits.length - patternKits} use-case ${kits.length - patternKits === 1 ? 'starter' : 'starters'}`,
       note: 'Run on synthetic data only. Most blueprints reuse a pattern kit rather than having their own code.',
       ok: c.executable.status === 'passed',
     },

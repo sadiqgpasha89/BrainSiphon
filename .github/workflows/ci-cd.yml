@@ -239,6 +239,8 @@ jobs:
           BS_RELEASE_STRICT: '1'
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           NEXT_PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io
+          # the checkout link for BrainSiphon Pro; empty keeps the "Ask for early access" buttons (set it under Settings > Variables)
+          NEXT_PUBLIC_PRO_CHECKOUT_URL: ${{ vars.PRO_CHECKOUT_URL }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: out }

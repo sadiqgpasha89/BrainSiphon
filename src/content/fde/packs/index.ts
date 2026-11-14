@@ -1,14 +1,5 @@
 import type { ImplementationPlaybook } from '../../../schemas/implementation.schema';
-import { ADTECH_CTR } from './adtech';
-import { BFSI_BRANCH } from './bfsi';
-import { CYBER_PHISHING } from './cybersecurity';
-import { EDTECH_KT } from './edtech';
 import { FINTECH_FRAUD } from './fintech';
-import { HEALTHCARE_SEPSIS } from './healthcare';
-import { REAL_ESTATE_AVM } from './real-estate';
-import { RETAIL_FORECAST } from './retail';
-import { SAAS_TRIAGE } from './saas';
-import { SUPPLY_CHAIN_ETA } from './supply-chain';
 
 type PB = ImplementationPlaybook;
 
@@ -35,16 +26,10 @@ export interface AuthoredPack {
   testing?: PB['testing']['suites'];
 }
 
-/** The ten use cases with an executable pack under fde-packs/, keyed by `<domain>/<slug>`. */
+/**
+ * The use cases with an executable pack under fde-packs/, keyed by `<domain>/<slug>`. The free site ships one (card and UPI fraud);
+ * the other nine packs are in BrainSiphon Pro, so their use cases get the derived implementation playbook only.
+ */
 export const AUTHORED: Record<string, AuthoredPack> = {
   'fintech/real-time-card-upi-fraud-detection': FINTECH_FRAUD,
-  'retail/demand-forecasting-sku-store': RETAIL_FORECAST,
-  'healthcare/sepsis-early-warning': HEALTHCARE_SEPSIS,
-  'supply-chain/eta-prediction-for-shipments': SUPPLY_CHAIN_ETA,
-  'adtech/ctr-prediction-ads': ADTECH_CTR,
-  'cybersecurity/phishing-url-and-email-detection': CYBER_PHISHING,
-  'edtech/knowledge-tracing-student-modeling': EDTECH_KT,
-  'saas/support-ticket-triage-and-priority': SAAS_TRIAGE,
-  'bfsi/branch-footfall-and-staffing-forecast': BFSI_BRANCH,
-  'real-estate/automated-valuation-model': REAL_ESTATE_AVM,
 };

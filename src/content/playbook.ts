@@ -27,7 +27,7 @@ const AuthoredSchema = PlaybookBase.omit({ provenance: true, prerequisites: true
       sample: PlaybookBase.shape.data.shape.sample.unwrap(),
     }),
     milestones: PlaybookBase.shape.milestones.element.omit({ delivery: true, state: true }).array().min(6),
-    workedExample: PlaybookBase.shape.workedExample.omit({ basis: true }),
+    workedExample: PlaybookBase.shape.workedExample.unwrap().omit({ basis: true }),
     starter: z.object({
       runtime: nonEmpty,
       run: z.array(nonEmpty).min(2),
