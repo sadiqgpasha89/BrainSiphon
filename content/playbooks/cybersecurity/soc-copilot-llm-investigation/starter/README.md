@@ -1,5 +1,11 @@
 # SOC Copilot Autonomous Investigation Agent — Reference Implementation
 
+> **Looking for the whole system?** This starter covers the modelling step on synthetic data. The complete, runnable
+> agentic workflow system (source system, CDC, validation, features, training, registry, serving, API with authentication,
+> application, human review, monitoring, retraining) is in
+> [`reference-implementations/agentic-workflow`](../../../../../reference-implementations/agentic-workflow/). Where the two differ, that one is the reference.
+
+
 > **Blueprint Reference:** `cybersecurity/soc-copilot-llm-investigation`  
 > **Pattern Classification:** Autonomous Multi-Tool Agent with Human-in-the-Loop Safeguards  
 > **Target SLA:** Investigation Turnaround $< 60\text{ seconds}$ vs 35-minute human tier-1 triage  

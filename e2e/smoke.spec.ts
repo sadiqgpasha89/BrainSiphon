@@ -662,3 +662,21 @@ test('every blueprint carries a seven-level maturity scorecard with evidence, re
   await expect(page.getByTestId('maturity-headline')).toContainText('Level 3 of 7');
   await expect(page.locator('#feasibility-warnings')).toContainText('Recommended remediation');
 });
+
+test('reference implementations page lists the four systems and says what is not covered', async ({
+  page,
+}) => {
+  await page.goto('/implementations');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Reference implementations');
+  const list = page.getByTestId('implementations-list');
+  for (const dir of ['realtime-decisioning', 'batch-forecasting', 'rag-assistant', 'agentic-workflow']) {
+    await expect(list).toContainText(dir);
+  }
+  const coverage = page.getByTestId('implementations-coverage');
+  await expect(coverage.getByRole('row')).toHaveCount(10); // header + nine archetypes
+  await expect(coverage).toContainText('No reference implementation yet');
+  await expect(page.getByTestId('implementations-verified')).toContainText('Not run');
+  await expect(
+    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Implementations' }),
+  ).toBeVisible();
+});

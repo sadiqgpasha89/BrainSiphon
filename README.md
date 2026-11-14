@@ -54,6 +54,34 @@ The site navigation follows the same idea: the header has five destinations (Del
 the home page is "pick a use case, follow the guide, build from the blueprint", and inside a blueprint the 22 sections are grouped
 as Understand, Design, Prove, and Ship and run, with the role lens folded behind one button.
 
+## Reference implementations: clone, configure, run, verify
+
+[`reference-implementations/`](reference-implementations/) holds four complete systems, one per solution family, each
+runnable end to end with `make setup && make demo` (no cloud account, API key or Docker needed for the default profile):
+
+| Implementation | Family | Worked use case | Checks |
+| --- | --- | --- | --- |
+| [`realtime-decisioning`](reference-implementations/realtime-decisioning/) | Real-time decisioning | Card and UPI fraud | 26 tests, 19-check verification |
+| [`batch-forecasting`](reference-implementations/batch-forecasting/) | Forecasting; adaptable to batch analytics | Demand sensing | 16 tests, 21-check verification |
+| [`rag-assistant`](reference-implementations/rag-assistant/) | Retrieval-augmented generation | Developer documentation assistant | 15 tests, 21-check verification |
+| [`agentic-workflow`](reference-implementations/agentic-workflow/) | Agentic workflow | SOC alert triage | 17 tests, 23-check verification |
+
+Each one implements, in the same directory layout, source-system integration, ingestion and CDC, validation, feature
+engineering and storage, training and evaluation, packaging and a registry, online inference or batch processing, a backend
+API, a consuming application, authentication and authorisation, human-in-the-loop review, monitoring and alerting,
+infrastructure (Docker, Compose, Kubernetes, CI) and a feedback and retraining loop, with a README covering prerequisites,
+environment variables, commands, expected results, troubleshooting and teardown.
+
+They cover 214 of the 500 blueprints by family, and 119 more (batch analytics) by adaptation with named changes. Computer
+vision, document extraction, optimisation and recommendation (167 blueprints) have **no** reference implementation yet.
+What was run, what was only syntax-checked and what is simulated is stated in
+[`reference-implementations/README.md`](reference-implementations/README.md#what-has-and-has-not-been-verified) and on the
+site at [`/implementations`](https://sadiqgpasha89.github.io/BrainSiphon/implementations/).
+
+The eight per-use-case starters under `content/playbooks/` remain what they were: the modelling step on synthetic data.
+Their serving stubs are illustrative; where a starter and a reference implementation differ, the reference implementation is
+the one to build from.
+
 ## Guided Implementation Workspace & Golden Reference Implementations
 
 BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineering execution through dedicated implementation assets:

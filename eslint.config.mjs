@@ -10,6 +10,7 @@ const config = [
       '.next/**',
       'out/**',
       '.venv/**',
+      'reference-implementations/**',
       'node_modules/**',
       'content/generated/**',
       'public/**',

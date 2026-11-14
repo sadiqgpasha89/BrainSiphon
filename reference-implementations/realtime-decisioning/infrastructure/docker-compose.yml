@@ -1,0 +1,63 @@
+# The compose profile: the same code on PostgreSQL, with a continuous worker, Prometheus and Grafana.
+#   cp .env.example .env && make setup      (generates the secrets in .env)
+#   docker compose -f infrastructure/docker-compose.yml --env-file .env up -d --build
+#   docker compose -f infrastructure/docker-compose.yml --env-file .env run --rm job python scripts/bootstrap.py
+#   API http://localhost:8000  ·  Prometheus http://localhost:9090  ·  Grafana http://localhost:3000
+# Teardown (removes the volumes too):  docker compose -f infrastructure/docker-compose.yml down -v
+name: realtime-decisioning
+
+x-app: &app
+  build: {context: .., dockerfile: infrastructure/Dockerfile}
+  environment: &env
+    APP_ENV: compose
+    DATABASE_URL: postgresql+psycopg://app:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/app
+    MODEL_REGISTRY_DIR: /registry
+    AUTH_MODE: ${AUTH_MODE:-local}
+    JWT_SECRET: ${JWT_SECRET:?run make setup}
+    USER_SVC_GATEWAY_PASSWORD: ${USER_SVC_GATEWAY_PASSWORD:?run make setup}
+    USER_ANALYST_PASSWORD: ${USER_ANALYST_PASSWORD:?run make setup}
+    USER_ML_ADMIN_PASSWORD: ${USER_ML_ADMIN_PASSWORD:?run make setup}
+    ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
+    LOG_LEVEL: ${LOG_LEVEL:-INFO}
+  volumes: [registry:/registry]
+  depends_on:
+    postgres: {condition: service_healthy}
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment: {POSTGRES_USER: app, POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}", POSTGRES_DB: app}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: {test: ["CMD-SHELL", "pg_isready -U app -d app"], interval: 5s, timeout: 3s, retries: 20}
+
+  api:
+    <<: *app
+    ports: ["${API_PORT:-8000}:8000"]
+
+  worker:            # CDC relay + streaming ingestion, continuously
+    <<: *app
+    command: ["python", "-m", "data.worker", "--loop"]
+    healthcheck: {disable: true}
+
+  job:               # one-off and scheduled commands: `docker compose run --rm job python -m training.retrain`
+    <<: *app
+    profiles: [jobs]
+    command: ["python", "-m", "monitoring.job"]
+    healthcheck: {disable: true}
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    volumes:
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../monitoring/prometheus-rules.yml:/etc/prometheus/rules.yml:ro
+    ports: ["9090:9090"]
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    environment: {GF_AUTH_ANONYMOUS_ENABLED: "true", GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer}
+    volumes:
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../monitoring/grafana/dashboard.json:/var/lib/grafana/dashboards/fraud.json:ro
+    ports: ["3000:3000"]
+
+volumes: {pgdata: {}, registry: {}}

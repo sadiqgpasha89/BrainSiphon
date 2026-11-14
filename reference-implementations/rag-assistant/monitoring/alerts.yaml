@@ -1,0 +1,83 @@
+# The single list of alert rules. `metric`/`op`/`threshold` are evaluated by monitoring/job.py; `promql` is for Prometheus.
+rules:
+  - name: RagIndexStale
+    metric: stale_documents
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 30m
+    summary: Documents were published, changed or deleted since the serving index was built, so answers may be out of date
+    runbook: docs/RUNBOOK.md#index-stale
+    promql: rag_stale_documents > 0
+  - name: RagAnswerCorrectnessLow
+    metric: eval_answer_correctness
+    op: "<"
+    threshold: 0.90
+    severity: page
+    for: 15m
+    summary: The serving index answers fewer than 90% of the evaluation questions correctly
+    runbook: docs/RUNBOOK.md#answer-quality-low
+    promql: rag_eval_answer_correctness < 0.90
+  - name: RagAccessControlLeak
+    metric: eval_acl_leaks
+    op: ">"
+    threshold: 0
+    severity: page
+    for: 0m
+    summary: An internal passage was retrieved for a public reader during evaluation
+    runbook: docs/RUNBOOK.md#access-control-leak
+    promql: rag_eval_acl_leaks > 0
+  - name: RagAbstainRateHigh
+    metric: abstain_rate
+    op: ">"
+    threshold: 0.35
+    severity: ticket
+    for: 1h
+    summary: More than 35% of questions are being declined (a documentation gap or a retrieval fault)
+    runbook: docs/RUNBOOK.md#abstain-rate-high
+    promql: sum(rate(rag_answers_total{status="abstained"}[1h])) / sum(rate(rag_answers_total[1h])) > 0.35
+  - name: RagThumbsDownRateHigh
+    metric: thumbs_down_rate
+    op: ">"
+    threshold: 0.25
+    severity: ticket
+    for: 1h
+    summary: More than a quarter of rated answers are rated not helpful
+    runbook: docs/RUNBOOK.md#answer-quality-low
+    promql: sum(rate(rag_ratings_total{rating="down"}[6h])) / sum(rate(rag_ratings_total[6h])) > 0.25
+  - name: RagUnsupportedSentences
+    metric: unsupported_sentence_rate
+    op: ">"
+    threshold: 0.05
+    severity: ticket
+    for: 1h
+    summary: The generator is producing sentences that its citations do not support (they are removed, but investigate)
+    runbook: docs/RUNBOOK.md#unsupported-sentences
+    promql: sum(rate(rag_unsupported_sentences_total[1h])) / sum(rate(rag_answers_total{status="answered"}[1h])) > 0.05
+  - name: RagAnswerLatencyHigh
+    metric: answer_p95_ms
+    op: ">"
+    threshold: 4000
+    severity: ticket
+    for: 15m
+    summary: p95 time to answer is above 4 seconds
+    runbook: docs/RUNBOOK.md#latency-high
+    promql: histogram_quantile(0.95, sum(rate(rag_answer_duration_ms_bucket[15m])) by (le)) > 4000
+  - name: IngestDeadLetters
+    metric: dead_letters
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 1m
+    summary: Document events are in the dead-letter queue and need a person to look at them
+    runbook: docs/RUNBOOK.md#dead-letters
+    promql: rag_ingest_dead_letters > 0
+  - name: ReviewsOverdue
+    metric: reviews_overdue
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 5m
+    summary: Questions have waited for the documentation team past the review SLA
+    runbook: docs/RUNBOOK.md#reviews-overdue
+    promql: rag_reviews_overdue > 0

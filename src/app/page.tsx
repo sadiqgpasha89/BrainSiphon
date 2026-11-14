@@ -177,8 +177,12 @@ export default async function Home() {
               <h3 className="font-semibold text-ink">Executable Starters</h3>
             </div>
             <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              11 reusable pattern kits and 8 named use-case reference implementations with standard repository
-              structures, FastAPI microservices, and pytest test suites tested on every build.
+              Four complete{' '}
+              <Link href="/implementations" className="text-signal hover:underline">
+                reference implementations
+              </Link>{' '}
+              (real-time decisioning, batch forecasting, RAG, agentic workflow) that run end to end with one
+              command, plus 11 pattern kits and 8 use-case starters for the modelling step, all tested in CI.
             </p>
           </div>
 

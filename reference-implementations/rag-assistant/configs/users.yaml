@@ -1,0 +1,15 @@
+# Passwords come from USER_<NAME>_PASSWORD in the environment (`make setup` generates them into .env).
+users:
+  - username: customer          # an external developer: sees public documents only
+    roles: [user]
+  - username: employee          # staff: also sees internal documents
+    roles: [user, employee]
+  - username: writer            # documentation team: answers unanswered questions, reviews bad answers
+    roles: [user, employee, writer]
+  - username: ml-admin
+    roles: [user, employee, writer, ml-admin]
+roles:
+  user: ask questions and rate answers (public documents)
+  employee: answers may also draw on internal documents
+  writer: work the review queue, add evaluation examples
+  ml-admin: rebuild, promote and roll back the index

@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: realtime-decisioning
+resources: [namespace.yaml, configmap.yaml, registry-pvc.yaml, api.yaml, worker.yaml, cronjobs.yaml, network-policy.yaml]
+images:
+  - {name: realtime-decisioning, newName: ghcr.io/your-org/realtime-decisioning, newTag: latest}

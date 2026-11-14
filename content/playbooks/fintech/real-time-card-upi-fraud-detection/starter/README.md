@@ -1,5 +1,11 @@
 # Real-Time Card & UPI Fraud Detection — Reference Implementation
 
+> **Looking for the whole system?** This starter covers the modelling step on synthetic data. The complete, runnable
+> real-time decisioning system (source system, CDC, validation, features, training, registry, serving, API with authentication,
+> application, human review, monitoring, retraining) is in
+> [`reference-implementations/realtime-decisioning`](../../../../../reference-implementations/realtime-decisioning/). Where the two differ, that one is the reference.
+
+
 > **Blueprint Reference:** `fintech/real-time-card-upi-fraud-detection`  
 > **Target SLA:** P99 Latency $< 15\text{ ms}$, Throughput $\ge 2,500\text{ req/sec}$  
 > **Decision Vocabulary:** `ALLOW` | `STEP_UP` | `BLOCK`  

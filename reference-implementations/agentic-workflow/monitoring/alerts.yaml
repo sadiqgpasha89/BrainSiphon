@@ -1,0 +1,83 @@
+# The single list of alert rules. `metric`/`op`/`threshold` are evaluated by monitoring/job.py; `promql` is for Prometheus.
+rules:
+  - name: AgentOverrideRateHigh
+    metric: override_rate
+    op: ">"
+    threshold: 0.20
+    severity: page
+    for: 1h
+    summary: Analysts are changing more than 20% of the agent's own verdicts
+    runbook: docs/RUNBOOK.md#override-rate-high
+    promql: sum(increase(agent_analyst_verdicts_total{agreement="override"}[1d])) / sum(increase(agent_analyst_verdicts_total[1d])) > 0.20
+  - name: AgentMissedThreat
+    metric: live_missed_threats
+    op: ">"
+    threshold: 0
+    severity: page
+    for: 0m
+    summary: A case the agent closed as benign was judged a true positive by an analyst
+    runbook: docs/RUNBOOK.md#missed-threat
+    promql: agent_live_missed_threats > 0
+  - name: AgentEscalationRateHigh
+    metric: escalation_rate
+    op: ">"
+    threshold: 0.5
+    severity: ticket
+    for: 6h
+    summary: The agent is sending more than half of the cases to a person
+    runbook: docs/RUNBOOK.md#escalation-rate-high
+    promql: sum(rate(agent_investigations_total{verdict="needs_human"}[6h])) / sum(rate(agent_investigations_total[6h])) > 0.5
+  - name: AgentApprovalRejectionRateHigh
+    metric: approval_rejection_rate
+    op: ">"
+    threshold: 0.3
+    severity: ticket
+    for: 6h
+    summary: Approvers are rejecting more than 30% of the containment actions the agent proposes
+    runbook: docs/RUNBOOK.md#approval-rejections-high
+    promql: sum(increase(agent_approval_decisions_total{decision="reject"}[1d])) / sum(increase(agent_approval_decisions_total[1d])) > 0.3
+  - name: AgentToolErrors
+    metric: tool_error_rate
+    op: ">"
+    threshold: 0.05
+    severity: page
+    for: 10m
+    summary: More than 5% of the agent's tool calls are failing, so investigations are running on partial evidence
+    runbook: docs/RUNBOOK.md#tool-errors
+    promql: agent_tool_error_rate > 0.05
+  - name: AgentStepBudgetExhausted
+    metric: budget_exhausted_cases
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 30m
+    summary: Investigations are hitting the step budget without reaching a conclusion
+    runbook: docs/RUNBOOK.md#step-budget-exhausted
+    promql: agent_budget_exhausted_cases > 0
+  - name: ApprovalsOverdue
+    metric: approvals_overdue
+    op: ">"
+    threshold: 0
+    severity: page
+    for: 5m
+    summary: Containment actions have waited past the approval SLA; the threat is still active
+    runbook: docs/RUNBOOK.md#approvals-overdue
+    promql: agent_approvals_overdue > 0
+  - name: CasesUninvestigated
+    metric: uninvestigated_cases
+    op: ">"
+    threshold: 0
+    severity: page
+    for: 10m
+    summary: Alerts have been ingested but not investigated (no production agent, or the worker is down)
+    runbook: docs/RUNBOOK.md#cases-uninvestigated
+    promql: agent_uninvestigated_cases > 0
+  - name: IngestDeadLetters
+    metric: dead_letters
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 1m
+    summary: Alert events are in the dead-letter queue and need a person to look at them
+    runbook: docs/RUNBOOK.md#dead-letters
+    promql: agent_ingest_dead_letters > 0

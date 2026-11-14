@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demand planner console</title>
+<link rel="stylesheet" href="/_shared/app.css">
+</head>
+<body>
+<header><h1>Demand planner console</h1><div id="who" class="row"></div></header>
+<main>
+  <section id="login" class="card">
+    <h2>Sign in</h2>
+    <form id="login-form" class="row">
+      <input name="username" placeholder="username" autocomplete="username" required>
+      <input name="password" type="password" placeholder="password" autocomplete="current-password" required>
+      <button class="primary">Sign in</button>
+    </form>
+    <p class="mute">Use <code>planner</code> or <code>ml-admin</code>; the passwords are in your <code>.env</code> file.</p>
+  </section>
+  <div id="app" class="hidden" style="display:grid;gap:16px">
+    <section class="card"><h2>Latest run and accuracy so far</h2><div id="stats" class="grid"></div><div id="alerts"></div>
+      <div class="row" style="margin-top:10px"><button id="run" class="primary">Start a forecast run</button><button id="reload">Refresh</button></div></section>
+    <section class="card"><h2>Series held for review</h2>
+      <table><thead><tr><th>Series</th><th>Model, next 14 days</th><th>Recent 14 days</th><th>Ratio</th><th>Decision</th></tr></thead><tbody id="queue"></tbody></table></section>
+    <section class="card"><h2>Look up a forecast</h2>
+      <form id="lookup" class="row"><input name="store_id" value="S001" size="6" required><input name="sku" value="K0001" size="6" required>
+        <button>Show</button><input name="factor" type="number" step="0.05" min="0" max="10" placeholder="override factor" size="12">
+        <input name="reason" placeholder="reason for the override" size="28"><button type="button" id="ov">Apply override</button></form>
+      <div id="series"></div></section>
+    <section class="card"><h2>Models</h2><table><thead><tr><th>Version</th><th>Stage</th><th>WAPE</th><th>Baseline WAPE</th><th>Value added</th><th>Band coverage</th><th>Test origins</th></tr></thead><tbody id="models"></tbody></table></section>
+  </div>
+</main>
+<div id="toast" role="status"></div>
+<script src="/_shared/app.js"></script>
+<script>
+const $ = (id) => document.getElementById(id), e = BS.esc, pct = (v) => (v == null ? "n/a" : (v * 100).toFixed(1) + "%");
+async function refresh() {
+  const [sum, tasks, models] = await Promise.all([BS.api("/v1/monitoring/summary"), BS.api("/v1/reviews"), BS.api("/v1/models")]);
+  const r = sum.latest_run || {}, a = sum.accuracy || {};
+  $("stats").innerHTML = [["Production model", sum.production_model || "none"], ["Latest origin", r.origin_day || "no run yet"],
+    ["Series forecast", r.series ?? 0], ["Held for review", tasks.length], ["Live WAPE (final)", pct(a.wape_final)],
+    ["Live WAPE (baseline)", pct(a.wape_baseline)], ["Band coverage", pct(a.coverage_p10_p90)], ["Scored rows", a.rows ?? 0]]
+    .map(([k, v]) => `<div class="stat"><b>${e(v)}</b><span>${e(k)}</span></div>`).join("");
+  $("alerts").innerHTML = sum.alerts_firing.map((x) => `<p><span class="pill bad">${e(x.severity)}</span> ${e(x.message)}</p>`).join("");
+  $("queue").innerHTML = tasks.map((t) => { const p = t.payload; return `<tr><td><code>${e(p.store_id)} / ${e(p.sku)}</code><br><span class="mute">${e(p.run_id)}</span></td>
+    <td class="num">${e(p.forecast_14d)}</td><td class="num">${e(p.recent_14d)}</td><td class="num">${e(p.ratio)}x</td>
+    <td><div class="row"><button data-v="accept_model" data-id="${t.id}">Accept model</button><button data-v="keep_baseline" data-id="${t.id}">Keep baseline</button>
+    <button data-v="override" data-id="${t.id}">Override…</button></div></td></tr>`; }).join("") || `<tr><td colspan="5" class="mute">No series is held.</td></tr>`;
+  $("models").innerHTML = models.versions.slice().reverse().map((m) => `<tr><td><code>${e(m.version)}</code></td>
+    <td>${m.stage === "production" ? '<span class="pill ok">production</span>' : '<span class="pill">candidate</span>'}</td>
+    <td class="num">${pct(m.metrics.wape)}</td><td class="num">${pct(m.metrics.baseline_wape)}</td><td class="num">${pct(m.metrics.forecast_value_added)}</td>
+    <td class="num">${pct(m.metrics.coverage_p10_p90)}</td><td>${e((m.origins?.test || []).join(" to "))}</td></tr>`).join("");
+}
+async function show() {
+  const f = new FormData($("lookup"));
+  const d = await BS.api(`/v1/forecasts?store_id=${encodeURIComponent(f.get("store_id"))}&sku=${encodeURIComponent(f.get("sku"))}`);
+  $("series").innerHTML = `<p>Run <code>${e(d.run_id)}</code> · status <span class="pill ${d.status === "held" ? "warn" : "ok"}">${e(d.status)}</span></p>
+    <table><thead><tr><th>Day</th><th>Final</th><th>p10</th><th>p50</th><th>p90</th><th>Baseline</th></tr></thead><tbody>${d.days.map((x) =>
+    `<tr><td>${e(x.target_day)}</td><td class="num"><b>${e(x.final.toFixed(1))}</b></td><td class="num">${e(x.p10.toFixed(1))}</td>
+     <td class="num">${e(x.p50.toFixed(1))}</td><td class="num">${e(x.p90.toFixed(1))}</td><td class="num">${e(x.baseline.toFixed(1))}</td></tr>`).join("")}</tbody></table>`;
+}
+$("lookup").addEventListener("submit", (ev) => { ev.preventDefault(); show().catch((err) => BS.toast(err.message)); });
+document.addEventListener("click", async (ev) => {
+  const b = ev.target.closest("button"); if (!b) return;
+  try {
+    if (b.id === "run") { const r = await BS.api("/v1/runs", { method: "POST" }); BS.toast(r.replayed ? "This run already exists" : `Run ${r.run_id}: ${r.series} series, ${r.held} held`); }
+    else if (b.id === "ov") { const f = new FormData($("lookup"));
+      await BS.api("/v1/forecasts/override", { method: "POST", json: { store_id: f.get("store_id"), sku: f.get("sku"), factor: Number(f.get("factor")), reason: f.get("reason") } }); await show(); }
+    else if (b.dataset.v) { let factor = 1; if (b.dataset.v === "override") { factor = Number(prompt("Multiply the model forecast by", "0.8")); if (!(factor >= 0)) return; }
+      const notes = prompt("Notes (optional)") ?? ""; await BS.api(`/v1/reviews/${b.dataset.id}/decision`, { method: "POST", json: { verdict: b.dataset.v, factor, notes } }); }
+    else if (b.id !== "reload") return;
+    await refresh();
+  } catch (err) { BS.toast(err.message); }
+});
+BS.init();
+</script>
+</body>
+</html>

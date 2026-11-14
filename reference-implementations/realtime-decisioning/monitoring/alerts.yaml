@@ -1,0 +1,93 @@
+# The single list of alert rules. `metric`/`op`/`threshold` are evaluated by monitoring/job.py (works with no Prometheus);
+# `promql` is what Prometheus evaluates. `python -m bsref.observability` renders prometheus-rules.yml from this file.
+rules:
+  - name: FraudFallbackRateHigh
+    metric: fallback_rate
+    op: ">"
+    threshold: 0.02
+    severity: page
+    for: 5m
+    summary: More than 2% of decisions are answered by the rules fallback instead of the model
+    runbook: docs/RUNBOOK.md#fallback-rate-high
+    promql: sum(rate(fraud_decisions_total{fallback="true"}[5m])) / sum(rate(fraud_decisions_total[5m])) > 0.02
+  - name: FraudBlockRateHigh
+    metric: block_rate
+    op: ">"
+    threshold: 0.02
+    severity: page
+    for: 10m
+    summary: The share of blocked payments is far above the planned false-decline budget
+    runbook: docs/RUNBOOK.md#block-rate-high
+    promql: sum(rate(fraud_decisions_total{action="BLOCK"}[10m])) / sum(rate(fraud_decisions_total[10m])) > 0.02
+  - name: FraudScoringLatencyHigh
+    metric: scoring_p99_ms
+    op: ">"
+    threshold: 50
+    severity: page
+    for: 5m
+    summary: p99 scoring time is above the 50 ms deadline
+    runbook: docs/RUNBOOK.md#latency-high
+    promql: histogram_quantile(0.99, sum(rate(fraud_scoring_duration_ms_bucket[5m])) by (le)) > 50
+  - name: FraudFeatureDrift
+    metric: max_feature_psi
+    op: ">"
+    threshold: 0.25
+    severity: ticket
+    for: 1h
+    summary: A model input has drifted from its training distribution (PSI above 0.25)
+    runbook: docs/RUNBOOK.md#feature-drift
+    promql: fraud_max_feature_psi > 0.25
+  - name: FraudLivePrecisionLow
+    metric: matured_pr_auc
+    op: "<"
+    threshold: 0.30
+    severity: ticket
+    for: 1h
+    summary: PR-AUC on the newest matured labels has fallen below the promotion gate
+    runbook: docs/RUNBOOK.md#model-performance-low
+    promql: fraud_matured_pr_auc < 0.30
+  - name: FraudBlockOverturnRateHigh
+    metric: block_overturn_rate
+    op: ">"
+    threshold: 0.5
+    severity: ticket
+    for: 1h
+    summary: Analysts are releasing more than half of the blocked payments as genuine
+    runbook: docs/RUNBOOK.md#block-rate-high
+    promql: sum(increase(fraud_reviews_total{verdict="genuine"}[6h])) / sum(increase(fraud_reviews_total[6h])) > 0.5
+  - name: IngestConsumerLag
+    metric: consumer_lag
+    op: ">"
+    threshold: 5000
+    severity: page
+    for: 5m
+    summary: Feature ingestion is more than 5000 events behind the source, so online features are stale
+    runbook: docs/RUNBOOK.md#ingestion-lag
+    promql: fraud_ingest_consumer_lag > 5000
+  - name: IngestDeadLetters
+    metric: dead_letters
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 1m
+    summary: Events are in the dead-letter queue and need a person to look at them
+    runbook: docs/RUNBOOK.md#dead-letters
+    promql: fraud_ingest_dead_letters > 0
+  - name: IngestQuarantineRateHigh
+    metric: quarantine_rate
+    op: ">"
+    threshold: 0.01
+    severity: ticket
+    for: 15m
+    summary: More than 1% of source events violate the data contract
+    runbook: docs/RUNBOOK.md#quarantine-rate-high
+    promql: fraud_ingest_quarantine_rate > 0.01
+  - name: ReviewsOverdue
+    metric: reviews_overdue
+    op: ">"
+    threshold: 0
+    severity: ticket
+    for: 5m
+    summary: Blocked payments have passed their review SLA without a decision
+    runbook: docs/RUNBOOK.md#reviews-overdue
+    promql: fraud_reviews_overdue > 0

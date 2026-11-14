@@ -1,5 +1,11 @@
 # Developer Docs Assistant (Production RAG) — Reference Implementation
 
+> **Looking for the whole system?** This starter covers the modelling step on synthetic data. The complete, runnable
+> RAG system (source system, CDC, validation, features, training, registry, serving, API with authentication,
+> application, human review, monitoring, retraining) is in
+> [`reference-implementations/rag-assistant`](../../../../../reference-implementations/rag-assistant/). Where the two differ, that one is the reference.
+
+
 > **Blueprint Reference:** `saas/developer-docs-assistant`  
 > **Pattern Classification:** Production Retrieval-Augmented Generation (RAG) with Citation Verification  
 > **Evaluation Metric:** Faithfulness $\ge 0.92$, Answer Relevance $\ge 0.88$, Context Precision $\ge 0.85$ (Ragas framework)  

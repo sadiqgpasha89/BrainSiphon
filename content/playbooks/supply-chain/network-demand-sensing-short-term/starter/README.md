@@ -1,5 +1,11 @@
 # Short-Term Supply Chain Demand Sensing — Reference Implementation
 
+> **Looking for the whole system?** This starter covers the modelling step on synthetic data. The complete, runnable
+> batch forecasting system (source system, CDC, validation, features, training, registry, serving, API with authentication,
+> application, human review, monitoring, retraining) is in
+> [`reference-implementations/batch-forecasting`](../../../../../reference-implementations/batch-forecasting/). Where the two differ, that one is the reference.
+
+
 > **Blueprint Reference:** `supply-chain/network-demand-sensing-short-term`  
 > **Forecast Horizon:** Daily 1-to-14 day multi-echelon SKU demand sensing  
 > **Evaluation Metric:** WAPE $\le 18.5\%$, Bias $\in [-3\%, +3\%]$, Pinball Loss across P10/P50/P90 quantiles  

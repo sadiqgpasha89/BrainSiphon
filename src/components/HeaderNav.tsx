@@ -53,6 +53,13 @@ export function HeaderNav() {
       >
         Workspace
       </Link>
+      <Link
+        href="/implementations"
+        aria-current={here('/implementations') ? 'page' : undefined}
+        className={`${LINK} hidden lg:block ${here('/implementations') ? 'text-signal' : 'text-mute hover:text-ink'}`}
+      >
+        Implementations
+      </Link>
       <div ref={wrap} className="sm:relative">
         <button
           type="button"
@@ -108,12 +115,15 @@ export function HeaderNav() {
               ))}
             </ul>
           </nav>
-          <div className="mt-1 flex gap-1 border-t border-line pt-1 md:hidden">
-            <Link href="/patterns" className={`${LINK} text-mute hover:text-ink`}>
+          <div className="mt-1 flex flex-wrap gap-1 border-t border-line pt-1 lg:hidden">
+            <Link href="/patterns" className={`${LINK} text-mute hover:text-ink md:hidden`}>
               Patterns
             </Link>
-            <Link href="/deployment" className={`${LINK} text-mute hover:text-ink`}>
+            <Link href="/deployment" className={`${LINK} text-mute hover:text-ink md:hidden`}>
               Deployment
+            </Link>
+            <Link href="/implementations" className={`${LINK} text-mute hover:text-ink`}>
+              Implementations
             </Link>
             <Link href="/about" className={`${LINK} text-mute hover:text-ink sm:hidden`}>
               About
