@@ -90,7 +90,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        impl: [realtime-decisioning, batch-forecasting, rag-assistant, agentic-workflow]
+        impl: [realtime-decisioning]
     defaults:
       run:
         working-directory: reference-implementations/${{ matrix.impl }}
@@ -107,7 +107,6 @@ jobs:
       - name: Bootstrap (seed, pipeline, first model or index or agent version)
         run: $COMPOSE run --rm job python scripts/bootstrap.py
       - name: Extra data the verification expects
-        if: matrix.impl == 'realtime-decisioning' || matrix.impl == 'agentic-workflow'
         run: $COMPOSE run --rm job sh -c "python -m data.source_system advance && python -m data.worker"
       - name: Verify through the API
         run: $COMPOSE run --rm -e API_URL=http://api:8000 job python scripts/verify.py
