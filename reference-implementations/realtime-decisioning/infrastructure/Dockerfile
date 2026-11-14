@@ -12,7 +12,9 @@ RUN useradd --uid 10001 --create-home app
 WORKDIR /app
 COPY --from=build /venv /venv
 COPY --chown=app:app . .
-RUN mkdir -p /app/var /app/models/registry && chown -R app:app /app/var /app/models
+# /registry is where Compose and Kubernetes mount the model registry volume. A new named volume takes the ownership of the
+# image directory it is mounted on, so it must exist here, owned by the non-root user, or the first write is refused.
+RUN mkdir -p /app/var /app/models/registry /registry && chown -R app:app /app/var /app/models /registry
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --retries=5 CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz').status==200 else 1)"
