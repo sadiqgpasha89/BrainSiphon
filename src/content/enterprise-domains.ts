@@ -4,6 +4,7 @@
  * control and which evidence. Client-safe plain data, consumed by `enterprise.ts`.
  */
 import type { Domain } from '../schemas/usecase.schema';
+import type { RawUseCase } from './parse';
 
 export interface Obligation {
   obligation: string;
@@ -309,3 +310,22 @@ export const DOMAIN_ENTERPRISE: Record<Domain, DomainEnterprise> = {
     ],
   },
 };
+
+/**
+ * The enterprise facts for one use case: the domain default with the use case's own `sor:`, `up:` and `down:` lines laid over
+ * it. Everything that names a system (the application architecture, C4 views, discovery questions, role lenses and the
+ * implementation playbook) must go through this, so a blueprint never lists a system its own use case does not touch.
+ */
+export function domainOf(raw: Pick<RawUseCase, 'sor' | 'up' | 'down' | 'own' | 'host'>, domain: Domain): DomainEnterprise {
+  const base = DOMAIN_ENTERPRISE[domain];
+  if (!raw.sor && !raw.up && !raw.down && !raw.own && !raw.host) return base;
+  const pick = (own: string[] | undefined, dflt: string[]) => (own && own.length >= 2 ? own : dflt);
+  return {
+    ...base,
+    systemsOfRecord: pick(raw.sor, base.systemsOfRecord),
+    upstream: pick(raw.up, base.upstream),
+    downstream: pick(raw.down, base.downstream),
+    owners: pick(raw.own, base.owners),
+    hosting: raw.host ?? base.hosting,
+  };
+}

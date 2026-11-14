@@ -152,7 +152,7 @@ describe('Phase 0: enterprise discovery and business requirements', () => {
     }
   });
 
-  it('appears first in the markdown export, before the enterprise context, and lists all fourteen roles', () => {
+  it('appears first in the markdown export, before the enterprise context, and lists every role', () => {
     const md = toMarkdown(all[0]!);
     expect(md.indexOf('## Phase 0: Enterprise discovery')).toBeGreaterThan(0);
     expect(md.indexOf('## Phase 0: Enterprise discovery')).toBeLessThan(

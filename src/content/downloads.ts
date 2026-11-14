@@ -7,11 +7,11 @@ import { DOWNLOAD_BUNDLES, type BundleId } from './downloads-meta';
 export { DOWNLOAD_BUNDLES };
 export type { BundleId };
 
-const SKIP = new Set(['.terraform', 'node_modules', '__pycache__', '.DS_Store']);
+const SKIP = new Set(['.terraform', 'node_modules', '__pycache__', '.pytest_cache', '.DS_Store']);
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const name of readdirSync(dir).sort()) {
-    if (SKIP.has(name) || name.endsWith('.tfstate') || name.endsWith('.tfstate.backup')) continue;
+    if (SKIP.has(name) || name.endsWith('.tfstate') || name.endsWith('.tfstate.backup') || name.endsWith('.pyc')) continue;
     const p = join(dir, name);
     if (statSync(p).isDirectory()) walk(p, out);
     else out.push(p);

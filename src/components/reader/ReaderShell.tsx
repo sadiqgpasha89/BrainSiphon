@@ -39,7 +39,7 @@ export function ReaderShell({
   const [pure, setPure] = useState(false);
   const [active, setActive] = useState(toc[0]?.id ?? '');
   const [roles, setRolesState] = useState<RoleId[]>([]);
-  // the fifteen lens buttons stay folded away until asked for: the keys 0-9 and a-e work either way
+  // the lens buttons stay folded away until asked for: the keys 0-9 and a-f work either way
   const [lensOpen, setLensOpen] = useState(false);
   const rolesRef = useRef<RoleId[]>([]);
   rolesRef.current = roles;

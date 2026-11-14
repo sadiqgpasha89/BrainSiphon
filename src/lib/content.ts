@@ -4,6 +4,8 @@ import { join } from 'node:path';
 import { cache } from 'react';
 import type { ResolvedDomainTracks } from '../content/tracks';
 import type { ReleaseManifest } from '../content/release';
+import { hydrate, type PersistedPlaybook } from '../content/fde/generate';
+import { ImplementationPlaybookSchema, type ImplementationPlaybook } from '../schemas/implementation.schema';
 import {
   UseCaseSchema,
   type Domain,
@@ -40,6 +42,17 @@ export const getUseCase = cache(async (slug: string): Promise<UseCase | null> =>
   try {
     const raw = await readFile(join(root, 'uc', `${slug}.json`), 'utf8');
     return UseCaseSchema.parse(JSON.parse(raw));
+  } catch {
+    return null;
+  }
+});
+
+/** The Customer Implementation Playbook for a use case: read the slim file written by content:build, add the shared parts back and validate. */
+export const getImplementation = cache(async (slug: string): Promise<ImplementationPlaybook | null> => {
+  if (!/^[a-z0-9-]+\/[a-z0-9-]+$/.test(slug)) return null;
+  try {
+    const raw = await readFile(join(root, 'impl', `${slug}.json`), 'utf8');
+    return ImplementationPlaybookSchema.parse(hydrate(JSON.parse(raw) as PersistedPlaybook));
   } catch {
     return null;
   }

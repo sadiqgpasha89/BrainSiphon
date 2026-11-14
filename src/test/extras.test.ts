@@ -8,7 +8,7 @@ const all = loadAllUseCases();
 const bySlug = (s: string) => all.find((u) => u.slug === s)!;
 
 describe('role lenses and primitives', () => {
-  it('gives every blueprint all fourteen role lenses with resolvable primitive links', () => {
+  it('gives every blueprint a lens for every role with resolvable primitive links', () => {
     for (const u of all) {
       expect(
         u.roleLenses.map((l) => l.role),

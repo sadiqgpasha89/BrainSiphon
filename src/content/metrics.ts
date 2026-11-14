@@ -29,7 +29,7 @@ import {
   type Paradigm,
   type PatternId,
 } from '../schemas/usecase.schema';
-import { DOMAIN_ENTERPRISE } from './enterprise-domains';
+import { domainOf } from './enterprise-domains';
 import { LABEL_DELAY, type Stance } from './extras';
 import { m, type Stage } from './design';
 import type { RawUseCase } from './parse';
@@ -114,7 +114,7 @@ const LAYER_WHY: Record<MetricLayerId, string> = {
 
 export function buildMetrics(c: MetricsCtx): Metrics {
   const { raw, domain, archetype, scale, stages, agentic, operations: ops, governance: gov, experimentation: xp, mlops, enterprise: ent } = c;
-  const d = DOMAIN_ENTERPRISE[domain];
+  const d = domainOf(raw, domain);
   const batch = scale.mode === 'batch';
   const isLlm = c.paradigms.includes('llm-agents') || c.pattern === 'llm-agent' || c.pattern === 'llm-rag';
   const hasAgents = isAgentic(agentic.fit) && agentic.agents.length > 0;

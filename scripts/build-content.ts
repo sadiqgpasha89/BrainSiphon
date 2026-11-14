@@ -7,6 +7,8 @@ import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { loadAllUseCases, toIndexEntry } from '../src/content/load';
 import { toMarkdown } from '../src/content/markdown';
+import { buildImplementationPlaybook, persist } from '../src/content/fde/generate';
+import { implementationMarkdown } from '../src/content/fde/markdown';
 import { DOMAIN_META, DOMAINS, PATTERN_IDS } from '../src/schemas/usecase.schema';
 import { PRIMITIVES } from '../src/content/primitives';
 import { ALL_STEPS, DELIVERY_PHASES } from '../src/content/delivery';
@@ -53,9 +55,15 @@ const manifest = buildManifest({
 
 rmSync(gen, { recursive: true, force: true });
 for (const d of DOMAINS) rmSync(join(pub, d), { recursive: true, force: true });
+rmSync(join(pub, 'implementation'), { recursive: true, force: true });
 for (const u of all) {
   write(join(gen, 'uc', `${u.slug}.json`), JSON.stringify(u));
   write(join(pub, `${u.slug}.md`), toMarkdown(u, origin, manifest));
+  // the Customer Implementation Playbook: the slim form is read by the page, the full form and Markdown are downloads
+  const playbook = buildImplementationPlaybook(u);
+  write(join(gen, 'impl', `${u.slug}.json`), JSON.stringify(persist(playbook)));
+  write(join(pub, 'implementation', `${u.slug}.json`), JSON.stringify(playbook));
+  write(join(pub, 'implementation', `${u.slug}.md`), implementationMarkdown(playbook, origin));
 }
 write(join(gen, 'release.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 write(join(pub, 'release.json'), `${JSON.stringify(manifest, null, 2)}\n`);
@@ -141,7 +149,9 @@ write(join(pub, 'delivery.md'), deliveryMarkdown(origin));
 for (const d of DOMAINS) {
   llms.push(`## ${DOMAIN_META[d].name}`, '');
   for (const u of all.filter((x) => x.domain === d))
-    llms.push(`- [${u.title}](${origin}/${u.slug}.md): ${u.summary}`);
+    llms.push(
+      `- [${u.title}](${origin}/${u.slug}.md): ${u.summary} ([implementation playbook](${origin}/implementation/${u.slug}.md))`,
+    );
   llms.push('');
 }
 llms.push(

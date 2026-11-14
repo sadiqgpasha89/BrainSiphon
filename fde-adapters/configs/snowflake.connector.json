@@ -1,0 +1,48 @@
+{
+  "adapter": "snowflake",
+  "name": "snowflake-orders",
+  "connection": {
+    "account_url": "${SNOWFLAKE_ACCOUNT_URL}",
+    "warehouse": "BS_WH",
+    "database": "ANALYTICS",
+    "schema": "PUBLIC",
+    "role": "BS_READER",
+    "token_type": "KEYPAIR_JWT",
+    "auth": {
+      "type": "bearer",
+      "token_env": "SNOWFLAKE_JWT"
+    }
+  },
+  "read": {
+    "statement": "SELECT ID, CUSTOMER, AMOUNT, UPDATED_AT FROM ORDERS ORDER BY ID",
+    "key_field": "ID"
+  },
+  "write": {
+    "table": "BS_DECISIONS",
+    "key_column": "DECISION_ID",
+    "columns": ["DECISION_ID", "ACTION", "MODEL_VERSION"],
+    "idempotency_fields": ["decision_id"]
+  },
+  "mapping": {
+    "fields": {
+      "id": {
+        "from": "ID",
+        "required": true
+      },
+      "customer": {
+        "from": "CUSTOMER"
+      },
+      "amount": {
+        "from": "AMOUNT",
+        "transform": ["to_float"]
+      },
+      "updated_at": {
+        "from": "UPDATED_AT",
+        "transform": ["to_utc"]
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

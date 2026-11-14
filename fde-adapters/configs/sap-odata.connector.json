@@ -1,0 +1,64 @@
+{
+  "adapter": "sap-odata",
+  "name": "sap-sales-orders",
+  "connection": {
+    "base_url": "${SAP_BASE_URL}",
+    "service": "API_SALES_ORDER_SRV",
+    "odata_version": "v2",
+    "sap_client": "100",
+    "auth": {
+      "type": "basic",
+      "user_env": "SAP_USER",
+      "password_env": "SAP_PASSWORD"
+    }
+  },
+  "read": {
+    "entity_set": "A_SalesOrder",
+    "select": ["SalesOrder", "SoldToParty", "TotalNetAmount", "TransactionCurrency", "CreationDate"],
+    "page_size": 100,
+    "key_field": "SalesOrder"
+  },
+  "write": {
+    "entity_set": "A_SalesOrder",
+    "reference_field": "YY1_BSKey",
+    "idempotency_fields": ["order_ref"]
+  },
+  "mapping": {
+    "fields": {
+      "order_id": {
+        "from": "SalesOrder",
+        "required": true
+      },
+      "customer_id": {
+        "from": "SoldToParty"
+      },
+      "net_amount": {
+        "from": "TotalNetAmount",
+        "transform": ["to_float"],
+        "required": true
+      },
+      "currency": {
+        "from": "TransactionCurrency"
+      },
+      "source": {
+        "value": "sap"
+      }
+    }
+  },
+  "contract": {
+    "type": "object",
+    "required": ["order_id", "net_amount", "currency"],
+    "properties": {
+      "net_amount": {
+        "type": "number",
+        "minimum": 0
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  },
+  "timeouts": {
+    "read": 60
+  }
+}

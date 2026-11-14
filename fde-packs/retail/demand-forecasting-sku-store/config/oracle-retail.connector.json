@@ -1,0 +1,46 @@
+{
+  "adapter": "oracle",
+  "name": "oracle-retail-rms-items",
+  "connection": {
+    "host": "${RMS_HOST}",
+    "port": 1521,
+    "database": "RMS",
+    "service_name": "RMSPRD",
+    "user_env": "RMS_USER",
+    "password_env": "RMS_PASSWORD",
+    "tls": true
+  },
+  "read": {
+    "query": "SELECT item, item_desc, status, dept, class, subclass FROM item_master WHERE item_level = tran_level",
+    "key_field": "item",
+    "page_size": 2000
+  },
+  "mapping": {
+    "fields": {
+      "sku": {
+        "from": "item",
+        "required": true
+      },
+      "description": {
+        "from": "item_desc"
+      },
+      "status": {
+        "from": "status",
+        "transform": ["map"],
+        "map": {
+          "A": "active",
+          "D": "discontinued",
+          "I": "inactive",
+          "C": "delisted"
+        }
+      },
+      "hierarchy": {
+        "concat": ["dept", "class", "subclass"],
+        "sep": "/"
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

@@ -109,7 +109,7 @@ Blueprints will no longer conflate complexity with readiness:
 
 ### Workstream 2: Delivery Guide Transformation into an Executable Delivery Workspace
 
-The Delivery Guide (7 phases, 69 steps) is evolved from a checklist into an **asset generation engine**.
+The Delivery Guide (7 phases, 73 steps) is evolved from a checklist into an **asset generation engine**.
 
 #### 2.1 The 11 Core Delivery Asset Packs
 To address the missing items identified in the assessment, provide standardized, editable Markdown, YAML, and Python templates:

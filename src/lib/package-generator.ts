@@ -255,7 +255,7 @@ ${r.rejected.map((x) => `- **${x.option}**: ${x.why}`).join('\n')}
 `;
 }
 
-/** The implementation backlog, generated from the 69 delivery steps and the chosen family; Jira-style columns. */
+/** The implementation backlog, generated from the delivery steps and the chosen family; Jira-style columns. */
 export function backlogCsv(i: PackageInput): string {
   const rows: string[][] = [
     [

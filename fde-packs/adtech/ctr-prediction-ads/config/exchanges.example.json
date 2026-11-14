@@ -1,0 +1,27 @@
+{
+  "exchanges": {
+    "exch-a": {
+      "protocol": "openrtb-2.5",
+      "endpoint": "https://bid.exch-a.example/rtb",
+      "default_tmax_ms": 100,
+      "required_ext": [],
+      "currencies": ["USD"],
+      "source_cidrs": ["198.51.100.0/24"],
+      "keys": { "k1": "env:EXCH_A_KEY_1", "k2": "env:EXCH_A_KEY_2" },
+      "traffic_share": 0.05,
+      "seat": "seat-a"
+    },
+    "exch-b": {
+      "protocol": "openrtb-2.5",
+      "endpoint": "https://rtb.exch-b.example/bid",
+      "default_tmax_ms": 120,
+      "required_ext": ["source.ext.schain"],
+      "currencies": ["USD", "EUR"],
+      "source_cidrs": ["203.0.113.0/24"],
+      "keys": { "k1": "env:EXCH_B_KEY_1" },
+      "traffic_share": 0.0,
+      "seat": "seat-b"
+    }
+  },
+  "_note": "Keys are references to the secret manager or environment, never values."
+}

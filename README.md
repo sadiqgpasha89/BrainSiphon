@@ -50,8 +50,8 @@ test checks that every role responsibility in `src/lib/roles.ts` is covered by a
 blueprint section the guide links to exists on blueprints of different kinds. Week numbers in the guide are a 16-week planning
 default, not a measurement.
 
-The site navigation follows the same idea: the header has five destinations (Delivery guide, Workspace, Use cases, Patterns, Deployment),
-the home page is "pick a use case, follow the guide, build from the blueprint", and inside a blueprint the 22 sections are grouped
+The site navigation follows the same idea: the header has six destinations (Delivery guide, FDE hub, Workspace, Use cases, Patterns, Deployment),
+the home page is "pick a use case, follow the guide, build from the blueprint", and inside a blueprint the 23 sections are grouped
 as Understand, Design, Prove, and Ship and run, with the role lens folded behind one button.
 
 ## Reference implementations: clone, configure, run, verify
@@ -98,6 +98,30 @@ BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineeri
   8. *AdTech: Real-Time CTR Prediction for Ads* — Ultra-low latency RTB scoring, Empirical Bayes smoothing for cold-start ads, eCPM second-price auction resolution.
 - **Phase 0 to Phase 3 Downloadable Implementation Packages:** Standardized templates in `delivery/templates/` for Client Discovery, Production BRDs, C4 Architecture Suites, Sequence Diagrams, OpenAPI/AsyncAPI contracts, Data Quality Suites, and FastAPI microservices.
 - **10 Production Operational Runbooks (`deployment/runbooks/`):** Reference incident runbooks (RB-01 through RB-10) with exact Prometheus triggers, triage steps (<5m), mitigation actions (<15m), and diagnostic CLI commands.
+
+## Forward deployed engineers: the customer implementation playbook, hub and toolkit
+
+Every one of the 500 blueprints has a **Customer implementation playbook** (the `implementation` section, plus `/implementation/<domain>/<slug>.md` and
+`.json`): who does what (FDE RACI, independent versus approval-required work, escalation), what is missing for production (tasks from the
+maturity gap), discovery questions, customer systems and alternatives, **every integration in four layers** (external protocol, connector and
+transformation, internal contract, acknowledgement) with mappings, sequence diagrams and tests, identity, permissions, network and firewall
+requests, connectors and mocks, customer configuration, tests, rollout and rollback, deployment commands, troubleshooting, deliverables from
+both sides, acceptance criteria and a stage checklist. `src/content/fde/generate.ts` builds it from the blueprint's own data; the per-use-case
+integration facts (systems of record, upstream and downstream, protocols, owners, hosting) come from optional `sor`, `up`, `down`, `opt`, `proto`,
+`own` and `host` lines in the `.uc` source.
+
+| Part | Where | Verified by |
+|------|-------|-------------|
+| 12-stage FDE workflow, ten-category definition of done, 8 deployment modes, 15-scenario troubleshooting KB | `src/content/fde/` | `src/test/fde-playbooks.test.ts` |
+| **Ten authored playbooks** (card/UPI fraud, SKU-store forecasting, sepsis, shipment ETA, ad CTR, phishing, knowledge tracing, ticket triage, branch footfall, valuation) | `src/content/fde/packs/` over the executable packs in `fde-packs/` | 154 pytest tests; paths in each playbook are checked to exist |
+| Pre-flight toolkit: 13 templates, DNS/TCP/TLS/API/IdP/service-account/database/Kafka/S3 checks, readiness report, offline mode | `fde-toolkit/` | 56 tests against local fakes |
+| Reusable adapters and mocks (Salesforce, SAP, ServiceNow, Dynamics 365, Oracle, Snowflake, Databricks, PostgreSQL, SQL Server, Kafka, RabbitMQ, S3, IdP, HL7 v2, FHIR) | `fde-adapters/` | 63 tests against mocks |
+| Handover evidence: infrastructure inventory, release identity, sealed pack and verifier | `fde-evidence/` | 10 tests |
+| `/fde` hub: customer workspaces (tamper-evident history, evidence, blockers, decisions, acceptance report), dated plan generator, exports to GitHub Issues, Jira and Azure DevOps | `src/app/fde/`, `src/components/fde/`, `src/lib/fde/` | `src/test/fde-workspace.test.ts` |
+
+Run the Python suites with `npm run test:fde` (CI runs them on Python 3.9 and 3.13). **Everything is tested against mocks, fixtures and local fakes
+only: no vendor sandbox and no customer environment has been contacted**, every adapter is marked `vendorSandbox: not run`, and a derived
+playbook says it is derived. Workspaces live in the browser (localStorage, evidence files in IndexedDB); nothing is sent to a server.
 
 ## Start here, and the same design on every platform
 
@@ -275,9 +299,9 @@ retention; cost sanity; RTO/RPO vs the replication strategy; and model memory vs
   formula, and a Phase 0 exit gate. All of it is generated from the use case and its domain (`src/content/discovery.ts`) and is
   labelled `to-confirm`: these are starting positions for a discovery workshop, never findings about a real organisation, so every
   exit-gate item is open until a client confirms it.
-- **Role lenses (fourteen roles, combinable).** Business Analyst, Solution Architect, AI Architect, Data Analyst, Data Engineer, Data
-  Scientist, ML Engineer, AI Engineer, MLOps Engineer, Inference Engineer, Platform Engineer, SRE / DevOps Engineer, Security Engineer
-  and QA / Test Engineer. They are not fourteen navigation entries: in a blueprint, press a role's key (`1`–`9`, then `a`–`e`) or click
+- **Role lenses (fifteen roles, combinable).** Business Analyst, Solution Architect, AI Architect, Data Analyst, Data Engineer, Data
+  Scientist, ML Engineer, AI Engineer, MLOps Engineer, Inference Engineer, Platform Engineer, Forward Deployed Engineer, SRE / DevOps
+  Engineer, Security Engineer and QA / Test Engineer. They are not fifteen navigation entries: in a blueprint, press a role's key (`1`–`9`, then `a`–`f`) or click
   its chip in the Lens bar to add or remove it, and `0` clears. Pick several and the page keeps the union of their sections and shows a
   **combined view**: every phase of one common engineering lifecycle (Phase 0 discovery, architecture, data, model and application
   build, platform/security/verification, release, operate) with what each selected role does in it, the handoffs between them, and the

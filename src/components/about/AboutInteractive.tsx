@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { ROLE_IDS, SECTION_IDS } from '../../lib/roles';
 import {
   Compass,
   Zap,
@@ -369,12 +370,13 @@ export function AboutInteractive() {
               How to Read BrainSiphon by Role
             </h2>
           </div>
-          <span className="chip chip-signal">14 Role Lenses · Keyboard Keys 1–9, a–e</span>
+          <span className="chip chip-signal">{ROLE_IDS.length} Role Lenses · Keyboard Keys 1–9, a–f</span>
         </div>
         <p className="mt-2 max-w-3xl text-sm text-mute">
-          Every blueprint contains 22 deep engineering sections spanning business, architecture, modeling,
-          sizing, governance, and operations. Instead of getting bogged down in 4,000 words of details outside
-          your immediate scope, activate your role lens to filter only what moves your needle.
+          Every blueprint contains {SECTION_IDS.length} deep engineering sections spanning business,
+          architecture, modeling, sizing, governance, and operations. Instead of getting bogged down in 4,000
+          words of details outside your immediate scope, activate your role lens to filter only what moves
+          your needle.
         </p>
 
         {/* Persona Selector Tabs */}

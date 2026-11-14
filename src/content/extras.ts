@@ -1,7 +1,7 @@
 /**
  * Generated per-blueprint extras that close the gaps a rigid template leaves:
  *  - topology: which plane is active-active and which state is pinned (residency, tenancy), instead of "3 regions" everywhere
- *  - roleLenses: what each of fourteen personas must additionally check, specialised with this use case's own stages/features
+ *  - roleLenses: what each of the reader personas (see ROLE_IDS) must additionally check, specialised with this use case's own stages/features
  *  - primitives: the canonical mechanisms this system leans on, linked to /patterns/primitives/<id>
  */
 import type { Domain, LatencySLA, Paradigm, PatternId } from '../schemas/usecase.schema';
@@ -10,7 +10,7 @@ import type { Stage } from './design';
 import type { RawUseCase } from './parse';
 import type { ScaleResult } from './scale';
 import { PRIMITIVE_BY_ID } from './primitives';
-import { DOMAIN_ENTERPRISE } from './enterprise-domains';
+import { domainOf } from './enterprise-domains';
 
 export type Stance = 'stateless-active-active' | 'residency-pinned' | 'tenant-isolated';
 
@@ -115,6 +115,9 @@ export const PROTOCOLS: Record<Domain, string> = {
   'real-estate': 'RESO Web API, MLS feeds, BIM/IFC and BACnet/Modbus building protocols',
 };
 
+/** The protocols and interfaces this use case meets the outside world over: its own `proto:` line, else the domain default. */
+export const protocolsOf = (raw: Pick<RawUseCase, 'proto'>, domain: Domain): string => raw.proto ?? PROTOCOLS[domain];
+
 export const LABEL_DELAY: Record<Domain, string> = {
   fintech: 'chargebacks that mature in 30 to 90 days',
   bfsi: 'defaults, claims and lapses that resolve over months',
@@ -211,7 +214,7 @@ export function buildRoleLenses(
   const regulated = stance === 'residency-pinned';
   const total = latency === 'sub-10ms' ? '8 ms' : latency === 'sub-100ms' ? '80 ms' : latency === 'seconds' ? '2.5 s' : 'the run window';
 
-  const ent = DOMAIN_ENTERPRISE[domain];
+  const ent = domainOf(raw, domain);
 
   const L: Record<RoleId, RoleLensItem[]> = {
     'business-analyst': [
@@ -326,7 +329,7 @@ export function buildRoleLenses(
     'solution-architect': [
       {
         title: 'Legacy and protocol boundaries',
-        detail: `${raw.title} meets the outside world over ${PROTOCOLS[domain]}. Terminate and translate at an anti-corruption layer so the model plane sees one internal schema, and give each upstream its own timeout, retry budget and circuit breaker.`,
+        detail: `${raw.title} meets the outside world over ${protocolsOf(raw, domain)}. Terminate and translate at an anti-corruption layer so the model plane sees one internal schema, and give each upstream its own timeout, retry budget and circuit breaker.`,
       },
       {
         title: stance === 'residency-pinned' ? 'Residency and state synchronisation' : stance === 'tenant-isolated' ? 'Tenancy, not user count, is the bottleneck' : 'Consistency under regional failover',

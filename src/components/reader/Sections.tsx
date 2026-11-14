@@ -14,7 +14,7 @@ import { CloudDiagramTabs } from './CloudTabs';
 import { SymbolText } from './SymbolText';
 import { CapacityCalculator } from './CapacityCalculator';
 import { EvaluationDetail } from './Assurance';
-import { ROLE_META, rolesForSection } from '../../lib/roles';
+import { ROLE_COUNT_WORD, ROLE_META, rolesForSection } from '../../lib/roles';
 import { PRIMITIVE_BY_ID } from '../../content/primitives';
 
 export function Section({
@@ -86,6 +86,7 @@ export const tocFor = (hasPlaybook = false): { id: string; label: string; prose?
   { id: 'operations', label: 'Production operations' },
   { id: 'agentic', label: 'Agentic solution' },
   ...(hasPlaybook ? [{ id: 'playbook', label: 'Build playbook' }] : []),
+  { id: 'implementation', label: 'Customer implementation' },
   { id: 'validation', label: 'Validation' },
 ];
 
@@ -664,7 +665,7 @@ export async function Sections({ uc }: { uc: UseCase }) {
       <Section
         id="role-lenses"
         title="Role lenses: production gaps by persona"
-        kicker="What each of the fifteen roles must additionally check, specialised to this system. Pick one or more roles in the Lens bar to filter the page and combine their responsibilities."
+        kicker={`What each of the ${ROLE_COUNT_WORD} roles must additionally check, specialised to this system. Pick one or more roles in the Lens bar to filter the page and combine their responsibilities.`}
       >
         <div className="grid gap-4 lg:grid-cols-2">
           {uc.roleLenses.map((r) => (

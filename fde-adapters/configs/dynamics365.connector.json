@@ -1,0 +1,82 @@
+{
+  "adapter": "dynamics365",
+  "name": "dynamics-cases",
+  "connection": {
+    "org_url": "${D365_ORG_URL}",
+    "auth": {
+      "type": "oauth2_client_credentials",
+      "token_url": "https://login.microsoftonline.com/${AZURE_TENANT_ID}/oauth2/v2.0/token",
+      "client_id_env": "D365_CLIENT_ID",
+      "client_secret_env": "D365_CLIENT_SECRET",
+      "scope": "${D365_ORG_URL}/.default",
+      "client_auth": "body"
+    }
+  },
+  "read": {
+    "entity_set": "incidents",
+    "select": ["incidentid", "ticketnumber", "title", "prioritycode", "modifiedon"],
+    "filter": "statecode eq 0",
+    "page_size": 100,
+    "key_field": "incidentid",
+    "event_time_field": "modifiedon"
+  },
+  "write": {
+    "entity_set": "incidents",
+    "alternate_key": "bs_key",
+    "idempotency_fields": ["ticket_id"]
+  },
+  "mapping": {
+    "fields": {
+      "ticket_id": {
+        "from": "ticketnumber",
+        "required": true
+      },
+      "title": {
+        "from": "title"
+      },
+      "priority": {
+        "from": "prioritycode",
+        "transform": ["to_str", "map"],
+        "map": {
+          "1": "P1",
+          "2": "P2",
+          "3": "P3"
+        },
+        "default": "P3"
+      },
+      "updated_at": {
+        "from": "modifiedon",
+        "transform": ["to_utc"]
+      },
+      "source": {
+        "value": "dynamics365"
+      }
+    }
+  },
+  "write_mapping": {
+    "fields": {
+      "title": {
+        "from": "title"
+      },
+      "prioritycode": {
+        "from": "priority",
+        "transform": ["map"],
+        "map": {
+          "P1": 1,
+          "P2": 2,
+          "P3": 3
+        }
+      },
+      "bs_key": {
+        "from": "ticket_id"
+      }
+    }
+  },
+  "contract": {
+    "type": "object",
+    "required": ["ticket_id", "priority"]
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

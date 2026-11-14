@@ -1,0 +1,11 @@
+rule_id,description,source,source_cidr,destination,destination_host,destination_cidr,port,protocol,direction,via_proxy,needed_for_stage,purpose,requested_on,change_ticket,approved_by,status,owner
+FW-001,Gateway to scoring service,api-gateway,,scoring-service,scoring.internal.example,,8443,TCP/TLS,inbound,no,integration-testing,Synchronous scoring requests (gRPC or REST over mTLS),,,,requested,
+FW-002,Scoring service to online feature store,scoring-service,,feature-store,features.internal.example,,6379,TCP/TLS,outbound,no,integration-testing,Millisecond feature reads,,,,requested,
+FW-003,Scoring service to event stream,scoring-service,,kafka,kafka-1.internal.example,,9093,TCP/TLS,outbound,no,integration-testing,Publish decisions and outcomes; every advertised listener needs its own rule,,,,requested,
+FW-004,Pipelines to system of record,pipeline-workers,,system-of-record-db,db.internal.example,,5432,TCP/TLS,outbound,no,data-access,CDC or batch extract (replace the port for SQL Server 1433 / Oracle 1521),,,,requested,
+FW-005,Workloads to identity provider,workloads,,idp,login.example.com,,443,TCP/TLS,outbound,yes,integration-testing,OIDC discovery and JWKS fetch (or mirror internally),,,,requested,
+FW-006,Workloads to private registry,nodes,,registry,registry.internal.example,,443,TCP/TLS,outbound,no,customer-deployment,Image pulls from the customer registry,,,,requested,
+FW-007,CI runner to cluster API,ci-runner,,cluster-api,k8s-api.internal.example,,6443,TCP/TLS,outbound,no,customer-deployment,Helm and kubectl deploy,,,,requested,
+FW-008,Workloads to telemetry backend,workloads,,otel-collector,otel.internal.example,,4317,TCP,outbound,no,customer-deployment,Traces and metrics,,,,requested,
+FW-009,Operators to dashboards,corporate-network,,grafana,grafana.internal.example,,443,TCP/TLS,inbound,no,customer-acceptance,Operations dashboards,,,,requested,
+FW-010,Air-gap proof: public internet,workloads,,example.com,example.com,,443,TCP,outbound,no,environment-discovery,MUST be blocked in air-gapped environments (see egress_denied),,,,verify-blocked,

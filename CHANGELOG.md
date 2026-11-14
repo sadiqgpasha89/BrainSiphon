@@ -8,6 +8,23 @@ Architecture, framework, version and implementation changes. Content changes to 
 - `/start`: first hour, four-week reading and building sequence, reading order inside a blueprint, fast path per role, stuck table, trust notes. Linked from the header, home page and footer.
 - Platform tabs (Cloud-neutral, AWS, Azure, GCP, OpenStack) on the deployment topology, sequence, C4 container and agent diagrams, with a per-blueprint service map, connection walk-through and platform-specific design notes. Service map included in each blueprint's Markdown.
 
+### Added (forward deployed engineer work)
+- **Customer implementation playbook on every blueprint** (500): ownership and RACI, maturity-gap tasks, discovery questions, systems and alternatives, integrations in four layers with mappings, sequence diagrams and tests, identity, permissions, network, configuration, rollout and rollback, deployment commands, troubleshooting, deliverables, acceptance and handover. New `implementation` reader section, `/implementation/<slug>.md` and `.json`, and links from `llms.txt`.
+- **Ten authored playbooks** over new executable packs in `fde-packs/` (fraud, forecasting, sepsis, ETA, CTR, phishing, knowledge tracing, ticket triage, branch footfall, valuation). The BFSI branch-footfall and real-estate valuation blueprints now carry their own systems of record, upstream and downstream systems (`sor`, `up`, `down`, `opt`, `proto`, `own`, `host` in the `.uc` source) instead of the domain default.
+- `fde-toolkit/` (13 templates and executable DNS, TCP, TLS, API, IdP, service-account, database, Kafka and S3 checks with a machine-readable readiness report, usable offline), `fde-adapters/` (framework, 15 config-driven connectors, mocks) and `fde-evidence/` (inventory, release identity, sealed handover pack), all as downloads and ZIP bundles.
+- `/fde` hub: customer workspaces with a hash-chained change history, evidence attachments (SHA-256), decisions, blockers, issues, test and deployment records, a progress dashboard and a generated acceptance report; a dated plan generator over twelve FDE stages; deployment modes with filled commands; the troubleshooting knowledge base; exports to GitHub Issues, Jira and Azure DevOps.
+- Delivery guide: four FDE-owned steps (0.11 environment discovery and access requests, 1.12 integration specification, 4.11 customer acceptance and adoption, 6.11 customer-side incidents), so access discovery starts in Phase 0 rather than Phase 2. The FDE RACI row is now R in Phases 0, 1, 2, 4, 5 and 6.
+- `npm run test:fde` and a CI job running every FDE Python suite on Python 3.9 and 3.13.
+
+### Changed (FDE work)
+- Role, section and step counts in prose are derived from `ROLE_IDS`, `SECTION_IDS` and `ALL_STEPS` (the site said fourteen roles and 69 steps; it has fifteen and 73).
+- The stored playbook keeps customer dependencies that an authored pack adds in front of the shared ones (a round-trip test caught them being dropped).
+
+### Not done (FDE work)
+- No adapter, pack or toolkit check has been run against a real vendor sandbox or customer environment. Each adapter is marked `vendorSandbox: not run`.
+- The derived playbooks for 490 blueprints are generated from each blueprint's data and say so; only ten are authored against an executable pack.
+- Page size grew: each blueprint page carries about 190 KB more HTML (and the same again in its payload files), and `public/implementation/` adds about 100 MB.
+
 ### Removed
 - Domain-expert review and production evidence are no longer shown anywhere on the site: the two maturity levels (the scorecard is now five levels), their status chips, release-report counts, per-blueprint reviewer fields, the review programme and `content/reviews.json`.
 
@@ -27,7 +44,7 @@ Architecture, framework, version and implementation changes. Content changes to 
 - Four environments (dev, staging, **pre-production**, production) with tfvars and Helm values each; `backend.example.hcl` and `bootstrap-state.sh` for remote state with locking and encryption.
 - Infrastructure validation: `npm run validate:infra` (static, in the content gate) and CI jobs for `terraform fmt/init/validate`, `tflint`, Checkov, `helm lint/template`, `kubeconform` and conftest (OPA/Rego policy with its own tests). Reports are workflow artifacts. The jobs report; they do not gate the Pages deploy and they provision nothing.
 - `/deployment`: environment matrix, workload-specific architecture variants (not everything needs Kubernetes), recovery tiers, version registry, an honest validation-status table, and deploy / verify / rollback / teardown commands.
-- `/workspace` Architecture Packages: a working generator (recommendation with reasons and rejected alternatives, override recorded in an ADR, previews, ZIP download, saved configuration in the browser) producing tfvars, Helm values, env template, commands, ADR and a backlog generated from the 69 delivery steps (CSV plus a `gh issue create` script).
+- `/workspace` Architecture Packages: a working generator (recommendation with reasons and rejected alternatives, override recorded in an ADR, previews, ZIP download, saved configuration in the browser) producing tfvars, Helm values, env template, commands, ADR and a backlog generated from the delivery steps (CSV plus a `gh issue create` script).
 - Downloads: every delivery template and the deployment kit as direct links and as ZIPs with a SHA-256 manifest (`/downloads/`).
 - New templates: production handover package (with a worked example), FDE customer-environment checklist, maturity-gap checklist, risk register CSV.
 - `/release`: evidence layers (documentation vs tested code) with percentages, and severity and owner on every feasibility warning (`content/warning-acks.json`).

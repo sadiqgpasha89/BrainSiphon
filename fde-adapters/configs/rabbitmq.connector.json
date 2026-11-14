@@ -1,0 +1,37 @@
+{
+  "adapter": "rabbitmq",
+  "name": "rabbitmq-tasks",
+  "connection": {
+    "host": "${RABBIT_HOST}",
+    "port": 5671,
+    "vhost": "/",
+    "tls": true,
+    "user_env": "RABBIT_USER",
+    "password_env": "RABBIT_PASSWORD",
+    "mock": false
+  },
+  "read": {
+    "queue": "scoring.requests",
+    "dead_letter_queue": "scoring.requests.dlq",
+    "prefetch": 50,
+    "batch": 50
+  },
+  "write": {
+    "queue": "scoring.decisions",
+    "idempotency_fields": ["decision_id"]
+  },
+  "mapping": {
+    "fields": {
+      "request_id": {
+        "from": "value.request_id",
+        "required": true
+      },
+      "entity_id": {
+        "from": "value.entity_id"
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

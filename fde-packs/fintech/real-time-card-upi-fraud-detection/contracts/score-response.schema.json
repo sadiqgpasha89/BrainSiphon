@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScoreResponse",
+  "type": "object",
+  "required": ["action", "score", "reason_codes", "model_version"],
+  "properties": {
+    "action": {
+      "enum": ["ALLOW", "STEP_UP", "BLOCK"]
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "model_version": {
+      "type": "string"
+    },
+    "approved_amount_minor": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    }
+  }
+}

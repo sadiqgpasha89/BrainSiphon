@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { PackageGenerator } from '../../components/workspace/PackageGenerator';
-import { DELIVERY_TEMPLATES } from '../../content/delivery';
+import { ALL_STEPS, DELIVERY_TEMPLATES } from '../../content/delivery';
 import { DOWNLOAD_BUNDLES } from '../../content/downloads-meta';
 import { withBase } from '../../lib/site';
 import {
@@ -266,9 +266,7 @@ export default function WorkspacePage() {
       <div className="border-b border-line pb-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="font-mono text-xs uppercase tracking-wider text-signal">
-              Forward Deployed Engineer Hub
-            </p>
+            <p className="font-mono text-xs uppercase tracking-wider text-signal">Architecture workspace</p>
             <h1 className="mt-1 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
               Guided Implementation Workspace
             </h1>
@@ -279,6 +277,13 @@ export default function WorkspacePage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <Link
+              href="/fde"
+              className="bg-surface inline-flex items-center gap-1.5 rounded-md border border-signal/50 px-3 py-1.5 text-xs font-medium text-signal no-underline hover:opacity-90"
+            >
+              <Terminal size={14} />
+              FDE hub: customer workspaces
+            </Link>
             <Link
               href="/delivery"
               className="bg-surface inline-flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-xs font-medium text-mute no-underline hover:border-signal hover:text-ink"
@@ -469,8 +474,8 @@ export default function WorkspacePage() {
               Choose a solution family, cloud, environment and recovery tier. You get a recommendation with
               the reasons and the rejected alternatives, then a preview of the files it generates: variable
               file, Helm values, environment template, deploy and teardown commands, an architecture decision
-              record, and a backlog built from the 69-step delivery guide. Everything is produced in your
-              browser; nothing is sent anywhere.
+              record, and a backlog built from the {ALL_STEPS.length}-step delivery guide. Everything is
+              produced in your browser; nothing is sent anywhere.
             </p>
           </div>
           <PackageGenerator />

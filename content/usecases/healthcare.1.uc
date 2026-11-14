@@ -1,6 +1,11 @@
 # Healthcare & Life Sciences, part 1 (use cases 1-25)
 == sepsis-early-warning | Sepsis Early-Warning System | time-series,tabular | sub-100ms | staff-principal | a=24 k=3
 obj: Alert clinicians hours before sepsis onset from streaming vitals and labs, with alert burden low enough that nurses keep trusting it.
+sor: Electronic health record (EHR) ; Laboratory information system ; Master patient index (MPI) ; Care-team and clinical identity directory
+up: HL7 v2 ADT and ORU feeds through the integration engine (MLLP) ; FHIR R4 Observation and Encounter reads ; Bedside device and vitals feeds ; Order entry (CPOE) and medication administration
+down: In-EHR alert or worklist (CDS Hooks or vendor alert API) ; Nurse and physician review queue with acknowledge, snooze and override ; Clinical quality and safety dashboards ; Alert escalation and paging
+opt: DICOMweb imaging study references ; ABDM health-information exchange ; Pharmacy and microbiology systems
+proto: HL7 v2 over MLLP (ADT and ORU), FHIR R4 REST with SMART on FHIR, CDS Hooks for in-workflow alerts; DICOMweb and ABDM are optional extensions, not part of the core sepsis workflow
 loss: \mathcal{L}=\sum_t w_t\,\mathrm{BCE}(y_t,p_t)\quad w_t\ \text{emphasises the 6h pre-onset window}
 con: Alert fatigue budget under 1 alert per 10 patient-days ; Works on EHR data with irregular sampling ; Clinical explainability ; FDA SaMD change control ; Evaluated per patient episode, never per isolated window ; Per-site thresholds and calibration because each hospital is its own tenant
 sn: Label | Onset defined by Sepsis-3 criteria with clinician-adjudicated times | Billing-code sepsis labels | Billing codes lag and misplace onset by hours

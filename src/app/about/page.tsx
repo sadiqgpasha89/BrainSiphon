@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { AboutInteractive } from '../../components/about/AboutInteractive';
 import { ManifestSummary, MaturityLadder } from '../../components/ReleaseReport';
+import { ALL_STEPS } from '../../content/delivery';
 import { getRelease } from '../../lib/content';
 import { withBase } from '../../lib/site';
 import { DOMAINS, DOMAIN_META } from '../../schemas/usecase.schema';
@@ -56,8 +57,9 @@ export default async function AboutPage() {
           <strong className="text-ink">500 complete AI/ML system blueprints</strong> across 10 industry
           domains, evaluated against a transparent{' '}
           <strong className="text-ink">5-level implementation maturity framework</strong>, and coupled with a
-          universal <strong className="text-ink">7-phase, 69-step delivery guide</strong>. Every blueprint
-          separates the technical signal that moves the needle from the hype that wastes quarters.
+          universal <strong className="text-ink">7-phase, {ALL_STEPS.length}-step delivery guide</strong>.
+          Every blueprint separates the technical signal that moves the needle from the hype that wastes
+          quarters.
         </p>
 
         {/* Quick Jump Pills */}
@@ -324,7 +326,7 @@ export default async function AboutPage() {
         <div>
           <p className="font-mono text-xs uppercase tracking-wider text-signal">Universal Execution</p>
           <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-            The 7-Phase, 69-Step Delivery Guide
+            The 7-Phase, {ALL_STEPS.length}-Step Delivery Guide
           </h2>
           <p className="mt-2 max-w-3xl text-sm text-mute">
             A blueprint shows <em>what</em> to build. The{' '}

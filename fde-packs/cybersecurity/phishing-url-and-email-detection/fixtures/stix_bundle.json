@@ -1,0 +1,71 @@
+{
+  "type": "bundle",
+  "id": "bundle--11111111-1111-4111-8111-111111111111",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a1",
+      "created": "2026-03-01T00:00:00Z",
+      "modified": "2026-03-01T00:00:00Z",
+      "name": "phish kit host",
+      "pattern": "[domain-name:value = 'secure-login.invalid']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-01T00:00:00Z",
+      "valid_until": "2026-04-01T00:00:00Z",
+      "confidence": 85,
+      "labels": ["phishing"]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a2",
+      "pattern": "[url:value = 'http://collector.invalid/x?a=1']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-01T00:00:00Z",
+      "confidence": 90
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a3",
+      "pattern": "[domain-name:value = 'old.invalid']",
+      "pattern_type": "stix",
+      "valid_from": "2025-01-01T00:00:00Z",
+      "valid_until": "2025-02-01T00:00:00Z",
+      "confidence": 90
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a4",
+      "pattern": "[domain-name:value = 'weak.invalid']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-01T00:00:00Z",
+      "confidence": 20
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a5",
+      "pattern": "[ipv4-addr:value = '198.51.100.7'] FOLLOWEDBY [domain-name:value = 'x.invalid']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-01T00:00:00Z",
+      "confidence": 90
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a6",
+      "pattern": "[domain-name:value = 'SECURE-LOGIN.invalid']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-02T00:00:00Z",
+      "confidence": 95
+    },
+    {
+      "type": "malware",
+      "id": "malware--1",
+      "name": "ignored"
+    }
+  ]
+}

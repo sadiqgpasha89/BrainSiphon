@@ -1,0 +1,43 @@
+{
+  "adapter": "databricks",
+  "name": "databricks-prices",
+  "connection": {
+    "workspace_url": "${DATABRICKS_HOST}",
+    "warehouse_id": "${DATABRICKS_WAREHOUSE_ID}",
+    "catalog": "main",
+    "schema": "retail",
+    "auth": {
+      "type": "bearer",
+      "token_env": "DATABRICKS_TOKEN"
+    }
+  },
+  "read": {
+    "statement": "SELECT sku_id, sku, price FROM prices",
+    "key_field": "sku_id",
+    "poll_interval": 0
+  },
+  "write": {
+    "table": "main.retail.forecast_publish",
+    "key_column": "forecast_key",
+    "columns": ["forecast_key", "units", "model_version"],
+    "idempotency_fields": ["forecast_key"]
+  },
+  "mapping": {
+    "fields": {
+      "sku_id": {
+        "from": "sku_id",
+        "required": true
+      },
+      "sku": {
+        "from": "sku"
+      },
+      "price": {
+        "from": "price",
+        "transform": ["to_float"]
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}
