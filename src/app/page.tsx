@@ -184,12 +184,16 @@ export default async function Home() {
               <h3 className="font-semibold text-ink">Executable Starters</h3>
             </div>
             <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              Four complete{' '}
+              One complete worked use case, card and UPI fraud, free: a{' '}
               <Link href="/implementations" className="text-signal hover:underline">
-                reference implementations
+                reference implementation
               </Link>{' '}
-              (real-time decisioning, batch forecasting, RAG, agentic workflow) that run end to end with one
-              command, plus 11 pattern kits and 8 use-case starters for the modelling step, all tested in CI.
+              that runs end to end with one command, its starter and its customer implementation pack, plus 11
+              pattern kits, all tested in CI. A runnable worked template for every other use case is in{' '}
+              <Link href="/pro" className="text-signal hover:underline">
+                BrainSiphon Pro
+              </Link>
+              .
             </p>
           </div>
 

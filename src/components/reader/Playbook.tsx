@@ -5,6 +5,7 @@ import { PROBLEM_LABEL } from '../../lib/problem-types';
 import type { Playbook } from '../../schemas/usecase.schema';
 import { ArtifactLegend, KindBadge } from '../ArtifactKind';
 import { CodeBlock } from '../Code';
+import { ProLockedWorkedExample } from './ProLock';
 import { List, Section, TableWrap } from './Sections';
 
 const Label = ({ children }: { children: React.ReactNode }) => (
@@ -288,7 +289,7 @@ function KitFit({ pb }: { pb: Playbook }) {
 }
 
 /** The "Build playbook": everything an intermediate engineer needs to go from blueprint to a shipped system. */
-export async function PlaybookSection({ pb }: { pb: Playbook }) {
+export async function PlaybookSection({ pb, slug, title }: { pb: Playbook; slug: string; title: string }) {
   const starter = pb.starter;
   return (
     <Section
@@ -320,8 +321,8 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
             ) : (
               <>It has no starter kit: no reference kit is compatible with this use case.</>
             )}{' '}
-            8 pilot use cases have hand-written playbooks. Read each section against your own data and
-            decision.
+            One use case, card and UPI fraud, has a hand-written playbook with a complete worked example; the
+            other 499 are generated. Read each section against your own data and decision.
           </>
         ) : (
           <>
@@ -589,28 +590,34 @@ export async function PlaybookSection({ pb }: { pb: Playbook }) {
       </Sub>
 
       <Sub id="pb-example" title="5 · Worked example">
-        <p className="flex flex-wrap items-center gap-2 text-sm text-mute" data-prose>
-          <span className={`chip ${pb.workedExample.basis === 'reference-kit' ? 'chip-accent' : ''}`}>
-            {pb.workedExample.basis === 'reference-kit'
-              ? 'Run on the starter kit'
-              : 'Blueprint only: nothing was run'}
-          </span>
-          {pb.workedExample.scenario}
-        </p>
-        <ol className="space-y-3">
-          {pb.workedExample.steps.map((s) => (
-            <li key={s.stage} className="card p-4">
-              <p className="text-sm font-medium text-ink">{s.stage}</p>
-              <p className="mt-1 text-sm text-ink/90" data-prose>
-                {s.detail}
-              </p>
-            </li>
-          ))}
-        </ol>
-        <p className="text-sm text-signal/95" data-prose>
-          <strong>Outcome. </strong>
-          {pb.workedExample.outcome}
-        </p>
+        {pb.workedExample ? (
+          <>
+            <p className="flex flex-wrap items-center gap-2 text-sm text-mute" data-prose>
+              <span className={`chip ${pb.workedExample.basis === 'reference-kit' ? 'chip-accent' : ''}`}>
+                {pb.workedExample.basis === 'reference-kit'
+                  ? 'Run on the starter kit'
+                  : 'Blueprint only: nothing was run'}
+              </span>
+              {pb.workedExample.scenario}
+            </p>
+            <ol className="space-y-3">
+              {pb.workedExample.steps.map((s) => (
+                <li key={s.stage} className="card p-4">
+                  <p className="text-sm font-medium text-ink">{s.stage}</p>
+                  <p className="mt-1 text-sm text-ink/90" data-prose>
+                    {s.detail}
+                  </p>
+                </li>
+              ))}
+            </ol>
+            <p className="text-sm text-signal/95" data-prose>
+              <strong>Outcome. </strong>
+              {pb.workedExample.outcome}
+            </p>
+          </>
+        ) : (
+          <ProLockedWorkedExample slug={slug} title={title} />
+        )}
       </Sub>
 
       <Sub id="pb-tests" title="6 · Test and acceptance plan">

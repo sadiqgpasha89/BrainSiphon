@@ -68,6 +68,14 @@ export function HeaderNav() {
       >
         Implementations
       </Link>
+      <Link
+        href="/pro"
+        aria-current={here('/pro') ? 'page' : undefined}
+        data-testid="nav-pro"
+        className={`${LINK} hidden font-medium xl:block ${here('/pro') ? 'text-signal' : 'text-warn/90 hover:text-warn'}`}
+      >
+        Pro
+      </Link>
       <div ref={wrap} className="sm:relative">
         <button
           type="button"
@@ -103,6 +111,12 @@ export function HeaderNav() {
             className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
           >
             FDE hub
+          </Link>
+          <Link
+            href="/pro"
+            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-warn/90 no-underline hover:bg-raised xl:hidden"
+          >
+            Pro: 500 worked templates
           </Link>
           <Link
             href="/about"

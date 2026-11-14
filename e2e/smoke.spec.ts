@@ -655,7 +655,7 @@ test('every blueprint carries a five-level maturity scorecard with evidence and 
   await expect(page.locator('#feasibility-warnings')).toContainText('Recommended remediation');
 });
 
-test('reference implementations page lists the four systems and says what is not covered', async ({
+test('reference implementations page shows one free system, describes three Pro systems and says what is not covered', async ({
   page,
 }) => {
   await page.goto('/implementations');
@@ -664,6 +664,8 @@ test('reference implementations page lists the four systems and says what is not
   for (const dir of ['realtime-decisioning', 'batch-forecasting', 'rag-assistant', 'agentic-workflow']) {
     await expect(list).toContainText(dir);
   }
+  await expect(page.getByTestId('implementation-pro')).toHaveCount(3);
+  await expect(page.getByTestId('implementation-pro').first()).toContainText('Pro');
   const coverage = page.getByTestId('implementations-coverage');
   await expect(coverage.getByRole('row')).toHaveCount(10); // header + nine archetypes
   await expect(coverage).toContainText('No reference implementation yet');
@@ -764,4 +766,37 @@ test('diagrams can be redrawn on AWS, Azure, GCP and OpenStack, and the choice i
   await expect(hld.getByTestId('cloud-services-azure')).toContainText('Event Hubs');
   await hld.getByTestId('cloud-tab-hld-neutral').click();
   await expect(hld.getByTestId('diagram').first()).toBeVisible();
+});
+
+test('freemium: one worked example is free, every other use case shows what Pro adds and publishes no worked example', async ({
+  page,
+}) => {
+  // the free worked use case keeps its worked example and has no lock
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  await expect(page.getByTestId('pro-locked-example')).toHaveCount(0);
+  await expect(page.locator('#pb-example')).toContainText('Outcome');
+
+  // any other use case: a locked panel in the worked-example slot, with a way to ask for or buy Pro
+  await page.goto('/saas/in-app-ai-copilot');
+  const lock = page.getByTestId('pro-locked-example');
+  await expect(lock).toBeVisible();
+  await expect(lock).toContainText('BrainSiphon Pro');
+  await expect(lock).toContainText('WORKED_EXAMPLE.md');
+  await expect(lock.getByTestId('pro-cta')).toHaveAttribute('href', /^(mailto:|https:)/);
+  await expect(page.locator('#pb-example')).not.toContainText('Outcome.');
+
+  // nothing leaks through the Markdown export either
+  const md = await (await page.request.get('/saas/in-app-ai-copilot.md')).text();
+  expect(md).toContain('/pro');
+  expect(md).not.toContain('*Basis: ');
+  const free = await (await page.request.get('/fintech/real-time-card-upi-fraud-detection.md')).text();
+  expect(free).toContain('*Basis: ');
+
+  // the Pro page says what is in it, what stays free and what it costs
+  await page.goto('/pro');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('500');
+  await expect(page.getByTestId('pro-plans').locator(':scope > div')).toHaveCount(2);
+  await expect(page.getByTestId('pro-compare')).toContainText('card and UPI fraud');
+  await expect(page.getByTestId('pro-engines').getByRole('listitem')).toHaveCount(20);
+  await expect(page.getByTestId('pro-page')).toContainText('What a worked template is not');
 });

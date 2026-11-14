@@ -2,6 +2,23 @@
 
 Architecture, framework, version and implementation changes. Content changes to individual blueprints are visible in the git history of `content/usecases/`; each blueprint page shows the content version it was built from.
 
+## Unreleased: freemium split and BrainSiphon Pro
+
+### Added
+- `/pro`: what BrainSiphon Pro contains, what stays free, the plans and how buying works. Linked from the header, footer and every locked worked example. `content/pro.json` holds the free use case and the plans; `NEXT_PUBLIC_PRO_CHECKOUT_URL` (repository variable `PRO_CHECKOUT_URL`) turns the early-access buttons into a checkout link.
+- `content/pro-catalog.json`: the public listing of what each of the 500 Pro worked templates contains (engine, fit, file and document counts). It contains no results.
+- A locked panel in place of the worked example on every use case except the free one, and a pointer to `/pro` in its Markdown export.
+
+### Changed
+- The worked example of a build playbook is published for one use case only (card and UPI fraud). For the other 499 it is removed when the content is expanded, so it is absent from the generated JSON, the Markdown exports and the HTML. The playbook's milestones, gates, tests, decisions, pitfalls, compatibility analysis and the pattern kits are unchanged.
+- The free implementation assets are one use case deep: one authored starter, one executable customer implementation pack (`fde-packs/`), one reference implementation (`reference-implementations/realtime-decisioning`). The `/implementations` page describes the other three and links to `/pro`.
+
+### Removed from this repository (now in BrainSiphon Pro)
+- Seven hand-written starters from `content/playbooks/` (CTR, SOC copilot, knowledge tracing, sepsis, session recommendation, developer docs assistant, demand sensing).
+- Nine executable customer implementation packs from `fde-packs/` and their authored text under `src/content/fde/packs/`, and the three adapters that only existed inside them (Zendesk, workforce management, RESO).
+- Three reference implementations (`batch-forecasting`, `rag-assistant`, `agentic-workflow`).
+- Anything already published stays in the git history of this repository; the Pro repository is built from the same material plus 500 new worked templates that were never public.
+
 ## Unreleased: evidence, versions and implementation packages
 
 ### Added (guide and platform views)

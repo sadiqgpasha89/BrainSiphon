@@ -65,7 +65,7 @@ describe('use-case-specific problem, solution and end-to-end text', () => {
       expect(md).toContain(h);
   });
 
-  it('marks exactly the 8 pilots as hand-written and every other use case as generated', () => {
+  it('marks exactly the 8 pilot narratives as hand-written, and only the free worked example as a hand-written playbook', () => {
     const authored = all
       .filter((u) => u.narrativeProvenance === 'authored')
       .map((u) => u.slug)
@@ -75,7 +75,8 @@ describe('use-case-specific problem, solution and end-to-end text', () => {
       .map((u) => u.slug)
       .sort();
     expect(authored).toHaveLength(8);
-    expect(authored).toEqual(withPlaybook);
+    expect(withPlaybook).toEqual(['fintech/real-time-card-upi-fraud-detection']);
+    expect(authored).toContain('fintech/real-time-card-upi-fraud-detection');
     expect(all.filter((u) => u.narrativeProvenance === 'generated')).toHaveLength(all.length - 8);
   });
 

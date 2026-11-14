@@ -114,7 +114,7 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', relea
   experimentationMarkdown(u, L);
   metricsMarkdown(u, L);
   agenticMarkdown(u.agentic, L);
-  if (u.playbook) playbookMarkdown(u.playbook, L);
+  if (u.playbook) playbookMarkdown(u.playbook, L, origin);
   validationMarkdown(u, L, release, origin);
   return `${L.join('\n')}\n`;
 }
@@ -188,7 +188,7 @@ function agenticMarkdown(a: Agentic, L: string[]) {
   a.whenNotToUse.forEach((x) => L.push(`- ${x}`));
 }
 
-function playbookMarkdown(pb: Playbook, L: string[]) {
+function playbookMarkdown(pb: Playbook, L: string[], origin: string) {
   const c = pb.compatibility;
   const k = pb.completion;
   L.push('', '## Build playbook', '', pb.summary, '', '### What this playbook gives you, and where your platform starts', '');
@@ -243,9 +243,13 @@ function playbookMarkdown(pb: Playbook, L: string[]) {
     L.push('### 4. Starter kit', '', c.verdict === 'adaptable' ? '**Adapt before you rely on it:** this kit implements a neighbouring problem; make the modifications above first.' : 'Runs on synthetic data; it is not production code.', '', `Runtime: ${pb.starter.runtime}`, '', fence('bash', pb.starter.run.join('\n')), '', `Expect: ${pb.starter.expected}`, '');
     pb.starter.files.forEach((f) => L.push(`#### ${f.path}`, '', f.purpose, '', kindLine(f.kind), '', fence(f.language === 'text' ? 'text' : f.language, f.code), ''));
   } else L.push('### 4. Starter kit', '', `**None.** ${c.statement} No code, data generator or run command is supplied for this use case.`, '');
-  L.push('### 5. Worked example', '', `*Basis: ${pb.workedExample.basis === 'reference-kit' ? 'run on the starter kit' : 'blueprint only, nothing was run'}.* ${pb.workedExample.scenario}`, '');
-  pb.workedExample.steps.forEach((s) => L.push(`- **${s.stage}** ${s.detail}`));
-  L.push('', `**Outcome.** ${pb.workedExample.outcome}`, '', '### 6. Test and acceptance plan', '', '| Test | Tool / command | Pass criterion |', '|---|---|---|');
+  if (pb.workedExample) {
+    L.push('### 5. Worked example', '', `*Basis: ${pb.workedExample.basis === 'reference-kit' ? 'run on the starter kit' : 'blueprint only, nothing was run'}.* ${pb.workedExample.scenario}`, '');
+    pb.workedExample.steps.forEach((s) => L.push(`- **${s.stage}** ${s.detail}`));
+    L.push('', `**Outcome.** ${pb.workedExample.outcome}`, '');
+  } else
+    L.push('### 5. Worked example', '', `The runnable worked template for this use case (its own starter run, documents, contracts and deployment sizing) is in BrainSiphon Pro: ${origin}/pro`, '');
+  L.push('### 6. Test and acceptance plan', '', '| Test | Tool / command | Pass criterion |', '|---|---|---|');
   pb.tests.forEach((t) => L.push(`| ${esc(t.test)} | ${esc(t.tool)} | ${esc(t.pass)} |`));
   L.push('', '### 7. Decisions', '');
   pb.decisions.forEach((d) => {

@@ -26,7 +26,7 @@ export const DOWNLOAD_BUNDLES = [
     dir: 'fde-adapters',
     zip: 'brainsiphon-fde-adapters.zip',
     title: 'Reusable adapters and mocks',
-    note: 'A standard adapter framework, config-driven connectors for fifteen systems, protocol parsers and vendor-shaped mocks. Mock-tested only: no vendor sandbox has been run.',
+    note: 'A standard adapter framework, config-driven connectors for twelve systems, protocol parsers and vendor-shaped mocks. Mock-tested only: no vendor sandbox has been run.',
   },
   {
     id: 'fde-evidence',
@@ -38,9 +38,9 @@ export const DOWNLOAD_BUNDLES = [
   {
     id: 'fde-packs',
     dir: 'fde-packs',
-    zip: 'brainsiphon-fde-use-case-packs.zip',
-    title: 'Use-case implementation packs',
-    note: 'Ten executable packs with their tests, fixtures and customer documentation: fraud, forecasting, sepsis, ETA, CTR, phishing, knowledge tracing, ticket triage, branch footfall and valuation.',
+    zip: 'brainsiphon-fde-use-case-pack.zip',
+    title: 'Use-case implementation pack',
+    note: 'One executable pack with its tests, fixtures and customer documentation: card and UPI fraud. The other nine packs (forecasting, sepsis, ETA, CTR, phishing, knowledge tracing, ticket triage, branch footfall and valuation) are in BrainSiphon Pro.',
   },
 ] as const;
 export type BundleId = (typeof DOWNLOAD_BUNDLES)[number]['id'];

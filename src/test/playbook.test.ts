@@ -7,10 +7,10 @@ const all = loadAllUseCases();
 const withPlaybook = all.filter((u) => u.playbook?.provenance === 'authored');
 const generated = all.filter((u) => u.playbook?.provenance === 'generated');
 
-describe('generated playbooks (the other 492)', () => {
+describe('generated playbooks (the other 499)', () => {
   it('covers every use case without a hand-written playbook', () => {
     expect(withPlaybook.length + generated.length).toBe(all.length);
-    expect(generated.length).toBe(all.length - 8);
+    expect(generated.length).toBe(all.length - 1);
   });
 
   it('uses all eleven reference kits, but only where the compatibility check allows one', () => {
@@ -64,10 +64,9 @@ describe('generated playbooks (the other 492)', () => {
   });
 });
 
-describe('build playbooks (pilot)', () => {
-  it('ships one playbook per domain for the pilot', () => {
-    expect(new Set(withPlaybook.map((u) => u.domain)).size).toBe(8);
-    expect(withPlaybook.length).toBe(8);
+describe('build playbooks (the free worked example)', () => {
+  it('ships exactly one hand-written playbook: the free worked example', () => {
+    expect(withPlaybook.map((u) => u.slug)).toEqual(['fintech/real-time-card-upi-fraud-detection']);
   });
 
   it.each(withPlaybook.map((u) => [u.slug, u] as const))(

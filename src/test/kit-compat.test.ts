@@ -92,8 +92,8 @@ describe('Credit Default Survival Modeling (the mismatch in the review)', () => 
     ]);
     expect(pb.completion.reached).toBe('guidance-only');
     expect(pb.completion.states.every((s) => s.status === 'not-reached')).toBe(true);
-    expect(pb.workedExample.basis).toBe('blueprint-only');
-    expect(JSON.stringify(pb.workedExample)).not.toMatch(/On the kit/);
+    // the worked example is the one part of a playbook that only the free worked example publishes
+    expect(pb.workedExample).toBeUndefined();
     expect(pb.milestones.filter((m) => /\d/.test(m.gate.threshold)).length).toBeGreaterThanOrEqual(5);
   });
 });

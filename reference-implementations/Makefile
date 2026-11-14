@@ -1,9 +1,9 @@
 # Run a target in every reference implementation:  make test | make demo | make lint | make sync
-IMPLS := realtime-decisioning batch-forecasting rag-assistant agentic-workflow
+IMPLS := realtime-decisioning
 PY ?= $(CURDIR)/.venv/bin/python
 
 .PHONY: setup test demo lint sync check-sync
-setup:       ## One shared virtual environment for all four (each also has its own `make setup`)
+setup:       ## One shared virtual environment for every implementation (each also has its own `make setup`)
 	python3 -m venv .venv && .venv/bin/pip install -q -r requirements.txt
 	for d in $(IMPLS); do (cd $$d && PYTHONPATH=.:src $(PY) -m bsref.setup) || exit 1; done
 test:        ## Platform tests, then every implementation's test suite

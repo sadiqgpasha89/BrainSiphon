@@ -84,20 +84,9 @@ describe('Customer Implementation Playbook: every blueprint', () => {
   });
 });
 
-describe('the ten authored packs', () => {
-  const slugs = [
-    'fintech/real-time-card-upi-fraud-detection',
-    'retail/demand-forecasting-sku-store',
-    'healthcare/sepsis-early-warning',
-    'supply-chain/eta-prediction-for-shipments',
-    'adtech/ctr-prediction-ads',
-    'cybersecurity/phishing-url-and-email-detection',
-    'edtech/knowledge-tracing-student-modeling',
-    'saas/support-ticket-triage-and-priority',
-    'bfsi/branch-footfall-and-staffing-forecast',
-    'real-estate/automated-valuation-model',
-  ];
-  it('cover exactly the ten named use cases, each with an executable pack on disk', () => {
+describe('the authored pack that ships free', () => {
+  const slugs = ['fintech/real-time-card-upi-fraud-detection'];
+  it('covers exactly the free use case, with an executable pack on disk', () => {
     expect(Object.keys(AUTHORED).sort()).toEqual([...slugs].sort());
     expect(PACKS.map((p) => p.slug).sort()).toEqual([...slugs].sort());
     for (const s of slugs) {
@@ -131,38 +120,6 @@ describe('the ten authored packs', () => {
         for (const a of h.artifacts)
           expect(existsSync(join(root, a)), `${s} ${h.id} artifact ${a}`).toBe(true);
     }
-  });
-
-  it('give BFSI branch footfall a branch-operations architecture, not a core-banking one', () => {
-    const pb = playbooks.find((p) => p.slug === 'bfsi/branch-footfall-and-staffing-forecast')!;
-    const names = pb.systems.map((s) => s.name).join(' | ');
-    expect(names).toMatch(/queue/i);
-    expect(names).toMatch(/footfall|sensor/i);
-    expect(names).toMatch(/workforce|roster|WFM/i);
-    expect(names).not.toMatch(/core banking|general ledger|SWIFT|\bFIX\b|\bKYC\b|credit bureau|market data/i);
-    expect(pb.integrations.map((h) => h.name).join(' | ')).not.toMatch(/core banking|SWIFT|KYC/i);
-  });
-
-  it('keep the AVM free of a maintenance work-order destination and make building data optional', () => {
-    const pb = playbooks.find((p) => p.slug === 'real-estate/automated-valuation-model')!;
-    expect(
-      pb.systems
-        .filter((s) => s.role === 'target')
-        .map((s) => s.name)
-        .join(' | '),
-    ).not.toMatch(/work.?order|maintenance/i);
-    const bms = pb.integrations.find((h) => h.id === 'hop-bms-optional')!;
-    expect(bms.necessity).toBe('optional');
-    expect(pb.systems.find((s) => /Building-management/i.test(s.name))!.need).toBe('optional');
-  });
-
-  it('separate HL7 ADT, HL7 ORU and FHIR into separate connectors, with imaging and ABDM optional', () => {
-    const pb = playbooks.find((p) => p.slug === 'healthcare/sepsis-early-warning')!;
-    const ids = pb.integrations.map((h) => h.id);
-    for (const id of ['hop-hl7-adt', 'hop-hl7-oru', 'hop-fhir', 'hop-alert-delivery'])
-      expect(ids).toContain(id);
-    expect(pb.integrations.find((h) => h.id === 'hop-dicomweb')!.necessity).toBe('optional');
-    expect(pb.integrations.find((h) => h.id === 'hop-abdm')!.necessity).toBe('optional');
   });
 
   it('use the four integration layers on every authored hop', () => {
@@ -246,7 +203,7 @@ describe('workflow, definition of done, deployment modes and troubleshooting', (
   });
 
   it('lists every adapter with its module and config on disk and never claims a vendor sandbox run', () => {
-    expect(ADAPTERS.length).toBeGreaterThanOrEqual(15);
+    expect(ADAPTERS.length).toBeGreaterThanOrEqual(12);
     for (const a of ADAPTERS) {
       expect(existsSync(join(root, a.module)), a.module).toBe(true);
       expect(existsSync(join(root, a.config)), a.config).toBe(true);

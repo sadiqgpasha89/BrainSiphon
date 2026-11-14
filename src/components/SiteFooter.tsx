@@ -62,6 +62,12 @@ export async function SiteFooter() {
               </a>
             </li>
             <li>
+              <Link href="/pro" className="font-medium text-ink hover:text-ink">
+                BrainSiphon Pro
+              </Link>{' '}
+              — a worked template for every use case
+            </li>
+            <li>
               <Link href="/fde" className="hover:text-ink">
                 FDE hub
               </Link>{' '}

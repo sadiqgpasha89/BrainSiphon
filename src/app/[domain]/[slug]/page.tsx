@@ -212,7 +212,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ domain
         <MlopsSection uc={uc} />
         <OperationsSection uc={uc} />
         <AgenticSection ag={uc.agentic} input={viewInputOf(uc)} />
-        {uc.playbook && <PlaybookSection pb={uc.playbook} />}
+        {uc.playbook && <PlaybookSection pb={uc.playbook} slug={uc.slug} title={uc.title} />}
         {implementation && <ImplementationSection pb={implementation} />}
         <ValidationSection uc={uc} release={release} />
       </article>
