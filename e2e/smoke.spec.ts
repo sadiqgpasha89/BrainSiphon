@@ -21,12 +21,10 @@ test('domain → filter → open blueprint → Pure Signal toggle', async ({ pag
     .first()
     .click();
   await expect(page.getByTestId('uc-title')).toHaveText('Real-Time Card & UPI Fraud Detection');
-  // five separate statuses instead of one "verified" badge
+  // separate statuses instead of one "verified" badge
   const status = page.getByTestId('validation-status');
   await expect(status.getByTestId('status-schema')).toContainText('Schema validated: Passed');
   await expect(status.getByTestId('status-feasibility')).toContainText('Architecture feasibility: Passed');
-  await expect(status.getByTestId('status-expert')).toContainText('Domain expert reviewed: Not reviewed');
-  await expect(status.getByTestId('status-production')).toContainText('Production evidence: Not available');
   await expect(status.getByTestId('status-synthetic')).toContainText('Synthetic starter tested');
   await expect(page.getByTestId('validation-summary').getByTestId('release-line')).toContainText('commit');
   await expect(page.getByText(/Verified against|Automated checks passed/)).toHaveCount(0);
@@ -354,7 +352,7 @@ test('blueprint 2.0 sections: governance risk tier, decision matrix, MLOps and o
   await expect(page.locator('#mlops')).toContainText('Experiment management');
   await expect(page.locator('#operations')).toContainText('regional cloud outage');
   await expect(page.getByTestId('adr').first()).toBeVisible();
-  await expect(page.getByTestId('validation-levels').getByRole('listitem')).toHaveCount(5);
+  await expect(page.getByTestId('validation-levels').getByRole('listitem')).toHaveCount(3);
 });
 
 test('patterns page explains the three-level hierarchy', async ({ page }) => {
@@ -379,7 +377,6 @@ test('review hardening: a forecast gets a forecast LLD, workload-based sizing an
   await expect(page.getByTestId('agentic-decision')).toContainText('rejected');
   await expect(page.locator('#experimentation')).toContainText('rolling-origin-backtest');
   await expect(page.getByTestId('provenance')).toContainText('generated from a template');
-  await expect(page.getByTestId('reviewer')).toContainText('No named reviewer yet');
 });
 
 test('deployment modes page explains what the static site leaves out', async ({ page }) => {
@@ -593,13 +590,11 @@ test('the home page states what has and has not been checked, from the release m
   const m = await (await request.get('/release.json')).json();
   await page.goto('/');
   const strip = page.getByTestId('manifest-transparency');
-  await expect(strip.getByTestId('manifest-tile')).toHaveCount(5);
+  await expect(strip.getByTestId('manifest-tile')).toHaveCount(3);
   const f = m.checks.feasibility;
   await expect(strip).toContainText(
     `${f.pass.toLocaleString('en-US')} passed · ${f.warn} warnings · ${f.fail} failed`,
   );
-  await expect(strip).toContainText(`${m.checks.domainExpert.reviewed} of 500`);
-  await expect(strip).toContainText(`${m.checks.productionEvidence.claimed} of 500`);
   await expect(page.getByText(/production-grade|battle-tested/i)).toHaveCount(0);
   await strip.getByTestId('release-report-link').click();
   await expect(page).toHaveURL(/\/release$/);
@@ -613,9 +608,8 @@ test('the release report lists maturity levels, kit runs and every feasibility w
   await page.goto('/release');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('What has been checked');
   await expect(page.getByTestId('release-identity')).toContainText(m.contentVersion);
-  await expect(page.getByTestId('maturity-ladder').locator('tbody tr')).toHaveCount(7);
-  await expect(page.getByTestId('ladder-expert-validated')).toContainText('0 of 500');
-  await expect(page.getByTestId('ladder-production-evidenced')).toContainText('0 of 500');
+  await expect(page.getByTestId('maturity-ladder').locator('tbody tr')).toHaveCount(5);
+  await expect(page.getByTestId('ladder-platform-integrated')).toContainText('0 of 500');
 
   const warnings = page.getByTestId('feasibility-warning');
   await expect(warnings).toHaveCount(m.checks.feasibility.warnings.length);
@@ -625,7 +619,7 @@ test('the release report lists maturity levels, kit runs and every feasibility w
   await expect(warnings.first()).toContainText('Recommended remediation');
   await expect(warnings.first()).toContainText(first.remediation);
   await expect(page.getByTestId('release-outstanding').getByRole('listitem').first()).toContainText(
-    'no domain-expert review',
+    'feasibility warnings are open',
   );
 
   // a warning leads to the affected blueprint, whose scorecard carries the same remediation
@@ -639,27 +633,24 @@ test('the release report lists maturity levels, kit runs and every feasibility w
   expect((await request.get('/release-report.md')).ok()).toBe(true);
 });
 
-test('every blueprint carries a seven-level maturity scorecard with evidence, reviewer and outstanding work', async ({
+test('every blueprint carries a five-level maturity scorecard with evidence and outstanding work', async ({
   page,
 }) => {
   await page.goto('/fintech/real-time-card-upi-fraud-detection');
   const chip = page.getByTestId('maturity-classification');
-  await expect(chip).toContainText(/Maturity \d of 7/);
+  await expect(chip).toContainText(/Maturity \d of 5/);
   await expect(chip).not.toContainText(/production/i);
   const card = page.getByTestId('maturity-scorecard');
-  await expect(card.locator('ol > li')).toHaveCount(7);
+  await expect(card.locator('ol > li')).toHaveCount(5);
   await expect(card.getByTestId('maturity-schema-validated')).toHaveAttribute('data-state', 'met');
-  for (const id of ['expert-validated', 'platform-integrated', 'production-evidenced']) {
-    const level = card.getByTestId(`maturity-${id}`);
-    await expect(level).toHaveAttribute('data-state', 'not-met');
-    await expect(level).toContainText('Reviewer: None');
-    await expect(level).toContainText('Outstanding');
-  }
-  await expect(card).toContainText('It does not show that the design has been built, reviewed or');
+  const level = card.getByTestId('maturity-platform-integrated');
+  await expect(level).toHaveAttribute('data-state', 'not-met');
+  await expect(level).toContainText('Outstanding');
+  await expect(card).toContainText('It does not show that the design has been built');
 
   // without a tested starter for its exact problem, a blueprint stays at feasibility whatever else it has
   await page.goto('/healthcare/polygenic-risk-scoring');
-  await expect(page.getByTestId('maturity-headline')).toContainText('Level 3 of 7');
+  await expect(page.getByTestId('maturity-headline')).toContainText('Level 3 of 5');
   await expect(page.locator('#feasibility-warnings')).toContainText('Recommended remediation');
 });
 
@@ -713,13 +704,9 @@ test('workspace generator recommends, previews, and records an override in the A
   expect((await download).suggestedFilename()).toMatch(/\.zip$/);
 });
 
-test('release report separates documentation from tested code and shows the review programme', async ({
-  page,
-}) => {
+test('release report separates documentation from tested code', async ({ page }) => {
   await page.goto('/release');
   await expect(page.getByTestId('evidence-layers')).toContainText('Generated documentation');
-  await expect(page.getByTestId('evidence-layers')).toContainText('Operational (production-evidenced)');
-  await expect(page.getByTestId('review-programme')).toContainText('has not completed any review yet');
   await expect(page.getByTestId('feasibility-warning').first().getByTestId('warning-owner')).toContainText(
     'Open',
   );
@@ -732,4 +719,48 @@ test('delivery guide templates are direct downloads', async ({ page }) => {
     'href',
     /downloads\/delivery\/templates\/phase-5-release\/production-handover-package\.md$/,
   );
+});
+
+test('the start guide gives a first hour, a four-week sequence, role paths and a stuck table', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByTestId('cta-start').click();
+  await expect(page).toHaveURL(/\/start$/);
+  const guide = page.getByTestId('start-guide');
+  await expect(guide.getByRole('heading', { level: 1 })).toContainText('Start here');
+  for (const w of ['w1', 'w2', 'w3', 'w4']) await expect(guide.getByTestId(`start-${w}`)).toBeVisible();
+  await expect(guide.getByTestId('start-capstone')).toContainText('seven delivery phases');
+  await expect(guide.getByTestId('start-role-forward-deployed-engineer')).toBeAttached();
+  await expect(guide.getByTestId('start-stuck')).toContainText('Which cloud service plays which role?');
+  // progress is ticked in this browser and counted
+  await guide.getByRole('checkbox', { name: /Know what this site is/ }).check();
+  await expect(guide.getByTestId('start-progress')).toContainText('1 of ');
+  await page.reload();
+  await expect(guide.getByRole('checkbox', { name: /Know what this site is/ })).toBeChecked();
+  // the example links open the blueprint at the section they name
+  await guide.getByTestId('start-step-w2b').getByRole('link').first().click();
+  await expect(page).toHaveURL(/real-time-card-upi-fraud-detection#hld$/);
+});
+
+test('diagrams can be redrawn on AWS, Azure, GCP and OpenStack, and the choice is shared', async ({
+  page,
+}) => {
+  await page.goto('/fintech/real-time-card-upi-fraud-detection');
+  const hld = page.getByTestId('cloud-tabs-hld');
+  await expect(hld.getByRole('tab')).toHaveCount(5);
+  await hld.getByTestId('cloud-tab-hld-aws').click();
+  await expect(hld.getByTestId('cloud-wiring-aws')).toContainText('CloudFront');
+  await expect(hld.getByTestId('cloud-services-aws')).toContainText('Amazon MSK');
+  await expect(hld.getByTestId('cloud-panel-hld-aws').locator('svg').first()).toBeVisible({ timeout: 15000 });
+  await expect(hld.getByTestId('cloud-panel-hld-aws')).toContainText('▸ ');
+  // the same platform is selected on the sequence diagram further down
+  await expect(page.getByTestId('cloud-tab-sequence-aws')).toHaveAttribute('data-state', 'active');
+  await hld.getByTestId('cloud-tab-hld-openstack').click();
+  await expect(hld.getByTestId('cloud-services-openstack')).toContainText('You deploy and operate it');
+  await expect(hld.getByTestId('cloud-wiring-openstack')).toContainText('Magnum');
+  await hld.getByTestId('cloud-tab-hld-azure').click();
+  await expect(hld.getByTestId('cloud-services-azure')).toContainText('Event Hubs');
+  await hld.getByTestId('cloud-tab-hld-neutral').click();
+  await expect(hld.getByTestId('diagram').first()).toBeVisible();
 });

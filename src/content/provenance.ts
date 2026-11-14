@@ -5,7 +5,6 @@
  */
 import type { Archetype, Governance, Provenance, Validation } from '../schemas/usecase.schema';
 import { ARCHETYPE_LABEL, VALIDATION_LEVELS } from '../schemas/usecase.schema';
-import type { Review } from './enterprise';
 
 export interface ProvenanceInput {
   specFile: string;
@@ -14,7 +13,6 @@ export interface ProvenanceInput {
   playbook: 'authored' | 'generated' | 'none';
   kit: string;
   archetype: Archetype;
-  review?: Review;
   governance: Pick<Governance, 'regulatory'>;
   levels: Validation['levels'];
   generatedAt: string;
@@ -31,8 +29,6 @@ export function buildProvenance(i: ProvenanceInput): Provenance {
   return {
     status,
     owner: 'BrainSiphon maintainers',
-    reviewer: i.review ? [i.review.reviewer, i.review.organisation].filter(Boolean).join(', ') : null,
-    reviewedAt: i.review?.date ?? null,
     generatedAt: i.generatedAt,
     sections: [
       { section: 'Signal versus noise, problem formulation, features, metrics and edge cases', origin: 'hand-authored', basis: `Written for this use case in ${spec} (entry "${i.specKey}").` },
@@ -40,7 +36,7 @@ export function buildProvenance(i: ProvenanceInput): Provenance {
       { section: 'Pipeline, high-level design and sequence diagrams', origin: 'generated-from-spec', basis: 'Built from the specification\'s own pipeline stages; stage budgets are modelled, not measured.' },
       { section: 'Low-level design', origin: 'generated-from-template', basis: `The ${tpl} template, filled with this use case's features, names and budgets. An illustrative scaffold, not production code.` },
       { section: 'Capacity and cost model', origin: 'generated-from-template', basis: i.statedVolume ? `The shared capacity model, sized from the stated volume "${i.statedVolume}".` : 'The shared capacity model at the published 10-million-user default; re-run it at your workload in the calculator.' },
-      { section: 'Role lenses, enterprise context, AI decision matrix, governance, MLOps and operations', origin: 'generated-from-template', basis: 'Shared enterprise templates specialised by domain, latency, risk tier and pattern. Not reviewed by a domain specialist unless the status above says so.' },
+      { section: 'Role lenses, enterprise context, AI decision matrix, governance, MLOps and operations', origin: 'generated-from-template', basis: 'Shared enterprise templates specialised by domain, latency, risk tier and pattern.' },
       { section: 'Agentic verdict and solution', origin: 'generated-from-template', basis: 'A rule over the reference kit, latency class and presence of a review queue decides whether agents are recommended at all.' },
       { section: 'Statistical validation and experimentation', origin: 'generated-from-template', basis: 'A design chosen by archetype and latency, with the use case\'s own metrics inserted.' },
       { section: 'Metrics catalogue', origin: 'generated-from-spec', basis: 'Assembled from this use case\'s own offline and online metrics, signals and leakage risks, pipeline stages, edge cases, SLOs, capacity model, regulatory obligations and agents; the layer structure is shared. Targets are starting thresholds.' },
@@ -55,13 +51,11 @@ export function buildProvenance(i: ProvenanceInput): Provenance {
       { item: 'Model-quality, agent and release-gate thresholds', nature: 'proposed-target', note: 'Gates to adopt or change after measuring your own baseline.' },
       { item: 'Starter-kit and playbook results', nature: 'synthetic', note: 'Produced on synthetic data from a reference kit; they show the pipeline runs, not that this use case reaches those scores.' },
       { item: 'Example payloads, schemas and code', nature: 'illustrative', note: 'Shaped to the archetype; field names and values are examples. The hot-path code is labelled pseudocode and the schemas, contracts and diagrams architectural illustration. Only starter-kit files are executable, and they are labelled executable reference code. Nothing is production code.' },
-      { item: 'Measured results from a pilot or production', nature: i.review ? 'pilot-measured' : 'illustrative', note: i.review ? `Reviewed by ${i.review.reviewer}; see the review scope above for what was covered.` : 'None recorded. No figure on this page comes from a real deployment.' },
     ],
     sources: [
       { kind: 'specification', ref: `${spec} entry "${i.specKey}"` },
       { kind: 'reference-kit', ref: `${i.kit} starter kit (synthetic data)` },
       ...i.governance.regulatory.slice(0, 3).map((r) => ({ kind: 'public-standard' as const, ref: `${r.obligation}: named for orientation; applicability depends on your jurisdiction and counsel` })),
-      ...(i.review ? [{ kind: 'review' as const, ref: `${i.review.reviewer}, ${i.review.date}: ${i.review.scope}` }] : []),
     ],
     assumptions: [
       'The workload, latency tier and risk tier come from the specification entry and may not match your organisation.',
@@ -70,9 +64,9 @@ export function buildProvenance(i: ProvenanceInput): Provenance {
       'Data is assumed to be available with the freshness and quality the data contract states.',
     ],
     limitations: [
-      i.review ? `Expert review covered: ${i.review.scope}. Anything outside that scope is still unreviewed.` : 'No named domain or engineering expert has reviewed this blueprint.',
+      'Every number is a modelled starting point: replace it with your own baseline before you rely on it.',
       'The low-level design is an illustrative scaffold; authentication, tenancy, rate limits and dependency hardening are described but not implemented.',
-      'No measured latency, throughput, accuracy or cost from a real deployment is recorded.',
+      'Latency, throughput, accuracy and cost figures are modelled or synthetic, not measured on your workload.',
       'Reference-kit and benchmark numbers belong to the kit; do not carry them over to this use case.',
     ],
   };

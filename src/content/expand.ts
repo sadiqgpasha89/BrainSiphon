@@ -19,7 +19,7 @@ import { buildAuthoredCompatibility, buildCompatibility } from './kit-compat';
 import type { ArtifactKind } from '../lib/artifacts';
 import { buildRoleLenses, buildTopology, pickPrimitives, stanceOf } from './extras';
 import { explainLoss } from './lossvars';
-import { buildDecisionMatrix, buildEnterpriseContext, buildGovernance, buildMlops, buildOperations, buildValidation, drFor, type EntCtx, type Review } from './enterprise';
+import { buildDecisionMatrix, buildEnterpriseContext, buildGovernance, buildMlops, buildOperations, buildValidation, drFor, type EntCtx } from './enterprise';
 import { checkFeasibility } from './feasibility';
 import { buildProvenance } from './provenance';
 import { buildExperimentation } from './experimentation';
@@ -43,21 +43,6 @@ const LLD_ARTIFACTS: Record<'apiContract' | 'dataModelDDL' | 'eventSchema' | 'cl
 
 /** Retention window the capacity table assumes (see scale.ts RETENTION_DAYS). */
 const ASSUMED_RETENTION_DAYS = 400;
-
-const reviewFiles = new Map<string, Record<string, Review>>();
-/** Domain-expert reviews recorded by maintainers in content/reviews.json ({ "<slug>": { reviewer, organisation?, date, scope } }). Empty by default. */
-function reviewsFor(root: string): Record<string, Review> {
-  let r = reviewFiles.get(root);
-  if (!r) {
-    const f = join(root, 'content', 'reviews.json');
-    const all = existsSync(f) ? (JSON.parse(readFileSync(f, 'utf8')) as Record<string, Review>) : {};
-    // an expired review is dropped: the blueprint goes back to "not reviewed" until it is renewed
-    const today = new Date().toISOString().slice(0, 10);
-    r = Object.fromEntries(Object.entries(all).filter(([, v]) => !v.validUntil || v.validUntil >= today));
-    reviewFiles.set(root, r);
-  }
-  return r;
-}
 
 const DEFAULT_LOSS: Record<Paradigm, string> = {
   tabular: '\\mathcal{L}=-\\sum_i w_i\\,[\\,y_i\\log p_i+(1-y_i)\\log(1-p_i)\\,]',
@@ -139,7 +124,6 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     onMetrics: raw.on,
     steps,
     archetype,
-    reviewed: Boolean(root && reviewsFor(root)[slug]),
   });
   const seq = sequenceDiagram(stages, scale.mode, latency, paradigms, steps);
 
@@ -195,14 +179,12 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     dr: { rpoSeconds: dr.rpoSeconds, rtoSeconds: dr.rtoSeconds, replication: dr.replication },
     productionModel: raw.prod,
   });
-  const review = root ? reviewsFor(root)[slug] : undefined;
   const validationBase = buildValidation(entCtx, feasibility, {
     hasPlaybook: Boolean(playbook),
     // a playbook with no compatible kit ships guidance only: nothing was run, so no starter pass is claimed
     hasStarter: Boolean(playbook?.starter),
     starterAdaptable: playbook?.compatibility.verdict === 'adaptable',
     hasCompatibleKit: playbook ? playbook.compatibility.verdict !== 'none' : true,
-    ...(review ? { review } : {}),
   });
   const validation = {
     ...validationBase,
@@ -213,8 +195,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
       playbook: !playbook ? 'none' : playbook.provenance,
       kit: pattern,
       archetype,
-      ...(review ? { review } : {}),
-      governance,
+        governance,
       levels: validationBase.levels,
       generatedAt: verifiedAt,
       statedVolume: volume ? volume.driver.replace(/ \(stated.*$/, '') : null,

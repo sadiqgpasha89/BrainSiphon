@@ -1,3 +1,4 @@
+import { serviceMatrix, viewInputOf } from './cloud-views';
 import { ARTIFACT_KINDS, ARTIFACT_META, COMPLETION_META, DELIVERY_META, type ArtifactKind } from '../lib/artifacts';
 import { PROBLEM_LABEL } from '../lib/problem-types';
 import { PRIMITIVE_BY_ID } from './primitives';
@@ -46,9 +47,15 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', relea
   d.topology.notes.forEach((n) => L.push(`- ${n}`));
   L.push('', fence('mermaid', d.hld.mermaid), '', '| Component | Tech | Responsibility | Budget |', '|---|---|---|---|');
   d.hld.components.forEach((c) => L.push(`| ${esc(c.name)} | ${esc(c.tech)} | ${esc(c.responsibility)} | ${c.latencyBudgetMs === null ? '—' : `${c.latencyBudgetMs} ms`} |`));
+  {
+    const vi = viewInputOf(u);
+    L.push('', '### The same design on AWS, Azure, GCP and OpenStack', '', 'The blueprint page shows this diagram, the sequence and the C4 container diagram redrawn with each platform\'s services, and how they connect for this use case. The service for each building block:', '', '| Building block | AWS | Azure | GCP | OpenStack |', '|---|---|---|---|---|');
+    serviceMatrix(vi).forEach((r) => L.push(`| ${r.label} | ${esc(r.services.aws)} | ${esc(r.services.azure)} | ${esc(r.services.gcp)} | ${esc(r.services.openstack)} |`));
+    L.push('', 'Service names are the common option for each role, not a recommendation or a price comparison.');
+  }
   L.push('', '## Sequence diagram', '', fence('mermaid', d.sequence.mermaid), '');
   d.sequence.notes.forEach((n) => L.push(`- ${n}`));
-  L.push('', '## Low-level design', '', `**Archetype:** ${ARCHETYPE_LABEL[d.lld.archetype]} · **Status:** ${d.lld.status === 'expert-reviewed' ? 'expert reviewed' : 'illustrative implementation scaffold, not a complete production LLD'}`, '', '**What the artifact labels mean**', '', ...LEGEND, '', `### API contract\n\n${kindLine(d.lld.artifacts.apiContract)}\n\n\`${d.lld.apiContract.method} ${d.lld.apiContract.path}\``, '', 'Request:', '', fence('json', d.lld.apiContract.request), '', 'Response:', '', fence('json', d.lld.apiContract.response));
+  L.push('', '## Low-level design', '', `**Archetype:** ${ARCHETYPE_LABEL[d.lld.archetype]} · **Status:** illustrative implementation scaffold, not a complete production LLD`, '', '**What the artifact labels mean**', '', ...LEGEND, '', `### API contract\n\n${kindLine(d.lld.artifacts.apiContract)}\n\n\`${d.lld.apiContract.method} ${d.lld.apiContract.path}\``, '', 'Request:', '', fence('json', d.lld.apiContract.request), '', 'Response:', '', fence('json', d.lld.apiContract.response));
   L.push('', '### Data model', '', kindLine(d.lld.artifacts.dataModelDDL), '', fence('sql', d.lld.dataModelDDL), '', '### Classes', '', kindLine(d.lld.artifacts.classDiagram), '', fence('mermaid', d.lld.classDiagram), '', '### Core algorithm', '', kindLine(d.lld.artifacts.algorithm), '', fence(d.lld.algorithm.language, d.lld.algorithm.code), '', '### Config', '', kindLine(d.lld.artifacts.config), '', fence('yaml', d.lld.config), '', '### Degradation ladder', '', '| Level | Trigger | Behaviour |', '|---|---|---|');
   d.lld.degradationLadder.forEach((x) => L.push(`| L${x.level} | ${esc(x.trigger)} | ${esc(x.behaviour)} |`));
   L.push('', '### Event schema', '', kindLine(d.lld.artifacts.eventSchema), '', fence('json', d.lld.eventSchema), '', '### Failure and retry behaviour', '', '| Failure | Behaviour |', '|---|---|');
@@ -416,7 +423,7 @@ function operationsMarkdown(u: UseCase, L: string[]) {
 
 function validationMarkdown(u: UseCase, L: string[], release: ReleaseManifest | null, origin: string) {
   const pv = u.validation.provenance;
-  L.push('', '## Validation and architecture review', '', `**Content status:** ${pv.status} · **Owner:** ${pv.owner} · **Reviewer:** ${pv.reviewer ? `${pv.reviewer}, ${pv.reviewedAt}` : 'none yet'} · **Generated:** ${pv.generatedAt}`, '', '### How each part was made', '', '| Section | Origin | Basis |', '|---|---|---|');
+  L.push('', '## Validation', '', `**Content status:** ${pv.status} · **Owner:** ${pv.owner} · **Generated:** ${pv.generatedAt}`, '', '### How each part was made', '', '| Section | Origin | Basis |', '|---|---|---|');
   pv.sections.forEach((x) => L.push(`| ${esc(x.section)} | ${x.origin} | ${esc(x.basis)} |`));
   L.push('', '### What kind of number is this?', '', '| Figure | Nature | Note |', '|---|---|---|');
   pv.numbers.forEach((x) => L.push(`| ${esc(x.item)} | ${x.nature} | ${esc(x.note)} |`));
@@ -432,9 +439,9 @@ function validationMarkdown(u: UseCase, L: string[], release: ReleaseManifest | 
     L.push('', `**Release.** Version ${release.contentVersion} · source commit ${release.sourceCommit ?? 'unknown'}${release.sourceDirty ? ' (uncommitted changes)' : ''} · last successful validation ${release.validatedAt ?? 'none for this content'} · ${release.deployedAt ? `deployment built ${release.deployedAt}` : 'not a deployment build'}.`);
   const card = blueprintMaturityScorecard(u, release);
   L.push('', `### Maturity scorecard: level ${card.level} of ${card.items.length}, ${card.classificationLabel}`, '');
-  L.push(`A blueprint is classified at the highest level it reaches without skipping one. ${card.blockedBy ? `This one stops because of ${card.blockedBy}` : ''} A schema pass shows the page is complete, not that the design has been built, reviewed or run.`, '');
-  L.push('| Level | State | Evidence | Reviewer | Date | Outstanding |', '|---|---|---|---|---|---|');
-  card.items.forEach((x) => L.push(`| ${x.level}. ${x.label} | ${MATURITY_STATE_TEXT[x.state]} | ${esc(x.evidence)}${x.coverage ? ` Coverage: ${esc(x.coverage)}` : ''}${x.log?.endsWith('.txt') ? ` Log: ${origin}${x.log}` : ''} | ${esc(x.reviewer)} | ${x.date ?? 'none'} | ${esc(x.outstanding.join('; ')) || 'none'} |`));
+  L.push(`A blueprint is classified at the highest level it reaches without skipping one. ${card.blockedBy ? `This one stops because of ${card.blockedBy}` : ''} A schema pass shows the page is complete, not that the design has been built or run.`, '');
+  L.push('| Level | State | Evidence | Date | Outstanding |', '|---|---|---|---|---|');
+  card.items.forEach((x) => L.push(`| ${x.level}. ${x.label} | ${MATURITY_STATE_TEXT[x.state]} | ${esc(x.evidence)}${x.coverage ? ` Coverage: ${esc(x.coverage)}` : ''}${x.log?.endsWith('.txt') ? ` Log: ${origin}${x.log}` : ''} | ${x.date ?? 'none'} | ${esc(x.outstanding.join('; ')) || 'none'} |`));
   if (card.warnings.length) {
     L.push('', '**Open feasibility warnings**', '');
     card.warnings.forEach((w) => L.push(`- ${w.check}: ${w.detail} Recommended remediation: ${w.remediation}`));

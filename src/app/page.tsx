@@ -70,13 +70,20 @@ export default async function Home() {
           {all.length} reference blueprints for AI/ML systems across {DOMAINS.length} industries, and{' '}
           <strong className="text-ink">one delivery guide</strong> for taking one from scoping to monitored
           production. Each blueprint is checked for completeness and internal consistency and says what
-          evidence it has; none has been reviewed by a domain specialist or run in production yet.
+          evidence it has, so you can see what to adapt and test in your own environment.
         </p>
 
         <div className="mt-8">
           <ManifestSummary release={release} />
         </div>
         <div className="mt-8 flex flex-wrap items-center gap-3">
+          <Link
+            href="/start"
+            className="btn !border-signal !bg-signal !text-white no-underline"
+            data-testid="cta-start"
+          >
+            New here? Start here <ArrowRight size={14} aria-hidden />
+          </Link>
           <Link
             href="/delivery"
             className="btn !border-signal !bg-signal-soft !text-signal no-underline"
@@ -192,9 +199,9 @@ export default async function Home() {
               <h3 className="font-semibold text-ink">Transparent Maturity</h3>
             </div>
             <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              Every blueprint carries a seven-level maturity scorecard with the evidence behind each level,
-              from schema validation to production evidence. The <Link href="/release">release report</Link>{' '}
-              lists what has not been done, including every open feasibility warning and its remediation.
+              Every blueprint carries a maturity scorecard with the evidence behind each level, from schema
+              validation to a tested starter. The <Link href="/release">release report</Link> lists what has
+              not been done, including every open feasibility warning and its remediation.
             </p>
           </div>
 

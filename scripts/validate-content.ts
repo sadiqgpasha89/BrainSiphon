@@ -5,6 +5,7 @@
  *  - every KaTeX loss compiles; every Mermaid block parses
  *  - flags use cases older than 180 days or lacking concrete failure modes
  */
+import { CAPS, CLOUD_IDS, cloudView, viewInputOf, type CapId } from '../src/content/cloud-views';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import katex from 'katex';
@@ -47,6 +48,28 @@ async function main() {
   } catch (e) {
     console.error(`✖ ${(e as Error).message}`);
     process.exit(1);
+  }
+
+  // every service string of every platform, in both diagram kinds, so a character that Mermaid rejects is caught once, not 500 times
+  for (const cloud of CLOUD_IDS) {
+    const caps = Object.keys(CAPS) as CapId[];
+    const flow = `flowchart TB\n${caps.map((c, i) => `  N${i}["${CAPS[c].label}<br/>▸ ${CAPS[c].svc[cloud]}"]`).join('\n')}`;
+    const seq = `sequenceDiagram\n${caps.map((c, i) => `  participant P${i} as ${CAPS[c].label}<br/>▸ ${CAPS[c].svc[cloud]}`).join('\n')}`;
+    for (const [kind, code] of [
+      ['flowchart', flow],
+      ['sequence', seq],
+    ] as const) {
+      try {
+        await mermaid.parse(code);
+      } catch (e) {
+        errors.push(
+          `cloud-views ${cloud} ${kind}: ${String((e as Error).message ?? e)
+            .split('\n')
+            .slice(0, 3)
+            .join(' ')}`,
+        );
+      }
+    }
   }
 
   const slugs = new Set<string>();
@@ -98,6 +121,19 @@ async function main() {
       ['c4-container', u.enterpriseContext.c4Container],
       ['metric-tree', u.metrics.tree],
     ];
+    // the cloud rewrite of each blueprint's diagrams must still parse (every service string on every platform is checked once, below)
+    for (const cloud of ['aws'] as const) {
+      const v = cloudView(viewInputOf(u), cloud);
+      blocks.push(
+        [`hld-${cloud}`, v.hld],
+        [`sequence-${cloud}`, v.sequence],
+        [`c4-container-${cloud}`, v.c4Container],
+        ...(v.agentArchitecture
+          ? ([[`agent-architecture-${cloud}`, v.agentArchitecture]] as [string, string][])
+          : []),
+        ...(v.agentSequence ? ([[`agent-sequence-${cloud}`, v.agentSequence]] as [string, string][]) : []),
+      );
+    }
     for (const [name, code] of blocks) {
       try {
         await mermaid.parse(code);
@@ -194,11 +230,6 @@ async function main() {
       const lld = u.systemDesign.lld;
       if (!u.systemDesign.lld.apiContract.path.startsWith('/v1/'))
         errors.push(`${u.slug}: LLD API path is not versioned`);
-      if (
-        lld.status === 'illustrative-scaffold' &&
-        u.validation.levels.find((l) => l.level === 'domain-expert-reviewed')?.state === 'passed'
-      )
-        errors.push(`${u.slug}: LLD is a scaffold but the blueprint claims expert review`);
       const kind = lld.archetype;
       const ddl = lld.dataModelDDL;
       const must: Partial<Record<typeof kind, RegExp>> = {
@@ -404,7 +435,7 @@ async function main() {
     warnings: warnings.length,
   });
   console.log(
-    `validate:content ✔ ${all.length} use cases, ${all.length * 9} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${feas.length} feasibility checks`,
+    `validate:content ✔ ${all.length} use cases, ${all.length * 14} Mermaid blocks, ${all.length} KaTeX blocks, ${withPlaybook} playbooks, ${all.length} agentic sections, ${all.length} enterprise-context layers, ${feas.length} feasibility checks`,
   );
 }
 

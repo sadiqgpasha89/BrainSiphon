@@ -1,4 +1,3 @@
-import { HIGH_RISK_NOTICE } from '../../content/review-programme';
 import {
   AlertTriangle,
   CircleAlert,
@@ -10,7 +9,6 @@ import {
   Layers,
   ShieldAlert,
   Terminal,
-  UserCheck,
 } from 'lucide-react';
 import {
   MATURITY_STATE_TEXT,
@@ -26,11 +24,13 @@ import {
 } from '../../content/release';
 import { withBase } from '../../lib/site';
 
+const HIGH_RISK_NOTICE =
+  'Not suitable for real-world deployment as published: use it to learn, design and prototype until your own validation and approvals are complete.';
+
 const TONE: Record<StatusState, string> = {
   passed: 'chip-signal',
   failed: '!border-noise/50 !bg-noise/10 !text-noise',
   'not-run': '',
-  'not-reviewed': '',
   'not-available': '',
 };
 
@@ -41,8 +41,8 @@ function StateIcon({ state }: { state: StatusState }) {
 }
 
 /**
- * The five validation statuses side by side. There is deliberately no combined "verified" label: a reader has to be able to see
- * that, say, the schema and feasibility checks passed while no expert has reviewed the blueprint and no production evidence exists.
+ * The validation statuses side by side. There is deliberately no combined "verified" label: a reader has to be able to see
+ * which of the schema, feasibility and starter-run checks passed.
  */
 export function ValidationStatusStrip({
   statuses,
@@ -139,7 +139,7 @@ function MaturityStateBadge({ state }: { state: MaturityState }) {
 }
 
 /**
- * The maturity scorecard of one blueprint: seven levels, each with its own state and the evidence behind it. The classification is
+ * The maturity scorecard of one blueprint: one entry per level, each with its own state and the evidence behind it. The classification is
  * the highest level reached without skipping one, so a schema pass can never be read as proof that an implementation is ready.
  */
 export function MaturityScorecardPanel({ scorecard }: { scorecard: MaturityScorecard }) {
@@ -162,8 +162,8 @@ export function MaturityScorecardPanel({ scorecard }: { scorecard: MaturityScore
         {scorecard.blockedBy
           ? `This one stops at level ${scorecard.level} because of the next: ${scorecard.blockedBy}`
           : ''}{' '}
-        Passing the schema shows the page is complete. It does not show that the design has been built,
-        reviewed or run anywhere.
+        Passing the schema shows the page is complete. It does not show that the design has been built or run
+        anywhere.
       </p>
 
       {scorecard.highRisk && (
@@ -173,20 +173,9 @@ export function MaturityScorecardPanel({ scorecard }: { scorecard: MaturityScore
         >
           <ShieldAlert className="mt-0.5 shrink-0 text-warn" size={18} aria-hidden />
           <p className="text-sm text-ink/90">
-            <strong className="text-ink">High-risk use case. {HIGH_RISK_NOTICE}</strong> Nothing on this page
-            has been reviewed by a domain specialist or run in production. Treat it as a design to review, not
-            as an approved implementation, until levels 5 to 7 below are met in your own organisation.{' '}
-            <a className="underline" href={withBase('/release#review-programme')}>
-              What a review has to cover
-            </a>
-            {' · '}
-            <a
-              className="underline"
-              href="https://github.com/sadiqgpasha89/BrainSiphon/issues/new?template=blueprint-review.yml"
-            >
-              Raise a finding on this blueprint
-            </a>
-            .
+            <strong className="text-ink">High-risk use case. {HIGH_RISK_NOTICE}</strong> Treat this page as a
+            design to adapt and test in your own organisation, with your own risk, security and compliance
+            approvals, not as an approved implementation.
           </p>
         </aside>
       )}
@@ -219,9 +208,6 @@ export function MaturityScorecardPanel({ scorecard }: { scorecard: MaturityScore
               </p>
             )}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded bg-raised/40 px-2.5 py-1.5 font-mono text-[11px] text-mute">
-              <span className="flex items-center gap-1">
-                <UserCheck size={11} className="text-dim" aria-hidden /> Reviewer: {item.reviewer}
-              </span>
               <span>Date: {item.date ?? 'none'}</span>
               {item.command && (
                 <span className="flex items-center gap-1">

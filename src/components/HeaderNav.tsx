@@ -40,6 +40,14 @@ export function HeaderNav() {
   return (
     <nav aria-label="Main" className="flex min-w-0 flex-1 items-center gap-1">
       <Link
+        href="/start"
+        aria-current={here('/start') ? 'page' : undefined}
+        data-testid="nav-start"
+        className={`${LINK} hidden font-medium sm:block ${here('/start') ? 'text-signal' : 'text-signal/80 hover:text-signal'}`}
+      >
+        Start here
+      </Link>
+      <Link
         href="/delivery"
         aria-current={here('/delivery') ? 'page' : undefined}
         className={`${LINK} hidden sm:block ${here('/delivery') ? 'text-signal' : 'text-mute hover:text-ink'}`}
@@ -78,6 +86,12 @@ export function HeaderNav() {
           hidden={!open}
           className="card absolute inset-x-3 top-full z-50 mt-1 p-2 shadow-xl shadow-black/20 sm:inset-x-auto sm:left-0 sm:mt-2 sm:w-[34rem]"
         >
+          <Link
+            href="/start"
+            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
+          >
+            Start here
+          </Link>
           <Link
             href="/delivery"
             className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"

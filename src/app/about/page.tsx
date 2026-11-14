@@ -55,7 +55,7 @@ export default async function AboutPage() {
           BrainSiphon is an open, verified engineering reference platform containing{' '}
           <strong className="text-ink">500 complete AI/ML system blueprints</strong> across 10 industry
           domains, evaluated against a transparent{' '}
-          <strong className="text-ink">7-level implementation maturity framework</strong>, and coupled with a
+          <strong className="text-ink">5-level implementation maturity framework</strong>, and coupled with a
           universal <strong className="text-ink">7-phase, 69-step delivery guide</strong>. Every blueprint
           separates the technical signal that moves the needle from the hype that wastes quarters.
         </p>
@@ -200,12 +200,10 @@ export default async function AboutPage() {
       <section id="maturity-framework" className="scroll-mt-20 space-y-6">
         <div>
           <p className="font-mono text-xs uppercase tracking-wider text-signal">Evidence, not labels</p>
-          <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-            Seven maturity levels
-          </h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">Five maturity levels</h2>
           <p className="mt-2 max-w-3xl text-sm text-mute">
             A blueprint here is a reference design, not a deployed system. Instead of a label such as
-            &ldquo;production-grade&rdquo;, every blueprint is classified on seven levels, each backed by a
+            &ldquo;production-grade&rdquo;, every blueprint is classified on five levels, each backed by a
             different kind of evidence. A schema pass shows a page is complete; it is never read as proof that
             an implementation is ready. A blueprint is classified at the highest level it reaches without
             skipping one.

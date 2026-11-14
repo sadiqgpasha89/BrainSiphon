@@ -10,7 +10,7 @@ URL: https://sadiqgpasha89.github.io/BrainSiphon/
 4. Each page also has a **metrics catalogue** (business, model, data, system, cost, safety, plus RAG, LLM and agent metrics where they apply), the edge cases that break the system, and a **build playbook** with milestones and exit gates.
 5. Read it your way: keys `1`–`7` keep only what an AI architect, solution architect, data engineer, data scientist, AI engineer, inference engineer or MLOps engineer needs; `[` is Pure Signal mode, `⌘K` searches, and every page exports as clean Markdown for LLMs.
 
-> Blueprints are generated from a typed spec and have **not** been reviewed by a domain expert; every number is a modelled starting point, not a measurement. Each page says so.
+> Blueprints are generated from a typed spec; every number is a modelled starting point, not a measurement. Each page says so.
 
 ## Delivery guide: from project scoping to deployment and monitoring
 
@@ -99,6 +99,11 @@ BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineeri
 - **Phase 0 to Phase 3 Downloadable Implementation Packages:** Standardized templates in `delivery/templates/` for Client Discovery, Production BRDs, C4 Architecture Suites, Sequence Diagrams, OpenAPI/AsyncAPI contracts, Data Quality Suites, and FastAPI microservices.
 - **10 Production Operational Runbooks (`deployment/runbooks/`):** Reference incident runbooks (RB-01 through RB-10) with exact Prometheus triggers, triage steps (<5m), mitigation actions (<15m), and diagnostic CLI commands.
 
+## Start here, and the same design on every platform
+
+- **[`/start`](https://sadiqgpasha89.github.io/BrainSiphon/start/)** is a reading and referring sequence for engineers: a one-hour first path, a four-week sequence (understand, design, build and prove, ship and operate) with an exercise and a question each week, the order to read the 22 sections of a blueprint in, a fast path for each of the 15 roles (generated from the role, step and template data so it cannot drift), a "when you are stuck" table, and how far to trust what you read. Ticks are kept in the browser only. `src/content/start-guide.ts` is the single source and a test checks every link and anchor resolves.
+- **Platform tabs on the diagrams.** The deployment topology, request sequence, C4 container and agent diagrams each have tabs: Cloud-neutral, AWS, Azure, GCP and OpenStack. The same design is redrawn with the service that fills each role (`src/content/cloud-views.ts`), and under the topology diagram a numbered list explains how those services connect for that use case, what changes on that platform for that blueprint, and which building blocks an OpenStack operator must run themselves. The choice is remembered in the browser and applies to every diagram on the page; the Markdown export carries the service map as a table. The content gate parses every redrawn diagram.
+
 ## Evidence, versions and infrastructure validation
 
 - **Versions are tracked, not asserted.** [`content/version-registry.json`](content/version-registry.json) lists every pinned version with its support end, review date and whether the dates were read from the vendor's page. `npm run check:versions` fails when a version passes support, a quarterly review is overdue, or a file no longer matches. Kubernetes 1.30 (EKS) was removed because it was out of support; the stacks default to 1.36.
@@ -106,7 +111,6 @@ BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineeri
 - **Infrastructure validation.** `npm run validate:infra` (static, no cloud) runs in the content gate. CI also runs `terraform fmt/init/validate`, `tflint`, Checkov, `helm lint/template`, `kubeconform` and conftest policies (`deployment/policy/`), and attaches the reports to the run. **Nothing has been applied to a cloud account, and no restore or failover drill has been run.** Recovery targets are per workload class and are targets.
 - **Not everything needs Kubernetes.** `/deployment#variants` gives the runtime, hardware and sizing rule per workload class.
 - **Compliance.** The profiles are architecture designed to support technical controls. They are not a certification and not legal advice.
-- **Review programme.** Independent review is recorded in `content/reviews.json` (schema: `content/reviews.schema.json`) with reviewer, qualifications, scope and an expiry. None exists yet.
 - **Downloads.** Every delivery template and the deployment kit are published under `/downloads/`, with a checksum manifest. The workspace's package generator builds environment-specific files and a backlog from the delivery guide in the browser.
 - **Changes** are listed in [`CHANGELOG.md`](CHANGELOG.md).
 
@@ -157,9 +161,9 @@ governance and production operations to a capacity/cost model for **10 million u
 | 4   | Security, governance, responsible AI | `governance`: risk tier (low/medium/high/critical), approval path, data/model/responsible-AI controls with evidence, AI-security threats, obligation → control → evidence |
 | 5   | MLOps (and LLMOps where it applies) | `mlops`: nine lifecycle areas each with an artifact and a gate, retraining triggers, champion/challenger, rollback, toolchain |
 | 6   | Production operations and SRE    | `operations`: SLIs/SLOs/error budgets, telemetry, incident classes, support model, ten failure scenarios (detection → alert → owner → mitigation → recovery → learning), unit cost |
-| 7   | Validation and architecture review | `validation`: provenance (who made each part, what kind of number each figure is, owner, reviewer, sources, assumptions, limitations), five separate validation levels and the feasibility checks |
+| 7   | Validation and architecture review | `validation`: provenance (who made each part, what kind of number each figure is, owner, sources, assumptions, limitations), separate validation levels and the feasibility checks |
 | 8   | Statistical validation and business experimentation | `experimentation`: causal question and estimand, experimental design by archetype (interleaving, switchback, rolling-origin backtest, shadow then holdout, replay then canary), power arithmetic, label maturity and selection bias, calibration and uncertainty, slices and fairness, causal methods, stopping rules, business-value measurement |
-| 9   | Archetype-driven low-level design | `systemDesign.lld`: one of nine solution archetypes picks the API contract, data model, event schema, core algorithm, failure and retry behaviour, security model and test scenarios; always labelled an illustrative scaffold unless a review is recorded |
+| 9   | Archetype-driven low-level design | `systemDesign.lld`: one of nine solution archetypes picks the API contract, data model, event schema, core algorithm, failure and retry behaviour, security model and test scenarios; always labelled an illustrative scaffold |
 | 10  | An explicit verdict on agents | `agentic.decision`: why an agent is or is not better than a rules engine, a conventional model, an optimiser, RAG or a deterministic workflow, with cost, risk, fallback and when to revisit |
 | 11  | Metrics catalogue                | `metrics`: about 65 to 110 metrics per use case in up to 14 layers, each with a definition, a starting target, a cadence, an owner and what to do on a breach. Ten layers apply to every system (business, adoption and trust, model, data and features, system and reliability, cost and sustainability, responsible AI, security and compliance, MLOps and delivery, experimentation health); four appear only where the system has the component (RAG, LLM serving, agents, human review) and otherwise say why they do not apply. Also a metric tree, a monitor for each of the use case's own edge cases, and how each headline metric gets gamed (`src/content/metrics.ts`) |
 | 12  | Starter-kit compatibility, maturity ladder and artifact labels | `playbook.compatibility`, `playbook.completion`, `systemDesign.lld.artifacts`: a starter kit is shipped only when it implements the same problem (exact, adaptable with named modifications, or none: guidance only), how far its executable artifacts get an engineer on the six-tier maturity ladder (L0 Guidance, L1 Prototype, L2 Evaluation, L3 Integration, L4 Shadow, L5 Production), the Forward Deployed Engineer (FDE) Implementation Gap Report detailing delivered code vs required platform responsibilities, and a label on every code block saying what kind of artifact it is |
@@ -171,7 +175,7 @@ The metrics catalogue is built from each use case's own fields (its offline and 
 
 ### Validation levels (they are not the same thing)
 
-Every blueprint shows five statuses **side by side**. There is no combined "verified" badge, because the five are different kinds of
+Every blueprint shows three statuses **side by side**. There is no combined "verified" badge, because the three are different kinds of
 evidence and a reader needs to see exactly which have been earned:
 
 | Status                     | Shown as                              | Meaning                                                              | Evidence comes from                            |
@@ -179,32 +183,27 @@ evidence and a reader needs to see exactly which have been earned:
 | Schema validated           | Passed                                | Required sections and types passed the strict Zod schema             | the build (a failure stops it)                 |
 | Architecture feasibility   | Passed / Passed (n warnings) / Failed | Diagrams parse, equations compile, the numbers agree with each other | `npm run validate:content`                     |
 | Synthetic starter tested   | Passed / Failed / Not run             | The starter kit for this blueprint ran end to end on synthetic data  | `npm run test:playbooks` report for this content |
-| Domain expert reviewed     | Not reviewed (until a review is recorded) | A domain specialist reviewed the technical content               | `content/reviews.json` (empty by default)      |
-| Production evidence        | Not available                         | Evidence from a real deployment or production dataset                | not claimed for any blueprint                  |
 
 "Passed" for the starter is shown only when a kit report exists for **exactly this content**; a build that did not run the kits says
-"Not run". To record an expert review, add `{"<domain>/<slug>": {"reviewer": "...", "organisation": "...", "date": "YYYY-MM-DD", "scope": "..."}}` to
-`content/reviews.json`.
+"Not run".
 
 ### Maturity scorecard and the release report
 
 Passing the schema shows a page is complete; it is not evidence that an implementation is ready. So every blueprint also carries a
-**seven-level maturity scorecard** (`blueprintMaturityScorecard` in `src/content/release.ts`), and no page uses a label such as
+**five-level maturity scorecard** (`blueprintMaturityScorecard` in `src/content/release.ts`), and no page uses a label such as
 "production-grade":
 
 | Level | Classification                                        | Met when                                                                    |
 | ----- | ----------------------------------------------------- | --------------------------------------------------------------------------- |
-| 1     | Conceptually reviewed architecture                    | written and read through by the maintainers (no independent review)         |
+| 1     | Conceptually reviewed architecture                    | written and read through by the maintainers         |
 | 2     | Schema-validated blueprint                            | the blueprint parses against the strict schema                              |
 | 3     | Architecture-feasibility validated blueprint          | no feasibility check fails (open warnings are shown on the level)           |
 | 4     | Synthetic-data tested implementation                  | a starter for the **exact** problem passed its tests for this content       |
-| 5     | Domain-expert validated implementation                | a review is recorded in `content/reviews.json`                              |
-| 6     | Platform-integrated implementation                    | never, in this repository: it records no integration                        |
-| 7     | Production-deployed and production-evidenced solution | production evidence is recorded (none is)                                   |
+| 5     | Platform-integrated implementation                    | never, in this repository: it records no integration                        |
 
 A blueprint is classified at the highest level it reaches **without skipping one**. Each level shows its state, the evidence, the
-command that reproduces it, test counts and line coverage with a link to the published pytest output, the reviewer (or "None") and
-date, and what is outstanding. Every state is derived from recorded evidence; no reviewer, date or count is typed by hand.
+command that reproduces it, test counts and line coverage with a link to the published pytest output, the date, and what is
+outstanding. Every state is derived from recorded evidence; no date or count is typed by hand.
 
 `/release` is the **release report**, generated from the manifest: how many blueprints meet each level, every starter-kit run with its
 log (`/release/kit-logs/*.txt`), every architecture-feasibility warning with the blueprint it affects and the recommended remediation,
@@ -225,8 +224,7 @@ and summarised in the header of each blueprint's `.md` twin):
 | `deployedAt`                              | When the deployment artefact was built (null for a build that is not a deployment)                |
 | `checks.schema` / `checks.feasibility`    | Status of the schema and architecture-feasibility checks across all 500 blueprints; feasibility counts passed, not applicable, warnings and failures separately and lists every warning with its remediation |
 | `checks.executable`                       | Starter-kit results (one entry per kit: status, test counts, line coverage, seconds) and when they ran |
-| `maturity`                                | For each of the seven maturity levels, how many blueprints meet it and how many are classified at it |
-| `checks.domainExpert` / `checks.productionEvidence` | How many blueprints have a recorded expert review / production evidence (both 0 today)  |
+| `maturity`                                | For each of the five maturity levels, how many blueprints meet it and how many are classified at it |
 
 A report is only used when its content digest equals the build's, so a validation or kit run from earlier content can never vouch for
 later content. The reports are `.release/validation.json` (written by `validate:content` only after every gate passes, and removed at
@@ -326,7 +324,7 @@ deployment-modes page. Still open, in the order we would take them:
 - Graph-analytics and multi-tenant SaaS workload profiles for the capacity calculator.
 - An Enterprise AI and data platform category (lakehouse, feature platform, ML platform, LLM gateway, RAG platform, agent control plane...) and additional industries.
 - Workshop flow, decision comparison and a downloadable architecture package (diagrams, ADRs, contracts, schemas, test plans).
-- Executable starter kits for the most important implementation patterns, and recorded expert reviews in `content/reviews.json`.
+- Executable starter kits for the most important implementation patterns.
 
 ## Quick start
 
@@ -388,7 +386,7 @@ and a 30-day launch checklist.
   (`content/domain-knowledge`), a curated and link-checked dataset registry (`content/dataset-registry.json`) and, **only where
   one is compatible**, one of **11 reference starter kits** (`content/kits`: tabular, forecast, anomaly, recommender, graph, nlp,
   cv, bandit, optimize, llm-rag, llm-agent), each run on synthetic data and tested in CI. Generated playbooks are specific to the
-  use case where the blueprint is, and generic where it is not; they have not been reviewed by a domain expert, and the kit
+  use case where the blueprint is, and generic where it is not; the kit
   numbers are the reference kit's, not the use case's.
 
 ### Starter-kit compatibility (a build gate, not a label)

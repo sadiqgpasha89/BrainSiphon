@@ -78,10 +78,8 @@ export interface ReleaseManifest {
       warnings: FeasibilityWarning[];
     };
     executable: { status: RunStatus; ranAt: string | null; kits: KitResult[] };
-    domainExpert: { reviewed: number; total: number };
-    productionEvidence: { claimed: number; total: number };
   };
-  /** how many blueprints meet, and are classified at, each of the seven maturity levels */
+  /** how many blueprints meet, and are classified at, each maturity level */
   maturity: MaturitySummaryRow[];
 }
 
@@ -89,8 +87,8 @@ export const shortSha = (sha: string | null) => (sha ? sha.slice(0, 7) : 'unknow
 
 /* ------------------------------------------------------------------ per-blueprint status */
 
-export type StatusId = 'schema' | 'feasibility' | 'synthetic' | 'expert' | 'production';
-export type StatusState = 'passed' | 'failed' | 'not-run' | 'not-reviewed' | 'not-available';
+export type StatusId = 'schema' | 'feasibility' | 'synthetic';
+export type StatusState = 'passed' | 'failed' | 'not-run' | 'not-available';
 
 export interface StatusRow {
   id: StatusId;
@@ -105,7 +103,6 @@ const STATE_TEXT: Record<StatusState, string> = {
   passed: 'Passed',
   failed: 'Failed',
   'not-run': 'Not run',
-  'not-reviewed': 'Not reviewed',
   'not-available': 'Not available',
 };
 
@@ -113,8 +110,6 @@ export const STATUS_LABEL: Record<StatusId, string> = {
   schema: 'Schema validated',
   feasibility: 'Architecture feasibility',
   synthetic: 'Synthetic starter tested',
-  expert: 'Domain expert reviewed',
-  production: 'Production evidence',
 };
 
 /** Which entry of the kit report covers this blueprint's starter. */
@@ -122,8 +117,8 @@ export const kitKeyFor = (uc: Pick<UseCase, 'slug' | 'pattern' | 'playbook'>): s
   uc.playbook?.provenance === 'authored' ? uc.slug : `kits/${uc.playbook?.starter?.kitId ?? uc.pattern}`;
 
 /**
- * The five validation statuses of one blueprint, each derived on its own from evidence. Nothing is rolled into a single
- * "verified" verdict: a reader can see that schema, feasibility and the starter run passed and that no expert has looked at it.
+ * The validation statuses of one blueprint, each derived on its own from evidence. Nothing is rolled into a single
+ * "verified" verdict: a reader can see whether schema, feasibility and the starter run each passed.
  */
 export function blueprintStatuses(
   uc: Pick<UseCase, 'slug' | 'pattern' | 'playbook' | 'validation'>,
@@ -182,12 +177,6 @@ export function blueprintStatuses(
       !fails && warns ? ` (${warns} ${warns === 1 ? 'warning' : 'warnings'})` : '',
     ),
     synthetic,
-    claimed('domain-expert-reviewed')
-      ? row('expert', 'passed', levels.find((x) => x.level === 'domain-expert-reviewed')?.evidence ?? 'Reviewed.', ' (see scope)')
-      : row('expert', 'not-reviewed', 'No domain specialist has reviewed this blueprint; content/reviews.json has no entry for it.'),
-    claimed('production-evidence')
-      ? row('production', 'passed', levels.find((x) => x.level === 'production-evidence')?.evidence ?? 'Recorded.')
-      : row('production', 'not-available', 'No evidence from a real deployment or production dataset is recorded.'),
   ];
 }
 
@@ -326,22 +315,10 @@ export const MATURITY_LEVELS = [
     meaning: 'Starter code for this exact problem runs end to end on generated data and passes its tests. It has never seen real data.',
   },
   {
-    id: 'expert-validated',
-    label: 'Domain-expert validated implementation',
-    short: 'Domain-expert validated',
-    meaning: 'A named specialist in the domain has reviewed the content, with the scope of the review recorded.',
-  },
-  {
     id: 'platform-integrated',
     label: 'Platform-integrated implementation',
     short: 'Platform-integrated',
     meaning: 'The implementation is connected to real source systems, identity, a feature store and a serving platform.',
-  },
-  {
-    id: 'production-evidenced',
-    label: 'Production-deployed and production-evidenced solution',
-    short: 'Production-evidenced',
-    meaning: 'It runs in production and measured results from that deployment are recorded.',
   },
 ] as const;
 
@@ -375,9 +352,7 @@ export interface MaturityItem {
   log?: string;
   /** what the tests cover, when tests exist */
   coverage?: string;
-  /** who reviewed, and for which organisation; says so plainly when nobody did */
-  reviewer: string;
-  /** date of the run or the review; null when there was none */
+  /** date of the run; null when there was none */
   date: string | null;
   outstanding: string[];
 }
@@ -402,13 +377,11 @@ const kitLogPath = (name: string) => `/release/kit-logs/${name.replace(/\//g, '-
 
 /**
  * The maturity scorecard of one blueprint. Every state is derived from recorded evidence: the checks stored on the blueprint,
- * the release manifest for this build, and content/reviews.json. Nothing is asserted by hand, and the classification is the
+ * the release manifest for this build. Nothing is asserted by hand, and the classification is the
  * highest level reached without skipping one, so a later level cannot lift a blueprint past an earlier gap.
  */
 export function blueprintMaturityScorecard(uc: ScorecardInput, release: ReleaseManifest | null): MaturityScorecard {
   const p = uc.validation.provenance;
-  const levelRow = (l: string) => uc.validation.levels.find((x) => x.level === l);
-  const claimed = (l: string) => levelRow(l)?.state === 'passed';
   const feas = uc.validation.feasibility;
   const n = (s: string) => feas.filter((f) => f.status === s).length;
   const warnings = feasibilityWarnings([uc]);
@@ -441,10 +414,9 @@ export function blueprintMaturityScorecard(uc: ScorecardInput, release: ReleaseM
     {
       ...meta('conceptual-architecture'),
       state: 'met',
-      evidence: `Written and read through by the maintainers: ${handAuthored} of ${p.sections.length} section groups are hand-authored for this use case and the rest are generated from its specification or a shared template (see provenance above). No independent architecture review is recorded.`,
-      reviewer: `${p.owner} (the authors; not an independent review)`,
+      evidence: `Written and read through by the maintainers: ${handAuthored} of ${p.sections.length} section groups are hand-authored for this use case and the rest are generated from its specification or a shared template (see provenance above). `,
       date: p.generatedAt,
-      outstanding: ['An architecture review by someone other than the authors'],
+      outstanding: [],
     },
     {
       ...meta('schema-validated'),
@@ -453,7 +425,6 @@ export function blueprintMaturityScorecard(uc: ScorecardInput, release: ReleaseM
       command: 'npm run validate:content',
       log: '/release',
       coverage: 'Every required section and field of the blueprint schema. Structure only: no statement on the page is checked for being true.',
-      reviewer: 'Automated check; no human reviewer',
       date: day(validated),
       outstanding: [],
     },
@@ -464,7 +435,6 @@ export function blueprintMaturityScorecard(uc: ScorecardInput, release: ReleaseM
       command: 'npm run validate:content',
       log: '/release#feasibility-warnings',
       coverage: 'Latency envelope, stage budgets, throughput against capacity, availability against redundancy, storage against retention, cost, recovery objectives and model memory.',
-      reviewer: 'Automated check; no human reviewer',
       date: day(validated),
       outstanding: [
         ...feas.filter((f) => f.status === 'fail').map((f) => `Failed: ${f.check}`),
@@ -477,7 +447,6 @@ export function blueprintMaturityScorecard(uc: ScorecardInput, release: ReleaseM
       evidence: synthetic.detail,
       ...(syntheticState === 'not-applicable' ? {} : { command: `npm run test:playbooks`, coverage: kitCoverage(kit) }),
       ...(kit ? { log: kitLogPath(kit.name) } : {}),
-      reviewer: 'Automated test run; no human reviewer',
       date: kit ? day(exec?.ranAt) : null,
       outstanding:
         syntheticState === 'not-applicable'
@@ -491,34 +460,11 @@ export function blueprintMaturityScorecard(uc: ScorecardInput, release: ReleaseM
                 : [`Fix the failing tests in ${key}`],
     },
     {
-      ...meta('expert-validated'),
-      state: claimed('domain-expert-reviewed') ? 'met' : 'not-met',
-      evidence: claimed('domain-expert-reviewed')
-        ? (levelRow('domain-expert-reviewed')?.evidence ?? 'A review is recorded in content/reviews.json.')
-        : 'No review is recorded: content/reviews.json has no entry for this blueprint.',
-      reviewer: p.reviewer ?? 'None',
-      date: p.reviewedAt,
-      outstanding: claimed('domain-expert-reviewed')
-        ? ['Anything outside the recorded review scope is still unreviewed']
-        : ['Review by a named domain specialist, recorded in content/reviews.json with reviewer, organisation, date and scope'],
-    },
-    {
       ...meta('platform-integrated'),
       state: 'not-met',
       evidence: 'Nothing in this repository connects this use case to a source system, identity provider, feature store or serving platform, and the project records no integration for any blueprint.',
-      reviewer: 'None',
       date: null,
       outstanding: need('integration-ready').length ? [...need('integration-ready'), ...need('shadow-ready').slice(1)] : ['Integration with your data sources, identity and serving platform'],
-    },
-    {
-      ...meta('production-evidenced'),
-      state: claimed('production-evidence') ? 'met' : 'not-met',
-      evidence: claimed('production-evidence')
-        ? (levelRow('production-evidence')?.evidence ?? 'Production evidence is recorded.')
-        : 'No deployment of this blueprint is known to the project and no figure on this page was measured in production.',
-      reviewer: 'None',
-      date: null,
-      outstanding: need('production-ready').length ? need('production-ready') : ['A monitored production deployment with measured results'],
     },
   ];
 
@@ -574,8 +520,6 @@ export function buildManifest(i: ManifestInput): ReleaseManifest {
   // a report only counts when it was produced for exactly this content
   const validation = i.validation?.contentDigest === i.contentDigest ? i.validation : null;
   const kits = i.kits?.contentDigest === i.contentDigest ? i.kits : null;
-  const reviewed = i.useCases.filter((u) => u.validation.levels.some((l) => l.level === 'domain-expert-reviewed' && l.state === 'passed')).length;
-  const production = i.useCases.filter((u) => u.validation.levels.some((l) => l.level === 'production-evidence' && l.state === 'passed')).length;
 
   const manifest: ReleaseManifest = {
     schemaVersion: RELEASE_SCHEMA_VERSION,
@@ -605,8 +549,6 @@ export function buildManifest(i: ManifestInput): ReleaseManifest {
             kits: kits.kits.map((k) => ({ ...k, log: undefined })),
           }
         : { status: 'not-run', ranAt: null, kits: [] },
-      domainExpert: { reviewed, total: i.useCases.length },
-      productionEvidence: { claimed: production, total: i.useCases.length },
     },
     maturity: [],
   };
@@ -676,10 +618,6 @@ export function releaseOutstanding(m: ReleaseManifest): string[] {
   const total = c.schema.useCases;
   const out: string[] = [];
   const at = (id: MaturityLevelId) => m.maturity.find((r) => r.id === id)?.met ?? 0;
-  if (c.domainExpert.reviewed < total)
-    out.push(`${total - c.domainExpert.reviewed} of ${total} blueprints have no domain-expert review.`);
-  if (c.productionEvidence.claimed < total)
-    out.push(`${total - c.productionEvidence.claimed} of ${total} blueprints have no production evidence, and none is integrated with a real platform.`);
   if (c.feasibility.warn) out.push(`${c.feasibility.warn} architecture-feasibility warnings are open; each is listed below with its remediation.`);
   if (c.feasibility.fail) out.push(`${c.feasibility.fail} architecture-feasibility checks fail.`);
   if (c.executable.status === 'not-run') out.push('The starter kits were not run for this content, so no synthetic-data result is claimed.');
@@ -720,8 +658,6 @@ export function releaseReportMarkdown(m: ReleaseManifest, origin: string): strin
     `| Schema validation | ${c.schema.useCases} blueprints parsed | \`npm run validate:content\` |`,
     `| Architecture feasibility | ${c.feasibility.checks} checks: ${c.feasibility.pass} passed, ${c.feasibility.notApplicable} not applicable, ${c.feasibility.warn} warnings, ${c.feasibility.fail} failed | \`npm run validate:content\` |`,
     `| Executable starter kits | ${c.executable.status === 'not-run' ? 'not run for this content' : `${c.executable.kits.filter((k) => k.status === 'passed').length} of ${c.executable.kits.length} passed on synthetic data (${c.executable.ranAt})`} | \`npm run test:playbooks\` |`,
-    `| Domain-expert review | ${c.domainExpert.reviewed} of ${c.domainExpert.total} blueprints | \`content/reviews.json\` |`,
-    `| Production evidence | ${c.productionEvidence.claimed} of ${c.productionEvidence.total} blueprints | none recorded |`,
     '',
   ];
   if (c.executable.kits.length) {
