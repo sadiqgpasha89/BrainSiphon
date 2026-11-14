@@ -231,8 +231,8 @@ Two groups. **Business partners** own the problem, the data, the rules and the m
 | MLOps Engineer | I | R | C | R | R | R | R |
 | Inference Engineer | I | R | · | R | C | I | R |
 | Platform Engineer | C | C | C | C | R | C | C |
-| Forward Deployed Engineer | C | C | C | C | C | C | C |
-| SRE / DevOps Engineer | I | C | I | I | R | R | R |
+| Forward Deployed Engineer | C | C | R | C | C | R | C |
+| SRE / DevOps Engineer | I | C | I | I | R | C | R |
 | Security Engineer | R | R | C | C | R | C | R |
 | QA / Test Engineer | C | R | I | C | R | C | C |
 
@@ -599,7 +599,7 @@ Called by: Delivery lead (project manager). Signed by: Solution Architect, AI Ar
 
 | Step | What | Owner | When | Output |
 | --- | --- | --- | --- | --- |
-| 2.1 | Get access and sign the agreements | Data Engineer | Week 3 | Access approvals, signed data contracts and the privacy impact assessment. |
+| 2.1 | Get access and sign the agreements | Forward Deployed Engineer | Week 3 | Access approvals, signed data contracts, the privacy impact assessment and a customer-environment checklist with every blocker owned. |
 | 2.2 | Profile the data | Data Analyst | Weeks 3–4 | Data profiling report and a quality issues log. |
 | 2.3 | Write the source-to-target mapping | Data Analyst | Week 4 | Source-to-target mapping that reconciles to a trusted report. |
 | 2.4 | Define the label and the prediction point | Data Scientist | Week 4 | Label specification approved by the domain expert. |
@@ -611,15 +611,16 @@ Called by: Delivery lead (project manager). Signed by: Solution Architect, AI Ar
 
 ### 2.1 Get access and sign the agreements
 
-- **Owner:** Data Engineer
-- **With:** Data owner (data steward), Security Engineer, Risk, compliance, legal and privacy, Forward Deployed Engineer
+- **Owner:** Forward Deployed Engineer
+- **With:** Data Engineer, Data owner (data steward), Security Engineer, Risk, compliance, legal and privacy
 - **When:** Week 3
 - **How:**
-  1. Request access to each source with the purpose stated.
-  2. Complete a privacy impact assessment wherever personal data is involved (under GDPR, a data protection impact assessment).
-  3. Sign the data contract with each producing team.
-  4. Use service accounts with the least privilege that works.
-- **Output:** Access approvals, signed data contracts and the privacy impact assessment.
+  1. Request access to each source with the purpose stated, through the customer’s own access process, and track each request to closure.
+  2. Work through the customer-environment checklist (network allow-lists, private endpoints, identity federation, API access, deployment permissions) and record what is still blocked and who owns the blocker.
+  3. Complete a privacy impact assessment wherever personal data is involved (under GDPR, a data protection impact assessment).
+  4. Sign the data contract with each producing team.
+  5. Use service accounts with the least privilege that works.
+- **Output:** Access approvals, signed data contracts, the privacy impact assessment and a customer-environment checklist with every blocker owned.
 - **Read in the blueprint:** Security & governance · Data governance (`#gov-data`); Enterprise context · Data architecture and data contract (`#ent-data`); Build playbook · Before you start (`#pb-prereqs`)
 
 ### 2.2 Profile the data
@@ -1093,11 +1094,11 @@ Called by: Delivery lead (project manager). Signed by: QA / Test Engineer, Secur
 | 5.1 | Prepare the business change | Business Analyst | Week 12 | Users trained, communication sent, procedures updated. |
 | 5.2 | Plan the cut-over and the experiment | MLOps Engineer | Week 12 | Rollout and experiment plan, written before any traffic moves. |
 | 5.3 | Hold the go/no-go review | Product owner (decision owner) | Week 12 | Recorded go/no-go decision and an approved change request. |
-| 5.4 | Deploy to production with no user impact | MLOps Engineer | Week 12 | Production deployment verified, with users still on the old path. |
+| 5.4 | Deploy to production with no user impact | Forward Deployed Engineer | Week 12 | Production deployment verified, with users still on the old path. |
 | 5.5 | Run in shadow | MLOps Engineer | Weeks 12–13 | Shadow report: production behaves as offline evaluation predicted. |
 | 5.6 | Canary, then ramp | MLOps Engineer | Weeks 13–14 | Ramp log with the decision taken at each step. |
 | 5.7 | Measure the business effect | Data Scientist | Weeks 13–16, once labels mature | Experiment readout. |
-| 5.8 | Run hypercare and hand over to operations | SRE / DevOps Engineer | Weeks 14–16 | Handover record: the service is accepted by operations. |
+| 5.8 | Run hypercare and hand over to operations | Forward Deployed Engineer | Weeks 14–16 | Production handover package and a signed acceptance record: the service is accepted by operations. |
 | 5.9 | Close the release | Delivery lead (project manager) | Week 16 | Release record and retrospective actions. |
 
 ### 5.1 Prepare the business change
@@ -1139,11 +1140,11 @@ Called by: Delivery lead (project manager). Signed by: QA / Test Engineer, Secur
 
 ### 5.4 Deploy to production with no user impact
 
-- **Owner:** MLOps Engineer
-- **With:** Platform Engineer, SRE / DevOps Engineer, ML Engineer
+- **Owner:** Forward Deployed Engineer
+- **With:** MLOps Engineer, Platform Engineer, SRE / DevOps Engineer, ML Engineer
 - **When:** Week 12
 - **How:**
-  1. Deploy the signed artifact handed over by the ML engineer, with traffic off or behind a flag.
+  1. Deploy the signed artifact handed over by the ML engineer into the customer-controlled environment, with traffic off or behind a flag; the MLOps engineer owns the pipeline, the FDE owns getting it through the customer’s change process.
   2. Run smoke tests in production.
   3. Confirm dashboards, alerts and logs are receiving data.
 - **Output:** Production deployment verified, with users still on the old path.
@@ -1188,14 +1189,15 @@ Called by: Delivery lead (project manager). Signed by: QA / Test Engineer, Secur
 
 ### 5.8 Run hypercare and hand over to operations
 
-- **Owner:** SRE / DevOps Engineer
-- **With:** Support and service desk, MLOps Engineer, Delivery lead (project manager)
+- **Owner:** Forward Deployed Engineer
+- **With:** SRE / DevOps Engineer, Support and service desk, MLOps Engineer, Delivery lead (project manager)
 - **When:** Weeks 14–16
 - **How:**
-  1. Review the service every day for the first two to four weeks and triage issues the same day.
-  2. Hand over runbooks, dashboards, contacts and known issues.
-  3. Operations formally accepts the service.
-- **Output:** Handover record: the service is accepted by operations.
+  1. Review the service every day for the first two to four weeks and triage customer-side issues the same day; the SRE takes the on-call pages.
+  2. Assemble the production handover package (architecture as deployed, inventory, ownership, SLOs, on-call, credential transfer, risks, failure modes, recovery, escalation, training evidence).
+  3. Train the customer’s operators and users, and collect the first production feedback.
+  4. Operations formally accepts the service, and business and technical acceptance are recorded.
+- **Output:** Production handover package and a signed acceptance record: the service is accepted by operations.
 - **Read in the blueprint:** Build playbook · The first 30 days after launch (`#pb-30`); Production operations (`#operations`)
 
 ### 5.9 Close the release
@@ -1536,6 +1538,11 @@ Standardized, downloadable deliverables covering project discovery, production a
 | `BS-TMPL-OPS-01` | p6 | **SRE Operational Runbook & Incident Response Guide** | Platform Engineer | `delivery/templates/phase-6-operate/sre-operational-runbook-template.md` | Tier 1 incident response playbooks for P99 latency breach, feature staleness, score collapse, and service degradation. |
 | `BS-TMPL-OPS-02` | p6 | **Blameless Post-Incident Review (PIR) Template** | Platform Engineer | `delivery/templates/phase-6-operate/post-incident-review-pir-template.md` | Structured post-mortem document with 5 Whys analysis, timeline reconstruction, and tracked CAPA corrective actions. |
 | `BS-TMPL-OPS-03` | p6 | **Quarterly Service Review & Realized ROI Tracker** | Business Analyst | `delivery/templates/phase-6-operate/service-review-roi-tracker.md` | Executive performance scorecard measuring actual dollar benefit vs baseline, cost per 1k decisions, and technical debt backlog. |
+| `BS-TMPL-SCOPE-11` | p0 | **Risk Register (CSV, pre-seeded with seven common risks)** | Delivery lead (project manager) | `delivery/templates/phase-0-scope/11-risk-register.csv` | Machine-readable risk register with likelihood, impact, score, owner, mitigation, trigger and review date; opens in any spreadsheet or project tool. |
+| `BS-TMPL-FDE-01` | p2 | **FDE Customer-Environment Implementation Checklist** | Forward Deployed Engineer | `delivery/templates/phase-2-data/fde-customer-environment-checklist.md` | Network restrictions, private endpoints, identity federation, API access and deployment permissions, with a named customer owner and an evidence link for every line. |
+| `BS-TMPL-MAT-01` | p5 | **Implementation Checklist: Work Between Maturity Levels** | Forward Deployed Engineer | `delivery/templates/phase-5-release/maturity-gap-checklist.md` | What is supplied and what you must still do to move from prototype-ready to evaluation-, shadow- and production-ready, with an evidence ledger. |
+| `BS-TMPL-HAND-01` | p5 | **Production Handover Package** | Forward Deployed Engineer | `delivery/templates/phase-5-release/production-handover-package.md` | Architecture as deployed, inventory, ownership, SLIs/SLOs with measured values, on-call, credential transfer, risks, failure modes, recovery, training and a signed acceptance record. |
+| `BS-EX-HAND-01` | p5 | **Worked example: handover package for the card-fraud reference use case** | Forward Deployed Engineer | `delivery/templates/phase-5-release/examples/fraud-handover-package.example.md` | A completed excerpt, labelled illustrative: shows a handover that is correctly rejected because a measured value is below target. |
 
 ## Every deliverable, in order
 
@@ -1570,7 +1577,7 @@ Standardized, downloadable deliverables covering project discovery, production a
 
 **Phase 2 · Data**
 
-- [ ] 2.1 Access approvals, signed data contracts and the privacy impact assessment. (Data Engineer)
+- [ ] 2.1 Access approvals, signed data contracts, the privacy impact assessment and a customer-environment checklist with every blocker owned. (Forward Deployed Engineer)
 - [ ] 2.2 Data profiling report and a quality issues log. (Data Analyst)
 - [ ] 2.3 Source-to-target mapping that reconciles to a trusted report. (Data Analyst)
 - [ ] 2.4 Label specification approved by the domain expert. (Data Scientist)
@@ -1614,11 +1621,11 @@ Standardized, downloadable deliverables covering project discovery, production a
 - [ ] 5.1 Users trained, communication sent, procedures updated. (Business Analyst)
 - [ ] 5.2 Rollout and experiment plan, written before any traffic moves. (MLOps Engineer)
 - [ ] 5.3 Recorded go/no-go decision and an approved change request. (Product owner (decision owner))
-- [ ] 5.4 Production deployment verified, with users still on the old path. (MLOps Engineer)
+- [ ] 5.4 Production deployment verified, with users still on the old path. (Forward Deployed Engineer)
 - [ ] 5.5 Shadow report: production behaves as offline evaluation predicted. (MLOps Engineer)
 - [ ] 5.6 Ramp log with the decision taken at each step. (MLOps Engineer)
 - [ ] 5.7 Experiment readout. (Data Scientist)
-- [ ] 5.8 Handover record: the service is accepted by operations. (SRE / DevOps Engineer)
+- [ ] 5.8 Production handover package and a signed acceptance record: the service is accepted by operations. (Forward Deployed Engineer)
 - [ ] 5.9 Release record and retrospective actions. (Delivery lead (project manager))
 - [ ] Gate 5 · Live and accepted, signed by Product owner (decision owner), SRE / DevOps Engineer, Executive sponsor
 

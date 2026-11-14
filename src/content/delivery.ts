@@ -640,16 +640,18 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
       {
         id: '2.1',
         title: 'Get access and sign the agreements',
-        owner: 'data-engineer',
-        with: ['data-owner', 'security-engineer', 'risk-compliance', 'forward-deployed-engineer'],
+        owner: 'forward-deployed-engineer',
+        with: ['data-engineer', 'data-owner', 'security-engineer', 'risk-compliance'],
         when: 'Week 3',
         how: [
-          'Request access to each source with the purpose stated.',
+          'Request access to each source with the purpose stated, through the customer’s own access process, and track each request to closure.',
+          'Work through the customer-environment checklist (network allow-lists, private endpoints, identity federation, API access, deployment permissions) and record what is still blocked and who owns the blocker.',
           'Complete a privacy impact assessment wherever personal data is involved (under GDPR, a data protection impact assessment).',
           'Sign the data contract with each producing team.',
           'Use service accounts with the least privilege that works.',
         ],
-        output: 'Access approvals, signed data contracts and the privacy impact assessment.',
+        output:
+          'Access approvals, signed data contracts, the privacy impact assessment and a customer-environment checklist with every blocker owned.',
         read: ['gov-data', 'ent-data', 'pb-prereqs'],
       },
       {
@@ -1223,11 +1225,11 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
       {
         id: '5.4',
         title: 'Deploy to production with no user impact',
-        owner: 'mlops-engineer',
-        with: ['platform-engineer', 'sre-devops-engineer', 'ml-engineer'],
+        owner: 'forward-deployed-engineer',
+        with: ['mlops-engineer', 'platform-engineer', 'sre-devops-engineer', 'ml-engineer'],
         when: 'Week 12',
         how: [
-          'Deploy the signed artifact handed over by the ML engineer, with traffic off or behind a flag.',
+          'Deploy the signed artifact handed over by the ML engineer into the customer-controlled environment, with traffic off or behind a flag; the MLOps engineer owns the pipeline, the FDE owns getting it through the customer’s change process.',
           'Run smoke tests in production.',
           'Confirm dashboards, alerts and logs are receiving data.',
         ],
@@ -1280,15 +1282,17 @@ export const DELIVERY_PHASES: DeliveryPhase[] = [
       {
         id: '5.8',
         title: 'Run hypercare and hand over to operations',
-        owner: 'sre-devops-engineer',
-        with: ['support', 'mlops-engineer', 'delivery-lead'],
+        owner: 'forward-deployed-engineer',
+        with: ['sre-devops-engineer', 'support', 'mlops-engineer', 'delivery-lead'],
         when: 'Weeks 14–16',
         how: [
-          'Review the service every day for the first two to four weeks and triage issues the same day.',
-          'Hand over runbooks, dashboards, contacts and known issues.',
-          'Operations formally accepts the service.',
+          'Review the service every day for the first two to four weeks and triage customer-side issues the same day; the SRE takes the on-call pages.',
+          'Assemble the production handover package (architecture as deployed, inventory, ownership, SLOs, on-call, credential transfer, risks, failure modes, recovery, escalation, training evidence).',
+          'Train the customer’s operators and users, and collect the first production feedback.',
+          'Operations formally accepts the service, and business and technical acceptance are recorded.',
         ],
-        output: 'Handover record: the service is accepted by operations.',
+        output:
+          'Production handover package and a signed acceptance record: the service is accepted by operations.',
         read: ['pb-30', 'operations'],
       },
       {
@@ -2280,6 +2284,51 @@ export const DELIVERY_TEMPLATES: DeliveryTemplateMeta[] = [
     file: 'delivery/templates/phase-6-operate/service-review-roi-tracker.md',
     description:
       'Executive performance scorecard measuring actual dollar benefit vs baseline, cost per 1k decisions, and technical debt backlog.',
+  },
+  {
+    code: 'BS-TMPL-SCOPE-11',
+    phaseId: 'p0',
+    title: 'Risk Register (CSV, pre-seeded with seven common risks)',
+    ownerRole: 'delivery-lead',
+    file: 'delivery/templates/phase-0-scope/11-risk-register.csv',
+    description:
+      'Machine-readable risk register with likelihood, impact, score, owner, mitigation, trigger and review date; opens in any spreadsheet or project tool.',
+  },
+  {
+    code: 'BS-TMPL-FDE-01',
+    phaseId: 'p2',
+    title: 'FDE Customer-Environment Implementation Checklist',
+    ownerRole: 'forward-deployed-engineer',
+    file: 'delivery/templates/phase-2-data/fde-customer-environment-checklist.md',
+    description:
+      'Network restrictions, private endpoints, identity federation, API access and deployment permissions, with a named customer owner and an evidence link for every line.',
+  },
+  {
+    code: 'BS-TMPL-MAT-01',
+    phaseId: 'p5',
+    title: 'Implementation Checklist: Work Between Maturity Levels',
+    ownerRole: 'forward-deployed-engineer',
+    file: 'delivery/templates/phase-5-release/maturity-gap-checklist.md',
+    description:
+      'What is supplied and what you must still do to move from prototype-ready to evaluation-, shadow- and production-ready, with an evidence ledger.',
+  },
+  {
+    code: 'BS-TMPL-HAND-01',
+    phaseId: 'p5',
+    title: 'Production Handover Package',
+    ownerRole: 'forward-deployed-engineer',
+    file: 'delivery/templates/phase-5-release/production-handover-package.md',
+    description:
+      'Architecture as deployed, inventory, ownership, SLIs/SLOs with measured values, on-call, credential transfer, risks, failure modes, recovery, training and a signed acceptance record.',
+  },
+  {
+    code: 'BS-EX-HAND-01',
+    phaseId: 'p5',
+    title: 'Worked example: handover package for the card-fraud reference use case',
+    ownerRole: 'forward-deployed-engineer',
+    file: 'delivery/templates/phase-5-release/examples/fraud-handover-package.example.md',
+    description:
+      'A completed excerpt, labelled illustrative: shows a handover that is correctly rejected because a measured value is below target.',
   },
 ];
 

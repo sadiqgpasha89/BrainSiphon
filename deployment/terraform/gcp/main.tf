@@ -6,7 +6,7 @@
  */
 
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.9.0"
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -19,6 +19,16 @@ variable "environment" {
   type        = string
   description = "Target deployment environment (dev, staging, preprod, production)"
   default     = "production"
+
+  validation {
+    condition     = contains(["dev", "staging", "preprod", "production"], var.environment)
+    error_message = "environment must be one of: dev, staging, preprod, production."
+  }
+}
+
+locals {
+  # preprod is deliberately production-shaped (multi-AZ, HA database, private endpoints) so that what it proves carries over to production
+  prod_like = contains(["preprod", "production"], var.environment)
 }
 
 variable "project_id" {
@@ -86,6 +96,11 @@ resource "google_container_cluster" "primary" {
   network    = google_compute_network.vpc.id
   subnetwork = google_compute_subnetwork.subnet.id
 
+  # GKE keeps the control plane on a supported version through the release channel; see content/version-registry.json
+  release_channel {
+    channel = var.environment == "production" ? "STABLE" : "REGULAR"
+  }
+
   remove_default_node_pool = true
   initial_node_count       = 1
 
@@ -96,7 +111,7 @@ resource "google_container_cluster" "primary" {
 
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = false
+    enable_private_endpoint = local.prod_like
     master_ipv4_cidr_block  = "172.16.0.0/28"
   }
 
@@ -114,15 +129,15 @@ resource "google_container_node_pool" "serving_pool" {
   name       = "serving-pool"
   location   = var.region
   cluster    = google_container_cluster.primary.name
-  node_count = var.environment == "production" ? 2 : 1 # Per zone (x3 zones)
+  node_count = local.prod_like ? 2 : 1 # Per zone (x3 zones)
 
   autoscaling {
-    min_node_count = var.environment == "production" ? 1 : 1
-    max_node_count = var.environment == "production" ? 6 : 2
+    min_node_count = local.prod_like ? 1 : 1
+    max_node_count = local.prod_like ? 6 : 2
   }
 
   node_config {
-    machine_type = var.environment == "production" ? "c2-standard-16" : "e2-standard-4"
+    machine_type = local.prod_like ? "c2-standard-16" : "e2-standard-4"
     oauth_scopes = ["https://www.googleapis.com/auth/cloud-platform"]
 
     shielded_instance_config {
@@ -139,8 +154,8 @@ resource "google_sql_database_instance" "postgres" {
   region           = var.region
 
   settings {
-    tier              = var.environment == "production" ? "db-custom-8-32768" : "db-f1-micro"
-    availability_type = var.environment == "production" ? "REGIONAL" : "ZONAL"
+    tier              = local.prod_like ? "db-custom-8-32768" : "db-f1-micro"
+    availability_type = local.prod_like ? "REGIONAL" : "ZONAL"
 
     ip_configuration {
       ipv4_enabled    = false
@@ -162,8 +177,8 @@ resource "google_sql_database_instance" "postgres" {
 # 5. Cloud Memorystore for Redis (High Availability)
 resource "google_redis_instance" "cache" {
   name           = "${var.environment}-aiml-redis-cache"
-  tier           = var.environment == "production" ? "STANDARD_HA" : "BASIC"
-  memory_size_gb = var.environment == "production" ? 16 : 2
+  tier           = local.prod_like ? "STANDARD_HA" : "BASIC"
+  memory_size_gb = local.prod_like ? 16 : 2
   region         = var.region
 
   authorized_network = google_compute_network.vpc.id

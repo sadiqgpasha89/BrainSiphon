@@ -7,11 +7,13 @@
  *
  * Run after `npm run build:static` (it is also called from there). Reads NEXT_PUBLIC_BASE_PATH and NEXT_PUBLIC_SITE_URL.
  */
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadAllUseCases } from '../src/content/load';
 import { PRIMITIVE_IDS } from '../src/content/primitives';
-import { STATUS_LABEL, type ReleaseManifest } from '../src/content/release';
+import { STATUS_LABEL, shortSha, type ReleaseManifest } from '../src/content/release';
+import { DELIVERY_TEMPLATES } from '../src/content/delivery';
+import { DOWNLOAD_BUNDLES } from '../src/content/downloads-meta';
 import { computeContentDigest, gitInfo } from '../src/content/release-io';
 
 export function verifyStatic(
@@ -134,6 +136,53 @@ export function verifyStatic(
       )
         fail(`${sampleSlug} page still shows a combined verification badge`);
     }
+  }
+
+  // 2d. one release identity: every page's footer must carry the same commit and content version as release.json
+  if (nonEmpty(relPath)) {
+    const m = JSON.parse(readFileSync(relPath, 'utf8')) as ReleaseManifest;
+    const pages: string[] = [];
+    const walk = (d: string) => {
+      for (const name of readdirSync(d)) {
+        const p = join(d, name);
+        if (statSync(p).isDirectory()) walk(p);
+        else if (name === 'index.html' || name === '404.html') pages.push(p);
+      }
+    };
+    walk(out);
+    let bad = 0;
+    for (const p of pages) {
+      const html = readFileSync(p, 'utf8');
+      const line = /data-testid="release-line"[^>]*>([^<]*(?:<!-- -->[^<]*)*)</
+        .exec(html)?.[1]
+        ?.replace(/<!-- -->/g, '');
+      if (!line) continue;
+      if (!line.includes(m.contentVersion) || !line.includes(shortSha(m.sourceCommit))) {
+        if (bad++ < 5)
+          fail(
+            `${p.slice(out.length + 1)} shows a different release than release.json (${line.slice(0, 80)})`,
+          );
+      }
+    }
+    if (bad > 5) fail(`... and ${bad - 5} more pages with a different release identity`);
+  }
+
+  // 2e. downloadable artefacts: every template the guide lists, the bundles and the manifest are published
+  for (const t of DELIVERY_TEMPLATES)
+    if (!nonEmpty(join(out, 'downloads', t.file)))
+      fail(`template ${t.code} is listed but out/downloads/${t.file} is missing`);
+  for (const b of DOWNLOAD_BUNDLES)
+    if (!nonEmpty(join(out, 'downloads', b.zip))) fail(`out/downloads/${b.zip} is missing`);
+  if (!nonEmpty(join(out, 'downloads', 'manifest.json'))) fail('out/downloads/manifest.json is missing');
+  for (const [page, marker] of [
+    ['deployment', 'data-testid="version-registry"'],
+    ['deployment', 'data-testid="recovery-tiers"'],
+    ['deployment', 'data-testid="compliance-notice"'],
+    ['release', 'data-testid="review-programme"'],
+    ['release', 'data-testid="evidence-layers"'],
+  ] as const) {
+    const f = join(out, page, 'index.html');
+    if (!nonEmpty(f) || !readFileSync(f, 'utf8').includes(marker)) fail(`${page} page is missing ${marker}`);
   }
 
   // 2b. the delivery guide: its page and its markdown twin

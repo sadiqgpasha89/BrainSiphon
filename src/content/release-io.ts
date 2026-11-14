@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { KitReport, ReleaseManifest, ValidationReport } from './release';
+import type { KitReport, ReleaseManifest, ValidationReport, WarningAck } from './release';
 
 export const RELEASE_DIR = '.release';
 export const VALIDATION_REPORT = join(RELEASE_DIR, 'validation.json');
@@ -102,3 +102,9 @@ export function writeReport(root: string, file: string, report: ValidationReport
 
 /** A failed run must not leave an older pass behind. */
 export const clearReport = (root: string, file: string) => rmSync(join(root, file), { force: true });
+
+/** Named owners' decisions about feasibility warnings, keyed `<slug>::<check>`. Empty until someone records one. */
+export function loadWarningAcks(root = process.cwd()): Record<string, WarningAck> {
+  const f = join(root, 'content', 'warning-acks.json');
+  return existsSync(f) ? (JSON.parse(readFileSync(f, 'utf8')) as Record<string, WarningAck>) : {};
+}

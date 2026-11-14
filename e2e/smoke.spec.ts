@@ -680,3 +680,56 @@ test('reference implementations page lists the four systems and says what is not
     page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Implementations' }),
   ).toBeVisible();
 });
+
+test('deployment page shows environments, recovery tiers, versions and what is not validated', async ({
+  page,
+}) => {
+  await page.goto('/deployment');
+  for (const e of ['dev', 'staging', 'preprod', 'production'])
+    await expect(page.getByTestId(`env-${e}`)).toBeVisible();
+  await expect(page.getByTestId('recovery-tiers')).toContainText(
+    'No failover, restore or disaster-recovery drill has been run',
+  );
+  await expect(page.getByTestId('compliance-notice')).toContainText('not certification');
+  await expect(page.getByTestId('version-registry')).toContainText('1.36');
+  await expect(page.locator('body')).not.toContainText('EKS 1.30');
+  await expect(page.getByTestId('infra-validation')).toContainText('NOT RUN');
+});
+
+test('workspace generator recommends, previews, and records an override in the ADR', async ({ page }) => {
+  await page.goto('/workspace');
+  await page.getByRole('button', { name: /Architecture Packages/ }).click();
+  const gen = page.getByTestId('package-generator');
+  await gen.getByLabel('Peak requests / second').fill('800');
+  await expect(gen.getByTestId('pg-recommendation')).toContainText('Managed Kubernetes');
+  await gen
+    .getByLabel('Override the recommendation')
+    .selectOption({ label: 'Managed container service (ECS Fargate / Container Apps / Cloud Run)' });
+  await gen.getByLabel('Reason (recorded in the ADR)').fill('No platform team until Q3');
+  await gen.getByRole('button', { name: /adr\/0001/ }).click();
+  await expect(gen.getByTestId('pg-preview')).toContainText('No platform team until Q3');
+  const download = page.waitForEvent('download');
+  await gen.getByTestId('pg-download-zip').click();
+  expect((await download).suggestedFilename()).toMatch(/\.zip$/);
+});
+
+test('release report separates documentation from tested code and shows the review programme', async ({
+  page,
+}) => {
+  await page.goto('/release');
+  await expect(page.getByTestId('evidence-layers')).toContainText('Generated documentation');
+  await expect(page.getByTestId('evidence-layers')).toContainText('Operational (production-evidenced)');
+  await expect(page.getByTestId('review-programme')).toContainText('has not completed any review yet');
+  await expect(page.getByTestId('feasibility-warning').first().getByTestId('warning-owner')).toContainText(
+    'Open',
+  );
+});
+
+test('delivery guide templates are direct downloads', async ({ page }) => {
+  await page.goto('/delivery');
+  await expect(page.getByTestId('template-bundles')).toContainText('All delivery templates');
+  await expect(page.getByRole('link', { name: 'production-handover-package.md' }).first()).toHaveAttribute(
+    'href',
+    /downloads\/delivery\/templates\/phase-5-release\/production-handover-package\.md$/,
+  );
+});

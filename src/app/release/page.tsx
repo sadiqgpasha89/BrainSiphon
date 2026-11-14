@@ -1,10 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { KitRunsTable, ManifestSummary, MaturityLadder } from '../../components/ReleaseReport';
+import {
+  EvidenceLayers,
+  KitRunsTable,
+  ManifestSummary,
+  MaturityLadder,
+  ReviewProgramme,
+} from '../../components/ReleaseReport';
 import { FeasibilityWarningsPanel } from '../../components/reader/ValidationStatus';
 import { releaseOutstanding } from '../../content/release';
 import { getRelease } from '../../lib/content';
 import { withBase } from '../../lib/site';
+import { loadWarningAcks } from '../../content/release-io';
 
 export const revalidate = 86400;
 
@@ -72,6 +79,17 @@ export default async function ReleasePage() {
         <ManifestSummary release={release} />
       </section>
 
+      <section aria-labelledby="layers" className="space-y-3">
+        <h2 id="layers" className="scroll-mt-24 text-xl font-semibold">
+          Documentation, tested code and operational solutions are different things
+        </h2>
+        <p className="max-w-3xl text-sm text-mute">
+          Every blueprint is documentation. A small number also have tested starter code. None is an
+          operational solution. The shares below come from the manifest this site was built from.
+        </p>
+        <EvidenceLayers release={release} />
+      </section>
+
       <section aria-labelledby="maturity" className="space-y-3">
         <h2 id="maturity" className="scroll-mt-24 text-xl font-semibold">
           Maturity levels
@@ -106,10 +124,17 @@ export default async function ReleasePage() {
           release; it marks a design whose numbers need changing before anyone builds it.
         </p>
         {warnings.length ? (
-          <FeasibilityWarningsPanel warnings={warnings} linkBlueprints />
+          <FeasibilityWarningsPanel warnings={warnings} linkBlueprints acks={loadWarningAcks()} />
         ) : (
           <p className="text-sm text-mute">No warnings are open.</p>
         )}
+      </section>
+
+      <section aria-labelledby="review-programme" className="space-y-3">
+        <h2 id="review-programme" className="scroll-mt-24 text-xl font-semibold">
+          Independent review programme
+        </h2>
+        <ReviewProgramme />
       </section>
 
       <section aria-labelledby="outstanding" className="space-y-3">

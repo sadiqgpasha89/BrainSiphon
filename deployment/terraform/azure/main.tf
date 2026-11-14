@@ -7,7 +7,7 @@
  */
 
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.9.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -16,10 +16,26 @@ terraform {
   }
 }
 
+variable "kubernetes_version" {
+  type        = string
+  description = "AKS Kubernetes minor version. Must be supported: see content/version-registry.json (checked by npm run check:versions)."
+  default     = "1.36"
+}
+
 variable "environment" {
   type        = string
   description = "Target deployment environment (dev, staging, preprod, production)"
   default     = "production"
+
+  validation {
+    condition     = contains(["dev", "staging", "preprod", "production"], var.environment)
+    error_message = "environment must be one of: dev, staging, preprod, production."
+  }
+}
+
+locals {
+  # preprod is deliberately production-shaped (multi-AZ, HA database, private endpoints) so that what it proves carries over to production
+  prod_like = contains(["preprod", "production"], var.environment)
 }
 
 variable "location" {
@@ -95,19 +111,19 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "aks-${var.environment}-aiml"
-  kubernetes_version  = "1.30"
+  kubernetes_version  = var.kubernetes_version
 
   oidc_issuer_enabled       = true
   workload_identity_enabled = true
 
   default_node_pool {
     name                = "servingpool"
-    node_count          = var.environment == "production" ? 6 : 2
-    vm_size             = var.environment == "production" ? "Standard_D8s_v5" : "Standard_D4s_v5"
+    node_count          = local.prod_like ? 6 : 2
+    vm_size             = local.prod_like ? "Standard_D8s_v5" : "Standard_D4s_v5"
     vnet_subnet_id      = azurerm_subnet.aks.id
     enable_auto_scaling = true
-    min_count           = var.environment == "production" ? 3 : 1
-    max_count           = var.environment == "production" ? 18 : 4
+    min_count           = local.prod_like ? 3 : 1
+    max_count           = local.prod_like ? 18 : 4
     zones               = ["1", "2", "3"]
   }
 
@@ -131,13 +147,13 @@ resource "azurerm_postgresql_flexible_server" "db" {
   administrator_login    = "aiml_admin"
   administrator_password = "SuperSecretSecurePassword123!" # In real deploy, inject via KeyVault
 
-  storage_mb = var.environment == "production" ? 131072 : 32768
-  sku_name   = var.environment == "production" ? "GP_Standard_D4s_v3" : "B_Standard_B2s"
+  storage_mb = local.prod_like ? 131072 : 32768
+  sku_name   = local.prod_like ? "GP_Standard_D4s_v3" : "B_Standard_B2s"
   zone       = "1"
 
   high_availability {
-    mode                      = var.environment == "production" ? "ZoneRedundant" : "Disabled"
-    standby_availability_zone = var.environment == "production" ? "2" : null
+    mode                      = local.prod_like ? "ZoneRedundant" : "Disabled"
+    standby_availability_zone = local.prod_like ? "2" : null
   }
 }
 
@@ -146,9 +162,9 @@ resource "azurerm_redis_cache" "redis" {
   name                = "redis-${var.environment}-aiml-cache"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  capacity            = var.environment == "production" ? 2 : 1
-  family              = var.environment == "production" ? "P" : "C"
-  sku_name            = var.environment == "production" ? "Premium" : "Standard"
+  capacity            = local.prod_like ? 2 : 1
+  family              = local.prod_like ? "P" : "C"
+  sku_name            = local.prod_like ? "Premium" : "Standard"
   enable_non_ssl_port = false
   minimum_tls_version = "1.2"
   subnet_id           = azurerm_subnet.redis.id
