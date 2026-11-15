@@ -3,11 +3,11 @@ import { ALL_STEPS } from '../src/content/delivery';
 
 test('domain → filter → open blueprint → Pure Signal toggle', async ({ page }) => {
   await page.goto('/');
-  // the ten domains live in one "Use cases" menu instead of a scrolling row in the header
-  await expect(page.getByRole('navigation', { name: 'Domains', exact: true })).toBeHidden();
-  await page.getByTestId('usecases-button').click();
+  // the ten industries live in one "Blueprints" menu instead of a scrolling row in the header
+  await expect(page.getByRole('navigation', { name: 'Industries', exact: true })).toBeHidden();
+  await page.getByTestId('nav-blueprints').click();
   await page
-    .getByRole('navigation', { name: 'Domains', exact: true })
+    .getByRole('navigation', { name: 'Industries', exact: true })
     .getByRole('link', { name: 'FinTech' })
     .click();
   await expect(page).toHaveURL(/\/fintech$/);
@@ -395,6 +395,37 @@ test('home page leads a newcomer from a use case to the delivery guide', async (
   await expect(page.getByRole('heading', { level: 1 })).toContainText('From project scoping to deployment');
 });
 
+test('a newcomer sees a short header: two links, two menus and Pro, with one primary action on the home page', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const main = page.getByRole('navigation', { name: 'Main', exact: true });
+  // the bar holds Start here and Delivery guide, plus the Blueprints and More menus; everything else is inside a menu
+  await expect(main.getByRole('link')).toHaveCount(2);
+  await expect(main.getByRole('button')).toHaveCount(2);
+  await expect(page.getByTestId('nav-pro')).toBeVisible();
+  // the home page has one primary button, and a search box that opens the palette
+  await expect(page.locator('main .btn-primary')).toHaveCount(1);
+  await page.getByTestId('hero-search').click();
+  await expect(page.getByRole('combobox', { name: 'Search blueprints' })).toBeVisible();
+});
+
+test('on a phone the header becomes one menu that carries every destination, without sideways scrolling', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/');
+  await expect(page.getByRole('navigation', { name: 'Main', exact: true })).toBeHidden();
+  await page.getByTestId('nav-menu').click();
+  const menu = page.getByRole('navigation', { name: 'Mobile', exact: true });
+  for (const name of ['Start here', 'Delivery guide', 'Pro', 'FinTech', 'Real Estate', 'Patterns', 'About']) {
+    await expect(menu.getByRole('link', { name: new RegExp(`^${name}`) }).first()).toBeVisible();
+  }
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
 test('delivery guide: steps, gates, a role filter, progress and links into the chosen blueprint', async ({
   page,
 }) => {
@@ -571,9 +602,12 @@ test('delivery guide indexes evaluation, guardrails and governance and maps the 
 
 test('about page explains the platform, blueprint anatomy, role guides, and navigation', async ({ page }) => {
   await page.goto('/');
-  const aboutLink = page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'About' });
-  await expect(aboutLink.first()).toBeVisible();
-  await aboutLink.first().click();
+  // specialised pages sit one click away, under "More", each with a plain-language line
+  await page.getByTestId('nav-more').click();
+  const aboutLink = page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: /^About/ });
+  await expect(aboutLink).toBeVisible();
+  await expect(aboutLink).toContainText('What this project is');
+  await aboutLink.click();
   await expect(page).toHaveURL(/\/about$/);
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Signal in.');
@@ -670,8 +704,9 @@ test('reference implementations page shows one free system, describes three Pro 
   await expect(coverage.getByRole('row')).toHaveCount(10); // header + nine archetypes
   await expect(coverage).toContainText('No reference implementation yet');
   await expect(page.getByTestId('implementations-verified')).toContainText('Not run');
+  await page.getByTestId('nav-more').click();
   await expect(
-    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Implementations' }),
+    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: /^Reference implementations/ }),
   ).toBeVisible();
 });
 
@@ -797,6 +832,9 @@ test('freemium: one worked example is free, every other use case shows what Pro 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('500');
   await expect(page.getByTestId('pro-plans').locator(':scope > div')).toHaveCount(2);
   await expect(page.getByTestId('pro-compare')).toContainText('card and UPI fraud');
+  await expect(page.getByTestId('pro-steps').getByRole('listitem')).toHaveCount(3);
+  // the engine list is reference detail, so it opens on request
+  await page.getByTestId('pro-engines-toggle').click();
   await expect(page.getByTestId('pro-engines').getByRole('listitem')).toHaveCount(20);
   await expect(page.getByTestId('pro-page')).toContainText('What a worked template is not');
 });

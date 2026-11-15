@@ -53,58 +53,72 @@ export type Paradigm = z.infer<typeof ParadigmEnum>;
 export type LatencySLA = z.infer<typeof LatencyEnum>;
 export type Difficulty = z.infer<typeof DifficultyEnum>;
 
-export const DOMAIN_META: Record<Domain, { name: string; short: string; blurb: string }> = {
+/**
+ * `topics` is the short line shown on cards and in menus (it always fits); `blurb` is the fuller description used on the
+ * industry's own page and in search results.
+ */
+export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: string; blurb: string }> = {
   fintech: {
     name: 'FinTech & Payments',
     short: 'FinTech',
+    topics: 'Fraud, credit, AML, payments, trading',
     blurb:
       'Fraud, credit, AML, trading, payments and insurance — where milliseconds and basis points are money.',
   },
   retail: {
     name: 'Retail & E-Commerce',
     short: 'Retail',
+    topics: 'Search, recommendations, pricing, demand',
     blurb: 'Search, recommendations, pricing, demand and trust & safety for marketplaces at scale.',
   },
   healthcare: {
     name: 'Healthcare & Life Sciences',
     short: 'Healthcare',
+    topics: 'Clinical risk, imaging, operations, genomics',
     blurb: 'Clinical risk, imaging, operations, genomics and drug discovery under regulatory constraints.',
   },
   'supply-chain': {
     name: 'Supply Chain & Logistics',
     short: 'Supply Chain',
+    topics: 'Forecasting, routing, warehouses, fleets',
     blurb: 'Forecasting, routing, warehouse automation, ETA and fleet intelligence across physical networks.',
   },
   adtech: {
     name: 'AdTech & Marketing',
     short: 'AdTech',
+    topics: 'Bidding, CTR/CVR, attribution, audiences',
     blurb: 'Auction bidding, CTR/CVR, attribution, creative and audience modelling in sub-100ms loops.',
   },
   cybersecurity: {
     name: 'Cybersecurity',
     short: 'Cybersecurity',
+    topics: 'Detection, triage, identity, abuse',
     blurb:
       'Detection, triage, identity and abuse prevention — adversarial settings with brutal class imbalance.',
   },
   edtech: {
     name: 'EdTech',
     short: 'EdTech',
+    topics: 'Adaptive learning, assessment, tutoring',
     blurb: 'Adaptive learning, assessment, tutoring and engagement for learners at national scale.',
   },
   saas: {
     name: 'SaaS & Developer Platforms',
     short: 'SaaS',
+    topics: 'Churn, copilots, support, AIOps',
     blurb: 'Churn, copilots, support automation, AIOps and product intelligence for B2B/B2C platforms.',
   },
   bfsi: {
     name: 'BFSI: Banking, Financial Services & Insurance',
     short: 'BFSI',
+    topics: 'Lending, treasury, settlement, claims',
     blurb:
       'How incumbent banks, insurers, asset managers and custodians run: lending, treasury, settlement, wealth, claims and compliance, where a regulator reads the model.',
   },
   'real-estate': {
     name: 'Real Estate & PropTech',
     short: 'Real Estate',
+    topics: 'Valuation, listings, leasing, smart buildings',
     blurb:
       'Valuation, listings, leasing, property operations, construction and smart buildings: slow, local, high-value assets with sparse data.',
   },

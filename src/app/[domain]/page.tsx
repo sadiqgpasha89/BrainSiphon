@@ -37,7 +37,7 @@ export default async function DomainPage({ params }: { params: Promise<{ domain:
     <div className="mx-auto max-w-7xl px-4 pt-10">
       <header className="mb-8 max-w-3xl">
         <p className="font-mono text-xs uppercase tracking-wider text-signal">
-          Domain · {entries.length} blueprints
+          Industry · {entries.length} blueprints
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{meta.name}</h1>
         <p className="mt-3 text-mute">{meta.blurb}</p>

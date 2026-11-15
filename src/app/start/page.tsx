@@ -32,31 +32,37 @@ export default function StartPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-14 px-4 py-14" data-testid="start-guide">
       <header>
-        <p className={KICK}>Getting started</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Start here: how an engineer gets from the first page to real expertise
+        <p className={KICK}>New to BrainSiphon?</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-5xl">
+          Start here: pick a use case and know what to do next
         </h1>
-        <p className="mt-4 max-w-3xl text-mute">
-          BrainSiphon has 500 blueprints, a delivery guide, patterns, reference implementations, deployment
-          kits and templates. You do not read it all. You pick one use case and move through the material in a
-          fixed order, each step ending in something you can check. This page is that order.
+        <p className="mt-4 max-w-3xl text-lg text-mute">
+          You do not need to read everything. Pick one use case and follow a fixed order; every step ends in
+          something you can check. Most people begin with the first hour.
         </p>
-        <ul className="mt-5 flex flex-wrap gap-2 text-sm">
-          {[
-            ['#first-hour', 'First hour'],
-            ['#four-weeks', 'Four-week sequence'],
-            ['#one-blueprint', 'Reading one blueprint'],
-            ['#by-role', 'Fast path by role'],
-            ['#stuck', 'When you are stuck'],
-            ['#trust', 'How far to trust it'],
-          ].map(([h, l]) => (
-            <li key={h}>
-              <a href={h} className="chip no-underline">
-                {l}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <p className="mt-6">
+          <a href="#first-hour" className="btn-primary" data-testid="start-begin">
+            Begin the first hour
+          </a>
+        </p>
+        <nav aria-label="On this page" className="mt-6 flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-dim">Or jump to:</span>
+          <ul className="flex flex-wrap gap-2">
+            {[
+              ['#four-weeks', 'Four-week sequence'],
+              ['#one-blueprint', 'Reading one blueprint'],
+              ['#by-role', 'Fast path by role'],
+              ['#stuck', 'When you are stuck'],
+              ['#trust', 'How far to trust it'],
+            ].map(([h, l]) => (
+              <li key={h}>
+                <a href={h} className="chip no-underline">
+                  {l}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <div className="mt-4">
           <ProgressSummary ids={allStepIds} />
         </div>
