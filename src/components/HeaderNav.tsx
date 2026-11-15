@@ -1,33 +1,46 @@
 'use client';
 
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
+import { GUIDE_LINK, MORE_LINKS, PRO_LINK, START_LINK, isHere } from '../lib/nav';
 import { DOMAINS, DOMAIN_META } from '../schemas/usecase.schema';
+import { SearchTrigger } from './SearchTrigger';
+import { ThemeToggle } from './ThemeToggle';
 
-const LINK =
-  'block whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm no-underline transition hover:bg-raised';
+type MenuId = 'blueprints' | 'more' | 'mobile';
+
+const TOP = 'flex items-center gap-1 rounded-md px-3 py-2 text-sm no-underline transition hover:bg-raised';
+const LABEL = 'px-3 pb-1 pt-1 font-mono text-[11px] uppercase tracking-wider text-dim';
+const ITEM = 'block rounded-md px-3 py-2 no-underline hover:bg-raised';
+const tone = (on: boolean) => (on ? 'text-ink' : 'text-mute hover:text-ink');
 
 /**
- * Four destinations instead of a scrolling row of twelve: the delivery guide, the use cases (the ten domains, in a menu),
- * patterns and deployment. On a phone the last two move into the menu.
+ * Everything to the right of the logo. Four things in the bar on a desktop: Start here, Blueprints (a menu of the ten industries),
+ * the delivery guide, and More (a menu of the specialised pages, each with a plain-language line). Pro is a separate button so
+ * it is never mistaken for free content. On a phone the same lists open as one menu panel; nothing changes by screen size
+ * except where it is shown.
  */
 export function HeaderNav() {
-  const [open, setOpen] = useState(false);
-  const wrap = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState<MenuId | null>(null);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLElement | null>(null);
   const pathname = usePathname();
-  const here = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
-  const inDomain = DOMAINS.some((d) => here(`/${d}`));
+  const here = (href: string) => isHere(pathname, href);
+  const inIndustry = DOMAINS.some((d) => here(`/${d}`));
+  const inMore = MORE_LINKS.some((l) => here(l.href));
 
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => setOpen(null), [pathname]);
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key !== 'Escape') return;
+      setOpen(null);
+      trigger.current?.focus();
     };
-    const onDown = (e: MouseEvent) => {
-      if (!wrap.current?.contains(e.target as Node)) setOpen(false);
+    const onDown = (e: globalThis.MouseEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(null);
     };
     window.addEventListener('keydown', onKey);
     window.addEventListener('mousedown', onDown);
@@ -37,149 +50,199 @@ export function HeaderNav() {
     };
   }, [open]);
 
+  const toggle = (id: MenuId) => (e: MouseEvent<HTMLElement>) => {
+    trigger.current = e.currentTarget;
+    setOpen((cur) => (cur === id ? null : id));
+  };
+
   return (
-    <nav aria-label="Main" className="flex min-w-0 flex-1 items-center gap-1">
-      <Link
-        href="/start"
-        aria-current={here('/start') ? 'page' : undefined}
-        data-testid="nav-start"
-        className={`${LINK} hidden font-medium sm:block ${here('/start') ? 'text-signal' : 'text-signal/80 hover:text-signal'}`}
-      >
-        Start here
-      </Link>
-      <Link
-        href="/delivery"
-        aria-current={here('/delivery') ? 'page' : undefined}
-        className={`${LINK} hidden sm:block ${here('/delivery') ? 'text-signal' : 'text-mute hover:text-ink'}`}
-      >
-        Delivery guide
-      </Link>
-      <Link
-        href="/fde"
-        aria-current={here('/fde') || here('/workspace') ? 'page' : undefined}
-        className={`${LINK} hidden sm:block ${here('/fde') || here('/workspace') ? 'text-signal' : 'text-mute hover:text-ink'}`}
-      >
-        FDE hub
-      </Link>
-      <Link
-        href="/implementations"
-        aria-current={here('/implementations') ? 'page' : undefined}
-        className={`${LINK} hidden lg:block ${here('/implementations') ? 'text-signal' : 'text-mute hover:text-ink'}`}
-      >
-        Implementations
-      </Link>
-      <Link
-        href="/pro"
-        aria-current={here('/pro') ? 'page' : undefined}
-        data-testid="nav-pro"
-        className={`${LINK} hidden font-medium xl:block ${here('/pro') ? 'text-signal' : 'text-warn/90 hover:text-warn'}`}
-      >
-        Pro
-      </Link>
-      <div ref={wrap} className="sm:relative">
+    <div ref={root} className="flex min-w-0 flex-1 items-center">
+      {/* desktop */}
+      <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
+        <Link
+          href={START_LINK.href}
+          aria-current={here(START_LINK.href) ? 'page' : undefined}
+          data-testid="nav-start"
+          className={`${TOP} font-medium ${here(START_LINK.href) ? 'bg-raised text-signal' : 'text-signal hover:text-signal'}`}
+        >
+          {START_LINK.label}
+        </Link>
+
+        <div className="relative">
+          <button
+            type="button"
+            className={`${TOP} ${tone(inIndustry || open === 'blueprints')}`}
+            aria-expanded={open === 'blueprints'}
+            aria-controls="menu-blueprints"
+            onClick={toggle('blueprints')}
+            data-testid="nav-blueprints"
+          >
+            Blueprints
+            <ChevronDown
+              size={14}
+              className={`transition ${open === 'blueprints' ? 'rotate-180' : ''}`}
+              aria-hidden
+            />
+          </button>
+          <div
+            id="menu-blueprints"
+            hidden={open !== 'blueprints'}
+            className="card absolute left-0 top-full z-50 mt-2 w-[36rem] p-2 shadow-xl shadow-black/20"
+          >
+            <nav aria-label="Industries">
+              <p className={LABEL}>{DOMAINS.length} industries · 50 blueprints each</p>
+              <ul className="grid grid-cols-2 gap-0.5">
+                {DOMAINS.map((d) => (
+                  <li key={d}>
+                    <Link
+                      href={`/${d}`}
+                      aria-current={here(`/${d}`) ? 'page' : undefined}
+                      className={`${ITEM} ${here(`/${d}`) ? 'bg-raised' : ''}`}
+                    >
+                      <span className="block text-sm font-medium text-ink">{DOMAIN_META[d].short}</span>
+                      <span className="block truncate text-xs text-mute">{DOMAIN_META[d].topics}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <Link
+          href={GUIDE_LINK.href}
+          aria-current={here(GUIDE_LINK.href) ? 'page' : undefined}
+          className={`${TOP} ${here(GUIDE_LINK.href) ? 'bg-raised text-ink' : tone(false)}`}
+        >
+          {GUIDE_LINK.label}
+        </Link>
+
+        <div className="relative">
+          <button
+            type="button"
+            className={`${TOP} ${tone(inMore || open === 'more')}`}
+            aria-expanded={open === 'more'}
+            aria-controls="menu-more"
+            onClick={toggle('more')}
+            data-testid="nav-more"
+          >
+            More
+            <ChevronDown
+              size={14}
+              className={`transition ${open === 'more' ? 'rotate-180' : ''}`}
+              aria-hidden
+            />
+          </button>
+          <div
+            id="menu-more"
+            hidden={open !== 'more'}
+            className="card absolute left-0 top-full z-50 mt-2 w-[22rem] p-2 shadow-xl shadow-black/20"
+          >
+            <ul>
+              {MORE_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    aria-current={here(l.href) ? 'page' : undefined}
+                    className={`${ITEM} ${here(l.href) ? 'bg-raised' : ''}`}
+                  >
+                    <span className="block text-sm font-medium text-ink">{l.label}</span>
+                    <span className="block text-xs text-mute">{l.blurb}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      {/* always visible */}
+      <div className="ml-auto flex items-center gap-2">
+        <SearchTrigger />
+        <ThemeToggle />
+        <Link
+          href={PRO_LINK.href}
+          aria-current={here(PRO_LINK.href) ? 'page' : undefined}
+          data-testid="nav-pro"
+          className="hidden items-center rounded-lg border border-warn/40 bg-warn/10 px-3 py-1.5 text-sm font-medium text-warn no-underline transition hover:bg-warn/20 md:inline-flex"
+        >
+          {PRO_LINK.label}
+        </Link>
         <button
           type="button"
-          className={`${LINK} flex items-center gap-1 ${inDomain || open ? 'text-ink' : 'text-mute hover:text-ink'}`}
-          aria-expanded={open}
-          aria-controls="usecases-menu"
-          onClick={() => setOpen((v) => !v)}
-          data-testid="usecases-button"
+          className="btn !px-2.5 lg:hidden"
+          aria-expanded={open === 'mobile'}
+          aria-controls="menu-mobile"
+          aria-label={open === 'mobile' ? 'Close menu' : 'Open menu'}
+          onClick={toggle('mobile')}
+          data-testid="nav-menu"
         >
-          <span className="hidden sm:inline">Use cases</span>
-          <span className="sm:hidden">Menu</span>
-          <ChevronDown size={14} className={`transition ${open ? 'rotate-180' : ''}`} aria-hidden />
+          {open === 'mobile' ? <X size={16} aria-hidden /> : <Menu size={16} aria-hidden />}
         </button>
-        <div
-          id="usecases-menu"
-          hidden={!open}
-          className="card absolute inset-x-3 top-full z-50 mt-1 p-2 shadow-xl shadow-black/20 sm:inset-x-auto sm:left-0 sm:mt-2 sm:w-[34rem]"
-        >
-          <Link
-            href="/start"
-            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
-          >
-            Start here
-          </Link>
-          <Link
-            href="/delivery"
-            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
-          >
-            Delivery guide
-          </Link>
-          <Link
-            href="/fde"
-            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
-          >
-            FDE hub
-          </Link>
-          <Link
-            href="/pro"
-            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-warn/90 no-underline hover:bg-raised xl:hidden"
-          >
-            Pro: 500 worked templates
-          </Link>
-          <Link
-            href="/about"
-            className="mb-1 block rounded-md px-3 py-2 text-sm font-medium text-signal no-underline hover:bg-raised sm:hidden"
-          >
-            About
-          </Link>
-          <nav aria-label="Domains">
-            <p className="px-3 pb-1 pt-1 font-mono text-[11px] uppercase tracking-wider text-dim">
-              {DOMAINS.length} domains · 50 use cases each
-            </p>
-            <ul className="grid gap-0.5 sm:grid-cols-2">
+      </div>
+
+      {/* phone and tablet */}
+      <div
+        id="menu-mobile"
+        hidden={open !== 'mobile'}
+        className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-b border-line bg-bg shadow-xl shadow-black/30 lg:hidden"
+      >
+        <nav aria-label="Mobile" className="mx-auto max-w-7xl space-y-6 px-4 py-5">
+          <ul className="space-y-1">
+            {[START_LINK, GUIDE_LINK, PRO_LINK].map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  aria-current={here(l.href) ? 'page' : undefined}
+                  className={`${ITEM} ${here(l.href) ? 'bg-raised' : ''}`}
+                >
+                  <span
+                    className={`block text-base font-semibold ${l.href === START_LINK.href ? 'text-signal' : l.href === PRO_LINK.href ? 'text-warn' : 'text-ink'}`}
+                  >
+                    {l.label}
+                  </span>
+                  <span className="block text-sm text-mute">{l.blurb}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div>
+            <p className={LABEL}>Blueprints by industry</p>
+            <ul className="grid grid-cols-2 gap-1">
               {DOMAINS.map((d) => (
                 <li key={d}>
                   <Link
                     href={`/${d}`}
                     aria-current={here(`/${d}`) ? 'page' : undefined}
-                    className={`block rounded-md px-3 py-2 no-underline hover:bg-raised ${here(`/${d}`) ? 'bg-raised' : ''}`}
+                    className={`${ITEM} text-sm font-medium text-ink ${here(`/${d}`) ? 'bg-raised' : ''}`}
                   >
-                    <span className="text-sm font-medium text-ink">{DOMAIN_META[d].short}</span>
-                    <span className="hidden truncate text-xs text-mute sm:block">{DOMAIN_META[d].blurb}</span>
+                    {DOMAIN_META[d].short}
                   </Link>
                 </li>
               ))}
             </ul>
-          </nav>
-          <div className="mt-1 flex flex-wrap gap-1 border-t border-line pt-1 lg:hidden">
-            <Link href="/patterns" className={`${LINK} text-mute hover:text-ink md:hidden`}>
-              Patterns
-            </Link>
-            <Link href="/deployment" className={`${LINK} text-mute hover:text-ink md:hidden`}>
-              Deployment
-            </Link>
-            <Link href="/implementations" className={`${LINK} text-mute hover:text-ink`}>
-              Implementations
-            </Link>
-            <Link href="/about" className={`${LINK} text-mute hover:text-ink sm:hidden`}>
-              About
-            </Link>
           </div>
-        </div>
+
+          <div>
+            <p className={LABEL}>More</p>
+            <ul>
+              {MORE_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    aria-current={here(l.href) ? 'page' : undefined}
+                    className={`${ITEM} ${here(l.href) ? 'bg-raised' : ''}`}
+                  >
+                    <span className="block text-sm font-medium text-ink">{l.label}</span>
+                    <span className="block text-xs text-mute">{l.blurb}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
       </div>
-      <Link
-        href="/patterns"
-        aria-current={here('/patterns') ? 'page' : undefined}
-        className={`${LINK} hidden md:block ${here('/patterns') ? 'text-signal' : 'text-mute hover:text-ink'}`}
-      >
-        Patterns
-      </Link>
-      <Link
-        href="/deployment"
-        aria-current={here('/deployment') ? 'page' : undefined}
-        className={`${LINK} hidden md:block ${here('/deployment') ? 'text-signal' : 'text-mute hover:text-ink'}`}
-      >
-        Deployment
-      </Link>
-      <Link
-        href="/about"
-        aria-current={here('/about') ? 'page' : undefined}
-        className={`${LINK} hidden sm:block ${here('/about') ? 'text-signal' : 'text-mute hover:text-ink'}`}
-      >
-        About
-      </Link>
-    </nav>
+    </div>
   );
 }

@@ -1,24 +1,16 @@
-import {
-  ArrowRight,
-  CheckCircle2,
-  Cpu,
-  Layers,
-  ShieldCheck,
-  Sparkles,
-  Terminal,
-  Workflow,
-} from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import Link from 'next/link';
-import { SearchTrigger } from '../components/SearchTrigger';
-import { tocFor } from '../components/reader/Sections';
-import { ALL_STEPS, DELIVERY_PHASES } from '../content/delivery';
+import { SearchBar } from '../components/SearchTrigger';
 import { ManifestSummary } from '../components/ReleaseReport';
+import { ALL_STEPS, DELIVERY_PHASES } from '../content/delivery';
 import { getIndex, getRelease } from '../lib/content';
-import { ROLE_IDS, ROLE_META, ROLE_OWNS, SECTION_GROUPS } from '../lib/roles';
-import { DOMAINS, DOMAIN_META, PARADIGM_LABEL, type Paradigm } from '../schemas/usecase.schema';
+import { PRO_CURRENCY, PRO_PLANS } from '../lib/pro';
+import { SECTION_GROUPS } from '../lib/roles';
+import { DOMAINS, DOMAIN_META } from '../schemas/usecase.schema';
 
 export const revalidate = 86400;
 
+/** A few well-rounded blueprints for someone who does not know where to begin. */
 const FEATURED = [
   'fintech/real-time-card-upi-fraud-detection',
   'retail/personalized-search-ranking',
@@ -28,357 +20,274 @@ const FEATURED = [
   'saas/in-app-ai-copilot',
 ];
 
+const fromPrice = Math.min(...PRO_PLANS.map((p) => p.price));
+const money = (n: number) => `${PRO_CURRENCY === 'USD' ? '$' : ''}${n}`;
+
 export default async function Home() {
   const all = await getIndex();
   const release = await getRelease();
   const featured = FEATURED.map((s) => all.find((e) => e.slug === s)).filter(
     (e): e is NonNullable<typeof e> => Boolean(e),
   );
-  const sectionLabel = new Map(tocFor(true).map((t) => [t.id, t.label]));
 
   const steps = [
     {
-      title: 'Pick a use case',
+      title: 'Pick a blueprint',
       body: `${DOMAINS.length} industries, 50 solved use cases in each. Take the one closest to your problem.`,
-      href: '#domains',
-      cta: 'Browse the domains',
+      href: '#industries',
+      cta: 'Browse industries',
+      testId: 'cta-industries',
     },
     {
       title: 'Follow the delivery guide',
-      body: `${DELIVERY_PHASES.length} phases and ${ALL_STEPS.length} steps from scoping to monitoring. Each step names who does it, with whom, when, how and what it produces.`,
+      body: `${DELIVERY_PHASES.length} phases and ${ALL_STEPS.length} steps from scoping to monitoring. Each step says who does it and what it produces.`,
       href: '/delivery',
       cta: 'Open the guide',
+      testId: 'cta-guide',
     },
     {
       title: 'Build from the blueprint',
-      body: 'Each step links to the section of the blueprint you need: signals, architecture, data, evaluation, operations and, where one fits, a starter kit.',
+      body: 'Every step points to the part of the blueprint you need: signals, architecture, data, evaluation and operations.',
       href: `/${FEATURED[0]}`,
       cta: 'See an example blueprint',
+      testId: 'cta-example',
     },
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4">
-      <section className="py-14 sm:py-20">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal">
-          Solved AI/ML use cases, and how to deliver them
-        </p>
-        <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
-          Signal in. <span className="text-noise line-through decoration-2">Noise</span> out.
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg text-mute">
-          {all.length} reference blueprints for AI/ML systems across {DOMAINS.length} industries, and{' '}
-          <strong className="text-ink">one delivery guide</strong> for taking one from scoping to monitored
-          production. Each blueprint is checked for completeness and internal consistency and says what
-          evidence it has, so you can see what to adapt and test in your own environment.
-        </p>
-
-        <div className="mt-8">
-          <ManifestSummary release={release} />
-        </div>
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Link
-            href="/start"
-            className="btn !border-signal !bg-signal !text-white no-underline"
-            data-testid="cta-start"
-          >
-            New here? Start here <ArrowRight size={14} aria-hidden />
-          </Link>
-          <Link
-            href="/delivery"
-            className="btn !border-signal !bg-signal-soft !text-signal no-underline"
-            data-testid="cta-guide"
-          >
-            Start with the delivery guide <ArrowRight size={14} aria-hidden />
-          </Link>
-          <a href="#about" className="btn no-underline" data-testid="cta-about">
-            About this project
-          </a>
-          <a href="#domains" className="btn no-underline">
-            Browse use cases
-          </a>
-          <SearchTrigger />
-        </div>
-      </section>
-
-      {/* ── About Section: Built for Engineers ── */}
-      <section
-        id="about"
-        aria-labelledby="about-heading"
-        className="scroll-mt-20 border-t border-line/60 py-12"
-      >
-        <div className="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      {/* ── 1. What is this, and what do I do first? ── */}
+      <section className="hero-glow border-b border-line/60">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 pb-14 pt-12 sm:pb-20 sm:pt-20 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-signal-line bg-signal-soft px-3 py-1 font-mono text-xs font-medium text-signal">
-              <Sparkles size={12} aria-hidden />
-              <span>Engineers First · Zero-Noise Reference Platform</span>
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal">
+              Signal in. <span className="text-noise line-through decoration-2">Noise</span> out.
+            </p>
+            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+              Build AI systems that work in production
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-mute">
+              {all.length} ready-made blueprints across {DOMAINS.length} industries, and one step-by-step
+              guide that takes any of them from idea to a monitored, live system. Free to read.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link href="/start" className="btn-primary w-full sm:w-auto" data-testid="cta-start">
+                New here? Start here <ArrowRight size={16} aria-hidden />
+              </Link>
+              <a href="#industries" className="btn-secondary w-full sm:w-auto" data-testid="cta-browse">
+                Browse blueprints
+              </a>
             </div>
-            <h2
-              id="about-heading"
-              className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-3xl"
+            <div className="mt-5">
+              <SearchBar />
+            </div>
+
+            <dl
+              className="mt-10 grid grid-cols-2 gap-x-8 gap-y-4 sm:flex sm:flex-wrap sm:gap-x-10"
+              data-testid="home-stats"
             >
-              What is BrainSiphon all about?
-            </h2>
-          </div>
-          <Link
-            href="/about"
-            className="btn inline-flex items-center gap-1.5 text-xs text-signal no-underline hover:text-ink"
-          >
-            Read deep-dive architecture philosophy <ArrowRight size={14} aria-hidden />
-          </Link>
-        </div>
-
-        <p className="mt-4 max-w-3xl text-base leading-relaxed text-mute">
-          Most AI resources online are either vendor marketing gloss, toy single-prompt chat demos, or
-          academic papers that omit operational realities. When engineers are tasked with deploying AI systems
-          into mission-critical production environments—whether processing 2,500 real-time card transactions
-          per second or monitoring clinical ICU vitals—they are forced to invent production architectures,
-          NFRs, failure modes, data contracts, and capacity sizing from scratch.
-        </p>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-mute">
-          <strong className="text-ink">BrainSiphon is the engineering antidote</strong>: an open reference
-          platform containing {all.length} AI/ML system blueprints, a universal 7-phase delivery guide,
-          measurable non-functional requirements (NFRs), and executable starter kits tested in CI.
-        </p>
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="card p-5">
-            <div className="flex items-center gap-2.5 text-signal">
-              <Cpu size={18} aria-hidden />
-              <h3 className="font-semibold text-ink">Zero-Noise Blueprints</h3>
-            </div>
-            <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              Every blueprint defines exact latency budgets (P50/P95/P99), hardware requirements (GPU VRAM vs
-              KV cache sizing formulas), mathematical loss formulations, and explicit degraded fallback
-              ladders when inference fails.
-            </p>
-          </div>
-
-          <div className="card p-5">
-            <div className="flex items-center gap-2.5 text-signal">
-              <Layers size={18} aria-hidden />
-              <h3 className="font-semibold text-ink">Machine-Readable Contracts</h3>
-            </div>
-            <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              Downloadable, machine-readable specifications: OpenAPI 3.1 REST APIs, AsyncAPI 3.0 event streams
-              (Kafka/Flink), and point-in-time correct data contracts that prevent data leakage and schema
-              drift.
-            </p>
-          </div>
-
-          <div className="card p-5">
-            <div className="flex items-center gap-2.5 text-signal">
-              <Workflow size={18} aria-hidden />
-              <h3 className="font-semibold text-ink">Universal 7-Phase Delivery</h3>
-            </div>
-            <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              One coherent lifecycle from Phase 0 discovery and financial ROI models to Phase 6 SRE
-              operational runbooks. {ALL_STEPS.length} actionable steps, each naming exactly who does it, with
-              whom, and what artifact is produced.
-            </p>
-          </div>
-
-          <div className="card p-5">
-            <div className="flex items-center gap-2.5 text-signal">
-              <Terminal size={18} aria-hidden />
-              <h3 className="font-semibold text-ink">Executable Starters</h3>
-            </div>
-            <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              One complete worked use case, card and UPI fraud, free: a{' '}
-              <Link href="/implementations" className="text-signal hover:underline">
-                reference implementation
-              </Link>{' '}
-              that runs end to end with one command, its starter and its customer implementation pack, plus 11
-              pattern kits, all tested in CI. A runnable worked template for every other use case is in{' '}
-              <Link href="/pro" className="text-signal hover:underline">
-                BrainSiphon Pro
-              </Link>
-              .
-            </p>
-          </div>
-
-          <div className="card p-5">
-            <div className="flex items-center gap-2.5 text-signal">
-              <ShieldCheck size={18} aria-hidden />
-              <h3 className="font-semibold text-ink">Transparent Maturity</h3>
-            </div>
-            <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              Every blueprint carries a maturity scorecard with the evidence behind each level, from schema
-              validation to a tested starter. The <Link href="/release">release report</Link> lists what has
-              not been done, including every open feasibility warning and its remediation.
-            </p>
-          </div>
-
-          <div className="card p-5">
-            <div className="flex items-center gap-2.5 text-signal">
-              <CheckCircle2 size={18} aria-hidden />
-              <h3 className="font-semibold text-ink">15 Engineering Role Lenses</h3>
-            </div>
-            <p className="mt-2.5 text-xs leading-relaxed text-mute">
-              Filter any blueprint or delivery step to your exact discipline: Solution Architect, ML Engineer,
-              SRE, Platform Engineer, Data Scientist, Forward Deployed Engineer (FDE), or Security Officer.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Link
-            href="/about"
-            className="btn !border-signal !bg-signal-soft text-xs !text-signal no-underline"
-          >
-            Read the full About &amp; Engineering Guide <ArrowRight size={13} aria-hidden />
-          </Link>
-          <Link href="/delivery" className="btn text-xs no-underline">
-            Explore {ALL_STEPS.length}-Step Delivery Guide
-          </Link>
-          <Link href="/patterns" className="btn text-xs no-underline">
-            View Pattern Library
-          </Link>
-          <Link href="/deployment" className="btn text-xs no-underline">
-            Cloud Deployment &amp; IaC
-          </Link>
-        </div>
-      </section>
-
-      <section aria-labelledby="how" className="pb-6">
-        <h2 id="how" className="h-section">
-          How it works
-        </h2>
-        <ol className="mt-5 grid gap-4 md:grid-cols-3" data-testid="how-it-works">
-          {steps.map((s, i) => (
-            <li key={s.title} className="card flex flex-col p-5">
-              <span className="font-mono text-sm text-signal">Step {i + 1}</span>
-              <h3 className="mt-1 text-lg font-semibold text-ink">{s.title}</h3>
-              <p className="mt-2 flex-1 text-sm text-mute">{s.body}</p>
-              <Link href={s.href} className="mt-4 inline-flex items-center gap-1 text-sm text-signal">
-                {s.cta} <ArrowRight size={13} aria-hidden />
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section aria-labelledby="domains" className="py-10">
-        <h2 id="domains" className="h-section">
-          Pick a domain
-        </h2>
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {DOMAINS.map((d) => {
-            const items = all.filter((e) => e.domain === d);
-            // the paradigms this domain actually uses most, not the first three that happen to appear
-            const counts = new Map<Paradigm, number>();
-            for (const e of items) for (const p of e.mlParadigms) counts.set(p, (counts.get(p) ?? 0) + 1);
-            const para = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
-            return (
-              <Link
-                key={d}
-                href={`/${d}`}
-                className="card group flex flex-col p-5 no-underline transition hover:border-signal/60 hover:bg-raised/50"
-              >
-                <div className="flex items-baseline justify-between">
-                  <h3 className="font-semibold text-ink group-hover:text-signal">{DOMAIN_META[d].short}</h3>
-                  <span className="font-mono text-xs text-mute">{items.length}</span>
+              {[
+                [String(all.length), 'blueprints'],
+                [String(DOMAINS.length), 'industries'],
+                [String(ALL_STEPS.length), 'step delivery guide'],
+                ['Free', 'to read, always'],
+              ].map(([n, l]) => (
+                <div key={l} className="flex items-baseline gap-2">
+                  <dt className="text-2xl font-semibold text-ink">{n}</dt>
+                  <dd className="m-0 text-sm text-mute">{l}</dd>
                 </div>
-                <p className="mt-2 flex-1 text-sm text-mute">{DOMAIN_META[d].blurb}</p>
-                <p className="mt-3 text-xs text-dim">{para.map(([p]) => PARADIGM_LABEL[p]).join(' · ')}</p>
-              </Link>
-            );
-          })}
+              ))}
+            </dl>
+          </div>
+
+          {/* what a blueprint is, shown rather than described */}
+          <aside
+            className="card hidden p-6 lg:block"
+            aria-label="What is inside a blueprint"
+            data-testid="home-anatomy"
+          >
+            <p className="font-mono text-[11px] uppercase tracking-wider text-dim">Inside every blueprint</p>
+            <ol className="mt-5 space-y-5">
+              {SECTION_GROUPS.map((g) => (
+                <li key={g.id} className="border-l-2 border-signal-line pl-4">
+                  <p className="font-semibold text-ink">{g.label}</p>
+                  <p className="mt-0.5 text-sm text-mute">{g.blurb}</p>
+                </li>
+              ))}
+            </ol>
+            <Link
+              href={`/${FEATURED[0]}`}
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-signal no-underline hover:underline"
+            >
+              Open an example <ArrowRight size={14} aria-hidden />
+            </Link>
+          </aside>
         </div>
       </section>
 
-      <section aria-labelledby="featured" className="py-10">
-        <h2 id="featured" className="h-section">
-          Not sure? Start with one of these
-        </h2>
-        <ul className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {featured.map((e) => (
-            <li key={e.id}>
-              <Link
-                href={`/${e.slug}`}
-                className="card block h-full p-4 no-underline transition hover:border-signal/60"
-              >
-                <p className="font-mono text-[11px] uppercase tracking-wider text-dim">
-                  {DOMAIN_META[e.domain].short}
+      <div className="mx-auto max-w-7xl px-4">
+        {/* ── 2. How does it work? ── */}
+        <section aria-labelledby="how" className="py-14">
+          <p className="section-kicker">How it works</p>
+          <h2 id="how" className="section-title">
+            Three steps from a problem to a plan
+          </h2>
+          <ol className="mt-8 grid gap-4 md:grid-cols-3" data-testid="how-it-works">
+            {steps.map((s, i) => (
+              <li key={s.title} className="card flex flex-col p-6">
+                <span
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-signal-soft font-mono text-sm font-semibold text-signal"
+                  aria-hidden
+                >
+                  {i + 1}
+                </span>
+                <h3 className="mt-4 text-lg font-semibold text-ink">{s.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-mute">{s.body}</p>
+                <Link
+                  href={s.href}
+                  data-testid={s.testId}
+                  className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-signal no-underline hover:underline"
+                >
+                  {s.cta} <ArrowRight size={14} aria-hidden />
+                </Link>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-8">
+            <p className="text-sm text-mute">
+              The delivery guide has the same {DELIVERY_PHASES.length} phases for every use case. Each ends in
+              a gate that named people sign.
+            </p>
+            <ol
+              className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7"
+              data-testid="home-phases"
+            >
+              {DELIVERY_PHASES.map((p) => (
+                <li key={p.id}>
+                  <Link href={`/delivery#${p.id}`} className="card-link h-full p-3">
+                    <span className="font-mono text-xs text-signal">Phase {p.n}</span>
+                    <span className="mt-0.5 block font-semibold text-ink">{p.short}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* ── 3. Where do I begin? ── */}
+        <section
+          id="industries"
+          aria-labelledby="industries-h"
+          className="scroll-mt-20 border-t border-line/60 py-14"
+        >
+          <p className="section-kicker">Blueprints</p>
+          <h2 id="industries-h" className="section-title">
+            Pick an industry
+          </h2>
+          <p className="section-lead">
+            Each one has 50 solved blueprints. Open the one closest to your work.
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-5">
+            {DOMAINS.map((d) => (
+              <Link key={d} href={`/${d}`} className="card-link group flex h-full flex-col p-4 sm:p-5">
+                <h3 className="font-semibold text-ink group-hover:text-signal">{DOMAIN_META[d].short}</h3>
+                <p className="mt-2 flex-1 text-sm text-mute">{DOMAIN_META[d].topics}</p>
+                <p className="mt-3 font-mono text-xs text-dim">
+                  {all.filter((e) => e.domain === d).length} blueprints
                 </p>
-                <h3 className="mt-1 font-semibold text-ink">{e.title}</h3>
-                <p className="mt-2 line-clamp-2 text-sm text-mute">{e.summary}</p>
               </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
+            ))}
+          </div>
 
-      <section aria-labelledby="path" className="py-10">
-        <h2 id="path" className="h-section">
-          The delivery path
-        </h2>
-        <p className="mt-2 max-w-3xl text-sm text-mute">
-          The same seven phases for every use case. Each ends in a gate that named people sign.
-        </p>
-        <ol className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7" data-testid="home-phases">
-          {DELIVERY_PHASES.map((p) => (
-            <li key={p.id}>
-              <Link
-                href={`/delivery#${p.id}`}
-                className="card block h-full p-3 no-underline transition hover:border-signal/60"
-              >
-                <span className="font-mono text-xs text-signal">Phase {p.n}</span>
-                <span className="mt-0.5 block font-semibold text-ink">{p.short}</span>
-                <span className="mt-1 block text-xs text-mute">{p.name}</span>
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section aria-labelledby="inside" className="py-10">
-        <h2 id="inside" className="h-section">
-          What every blueprint contains
-        </h2>
-        <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SECTION_GROUPS.map((g) => (
-            <li key={g.id} className="card p-5">
-              <h3 className="font-semibold text-ink">{g.label}</h3>
-              <p className="mt-1 text-sm text-mute">{g.blurb}</p>
-              <ul className="mt-3 space-y-1 text-sm text-ink/90">
-                {g.sections.map((id) => (
-                  <li key={id} className="flex gap-2">
-                    <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-signal" aria-hidden />
-                    {sectionLabel.get(id)}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="roles" className="py-10">
-        <h2 id="roles" className="h-section">
-          Read it as your role
-        </h2>
-        <p className="mt-2 max-w-3xl text-sm text-mute">
-          Inside a blueprint, the Role lens keeps only the sections your role needs. In the delivery guide,
-          “Your role” keeps only your steps. Pick several roles if you hold several.
-        </p>
-        <details className="card mt-5 p-4">
-          <summary className="cursor-pointer text-sm font-semibold text-ink">
-            The {ROLE_IDS.length} roles and what each one owns
-          </summary>
-          <ul className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="role-cards">
-            {ROLE_IDS.map((r) => (
-              <li key={r} className="text-sm">
-                <p className="font-medium text-ink">
-                  <span className="kbd mr-2">{ROLE_META[r].key}</span>
-                  {ROLE_META[r].label}
-                </p>
-                <p className="mt-0.5 text-mute">{ROLE_OWNS[r]}</p>
+          <h3 className="mt-12 text-lg font-semibold text-ink">Not sure? Start with one of these</h3>
+          <ul className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {featured.map((e) => (
+              <li key={e.id}>
+                <Link href={`/${e.slug}`} className="card-link h-full p-4">
+                  <p className="font-mono text-[11px] uppercase tracking-wider text-dim">
+                    {DOMAIN_META[e.domain].short}
+                  </p>
+                  <p className="mt-1 font-semibold text-ink">{e.title}</p>
+                  <p className="mt-2 line-clamp-2 text-sm text-mute">{e.summary}</p>
+                </Link>
               </li>
             ))}
           </ul>
-        </details>
-      </section>
+        </section>
+
+        {/* ── 4. What is free, and what is Pro? ── */}
+        <section aria-labelledby="free-pro" className="border-t border-line/60 py-14">
+          <p className="section-kicker">Free and Pro</p>
+          <h2 id="free-pro" className="section-title">
+            Free to learn. Pro to build faster.
+          </h2>
+          <p className="section-lead">
+            Everything you need to understand and plan a system is free, and stays free. Pro is for when you
+            are ready to build.
+          </p>
+          <div className="mt-8 grid gap-4 md:grid-cols-2" data-testid="home-free-pro">
+            <div className="card flex flex-col p-6">
+              <p className="chip chip-signal self-start">Free</p>
+              <h3 className="mt-3 text-xl font-semibold text-ink">Read, learn and plan</h3>
+              <ul className="mt-4 flex-1 space-y-2 text-sm text-ink/90">
+                {[
+                  `All ${all.length} blueprints`,
+                  `The ${ALL_STEPS.length}-step delivery guide and its templates`,
+                  'Pattern kits with runnable code',
+                  'One complete worked use case: card and UPI fraud',
+                ].map((t) => (
+                  <li key={t} className="flex gap-2">
+                    <Check size={16} className="mt-0.5 shrink-0 text-signal" aria-hidden />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/start" className="btn-secondary mt-6 self-start">
+                Start free
+              </Link>
+            </div>
+            <div className="card flex flex-col border-warn/40 p-6">
+              <p className="chip self-start !border-warn/40 !bg-warn/10 !text-warn">
+                Pro · from {money(fromPrice)}, once
+              </p>
+              <h3 className="mt-3 text-xl font-semibold text-ink">Start building on day one</h3>
+              <ul className="mt-4 flex-1 space-y-2 text-sm text-ink/90">
+                {[
+                  `A runnable starter for each of the ${all.length} use cases`,
+                  'Filled-in project documents, contracts and deployment sizing',
+                  'No subscription, and every update to version 1',
+                ].map((t) => (
+                  <li key={t} className="flex gap-2">
+                    <Check size={16} className="mt-0.5 shrink-0 text-warn" aria-hidden />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/pro" className="btn-pro mt-6 self-start">
+                See what Pro includes
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 5. Can I trust it? ── */}
+        <section aria-labelledby="trust" className="border-t border-line/60 py-14">
+          <p className="section-kicker">Honesty</p>
+          <h2 id="trust" className="section-title">
+            What has been checked
+          </h2>
+          <p className="section-lead">
+            Every blueprint is checked for completeness and internal consistency, and says what evidence it
+            has. This is exactly what that does and does not prove, so you can see what to adapt and test in
+            your own environment.
+          </p>
+          <div className="mt-8">
+            <ManifestSummary release={release} />
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

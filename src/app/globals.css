@@ -86,6 +86,40 @@ a {
   .card {
     @apply rounded-xl border border-line bg-panel;
   }
+  /* A card that is a link: lifts its border on hover and focus. */
+  .card-link {
+    @apply card block no-underline transition hover:border-signal/60 hover:bg-raised/50 focus-visible:border-signal/60;
+  }
+
+  /* The one primary action on a page, and its quieter partner. Dark text on the signal colour is readable in both themes (white on the dark theme's light green was not). */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-signal bg-signal px-5 py-3 text-base font-semibold text-bg no-underline transition hover:brightness-110;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-raised px-5 py-3 text-base font-medium text-ink no-underline transition hover:border-mute hover:bg-line/60;
+  }
+  /* Pro actions use the warm accent so they are never confused with the free path. */
+  .btn-pro {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-warn/50 bg-warn/15 px-5 py-3 text-base font-semibold text-warn no-underline transition hover:bg-warn/25;
+  }
+
+  /* A page section's heading block: small label, title, one plain sentence. */
+  .section-kicker {
+    @apply font-mono text-xs uppercase tracking-[0.16em] text-signal;
+  }
+  .section-title {
+    @apply mt-2 scroll-mt-24 text-2xl font-semibold tracking-tight text-ink sm:text-3xl;
+  }
+  .section-lead {
+    @apply mt-3 max-w-2xl text-base text-mute;
+  }
+
+  /* A soft glow behind the home page hero; it follows the theme because it reads the theme's colours. */
+  .hero-glow {
+    background:
+      radial-gradient(50rem 24rem at 12% -8%, rgb(var(--c-signal) / 0.13), transparent 65%),
+      radial-gradient(36rem 20rem at 92% 0%, rgb(var(--c-accent) / 0.1), transparent 65%);
+  }
   .h-section {
     @apply scroll-mt-24 text-xl font-semibold tracking-tight text-ink;
   }

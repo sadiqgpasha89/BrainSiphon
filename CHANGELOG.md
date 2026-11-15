@@ -2,6 +2,20 @@
 
 Architecture, framework, version and implementation changes. Content changes to individual blueprints are visible in the git history of `content/usecases/`; each blueprint page shows the content version it was built from.
 
+## Unreleased: simpler navigation and home page for newcomers
+
+### Changed
+- Header: four things in the bar (Start here, Blueprints, Delivery guide, More) instead of up to nine links that appeared and disappeared by screen width. Blueprints opens the ten industries; More groups Patterns, Reference implementations, Deployment, FDE hub, About and the release report, each with a one-line explanation. Pro is a separate button so it is never mistaken for free content. On a phone the same lists open as one menu panel.
+- Home page: one headline, one primary action (Start here), a search box and a card showing what is inside a blueprint, then How it works, Pick an industry, Free and Pro, and What has been checked. The long About block, the blueprint-contents grid and the role-lens section moved out of the home page; they remain on `/about` and `/start`. The "what has been checked" strip moved from the hero to its own section, with the same figures and the same link to the release report.
+- `/pro`: a three-step "how you get it" section, a lead that separates learning (free) from building (Pro), and the FAQ and the list of 20 engines in expandable sections. Pro uses one warm accent everywhere (header, home page, this page).
+- `/start`: a plainer headline and one "Begin the first hour" button above the jump links.
+- Footer: three short columns instead of seventeen links with descriptions; the notes for tools and AI agents moved to a quiet bottom line, and a link to the source repository was added.
+- Primary buttons use dark text on the signal colour; white on the dark theme's light green did not have enough contrast.
+- Industry pages say "Industry" where they said "Domain", matching the menu. `DOMAIN_META` gained a short `topics` line used on cards and in menus.
+
+### Added
+- `src/lib/nav.ts`: the navigation written once; the header, phone menu and footer all read it.
+
 ## Unreleased: freemium split and BrainSiphon Pro
 
 ### Added

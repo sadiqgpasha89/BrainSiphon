@@ -20,9 +20,6 @@ export const metadata: Metadata = {
   alternates: { canonical: '/pro' },
 };
 
-const H2 = 'scroll-mt-24 text-2xl font-semibold tracking-tight text-ink';
-const KICK = 'font-mono text-xs uppercase tracking-wider text-signal';
-
 const packs = proCatalog.packs as ProCatalogEntry[];
 const totalFiles = packs.reduce((a, p) => a + p.files, 0);
 const engines = Object.entries(
@@ -58,39 +55,80 @@ const COMPARE: [string, string, string][] = [
   ['Customer implementation packs and the other reference implementations', '1', 'All'],
 ];
 
+const STEPS: [string, string][] = [
+  PRO_CHECKOUT_LIVE
+    ? ['Choose a plan', 'Pay once. There is no subscription, and updates to version 1 are included.']
+    : [
+        'Ask for early access',
+        'Checkout is not open yet, so the button sends an email request and you get the repository invitation by return.',
+      ],
+  [
+    'Receive the repository',
+    'You get the whole private repository: every worked template, the starter engines and the generator.',
+  ],
+  [
+    'Open your use case',
+    'Each use case has its own folder. Read WORKED_EXAMPLE.md, then run its starter on synthetic data.',
+  ],
+];
+
+const FAQ: [string, string][] = [
+  [
+    'What do I receive?',
+    'A download of the whole repository, with all worked templates, the engines and the generator, and every update to version 1, sent through the checkout provider.',
+  ],
+  [
+    'Can I use it for client work?',
+    'Yes, inside the licence: one engineer on the Individual plan, up to ten engineers in one company on the Team plan. You may not resell or republish the templates or the repository.',
+  ],
+  [
+    'Is there a refund?',
+    'If a template does not run as described, write to the contact address and it will be fixed or refunded.',
+  ],
+  [
+    'Do the free pages go away?',
+    'No. The blueprints, delivery guide, deployment kit and the one complete worked example stay free.',
+  ],
+];
+
+const CTA_ATTRS = PRO_CHECKOUT_LIVE ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+
 export default function ProPage() {
   return (
-    <div className="mx-auto max-w-5xl space-y-14 px-4 py-14" data-testid="pro-page">
+    <div className="mx-auto max-w-5xl space-y-16 px-4 py-14" data-testid="pro-page">
       <header>
-        <p className={KICK}>BrainSiphon Pro</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+        <p className="section-kicker !text-warn">BrainSiphon Pro</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-5xl">
           A worked template for every one of the {PRO_PACK_COUNT} use cases
         </h1>
-        <p className="mt-4 max-w-3xl text-mute">
-          The blueprints tell you what to build and what to avoid. Pro gives you the first week of the build,
-          already done for your use case: a runnable starter on synthetic data with its tests, the project
-          documents filled in from the blueprint, the contracts, and the deployment sizing. The free site
-          keeps one complete worked example so you can judge the quality before you buy.
+        <p className="mt-5 max-w-3xl text-lg text-mute">
+          The free blueprints tell you what to build. Pro gives you the first week of the build, already done
+          for your use case: a runnable starter on synthetic data, the project documents filled in, the
+          contracts and the deployment sizing.
         </p>
-        <p className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="mt-7 flex flex-wrap items-center gap-3">
           <a
             href={PRO_CTA_HREF}
             data-testid="pro-cta-top"
-            className="text-canvas rounded-md bg-signal px-4 py-2 text-sm font-medium no-underline hover:opacity-90"
-            {...(PRO_CHECKOUT_LIVE ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            className="btn-pro w-full sm:w-auto"
+            {...CTA_ATTRS}
           >
             {PRO_CHECKOUT_LIVE ? 'Get BrainSiphon Pro' : 'Ask for early access'}
           </a>
-          <Link href={`/${FREE_WORKED_EXAMPLE}`} className="text-sm text-mute hover:text-ink">
-            See the free worked example
+          <Link href={`/${FREE_WORKED_EXAMPLE}`} className="btn-secondary w-full sm:w-auto">
+            Try the free worked example first
           </Link>
+        </div>
+        <p className="mt-4 max-w-2xl text-sm text-mute">
+          Looking to learn or plan? Everything for that is free: all {PRO_PACK_COUNT} blueprints, the delivery
+          guide and one complete worked example. Pro is for when you are ready to build.
         </p>
-        <dl className="mt-8 grid gap-3 sm:grid-cols-4">
+        <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
             [String(PRO_PACK_COUNT), 'worked templates'],
             [String(PRO_ENGINE_COUNT), 'starter engines, plus hand-written starters'],
             [totalFiles.toLocaleString('en-US'), 'files in the repository'],
-            ['10', 'domains, 50 use cases each'],
+            ['10', 'industries, 50 use cases each'],
           ].map(([n, l]) => (
             <div key={l} className="card p-4">
               <dt className="text-2xl font-semibold text-ink">{n}</dt>
@@ -100,15 +138,17 @@ export default function ProPage() {
         </dl>
       </header>
 
-      <section aria-labelledby="inside" className="space-y-4">
-        <p className={KICK}>Every template contains</p>
-        <h2 id="inside" className={H2}>
-          What is inside one worked template
-        </h2>
+      <section aria-labelledby="inside" className="space-y-5">
+        <div>
+          <p className="section-kicker">Every template contains</p>
+          <h2 id="inside" className="section-title">
+            What is inside one worked template
+          </h2>
+        </div>
         <ul className="grid gap-3 sm:grid-cols-2">
           {PRO_PACK_CONTENTS.map((c) => (
             <li key={c.path} className="card p-4">
-              <p className="font-mono text-xs text-signal">{c.path}</p>
+              <p className="font-mono text-xs text-warn">{c.path}</p>
               <p className="mt-1 text-sm text-ink/90" data-prose>
                 {c.what}
               </p>
@@ -123,18 +163,45 @@ export default function ProPage() {
         </p>
       </section>
 
-      <section aria-labelledby="compare" className="space-y-4">
-        <p className={KICK}>Free and Pro</p>
-        <h2 id="compare" className={H2}>
-          What stays free
-        </h2>
+      <section aria-labelledby="how-buying" className="space-y-5">
+        <div>
+          <p className="section-kicker">How you get it</p>
+          <h2 id="how-buying" className="section-title">
+            Three steps, no account to manage
+          </h2>
+        </div>
+        <ol className="grid gap-4 md:grid-cols-3" data-testid="pro-steps">
+          {STEPS.map(([title, body], i) => (
+            <li key={title} className="card p-5">
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-warn/15 font-mono text-sm font-semibold text-warn"
+                aria-hidden
+              >
+                {i + 1}
+              </span>
+              <h3 className="mt-3 font-semibold text-ink">{title}</h3>
+              <p className="mt-1 text-sm text-mute" data-prose>
+                {body}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section aria-labelledby="compare" className="space-y-5">
+        <div>
+          <p className="section-kicker">Free and Pro</p>
+          <h2 id="compare" className="section-title">
+            What stays free
+          </h2>
+        </div>
         <div className="overflow-x-auto">
           <table className="bs-table" data-testid="pro-compare">
             <thead>
               <tr>
                 <th>Included</th>
                 <th>Free</th>
-                <th className="!text-signal">Pro</th>
+                <th className="!text-warn">Pro</th>
               </tr>
             </thead>
             <tbody>
@@ -142,7 +209,7 @@ export default function ProPage() {
                 <tr key={what}>
                   <td>{what}</td>
                   <td>{free}</td>
-                  <td className="text-signal/90">{pro}</td>
+                  <td className="font-medium text-warn">{pro}</td>
                 </tr>
               ))}
             </tbody>
@@ -150,72 +217,45 @@ export default function ProPage() {
         </div>
       </section>
 
-      <section aria-labelledby="engines" className="space-y-4">
-        <p className={KICK}>How the starters are built</p>
-        <h2 id="engines" className={H2}>
-          {PRO_ENGINE_COUNT} engines, one for each kind of problem
-        </h2>
-        <p className="max-w-3xl text-sm text-mute" data-prose>
-          Each use case runs the engine that implements its problem type, with a seed and settings drawn from
-          the use case itself, so every template reports its own numbers. An engine plants the traps the
-          blueprint warns about: late labels, leakage, drift, censoring, a channel that changes, a layout the
-          model has never seen.
-        </p>
-        <ul className="grid gap-2 sm:grid-cols-2" data-testid="pro-engines">
-          {engines.map(([id, e]) => (
-            <li key={id} className="card flex items-baseline justify-between gap-3 p-3 text-sm">
-              <span className="text-ink/90">{e.label}</span>
-              <span className="shrink-0 font-mono text-xs text-mute">{e.n} use cases</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="pricing" className="space-y-4">
-        <p className={KICK}>Pricing</p>
-        <h2 id="pricing" className={H2}>
-          One payment, no subscription
-        </h2>
+      <section aria-labelledby="pricing" className="space-y-5">
+        <div>
+          <p className="section-kicker">Pricing</p>
+          <h2 id="pricing" className="section-title">
+            One payment, no subscription
+          </h2>
+        </div>
         <div className="grid gap-4 sm:grid-cols-2" data-testid="pro-plans">
           {PRO_PLANS.map((p) => (
-            <div key={p.id} className="card flex flex-col p-5">
+            <div key={p.id} className="card flex flex-col p-6">
               <p className="text-sm font-medium text-ink">{p.name}</p>
-              <p className="mt-2 text-3xl font-semibold text-ink">
+              <p className="mt-2 text-4xl font-semibold text-ink">
                 {PRO_CURRENCY === 'USD' ? '$' : ''}
                 {p.price}
                 <span className="ml-2 text-sm font-normal text-mute">once · {p.seats}</span>
               </p>
-              <p className="mt-2 text-sm text-mute" data-prose>
+              <p className="mt-3 text-sm text-mute" data-prose>
                 {p.summary}
               </p>
-              <ul className="mt-3 space-y-1 text-sm text-ink/90">
+              <ul className="mt-4 flex-1 space-y-1.5 text-sm text-ink/90">
                 {p.features.map((f) => (
                   <li key={f}>· {f}</li>
                 ))}
               </ul>
-              <a
-                href={PRO_CTA_HREF}
-                className="text-canvas mt-5 self-start rounded-md bg-signal px-4 py-2 text-sm font-medium no-underline hover:opacity-90"
-                {...(PRO_CHECKOUT_LIVE ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              >
+              <a href={PRO_CTA_HREF} className="btn-pro mt-6 self-start" {...CTA_ATTRS}>
                 {PRO_CHECKOUT_LIVE ? `Buy ${p.name}` : 'Ask for early access'}
               </a>
             </div>
           ))}
         </div>
-        {!PRO_CHECKOUT_LIVE && (
-          <p className="text-sm text-mute" data-prose>
-            Checkout is not open yet. The button sends an email request and you will get the repository
-            invitation by return.
-          </p>
-        )}
       </section>
 
-      <section aria-labelledby="honest" className="space-y-4">
-        <p className={KICK}>Before you buy</p>
-        <h2 id="honest" className={H2}>
-          What a worked template is not
-        </h2>
+      <section aria-labelledby="honest" className="space-y-5">
+        <div>
+          <p className="section-kicker">Before you buy</p>
+          <h2 id="honest" className="section-title">
+            What a worked template is not
+          </h2>
+        </div>
         <ul className="max-w-3xl list-disc space-y-2 pl-5 text-sm text-ink/90" data-prose>
           <li>
             The starter runs on synthetic data. It plants the traps the blueprint names so each lesson is
@@ -236,38 +276,46 @@ export default function ProPage() {
         </ul>
       </section>
 
-      <section aria-labelledby="faq" className="space-y-4">
-        <p className={KICK}>Questions</p>
-        <h2 id="faq" className={H2}>
-          How buying works
-        </h2>
-        <dl className="max-w-3xl space-y-4 text-sm">
-          {[
-            [
-              'What do I receive?',
-              'A download of the whole repository, with all worked templates, the engines and the generator, and every update to version 1, sent through the checkout provider.',
-            ],
-            [
-              'Can I use it for client work?',
-              'Yes, inside the licence: one engineer on the Individual plan, up to ten engineers in one company on the Team plan. You may not resell or republish the templates or the repository.',
-            ],
-            [
-              'Is there a refund?',
-              'If a template does not run as described, write to the contact address and it will be fixed or refunded.',
-            ],
-            [
-              'Do the free pages go away?',
-              'No. The blueprints, delivery guide, deployment kit and the one complete worked example stay free.',
-            ],
-          ].map(([q, a]) => (
-            <div key={q}>
-              <dt className="font-medium text-ink">{q}</dt>
-              <dd className="mt-1 text-mute" data-prose>
+      <section aria-labelledby="faq" className="space-y-5">
+        <div>
+          <p className="section-kicker">Questions</p>
+          <h2 id="faq" className="section-title">
+            Good to know
+          </h2>
+        </div>
+        <div className="max-w-3xl space-y-2" data-testid="pro-faq">
+          {FAQ.map(([q, a]) => (
+            <details key={q} className="card group p-4">
+              <summary className="cursor-pointer font-medium text-ink">{q}</summary>
+              <p className="mt-2 text-sm text-mute" data-prose>
                 {a}
-              </dd>
-            </div>
+              </p>
+            </details>
           ))}
-        </dl>
+        </div>
+
+        <details className="card max-w-3xl p-4" data-testid="pro-engines-details">
+          <summary className="cursor-pointer font-medium text-ink" data-testid="pro-engines-toggle">
+            How the starters are built: {PRO_ENGINE_COUNT} engines, one for each kind of problem
+          </summary>
+          <p className="mt-3 text-sm text-mute" data-prose>
+            Each use case runs the engine that implements its problem type, with a seed and settings drawn
+            from the use case itself, so every template reports its own numbers. An engine plants the traps
+            the blueprint warns about: late labels, leakage, drift, censoring, a channel that changes, a
+            layout the model has never seen.
+          </p>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2" data-testid="pro-engines">
+            {engines.map(([id, e]) => (
+              <li
+                key={id}
+                className="flex items-baseline justify-between gap-3 rounded-lg border border-line p-3 text-sm"
+              >
+                <span className="text-ink/90">{e.label}</span>
+                <span className="shrink-0 font-mono text-xs text-mute">{e.n} use cases</span>
+              </li>
+            ))}
+          </ul>
+        </details>
       </section>
     </div>
   );
