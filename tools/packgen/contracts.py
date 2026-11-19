@@ -157,7 +157,7 @@ def compose(u: dict) -> str:
 services:
   starter:
     build: ../starter
-    image: brainsiphon-pro/{name}:starter
+    image: brainsiphon/{name}:starter
     command: ["python", "run_usecase.py"]
     environment:
       OMP_NUM_THREADS: "2"
@@ -165,7 +165,7 @@ services:
       - ../starter:/app
   tests:
     build: ../starter
-    image: brainsiphon-pro/{name}:starter
+    image: brainsiphon/{name}:starter
     command: ["python", "-m", "pytest", "-q"]
     environment:
       OMP_NUM_THREADS: "2"

@@ -395,7 +395,7 @@ test('home page leads a newcomer from a use case to the delivery guide', async (
   await expect(page.getByRole('heading', { level: 1 })).toContainText('From project scoping to deployment');
 });
 
-test('a newcomer sees a short header: two links, two menus and Pro, with one primary action on the home page', async ({
+test('a newcomer sees a short header: two links, two menus and worked templates, with one primary action on the home page', async ({
   page,
 }) => {
   await page.goto('/');
@@ -418,7 +418,15 @@ test('on a phone the header becomes one menu that carries every destination, wit
   await expect(page.getByRole('navigation', { name: 'Main', exact: true })).toBeHidden();
   await page.getByTestId('nav-menu').click();
   const menu = page.getByRole('navigation', { name: 'Mobile', exact: true });
-  for (const name of ['Start here', 'Delivery guide', 'Worked templates', 'FinTech', 'Real Estate', 'Patterns', 'About']) {
+  for (const name of [
+    'Start here',
+    'Delivery guide',
+    'Worked templates',
+    'FinTech',
+    'Real Estate',
+    'Patterns',
+    'About',
+  ]) {
     await expect(menu.getByRole('link', { name: new RegExp(`^${name}`) }).first()).toBeVisible();
   }
   await page.keyboard.press('Escape');
@@ -808,7 +816,9 @@ test('one open site: every use case shows its worked example and links to its te
 }) => {
   await page.goto('/fintech/real-time-card-upi-fraud-detection');
   await expect(page.locator('#pb-example')).toContainText('Outcome');
-  await expect(page.locator('#pb-example a[href*="/templates/fintech/real-time-card-upi-fraud-detection"]')).toHaveCount(1);
+  await expect(
+    page.locator('#pb-example a[href*="/templates/fintech/real-time-card-upi-fraud-detection"]'),
+  ).toHaveCount(1);
 
   // any other use case shows its worked example too, with a link to its own template folder
   await page.goto('/saas/in-app-ai-copilot');

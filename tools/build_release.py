@@ -1,9 +1,9 @@
-"""Build the ZIP you upload to the checkout provider.
+"""Build the ZIP release archive.
 
-    python3 tools/build_release.py [--licensee "Jane Doe <jane@example.com>"] [--version 1.0.0]
+    python3 tools/build_release.py [--version 1.0.0]
 
-Writes dist/brainsiphon-pro-<version>.zip and dist/SHA256SUMS. The archive contains the repository without git history, reports and the
-owner/ folder. With --licensee, a LICENSED-TO.txt naming the buyer is added, so a leaked copy can be traced to a licence.
+Writes dist/brainsiphon-<version>.zip and dist/SHA256SUMS. The archive contains the repository without git history, reports and the
+owner/ folder.
 Run tools/validate_repo.py first: this script refuses to build when it fails.
 """
 from __future__ import annotations
@@ -33,7 +33,7 @@ def main() -> int:
         return 1
     dist = ROOT / "dist"
     dist.mkdir(exist_ok=True)
-    name = f"brainsiphon-pro-{version}" + (f"-{re.sub(r'[^a-z0-9]+', '-', a.licensee.lower()).strip('-')[:40]}" if a.licensee else "")
+    name = f"brainsiphon-{version}" + (f"-{re.sub(r'[^a-z0-9]+', '-', a.licensee.lower()).strip('-')[:40]}" if a.licensee else "")
     out = dist / f"{name}.zip"
     count = 0
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
@@ -41,10 +41,10 @@ def main() -> int:
             rel = p.relative_to(ROOT)
             if not p.is_file() or set(rel.parts) & SKIP_DIRS or p.suffix in SKIP_SUFFIX:
                 continue
-            z.write(p, f"brainsiphon-pro/{rel}")
+            z.write(p, f"brainsiphon/{rel}")
             count += 1
         if a.licensee:
-            z.writestr("brainsiphon-pro/LICENSED-TO.txt", f"This copy of BrainSiphon Pro {version} is licensed to:\n{a.licensee}\n\nSee LICENSE.md. Do not share it.\n")
+            z.writestr("brainsiphon/LICENSED-TO.txt", f"This copy of BrainSiphon {version} is licensed to:\n{a.licensee}\n\nSee LICENSE.md.\n")
     digest = hashlib.sha256(out.read_bytes()).hexdigest()
     (dist / "SHA256SUMS").open("a").write(f"{digest}  {out.name}\n")
     print(f"{out.relative_to(ROOT)}: {count} files, {out.stat().st_size / 1e6:.1f} MB, sha256 {digest[:16]}…")

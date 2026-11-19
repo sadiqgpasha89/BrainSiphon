@@ -86,10 +86,10 @@ family, are in this repository.
 
 | Implementation | Family | Worked use case | Checks | Where |
 | --- | --- | --- | --- | --- |
-| [`realtime-decisioning`](reference-implementations/realtime-decisioning/) | Real-time decisioning | Card and UPI fraud | 26 tests, 19-check verification | free |
-| `batch-forecasting` | Forecasting; adaptable to batch analytics | Demand sensing | 16 tests, 21-check verification | Pro |
-| `rag-assistant` | Retrieval-augmented generation | Developer documentation assistant | 15 tests, 21-check verification | Pro |
-| `agentic-workflow` | Agentic workflow | SOC alert triage | 17 tests, 23-check verification | Pro |
+| [`realtime-decisioning`](reference-implementations/realtime-decisioning/) | Real-time decisioning | Card and UPI fraud | 26 tests, 19-check verification | In repo |
+| [`batch-forecasting`](reference-implementations/batch-forecasting/) | Forecasting; adaptable to batch analytics | Demand sensing | 16 tests, 21-check verification | In repo |
+| [`rag-assistant`](reference-implementations/rag-assistant/) | Retrieval-augmented generation | Developer documentation assistant | 15 tests, 21-check verification | In repo |
+| [`agentic-workflow`](reference-implementations/agentic-workflow/) | Agentic workflow | SOC alert triage | 17 tests, 23-check verification | In repo |
 
 Each one implements, in the same directory layout, source-system integration, ingestion and CDC, validation, feature
 engineering and storage, training and evaluation, packaging and a registry, online inference or batch processing, a backend

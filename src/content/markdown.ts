@@ -114,7 +114,7 @@ export function toMarkdown(u: UseCase, origin = 'https://brainsiphon.com', relea
   experimentationMarkdown(u, L);
   metricsMarkdown(u, L);
   agenticMarkdown(u.agentic, L);
-  if (u.playbook) playbookMarkdown(u.playbook, L, origin);
+  if (u.playbook) playbookMarkdown(u.playbook, L);
   validationMarkdown(u, L, release, origin);
   return `${L.join('\n')}\n`;
 }
@@ -188,7 +188,7 @@ function agenticMarkdown(a: Agentic, L: string[]) {
   a.whenNotToUse.forEach((x) => L.push(`- ${x}`));
 }
 
-function playbookMarkdown(pb: Playbook, L: string[], origin: string) {
+function playbookMarkdown(pb: Playbook, L: string[]) {
   const c = pb.compatibility;
   const k = pb.completion;
   L.push('', '## Build playbook', '', pb.summary, '', '### What this playbook gives you, and where your platform starts', '');

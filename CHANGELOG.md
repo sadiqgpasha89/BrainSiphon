@@ -5,21 +5,16 @@ Architecture, framework, version and implementation changes. Content changes to 
 ## Unreleased: one free site, with the worked templates in the repository
 
 ### Changed
-- The Pro repository is merged into this one and is free: the 500 worked templates (`templates/`), the 20 starter engines (`engines/`), the generator and tools (`tools/`, `vendor/`, `data/`), the ten implementation packs (`fde-packs/`), the four reference implementations (`reference-implementations/`) and their CI (`.github/workflows/templates-ci.yml`).
-- Licence: MIT, in `LICENSE.md`. This replaces the Pro licence, which no longer applies to this repository.
-- Every use case page shows its worked example, and links to its folder under `templates/`. The worked example was previously withheld on all but one use case.
-- Home page, header, footer and the implementations page describe what is free instead of Pro. The "Worked templates" link in the header and footer points at the `templates/` folder on GitHub.
-- The owner-only notes that were in the Pro repository are not part of this repository.
-
-### Removed
-- `/pro`, its prices and its early-access buttons. `src/lib/pro.ts`, `src/components/reader/ProLock.tsx`, `content/pro.json` and `content/pro-catalog.json`. Links to `/pro` now return 404.
+- The repository is completely open and free: the 500 worked templates (`templates/`), the 20 starter engines (`engines/`), the generator and tools (`tools/`, `vendor/`, `data/`), the ten implementation packs (`fde-packs/`), the four reference implementations (`reference-implementations/`) and their CI (`.github/workflows/templates-ci.yml`).
+- Licence: MIT, in `LICENSE.md`.
+- Every use case page shows its worked example, and links to its folder under `templates/`.
+- Home page, header, footer and the implementations page describe what is free and open. The "Worked templates" link in the header and footer points at the `templates/` folder on GitHub.
 
 ## Unreleased: simpler navigation and home page for newcomers
 
 ### Changed
-- Header: four things in the bar (Start here, Blueprints, Delivery guide, More) instead of up to nine links that appeared and disappeared by screen width. Blueprints opens the ten industries; More groups Patterns, Reference implementations, Deployment, FDE hub, About and the release report, each with a one-line explanation. Pro is a separate button so it is never mistaken for free content. On a phone the same lists open as one menu panel.
-- Home page: one headline, one primary action (Start here), a search box and a card showing what is inside a blueprint, then How it works, Pick an industry, Free and Pro, and What has been checked. The long About block, the blueprint-contents grid and the role-lens section moved out of the home page; they remain on `/about` and `/start`. The "what has been checked" strip moved from the hero to its own section, with the same figures and the same link to the release report.
-- `/pro`: a three-step "how you get it" section, a lead that separates learning (free) from building (Pro), and the FAQ and the list of 20 engines in expandable sections. Pro uses one warm accent everywhere (header, home page, this page).
+- Header: four things in the bar (Start here, Blueprints, Delivery guide, More) instead of up to nine links that appeared and disappeared by screen width. Blueprints opens the ten industries; More groups Patterns, Reference implementations, Deployment, FDE hub, About and the release report, each with a one-line explanation. On a phone the same lists open as one menu panel.
+- Home page: one headline, one primary action (Start here), a search box and a card showing what is inside a blueprint, then How it works, Pick an industry, and What has been checked. The long About block, the blueprint-contents grid and the role-lens section moved out of the home page; they remain on `/about` and `/start`. The "what has been checked" strip moved from the hero to its own section, with the same figures and the same link to the release report.
 - `/start`: a plainer headline and one "Begin the first hour" button above the jump links.
 - Footer: three short columns instead of seventeen links with descriptions; the notes for tools and AI agents moved to a quiet bottom line, and a link to the source repository was added.
 - Primary buttons use dark text on the signal colour; white on the dark theme's light green did not have enough contrast.
@@ -27,23 +22,6 @@ Architecture, framework, version and implementation changes. Content changes to 
 
 ### Added
 - `src/lib/nav.ts`: the navigation written once; the header, phone menu and footer all read it.
-
-## Unreleased: freemium split and BrainSiphon Pro
-
-### Added
-- `/pro`: what BrainSiphon Pro contains, what stays free, the plans and how buying works. Linked from the header, footer and every locked worked example. `content/pro.json` holds the free use case and the plans; `NEXT_PUBLIC_PRO_CHECKOUT_URL` (repository variable `PRO_CHECKOUT_URL`) turns the early-access buttons into a checkout link.
-- `content/pro-catalog.json`: the public listing of what each of the 500 Pro worked templates contains (engine, fit, file and document counts). It contains no results.
-- A locked panel in place of the worked example on every use case except the free one, and a pointer to `/pro` in its Markdown export.
-
-### Changed
-- The worked example of a build playbook is published for one use case only (card and UPI fraud). For the other 499 it is removed when the content is expanded, so it is absent from the generated JSON, the Markdown exports and the HTML. The playbook's milestones, gates, tests, decisions, pitfalls, compatibility analysis and the pattern kits are unchanged.
-- The free implementation assets are one use case deep: one authored starter, one executable customer implementation pack (`fde-packs/`), one reference implementation (`reference-implementations/realtime-decisioning`). The `/implementations` page describes the other three and links to `/pro`.
-
-### Removed from this repository (now in BrainSiphon Pro)
-- Seven hand-written starters from `content/playbooks/` (CTR, SOC copilot, knowledge tracing, sepsis, session recommendation, developer docs assistant, demand sensing).
-- Nine executable customer implementation packs from `fde-packs/` and their authored text under `src/content/fde/packs/`, and the three adapters that only existed inside them (Zendesk, workforce management, RESO).
-- Three reference implementations (`batch-forecasting`, `rag-assistant`, `agentic-workflow`).
-- Anything already published stays in the git history of this repository; the Pro repository is built from the same material plus 500 new worked templates that were never public.
 
 ## Unreleased: evidence, versions and implementation packages
 

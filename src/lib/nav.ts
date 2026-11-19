@@ -67,6 +67,11 @@ export const MORE_LINKS: NavLink[] = [
     label: 'Release report',
     blurb: 'What has been checked, and what has not.',
   },
+  {
+    href: 'https://sadiqgpasha89.github.io',
+    label: 'Portfolio',
+    blurb: 'Return to Sadiq G Pasha portfolio.',
+  },
 ];
 
 /** Extra pages that belong to a section for the purpose of "you are here" highlighting. */

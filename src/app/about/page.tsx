@@ -627,6 +627,12 @@ export default async function AboutPage() {
 
           <div className="flex flex-wrap items-center gap-2.5">
             <a
+              href="https://sadiqgpasha89.github.io"
+              className="btn inline-flex items-center gap-2 text-xs no-underline hover:text-signal"
+            >
+              <ExternalLink size={13} aria-hidden /> Portfolio
+            </a>
+            <a
               href="https://github.com/sadiqgpasha89"
               target="_blank"
               rel="noreferrer"

@@ -20,7 +20,6 @@ const FEATURED = [
   'saas/in-app-ai-copilot',
 ];
 
-
 export default async function Home() {
   const all = await getIndex();
   const release = await getRelease();
@@ -222,8 +221,8 @@ export default async function Home() {
             Every blueprint, and a worked template for each one.
           </h2>
           <p className="section-lead">
-            Nothing here is paid. Read the blueprints, then take the worked template for your use case from the
-            repository and run it.
+            Nothing here is paid. Read the blueprints, then take the worked template for your use case from
+            the repository and run it.
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-2" data-testid="home-free">
             <div className="card flex flex-col p-6">

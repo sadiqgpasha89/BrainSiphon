@@ -233,7 +233,7 @@ for d in sorted(p for p in E.iterdir() if p.is_dir()):
     eid = d.name
     if eid in NEW:
         label, summary, types, traps = NEW[eid]
-        meta = {"id": eid, "label": label, "summary": summary, "problemTypes": types, "traps": traps, "origin": "brainsiphon-pro"}
+        meta = {"id": eid, "label": label, "summary": summary, "problemTypes": types, "traps": traps, "origin": "brainsiphon"}
     else:
         kit = json.loads((d / "kit.json").read_text())
         c = contracts.get(eid, {})

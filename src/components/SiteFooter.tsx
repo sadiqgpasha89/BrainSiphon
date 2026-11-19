@@ -19,7 +19,11 @@ export async function SiteFooter() {
             Blueprints for AI/ML systems, and one guide that takes any of them from scoping to monitoring.
             Free to read.
           </p>
-          <p className="mt-3">
+          <p className="mt-3 flex items-center gap-3">
+            <a href="https://sadiqgpasha89.github.io" className={A}>
+              Portfolio
+            </a>
+            <span className="text-dim">·</span>
             <a
               href="https://github.com/sadiqgpasha89/BrainSiphon"
               className={A}

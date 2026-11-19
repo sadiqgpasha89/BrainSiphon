@@ -289,7 +289,7 @@ function KitFit({ pb }: { pb: Playbook }) {
 }
 
 /** The "Build playbook": everything an intermediate engineer needs to go from blueprint to a shipped system. */
-export async function PlaybookSection({ pb, slug, title }: { pb: Playbook; slug: string; title: string }) {
+export async function PlaybookSection({ pb, slug }: { pb: Playbook; slug: string; title?: string }) {
   const starter = pb.starter;
   return (
     <Section
@@ -614,8 +614,9 @@ export async function PlaybookSection({ pb, slug, title }: { pb: Playbook; slug:
               <strong>Outcome. </strong>
               {pb.workedExample.outcome}
             </p>
-          <p className="text-sm text-mute" data-prose>
-              The full worked template for this use case, with its starter, tests, saved results, documents and contracts, is in the repository:{' '}
+            <p className="text-sm text-mute" data-prose>
+              The full worked template for this use case, with its starter, tests, saved results, documents
+              and contracts, is in the repository:{' '}
               <a href={`${TEMPLATES_URL}/${slug}`} className="text-signal hover:underline">
                 templates/{slug}
               </a>

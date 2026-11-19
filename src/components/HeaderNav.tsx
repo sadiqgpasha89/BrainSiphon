@@ -188,6 +188,13 @@ export function HeaderNav() {
         className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-b border-line bg-bg shadow-xl shadow-black/30 lg:hidden"
       >
         <nav aria-label="Mobile" className="mx-auto max-w-7xl space-y-6 px-4 py-5">
+          <div className="border-b border-line pb-2">
+            <a href="https://sadiqgpasha89.github.io" className={`${ITEM} font-medium`}>
+              <span className="block text-base font-semibold text-signal">← Portfolio</span>
+              <span className="block text-sm text-mute">Return to sadiqgpasha89.github.io</span>
+            </a>
+          </div>
+
           <ul className="space-y-1">
             {[START_LINK, GUIDE_LINK, TEMPLATES_LINK].map((l) => (
               <li key={l.href}>

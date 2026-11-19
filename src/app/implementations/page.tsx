@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { CheckCircle2, CircleDashed, Lock, Terminal } from 'lucide-react';
+import { CheckCircle2, CircleDashed, Terminal } from 'lucide-react';
 import { ARCHETYPE_LABEL, type Archetype } from '../../schemas/usecase.schema';
 
 export const revalidate = 86400;
 export const metadata: Metadata = {
   title: 'Reference implementations — BrainSiphon',
   description:
-    'One complete, runnable system is free and three more are in the reference-implementations folder, one per solution family: source system, CDC, validation, features, training, registry, serving, API, application, authentication, human review, monitoring and retraining. Clone, make setup, make demo.',
+    'Four complete, runnable systems are in the reference-implementations folder, one per solution family: source system, CDC, validation, features, training, registry, serving, API, application, authentication, human review, monitoring and retraining. Clone, make setup, make demo.',
 };
 
 const REPO = 'https://github.com/sadiqgpasha89/BrainSiphon/tree/main/reference-implementations';
@@ -73,7 +73,7 @@ const REPO_IMPLS: Impl[] = [
 const COVERAGE: {
   archetype: Archetype;
   count: number;
-  status: 'own' | 'pro' | 'adapt' | 'none';
+  status: 'own' | 'adapt' | 'none';
   note: string;
 }[] = [
   {
@@ -85,9 +85,9 @@ const COVERAGE: {
   { archetype: 'realtime-decisioning', count: 100, status: 'own', note: 'realtime-decisioning' },
   { archetype: 'computer-vision', count: 66, status: 'none', note: 'No reference implementation yet' },
   { archetype: 'document-extraction', count: 48, status: 'none', note: 'No reference implementation yet' },
-  { archetype: 'rag', count: 44, status: 'pro', note: 'rag-assistant (in the repo)' },
-  { archetype: 'forecasting', count: 35, status: 'pro', note: 'batch-forecasting (in the repo)' },
-  { archetype: 'agentic-workflow', count: 35, status: 'pro', note: 'agentic-workflow (in the repo)' },
+  { archetype: 'rag', count: 44, status: 'own', note: 'rag-assistant' },
+  { archetype: 'forecasting', count: 35, status: 'own', note: 'batch-forecasting' },
+  { archetype: 'agentic-workflow', count: 35, status: 'own', note: 'agentic-workflow' },
   { archetype: 'optimisation', count: 32, status: 'none', note: 'No reference implementation yet' },
   { archetype: 'recommendation', count: 21, status: 'none', note: 'No reference implementation yet' },
 ];
@@ -140,7 +140,8 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
 
       <section className="space-y-5" data-testid="implementations-list">
         <h2 className="text-xl font-semibold text-ink">
-          Four systems, because the families differ in kind: one free to read on the site, three more in the repository
+          Four systems, because the families differ in kind: complete, runnable implementations in the
+          repository
         </h2>
         <div className="grid gap-5 md:grid-cols-2">
           {IMPLS.map((i) => (
@@ -178,7 +179,7 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
             <article key={i.dir} className="card space-y-3 p-6" data-testid="implementation-repo">
               <p className="font-mono text-xs uppercase tracking-wide text-dim">{i.family}</p>
               <h3 className="flex items-center gap-2 text-lg font-semibold text-ink">
-                <Lock size={15} className="text-signal" aria-hidden />
+                <CheckCircle2 size={15} className="text-signal" aria-hidden />
                 {i.dir}
                 <span className="chip chip-accent">In repo</span>
               </h3>
@@ -193,7 +194,10 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
                 {i.checks}-check end-to-end verification
               </p>
               <p className="text-xs">
-                <Link href={`https://github.com/sadiqgpasha89/BrainSiphon/tree/main/reference-implementations/${i.dir}`} className="text-signal hover:underline">
+                <Link
+                  href={`https://github.com/sadiqgpasha89/BrainSiphon/tree/main/reference-implementations/${i.dir}`}
+                  className="text-signal hover:underline"
+                >
                   View the source
                 </Link>
               </p>
@@ -227,8 +231,6 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
                     <span className="inline-flex items-center gap-1.5">
                       {c.status === 'none' ? (
                         <CircleDashed size={14} className="text-dim" aria-hidden />
-                      ) : c.status === 'pro' ? (
-                        <Lock size={14} className="text-signal" aria-hidden />
                       ) : (
                         <CheckCircle2 size={14} className="text-signal" aria-hidden />
                       )}
