@@ -1,0 +1,53 @@
+{
+ "slug": "saas/data-quality-anomaly-detection",
+ "title": "Data Quality Anomaly Detection",
+ "domain": "saas",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 16824,
+ "knobs": {
+  "n_series": 111,
+  "anomalies_per_series": 3.353
+ },
+ "blueprintSignals": [
+  {
+   "name": "Freshness delay vs expected",
+   "definition": "time since last load vs schedule",
+   "asOfRule": "Schedule metadata"
+  },
+  {
+   "name": "Volume and null-rate deviation",
+   "definition": "z-score",
+   "asOfRule": "Baseline"
+  },
+  {
+   "name": "Downstream consumer count",
+   "definition": "lineage fan-out",
+   "asOfRule": "Lineage graph"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Data Quality Anomaly Detection\": Detect freshness, volume, schema and distribution problems in data pipelines before dashboards and models break. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Injected anomalies only."
+}

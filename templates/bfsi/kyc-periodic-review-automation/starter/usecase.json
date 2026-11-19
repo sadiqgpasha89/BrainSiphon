@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/kyc-periodic-review-automation",
+ "title": "KYC Periodic Review Automation & Risk Re-rating",
+ "domain": "bfsi",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 24671,
+ "knobs": {
+  "n_docs": 4890
+ },
+ "blueprintSignals": [
+  {
+   "name": "Ownership change",
+   "definition": "change in beneficial ownership recorded in a company registry since the last review",
+   "asOfRule": "Registries update late"
+  },
+  {
+   "name": "Adverse media hit",
+   "definition": "match of the customer or an owner in negative news with a score",
+   "asOfRule": "Precision is low for common names"
+  },
+  {
+   "name": "Activity versus profile",
+   "definition": "monthly transaction volume divided by the volume expected for the profile",
+   "asOfRule": "Baselines are weak for new customers"
+  },
+  {
+   "name": "Document expiry",
+   "definition": "days until identity and address documents expire",
+   "asOfRule": "Dates are entered by hand and may be wrong"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"KYC Periodic Review Automation & Risk Re-rating\": Automate periodic KYC refreshes by checking customer files against fresh data and re-rating risk, escalating changes to analysts. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels come from past analyst decisions, so the model repeats earlier habits."
+}

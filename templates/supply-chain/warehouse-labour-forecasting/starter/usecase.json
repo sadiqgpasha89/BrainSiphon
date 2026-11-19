@@ -1,0 +1,52 @@
+{
+ "slug": "supply-chain/warehouse-labour-forecasting",
+ "title": "Warehouse Labour Demand Forecasting",
+ "domain": "supply-chain",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 45924,
+ "knobs": {
+  "n_series": 240
+ },
+ "blueprintSignals": [
+  {
+   "name": "Forecast order lines by type",
+   "definition": "lines by category",
+   "asOfRule": "Forecast"
+  },
+  {
+   "name": "Task standard times",
+   "definition": "engineered times",
+   "asOfRule": "Standards version"
+  },
+  {
+   "name": "Staffing experience mix",
+   "definition": "share of new workers",
+   "asOfRule": "Roster"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Warehouse Labour Demand Forecasting\": Forecast labour hours needed by task and shift from order inflow and process mix to plan staffing and overtime. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Forecasting hours that were constrained by staffing."
+}

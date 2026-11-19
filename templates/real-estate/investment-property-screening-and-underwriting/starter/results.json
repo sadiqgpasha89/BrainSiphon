@@ -1,0 +1,42 @@
+{
+ "use_case": "real-estate/investment-property-screening-and-underwriting",
+ "engine": "generative",
+ "seed": 40910,
+ "knobs": {
+  "n": 315
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "golden_items": 315,
+  "v1_pass_rate_strict_judge": 0.17777777777777778,
+  "v1_pass_rate_fuzzy_judge": 0.4888888888888889,
+  "v2_pass_rate_fuzzy_judge": 0.6031746031746031,
+  "v1_pass_rate_ci95": [
+   0.4347619047619048,
+   0.546031746031746
+  ],
+  "v2_minus_v1": 0.11428571428571428,
+  "v2_minus_v1_ci95": [
+   0.03484126984126985,
+   0.1873015873015873
+  ],
+  "judge_agreement_kappa_v1": 0.36873747494989983,
+  "judge_disagreement_share_v1": 0.3111111111111111,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.46984126984126984,
+   "date_correct": 0.1746031746031746,
+   "within_length": 0.031746031746031744,
+   "no_forbidden_claims": 0.05714285714285714
+  },
+  "ci_width_at_60_items": 0.21666666666666662,
+  "ci_width_at_full_set": 0.11126984126984119
+ }
+}

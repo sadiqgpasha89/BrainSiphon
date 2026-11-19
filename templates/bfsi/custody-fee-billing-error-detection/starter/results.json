@@ -1,0 +1,34 @@
+{
+ "use_case": "bfsi/custody-fee-billing-error-detection",
+ "engine": "tabular",
+ "seed": 72063,
+ "knobs": {
+  "n_entities": 2520,
+  "positive_entity_rate": 0.022,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.7,
+ "results": {
+  "rows": 193331,
+  "positive_rate": 0.0028034821109909945,
+  "test_rows": 64475,
+  "test_positive_rate": 0.0020938348196975574,
+  "baseline_lr": {
+   "pr_auc": 0.541816040962897,
+   "recall_at_0.5pct_fpr": 0.6962962962962963,
+   "brier": 0.001675043162524606
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6257825706961508,
+   "recall_at_0.5pct_fpr": 0.7407407407407407,
+   "brier": 0.0011409566997645892
+  }
+ }
+}

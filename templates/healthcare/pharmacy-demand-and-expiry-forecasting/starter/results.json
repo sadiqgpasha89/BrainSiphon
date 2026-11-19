@@ -1,0 +1,46 @@
+{
+ "use_case": "healthcare/pharmacy-demand-and-expiry-forecasting",
+ "engine": "forecast",
+ "seed": 9401,
+ "knobs": {
+  "n_series": 283
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 17.2,
+ "results": {
+  "rows": 25765,
+  "h1": {
+   "wmape_model": 0.11842328979933243,
+   "wmape_baseline": 0.21410874440832842,
+   "fva": 0.44690119907720127
+  },
+  "h3": {
+   "wmape_model": 0.11577745002402962,
+   "wmape_baseline": 0.19802985932521694,
+   "fva": 0.4153535713324288
+  },
+  "h7": {
+   "wmape_model": 0.11755004059403382,
+   "wmape_baseline": 0.2168313582497721,
+   "fva": 0.4578734296419168
+  },
+  "h14": {
+   "wmape_model": 0.1499099412888617,
+   "wmape_baseline": 0.23276576651938827,
+   "fva": 0.35596224680928357
+  },
+  "p90_coverage": 0.8976906656316709,
+  "wmape_sku_level": 0.1252166144051707,
+  "wmape_aggregate": 0.022242365058638018,
+  "late_feed": {
+   "missing_as_zero": 0.20123707452379622,
+   "missing_as_nan": 0.13937627426959193
+  }
+ }
+}

@@ -1,0 +1,43 @@
+{
+ "use_case": "fintech/payment-ops-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 51663,
+ "knobs": {
+  "n_series": 90,
+  "anomalies_per_series": 3.473
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 9.5,
+ "results": {
+  "series": 90,
+  "hours": 2016,
+  "events": 301,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.24750103263114415,
+   "recall": 0.5614035087719298,
+   "median_delay_h": 1.0,
+   "events": 171
+  },
+  "seasonal_z": {
+   "threshold": 4.0,
+   "false_alerts_per_series_week": 0.6546055349029326,
+   "recall": 0.9122807017543859,
+   "median_delay_h": 0.0,
+   "events": 171
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.46030565881866997,
+   "recall": 0.9649122807017544,
+   "median_delay_h": 0.0,
+   "events": 171
+  }
+ }
+}

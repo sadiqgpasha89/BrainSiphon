@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/inventory-optimization-multi-echelon",
+ "title": "Multi-Echelon Inventory Optimisation",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 25670,
+ "knobs": {
+  "n_instances": 105,
+  "noise": 0.277
+ },
+ "blueprintSignals": [
+  {
+   "name": "Demand forecast error distribution",
+   "definition": "residuals by horizon",
+   "asOfRule": "Forecast backtest"
+  },
+  {
+   "name": "Replenishment lead-time distribution",
+   "definition": "empirical quantiles",
+   "asOfRule": "Delivered times"
+  },
+  {
+   "name": "Holding cost and criticality",
+   "definition": "cost and service class",
+   "asOfRule": "Finance data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Multi-Echelon Inventory Optimisation\": Set stocking levels across plants, DCs and stores to hit service targets at minimal total inventory investment. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Normal-distribution assumptions on skewed demand."
+}

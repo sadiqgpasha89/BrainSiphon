@@ -1,0 +1,16 @@
+contract: visual_quality_inspection_line_inputs.v1
+owner: supply-chain-planning@example.com
+system_of_record: ERP (orders, inventory, finance)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: anomaly_score_map, type: double, nullable: false }
+    - { name: part_pose_and_alignment, type: double, nullable: false }
+    - { name: defect_class_classifier, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

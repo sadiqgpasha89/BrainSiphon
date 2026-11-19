@@ -1,0 +1,46 @@
+{
+ "use_case": "supply-chain/warehouse-labour-forecasting",
+ "engine": "forecast",
+ "seed": 45924,
+ "knobs": {
+  "n_series": 240
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 7.5,
+ "results": {
+  "rows": 21746,
+  "h1": {
+   "wmape_model": 0.11742347797744367,
+   "wmape_baseline": 0.2253629098026423,
+   "fva": 0.47895828075580293
+  },
+  "h3": {
+   "wmape_model": 0.11779014940161103,
+   "wmape_baseline": 0.22353788084074416,
+   "fva": 0.4730640330015088
+  },
+  "h7": {
+   "wmape_model": 0.1221491096593172,
+   "wmape_baseline": 0.20792698059617806,
+   "fva": 0.4125384338815218
+  },
+  "h14": {
+   "wmape_model": 0.15039700802242612,
+   "wmape_baseline": 0.22369329294013882,
+   "fva": 0.3276642046542141
+  },
+  "p90_coverage": 0.8840706336797572,
+  "wmape_sku_level": 0.126162614051613,
+  "wmape_aggregate": 0.028414303704298538,
+  "late_feed": {
+   "missing_as_zero": 0.19364985316707406,
+   "missing_as_nan": 0.14285055843932146
+  }
+ }
+}

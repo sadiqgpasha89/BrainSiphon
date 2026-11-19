@@ -1,0 +1,42 @@
+{
+ "use_case": "real-estate/virtual-staging-and-photo-enhancement",
+ "engine": "generative",
+ "seed": 8904,
+ "knobs": {
+  "n": 280
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.7,
+ "results": {
+  "golden_items": 280,
+  "v1_pass_rate_strict_judge": 0.19642857142857142,
+  "v1_pass_rate_fuzzy_judge": 0.5142857142857142,
+  "v2_pass_rate_fuzzy_judge": 0.5857142857142857,
+  "v1_pass_rate_ci95": [
+   0.45,
+   0.5714285714285714
+  ],
+  "v2_minus_v1": 0.07142857142857142,
+  "v2_minus_v1_ci95": [
+   -0.007142857142857143,
+   0.15723214285714276
+  ],
+  "judge_agreement_kappa_v1": 0.3751253761283852,
+  "judge_disagreement_share_v1": 0.31785714285714284,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.45,
+   "date_correct": 0.15,
+   "within_length": 0.017857142857142856,
+   "no_forbidden_claims": 0.05357142857142857
+  },
+  "ci_width_at_60_items": 0.23333333333333334,
+  "ci_width_at_full_set": 0.12142857142857139
+ }
+}

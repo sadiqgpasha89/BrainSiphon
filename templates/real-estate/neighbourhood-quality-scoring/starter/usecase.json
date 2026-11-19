@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/neighbourhood-quality-scoring",
+ "title": "Neighbourhood Quality Scoring",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 31976,
+ "knobs": {
+  "n": 24710,
+  "outlier_share": 0.035,
+  "drift": 0.368
+ },
+ "blueprintSignals": [
+  {
+   "name": "Walk time to amenities",
+   "definition": "routing time on the pedestrian network to the nearest grocery, school, park and transit stop",
+   "asOfRule": "Use the current map snapshot for training labels and do not mix in later openings"
+  },
+  {
+   "name": "Street imagery greenery",
+   "definition": "share of pixels classed as tree canopy in street-level images, averaged over each cell",
+   "asOfRule": "Images are seasonal, so normalise by capture month and never compare winter to summer"
+  },
+  {
+   "name": "Business openings",
+   "definition": "net new registered businesses in the cell over 24 months, divided by existing businesses",
+   "asOfRule": "Registrations lag opening, so count by registration date and exclude the scored quarter"
+  },
+  {
+   "name": "Noise exposure",
+   "definition": "modelled decibel level from road, rail and flight-path data at the cell centroid",
+   "asOfRule": "The model assumes typical traffic, so re-run it after a major route change"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Neighbourhood Quality Scoring\": Score each neighbourhood on walkability, amenities, safety perception, noise and change so buyers and investors can compare areas. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Survey calibration data covers wealthy and responsive areas better than others."
+}

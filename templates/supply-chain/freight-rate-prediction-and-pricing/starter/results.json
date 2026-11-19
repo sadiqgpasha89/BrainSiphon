@@ -1,0 +1,49 @@
+{
+ "use_case": "supply-chain/freight-rate-prediction-and-pricing",
+ "engine": "regression",
+ "seed": 37876,
+ "knobs": {
+  "n": 20590,
+  "outlier_share": 0.01,
+  "drift": 0.307
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "rows": 20590,
+  "train_rows": 14412,
+  "test_rows": 6178,
+  "baseline_ridge": {
+   "mae": 6.643284787202646,
+   "rmse": 10.38931495587117,
+   "wape": 0.12591585492622567,
+   "r2": 0.5323884116102188
+  },
+  "challenger_gbm": {
+   "mae": 4.29621209757673,
+   "rmse": 8.084054905745301,
+   "wape": 0.0814297800769964,
+   "r2": 0.7168803909969653
+  },
+  "mae_gain_vs_baseline": 0.3533000262381075,
+  "interval_80_coverage": 0.6429265134347686,
+  "interval_80_mean_width": 8.746302539573646,
+  "segment_mae": {
+   "0": 4.1958809760955065,
+   "1": 4.2558335150698525,
+   "2": 4.29566677743327,
+   "3": 5.495825169830699
+  },
+  "worst_segment_vs_overall": 1.2792257563192952,
+  "leaky_feature_rmse": 1.6330856709587382,
+  "honest_rmse": 8.084054905745301,
+  "random_split_mae": 3.815444362132461,
+  "chronological_mae": 4.29621209757673
+ }
+}

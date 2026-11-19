@@ -1,0 +1,50 @@
+{
+ "use_case": "healthcare/surgical-video-phase-recognition",
+ "engine": "cv",
+ "seed": 6456,
+ "knobs": {
+  "n": 3880,
+  "prevalence": 0.089
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.7,
+ "results": {
+  "images": 3880,
+  "train": 1376,
+  "prevalence": 0.09020618556701031,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9382008894044856,
+    "sens_at_95_spec": 0.7083333333333334
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.977566425120773,
+    "sens_at_95_spec": 0.9166666666666666
+   },
+   "site_B": {
+    "auc": 0.7468546293227267,
+    "sens_at_95_spec": 0.27380952380952384
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.2261904761904762,
+    "false_positive_rate": 0.0382830626450116
+   }
+  }
+ }
+}

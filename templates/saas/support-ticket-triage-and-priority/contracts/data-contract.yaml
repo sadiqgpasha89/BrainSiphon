@@ -1,0 +1,16 @@
+contract: support_ticket_triage_and_priority_inputs.v1
+owner: product-analytics@example.com
+system_of_record: Ticketing platform (Zendesk, ServiceNow or Salesforce Service Cloud)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: account_tier_and_sla, type: double, nullable: false }
+    - { name: incident_linkage, type: double, nullable: false }
+    - { name: urgency_language, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

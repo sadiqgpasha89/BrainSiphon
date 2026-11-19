@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/model-extraction-and-abuse-detection-api",
+ "title": "Model Extraction & Abuse Detection for ML APIs",
+ "domain": "cybersecurity",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "tabular-anomaly-detection",
+ "seed": 34107,
+ "knobs": {
+  "n_series": 61,
+  "anomalies_per_series": 3.34
+ },
+ "blueprintSignals": [
+  {
+   "name": "Query-space coverage",
+   "definition": "diversity and boundary-probing queries",
+   "asOfRule": "Embeddings"
+  },
+  {
+   "name": "Account cluster similarity",
+   "definition": "related accounts' query overlap",
+   "asOfRule": "Graph"
+  },
+  {
+   "name": "Confidence-score request pattern",
+   "definition": "repeated requests for probabilities",
+   "asOfRule": "API usage"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Model Extraction & Abuse Detection for ML APIs\": Detect model-extraction, scraping and membership-inference attempts on prediction APIs from query patterns while preserving customer experience. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulated extraction attacks too naive."
+}

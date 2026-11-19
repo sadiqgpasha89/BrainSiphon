@@ -1,0 +1,50 @@
+{
+ "slug": "fintech/transaction-monitoring-alert-triage-llm",
+ "title": "Transaction Monitoring Alert Triage with LLM Agents",
+ "domain": "fintech",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 8031,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Evidence coverage",
+   "definition": "fraction of narrative sentences linked to a source record",
+   "asOfRule": "Coverage must be computed on the final text not the draft"
+  },
+  {
+   "name": "Rule-hit context",
+   "definition": "which scenario fired and its threshold distance",
+   "asOfRule": "Include scenario version to stay point-in-time"
+  },
+  {
+   "name": "Customer behaviour baseline",
+   "definition": "12-month median and MAD of monthly flows",
+   "asOfRule": "Baseline excludes the alert month"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Transaction Monitoring Alert Triage with LLM Agents\": Auto-summarise and pre-dispose low-risk AML alerts with cited evidence so analysts spend time only on genuinely suspicious cases. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Golden set written by the same team that prompts the model."
+}

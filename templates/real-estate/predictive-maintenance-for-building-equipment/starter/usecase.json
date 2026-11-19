@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/predictive-maintenance-for-building-equipment",
+ "title": "Predictive Maintenance for Building Equipment",
+ "domain": "real-estate",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 85243,
+ "knobs": {
+  "n_series": 114,
+  "anomalies_per_series": 3.36
+ },
+ "blueprintSignals": [
+  {
+   "name": "Vibration trend",
+   "definition": "slope of RMS vibration over the last 14 days",
+   "asOfRule": "Sensors loosen and drift, so calibrate per sensor"
+  },
+  {
+   "name": "Efficiency drift",
+   "definition": "rise in kilowatts per ton of cooling or per unit of heat at similar load",
+   "asOfRule": "Weather changes the baseline, so normalise by load and temperature"
+  },
+  {
+   "name": "Runtime hours",
+   "definition": "hours since the last service",
+   "asOfRule": "Logging gaps and meter replacements reset the counter"
+  },
+  {
+   "name": "Fault codes",
+   "definition": "count of controller alarm codes by type in the last 7 days",
+   "asOfRule": "Alarms are noisy, so count only the codes linked to failures"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Predictive Maintenance for Building Equipment\": Predict failures of building equipment such as chillers, boilers and lifts from sensor data so repairs happen before breakdowns. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Maintenance resets the history, so a repaired machine looks as though it had no problem."
+}

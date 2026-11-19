@@ -1,0 +1,38 @@
+{
+ "id": "bandit",
+ "label": "Decisions from logged data with off-policy evaluation",
+ "summary": "A runnable reference for choosing actions (offers, prices, notifications, routes, treatments) from logged decisions: a reward model, a learned policy, and four offline estimators compared with the hidden true value of each policy.",
+ "problemTypes": [
+  "off-policy-decisioning",
+  "uplift-causal-effect"
+ ],
+ "traps": [
+  "Evaluating a new policy on the rows where it agrees with the old one",
+  "Not logging propensities",
+  "Trusting the highest-variance estimator",
+  "Shipping a policy that only looks better offline"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ]
+}

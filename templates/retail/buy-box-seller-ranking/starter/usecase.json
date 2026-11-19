@@ -1,0 +1,54 @@
+{
+ "slug": "retail/buy-box-seller-ranking",
+ "title": "Buy-Box & Seller Offer Ranking",
+ "domain": "retail",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 11149,
+ "knobs": {
+  "n": 16310,
+  "outlier_share": 0.034,
+  "drift": 0.339
+ },
+ "blueprintSignals": [
+  {
+   "name": "Landed price percentile",
+   "definition": "price plus shipping percentile",
+   "asOfRule": "Include taxes"
+  },
+  {
+   "name": "Seller defect rate",
+   "definition": "order defect rate over 60 days",
+   "asOfRule": "Matured outcomes"
+  },
+  {
+   "name": "Delivery promise reliability",
+   "definition": "actual vs promised ratio",
+   "asOfRule": "Seller-level shrinkage"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Buy-Box & Seller Offer Ranking\": Select which seller wins the featured offer for each product based on price, speed, reliability and customer-experience. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Outcomes confounded by Buy Box position."
+}

@@ -1,0 +1,76 @@
+openapi: 3.1.0
+info:
+  title: Knowledge Tracing Student Modeling API
+  description: Real-time mastery state tracking and Bayesian knowledge tracing.
+  version: 1.2.0
+paths:
+  /v1/trace:
+    post:
+      summary: Submit question attempt and update student mastery state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InteractionSubmission'
+      responses:
+        '200':
+          description: Updated skill mastery and next recommended action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasteryStateResponse'
+  /v1/predict_success:
+    post:
+      summary: Predict likelihood of student correctly answering target question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuccessPredictionRequest'
+      responses:
+        '200':
+          description: Predicted probability of correctness and ZPD assessment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessPredictionResponse'
+components:
+  schemas:
+    InteractionSubmission:
+      type: object
+      required: [student_id, question_id, skill_id, correct]
+      properties:
+        student_id: { type: string }
+        question_id: { type: integer }
+        skill_id: { type: integer }
+        correct: { type: integer, enum: [0, 1] }
+        timestamp: { type: number }
+    MasteryStateResponse:
+      type: object
+      required: [student_id, skill_id, mastery_probability, is_mastered]
+      properties:
+        student_id: { type: string }
+        skill_id: { type: integer }
+        mastery_probability: { type: number }
+        total_attempts: { type: integer }
+        consecutive_correct: { type: integer }
+        is_mastered: { type: boolean }
+        recommended_action: { type: string, enum: [advance_difficulty, practice_same_level, remedial_review] }
+    SuccessPredictionRequest:
+      type: object
+      required: [student_id, skill_id]
+      properties:
+        student_id: { type: string }
+        skill_id: { type: integer }
+        question_difficulty: { type: number, default: 0.0 }
+    SuccessPredictionResponse:
+      type: object
+      required: [student_id, skill_id, p_correct, zpd_appropriate]
+      properties:
+        student_id: { type: string }
+        skill_id: { type: integer }
+        p_correct: { type: number }
+        zpd_appropriate: { type: boolean }
+

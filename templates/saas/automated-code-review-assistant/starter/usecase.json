@@ -1,0 +1,50 @@
+{
+ "slug": "saas/automated-code-review-assistant",
+ "title": "Automated Code Review Assistant",
+ "domain": "saas",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 10946,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Comment acceptance rate",
+   "definition": "accepted or resolved comments",
+   "asOfRule": "Logging"
+  },
+  {
+   "name": "Static-analysis corroboration",
+   "definition": "linter or analyser agreement",
+   "asOfRule": "Tools"
+  },
+  {
+   "name": "Test-failure linkage",
+   "definition": "comment correlates to failing tests",
+   "asOfRule": "CI"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Automated Code Review Assistant\": Review pull requests for bugs, risks and style, posting high-signal comments that developers act on. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Counting all comments as value."
+}

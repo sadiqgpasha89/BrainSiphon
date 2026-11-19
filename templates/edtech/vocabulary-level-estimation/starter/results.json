@@ -1,0 +1,49 @@
+{
+ "use_case": "edtech/vocabulary-level-estimation",
+ "engine": "regression",
+ "seed": 82532,
+ "knobs": {
+  "n": 24710,
+  "outlier_share": 0.022,
+  "drift": 0.24
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.6,
+ "results": {
+  "rows": 24710,
+  "train_rows": 17297,
+  "test_rows": 7413,
+  "baseline_ridge": {
+   "mae": 7.345757056825501,
+   "rmse": 12.737616262490057,
+   "wape": 0.13898329057770994,
+   "r2": 0.4231595758787887
+  },
+  "challenger_gbm": {
+   "mae": 4.887210947055987,
+   "rmse": 10.787536038503282,
+   "wape": 0.0924670737018335,
+   "r2": 0.5862634539279928
+  },
+  "mae_gain_vs_baseline": 0.33468927582965624,
+  "interval_80_coverage": 0.6854175097801161,
+  "interval_80_mean_width": 9.034633992209155,
+  "segment_mae": {
+   "0": 4.950714428281353,
+   "1": 4.717059067010528,
+   "2": 4.7447138212576006,
+   "3": 5.630294567793729
+  },
+  "worst_segment_vs_overall": 1.1520465616867568,
+  "leaky_feature_rmse": 1.5864012173011957,
+  "honest_rmse": 10.787536038503282,
+  "random_split_mae": 4.242994032436984,
+  "chronological_mae": 4.887210947055987
+ }
+}

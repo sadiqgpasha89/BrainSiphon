@@ -1,0 +1,16 @@
+contract: carrier_selection_and_tendering_inputs.v1
+owner: supply-chain-planning@example.com
+system_of_record: ERP (orders, inventory, finance)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: carrier_acceptance_probability, type: double, nullable: false }
+    - { name: carrier_on_time_performance, type: double, nullable: false }
+    - { name: capacity_signals, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

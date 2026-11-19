@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/student-dropout-early-warning",
+ "title": "Student Dropout & Attrition Early Warning",
+ "domain": "edtech",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 1003,
+ "knobs": {
+  "n": 7790,
+  "dropout": 0.139
+ },
+ "blueprintSignals": [
+  {
+   "name": "Engagement decay",
+   "definition": "trend in logins and submissions",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Assessment trajectory",
+   "definition": "grade trends",
+   "asOfRule": "As-of"
+  },
+  {
+   "name": "Support-contact history",
+   "definition": "advisor contacts",
+   "asOfRule": "Consent"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Student Dropout & Attrition Early Warning\": Identify learners at risk of dropping out weeks ahead and trigger supportive interventions that actually help. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Interventions confound labels."
+}

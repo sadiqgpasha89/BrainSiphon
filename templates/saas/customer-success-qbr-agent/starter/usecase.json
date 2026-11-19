@@ -1,0 +1,50 @@
+{
+ "slug": "saas/customer-success-qbr-agent",
+ "title": "Customer Success QBR & Account Briefing Agent",
+ "domain": "saas",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 33537,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Metric citation coverage",
+   "definition": "statements linked to queries",
+   "asOfRule": "Citation check"
+  },
+  {
+   "name": "Insight relevance",
+   "definition": "CSM-rated usefulness",
+   "asOfRule": "Feedback"
+  },
+  {
+   "name": "Data freshness",
+   "definition": "age of source data",
+   "asOfRule": "Metadata"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Customer Success QBR & Account Briefing Agent\": Generate account briefs and quarterly business review drafts from usage, support, billing and CRM data with cited metrics. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Judging fluency over accuracy."
+}

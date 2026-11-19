@@ -1,0 +1,45 @@
+{
+ "use_case": "supply-chain/order-promising-atp-optimization",
+ "engine": "optimize",
+ "seed": 11748,
+ "knobs": {
+  "n_instances": 113,
+  "noise": 0.347
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.4,
+ "results": {
+  "instances": 113,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 126.79643691884765,
+   "promised_cost": 95.30170701684445,
+   "optimism_gap_pct": 33.04739326068582,
+   "regret_vs_oracle_pct": 38.27080308662435
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 111.82050922401497,
+   "promised_cost": 76.63081139474296,
+   "optimism_gap_pct": 45.92108211930808,
+   "regret_vs_oracle_pct": 21.939637955722084
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 107.46199265986941,
+   "promised_cost": 78.78951368809794,
+   "optimism_gap_pct": 36.391237399023034,
+   "regret_vs_oracle_pct": 17.186700095358756
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.70152634422163,
+   "promised_cost": 95.85247718565232,
+   "optimism_gap_pct": -4.330561883539949,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

@@ -1,0 +1,52 @@
+{
+ "slug": "healthcare/icu-deterioration-prediction",
+ "title": "ICU & Ward Deterioration Prediction",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 51872,
+ "knobs": {
+  "n_series": 208
+ },
+ "blueprintSignals": [
+  {
+   "name": "Vital-sign trend z-scores",
+   "definition": "deviation of HR, RR, SpO2 from patient baseline",
+   "asOfRule": "Baseline excludes the prediction window"
+  },
+  {
+   "name": "Oxygen support escalation",
+   "definition": "change in FiO2 or device level",
+   "asOfRule": "Charted times"
+  },
+  {
+   "name": "Nurse concern flag",
+   "definition": "structured concern assessment",
+   "asOfRule": "Present only if recorded before event"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"ICU & Ward Deterioration Prediction\": Predict cardiac arrest, ICU transfer or death within 12 hours for ward patients so rapid-response teams can intervene early. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Retrospective labels include interventions caused by model-driven alerts."
+}

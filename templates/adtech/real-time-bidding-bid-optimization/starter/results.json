@@ -1,0 +1,34 @@
+{
+ "use_case": "adtech/real-time-bidding-bid-optimization",
+ "engine": "tabular",
+ "seed": 36641,
+ "knobs": {
+  "n_entities": 2210,
+  "positive_entity_rate": 0.03,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.0,
+ "results": {
+  "rows": 170107,
+  "positive_rate": 0.003803488392599952,
+  "test_rows": 56573,
+  "test_positive_rate": 0.003924133420536298,
+  "baseline_lr": {
+   "pr_auc": 0.6851563410228902,
+   "recall_at_0.5pct_fpr": 0.7477477477477478,
+   "brier": 0.001840693722726372
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7269183185528975,
+   "recall_at_0.5pct_fpr": 0.7657657657657657,
+   "brier": 0.001773289961466136
+  }
+ }
+}

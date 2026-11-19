@@ -1,0 +1,63 @@
+{
+ "slug": "retail/personalized-search-ranking",
+ "title": "Personalised Product Search Ranking",
+ "domain": "retail",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 70871,
+ "knobs": {
+  "n_sessions": 47410,
+  "bot_share": 0.091
+ },
+ "blueprintSignals": [
+  {
+   "name": "Query-item semantic score",
+   "definition": "cosine of query and item embeddings from a dual encoder",
+   "asOfRule": "Embeddings must be trained on pre-period logs"
+  },
+  {
+   "name": "Item price-rank within query",
+   "definition": "percentile of price among retrieved results",
+   "asOfRule": "Compute over the retrieved set not the catalogue"
+  },
+  {
+   "name": "User-category affinity",
+   "definition": "decayed purchase and click share by category",
+   "asOfRule": "Exclude events in the current session after the query"
+  },
+  {
+   "name": "Slot position (training only)",
+   "definition": "position-bias tower input that is dropped or fixed to slot 1 at inference (PAL)",
+   "asOfRule": "If position leaks into serving features the ranker reproduces the page layout"
+  },
+  {
+   "name": "Deliverable at pincode",
+   "definition": "bitmap membership for the shopper pincode or dark store",
+   "asOfRule": "Inventory stream lag shows sold-out items, so version the bitmaps and log staleness"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Personalised Product Search Ranking\": Rank search results to maximise purchases per search session while preserving relevance and catalogue fairness to sellers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on clicks from the current ranker."
+}

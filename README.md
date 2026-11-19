@@ -12,23 +12,29 @@ URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
 > Blueprints are generated from a typed spec; every number is a modelled starting point, not a measurement. Each page says so.
 
-## Free and Pro
+## Free and open: the blueprints and the worked templates
 
-The blueprints, the delivery guide, the deployment kit, the FDE toolkit, the pattern kits and **one complete worked use case** (card and
-UPI fraud: its starter, worked example, reference implementation and customer implementation pack) are free and stay free.
+Everything in this repository is free and MIT licensed (see `LICENSE.md`). Read the 500 blueprints on the site, then take the worked template for your use case from `templates/<domain>/<use-case>/`: a runnable starter on synthetic data with its tests and saved results, the project documents filled in from the blueprint, the contracts, and the deployment sizing.
 
-**[BrainSiphon Pro](https://sadiqgpasha89.github.io/BrainSiphon/pro/)** is a separate, private repository (`BrainSiphon-pro`), sold as a downloadable ZIP, with a **worked
-template for every one of the 500 use cases**: a runnable starter on synthetic data with its tests and saved results, nine filled-in project
-documents (brief, discovery workbook, delivery plan, data spec, evaluation plan, risk register, runbook, model and data cards, capacity),
-OpenAPI, AsyncAPI and data contracts, deployment sizing, and a `FIT.md` that says how well the starter fits and what to change. It also holds
-the 20 starter engines, the generator, the eight hand-written starters, nine more customer implementation packs and three more reference
-implementations. Nothing in this repository grants access to it.
+| Path | What it is |
+|---|---|
+| `templates/<domain>/<use-case>/` | **500 worked templates**, one per use case (see `INDEX.md` and `catalog.json`) |
+| `engines/` | The 20 starter engines, one for each kind of problem, each with its own tests |
+| `tools/` | The generator, the runner, the validator and the release builder |
+| `data/` | The blueprint snapshot the generator reads |
+| `vendor/authored-starters/` | The eight hand-written starters, with their serving layers, contracts and tests |
+| `fde-packs/` | Ten customer implementation packs |
+| `fde-adapters/` | The adapter framework the packs use |
+| `reference-implementations/` | Four complete end-to-end systems |
 
-How the split is built: `content/pro.json` names the free worked use case and the plans; `src/lib/pro.ts` reads it; the worked-example part of
-a build playbook is removed for every other use case when the content is expanded (`src/content/expand.ts`), so it is absent from the JSON,
-the Markdown exports and the HTML, not hidden by CSS; `content/pro-catalog.json` is the public listing of what each Pro template contains.
-Set `NEXT_PUBLIC_PRO_CHECKOUT_URL` at build time (the repository variable `PRO_CHECKOUT_URL` in the deploy workflow) to turn the "Ask for early
-access" buttons into a checkout link.
+Start with the card and UPI fraud template:
+
+```bash
+cd templates/fintech/real-time-card-upi-fraud-detection/starter
+make setup && make demo && make test
+```
+
+Each template's `README.md`, `WORKED_EXAMPLE.md` and `FIT.md` say what it does, what its numbers mean, and how well the starter fits. The starters run on synthetic data and show mechanics, not performance on your data. The worked templates are validated by `.github/workflows/templates-ci.yml`.
 
 ## Delivery guide: from project scoping to deployment and monitoring
 
@@ -76,7 +82,7 @@ as Understand, Design, Prove, and Ship and run, with the role lens folded behind
 
 [`reference-implementations/`](reference-implementations/) holds one complete system, runnable end to end with
 `make setup && make demo` (no cloud account, API key or Docker needed for the default profile). Three more, one per solution
-family, are in BrainSiphon Pro.
+family, are in this repository.
 
 | Implementation | Family | Worked use case | Checks | Where |
 | --- | --- | --- | --- | --- |
@@ -106,7 +112,7 @@ the one to build from.
 BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineering execution through dedicated implementation assets:
 
 - **Guided Implementation Workspace (`/workspace`):** Direct in-browser hub for Forward Deployed Engineers (FDEs). Select deployment profiles (Profile A: Local Dev, Profile B: Cloud-Native, Profile C: Private Cloud, Profile D: Regulated), review technology decision trees (Kafka vs SQS, Feast vs Redis, K8s vs Serverless, RAG vs Fine-tuning), and inspect operational incident runbooks.
-- **The free Golden Path worked use case:** *FinTech: Real-Time Card & UPI Fraud Detection* ships with an executable serving microservice (FastAPI), OpenAPI 3.1 and AsyncAPI 3.0 contracts, an OpenDataContract schema, a Docker Compose stack and a test suite: a sub-15ms inference service, a three-action decision policy (ALLOW, STEP_UP, BLOCK) and a decisions WAL ledger with SHA-256 chaining. The other seven hand-written starters (sepsis early warning, developer documentation assistant, network demand sensing, session-based recommendation, knowledge tracing, SOC copilot agent and real-time CTR prediction) are in BrainSiphon Pro, together with a generated worked template for every one of the 500 use cases.
+- **The free Golden Path worked use case:** *FinTech: Real-Time Card & UPI Fraud Detection* ships with an executable serving microservice (FastAPI), OpenAPI 3.1 and AsyncAPI 3.0 contracts, an OpenDataContract schema, a Docker Compose stack and a test suite: a sub-15ms inference service, a three-action decision policy (ALLOW, STEP_UP, BLOCK) and a decisions WAL ledger with SHA-256 chaining. The other seven hand-written starters (sepsis early warning, developer documentation assistant, network demand sensing, session-based recommendation, knowledge tracing, SOC copilot agent and real-time CTR prediction) are in this repository, together with a generated worked template for every one of the 500 use cases.
 - **Phase 0 to Phase 3 Downloadable Implementation Packages:** Standardized templates in `delivery/templates/` for Client Discovery, Production BRDs, C4 Architecture Suites, Sequence Diagrams, OpenAPI/AsyncAPI contracts, Data Quality Suites, and FastAPI microservices.
 - **10 Production Operational Runbooks (`deployment/runbooks/`):** Reference incident runbooks (RB-01 through RB-10) with exact Prometheus triggers, triage steps (<5m), mitigation actions (<15m), and diagnostic CLI commands.
 
@@ -124,7 +130,7 @@ integration facts (systems of record, upstream and downstream, protocols, owners
 | Part | Where | Verified by |
 |------|-------|-------------|
 | 12-stage FDE workflow, ten-category definition of done, 8 deployment modes, 15-scenario troubleshooting KB | `src/content/fde/` | `src/test/fde-playbooks.test.ts` |
-| **One authored playbook** (card/UPI fraud; the other nine, for forecasting, sepsis, shipment ETA, ad CTR, phishing, knowledge tracing, ticket triage, branch footfall and valuation, are in BrainSiphon Pro) | `src/content/fde/packs/` over the executable pack in `fde-packs/` | its pytest suite; paths in the playbook are checked to exist |
+| **One authored playbook** (card/UPI fraud; the other nine, for forecasting, sepsis, shipment ETA, ad CTR, phishing, knowledge tracing, ticket triage, branch footfall and valuation, are in this repository) | `src/content/fde/packs/` over the executable pack in `fde-packs/` | its pytest suite; paths in the playbook are checked to exist |
 | Pre-flight toolkit: 13 templates, DNS/TCP/TLS/API/IdP/service-account/database/Kafka/S3 checks, readiness report, offline mode | `fde-toolkit/` | 56 tests against local fakes |
 | Reusable adapters and mocks (Salesforce, SAP, ServiceNow, Dynamics 365, Oracle, Snowflake, Databricks, PostgreSQL, SQL Server, Kafka, RabbitMQ, S3, IdP, HL7 v2, FHIR) | `fde-adapters/` | 63 tests against mocks |
 | Handover evidence: infrastructure inventory, release identity, sealed pack and verifier | `fde-evidence/` | 10 tests |
@@ -415,7 +421,7 @@ and a 30-day launch checklist.
 
 - **Hand-written (card and UPI fraud, the free worked example).** It has its own starter kit and numbers measured from its runs. Seven
   more pilot use cases (sepsis early warning, CTR prediction, demand sensing, session recommendation, knowledge tracing, SOC
-  investigation agent and a developer docs assistant) have hand-written *narratives* here and their starters in BrainSiphon Pro.
+  investigation agent and a developer docs assistant) have hand-written *narratives* here and their starters in this repository.
 - **Generated (the other 499).** Assembled from the use case's *own* authored fields (objective, constraints, signals,
   noise, baseline and production model, pipeline, edge cases, metrics and traps), shared domain and method knowledge
   (`content/domain-knowledge`), a curated and link-checked dataset registry (`content/dataset-registry.json`) and, **only where

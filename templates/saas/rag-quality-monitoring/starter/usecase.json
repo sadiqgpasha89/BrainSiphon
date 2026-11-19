@@ -1,0 +1,48 @@
+{
+ "slug": "saas/rag-quality-monitoring",
+ "title": "RAG Quality Monitoring in Production",
+ "domain": "saas",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 63831,
+ "knobs": {
+  "n": 283
+ },
+ "blueprintSignals": [
+  {
+   "name": "Retrieval hit rate on judged queries",
+   "definition": "gold passage in top-k",
+   "asOfRule": "Labels"
+  },
+  {
+   "name": "Groundedness rate",
+   "definition": "answers supported by retrieved text",
+   "asOfRule": "NLI"
+  },
+  {
+   "name": "Unanswerable-query rate",
+   "definition": "queries with no relevant doc",
+   "asOfRule": "Classifier"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"RAG Quality Monitoring in Production\": Monitor retrieval relevance, groundedness and user outcomes of RAG apps in production, spotting content gaps and regressions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Ratings used as quality."
+}

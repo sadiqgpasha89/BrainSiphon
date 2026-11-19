@@ -1,0 +1,31 @@
+asyncapi: 3.0.0
+info:
+  title: Supply Chain Event Streams
+  version: 1.1.0
+channels:
+  pos.transactions.daily:
+    address: pos.transactions.daily
+    messages:
+      posAggregated:
+        summary: End-of-day store POS sales aggregated by SKU
+        payload:
+          type: object
+          properties:
+            store_id: { type: integer }
+            sku_id: { type: integer }
+            day: { type: integer }
+            units_sold: { type: number }
+            constrained: { type: integer }
+  erp.orderbook.delta:
+    address: erp.orderbook.delta
+    messages:
+      orderBookSnapshot:
+        summary: B2B firm prebooked orders for upcoming delivery windows
+        payload:
+          type: object
+          properties:
+            customer_id: { type: string }
+            sku_id: { type: integer }
+            delivery_day: { type: integer }
+            confirmed_units: { type: number }
+

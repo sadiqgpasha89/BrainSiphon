@@ -1,0 +1,50 @@
+{
+ "use_case": "real-estate/construction-site-safety-monitoring",
+ "engine": "cv",
+ "seed": 77385,
+ "knobs": {
+  "n": 5180,
+  "prevalence": 0.131
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "images": 5180,
+  "train": 1816,
+  "prevalence": 0.13996138996138996,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9424461818777777,
+    "sens_at_95_spec": 0.7393617021276596
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9810675182481752,
+    "sens_at_95_spec": 0.9375
+   },
+   "site_B": {
+    "auc": 0.7396485071677159,
+    "sens_at_95_spec": 0.24202127659574468
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.26861702127659576,
+    "false_positive_rate": 0.05890348889895786
+   }
+  }
+ }
+}

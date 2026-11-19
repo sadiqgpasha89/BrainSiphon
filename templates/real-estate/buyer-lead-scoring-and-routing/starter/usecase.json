@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/buyer-lead-scoring-and-routing",
+ "title": "Buyer Lead Scoring & Routing",
+ "domain": "real-estate",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 13312,
+ "knobs": {
+  "n_entities": 2540,
+  "positive_entity_rate": 0.037,
+  "n_flash_sales": 3
+ },
+ "blueprintSignals": [
+  {
+   "name": "Viewing depth",
+   "definition": "number of distinct listings viewed and the share viewed more than once in 7 days",
+   "asOfRule": "Bots inflate views, so filter them before computing"
+  },
+  {
+   "name": "Finance readiness",
+   "definition": "pre-approval flag and stated budget relative to the viewed prices",
+   "asOfRule": "Self-reported readiness is unreliable, so prefer a verified flag"
+  },
+  {
+   "name": "Agent response time",
+   "definition": "median minutes from enquiry to first contact over the last 30 days",
+   "asOfRule": "Agents can game it by sending empty acknowledgements"
+  },
+  {
+   "name": "Area expertise",
+   "definition": "the agent's closed sales in the lead's search area over 24 months",
+   "asOfRule": "Sparse for new agents, so shrink towards the team average"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Buyer Lead Scoring & Routing\": Score portal enquiries by likelihood to transact and route them to the agent best placed to convert them quickly. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Outcomes are observed only for leads that were contacted, so the model cannot learn from the rest."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "bfsi/sme-financial-statement-spreading",
+ "title": "SME Financial Statement Spreading",
+ "domain": "bfsi",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 16748,
+ "knobs": {
+  "n_train": 1100
+ },
+ "blueprintSignals": [
+  {
+   "name": "Foot check residual",
+   "definition": "difference between reported totals and the sum of lines",
+   "asOfRule": "Rounding in thousands needs a tolerance"
+  },
+  {
+   "name": "Label to account similarity",
+   "definition": "embedding similarity between a label and the account definitions",
+   "asOfRule": "Needs per-language calibration"
+  },
+  {
+   "name": "Column role classification",
+   "definition": "probability a column is current, prior or note",
+   "asOfRule": "Layout varies by auditor"
+  },
+  {
+   "name": "Cross-statement consistency",
+   "definition": "profit on the income statement equals the movement in equity",
+   "asOfRule": "Dividends and other movements need explicit handling"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"SME Financial Statement Spreading\": Convert scanned or digital SME financial statements into standard spread lines so ratios and ratings use consistent definitions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Clean statements in training hide scanner noise in production."
+}

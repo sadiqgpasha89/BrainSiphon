@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/population-health-risk-stratification",
+ "engine": "tabular",
+ "seed": 20540,
+ "knobs": {
+  "n_entities": 2200,
+  "positive_entity_rate": 0.033,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "rows": 167391,
+  "positive_rate": 0.003924942201193613,
+  "test_rows": 55909,
+  "test_positive_rate": 0.0043821209465381246,
+  "baseline_lr": {
+   "pr_auc": 0.6727207090197431,
+   "recall_at_0.5pct_fpr": 0.7591836734693878,
+   "brier": 0.002668614668110533
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.742967583784961,
+   "recall_at_0.5pct_fpr": 0.7510204081632653,
+   "brier": 0.001694693546918199
+  }
+ }
+}

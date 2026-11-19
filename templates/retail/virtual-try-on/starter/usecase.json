@@ -1,0 +1,48 @@
+{
+ "slug": "retail/virtual-try-on",
+ "title": "Virtual Try-On",
+ "domain": "retail",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 78949,
+ "knobs": {
+  "n": 275
+ },
+ "blueprintSignals": [
+  {
+   "name": "Body keypoints and parsing",
+   "definition": "pose and segmentation masks",
+   "asOfRule": "Robust to clothing"
+  },
+  {
+   "name": "Garment geometry features",
+   "definition": "measurements and fabric type",
+   "asOfRule": "Catalogue data quality"
+  },
+  {
+   "name": "Identity preservation score",
+   "definition": "face and body identity similarity",
+   "asOfRule": "Metric gaming risk"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Virtual Try-On\": Render garments, glasses or makeup on a user's photo or live camera realistically enough to cut returns. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluated on studio models only."
+}

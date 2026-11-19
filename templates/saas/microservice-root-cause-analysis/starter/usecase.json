@@ -1,0 +1,53 @@
+{
+ "slug": "saas/microservice-root-cause-analysis",
+ "title": "Microservice Root-Cause Analysis",
+ "domain": "saas",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 71098,
+ "knobs": {
+  "n_clusters": 1530,
+  "hub_share": 0.134
+ },
+ "blueprintSignals": [
+  {
+   "name": "Anomaly onset ordering",
+   "definition": "earliest anomaly in the call graph",
+   "asOfRule": "Clock sync"
+  },
+  {
+   "name": "Trace error propagation",
+   "definition": "where errors originate in traces",
+   "asOfRule": "Trace sampling"
+  },
+  {
+   "name": "Recent change proximity",
+   "definition": "change near the candidate",
+   "asOfRule": "Change feed"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Microservice Root-Cause Analysis\": Localise the root cause service or change in a microservice incident using traces, metrics and topology, cutting time to diagnosis. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluation on injected faults only."
+}

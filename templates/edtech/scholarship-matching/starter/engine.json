@@ -1,0 +1,39 @@
+{
+ "id": "recommender",
+ "label": "Next-item ranking from sessions",
+ "summary": "A runnable reference for recommending the next item from the current session: bot filtering, popularity, bag co-visitation, ordered transitions and a theme-aware model, evaluated by hit rate, MRR and coverage on a time split.",
+ "problemTypes": [
+  "next-item-recommendation",
+  "personalised-ranking",
+  "search-ranking"
+ ],
+ "traps": [
+  "Counting every click as a human signal",
+  "Treating the session as a bag of items",
+  "Splitting sessions at random",
+  "Choosing a heavy model before measuring headroom"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ]
+}

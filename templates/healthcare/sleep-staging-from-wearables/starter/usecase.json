@@ -1,0 +1,54 @@
+{
+ "slug": "healthcare/sleep-staging-from-wearables",
+ "title": "Sleep Staging from Wearables",
+ "domain": "healthcare",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 33774,
+ "knobs": {
+  "n": 14610,
+  "label_noise": 0.059,
+  "dup_share": 0.386
+ },
+ "blueprintSignals": [
+  {
+   "name": "Heart-rate variability features",
+   "definition": "HRV in 30s epochs",
+   "asOfRule": "Artifact handling"
+  },
+  {
+   "name": "Movement activity counts",
+   "definition": "accelerometer activity",
+   "asOfRule": "Sensor placement"
+  },
+  {
+   "name": "Circadian time prior",
+   "definition": "clock time and personal chronotype",
+   "asOfRule": "Timezone"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Sleep Staging from Wearables\": Infer sleep stages and sleep quality metrics from wrist/ring sensors with accuracy near PSG for coaching and clinical screening. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Healthy young validation cohort only."
+}

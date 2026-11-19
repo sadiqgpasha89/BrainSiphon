@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/privileged-access-session-anomaly",
+ "title": "Privileged Access Session Anomaly Detection",
+ "domain": "cybersecurity",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 42850,
+ "knobs": {
+  "n_series": 100,
+  "anomalies_per_series": 2.22
+ },
+ "blueprintSignals": [
+  {
+   "name": "Command risk embedding",
+   "definition": "embedding of command and arguments",
+   "asOfRule": "Tokenisation"
+  },
+  {
+   "name": "Ticket linkage",
+   "definition": "session tied to approved ticket",
+   "asOfRule": "ITSM"
+  },
+  {
+   "name": "Target criticality",
+   "definition": "critical server tier",
+   "asOfRule": "CMDB"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Privileged Access Session Anomaly Detection\": Monitor privileged sessions (SSH, RDP, DB consoles) for risky commands and behaviour changes and terminate or alert in real time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Lab attack sessions are too clean."
+}

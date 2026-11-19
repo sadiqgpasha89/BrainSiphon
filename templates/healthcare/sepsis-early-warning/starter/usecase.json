@@ -1,0 +1,44 @@
+{
+ "slug": "healthcare/sepsis-early-warning",
+ "title": "Sepsis Early-Warning System",
+ "domain": "healthcare",
+ "engine": "authored",
+ "fit": "authored",
+ "problemType": "time-series-anomaly-detection",
+ "seed": null,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Lactate and trend",
+   "definition": "latest lactate and 6h slope",
+   "asOfRule": "Use result time not draw time"
+  },
+  {
+   "name": "Missingness pattern",
+   "definition": "counts of vitals measured in last 4h",
+   "asOfRule": "Treat as signal only if the process is stable across sites"
+  },
+  {
+   "name": "SIRS and qSOFA drift",
+   "definition": "change in composite score over 3h",
+   "asOfRule": "Compute from charted times"
+  },
+  {
+   "name": "Vital-sign slope 3h",
+   "definition": "change in heart rate, respiratory rate and systolic pressure over 3 hours",
+   "asOfRule": "Use charted times and carry values forward only from past readings"
+  },
+  {
+   "name": "Reading density 4h",
+   "definition": "number of vitals charted in the last 4 hours",
+   "asOfRule": "Charting habits differ between wards, so check stability per site before trusting it"
+  },
+  {
+   "name": "Clinician order frequency",
+   "definition": "count and timing of lactate orders and blood-culture draws",
+   "asOfRule": "High-risk proxy leakage: exclude it, or use it only as a missed-escalation safety net and report results with and without it"
+  }
+ ],
+ "engineFeatures": [],
+ "label": "For \"Sepsis Early-Warning System\": Alert clinicians hours before sepsis onset from streaming vitals and labs, with alert burden low enough that nurses keep trusting it. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels set after the intervention are partly caused by it."
+}

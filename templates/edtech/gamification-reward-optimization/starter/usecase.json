@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/gamification-reward-optimization",
+ "title": "Gamification & Reward Optimisation",
+ "domain": "edtech",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 21061,
+ "knobs": {
+  "n": 30120,
+  "logging_temperature": 1.161
+ },
+ "blueprintSignals": [
+  {
+   "name": "Intrinsic engagement proxy",
+   "definition": "voluntary extra practice",
+   "asOfRule": "Definition"
+  },
+  {
+   "name": "Streak anxiety indicators",
+   "definition": "drop-off after breaking a streak",
+   "asOfRule": "Event patterns"
+  },
+  {
+   "name": "Learning-gain surrogate",
+   "definition": "mastery change",
+   "asOfRule": "KT"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Gamification & Reward Optimisation\": Tune badges, streaks and rewards to increase sustained learning effort without manipulative or anxiety-inducing design. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Rewarding time-on-app."
+}

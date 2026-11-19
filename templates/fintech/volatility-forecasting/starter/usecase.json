@@ -1,0 +1,52 @@
+{
+ "slug": "fintech/volatility-forecasting",
+ "title": "Volatility Forecasting for Risk & Options",
+ "domain": "fintech",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 28764,
+ "knobs": {
+  "n_series": 279
+ },
+ "blueprintSignals": [
+  {
+   "name": "Realised variance components",
+   "definition": "daily, weekly, monthly RV averages",
+   "asOfRule": "Intraday RV needs clean tick data"
+  },
+  {
+   "name": "Jump component",
+   "definition": "bipower variation difference",
+   "asOfRule": "Use consistent sampling frequency"
+  },
+  {
+   "name": "Implied vol term structure",
+   "definition": "at-the-money implied vol by tenor",
+   "asOfRule": "Use end-of-day mid not stale quotes"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Volatility Forecasting for Risk & Options\": Forecast 1-day to 3-month volatility per instrument for VaR, margining and options pricing with calibrated coverage. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating against squared returns instead of RV."
+}

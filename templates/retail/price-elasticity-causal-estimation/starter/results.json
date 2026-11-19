@@ -1,0 +1,36 @@
+{
+ "use_case": "retail/price-elasticity-causal-estimation",
+ "engine": "uplift",
+ "seed": 33812,
+ "knobs": {
+  "n": 34940,
+  "confound": 0.863,
+  "holdout": 0.127
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "rows": 34940,
+  "observational_rows": 30520,
+  "holdout_rows": 4420,
+  "true_ate": 0.0688236977676016,
+  "naive_ate": 0.17045476701215992,
+  "naive_bias": 0.10163106924455832,
+  "ipw_ate": 0.06813744751553094,
+  "ipw_bias": -0.0006862502520706554,
+  "holdout_ate": 0.10425022281639929,
+  "holdout_balance_smd_x0": 0.01188477528109236,
+  "observational_balance_smd_x0": 0.7999717341629143,
+  "t_learner_qini_auc": 0.011194963312073872,
+  "random_ranking_qini_auc": -0.0017355167789357303,
+  "top_decile_realised_uplift": 0.1708212798260192,
+  "bottom_decile_realised_uplift": 0.05269951849195781,
+  "share_predicted_negative": 0.20497737556561085
+ }
+}

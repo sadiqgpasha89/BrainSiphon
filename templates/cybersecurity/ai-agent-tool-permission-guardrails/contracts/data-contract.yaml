@@ -1,0 +1,16 @@
+contract: ai_agent_tool_permission_guardrails_inputs.v1
+owner: detection-engineering@example.com
+system_of_record: SIEM and security data lake
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: intent_action_consistency, type: double, nullable: false }
+    - { name: data_sensitivity_of_arguments, type: double, nullable: false }
+    - { name: action_reversibility_tier, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/retail-banking-churn-prediction",
+ "title": "Retail Banking Churn Prediction",
+ "domain": "fintech",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 67502,
+ "knobs": {
+  "n": 39710,
+  "confound": 1.581,
+  "holdout": 0.174
+ },
+ "blueprintSignals": [
+  {
+   "name": "Salary-credit shift",
+   "definition": "share of incoming salary arriving to this account vs prior",
+   "asOfRule": "Detect before closure date"
+  },
+  {
+   "name": "Digital engagement decay",
+   "definition": "4-week trend of logins and transactions",
+   "asOfRule": "Exclude outage weeks"
+  },
+  {
+   "name": "Product depth",
+   "definition": "number of active products and their stickiness",
+   "asOfRule": "Count active, not opened"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Retail Banking Churn Prediction\": Identify customers likely to leave within 90 days and trigger the right retention action at net-positive ROI. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Predicting churn and treating without holdout."
+}

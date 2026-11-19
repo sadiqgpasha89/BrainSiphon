@@ -1,0 +1,50 @@
+{
+ "slug": "healthcare/symptom-checker-and-care-navigation",
+ "title": "Symptom Checker & Care Navigation",
+ "domain": "healthcare",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 90502,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Red-flag symptom detection",
+   "definition": "rule-based emergency symptom match",
+   "asOfRule": "Clinician-curated list"
+  },
+  {
+   "name": "Symptom-slot completeness",
+   "definition": "required questions answered",
+   "asOfRule": "Dialogue state"
+  },
+  {
+   "name": "Demographic and history risk",
+   "definition": "age, pregnancy, chronic disease",
+   "asOfRule": "Self-reported"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Symptom Checker & Care Navigation\": Guide users from symptoms to the right level of care (self-care, GP, urgent, emergency) safely and consistently. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Vignettes simpler than real patients."
+}

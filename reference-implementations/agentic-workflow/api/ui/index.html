@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOC triage console</title>
+<link rel="stylesheet" href="/_shared/app.css">
+</head>
+<body>
+<header><h1>SOC triage console</h1><div id="who" class="row"></div></header>
+<main>
+  <section id="login" class="card">
+    <h2>Sign in</h2>
+    <form id="login-form" class="row">
+      <input name="username" placeholder="username" autocomplete="username" required>
+      <input name="password" type="password" placeholder="password" autocomplete="current-password" required>
+      <button class="primary">Sign in</button>
+    </form>
+    <p class="mute">Users: <code>analyst</code>, <code>responder</code>, <code>soc-lead</code>; the passwords are in your <code>.env</code> file.</p>
+  </section>
+  <div id="app" class="hidden" style="display:grid;gap:16px">
+    <section class="card"><h2>Overview</h2><div id="stats" class="grid"></div><div id="alerts"></div></section>
+    <section class="card hidden" id="approvals-card"><h2>Containment actions awaiting approval</h2>
+      <table><thead><tr><th>Action</th><th>Why</th><th>Asset</th><th>Approvals</th><th>Decision</th></tr></thead><tbody id="approvals"></tbody></table></section>
+    <section class="card"><h2>Cases</h2>
+      <div class="row"><select id="status"><option value="">All</option><option value="needs_human">Needs a person</option><option value="awaiting_approval">Awaiting approval</option>
+        <option value="contained">Contained</option><option value="closed_benign">Closed as benign by the agent</option><option value="closed">Closed by an analyst</option></select><button id="reload">Refresh</button></div>
+      <table><thead><tr><th>Case</th><th>Alert</th><th>Agent verdict</th><th>Status</th><th></th></tr></thead><tbody id="cases"></tbody></table>
+      <div id="detail"></div></section>
+  </div>
+</main>
+<div id="toast" role="status"></div>
+<script src="/_shared/app.js"></script>
+<script>
+const $ = (id) => document.getElementById(id), e = BS.esc;
+const pill = (v) => `<span class="pill ${v === "true_positive" || v === "awaiting_approval" ? "bad" : v === "needs_human" ? "warn" : "ok"}">${e(v || "none")}</span>`;
+async function refresh() {
+  const approver = BS.has("approver");
+  $("approvals-card").classList.toggle("hidden", !approver);
+  const [sum, cases, tasks] = await Promise.all([BS.api("/v1/monitoring/summary"), BS.api("/v1/cases" + ($("status").value ? "?status=" + $("status").value : "")),
+    approver ? BS.api("/v1/approvals") : Promise.resolve([])]);
+  const c = sum.cases;
+  $("stats").innerHTML = [["Agent version", sum.agent_version], ["Needs a person", c.needs_human || 0], ["Awaiting approval", c.awaiting_approval || 0],
+    ["Contained", c.contained || 0], ["Closed as benign", c.closed_benign || 0], ["Analyst agreed / overrode", `${sum.analyst_feedback.agree} / ${sum.analyst_feedback.override}`],
+    ["Labelled incidents", sum.labelled_incidents]].map(([k, v]) => `<div class="stat"><b>${e(v)}</b><span>${e(k)}</span></div>`).join("");
+  $("alerts").innerHTML = sum.alerts_firing.map((x) => `<p><span class="pill bad">${e(x.severity)}</span> ${e(x.message)}</p>`).join("");
+  $("approvals").innerHTML = tasks.map((t) => { const p = t.payload, done = t.decisions.filter((d) => d.decision === "approve").length;
+    return `<tr><td><b>${e(p.action)}</b> <code>${e(p.target)}</code><br><span class="mute">case ${e(p.case_id)} · requested by ${e(t.requested_by)}</span></td>
+    <td>${e(p.reason)}<br><span class="mute">${e(p.verdict_summary)}</span></td><td>${p.criticality === "critical" ? '<span class="pill bad">critical</span>' : e(p.criticality)}</td>
+    <td class="num">${done} of ${t.required_approvals}</td>
+    <td><div class="row"><button class="primary" data-ap="approve" data-id="${t.id}">Approve</button><button class="danger" data-ap="reject" data-id="${t.id}">Reject</button></div></td></tr>`; })
+    .join("") || `<tr><td colspan="5" class="mute">Nothing is waiting.</td></tr>`;
+  $("cases").innerHTML = cases.map((k) => `<tr><td><code>${e(k.case_id)}</code><br><span class="mute">${e(k.severity)}</span></td>
+    <td>${e(k.summary).slice(0, 140)}${k.injection_suspected ? ' <span class="pill bad">planted instruction</span>' : ""}</td>
+    <td>${pill(k.agent_verdict)} ${k.agent_confidence != null ? e(k.agent_confidence.toFixed(2)) : ""}</td><td>${pill(k.status)}${k.final_verdict ? `<br><span class="mute">final: ${e(k.final_verdict)}</span>` : ""}</td>
+    <td><button data-open="${e(k.case_id)}">Trace</button></td></tr>`).join("") || `<tr><td colspan="5" class="mute">No cases.</td></tr>`;
+}
+async function open(id) {
+  const k = await BS.api("/v1/cases/" + id);
+  $("detail").innerHTML = `<h2 style="margin-top:14px">Case ${e(k.case_id)}</h2><p>${e(k.agent_summary || "Not investigated yet.")}</p>
+    <table><thead><tr><th>#</th><th>Tool</th><th>Arguments</th><th>Result</th><th>ms</th></tr></thead><tbody>${k.trace.map((s) =>
+    `<tr><td>${s.step}</td><td><code>${e(s.tool)}</code></td><td><code>${e(JSON.stringify(s.arguments))}</code></td><td><pre>${e(JSON.stringify(s.result, null, 1)).slice(0, 900)}</pre></td><td class="num">${e(s.ms)}</td></tr>`).join("")}</tbody></table>
+    <p>${k.actions.map((a) => `<span class="pill">${e(a.action)} ${e(a.target)}: ${e(a.status)}</span>`).join(" ")}</p>
+    <div class="row"><span class="mute">Final verdict:</span><button data-fv="true_positive" data-id="${e(k.case_id)}">True positive</button><button data-fv="benign" data-id="${e(k.case_id)}">Benign</button>
+    ${k.status === "new" ? `<button data-inv="${e(k.case_id)}">Investigate now</button>` : ""}</div>`;
+}
+document.addEventListener("click", async (ev) => {
+  const b = ev.target.closest("button"); if (!b) return;
+  try {
+    if (b.dataset.open) return await open(b.dataset.open);
+    if (b.dataset.ap) { const notes = prompt(`Notes for "${b.dataset.ap}" (optional)`); if (notes === null) return;
+      const r = await BS.api(`/v1/approvals/${b.dataset.id}/decision`, { method: "POST", json: { decision: b.dataset.ap, notes } }); BS.toast(`Action is now: ${r.action.status}`); }
+    else if (b.dataset.fv) { await BS.api(`/v1/cases/${b.dataset.id}/verdict`, { method: "POST", json: { verdict: b.dataset.fv } }); await open(b.dataset.id); }
+    else if (b.dataset.inv) { await BS.api(`/v1/cases/${b.dataset.inv}/investigate`, { method: "POST" }); await open(b.dataset.inv); }
+    else if (b.id !== "reload") return;
+    await refresh();
+  } catch (err) { BS.toast(err.message); }
+});
+$("status").onchange = () => refresh().catch((err) => BS.toast(err.message));
+BS.init();
+</script>
+</body>
+</html>

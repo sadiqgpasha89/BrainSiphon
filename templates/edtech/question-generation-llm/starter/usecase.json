@@ -1,0 +1,48 @@
+{
+ "slug": "edtech/question-generation-llm",
+ "title": "Question Generation with LLMs",
+ "domain": "edtech",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 4069,
+ "knobs": {
+  "n": 228
+ },
+ "blueprintSignals": [
+  {
+   "name": "Independent solve agreement",
+   "definition": "solver matches key",
+   "asOfRule": "Solver quality"
+  },
+  {
+   "name": "Objective-match score",
+   "definition": "classifier alignment to objective",
+   "asOfRule": "Taxonomy"
+  },
+  {
+   "name": "Distractor plausibility",
+   "definition": "model-estimated selection rate",
+   "asOfRule": "Calibration"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Question Generation with LLMs\": Generate curriculum-aligned questions with correct answers, plausible distractors and difficulty tags for teacher review. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating without a solver check."
+}

@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/project-delay-and-overrun-prediction",
+ "engine": "regression",
+ "seed": 44750,
+ "knobs": {
+  "n": 21880,
+  "outlier_share": 0.03,
+  "drift": 0.198
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.5,
+ "results": {
+  "rows": 21880,
+  "train_rows": 15315,
+  "test_rows": 6565,
+  "baseline_ridge": {
+   "mae": 7.684511806375266,
+   "rmse": 13.727613289961198,
+   "wape": 0.1448457362023367,
+   "r2": 0.3664460284070439
+  },
+  "challenger_gbm": {
+   "mae": 5.119104948307499,
+   "rmse": 11.958753050002285,
+   "wape": 0.09649025775709963,
+   "r2": 0.5191990244169038
+  },
+  "mae_gain_vs_baseline": 0.3338412280061096,
+  "interval_80_coverage": 0.7105864432597105,
+  "interval_80_mean_width": 9.600877166483807,
+  "segment_mae": {
+   "0": 4.961751112346506,
+   "1": 5.181354349839058,
+   "2": 5.08273388856178,
+   "3": 6.4162676610307114
+  },
+  "worst_segment_vs_overall": 1.2533963897638172,
+  "leaky_feature_rmse": 1.4880680215969277,
+  "honest_rmse": 11.958753050002285,
+  "random_split_mae": 4.737452681257292,
+  "chronological_mae": 5.119104948307499
+ }
+}

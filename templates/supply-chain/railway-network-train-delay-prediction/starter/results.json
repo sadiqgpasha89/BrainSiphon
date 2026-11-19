@@ -1,0 +1,46 @@
+{
+ "use_case": "supply-chain/railway-network-train-delay-prediction",
+ "engine": "forecast",
+ "seed": 48395,
+ "knobs": {
+  "n_series": 212
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 7.5,
+ "results": {
+  "rows": 19287,
+  "h1": {
+   "wmape_model": 0.11676746674270888,
+   "wmape_baseline": 0.21603058570931288,
+   "fva": 0.4594864131885972
+  },
+  "h3": {
+   "wmape_model": 0.11768751266189934,
+   "wmape_baseline": 0.21301920964341914,
+   "fva": 0.4475262918358355
+  },
+  "h7": {
+   "wmape_model": 0.11874168719658844,
+   "wmape_baseline": 0.21292184724689164,
+   "fva": 0.44232267035095485
+  },
+  "h14": {
+   "wmape_model": 0.148558337737883,
+   "wmape_baseline": 0.22389765484186042,
+   "fva": 0.336489978678829
+  },
+  "p90_coverage": 0.8932441540934308,
+  "wmape_sku_level": 0.12484199541262758,
+  "wmape_aggregate": 0.024302134932296795,
+  "late_feed": {
+   "missing_as_zero": 0.2035135540327599,
+   "missing_as_nan": 0.1460045475813915
+  }
+ }
+}

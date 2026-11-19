@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/longevity-and-mortality-forecasting",
+ "title": "Longevity & Mortality Forecasting",
+ "domain": "bfsi",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 6353,
+ "knobs": {
+  "n_series": 272
+ },
+ "blueprintSignals": [
+  {
+   "name": "Age-period-cohort effects",
+   "definition": "decomposition of log mortality into age, period and cohort terms",
+   "asOfRule": "The three effects are not fully identifiable, so impose a documented constraint"
+  },
+  {
+   "name": "Population improvement",
+   "definition": "national mortality improvement rate by age band over the last 10 years",
+   "asOfRule": "Revisions change past values"
+  },
+  {
+   "name": "Portfolio experience ratio",
+   "definition": "actual deaths divided by expected deaths for the portfolio",
+   "asOfRule": "Credibility is low for small portfolios, so blend"
+  },
+  {
+   "name": "Cause-of-death mix",
+   "definition": "share of deaths due to cardiovascular disease and cancer by age",
+   "asOfRule": "Data lag by one to two years"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Longevity & Mortality Forecasting\": Forecast mortality improvement by age and cohort for pension and annuity pricing and reserving. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: A back-test through stable years makes any trend model look accurate."
+}

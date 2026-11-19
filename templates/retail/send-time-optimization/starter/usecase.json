@@ -1,0 +1,53 @@
+{
+ "slug": "retail/send-time-optimization",
+ "title": "Notification Send-Time & Frequency Optimisation",
+ "domain": "retail",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 59984,
+ "knobs": {
+  "n": 38120,
+  "logging_temperature": 1.135
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hourly engagement profile",
+   "definition": "per-user open probability by hour with shrinkage",
+   "asOfRule": "Windowed history before the send"
+  },
+  {
+   "name": "Fatigue state",
+   "definition": "messages in last 7 days and recent ignores",
+   "asOfRule": "Rolling count excl. current send"
+  },
+  {
+   "name": "Opt-out hazard",
+   "definition": "modelled probability of unsubscribe",
+   "asOfRule": "Calibrated per channel"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Notification Send-Time & Frequency Optimisation\": Choose when and how often to send push, email and SMS per user to maximise engagement without driving opt-outs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising opens inflated by privacy-proxy pre-fetch."
+}

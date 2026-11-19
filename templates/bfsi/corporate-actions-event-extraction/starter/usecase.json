@@ -1,0 +1,53 @@
+{
+ "slug": "bfsi/corporate-actions-event-extraction",
+ "title": "Corporate Actions Event Extraction",
+ "domain": "bfsi",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 21666,
+ "knobs": {
+  "n_train": 1130
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field confidence",
+   "definition": "calibrated confidence per extracted field",
+   "asOfRule": "Calibration drifts by language"
+  },
+  {
+   "name": "Source agreement",
+   "definition": "whether vendor and issuer notices agree",
+   "asOfRule": "Different timing across sources"
+  },
+  {
+   "name": "Date consistency",
+   "definition": "order check: announcement, ex, record, payment",
+   "asOfRule": "Market conventions differ"
+  },
+  {
+   "name": "Instrument match",
+   "definition": "security identifier resolution",
+   "asOfRule": "Identifier changes after events"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Corporate Actions Event Extraction\": Extract corporate action events (dividends, splits, mergers, rights issues) and their terms from notices and vendor feeds into a golden source for downstream processing. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on a single vendor format."
+}

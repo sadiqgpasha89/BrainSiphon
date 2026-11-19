@@ -1,0 +1,36 @@
+{
+ "use_case": "healthcare/icd-cpt-medical-coding-automation",
+ "engine": "nlp",
+ "seed": 82078,
+ "knobs": {
+  "n_docs": 4670
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "docs": 4670,
+  "duplicate_share": 0.2597430406852248,
+  "random_split_with_leak": {
+   "macro_f1": 0.8892501932611465,
+   "ece": 0.13834731247518361
+  },
+  "time_split_clean": {
+   "macro_f1": 0.43520343107996495,
+   "ece": 0.03089117983785657
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7775155545620549,
+   "ece": 0.09912985119029825
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.43520343107996495,
+   "ece": 0.03089117983785657
+  }
+ }
+}

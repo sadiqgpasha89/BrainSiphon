@@ -1,0 +1,49 @@
+{
+ "slug": "edtech/pronunciation-assessment-speech",
+ "title": "Pronunciation & Speaking Assessment",
+ "domain": "edtech",
+ "engine": "audio",
+ "fit": "exact",
+ "problemType": "speech-audio",
+ "seed": 3348,
+ "knobs": {
+  "n_train": 1200,
+  "test_snr": 2.8
+ },
+ "blueprintSignals": [
+  {
+   "name": "Goodness-of-pronunciation per phoneme",
+   "definition": "GOP scores",
+   "asOfRule": "Aligner quality"
+  },
+  {
+   "name": "Fluency features",
+   "definition": "pause patterns, speech rate",
+   "asOfRule": "Segmentation"
+  },
+  {
+   "name": "Prosody contour match",
+   "definition": "pitch and stress patterns",
+   "asOfRule": "Normalisation"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "log filterbank energies",
+   "meaning": "band energies, normalised per clip"
+  },
+  {
+   "feature": "raw magnitude spectrum",
+   "meaning": "gain-sensitive baseline"
+  },
+  {
+   "feature": "channel augmentation",
+   "meaning": "low-pass and noise added at training time"
+  },
+  {
+   "feature": "word error rate",
+   "meaning": "edit distance over reference words"
+  }
+ ],
+ "label": "For \"Pronunciation & Speaking Assessment\": Assess spoken language for pronunciation, fluency and prosody with phoneme-level feedback for learners across accents. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training mostly on native speakers."
+}

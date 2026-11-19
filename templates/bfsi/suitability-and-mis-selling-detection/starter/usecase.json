@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/suitability-and-mis-selling-detection",
+ "title": "Suitability & Mis-Selling Detection",
+ "domain": "bfsi",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 50436,
+ "knobs": {
+  "n_docs": 6610
+ },
+ "blueprintSignals": [
+  {
+   "name": "Risk mismatch",
+   "definition": "product risk class minus client risk tolerance",
+   "asOfRule": "Questionnaires age"
+  },
+  {
+   "name": "Concentration after sale",
+   "definition": "share of wealth in the product",
+   "asOfRule": "Needs the full balance sheet"
+  },
+  {
+   "name": "Claim phrases",
+   "definition": "guaranteed, no risk, always, as phrases in transcripts",
+   "asOfRule": "Context matters"
+  },
+  {
+   "name": "Advisor pattern",
+   "definition": "advisor's rate of flagged sales",
+   "asOfRule": "Penalises high volume advisors unfairly"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Suitability & Mis-Selling Detection\": Review advised sales and call records to find products that do not fit the client's profile or were sold with misleading statements. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Confirmed breaches are those that complained, a biased label."
+}

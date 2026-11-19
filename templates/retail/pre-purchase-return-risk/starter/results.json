@@ -1,0 +1,34 @@
+{
+ "use_case": "retail/pre-purchase-return-risk",
+ "engine": "tabular",
+ "seed": 6937,
+ "knobs": {
+  "n_entities": 2780,
+  "positive_entity_rate": 0.021,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.4,
+ "results": {
+  "rows": 208404,
+  "positive_rate": 0.002744669008272394,
+  "test_rows": 69957,
+  "test_positive_rate": 0.00271595408608145,
+  "baseline_lr": {
+   "pr_auc": 0.6918588451745346,
+   "recall_at_0.5pct_fpr": 0.7526315789473684,
+   "brier": 0.0012995118946031931
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7446161135009951,
+   "recall_at_0.5pct_fpr": 0.8,
+   "brier": 0.0010947806562588785
+  }
+ }
+}

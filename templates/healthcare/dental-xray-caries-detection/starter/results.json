@@ -1,0 +1,50 @@
+{
+ "use_case": "healthcare/dental-xray-caries-detection",
+ "engine": "cv",
+ "seed": 54181,
+ "knobs": {
+  "n": 3630,
+  "prevalence": 0.112
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.1,
+ "results": {
+  "images": 3630,
+  "train": 1285,
+  "prevalence": 0.10743801652892562,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9331318485454348,
+    "sens_at_95_spec": 0.681592039800995
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9713599541185749,
+    "sens_at_95_spec": 0.896551724137931
+   },
+   "site_B": {
+    "auc": 0.7873746532136824,
+    "sens_at_95_spec": 0.3880597014925373
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.39303482587064675,
+    "false_positive_rate": 0.052336448598130844
+   }
+  }
+ }
+}

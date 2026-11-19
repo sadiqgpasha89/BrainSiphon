@@ -1,0 +1,46 @@
+{
+ "use_case": "retail/new-product-cold-start-forecasting",
+ "engine": "forecast",
+ "seed": 86204,
+ "knobs": {
+  "n_series": 188
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 9.6,
+ "results": {
+  "rows": 17098,
+  "h1": {
+   "wmape_model": 0.12027258959581916,
+   "wmape_baseline": 0.21439169637522074,
+   "fva": 0.4390053736721111
+  },
+  "h3": {
+   "wmape_model": 0.11588576572314269,
+   "wmape_baseline": 0.2009810648847038,
+   "fva": 0.4233995834900043
+  },
+  "h7": {
+   "wmape_model": 0.11743231079404526,
+   "wmape_baseline": 0.22239467396409826,
+   "fva": 0.4719643744121199
+  },
+  "h14": {
+   "wmape_model": 0.1512397136064174,
+   "wmape_baseline": 0.23881432363570462,
+   "fva": 0.3667058520446055
+  },
+  "p90_coverage": 0.8881740554450813,
+  "wmape_sku_level": 0.1260043584180624,
+  "wmape_aggregate": 0.026430597691005725,
+  "late_feed": {
+   "missing_as_zero": 0.18910409395231798,
+   "missing_as_nan": 0.13394198937726828
+  }
+ }
+}

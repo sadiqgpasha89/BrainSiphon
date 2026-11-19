@@ -1,0 +1,49 @@
+{
+ "use_case": "supply-chain/drone-and-av-delivery-path-planning",
+ "engine": "control",
+ "seed": 87924,
+ "knobs": {
+  "days": 46
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "days": 46,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 7.041819229480689,
+   "end_of_day_underdelivery_pct": 6.003638884857311,
+   "overshoot_max_pct": 6.767104159377893,
+   "oscillation": 0.0,
+   "hit_cap": 0.5
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.542546005785987,
+   "end_of_day_underdelivery_pct": 0.7584962040191741,
+   "overshoot_max_pct": 5.004026926205932,
+   "oscillation": 0.010924992056335217,
+   "hit_cap": 0.5434782608695652
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.0822510941227028,
+   "end_of_day_underdelivery_pct": 0.03061341986459127,
+   "overshoot_max_pct": 1.677986420706699,
+   "oscillation": 0.08663312252037689,
+   "hit_cap": 0.5869565217391305
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.1661812826733655,
+   "end_of_day_underdelivery_pct": 1.5801528571160277,
+   "overshoot_max_pct": 12.095392309297418,
+   "oscillation": 0.01758806868310912,
+   "hit_cap": 0.5869565217391305
+  },
+  "rmse_reduction_vs_open_loop": 0.6389362005855564
+ }
+}

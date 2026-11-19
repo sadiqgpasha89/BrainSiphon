@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/ooh-footfall-attribution",
+ "title": "Out-of-Home Footfall Attribution",
+ "domain": "adtech",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 33825,
+ "knobs": {
+  "n": 33590,
+  "confound": 1.007,
+  "holdout": 0.124
+ },
+ "blueprintSignals": [
+  {
+   "name": "Visibility-weighted exposure",
+   "definition": "line-of-sight and dwell",
+   "asOfRule": "Geometry"
+  },
+  {
+   "name": "Pre-period visit propensity",
+   "definition": "baseline store visits",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Daypart and weather",
+   "definition": "context",
+   "asOfRule": "Data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Out-of-Home Footfall Attribution\": Attribute store visits to out-of-home ad exposure using mobility data and control groups with privacy safeguards. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: No control group."
+}

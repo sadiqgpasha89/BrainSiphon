@@ -1,0 +1,16 @@
+contract: revenue_and_pipeline_forecasting_inputs.v1
+owner: product-analytics@example.com
+system_of_record: Tenant and entitlement service
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: deal_stage_age_vs_norm, type: double, nullable: false }
+    - { name: multi_threading, type: double, nullable: false }
+    - { name: quote_and_legal_activity, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

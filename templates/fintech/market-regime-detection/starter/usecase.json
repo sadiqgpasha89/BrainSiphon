@@ -1,0 +1,49 @@
+{
+ "slug": "fintech/market-regime-detection",
+ "title": "Market Regime Detection",
+ "domain": "fintech",
+ "engine": "cluster",
+ "fit": "exact",
+ "problemType": "clustering-segmentation",
+ "seed": 59632,
+ "knobs": {
+  "n": 6750,
+  "outlier_share": 0.009
+ },
+ "blueprintSignals": [
+  {
+   "name": "Realised vs implied vol spread",
+   "definition": "20d realised vol minus implied vol",
+   "asOfRule": "Align timestamps across sources"
+  },
+  {
+   "name": "Cross-asset correlation spike",
+   "definition": "rolling average pairwise correlation",
+   "asOfRule": "Window excludes decision day close"
+  },
+  {
+   "name": "Credit spread momentum",
+   "definition": "5-day change in IG-HY spread",
+   "asOfRule": "Use as-published spreads"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "value feature (f0)",
+   "meaning": "in currency units, thousands of times larger than the others"
+  },
+  {
+   "feature": "behaviour features (f1-f3)",
+   "meaning": "separate the segments"
+  },
+  {
+   "feature": "engagement features (f4-f6)",
+   "meaning": "separate some segments"
+  },
+  {
+   "feature": "noise feature (f7)",
+   "meaning": "carries little structure"
+  }
+ ],
+ "label": "For \"Market Regime Detection\": Identify volatility and correlation regimes early so risk limits and strategy weights adapt before drawdowns compound. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using smoothed state probabilities in backtests."
+}

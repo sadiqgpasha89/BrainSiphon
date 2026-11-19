@@ -1,0 +1,9 @@
+# Overrides for deployment/helm/ai-solution in the free BrainSiphon deployment kit, for Wearable Arrhythmia Detection (ECG/PPG).
+# Modelled sizing at 10M registered users. Replace with your measured peak, and set autoscaling bounds from a load test.
+# Blueprint compute statement: 180 8-vCPU pods for 450,000 req/s (≈2,500 scores/s per pod (GBDT / small NN, features already in memory)); 15 online feature-store shards and 60 event-bus partitions.
+replicaCount: 180   # modelled pods at peak, including failover headroom
+resources:
+  requests:
+    cpu: '8000m'
+  limits:
+    cpu: '8000m'

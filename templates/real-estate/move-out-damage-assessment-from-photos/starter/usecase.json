@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/move-out-damage-assessment-from-photos",
+ "title": "Move-Out Damage Assessment from Photos",
+ "domain": "real-estate",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 24602,
+ "knobs": {
+  "n": 4500,
+  "prevalence": 0.084
+ },
+ "blueprintSignals": [
+  {
+   "name": "Change detection",
+   "definition": "pixel-level difference between aligned move-in and move-out photos after exposure normalisation",
+   "asOfRule": "Lighting changes look like damage, so normalise first"
+  },
+  {
+   "name": "Damage class",
+   "definition": "classifier probability for stain, hole, scratch, crack or burn",
+   "asOfRule": "Rare classes have few examples, so check per class"
+  },
+  {
+   "name": "Age of fixture",
+   "definition": "years since the fixture, flooring or paint was installed or last renewed",
+   "asOfRule": "Records are incomplete, so use building age as a fallback"
+  },
+  {
+   "name": "Repair cost table",
+   "definition": "local labour and material rates per repair type",
+   "asOfRule": "Rates vary by contractor and season, so use a range"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Move-Out Damage Assessment from Photos\": Compare move-in and move-out photos to identify damage beyond normal wear and estimate repair cost for deposit decisions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Posed photos taken by a careful inspector are cleaner than tenants' own pictures."
+}

@@ -1,0 +1,37 @@
+{
+ "id": "regression",
+ "label": "Continuous-target estimation with drift, leakage and heavy tails",
+ "summary": "Ridge baseline against a quantile-capable boosted model on a synthetic table with a late drift, heavy-tailed heteroscedastic noise, outliers and a leaky column; reports MAE, RMSE, interval coverage, the worst segment and what a random split hides.",
+ "problemTypes": [
+  "regression-estimation"
+ ],
+ "traps": [
+  "Chronological drift in the last quarter",
+  "Heteroscedastic heavy-tailed noise, largest in the smallest segment",
+  "A leaky column recorded after the outcome",
+  "A random split that flatters the model"
+ ],
+ "origin": "brainsiphon-pro",
+ "slots": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ]
+}

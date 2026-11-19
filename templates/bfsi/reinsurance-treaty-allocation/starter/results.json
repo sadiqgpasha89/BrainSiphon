@@ -1,0 +1,45 @@
+{
+ "use_case": "bfsi/reinsurance-treaty-allocation",
+ "engine": "optimize",
+ "seed": 13782,
+ "knobs": {
+  "n_instances": 101,
+  "noise": 0.427
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.4,
+ "results": {
+  "instances": 101,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 135.68126975257437,
+   "promised_cost": 91.78687806912019,
+   "optimism_gap_pct": 47.82207719321216,
+   "regret_vs_oracle_pct": 48.11466700722427
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 121.59684222195706,
+   "promised_cost": 71.39722304642251,
+   "optimism_gap_pct": 70.31032445462863,
+   "regret_vs_oracle_pct": 32.739587620887804
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 115.53288775586823,
+   "promised_cost": 74.08459581804964,
+   "optimism_gap_pct": 55.947247170808375,
+   "regret_vs_oracle_pct": 26.119951777785914
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.60555972890688,
+   "promised_cost": 99.43786849600401,
+   "optimism_gap_pct": -7.876585535833241,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

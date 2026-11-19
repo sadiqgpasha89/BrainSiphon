@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/contractor-bid-evaluation",
+ "engine": "regression",
+ "seed": 63399,
+ "knobs": {
+  "n": 25370,
+  "outlier_share": 0.038,
+  "drift": 0.365
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.9,
+ "results": {
+  "rows": 25370,
+  "train_rows": 17759,
+  "test_rows": 7611,
+  "baseline_ridge": {
+   "mae": 8.271995867979516,
+   "rmse": 14.498546903257505,
+   "wape": 0.15521883591103702,
+   "r2": 0.3887476619768784
+  },
+  "challenger_gbm": {
+   "mae": 6.041750944364703,
+   "rmse": 12.85904447546824,
+   "wape": 0.11336968289344172,
+   "r2": 0.5191728586286227
+  },
+  "mae_gain_vs_baseline": 0.2696138826964336,
+  "interval_80_coverage": 0.6459072395217449,
+  "interval_80_mean_width": 9.934810860847524,
+  "segment_mae": {
+   "0": 6.014386018750996,
+   "1": 6.0784564537615235,
+   "2": 5.321598286728122,
+   "3": 8.132951955084431
+  },
+  "worst_segment_vs_overall": 1.3461249942237763,
+  "leaky_feature_rmse": 1.5197377175318267,
+  "honest_rmse": 12.85904447546824,
+  "random_split_mae": 5.191681240008099,
+  "chronological_mae": 6.041750944364703
+ }
+}

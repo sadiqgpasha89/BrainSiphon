@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/cold-chain-temperature-excursion-prediction",
+ "title": "Cold-Chain Excursion Prediction",
+ "domain": "supply-chain",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 4778,
+ "knobs": {
+  "n_series": 68,
+  "anomalies_per_series": 3.493
+ },
+ "blueprintSignals": [
+  {
+   "name": "Door-open events",
+   "definition": "duration and count",
+   "asOfRule": "Sensor"
+  },
+  {
+   "name": "Ambient vs setpoint delta",
+   "definition": "outside temp minus setpoint",
+   "asOfRule": "Weather"
+  },
+  {
+   "name": "Cooling unit duty cycle",
+   "definition": "compressor on-time fraction",
+   "asOfRule": "Unit telemetry"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Cold-Chain Excursion Prediction\": Predict temperature excursions in reefer trailers and pharma shipments minutes ahead so interventions save the load. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Excursion labels incomplete."
+}

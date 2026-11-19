@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/ransomware-early-detection",
+ "title": "Ransomware Early Detection",
+ "domain": "cybersecurity",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 63767,
+ "knobs": {
+  "n_series": 112,
+  "anomalies_per_series": 3.067
+ },
+ "blueprintSignals": [
+  {
+   "name": "Write entropy jump",
+   "definition": "entropy of written blocks vs original",
+   "asOfRule": "Block sampling"
+  },
+  {
+   "name": "Rename and extension change rate",
+   "definition": "files renamed per second",
+   "asOfRule": "Time window"
+  },
+  {
+   "name": "Process lineage anomaly",
+   "definition": "process spawned by office app or script",
+   "asOfRule": "Lineage data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Ransomware Early Detection\": Detect mass file encryption within seconds on endpoints and file servers to stop it before significant data is lost. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Lab ransomware samples differ from live attacks."
+}

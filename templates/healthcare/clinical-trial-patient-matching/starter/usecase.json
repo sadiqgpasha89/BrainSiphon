@@ -1,0 +1,48 @@
+{
+ "slug": "healthcare/clinical-trial-patient-matching",
+ "title": "Clinical Trial Patient Matching",
+ "domain": "healthcare",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 29185,
+ "knobs": {
+  "n_train": 1180
+ },
+ "blueprintSignals": [
+  {
+   "name": "Criterion evidence link",
+   "definition": "chart snippet per criterion",
+   "asOfRule": "Snippet retrieval"
+  },
+  {
+   "name": "Temporal window satisfaction",
+   "definition": "event date vs criterion window",
+   "asOfRule": "Date normalisation"
+  },
+  {
+   "name": "Unknown-criteria count",
+   "definition": "criteria lacking data",
+   "asOfRule": "Honest unknowns"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Clinical Trial Patient Matching\": Match patients to eligible trials by reasoning over structured and unstructured records against inclusion and exclusion criteria. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Gold set from a single disease area."
+}

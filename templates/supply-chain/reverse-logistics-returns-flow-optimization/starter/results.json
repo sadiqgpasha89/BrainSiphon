@@ -1,0 +1,36 @@
+{
+ "use_case": "supply-chain/reverse-logistics-returns-flow-optimization",
+ "engine": "uplift",
+ "seed": 27450,
+ "knobs": {
+  "n": 36760,
+  "confound": 1.101,
+  "holdout": 0.138
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "rows": 36760,
+  "observational_rows": 31598,
+  "holdout_rows": 5162,
+  "true_ate": 0.06862976060935799,
+  "naive_ate": 0.19148157230627297,
+  "naive_bias": 0.12285181169691498,
+  "ipw_ate": 0.06736879026427353,
+  "ipw_bias": -0.0012609703450844612,
+  "holdout_ate": 0.0538653696030745,
+  "holdout_balance_smd_x0": -0.0062381228961790325,
+  "observational_balance_smd_x0": 0.9872634618019083,
+  "t_learner_qini_auc": 0.007646710935493021,
+  "random_ranking_qini_auc": 0.0005890308592835789,
+  "top_decile_realised_uplift": 0.0849802371541502,
+  "bottom_decile_realised_uplift": -0.0010204081632653184,
+  "share_predicted_negative": 0.2084463386284386
+ }
+}

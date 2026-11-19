@@ -1,0 +1,16 @@
+contract: payment_routing_optimization_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: issuer_bin_success_posterior, type: double, nullable: false }
+    - { name: decline_code_mix, type: double, nullable: false }
+    - { name: fee_schedule_delta, type: double, nullable: false }
+sla:
+  freshness_p95: 5 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

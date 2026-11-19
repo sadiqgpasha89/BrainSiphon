@@ -1,0 +1,55 @@
+{
+ "slug": "bfsi/model-risk-validation-assistant",
+ "title": "Model Risk Validation Assistant",
+ "domain": "bfsi",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 80283,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Policy coverage",
+   "definition": "share of policy requirements addressed in the documentation",
+   "asOfRule": "Policy versions change"
+  },
+  {
+   "name": "Metric reproduction delta",
+   "definition": "difference between reported and reproduced metric",
+   "asOfRule": "Randomness needs seeds"
+  },
+  {
+   "name": "Change since last validation",
+   "definition": "code and data diff summary",
+   "asOfRule": "Repos may be messy"
+  },
+  {
+   "name": "Finding precision",
+   "definition": "share of drafted findings accepted by validators",
+   "asOfRule": "Review bias"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Model Risk Validation Assistant\": Assist model validators by checking documentation against policy, reproducing key tests and drafting findings, with the validator remaining accountable. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on past reports the retriever has seen."
+}

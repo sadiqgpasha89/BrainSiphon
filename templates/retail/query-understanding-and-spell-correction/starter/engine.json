@@ -1,0 +1,38 @@
+{
+ "id": "nlp",
+ "label": "Text classification with leakage and drift checks",
+ "summary": "A runnable reference for classifying text (tickets, documents, messages, reviews): TF-IDF with logistic regression evaluated optimistically and honestly, with duplicate threads, a post-hoc leak token and vocabulary drift built in.",
+ "problemTypes": [
+  "text-classification",
+  "information-extraction"
+ ],
+ "traps": [
+  "A random split with the leak token present",
+  "Copies of the same text on both sides of the split",
+  "Using a field written after the label",
+  "Freezing a model and not watching vocabulary"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ]
+}

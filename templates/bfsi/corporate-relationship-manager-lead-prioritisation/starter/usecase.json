@@ -1,0 +1,58 @@
+{
+ "slug": "bfsi/corporate-relationship-manager-lead-prioritisation",
+ "title": "Corporate Relationship Manager Lead Prioritisation",
+ "domain": "bfsi",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "personalised-ranking",
+ "seed": 52450,
+ "knobs": {
+  "n_sessions": 34120,
+  "bot_share": 0.101
+ },
+ "blueprintSignals": [
+  {
+   "name": "Cash and debt events",
+   "definition": "upcoming debt maturities and large payments from the client's own accounts",
+   "asOfRule": "Access depends on the client's accounts with the bank"
+  },
+  {
+   "name": "News and filings",
+   "definition": "acquisition, expansion or leadership news in public sources",
+   "asOfRule": "Noisy, so verify the source"
+  },
+  {
+   "name": "Product gap",
+   "definition": "products held by similar clients that this client does not hold",
+   "asOfRule": "Fit depends on size and sector"
+  },
+  {
+   "name": "Interaction recency",
+   "definition": "days since the last meaningful contact",
+   "asOfRule": "Logging in the CRM is inconsistent"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Corporate Relationship Manager Lead Prioritisation\": Rank corporate clients and prospects for relationship-manager outreach by the likelihood and value of a product need. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Past calls were not random, so outcomes reflect who was called and not who needed a product."
+}

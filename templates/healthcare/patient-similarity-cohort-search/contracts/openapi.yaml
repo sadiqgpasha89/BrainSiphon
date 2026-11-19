@@ -1,0 +1,116 @@
+openapi: 3.1.0
+info:
+  title: Patient Similarity & Cohort Search API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/patient-similarity-cohort-search/recommendations:
+    post:
+      summary: 'Patient Similarity & Cohort Search: request a decision'
+      operationId: patient_similarity_cohort_search
+      description: 'Illustrative contract taken from the blueprint''s low-level design. End-to-end deadline: 2500
+        ms. Replace the placeholder values with your own fields and keep the error behaviour.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_id:
+                  type: string
+                user_id:
+                  type: string
+                surface:
+                  type: string
+                context:
+                  type: object
+                  properties:
+                    device:
+                      type: string
+                    locale:
+                      type: string
+                slate_size:
+                  type: integer
+                constraints:
+                  type: object
+                  properties:
+                    exclude_ids:
+                      type: array
+                      items: {}
+                    max_per_category:
+                      type: integer
+                deadline_ms:
+                  type: integer
+            example:
+              request_id: 01JABCDEF…
+              user_id: u_123
+              surface: home_feed
+              context:
+                device: mobile
+                locale: en-IN
+              slate_size: 20
+              constraints:
+                exclude_ids: []
+                max_per_category: 3
+              deadline_ms: 2500
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                  slate:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        item_id:
+                          type: string
+                        rank:
+                          type: integer
+                        score:
+                          type: number
+                        source:
+                          type: string
+                        propensity:
+                          type: number
+                  model_version:
+                    type: string
+                  experiment_arm:
+                    type: string
+                  degraded:
+                    type: boolean
+                  latency_ms:
+                    type: integer
+              example:
+                request_id: 01JABCDEF…
+                slate:
+                - item_id: i_9
+                  rank: 1
+                  score: 0.82
+                  source: ann
+                  propensity: 0.04
+                model_version: 2026-11-03.r2
+                experiment_arm: treatment
+                degraded: false
+                latency_ms: 38
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

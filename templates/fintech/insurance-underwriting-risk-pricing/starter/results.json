@@ -1,0 +1,49 @@
+{
+ "use_case": "fintech/insurance-underwriting-risk-pricing",
+ "engine": "regression",
+ "seed": 64833,
+ "knobs": {
+  "n": 25760,
+  "outlier_share": 0.035,
+  "drift": 0.324
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.0,
+ "results": {
+  "rows": 25760,
+  "train_rows": 18032,
+  "test_rows": 7728,
+  "baseline_ridge": {
+   "mae": 7.984221541555003,
+   "rmse": 13.960189109706404,
+   "wape": 0.15027421648360015,
+   "r2": 0.3935468698429686
+  },
+  "challenger_gbm": {
+   "mae": 5.625651228273379,
+   "rmse": 12.158736798317964,
+   "wape": 0.10588262439097312,
+   "r2": 0.5399642805403534
+  },
+  "mae_gain_vs_baseline": 0.29540391646275266,
+  "interval_80_coverage": 0.650491718426501,
+  "interval_80_mean_width": 9.283789181095054,
+  "segment_mae": {
+   "0": 5.316993658852693,
+   "1": 5.84336253831197,
+   "2": 5.829313347323975,
+   "3": 6.872689985091754
+  },
+  "worst_segment_vs_overall": 1.221670115372779,
+  "leaky_feature_rmse": 1.5357406989274225,
+  "honest_rmse": 12.158736798317964,
+  "random_split_mae": 5.068561930504651,
+  "chronological_mae": 5.625651228273379
+ }
+}

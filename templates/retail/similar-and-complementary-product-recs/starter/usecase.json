@@ -1,0 +1,53 @@
+{
+ "slug": "retail/similar-and-complementary-product-recs",
+ "title": "Similar & Complementary Product Recommendations",
+ "domain": "retail",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "personalised-ranking",
+ "seed": 8662,
+ "knobs": {
+  "n_sessions": 53530,
+  "bot_share": 0.073
+ },
+ "blueprintSignals": [
+  {
+   "name": "Co-purchase lift",
+   "definition": "PMI of co-purchase versus independence",
+   "asOfRule": "Use matured orders only"
+  },
+  {
+   "name": "Visual-text embedding distance",
+   "definition": "multimodal embedding similarity",
+   "asOfRule": "Domain-specific fine-tuning"
+  },
+  {
+   "name": "Attribute compatibility flags",
+   "definition": "structured compatibility table",
+   "asOfRule": "Maintain via catalogue pipeline"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Similar & Complementary Product Recommendations\": Show substitutes on out-of-stock or low-fit items and complements at cart, lifting basket size without cannibalising margin. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Co-view mistaken for complement."
+}

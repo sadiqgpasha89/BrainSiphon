@@ -1,0 +1,34 @@
+{
+ "use_case": "bfsi/settlement-fail-prediction",
+ "engine": "tabular",
+ "seed": 40916,
+ "knobs": {
+  "n_entities": 2540,
+  "positive_entity_rate": 0.031,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.6,
+ "results": {
+  "rows": 195268,
+  "positive_rate": 0.004117418112542762,
+  "test_rows": 65320,
+  "test_positive_rate": 0.004255970606246173,
+  "baseline_lr": {
+   "pr_auc": 0.6753460948189298,
+   "recall_at_0.5pct_fpr": 0.7733812949640287,
+   "brier": 0.0028243397839732617
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7606288964503669,
+   "recall_at_0.5pct_fpr": 0.8057553956834532,
+   "brier": 0.001664720638785078
+  }
+ }
+}

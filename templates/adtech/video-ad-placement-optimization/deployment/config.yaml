@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 80
+  stages:
+    - { name: playback_request, timeout_ms: 6, on_timeout: fallback_level_1 }
+    - { name: viewer_state, timeout_ms: 8, on_timeout: fallback_level_1 }
+    - { name: retention_hazard_model, timeout_ms: 16, on_timeout: fallback_level_1 }
+    - { name: break_point_detector, timeout_ms: 15, on_timeout: fallback_level_1 }
+    - { name: pod_optimiser, timeout_ms: 15, on_timeout: fallback_level_1 }
+    - { name: ad_server, timeout_ms: 6, on_timeout: fallback_level_1 }
+    - { name: playback_analytics, timeout_ms: 4, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Revenue per viewing hour"
+    - "Viewer retention"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

@@ -1,0 +1,37 @@
+{
+ "id": "uplift",
+ "label": "Treatment effect and causal measurement with known ground truth",
+ "summary": "Naive comparison, inverse-propensity weighting and a two-model uplift ranker on a confounded observational sample, scored against the true effect and a randomised holdout.",
+ "problemTypes": [
+  "uplift-causal-effect",
+  "causal-measurement"
+ ],
+ "traps": [
+  "Treatment assigned on a variable that also drives the outcome",
+  "A randomised holdout to evaluate honestly",
+  "Heterogeneous effect including a harmed group"
+ ],
+ "origin": "brainsiphon-pro",
+ "slots": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ]
+}

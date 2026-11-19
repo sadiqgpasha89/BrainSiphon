@@ -1,0 +1,48 @@
+{
+ "slug": "cybersecurity/security-log-parsing-llm",
+ "title": "Security Log Parsing & Normalisation with LLMs",
+ "domain": "cybersecurity",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 67387,
+ "knobs": {
+  "n_train": 1290
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field-extraction accuracy",
+   "definition": "accuracy on labelled samples",
+   "asOfRule": "Sample coverage"
+  },
+  {
+   "name": "Schema coverage",
+   "definition": "share of required fields mapped",
+   "asOfRule": "Schema"
+  },
+  {
+   "name": "Parser drift alarms",
+   "definition": "parse-failure rate over time",
+   "asOfRule": "Monitoring"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Security Log Parsing & Normalisation with LLMs\": Convert heterogeneous vendor logs to a common schema (OCSF/ECS) automatically, adapting to new formats with minimal engineer effort. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test on logs similar to training."
+}

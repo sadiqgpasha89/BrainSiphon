@@ -1,0 +1,36 @@
+{
+ "use_case": "bfsi/loan-hardship-case-triage",
+ "engine": "nlp",
+ "seed": 90441,
+ "knobs": {
+  "n_docs": 4900
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.2,
+ "results": {
+  "docs": 4900,
+  "duplicate_share": 0.2510204081632653,
+  "random_split_with_leak": {
+   "macro_f1": 0.8495297346065969,
+   "ece": 0.13366349533889735
+  },
+  "time_split_clean": {
+   "macro_f1": 0.41195261646698034,
+   "ece": 0.05267376197735606
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7118904307117757,
+   "ece": 0.11844948246286703
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.41195261646698034,
+   "ece": 0.05267376197735606
+  }
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/ambulance-dispatch-and-response-time-optimization",
+ "title": "Ambulance Dispatch & Positioning",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 77774,
+ "knobs": {
+  "n_instances": 108,
+  "noise": 0.321
+ },
+ "blueprintSignals": [
+  {
+   "name": "Spatiotemporal demand intensity",
+   "definition": "forecast calls per grid cell-hour",
+   "asOfRule": "Forecast not actual"
+  },
+  {
+   "name": "Travel-time estimate",
+   "definition": "live-traffic ETA",
+   "asOfRule": "Live feed"
+  },
+  {
+   "name": "Unit availability state",
+   "definition": "crew and vehicle status",
+   "asOfRule": "Real-time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Ambulance Dispatch & Positioning\": Choose which ambulance to dispatch and where to reposition idle units to minimise response times and maximise survival coverage. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulation uses historical calls ignoring policy effects."
+}

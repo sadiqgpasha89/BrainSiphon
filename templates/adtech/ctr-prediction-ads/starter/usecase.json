@@ -1,0 +1,39 @@
+{
+ "slug": "adtech/ctr-prediction-ads",
+ "title": "Ad Click-Through Rate Prediction",
+ "domain": "adtech",
+ "engine": "authored",
+ "fit": "authored",
+ "problemType": "binary-event-classification",
+ "seed": null,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Ad-user embedding interaction",
+   "definition": "dot product of ad and user embeddings",
+   "asOfRule": "Embedding versions must match between training and serving"
+  },
+  {
+   "name": "Historical CTR with smoothing",
+   "definition": "Bayesian-smoothed CTR by ad and placement",
+   "asOfRule": "Count only impressions before the scored one"
+  },
+  {
+   "name": "Context features",
+   "definition": "placement, device, hour",
+   "asOfRule": "All known at request time"
+  },
+  {
+   "name": "Position at display",
+   "definition": "slot number where the ad was shown, used in training and set to the top slot at serving",
+   "asOfRule": "Forgetting to neutralise it at serving time double-counts the position"
+  },
+  {
+   "name": "Ad age and impression count",
+   "definition": "hours since first impression and log of impressions so far",
+   "asOfRule": "Computed from impressions strictly before the scored one"
+  }
+ ],
+ "engineFeatures": [],
+ "label": "For \"Ad Click-Through Rate Prediction\": Predict click probability for each ad candidate with calibrated outputs at millions of requests per second. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Position bias unmodelled so the model learns the old ranking."
+}

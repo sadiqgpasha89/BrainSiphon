@@ -1,0 +1,54 @@
+{
+ "slug": "cybersecurity/fake-account-creation-detection",
+ "title": "Fake & Bulk Account Creation Detection",
+ "domain": "cybersecurity",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 68096,
+ "knobs": {
+  "n_entities": 2940,
+  "positive_entity_rate": 0.034,
+  "n_flash_sales": 5
+ },
+ "blueprintSignals": [
+  {
+   "name": "Email pattern similarity in window",
+   "definition": "edit-distance clusters of emails in 1 hour",
+   "asOfRule": "Window before signup"
+  },
+  {
+   "name": "Device and IP signup velocity",
+   "definition": "signups per fingerprint per day",
+   "asOfRule": "Fingerprint salt"
+  },
+  {
+   "name": "Phone number reputation",
+   "definition": "VoIP and carrier risk",
+   "asOfRule": "Vendor data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Fake & Bulk Account Creation Detection\": Stop automated and farmed account registrations at signup, protecting downstream trust, promos and abuse systems. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels from accounts later banned (late and biased)."
+}

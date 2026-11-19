@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/identity-resolution-cookieless",
+ "title": "Identity Resolution in a Cookieless World",
+ "domain": "adtech",
+ "engine": "graph",
+ "fit": "exact",
+ "problemType": "entity-resolution",
+ "seed": 83265,
+ "knobs": {
+  "n_clusters": 1720,
+  "hub_share": 0.09
+ },
+ "blueprintSignals": [
+  {
+   "name": "Deterministic link strength",
+   "definition": "shared login or hashed email",
+   "asOfRule": "Hash salting"
+  },
+  {
+   "name": "Co-occurrence patterns",
+   "definition": "shared IP and time patterns",
+   "asOfRule": "Shared networks"
+  },
+  {
+   "name": "Household vs individual score",
+   "definition": "probability devices belong to one person",
+   "asOfRule": "Context"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Identity Resolution in a Cookieless World\": Link devices and first-party identifiers into privacy-compliant identity clusters for measurement and addressability. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on deterministic links that inflate probabilistic accuracy."
+}

@@ -1,0 +1,46 @@
+{
+ "use_case": "fintech/volatility-forecasting",
+ "engine": "forecast",
+ "seed": 28764,
+ "knobs": {
+  "n_series": 279
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 15.5,
+ "results": {
+  "rows": 25334,
+  "h1": {
+   "wmape_model": 0.11623929601163904,
+   "wmape_baseline": 0.2009857686422662,
+   "fva": 0.42165409622343497
+  },
+  "h3": {
+   "wmape_model": 0.11502536377109773,
+   "wmape_baseline": 0.215925185774432,
+   "fva": 0.4672906573702805
+  },
+  "h7": {
+   "wmape_model": 0.11873388961327973,
+   "wmape_baseline": 0.20813663238364316,
+   "fva": 0.42953872053418185
+  },
+  "h14": {
+   "wmape_model": 0.14822070732859707,
+   "wmape_baseline": 0.22103398207985073,
+   "fva": 0.32942117798406734
+  },
+  "p90_coverage": 0.8960290518670562,
+  "wmape_sku_level": 0.12392138500213831,
+  "wmape_aggregate": 0.018827001552834007,
+  "late_feed": {
+   "missing_as_zero": 0.18974802535372692,
+   "missing_as_nan": 0.1385718742187253
+  }
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/federated-learning-multi-hospital",
+ "engine": "tabular",
+ "seed": 76776,
+ "knobs": {
+  "n_entities": 2300,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.6,
+ "results": {
+  "rows": 181990,
+  "positive_rate": 0.0032254519479092258,
+  "test_rows": 60123,
+  "test_positive_rate": 0.0033597791194717496,
+  "baseline_lr": {
+   "pr_auc": 0.71737472451587,
+   "recall_at_0.5pct_fpr": 0.7524752475247525,
+   "brier": 0.001559088897467607
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7922840279575757,
+   "recall_at_0.5pct_fpr": 0.8415841584158416,
+   "brier": 0.0013375090759215696
+  }
+ }
+}

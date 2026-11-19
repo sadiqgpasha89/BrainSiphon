@@ -1,0 +1,16 @@
+contract: due_diligence_document_review_inputs.v1
+owner: portfolio-data-team@example.com
+system_of_record: Property and portfolio management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: checklist_coverage, type: double, nullable: false }
+    - { name: issue_precision, type: double, nullable: false }
+    - { name: citation_validity, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

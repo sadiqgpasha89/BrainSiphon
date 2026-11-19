@@ -1,0 +1,52 @@
+{
+ "slug": "saas/ugc-moderation-saas",
+ "title": "UGC Moderation as a Service",
+ "domain": "saas",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 12711,
+ "knobs": {
+  "n_docs": 5940
+ },
+ "blueprintSignals": [
+  {
+   "name": "Category scores",
+   "definition": "multi-label calibrated scores",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Tenant feedback labels",
+   "definition": "tenant overrides",
+   "asOfRule": "Privacy"
+  },
+  {
+   "name": "Context signals",
+   "definition": "thread and user history",
+   "asOfRule": "Data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"UGC Moderation as a Service\": Offer customers configurable moderation of text, images and video with per-tenant policies and audit trails. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test data from one tenant."
+}

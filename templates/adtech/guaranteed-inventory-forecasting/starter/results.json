@@ -1,0 +1,46 @@
+{
+ "use_case": "adtech/guaranteed-inventory-forecasting",
+ "engine": "forecast",
+ "seed": 41809,
+ "knobs": {
+  "n_series": 288
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 7.8,
+ "results": {
+  "rows": 26152,
+  "h1": {
+   "wmape_model": 0.11745410300807693,
+   "wmape_baseline": 0.21496951557476995,
+   "fva": 0.4536243769539293
+  },
+  "h3": {
+   "wmape_model": 0.12100726256463083,
+   "wmape_baseline": 0.23717249653821829,
+   "fva": 0.48979217940166364
+  },
+  "h7": {
+   "wmape_model": 0.11990282935674466,
+   "wmape_baseline": 0.206311978246689,
+   "fva": 0.41882759122509206
+  },
+  "h14": {
+   "wmape_model": 0.14900701170342426,
+   "wmape_baseline": 0.22096417107793193,
+   "fva": 0.32565080131986224
+  },
+  "p90_coverage": 0.9003900275313551,
+  "wmape_sku_level": 0.12616401386905837,
+  "wmape_aggregate": 0.022554177401190714,
+  "late_feed": {
+   "missing_as_zero": 0.19569625538774998,
+   "missing_as_nan": 0.1405582382845101
+  }
+ }
+}

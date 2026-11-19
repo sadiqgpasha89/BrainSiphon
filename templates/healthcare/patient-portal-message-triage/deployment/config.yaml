@@ -1,0 +1,21 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: portal_message, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: intent_and_urgency_model, timeout_ms: 659, on_timeout: fallback_level_1 }
+    - { name: red_flag_rules, timeout_ms: 165, on_timeout: fallback_level_1 }
+    - { name: chart_retriever, timeout_ms: 495, on_timeout: fallback_level_1 }
+    - { name: draft_generator, timeout_ms: 659, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Staff minutes per message"
+    - "Time to response for urgent messages"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

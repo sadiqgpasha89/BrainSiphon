@@ -1,0 +1,54 @@
+{
+ "slug": "retail/checkout-payment-risk-ecommerce",
+ "title": "E-Commerce Checkout Risk (Card-Not-Present)",
+ "domain": "retail",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 86855,
+ "knobs": {
+  "n_entities": 2590,
+  "positive_entity_rate": 0.044,
+  "n_flash_sales": 4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Shipping-billing distance",
+   "definition": "geodesic distance and mismatch flags",
+   "asOfRule": "Address normalisation as-of"
+  },
+  {
+   "name": "Email-device-card entity degree",
+   "definition": "distinct values per entity within 7 days",
+   "asOfRule": "Time window before order"
+  },
+  {
+   "name": "Order velocity per identity cluster",
+   "definition": "orders per cluster in last hour",
+   "asOfRule": "Cluster membership as-of"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"E-Commerce Checkout Risk (Card-Not-Present)\": Approve genuine orders instantly and block fraudulent card-not-present orders before fulfilment, optimising profit not just fraud rate. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on approved orders only."
+}

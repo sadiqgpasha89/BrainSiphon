@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { DOMAINS, DOMAIN_META } from '../schemas/usecase.schema';
 import { withBase } from '../lib/site';
-import { GUIDE_LINK, MORE_LINKS, PRO_LINK, START_LINK } from '../lib/nav';
+import { GUIDE_LINK, MORE_LINKS, TEMPLATES_LINK, START_LINK } from '../lib/nav';
 import { getRelease } from '../lib/content';
 import { ReleaseLine } from './reader/ValidationStatus';
 
@@ -45,8 +45,8 @@ export async function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link href={PRO_LINK.href} className={A}>
-                BrainSiphon Pro
+              <Link href={TEMPLATES_LINK.href} className={A}>
+                {TEMPLATES_LINK.label}
               </Link>
             </li>
             {MORE_LINKS.map((l) => (

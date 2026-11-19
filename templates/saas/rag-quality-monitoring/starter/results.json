@@ -1,0 +1,42 @@
+{
+ "use_case": "saas/rag-quality-monitoring",
+ "engine": "generative",
+ "seed": 63831,
+ "knobs": {
+  "n": 283
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.7,
+ "results": {
+  "golden_items": 283,
+  "v1_pass_rate_strict_judge": 0.1625441696113074,
+  "v1_pass_rate_fuzzy_judge": 0.508833922261484,
+  "v2_pass_rate_fuzzy_judge": 0.6148409893992933,
+  "v1_pass_rate_ci95": [
+   0.44876325088339225,
+   0.5724381625441696
+  ],
+  "v2_minus_v1": 0.10600706713780919,
+  "v2_minus_v1_ci95": [
+   0.024558303886925804,
+   0.1872791519434629
+  ],
+  "judge_agreement_kappa_v1": 0.31558165934554067,
+  "judge_disagreement_share_v1": 0.3462897526501767,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4452296819787986,
+   "date_correct": 0.14487632508833923,
+   "within_length": 0.024734982332155476,
+   "no_forbidden_claims": 0.04240282685512368
+  },
+  "ci_width_at_60_items": 0.24999999999999994,
+  "ci_width_at_full_set": 0.12367491166077732
+ }
+}

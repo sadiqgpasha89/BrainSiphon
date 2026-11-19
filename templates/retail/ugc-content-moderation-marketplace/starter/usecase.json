@@ -1,0 +1,53 @@
+{
+ "slug": "retail/ugc-content-moderation-marketplace",
+ "title": "Marketplace UGC Moderation",
+ "domain": "retail",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 45111,
+ "knobs": {
+  "n": 4420,
+  "prevalence": 0.135
+ },
+ "blueprintSignals": [
+  {
+   "name": "Multi-label policy scores",
+   "definition": "per-policy probabilities",
+   "asOfRule": "Calibrated per region"
+  },
+  {
+   "name": "Hash match to known-bad",
+   "definition": "perceptual hash distance",
+   "asOfRule": "Hash refresh"
+  },
+  {
+   "name": "Account trust level",
+   "definition": "prior violations and tenure",
+   "asOfRule": "As-of"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Marketplace UGC Moderation\": Block prohibited listings, images and messages at submission while minimising wrongful removals. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels from reviewer disagreement unresolved."
+}

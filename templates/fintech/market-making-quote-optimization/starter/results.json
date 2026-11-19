@@ -1,0 +1,49 @@
+{
+ "use_case": "fintech/market-making-quote-optimization",
+ "engine": "control",
+ "seed": 59909,
+ "knobs": {
+  "days": 74
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "days": 74,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 5.6282096507325745,
+   "end_of_day_underdelivery_pct": 4.233853040786992,
+   "overshoot_max_pct": 6.242853420080427,
+   "oscillation": 0.0,
+   "hit_cap": 0.6216216216216216
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.2210020518708733,
+   "end_of_day_underdelivery_pct": 0.7169491653624034,
+   "overshoot_max_pct": 4.513796701724578,
+   "oscillation": 0.009759563397510112,
+   "hit_cap": 0.33783783783783783
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 0.9842604969288861,
+   "end_of_day_underdelivery_pct": 0.03424162675668021,
+   "overshoot_max_pct": 1.4789759995048268,
+   "oscillation": 0.0816863628547749,
+   "hit_cap": 0.5540540540540541
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 4.994220759120795,
+   "end_of_day_underdelivery_pct": 1.4312993287818885,
+   "overshoot_max_pct": 11.984640354247231,
+   "oscillation": 0.016973386917991287,
+   "hit_cap": 0.5675675675675675
+  },
+  "rmse_reduction_vs_open_loop": 0.6053803625488996
+ }
+}

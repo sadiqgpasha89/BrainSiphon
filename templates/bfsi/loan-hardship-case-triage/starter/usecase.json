@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/loan-hardship-case-triage",
+ "title": "Loan Hardship Case Triage",
+ "domain": "bfsi",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 90441,
+ "knobs": {
+  "n_docs": 4900
+ },
+ "blueprintSignals": [
+  {
+   "name": "Days to next due date",
+   "definition": "next scheduled payment minus today",
+   "asOfRule": "Dates must be contractual"
+  },
+  {
+   "name": "Arrears and history",
+   "definition": "current arrears, prior arrangements and recent contact",
+   "asOfRule": "Prior arrangements may have been miscoded"
+  },
+  {
+   "name": "Hardship category",
+   "definition": "classifier over the message and attachments",
+   "asOfRule": "Categories overlap in real messages"
+  },
+  {
+   "name": "Vulnerability cues",
+   "definition": "phrases and context indicating illness, bereavement or coercion",
+   "asOfRule": "Over-flagging overloads the team, under-flagging harms customers"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Loan Hardship Case Triage\": Route incoming hardship requests to the right treatment and priority, quickly and fairly, while spotting customers in vulnerable circumstances. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Offline labels come from past routing, which carries its own bias."
+}

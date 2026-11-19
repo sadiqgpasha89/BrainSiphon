@@ -1,0 +1,50 @@
+{
+ "use_case": "edtech/lecture-video-segmentation-and-summarization",
+ "engine": "cv",
+ "seed": 17664,
+ "knobs": {
+  "n": 5470,
+  "prevalence": 0.113
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "images": 5470,
+  "train": 1885,
+  "prevalence": 0.11462522851919561,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.948101706256273,
+    "sens_at_95_spec": 0.7475409836065574
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9757110016420362,
+    "sens_at_95_spec": 0.8761904761904762
+   },
+   "site_B": {
+    "auc": 0.7959638675142188,
+    "sens_at_95_spec": 0.42295081967213116
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3442622950819672,
+    "false_positive_rate": 0.03387755102040816
+   }
+  }
+ }
+}

@@ -1,0 +1,16 @@
+contract: genai_creative_generation_inputs.v1
+owner: ad-platform-engineering@example.com
+system_of_record: Campaign and budget ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: predicted_ctr_of_creative, type: double, nullable: false }
+    - { name: policy_classifier_score, type: double, nullable: false }
+    - { name: brand_similarity_score, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

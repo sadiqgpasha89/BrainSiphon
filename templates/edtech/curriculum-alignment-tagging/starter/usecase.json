@@ -1,0 +1,52 @@
+{
+ "slug": "edtech/curriculum-alignment-tagging",
+ "title": "Curriculum Standards Alignment & Tagging",
+ "domain": "edtech",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 90830,
+ "knobs": {
+  "n_docs": 5910
+ },
+ "blueprintSignals": [
+  {
+   "name": "Content-standard semantic similarity",
+   "definition": "embedding similarity",
+   "asOfRule": "Domain tuning"
+  },
+  {
+   "name": "Verb and cognitive level",
+   "definition": "action verb taxonomy",
+   "asOfRule": "Extraction"
+  },
+  {
+   "name": "Existing tag co-occurrence",
+   "definition": "related tags",
+   "asOfRule": "Data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Curriculum Standards Alignment & Tagging\": Tag content and assessments with curriculum standards and skills automatically, enabling precise search and gap analysis. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test content similar to training."
+}

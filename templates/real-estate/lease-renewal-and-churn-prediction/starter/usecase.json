@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/lease-renewal-and-churn-prediction",
+ "title": "Lease Renewal & Tenant Churn Prediction",
+ "domain": "real-estate",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 75919,
+ "knobs": {
+  "n_entities": 2060,
+  "positive_entity_rate": 0.037,
+  "n_flash_sales": 4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Renewal rent gap",
+   "definition": "proposed renewal rent minus the market rent for a similar unit",
+   "asOfRule": "Market rent estimates are noisy, so use a range"
+  },
+  {
+   "name": "Maintenance resolution time",
+   "definition": "median days to close a request in the last 12 months",
+   "asOfRule": "Logging gaps understate delays, so use ticket close dates"
+  },
+  {
+   "name": "Tenure",
+   "definition": "months in the unit, bucketed into cohorts",
+   "asOfRule": "Strongly tied to age and life stage, so check for unfairness"
+  },
+  {
+   "name": "Life events",
+   "definition": "moves in the job address, a change in household size or an inquiry about a purchase",
+   "asOfRule": "Data are partial and consent-based, so use only data the tenant has agreed to share"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Lease Renewal & Tenant Churn Prediction\": Predict which tenants will renew so managers can set renewal offers that keep good tenants without leaving rent on the table. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Past offers were not random, so renewals reflect the offer chosen and not the tenant."
+}

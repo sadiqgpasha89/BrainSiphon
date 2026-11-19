@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/listing-photo-quality-and-room-classification",
+ "title": "Listing Photo Quality & Room Classification",
+ "domain": "real-estate",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 39208,
+ "knobs": {
+  "n": 5240,
+  "prevalence": 0.15
+ },
+ "blueprintSignals": [
+  {
+   "name": "Room class probability",
+   "definition": "softmax output of the vision model for each room type",
+   "asOfRule": "Rare rooms such as utility or study are under-represented, so check per-class recall"
+  },
+  {
+   "name": "Blur score",
+   "definition": "variance of the Laplacian of the grey image",
+   "asOfRule": "Depends on image size, so compute at a fixed resolution"
+  },
+  {
+   "name": "Exposure histogram",
+   "definition": "share of pixels clipped in highlights and in shadows",
+   "asOfRule": "High-dynamic-range photos look clipped but are fine, so condition on the scene type"
+  },
+  {
+   "name": "Duplicate similarity",
+   "definition": "perceptual hash distance to other photos in the same listing",
+   "asOfRule": "Crops and filters change the hash, so use an embedding distance as a second check"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Listing Photo Quality & Room Classification\": Classify the room type and quality of each listing photo so galleries are ordered well and poor images are flagged to the agent. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training mostly on professional photos hides failures on the phone pictures that most agents upload."
+}

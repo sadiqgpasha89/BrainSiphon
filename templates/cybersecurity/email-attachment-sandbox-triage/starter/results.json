@@ -1,0 +1,34 @@
+{
+ "use_case": "cybersecurity/email-attachment-sandbox-triage",
+ "engine": "tabular",
+ "seed": 80417,
+ "knobs": {
+  "n_entities": 2820,
+  "positive_entity_rate": 0.026,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.9,
+ "results": {
+  "rows": 218127,
+  "positive_rate": 0.0036859260889298435,
+  "test_rows": 71921,
+  "test_positive_rate": 0.0035455569305209884,
+  "baseline_lr": {
+   "pr_auc": 0.7138289868349375,
+   "recall_at_0.5pct_fpr": 0.7725490196078432,
+   "brier": 0.0019126710503330987
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7748423373048376,
+   "recall_at_0.5pct_fpr": 0.8274509803921568,
+   "brier": 0.001411065438668102
+  }
+ }
+}

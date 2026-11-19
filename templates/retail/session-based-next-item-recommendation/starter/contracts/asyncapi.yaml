@@ -1,0 +1,19 @@
+asyncapi: 3.0.0
+info:
+  title: Ecommerce Clickstream Stream
+  version: 1.2.0
+channels:
+  clickstream.events:
+    address: clickstream.events
+    messages:
+      pageView:
+        summary: Product detail page view event in active session
+        payload:
+          type: object
+          properties:
+            session_id: { type: string }
+            item_id: { type: integer }
+            category: { type: string }
+            dwell_seconds: { type: number }
+            ts: { type: number }
+

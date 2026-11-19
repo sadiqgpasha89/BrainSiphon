@@ -1,0 +1,57 @@
+{
+ "slug": "real-estate/office-space-utilisation-from-sensors",
+ "title": "Office Space Utilisation from Sensors",
+ "domain": "real-estate",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 45978,
+ "knobs": {
+  "n_series": 278
+ },
+ "blueprintSignals": [
+  {
+   "name": "Peak occupancy",
+   "definition": "95th percentile of hourly counts per zone over four weeks",
+   "asOfRule": "Sensor errors create spikes, so remove impossible values"
+  },
+  {
+   "name": "Booked vs used",
+   "definition": "booked hours with no detected occupancy divided by booked hours",
+   "asOfRule": "Booking data are often incomplete"
+  },
+  {
+   "name": "Dwell time",
+   "definition": "median minutes people stay in a zone",
+   "asOfRule": "Sensors miss still people, so cross-check with a second source"
+  },
+  {
+   "name": "Day pattern",
+   "definition": "weekday profile of mean occupancy across weeks",
+   "asOfRule": "Patterns shift with policies, so refresh it often"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Office Space Utilisation from Sensors\": Measure how workspaces and meeting rooms are actually used from sensors and badge data to right-size the portfolio and plan layouts. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: A short pilot period misses seasonal peaks and holidays."
+}

@@ -1,0 +1,48 @@
+{
+ "slug": "edtech/adaptive-reading-text-simplification",
+ "title": "Adaptive Reading & Text Simplification",
+ "domain": "edtech",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 87039,
+ "knobs": {
+  "n": 216
+ },
+ "blueprintSignals": [
+  {
+   "name": "Reading-level estimate",
+   "definition": "model-based readability",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Key-fact retention",
+   "definition": "NLI-checked fact coverage",
+   "asOfRule": "Fact extraction"
+  },
+  {
+   "name": "Vocabulary-support coverage",
+   "definition": "glossed difficult words",
+   "asOfRule": "Lexicon"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Adaptive Reading & Text Simplification\": Adapt reading passages to each learner's reading level while preserving meaning, with vocabulary supports and comprehension checks. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating fluency not fidelity."
+}

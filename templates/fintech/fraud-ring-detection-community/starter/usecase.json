@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/fraud-ring-detection-community",
+ "title": "Fraud Ring Detection via Community Detection",
+ "domain": "fintech",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 86738,
+ "knobs": {
+  "n_clusters": 1590,
+  "hub_share": 0.117
+ },
+ "blueprintSignals": [
+  {
+   "name": "Shared-resource density",
+   "definition": "share of accounts in a cluster sharing devices or payment instruments",
+   "asOfRule": "Resource IDs hashed at event time"
+  },
+  {
+   "name": "Temporal co-burst",
+   "definition": "correlation of activity bursts among cluster members",
+   "asOfRule": "Bin windows before labels"
+  },
+  {
+   "name": "Cluster age and growth",
+   "definition": "rate of new accounts joining the cluster",
+   "asOfRule": "Snapshot cluster membership per day"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Fraud Ring Detection via Community Detection\": Find coordinated fraud rings across accounts, devices and merchants for batch takedown rather than one-at-a-time blocking. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on rings found by the same heuristic."
+}

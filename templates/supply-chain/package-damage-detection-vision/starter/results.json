@@ -1,0 +1,50 @@
+{
+ "use_case": "supply-chain/package-damage-detection-vision",
+ "engine": "cv",
+ "seed": 57296,
+ "knobs": {
+  "n": 4080,
+  "prevalence": 0.096
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "images": 4080,
+  "train": 1439,
+  "prevalence": 0.0909313725490196,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9592457212154494,
+    "sens_at_95_spec": 0.765625
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9711883230207837,
+    "sens_at_95_spec": 0.9090909090909091
+   },
+   "site_B": {
+    "auc": 0.7413080038440418,
+    "sens_at_95_spec": 0.2916666666666667
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.2916666666666667,
+    "false_positive_rate": 0.05271828665568369
+   }
+  }
+ }
+}

@@ -1,0 +1,42 @@
+{
+ "use_case": "retail/search-relevance-llm-judge-evaluation",
+ "engine": "generative",
+ "seed": 84915,
+ "knobs": {
+  "n": 265
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "golden_items": 265,
+  "v1_pass_rate_strict_judge": 0.1509433962264151,
+  "v1_pass_rate_fuzzy_judge": 0.4867924528301887,
+  "v2_pass_rate_fuzzy_judge": 0.6754716981132075,
+  "v1_pass_rate_ci95": [
+   0.4188679245283019,
+   0.5509433962264151
+  ],
+  "v2_minus_v1": 0.18867924528301888,
+  "v2_minus_v1_ci95": [
+   0.10924528301886793,
+   0.2792452830188679
+  ],
+  "judge_agreement_kappa_v1": 0.31568257652691123,
+  "judge_disagreement_share_v1": 0.33584905660377357,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4867924528301887,
+   "date_correct": 0.1509433962264151,
+   "within_length": 0.011320754716981131,
+   "no_forbidden_claims": 0.045283018867924525
+  },
+  "ci_width_at_60_items": 0.25041666666666657,
+  "ci_width_at_full_set": 0.13207547169811318
+ }
+}

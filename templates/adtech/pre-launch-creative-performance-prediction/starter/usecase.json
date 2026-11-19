@@ -1,0 +1,48 @@
+{
+ "slug": "adtech/pre-launch-creative-performance-prediction",
+ "title": "Pre-Launch Creative Performance Prediction",
+ "domain": "adtech",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 69936,
+ "knobs": {
+  "n": 299
+ },
+ "blueprintSignals": [
+  {
+   "name": "Visual embedding",
+   "definition": "image or video encoder embedding",
+   "asOfRule": "Domain tuning"
+  },
+  {
+   "name": "Attention heatmap",
+   "definition": "saliency prediction",
+   "asOfRule": "Model"
+  },
+  {
+   "name": "Text-overlay legibility",
+   "definition": "OCR text size and contrast",
+   "asOfRule": "OCR"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Pre-Launch Creative Performance Prediction\": Predict how well an image or video creative will perform before spending, so weak creatives are fixed or dropped. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training data confounded by budget and targeting."
+}

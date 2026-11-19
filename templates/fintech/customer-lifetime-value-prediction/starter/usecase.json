@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/customer-lifetime-value-prediction",
+ "title": "Customer Lifetime Value Prediction",
+ "domain": "fintech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 78234,
+ "knobs": {
+  "n": 23330,
+  "outlier_share": 0.015,
+  "drift": 0.205
+ },
+ "blueprintSignals": [
+  {
+   "name": "Early-life activity",
+   "definition": "transactions and balances in the first 30 days",
+   "asOfRule": "Fixed observation window per customer"
+  },
+  {
+   "name": "Product mix at 30d",
+   "definition": "products held and funding patterns",
+   "asOfRule": "Count at fixed day not current"
+  },
+  {
+   "name": "Acquisition source quality",
+   "definition": "historical LTV of customers from the same source",
+   "asOfRule": "Use matured cohorts only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Customer Lifetime Value Prediction\": Predict 12-month and 36-month customer value at acquisition and over time to steer marketing spend and servicing tiers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using full-history features for young customers."
+}

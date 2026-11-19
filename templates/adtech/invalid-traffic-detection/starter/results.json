@@ -1,0 +1,34 @@
+{
+ "use_case": "adtech/invalid-traffic-detection",
+ "engine": "tabular",
+ "seed": 9505,
+ "knobs": {
+  "n_entities": 2000,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.1,
+ "results": {
+  "rows": 154311,
+  "positive_rate": 0.003667917387613326,
+  "test_rows": 51529,
+  "test_positive_rate": 0.004133594674843292,
+  "baseline_lr": {
+   "pr_auc": 0.3914274878512191,
+   "recall_at_0.5pct_fpr": 0.4225352112676056,
+   "brier": 0.0034234375325651765
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7283981502539,
+   "recall_at_0.5pct_fpr": 0.7652582159624414,
+   "brier": 0.0021894063309889295
+  }
+ }
+}

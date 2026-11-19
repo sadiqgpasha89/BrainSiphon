@@ -1,0 +1,34 @@
+{
+ "use_case": "supply-chain/carrier-selection-and-tendering",
+ "engine": "tabular",
+ "seed": 46825,
+ "knobs": {
+  "n_entities": 2220,
+  "positive_entity_rate": 0.029,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "rows": 167083,
+  "positive_rate": 0.003998012963616885,
+  "test_rows": 54896,
+  "test_positive_rate": 0.00351573885164675,
+  "baseline_lr": {
+   "pr_auc": 0.6822611454361086,
+   "recall_at_0.5pct_fpr": 0.7191905206829186,
+   "brier": 0.001736478062642225
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.706997774591959,
+   "recall_at_0.5pct_fpr": 0.7512953367875648,
+   "brier": 0.001579926199229595
+  }
+ }
+}

@@ -1,0 +1,16 @@
+contract: credit_card_offer_personalization_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: pre_approval_probability, type: double, nullable: false }
+    - { name: spend_category_affinity, type: double, nullable: false }
+    - { name: expected_profit_margin, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

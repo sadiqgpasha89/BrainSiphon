@@ -1,0 +1,37 @@
+{
+ "id": "forecast",
+ "label": "Multi-horizon forecasting from an origin snapshot",
+ "summary": "A runnable reference for forecasting many series at several horizons with origin-safe features, quantile boosting, forecast value added against a seasonal baseline, censored demand and late feeds.",
+ "problemTypes": [
+  "forecasting"
+ ],
+ "traps": [
+  "Reading a late feed as zero",
+  "Training on capped values",
+  "Judging a model against nothing",
+  "Reporting aggregate accuracy"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/container-port-yard-planning",
+ "title": "Container Yard Stacking & Crane Planning",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 9874,
+ "knobs": {
+  "n_instances": 199,
+  "noise": 0.265
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pickup-time prediction",
+   "definition": "predicted dwell time per container",
+   "asOfRule": "Consignee history"
+  },
+  {
+   "name": "Stack height and exposure",
+   "definition": "rehandle risk of position",
+   "asOfRule": "Yard state"
+  },
+  {
+   "name": "Vessel stowage plan",
+   "definition": "planned load sequence",
+   "asOfRule": "Plan version"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Container Yard Stacking & Crane Planning\": Assign container slots and sequence crane moves to minimise reshuffles and vessel turnaround time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulator with perfect information."
+}

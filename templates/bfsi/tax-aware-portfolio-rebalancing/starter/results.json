@@ -1,0 +1,45 @@
+{
+ "use_case": "bfsi/tax-aware-portfolio-rebalancing",
+ "engine": "optimize",
+ "seed": 41334,
+ "knobs": {
+  "n_instances": 125,
+  "noise": 0.331
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.5,
+ "results": {
+  "instances": 125,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 126.37533091659621,
+   "promised_cost": 96.61546099467554,
+   "optimism_gap_pct": 30.8023887849179,
+   "regret_vs_oracle_pct": 38.1499615565512
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 111.71261091609011,
+   "promised_cost": 77.92100491006107,
+   "optimism_gap_pct": 43.36649154490808,
+   "regret_vs_oracle_pct": 22.121087964748213
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 107.50527336130266,
+   "promised_cost": 80.03901240693827,
+   "optimism_gap_pct": 34.316091776244164,
+   "regret_vs_oracle_pct": 17.521744744567656
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.47692079875456,
+   "promised_cost": 96.68185872855923,
+   "optimism_gap_pct": -5.3835724698031315,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

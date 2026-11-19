@@ -1,0 +1,54 @@
+{
+ "slug": "cybersecurity/network-intrusion-detection-flow-anomaly",
+ "title": "Network Intrusion Detection via Flow Anomalies",
+ "domain": "cybersecurity",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 32307,
+ "knobs": {
+  "n_entities": 2670,
+  "positive_entity_rate": 0.041,
+  "n_flash_sales": 8
+ },
+ "blueprintSignals": [
+  {
+   "name": "Fan-out and new-destination rate",
+   "definition": "distinct new peers per host per hour",
+   "asOfRule": "Window and baseline exclude the alert"
+  },
+  {
+   "name": "Beaconing periodicity",
+   "definition": "autocorrelation of connection intervals",
+   "asOfRule": "Jitter handling"
+  },
+  {
+   "name": "Byte ratio asymmetry",
+   "definition": "upload to download ratio",
+   "asOfRule": "Direction labelling"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Network Intrusion Detection via Flow Anomalies\": Detect lateral movement, scanning and command-and-control from network flow metadata at line rate, including in encrypted traffic. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on public datasets with unrealistic attacks."
+}

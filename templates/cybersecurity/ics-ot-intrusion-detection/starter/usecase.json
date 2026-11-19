@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/ics-ot-intrusion-detection",
+ "title": "ICS/OT Intrusion Detection",
+ "domain": "cybersecurity",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 70905,
+ "knobs": {
+  "n_series": 113,
+  "anomalies_per_series": 2.873
+ },
+ "blueprintSignals": [
+  {
+   "name": "Command-sequence deviation",
+   "definition": "unexpected function codes",
+   "asOfRule": "Protocol parsing"
+  },
+  {
+   "name": "Sensor-physics residual",
+   "definition": "residual from process model",
+   "asOfRule": "Model"
+  },
+  {
+   "name": "New communicator",
+   "definition": "previously unseen device pair",
+   "asOfRule": "Baseline"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"ICS/OT Intrusion Detection\": Detect malicious commands and process manipulation in industrial control networks using protocol-aware and physics-based models without disrupting operations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Testbed attacks lacking plant realism."
+}

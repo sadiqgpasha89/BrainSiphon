@@ -1,0 +1,57 @@
+{
+ "slug": "real-estate/commercial-occupancy-and-rent-roll-forecasting",
+ "title": "Commercial Occupancy & Rent-Roll Forecasting",
+ "domain": "real-estate",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 65878,
+ "knobs": {
+  "n_series": 161
+ },
+ "blueprintSignals": [
+  {
+   "name": "Expiry profile",
+   "definition": "share of income expiring within 12 months and within 36 months",
+   "asOfRule": "Break options can move the real expiry earlier, so include them"
+  },
+  {
+   "name": "Renewal propensity",
+   "definition": "predicted probability that the tenant renews, from tenant sector, size and history",
+   "asOfRule": "Few renewal events per tenant, so pool by tenant type"
+  },
+  {
+   "name": "Submarket vacancy",
+   "definition": "vacancy rate of comparable space within the submarket over the last 8 quarters",
+   "asOfRule": "Sources define vacancy differently, so use one source throughout"
+  },
+  {
+   "name": "Rent gap to market",
+   "definition": "passing rent minus market rent as a share of market rent",
+   "asOfRule": "Market rent estimates are uncertain, so carry an interval"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Commercial Occupancy & Rent-Roll Forecasting\": Forecast occupancy and rental income by property from lease expiries, renewal behaviour and market demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: A back-test through a strong market makes any renewal assumption look good."
+}

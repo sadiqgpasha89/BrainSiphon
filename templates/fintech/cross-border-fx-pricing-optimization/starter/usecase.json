@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/cross-border-fx-pricing-optimization",
+ "title": "Cross-Border Payment FX & Fee Pricing",
+ "domain": "fintech",
+ "engine": "bandit",
+ "fit": "adaptable",
+ "problemType": "off-policy-decisioning",
+ "seed": 17836,
+ "knobs": {
+  "n": 28550,
+  "logging_temperature": 1.29
+ },
+ "blueprintSignals": [
+  {
+   "name": "Corridor price elasticity",
+   "definition": "log-log demand response from randomised price tests",
+   "asOfRule": "Use randomised cells only"
+  },
+  {
+   "name": "Quote-to-convert funnel",
+   "definition": "conversion by price band for similar customers",
+   "asOfRule": "Condition on amount and device"
+  },
+  {
+   "name": "Liquidity cost estimate",
+   "definition": "real-time spread plus hedge cost",
+   "asOfRule": "Use cost at quote time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Cross-Border Payment FX & Fee Pricing\": Price FX markup and fees per corridor and customer segment to maximise revenue subject to conversion and fairness constraints. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Observational price-conversion data confounded."
+}

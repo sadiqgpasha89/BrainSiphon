@@ -1,0 +1,53 @@
+{
+ "slug": "saas/cdp-identity-resolution-saas",
+ "title": "Customer Data Platform Identity Resolution",
+ "domain": "saas",
+ "engine": "graph",
+ "fit": "exact",
+ "problemType": "entity-resolution",
+ "seed": 59091,
+ "knobs": {
+  "n_clusters": 1510,
+  "hub_share": 0.136
+ },
+ "blueprintSignals": [
+  {
+   "name": "Deterministic identifier match",
+   "definition": "email, user ID",
+   "asOfRule": "Hashing"
+  },
+  {
+   "name": "Device-session co-occurrence",
+   "definition": "repeated shared sessions",
+   "asOfRule": "Windows"
+  },
+  {
+   "name": "Conflict signals",
+   "definition": "contradictory attributes",
+   "asOfRule": "Rules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Customer Data Platform Identity Resolution\": Resolve anonymous and known identifiers into unified customer profiles for analytics and activation with explainable merges. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating with deterministic links only."
+}

@@ -1,0 +1,45 @@
+{
+ "use_case": "supply-chain/container-port-yard-planning",
+ "engine": "optimize",
+ "seed": 9874,
+ "knobs": {
+  "n_instances": 199,
+  "noise": 0.265
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "instances": 199,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 119.2285611456232,
+   "promised_cost": 99.55799175582655,
+   "optimism_gap_pct": 19.757900940830748,
+   "regret_vs_oracle_pct": 30.358663436320292
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 104.09586585435527,
+   "promised_cost": 82.42572061442672,
+   "optimism_gap_pct": 26.290513541637978,
+   "regret_vs_oracle_pct": 13.81331630301555
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 101.943949968572,
+   "promised_cost": 83.83903667458243,
+   "optimism_gap_pct": 21.59484890584204,
+   "regret_vs_oracle_pct": 11.460516973704937
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.46193893270922,
+   "promised_cost": 94.53267952745195,
+   "optimism_gap_pct": -3.248337622600657,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

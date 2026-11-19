@@ -1,0 +1,52 @@
+{
+ "slug": "retail/delivery-promise-estimation",
+ "title": "Delivery Promise (ETA) Estimation",
+ "domain": "retail",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 38474,
+ "knobs": {
+  "n_series": 256
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pin-code carrier lead-time quantile",
+   "definition": "90th percentile of last-mile time by carrier and pin",
+   "asOfRule": "Recent window as-of"
+  },
+  {
+   "name": "Warehouse processing backlog",
+   "definition": "orders waiting vs processing capacity",
+   "asOfRule": "Snapshot at order time"
+  },
+  {
+   "name": "Weather and event disruption flags",
+   "definition": "alerts on route",
+   "asOfRule": "Alerts known before the order"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Delivery Promise (ETA) Estimation\": Show accurate delivery dates at browse and checkout, balancing conversion (earlier promises) with on-time reliability. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on delivered orders only (survivorship)."
+}

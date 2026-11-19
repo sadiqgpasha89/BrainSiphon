@@ -1,0 +1,49 @@
+{
+ "use_case": "healthcare/medication-adherence-prediction-and-nudges",
+ "engine": "regression",
+ "seed": 22922,
+ "knobs": {
+  "n": 18630,
+  "outlier_share": 0.031,
+  "drift": 0.275
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.0,
+ "results": {
+  "rows": 18630,
+  "train_rows": 13041,
+  "test_rows": 5589,
+  "baseline_ridge": {
+   "mae": 7.668920201697028,
+   "rmse": 13.70867820840603,
+   "wape": 0.14566760868115297,
+   "r2": 0.40675595475429627
+  },
+  "challenger_gbm": {
+   "mae": 5.419627964038065,
+   "rmse": 11.902043829995886,
+   "wape": 0.10294333813621281,
+   "r2": 0.5528169703948078
+  },
+  "mae_gain_vs_baseline": 0.29329973170945567,
+  "interval_80_coverage": 0.6734657362676686,
+  "interval_80_mean_width": 9.782358293653193,
+  "segment_mae": {
+   "0": 5.493258869980585,
+   "1": 5.2345725049684555,
+   "2": 5.523995973951207,
+   "3": 5.4276698145344895
+  },
+  "worst_segment_vs_overall": 1.0192574122441016,
+  "leaky_feature_rmse": 1.5379439086829734,
+  "honest_rmse": 11.902043829995886,
+  "random_split_mae": 4.8963106434961725,
+  "chronological_mae": 5.419627964038065
+ }
+}

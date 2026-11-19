@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/load-consolidation-and-bin-packing",
+ "title": "Load Consolidation & 3D Bin Packing",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 18922,
+ "knobs": {
+  "n_instances": 120,
+  "noise": 0.43
+ },
+ "blueprintSignals": [
+  {
+   "name": "Item dimensions and fragility class",
+   "definition": "master data",
+   "asOfRule": "Accuracy"
+  },
+  {
+   "name": "Delivery sequence rank",
+   "definition": "unload order",
+   "asOfRule": "Route plan"
+  },
+  {
+   "name": "Axle load distribution",
+   "definition": "weight balance",
+   "asOfRule": "Calc"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Load Consolidation & 3D Bin Packing\": Pack orders into containers and trailers to minimise empty space while respecting weight, stacking and delivery order. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Benchmarks with random boxes."
+}

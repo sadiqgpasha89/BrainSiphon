@@ -1,0 +1,34 @@
+{
+ "use_case": "real-estate/acquisition-deal-sourcing",
+ "engine": "tabular",
+ "seed": 24970,
+ "knobs": {
+  "n_entities": 2610,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "rows": 194964,
+  "positive_rate": 0.0028877126033524138,
+  "test_rows": 63821,
+  "test_positive_rate": 0.003462810046849783,
+  "baseline_lr": {
+   "pr_auc": 0.7151158989879357,
+   "recall_at_0.5pct_fpr": 0.8054298642533937,
+   "brier": 0.001574760988099139
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7523152269552809,
+   "recall_at_0.5pct_fpr": 0.8009049773755657,
+   "brier": 0.0015917543332604114
+  }
+ }
+}

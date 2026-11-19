@@ -1,0 +1,60 @@
+{
+ "slug": "saas/in-app-ai-copilot",
+ "title": "In-App AI Copilot for SaaS Products",
+ "domain": "saas",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-write-actions",
+ "seed": 10809,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Tool-call validity rate",
+   "definition": "calls passing schema validation",
+   "asOfRule": "Schemas"
+  },
+  {
+   "name": "Task success rate",
+   "definition": "tasks completed as intended",
+   "asOfRule": "Instrumentation"
+  },
+  {
+   "name": "Confirmation acceptance",
+   "definition": "user approvals of previews",
+   "asOfRule": "UI"
+  },
+  {
+   "name": "Plan-hash confirmation match",
+   "definition": "share of executed mutations whose signed confirmation matches the previewed plan hash",
+   "asOfRule": "Record the hash at preview time, not at execution"
+  },
+  {
+   "name": "Idempotency replay rate",
+   "definition": "retries or double clicks absorbed without a second effect",
+   "asOfRule": "Keys must be scoped to user, plan and step"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"In-App AI Copilot for SaaS Products\": Let users accomplish tasks in the product through natural language, with the copilot calling product APIs safely on their behalf. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Golden tasks too easy."
+}

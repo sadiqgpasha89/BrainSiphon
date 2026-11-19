@@ -1,0 +1,16 @@
+contract: out_of_stock_substitution_inputs.v1
+owner: catalogue-operations@example.com
+system_of_record: Product information management (PIM)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: historic_substitution_acceptance, type: double, nullable: false }
+    - { name: price_delta_and_unit_size_delta, type: double, nullable: false }
+    - { name: user_substitution_tolerance, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

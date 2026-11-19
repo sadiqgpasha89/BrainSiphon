@@ -1,0 +1,37 @@
+{
+ "id": "optimize",
+ "label": "Allocation under predicted costs",
+ "summary": "A runnable reference for allocation, routing and scheduling from predicted costs: greedy assignment, optimal assignment on predictions and optimal assignment with an uncertainty penalty, compared on realised cost and on how optimistic the promise was.",
+ "problemTypes": [
+  "optimisation-allocation"
+ ],
+ "traps": [
+  "Trusting the promised cost",
+  "Ignoring prediction uncertainty",
+  "A greedy plan because it is simple",
+  "Measuring plan quality on the planning data"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ]
+}

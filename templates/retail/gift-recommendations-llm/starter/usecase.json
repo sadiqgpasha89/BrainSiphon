@@ -1,0 +1,48 @@
+{
+ "slug": "retail/gift-recommendations-llm",
+ "title": "Gift Recommendation Assistant",
+ "domain": "retail",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 59947,
+ "knobs": {
+  "n": 248
+ },
+ "blueprintSignals": [
+  {
+   "name": "Gift-brief completeness",
+   "definition": "filled slots out of required",
+   "asOfRule": "Slot extractor accuracy"
+  },
+  {
+   "name": "Deadline feasibility",
+   "definition": "whether delivery date meets occasion date",
+   "asOfRule": "Live carrier promises"
+  },
+  {
+   "name": "Recipient interest match",
+   "definition": "interest embedding vs item embedding",
+   "asOfRule": "Self-reported interests"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Gift Recommendation Assistant\": Help users find gifts for recipients and occasions through a short conversation with grounded product suggestions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on easy briefs."
+}

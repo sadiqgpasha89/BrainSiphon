@@ -1,0 +1,55 @@
+{
+ "slug": "real-estate/due-diligence-document-review",
+ "title": "Real Estate Due-Diligence Document Review",
+ "domain": "real-estate",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 32037,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Checklist coverage",
+   "definition": "share of required document types present and reviewed",
+   "asOfRule": "Definitions of required vary by deal, so use a template per type"
+  },
+  {
+   "name": "Issue precision",
+   "definition": "share of flagged issues that a lawyer accepts as real",
+   "asOfRule": "Reviewers disagree, so measure agreement as well"
+  },
+  {
+   "name": "Citation validity",
+   "definition": "share of issues whose cited passage supports the statement",
+   "asOfRule": "A passage can be real and still not support the claim, so check entailment"
+  },
+  {
+   "name": "Material flag",
+   "definition": "severity score assigned by a rule set tied to value and legal risk",
+   "asOfRule": "Severity involves judgement, so calibrate with lawyers"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Real Estate Due-Diligence Document Review\": Review data-room documents (title, leases, surveys, environmental, contracts) for a property acquisition, flag issues and draft a report with citations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Past deals used for tuning are the easy ones that closed, so recall on hard deals is overstated."
+}

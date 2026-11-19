@@ -1,0 +1,4 @@
+# Overrides for deployment/helm/ai-solution in the free BrainSiphon deployment kit, for Policy Lapse & Persistency Prediction.
+# Modelled sizing at 10M registered users. Replace with your measured peak, and set autoscaling bounds from a load test.
+# Blueprint compute statement: 2 8-vCPU Spark executors for 3,000,000 rows per run (≈40K rows/s per node, target completion window 2 h); 3 online feature-store shards and 12 event-bus partitions.
+# No pod or GPU count could be read from the compute statement; set replicas from docs/08-capacity-and-cost.md.

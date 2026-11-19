@@ -1,0 +1,35 @@
+# Every tunable of the pipeline in one reviewed file.
+model_name: docs-index          # the retrieval index is the versioned "model" of a RAG system
+feature_view: doc_chunk
+
+chunking:
+  target_words: 45
+  overlap_words: 15
+
+retrieval:
+  top_k: 5
+  rrf_k: 60                     # reciprocal-rank-fusion constant for combining lexical and dense rankings
+  dense_dimensions: 64
+  min_score: 0.30               # below this lexical-overlap score for the best chunk, the assistant abstains
+
+generation:
+  provider: extractive          # extractive (deterministic, offline, no key) | anthropic (needs ANTHROPIC_API_KEY)
+  anthropic_model: claude-opus-5-5
+  max_sentences: 3
+  min_support: 0.6              # share of an answer sentence's content words that must appear in the chunk it cites
+
+gates:                          # an index is promoted only if every gate holds on the evaluation set
+  min_recall_at_k: 0.90
+  min_mrr: 0.75
+  min_faithfulness: 0.95        # share of answers whose every sentence is supported by its citation
+  min_abstention_accuracy: 0.80 # share of unanswerable questions the assistant declines
+  max_acl_leaks: 0              # internal chunks shown to a public user, ever
+  max_regression_vs_production: 0.03
+  auto_promote: true
+
+review:
+  sla_seconds: 86400
+
+reindex:                        # any one condition triggers an index rebuild
+  min_changed_documents: 1
+  min_new_eval_examples: 3

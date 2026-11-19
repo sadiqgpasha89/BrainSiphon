@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/pathology-slide-cancer-detection",
+ "title": "Whole-Slide Pathology Cancer Detection",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 3283,
+ "knobs": {
+  "n": 3920,
+  "prevalence": 0.144
+ },
+ "blueprintSignals": [
+  {
+   "name": "Tile attention scores",
+   "definition": "attention-weighted tile importance",
+   "asOfRule": "Check heatmap fidelity against annotations"
+  },
+  {
+   "name": "Foundation-model tile embeddings",
+   "definition": "pretrained pathology encoder features",
+   "asOfRule": "Frozen vs finetuned tradeoff"
+  },
+  {
+   "name": "Slide-level uncertainty",
+   "definition": "ensemble variance",
+   "asOfRule": "Calibrate"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Whole-Slide Pathology Cancer Detection\": Assist pathologists by detecting and localising tumour regions in gigapixel whole-slide images to prioritise and speed up diagnosis. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on a single institution."
+}

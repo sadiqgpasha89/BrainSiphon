@@ -1,0 +1,50 @@
+{
+ "slug": "adtech/marketing-copilot-analyst-agent",
+ "title": "Marketing Analytics Copilot Agent",
+ "domain": "adtech",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 88991,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Metric-layer coverage",
+   "definition": "share of questions answerable via governed metrics",
+   "asOfRule": "Layer"
+  },
+  {
+   "name": "Query validity and result checks",
+   "definition": "row-count and sanity checks",
+   "asOfRule": "Checks"
+  },
+  {
+   "name": "Answer reproducibility",
+   "definition": "same question gives same answer",
+   "asOfRule": "Seed"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Marketing Analytics Copilot Agent\": Let marketers ask questions in plain language and get correct, reproducible analyses and chart-backed recommendations from campaign data. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Golden questions simpler than real."
+}

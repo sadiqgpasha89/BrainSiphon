@@ -1,0 +1,45 @@
+{
+ "use_case": "adtech/cross-channel-budget-allocation",
+ "engine": "optimize",
+ "seed": 61278,
+ "knobs": {
+  "n_instances": 111,
+  "noise": 0.329
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.5,
+ "results": {
+  "instances": 111,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 126.3026143824932,
+   "promised_cost": 97.33649831529004,
+   "optimism_gap_pct": 29.758740625101197,
+   "regret_vs_oracle_pct": 38.049461705104335
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 111.21611807221961,
+   "promised_cost": 78.38050200948535,
+   "optimism_gap_pct": 41.89258198264742,
+   "regret_vs_oracle_pct": 21.559837125029198
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 107.06371457030818,
+   "promised_cost": 80.38288584460625,
+   "optimism_gap_pct": 33.19217572914774,
+   "regret_vs_oracle_pct": 17.021236946213577
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.49084163203456,
+   "promised_cost": 95.80029499025508,
+   "optimism_gap_pct": -4.498371699856337,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

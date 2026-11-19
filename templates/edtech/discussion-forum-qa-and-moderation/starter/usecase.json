@@ -1,0 +1,50 @@
+{
+ "slug": "edtech/discussion-forum-qa-and-moderation",
+ "title": "Discussion Forum Q&A & Moderation",
+ "domain": "edtech",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 2334,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Question similarity",
+   "definition": "embedding similarity to past questions",
+   "asOfRule": "Domain tuning"
+  },
+  {
+   "name": "Answer quality votes and instructor tags",
+   "definition": "endorsements",
+   "asOfRule": "Vote bias"
+  },
+  {
+   "name": "Toxicity probability",
+   "definition": "classifier score",
+   "asOfRule": "Calibration"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Discussion Forum Q&A & Moderation\": Auto-answer repeated questions with citations, surface expert answers, and moderate toxic or off-topic posts. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on toxic data from other domains."
+}

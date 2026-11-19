@@ -1,0 +1,76 @@
+# GENERATED from monitoring/alerts.yaml by `python -m bsref.observability`. Do not edit.
+groups:
+- name: bsref
+  rules:
+  - alert: RagIndexStale
+    expr: rag_stale_documents > 0
+    for: 30m
+    labels:
+      severity: ticket
+    annotations:
+      summary: Documents were published, changed or deleted since the serving index was built, so answers may be out of date
+      runbook: docs/RUNBOOK.md#index-stale
+  - alert: RagAnswerCorrectnessLow
+    expr: rag_eval_answer_correctness < 0.90
+    for: 15m
+    labels:
+      severity: page
+    annotations:
+      summary: The serving index answers fewer than 90% of the evaluation questions correctly
+      runbook: docs/RUNBOOK.md#answer-quality-low
+  - alert: RagAccessControlLeak
+    expr: rag_eval_acl_leaks > 0
+    for: 0m
+    labels:
+      severity: page
+    annotations:
+      summary: An internal passage was retrieved for a public reader during evaluation
+      runbook: docs/RUNBOOK.md#access-control-leak
+  - alert: RagAbstainRateHigh
+    expr: sum(rate(rag_answers_total{status="abstained"}[1h])) / sum(rate(rag_answers_total[1h])) > 0.35
+    for: 1h
+    labels:
+      severity: ticket
+    annotations:
+      summary: More than 35% of questions are being declined (a documentation gap or a retrieval fault)
+      runbook: docs/RUNBOOK.md#abstain-rate-high
+  - alert: RagThumbsDownRateHigh
+    expr: sum(rate(rag_ratings_total{rating="down"}[6h])) / sum(rate(rag_ratings_total[6h])) > 0.25
+    for: 1h
+    labels:
+      severity: ticket
+    annotations:
+      summary: More than a quarter of rated answers are rated not helpful
+      runbook: docs/RUNBOOK.md#answer-quality-low
+  - alert: RagUnsupportedSentences
+    expr: sum(rate(rag_unsupported_sentences_total[1h])) / sum(rate(rag_answers_total{status="answered"}[1h])) > 0.05
+    for: 1h
+    labels:
+      severity: ticket
+    annotations:
+      summary: The generator is producing sentences that its citations do not support (they are removed, but investigate)
+      runbook: docs/RUNBOOK.md#unsupported-sentences
+  - alert: RagAnswerLatencyHigh
+    expr: histogram_quantile(0.95, sum(rate(rag_answer_duration_ms_bucket[15m])) by (le)) > 4000
+    for: 15m
+    labels:
+      severity: ticket
+    annotations:
+      summary: p95 time to answer is above 4 seconds
+      runbook: docs/RUNBOOK.md#latency-high
+  - alert: IngestDeadLetters
+    expr: rag_ingest_dead_letters > 0
+    for: 1m
+    labels:
+      severity: ticket
+    annotations:
+      summary: Document events are in the dead-letter queue and need a person to look at them
+      runbook: docs/RUNBOOK.md#dead-letters
+  - alert: ReviewsOverdue
+    expr: rag_reviews_overdue > 0
+    for: 5m
+    labels:
+      severity: ticket
+    annotations:
+      summary: Questions have waited for the documentation team past the review SLA
+      runbook: docs/RUNBOOK.md#reviews-overdue

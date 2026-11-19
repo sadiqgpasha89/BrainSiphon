@@ -1,0 +1,57 @@
+{
+ "slug": "real-estate/building-material-demand-and-procurement-forecast",
+ "title": "Building Material Demand & Procurement Forecast",
+ "domain": "real-estate",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 28897,
+ "knobs": {
+  "n_series": 212
+ },
+ "blueprintSignals": [
+  {
+   "name": "Schedule phase",
+   "definition": "tasks planned in each of the next 8 weeks mapped to material take-offs",
+   "asOfRule": "Schedules slip, so refresh weekly"
+  },
+  {
+   "name": "Supplier lead time",
+   "definition": "median and 90th percentile days from order to delivery for each supplier",
+   "asOfRule": "Quoted lead times differ from realised ones"
+  },
+  {
+   "name": "Price index",
+   "definition": "recent change in the relevant material price index",
+   "asOfRule": "Indices lag spot prices"
+  },
+  {
+   "name": "Waste factor",
+   "definition": "percentage of material wasted in past projects of the same type",
+   "asOfRule": "Varies by crew and site, so use site-level values"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Building Material Demand & Procurement Forecast\": Forecast material needs by project phase and plan purchases to avoid delays and excess stock. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Plans differ from as-built quantities, so a forecast fitted to plans is biased."
+}

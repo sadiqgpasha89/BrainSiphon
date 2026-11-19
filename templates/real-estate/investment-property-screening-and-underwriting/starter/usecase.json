@@ -1,0 +1,53 @@
+{
+ "slug": "real-estate/investment-property-screening-and-underwriting",
+ "title": "Investment Property Screening & Underwriting",
+ "domain": "real-estate",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 40910,
+ "knobs": {
+  "n": 315
+ },
+ "blueprintSignals": [
+  {
+   "name": "Yield vs target",
+   "definition": "going-in cap rate minus the fund's target cap rate",
+   "asOfRule": "Cap rates are computed on estimated income, so mark the income source"
+  },
+  {
+   "name": "Rent gap",
+   "definition": "passing rent minus market rent as a share of market rent",
+   "asOfRule": "Market rents are estimates, so use an interval"
+  },
+  {
+   "name": "Capex need",
+   "definition": "estimated capital spend per square metre from condition, age and survey notes",
+   "asOfRule": "Estimates are rough, so keep a contingency band"
+  },
+  {
+   "name": "Debt service cover",
+   "definition": "net operating income divided by annual debt service at current rates",
+   "asOfRule": "Rates change, so recompute when rates move"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Investment Property Screening & Underwriting\": Screen listed investment properties against the fund's criteria and draft an underwriting summary with cash-flow assumptions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Past deals are those the team chose to pursue, so the data is biased toward what they already liked."
+}

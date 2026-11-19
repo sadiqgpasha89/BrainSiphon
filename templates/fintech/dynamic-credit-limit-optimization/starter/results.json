@@ -1,0 +1,37 @@
+{
+ "use_case": "fintech/dynamic-credit-limit-optimization",
+ "engine": "bandit",
+ "seed": 7314,
+ "knobs": {
+  "n": 39690,
+  "logging_temperature": 0.806
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.3,
+ "results": {
+  "logged_rows": 39690,
+  "logging_reward_rate": 0.3489795918367347,
+  "always_best_average_action": {
+   "true_value": 0.4188663274012572,
+   "naive_matched": 0.4549,
+   "ips": 0.3551,
+   "snips": 0.406,
+   "doubly_robust": 0.3964,
+   "match_rate": 0.312
+  },
+  "learned_greedy": {
+   "true_value": 0.6837958794575705,
+   "naive_matched": 0.7105,
+   "ips": 0.6014,
+   "snips": 0.6648,
+   "doubly_robust": 0.6756,
+   "match_rate": 0.207
+  }
+ }
+}

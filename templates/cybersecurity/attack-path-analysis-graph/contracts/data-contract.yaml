@@ -1,0 +1,16 @@
+contract: attack_path_analysis_graph_inputs.v1
+owner: detection-engineering@example.com
+system_of_record: SIEM and security data lake
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: edge_exploit_probability, type: double, nullable: false }
+    - { name: betweenness_of_nodes, type: double, nullable: false }
+    - { name: crown_jewel_proximity, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

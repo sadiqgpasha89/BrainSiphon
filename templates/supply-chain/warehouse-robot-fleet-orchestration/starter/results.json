@@ -1,0 +1,45 @@
+{
+ "use_case": "supply-chain/warehouse-robot-fleet-orchestration",
+ "engine": "optimize",
+ "seed": 18283,
+ "knobs": {
+  "n_instances": 184,
+  "noise": 0.438
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.7,
+ "results": {
+  "instances": 184,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 136.54909117356377,
+   "promised_cost": 90.6820975155412,
+   "optimism_gap_pct": 50.57998757710895,
+   "regret_vs_oracle_pct": 48.85271699702859
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 122.78085924448568,
+   "promised_cost": 70.64165147214554,
+   "optimism_gap_pct": 73.80802499060907,
+   "regret_vs_oracle_pct": 33.84391164157201
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 115.41056062911719,
+   "promised_cost": 73.57263955946009,
+   "optimism_gap_pct": 56.86614116358356,
+   "regret_vs_oracle_pct": 25.809519288256677
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.7343626158262,
+   "promised_cost": 100.82983634587863,
+   "optimism_gap_pct": -9.020617368505931,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

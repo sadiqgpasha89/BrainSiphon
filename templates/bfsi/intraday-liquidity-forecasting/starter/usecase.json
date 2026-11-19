@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/intraday-liquidity-forecasting",
+ "title": "Intraday Liquidity Forecasting",
+ "domain": "bfsi",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 48232,
+ "knobs": {
+  "n_series": 222
+ },
+ "blueprintSignals": [
+  {
+   "name": "Time-of-day profile",
+   "definition": "median cumulative flow by 15-minute slot for the same day type",
+   "asOfRule": "Day types must be classified using the settlement calendar"
+  },
+  {
+   "name": "Queued payments",
+   "definition": "value of payments waiting in the queue",
+   "asOfRule": "The queue state needs a consistent snapshot"
+  },
+  {
+   "name": "Counterparty concentration",
+   "definition": "share of flows from the top 10 counterparties",
+   "asOfRule": "Counterparty identities need entity mapping"
+  },
+  {
+   "name": "Scheduled obligations",
+   "definition": "known margin calls, CLS pay-ins and bond settlements",
+   "asOfRule": "Source systems differ on timing"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Intraday Liquidity Forecasting\": Forecast intraday payment inflows and outflows by settlement system so treasury funds positions on time without holding excess buffers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on end-of-day aggregated data hides timing."
+}

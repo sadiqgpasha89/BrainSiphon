@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/ifrs9-ecl-stage-allocation",
+ "title": "IFRS 9 Expected Credit Loss Staging",
+ "domain": "bfsi",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 52553,
+ "knobs": {
+  "n_entities": 1950,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 7
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lifetime PD ratio",
+   "definition": "current lifetime PD divided by lifetime PD at origination",
+   "asOfRule": "The origination PD must be preserved, not re-estimated"
+  },
+  {
+   "name": "Days past due flag",
+   "definition": "payment more than 30 days overdue",
+   "asOfRule": "Counted on contractual due dates, not posting dates"
+  },
+  {
+   "name": "Watchlist and forbearance",
+   "definition": "internal flags for credit concern or concession",
+   "asOfRule": "Flags must have effective dates to avoid leakage"
+  },
+  {
+   "name": "Macro sensitivity",
+   "definition": "portfolio PD elasticity to unemployment and rates",
+   "asOfRule": "Sensitivities are estimated on few downturns"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"IFRS 9 Expected Credit Loss Staging\": Allocate each exposure to IFRS 9 stage 1, 2 or 3 and estimate lifetime expected loss so provisions respond to deteriorating credit without whipsaw. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Random split ignores economic cycles."
+}

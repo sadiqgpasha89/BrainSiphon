@@ -1,0 +1,50 @@
+{
+ "use_case": "healthcare/ultrasound-guidance-and-measurement",
+ "engine": "cv",
+ "seed": 37163,
+ "knobs": {
+  "n": 3790,
+  "prevalence": 0.14
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 3790,
+  "train": 1325,
+  "prevalence": 0.13720316622691292,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9421021370589737,
+    "sens_at_95_spec": 0.7470355731225297
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9816284028363167,
+    "sens_at_95_spec": 0.8953488372093024
+   },
+   "site_B": {
+    "auc": 0.77650928746413,
+    "sens_at_95_spec": 0.3201581027667984
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.38735177865612647,
+    "false_positive_rate": 0.07905853952926976
+   }
+  }
+ }
+}

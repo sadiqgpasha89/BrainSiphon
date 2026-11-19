@@ -1,0 +1,55 @@
+{
+ "slug": "bfsi/fund-factsheet-generation-with-compliance-review",
+ "title": "Fund Factsheet Generation with Compliance Review",
+ "domain": "bfsi",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 46074,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Figure match",
+   "definition": "share of numbers equal to the source",
+   "asOfRule": "Rounding rules"
+  },
+  {
+   "name": "Banned phrase rate",
+   "definition": "rate of phrases from the blacklist",
+   "asOfRule": "List maintenance"
+  },
+  {
+   "name": "Edit distance",
+   "definition": "changes by compliance",
+   "asOfRule": "Style edits"
+  },
+  {
+   "name": "Disclosure presence",
+   "definition": "required statements present",
+   "asOfRule": "Per jurisdiction"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Fund Factsheet Generation with Compliance Review\": Generate monthly fund factsheet commentary from portfolio data and manager notes, checked by a compliance verifier before review. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test notes are cleaner than real ones."
+}

@@ -1,0 +1,42 @@
+{
+ "use_case": "saas/test-generation-and-pr-description",
+ "engine": "generative",
+ "seed": 60903,
+ "knobs": {
+  "n": 213
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "golden_items": 213,
+  "v1_pass_rate_strict_judge": 0.16901408450704225,
+  "v1_pass_rate_fuzzy_judge": 0.4788732394366197,
+  "v2_pass_rate_fuzzy_judge": 0.596244131455399,
+  "v1_pass_rate_ci95": [
+   0.41784037558685444,
+   0.5492957746478874
+  ],
+  "v2_minus_v1": 0.11737089201877934,
+  "v2_minus_v1_ci95": [
+   0.02805164319248827,
+   0.2066901408450703
+  ],
+  "judge_agreement_kappa_v1": 0.3624489795918367,
+  "judge_disagreement_share_v1": 0.30985915492957744,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.460093896713615,
+   "date_correct": 0.11267605633802817,
+   "within_length": 0.018779342723004695,
+   "no_forbidden_claims": 0.06572769953051644
+  },
+  "ci_width_at_60_items": 0.23333333333333334,
+  "ci_width_at_full_set": 0.13145539906103293
+ }
+}

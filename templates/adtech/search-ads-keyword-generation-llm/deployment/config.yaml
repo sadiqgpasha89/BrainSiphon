@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: landing_page_crawl, timeout_ms: 185, on_timeout: fallback_level_1 }
+    - { name: keyword_generator, timeout_ms: 495, on_timeout: fallback_level_1 }
+    - { name: volume_and_cpc_enrichment, timeout_ms: 495, on_timeout: fallback_level_1 }
+    - { name: relevance_and_policy_filter, timeout_ms: 495, on_timeout: fallback_level_1 }
+    - { name: negative_miner, timeout_ms: 185, on_timeout: fallback_level_1 }
+    - { name: marketer_approval, timeout_ms: 185, on_timeout: fallback_level_1 }
+    - { name: campaign_performance, timeout_ms: 185, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Time to launch"
+    - "Cost per acquisition"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

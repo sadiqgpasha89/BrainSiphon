@@ -1,0 +1,50 @@
+{
+ "use_case": "healthcare/pathology-slide-cancer-detection",
+ "engine": "cv",
+ "seed": 3283,
+ "knobs": {
+  "n": 3920,
+  "prevalence": 0.144
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "images": 3920,
+  "train": 1421,
+  "prevalence": 0.1298469387755102,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9381580619741223,
+    "sens_at_95_spec": 0.7021276595744681
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.962998712998713,
+    "sens_at_95_spec": 0.8611111111111112
+   },
+   "site_B": {
+    "auc": 0.7934797529169527,
+    "sens_at_95_spec": 0.35319148936170214
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3872340425531915,
+    "false_positive_rate": 0.06272401433691756
+   }
+  }
+ }
+}

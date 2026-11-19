@@ -1,0 +1,53 @@
+{
+ "slug": "saas/log-anomaly-detection",
+ "title": "Log Anomaly Detection",
+ "domain": "saas",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "tabular-anomaly-detection",
+ "seed": 63475,
+ "knobs": {
+  "n_series": 87,
+  "anomalies_per_series": 3.2
+ },
+ "blueprintSignals": [
+  {
+   "name": "New template appearance",
+   "definition": "previously unseen templates",
+   "asOfRule": "Template store"
+  },
+  {
+   "name": "Template frequency shift",
+   "definition": "rate vs baseline",
+   "asOfRule": "Baseline"
+  },
+  {
+   "name": "Sequence perplexity",
+   "definition": "next-template surprise",
+   "asOfRule": "Model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Log Anomaly Detection\": Detect abnormal log patterns (new error templates, rate shifts) at scale without manual rules. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Logs from one service only."
+}

@@ -1,0 +1,43 @@
+{
+ "use_case": "cybersecurity/ddos-detection-and-mitigation",
+ "engine": "anomaly",
+ "seed": 32218,
+ "knobs": {
+  "n_series": 62,
+  "anomalies_per_series": 2.4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.4,
+ "results": {
+  "series": 62,
+  "hours": 2016,
+  "events": 159,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.2921213574769157,
+   "recall": 0.5789473684210527,
+   "median_delay_h": 1.5,
+   "events": 76
+  },
+  "seasonal_z": {
+   "threshold": 5.0,
+   "false_alerts_per_series_week": 0.4801534956229764,
+   "recall": 0.7631578947368421,
+   "median_delay_h": 0.0,
+   "events": 76
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5070152296438422,
+   "recall": 0.9736842105263158,
+   "median_delay_h": 0.0,
+   "events": 76
+  }
+ }
+}

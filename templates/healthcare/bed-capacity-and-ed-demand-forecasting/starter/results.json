@@ -1,0 +1,46 @@
+{
+ "use_case": "healthcare/bed-capacity-and-ed-demand-forecasting",
+ "engine": "forecast",
+ "seed": 60407,
+ "knobs": {
+  "n_series": 249
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 12.0,
+ "results": {
+  "rows": 22694,
+  "h1": {
+   "wmape_model": 0.11326528831920113,
+   "wmape_baseline": 0.20280393285916268,
+   "fva": 0.44150349195713934
+  },
+  "h3": {
+   "wmape_model": 0.1163228079591593,
+   "wmape_baseline": 0.21028163320307236,
+   "fva": 0.4468237373502588
+  },
+  "h7": {
+   "wmape_model": 0.12126870054289342,
+   "wmape_baseline": 0.22121681433322066,
+   "fva": 0.4518106550425891
+  },
+  "h14": {
+   "wmape_model": 0.1458860364217876,
+   "wmape_baseline": 0.24013930608870737,
+   "fva": 0.39249413684947787
+  },
+  "p90_coverage": 0.8909403366528598,
+  "wmape_sku_level": 0.12395539859410375,
+  "wmape_aggregate": 0.023876289490253635,
+  "late_feed": {
+   "missing_as_zero": 0.19073049268027029,
+   "missing_as_nan": 0.14181935233597884
+  }
+ }
+}

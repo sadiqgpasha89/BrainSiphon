@@ -1,0 +1,36 @@
+# Every tunable of the pipeline in one reviewed file.
+model_name: demand-forecaster
+feature_view: demand_series_day
+horizon_days: 14
+
+simulation:            # the simulated ERP / point-of-sale system (data/source_system.py)
+  seed: 11
+  stores: 8
+  skus: 25
+  days: 420
+  holdback_days: 21    # history is emitted up to (today - holdback); `make advance` emits the rest
+
+data:
+  min_origin_completeness: 0.90   # share of series that must have reported the origin day before a run may start
+  history_days: 56                # how much history the features look back over
+
+backtest:              # rolling forecast origins, one per week; never a random split
+  test_origins: 6
+  train_origins: 40
+  origin_step_days: 7
+
+gates:                 # a candidate is promoted only if every gate holds on the held-out origins
+  min_forecast_value_added: 0.05  # WAPE must beat the seasonal-naive baseline by at least 5%
+  coverage_range: [0.65, 0.92]    # share of actuals inside the p10..p90 band (nominal 0.80)
+  max_regression_vs_production: 0.02
+  auto_promote: true
+
+review:                # a series whose forecast moves implausibly against its recent sales is held for a planner
+  max_ratio_to_recent: 1.4
+  min_ratio_to_recent: 0.73
+  sla_seconds: 28800
+
+retrain:
+  max_model_age_days: 28
+  max_live_wape_ratio: 1.25       # live WAPE above 1.25x the backtest WAPE triggers a retrain
+  min_new_days: 14

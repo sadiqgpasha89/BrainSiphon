@@ -1,0 +1,45 @@
+{
+ "use_case": "adtech/query-ad-relevance-matching",
+ "engine": "recommender",
+ "seed": 13171,
+ "knobs": {
+  "n_sessions": 30470,
+  "bot_share": 0.055
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 9.4,
+ "results": {
+  "train_sessions": 20197,
+  "test_sessions": 5628,
+  "popularity": {
+   "hit_rate@20": 0.13041933191186922,
+   "mrr@20": 0.03345049310070231,
+   "coverage": 0.017333333333333333,
+   "sessions": 5628
+  },
+  "bag_covisit": {
+   "hit_rate@20": 0.5437100213219617,
+   "mrr@20": 0.21791915973396886,
+   "coverage": 0.9593333333333334,
+   "sessions": 5628
+  },
+  "ordered_transition": {
+   "hit_rate@20": 0.57818052594172,
+   "mrr@20": 0.29753492471107923,
+   "coverage": 0.968,
+   "sessions": 5628
+  },
+  "theme_aware": {
+   "hit_rate@20": 0.5726723525230988,
+   "mrr@20": 0.30678650237673677,
+   "coverage": 0.998,
+   "sessions": 5628
+  }
+ }
+}

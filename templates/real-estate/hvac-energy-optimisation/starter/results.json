@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/hvac-energy-optimisation",
+ "engine": "control",
+ "seed": 81507,
+ "knobs": {
+  "days": 43
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "days": 43,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.399422047880963,
+   "end_of_day_underdelivery_pct": 3.889908301574876,
+   "overshoot_max_pct": 8.52876942846496,
+   "oscillation": 0.0,
+   "hit_cap": 0.627906976744186
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.6431879329790897,
+   "end_of_day_underdelivery_pct": 0.9493674825461028,
+   "overshoot_max_pct": 5.6015620210587755,
+   "oscillation": 0.011516726524079526,
+   "hit_cap": 0.32558139534883723
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.0990546902719867,
+   "end_of_day_underdelivery_pct": 0.050634298824007704,
+   "overshoot_max_pct": 1.9615171984333117,
+   "oscillation": 0.08853423544273195,
+   "hit_cap": 0.4883720930232558
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.5435734261353655,
+   "end_of_day_underdelivery_pct": 1.8926081838307094,
+   "overshoot_max_pct": 13.893138632489961,
+   "oscillation": 0.01853822081618616,
+   "hit_cap": 0.5581395348837209
+  },
+  "rmse_reduction_vs_open_loop": 0.5869645863013009
+ }
+}

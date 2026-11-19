@@ -1,0 +1,48 @@
+{
+ "slug": "supply-chain/drone-and-av-delivery-path-planning",
+ "title": "Drone & Autonomous Vehicle Delivery Planning",
+ "domain": "supply-chain",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 87924,
+ "knobs": {
+  "days": 46
+ },
+ "blueprintSignals": [
+  {
+   "name": "Wind and weather forecast",
+   "definition": "forecast along path",
+   "asOfRule": "Forecast"
+  },
+  {
+   "name": "Obstacle map confidence",
+   "definition": "perception uncertainty",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Battery state and reserve",
+   "definition": "remaining energy vs plan",
+   "asOfRule": "Battery model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"Drone & Autonomous Vehicle Delivery Planning\": Plan safe, energy-feasible paths for delivery drones and sidewalk robots in dynamic environments with regulatory constraints. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulation without realistic wind."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/listing-price-recommendation-and-time-to-sell",
+ "title": "Listing Price Recommendation & Time-to-Sell",
+ "domain": "real-estate",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 74804,
+ "knobs": {
+  "n": 7990,
+  "dropout": 0.211
+ },
+ "blueprintSignals": [
+  {
+   "name": "Price to value ratio",
+   "definition": "listing price divided by AVM value",
+   "asOfRule": "AVM error"
+  },
+  {
+   "name": "Local inventory",
+   "definition": "active listings per month of sales",
+   "asOfRule": "Definition"
+  },
+  {
+   "name": "Early engagement",
+   "definition": "views and saves in the first 7 days",
+   "asOfRule": "Used for updates, not the first price"
+  },
+  {
+   "name": "Seasonal index",
+   "definition": "month factor by market",
+   "asOfRule": "Few years of data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Listing Price Recommendation & Time-to-Sell\": Recommend a listing price and predict the days to sell at different prices so sellers and agents can trade price against time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Withdrawn listings dropped."
+}

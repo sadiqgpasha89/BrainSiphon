@@ -1,0 +1,16 @@
+contract: teacher_copilot_lesson_planning_inputs.v1
+owner: learning-engineering@example.com
+system_of_record: Learning management system (LMS)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: standards_alignment_score, type: double, nullable: false }
+    - { name: reading_level_match, type: double, nullable: false }
+    - { name: teacher_edit_distance, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

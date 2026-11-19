@@ -1,0 +1,37 @@
+{
+ "use_case": "fintech/cross-border-fx-pricing-optimization",
+ "engine": "bandit",
+ "seed": 17836,
+ "knobs": {
+  "n": 28550,
+  "logging_temperature": 1.29
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "logged_rows": 28550,
+  "logging_reward_rate": 0.4426970227670753,
+  "always_best_average_action": {
+   "true_value": 0.42391289013201205,
+   "naive_matched": 0.5844,
+   "ips": 0.4133,
+   "snips": 0.4273,
+   "doubly_robust": 0.4195,
+   "match_rate": 0.3088
+  },
+  "learned_greedy": {
+   "true_value": 0.6373070535137871,
+   "naive_matched": 0.615,
+   "ips": 0.6463,
+   "snips": 0.6472,
+   "doubly_robust": 0.6418,
+   "match_rate": 0.2589
+  }
+ }
+}

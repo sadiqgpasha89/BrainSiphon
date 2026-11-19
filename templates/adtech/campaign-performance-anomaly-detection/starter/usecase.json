@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/campaign-performance-anomaly-detection",
+ "title": "Campaign Performance Anomaly Detection",
+ "domain": "adtech",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 90083,
+ "knobs": {
+  "n_series": 112,
+  "anomalies_per_series": 2.233
+ },
+ "blueprintSignals": [
+  {
+   "name": "Seasonal residual",
+   "definition": "residual vs expected for hour and weekday",
+   "asOfRule": "Forecast"
+  },
+  {
+   "name": "Spend at risk",
+   "definition": "residual times spend rate",
+   "asOfRule": "Spend rate"
+  },
+  {
+   "name": "Change events",
+   "definition": "budget, bid or creative edits",
+   "asOfRule": "Audit log"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Campaign Performance Anomaly Detection\": Detect sudden changes in spend, CPA, CTR or delivery per campaign within minutes and alert owners with probable causes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Synthetic anomaly tests only."
+}

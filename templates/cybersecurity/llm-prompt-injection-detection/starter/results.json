@@ -1,0 +1,36 @@
+{
+ "use_case": "cybersecurity/llm-prompt-injection-detection",
+ "engine": "nlp",
+ "seed": 20778,
+ "knobs": {
+  "n_docs": 6870
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.3,
+ "results": {
+  "docs": 6870,
+  "duplicate_share": 0.2503639010189228,
+  "random_split_with_leak": {
+   "macro_f1": 0.8783402284384687,
+   "ece": 0.09472952094276516
+  },
+  "time_split_clean": {
+   "macro_f1": 0.49194128351370237,
+   "ece": 0.056559070983983294
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8454649528082561,
+   "ece": 0.09271102589373219
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.49194128351370237,
+   "ece": 0.056559070983983294
+  }
+ }
+}

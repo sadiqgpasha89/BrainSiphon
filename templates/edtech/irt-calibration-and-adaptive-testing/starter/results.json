@@ -1,0 +1,49 @@
+{
+ "use_case": "edtech/irt-calibration-and-adaptive-testing",
+ "engine": "regression",
+ "seed": 5609,
+ "knobs": {
+  "n": 22430,
+  "outlier_share": 0.025,
+  "drift": 0.344
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.0,
+ "results": {
+  "rows": 22430,
+  "train_rows": 15700,
+  "test_rows": 6730,
+  "baseline_ridge": {
+   "mae": 7.331701164885807,
+   "rmse": 12.478259094355815,
+   "wape": 0.13836044657064017,
+   "r2": 0.4618917880848076
+  },
+  "challenger_gbm": {
+   "mae": 5.145713556484244,
+   "rmse": 10.62527361494819,
+   "wape": 0.09710750746492627,
+   "r2": 0.6098407866636468
+  },
+  "mae_gain_vs_baseline": 0.2981555793450851,
+  "interval_80_coverage": 0.6454680534918277,
+  "interval_80_mean_width": 9.15588664765758,
+  "segment_mae": {
+   "0": 5.196107377656105,
+   "1": 4.827580917518299,
+   "2": 5.364282207234423,
+   "3": 5.847565196670193
+  },
+  "worst_segment_vs_overall": 1.1363953963783173,
+  "leaky_feature_rmse": 1.506814621548471,
+  "honest_rmse": 10.62527361494819,
+  "random_split_mae": 4.589517166413152,
+  "chronological_mae": 5.145713556484244
+ }
+}

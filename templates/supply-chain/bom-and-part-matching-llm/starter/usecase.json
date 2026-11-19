@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/bom-and-part-matching-llm",
+ "title": "BOM Parsing & Part Matching with LLMs",
+ "domain": "supply-chain",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 31158,
+ "knobs": {
+  "n_clusters": 1950,
+  "hub_share": 0.086
+ },
+ "blueprintSignals": [
+  {
+   "name": "Parameter equality checks",
+   "definition": "numeric tolerance comparisons",
+   "asOfRule": "Unit normalisation"
+  },
+  {
+   "name": "Manufacturer part number match",
+   "definition": "exact MPN with cross-reference",
+   "asOfRule": "Catalogue"
+  },
+  {
+   "name": "Embedding similarity of descriptions",
+   "definition": "text embedding score",
+   "asOfRule": "Domain tuning"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"BOM Parsing & Part Matching with LLMs\": Normalise bills of materials and match parts to approved suppliers and alternatives to speed sourcing and cut errors. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test BOMs cleaner than production."
+}

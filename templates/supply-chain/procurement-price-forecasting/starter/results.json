@@ -1,0 +1,46 @@
+{
+ "use_case": "supply-chain/procurement-price-forecasting",
+ "engine": "forecast",
+ "seed": 56239,
+ "knobs": {
+  "n_series": 281
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 11.9,
+ "results": {
+  "rows": 25556,
+  "h1": {
+   "wmape_model": 0.11977015389340251,
+   "wmape_baseline": 0.23769192009010612,
+   "fva": 0.49611179947556017
+  },
+  "h3": {
+   "wmape_model": 0.11633125421137905,
+   "wmape_baseline": 0.22184150834703503,
+   "fva": 0.47561096623361543
+  },
+  "h7": {
+   "wmape_model": 0.1213323158950767,
+   "wmape_baseline": 0.2165238951658217,
+   "fva": 0.43963544623028283
+  },
+  "h14": {
+   "wmape_model": 0.14645256687151026,
+   "wmape_baseline": 0.23410173578575594,
+   "fva": 0.37440631792008583
+  },
+  "p90_coverage": 0.8990452339959305,
+  "wmape_sku_level": 0.1254598904041478,
+  "wmape_aggregate": 0.028603501117759694,
+  "late_feed": {
+   "missing_as_zero": 0.19529726817291027,
+   "missing_as_nan": 0.1376758728221982
+  }
+ }
+}

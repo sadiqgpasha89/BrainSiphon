@@ -1,0 +1,50 @@
+{
+ "use_case": "edtech/credential-fraud-verification",
+ "engine": "cv",
+ "seed": 61889,
+ "knobs": {
+  "n": 5180,
+  "prevalence": 0.117
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 5180,
+  "train": 1843,
+  "prevalence": 0.11196911196911197,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9534376340276353,
+    "sens_at_95_spec": 0.75177304964539
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9806129985228952,
+    "sens_at_95_spec": 0.9166666666666666
+   },
+   "site_B": {
+    "auc": 0.7430802891578246,
+    "sens_at_95_spec": 0.30851063829787234
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3404255319148936,
+    "false_positive_rate": 0.058720420683610865
+   }
+  }
+ }
+}

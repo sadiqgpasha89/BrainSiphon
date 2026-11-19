@@ -1,0 +1,16 @@
+contract: credit_scoring_thin_file_alt_data_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: inflow_volatility_90d, type: double, nullable: false }
+    - { name: minimum_balance_buffer, type: double, nullable: false }
+    - { name: recurring_obligation_coverage, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

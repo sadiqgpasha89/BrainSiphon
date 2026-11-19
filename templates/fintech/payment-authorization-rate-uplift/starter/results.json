@@ -1,0 +1,36 @@
+{
+ "use_case": "fintech/payment-authorization-rate-uplift",
+ "engine": "uplift",
+ "seed": 31584,
+ "knobs": {
+  "n": 35880,
+  "confound": 1.584,
+  "holdout": 0.182
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.4,
+ "results": {
+  "rows": 35880,
+  "observational_rows": 29470,
+  "holdout_rows": 6410,
+  "true_ate": 0.06946265328874024,
+  "naive_ate": 0.22000584978489376,
+  "naive_bias": 0.15054319649615353,
+  "ipw_ate": 0.06580828110935724,
+  "ipw_bias": -0.0036543721793829975,
+  "holdout_ate": 0.08943327191079142,
+  "holdout_balance_smd_x0": -0.0030135356587202193,
+  "observational_balance_smd_x0": 1.2970159312459,
+  "t_learner_qini_auc": 0.010409506973219356,
+  "random_ranking_qini_auc": 0.0023074902987638385,
+  "top_decile_realised_uplift": 0.12481014137165558,
+  "bottom_decile_realised_uplift": -0.037790811339198455,
+  "share_predicted_negative": 0.21357254290171607
+ }
+}

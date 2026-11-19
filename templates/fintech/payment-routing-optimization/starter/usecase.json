@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/payment-routing-optimization",
+ "title": "Payment Routing Optimization",
+ "domain": "fintech",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 23823,
+ "knobs": {
+  "n": 22350,
+  "logging_temperature": 1.251
+ },
+ "blueprintSignals": [
+  {
+   "name": "Issuer-BIN success posterior",
+   "definition": "Beta posterior of auth success per (acquirer, BIN) with 30-minute decay",
+   "asOfRule": "Decay must not use future outcomes"
+  },
+  {
+   "name": "Decline code mix",
+   "definition": "share of soft vs hard declines by route in the last 15 min",
+   "asOfRule": "Treat issuer decline codes consistently"
+  },
+  {
+   "name": "Fee schedule delta",
+   "definition": "effective interchange and scheme fee difference",
+   "asOfRule": "Contract versions as-of transaction time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Payment Routing Optimization\": Route each payment to the acquirer or rail that maximises authorisation success at minimum fee, adapting to live outages and issuer behaviour. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Replay evaluation ignores routes never chosen."
+}

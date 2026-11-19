@@ -1,0 +1,54 @@
+{
+ "slug": "saas/predictive-test-selection",
+ "title": "Predictive Test Selection",
+ "domain": "saas",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 66863,
+ "knobs": {
+  "n_entities": 2610,
+  "positive_entity_rate": 0.043,
+  "n_flash_sales": 3
+ },
+ "blueprintSignals": [
+  {
+   "name": "File-test co-failure history",
+   "definition": "tests failing when file changed",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Change size and risk",
+   "definition": "lines, files, authors",
+   "asOfRule": "Metadata"
+  },
+  {
+   "name": "Test historical failure rate",
+   "definition": "prior fail rate",
+   "asOfRule": "Matured"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Predictive Test Selection\": Select the subset of tests most likely to fail for a code change, cutting CI time dramatically while catching nearly all regressions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating with selected-only outcomes."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/indoor-air-quality-and-comfort-anomaly-detection",
+ "title": "Indoor Air Quality & Comfort Anomaly Detection",
+ "domain": "real-estate",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 76261,
+ "knobs": {
+  "n_series": 79,
+  "anomalies_per_series": 3.4
+ },
+ "blueprintSignals": [
+  {
+   "name": "CO2 vs occupancy",
+   "definition": "residual between measured CO2 and the CO2 expected for the current occupancy",
+   "asOfRule": "Occupancy counts are noisy, so smooth them"
+  },
+  {
+   "name": "Humidity drift",
+   "definition": "slope of relative humidity over 7 days with a seasonal baseline",
+   "asOfRule": "Seasonal effects are strong, so compare with the same season"
+  },
+  {
+   "name": "Particulate spike",
+   "definition": "PM2.5 rise above the rolling baseline, compared with outdoor PM2.5",
+   "asOfRule": "Outdoor pollution enters, so compare with outside"
+  },
+  {
+   "name": "Temperature gradient",
+   "definition": "difference in temperature between adjacent zones and between floor and ceiling sensors",
+   "asOfRule": "Sensor placement bias affects it"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Indoor Air Quality & Comfort Anomaly Detection\": Detect abnormal CO2, humidity, temperature and particulate readings so facilities fix ventilation and comfort issues. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Few labelled events, so recall is poorly estimated."
+}

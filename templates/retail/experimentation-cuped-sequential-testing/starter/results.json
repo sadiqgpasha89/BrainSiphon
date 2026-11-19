@@ -1,0 +1,36 @@
+{
+ "use_case": "retail/experimentation-cuped-sequential-testing",
+ "engine": "uplift",
+ "seed": 21981,
+ "knobs": {
+  "n": 31530,
+  "confound": 1.274,
+  "holdout": 0.156
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.3,
+ "results": {
+  "rows": 31530,
+  "observational_rows": 26667,
+  "holdout_rows": 4863,
+  "true_ate": 0.06898192197906755,
+  "naive_ate": 0.2051969187105084,
+  "naive_bias": 0.13621499673144086,
+  "ipw_ate": 0.07801753531538738,
+  "ipw_bias": 0.009035613336319831,
+  "holdout_ate": 0.06310492311847479,
+  "holdout_balance_smd_x0": 0.026846316467222776,
+  "observational_balance_smd_x0": 1.1093675683830546,
+  "t_learner_qini_auc": 0.0060263496507790785,
+  "random_ranking_qini_auc": 0.0002286964697363221,
+  "top_decile_realised_uplift": 0.13693246981042972,
+  "bottom_decile_realised_uplift": 0.03882102847887703,
+  "share_predicted_negative": 0.1782850092535472
+ }
+}

@@ -1,0 +1,83 @@
+openapi: 3.1.0
+info:
+  title: Clinical Trial Patient Matching API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/clinical-trial-patient-matching/ask:
+    post:
+      summary: 'Clinical Trial Patient Matching: request a decision'
+      operationId: clinical_trial_patient_matching
+      description: Illustrative contract taken from the blueprint's low-level design.  Replace the placeholder values
+        with your own fields and keep the error behaviour.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                principal:
+                  type: object
+                  properties:
+                    user_id:
+                      type: string
+                    groups:
+                      type: array
+                      items:
+                        type: string
+                question:
+                  type: string
+                filters:
+                  type: object
+                  properties:
+                    source:
+                      type: array
+                      items:
+                        type: string
+                max_context_tokens:
+                  type: integer
+                stream:
+                  type: boolean
+            example:
+              session_id: ses_91c2
+              principal:
+                user_id: u_123
+                groups:
+                - claims-analysts
+              question: …
+              filters:
+                source:
+                - policy
+                - case-notes
+              max_context_tokens: 6000
+              stream: true
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            text/event-stream:
+              schema:
+                type: string
+              example: 'event: retrieval  data: {"chunks":12,"after_acl":9,"after_rerank":5}
+
+                event: delta      data: {"text":"…"}
+
+                event: final      data: {"answer":"…","citations":[{"doc_id":"d_41","chunk_id":"c_7","span":[120,310]}],"grounded":true,"usage":{"input_tokens":4200,"output_tokens":310},"model_version":"…","prompt_version":"p14","degraded":false}'
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

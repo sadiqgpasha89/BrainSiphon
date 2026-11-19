@@ -1,0 +1,53 @@
+{
+ "slug": "retail/visual-search-shop-the-look",
+ "title": "Visual Search & Shop-the-Look",
+ "domain": "retail",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 45475,
+ "knobs": {
+  "n_sessions": 43650,
+  "bot_share": 0.062
+ },
+ "blueprintSignals": [
+  {
+   "name": "Garment crop embedding",
+   "definition": "embedding of detected item crops",
+   "asOfRule": "Crop quality gates"
+  },
+  {
+   "name": "Attribute classifier agreement",
+   "definition": "colour, pattern and category predictions",
+   "asOfRule": "Taxonomy aligned with catalogue"
+  },
+  {
+   "name": "Availability and size in stock",
+   "definition": "live inventory signal",
+   "asOfRule": "Real-time inventory join"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Visual Search & Shop-the-Look\": Let shoppers photograph or upload an image and retrieve visually matching sellable items, including per-garment matches in a scene. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Query set built from catalogue crops."
+}

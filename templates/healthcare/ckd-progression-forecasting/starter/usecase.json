@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/ckd-progression-forecasting",
+ "title": "Chronic Kidney Disease Progression Forecasting",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 78364,
+ "knobs": {
+  "n": 9670,
+  "dropout": 0.219
+ },
+ "blueprintSignals": [
+  {
+   "name": "eGFR slope",
+   "definition": "linear mixed-model slope over 2 years",
+   "asOfRule": "Observations before index"
+  },
+  {
+   "name": "Albuminuria category",
+   "definition": "UACR measurement",
+   "asOfRule": "Latest before index"
+  },
+  {
+   "name": "Blood-pressure control",
+   "definition": "fraction of readings in target",
+   "asOfRule": "Outpatient only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Chronic Kidney Disease Progression Forecasting\": Forecast eGFR trajectories and kidney failure risk to trigger timely nephrology referral and therapy. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Informative missingness of labs."
+}

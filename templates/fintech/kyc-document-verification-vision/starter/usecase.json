@@ -1,0 +1,48 @@
+{
+ "slug": "fintech/kyc-document-verification-vision",
+ "title": "KYC Document Verification (Vision)",
+ "domain": "fintech",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 43054,
+ "knobs": {
+  "n_train": 970
+ },
+ "blueprintSignals": [
+  {
+   "name": "MRZ checksum validity",
+   "definition": "ICAO 9303 check digits recomputed from parsed fields",
+   "asOfRule": "Parse the raw MRZ not the cleaned text"
+  },
+  {
+   "name": "Template conformity",
+   "definition": "layout and font match against issuing-authority templates",
+   "asOfRule": "Template version must match issue year"
+  },
+  {
+   "name": "Screen-recapture score",
+   "definition": "frequency-domain artefacts in the image",
+   "asOfRule": "Compression changes the spectrum so augment with JPEG"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"KYC Document Verification (Vision)\": Verify ID documents in under 3 seconds with tamper, forgery and replay detection to cut manual KYC review by 80%. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Synthetic forgeries in training differ from real attacker craft."
+}

@@ -1,0 +1,43 @@
+{
+ "use_case": "cybersecurity/privileged-access-session-anomaly",
+ "engine": "anomaly",
+ "seed": 42850,
+ "knobs": {
+  "n_series": 100,
+  "anomalies_per_series": 2.22
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.5,
+ "results": {
+  "series": 100,
+  "hours": 2016,
+  "events": 239,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.31018587360594796,
+   "recall": 0.46956521739130436,
+   "median_delay_h": 1.5,
+   "events": 115
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6724163568773234,
+   "recall": 0.8608695652173913,
+   "median_delay_h": 0.0,
+   "events": 115
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5058736059479554,
+   "recall": 0.9739130434782609,
+   "median_delay_h": 0.0,
+   "events": 115
+  }
+ }
+}

@@ -1,0 +1,84 @@
+# GENERATED from monitoring/alerts.yaml by `python -m bsref.observability`. Do not edit.
+groups:
+- name: bsref
+  rules:
+  - alert: ForecastRunStale
+    expr: forecast_days_since_last_run > 1
+    for: 1h
+    labels:
+      severity: page
+    annotations:
+      summary: No forecast run exists for the newest closed sales day, so consumers are reading an old forecast
+      runbook: docs/RUNBOOK.md#run-stale
+  - alert: ForecastInputIncomplete
+    expr: forecast_origin_completeness < 0.90
+    for: 30m
+    labels:
+      severity: page
+    annotations:
+      summary: Fewer than 90% of series have reported the newest sales day (late or missing store feeds)
+      runbook: docs/RUNBOOK.md#input-incomplete
+  - alert: ForecastLiveErrorHigh
+    expr: forecast_live_wape_ratio > 1.25
+    for: 1d
+    labels:
+      severity: ticket
+    annotations:
+      summary: Live forecast error is more than 25% above the backtest error of the production model
+      runbook: docs/RUNBOOK.md#live-error-high
+  - alert: ForecastWorseThanBaseline
+    expr: forecast_live_forecast_value_added < 0
+    for: 1d
+    labels:
+      severity: page
+    annotations:
+      summary: The published forecast is less accurate than the seasonal-naive baseline on live actuals
+      runbook: docs/RUNBOOK.md#live-error-high
+  - alert: ForecastBandMiscalibrated
+    expr: abs(forecast_live_coverage - 0.80) > 0.15
+    for: 1d
+    labels:
+      severity: ticket
+    annotations:
+      summary: The share of actuals inside the p10 to p90 band is more than 15 points away from the nominal 80%
+      runbook: docs/RUNBOOK.md#band-miscalibrated
+  - alert: ForecastFeatureDrift
+    expr: forecast_max_feature_psi > 0.25
+    for: 1d
+    labels:
+      severity: ticket
+    annotations:
+      summary: A model input has drifted from its training distribution (PSI above 0.25)
+      runbook: docs/RUNBOOK.md#feature-drift
+  - alert: ForecastOverridesHurting
+    expr: forecast_override_wape_delta > 0.05
+    for: 7d
+    labels:
+      severity: ticket
+    annotations:
+      summary: Planner overrides are making the forecast worse than the model they replace
+      runbook: docs/RUNBOOK.md#overrides-hurting
+  - alert: IngestDeadLetters
+    expr: forecast_ingest_dead_letters > 0
+    for: 1m
+    labels:
+      severity: ticket
+    annotations:
+      summary: Events are in the dead-letter queue and need a person to look at them
+      runbook: docs/RUNBOOK.md#dead-letters
+  - alert: IngestQuarantineRateHigh
+    expr: forecast_ingest_quarantine_rate > 0.01
+    for: 15m
+    labels:
+      severity: ticket
+    annotations:
+      summary: More than 1% of source rows violate the data contract
+      runbook: docs/RUNBOOK.md#quarantine-rate-high
+  - alert: ReviewsOverdue
+    expr: forecast_reviews_overdue > 0
+    for: 5m
+    labels:
+      severity: ticket
+    annotations:
+      summary: Held series have passed their review SLA; consumers are still receiving the baseline for them
+      runbook: docs/RUNBOOK.md#reviews-overdue

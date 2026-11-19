@@ -1,0 +1,50 @@
+{
+ "use_case": "supply-chain/proof-of-delivery-photo-verification",
+ "engine": "cv",
+ "seed": 41407,
+ "knobs": {
+  "n": 5430,
+  "prevalence": 0.123
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "images": 5430,
+  "train": 1880,
+  "prevalence": 0.13259668508287292,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9578801729739419,
+    "sens_at_95_spec": 0.7657894736842106
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9743107256810931,
+    "sens_at_95_spec": 0.8823529411764706
+   },
+   "site_B": {
+    "auc": 0.7537249893571731,
+    "sens_at_95_spec": 0.3
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.2657894736842105,
+    "false_positive_rate": 0.039165602383993185
+   }
+  }
+ }
+}

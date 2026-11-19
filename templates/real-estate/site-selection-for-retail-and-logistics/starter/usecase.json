@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/site-selection-for-retail-and-logistics",
+ "title": "Site Selection for Retail & Logistics",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 83969,
+ "knobs": {
+  "n": 20900,
+  "outlier_share": 0.027,
+  "drift": 0.239
+ },
+ "blueprintSignals": [
+  {
+   "name": "Catchment population",
+   "definition": "residents within a 15-minute drive weighted by purchasing power",
+   "asOfRule": "Census data age, so adjust with recent growth"
+  },
+  {
+   "name": "Competitor density",
+   "definition": "number and size of competing stores within the catchment",
+   "asOfRule": "Definitions of a competitor differ, so use a consistent category"
+  },
+  {
+   "name": "Mobility flows",
+   "definition": "anonymised footfall or vehicle counts passing the site, per hour",
+   "asOfRule": "Panels are samples, so check representativeness"
+  },
+  {
+   "name": "Network fit",
+   "definition": "average distance from the site to the company's hubs and suppliers",
+   "asOfRule": "Road conditions change, so use time and not distance"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Site Selection for Retail & Logistics\": Rank candidate locations for a store or warehouse by expected revenue or cost, using demographics, mobility, competition and network fit. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Survivor sites are those that were opened and kept, so failed locations are missing from the data."
+}

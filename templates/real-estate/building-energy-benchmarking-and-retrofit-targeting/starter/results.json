@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/building-energy-benchmarking-and-retrofit-targeting",
+ "engine": "regression",
+ "seed": 84018,
+ "knobs": {
+  "n": 25610,
+  "outlier_share": 0.029,
+  "drift": 0.235
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.2,
+ "results": {
+  "rows": 25610,
+  "train_rows": 17927,
+  "test_rows": 7683,
+  "baseline_ridge": {
+   "mae": 7.599506247151711,
+   "rmse": 13.439197201505673,
+   "wape": 0.14286874508640895,
+   "r2": 0.41102145739935303
+  },
+  "challenger_gbm": {
+   "mae": 5.156305940763449,
+   "rmse": 11.663539945511348,
+   "wape": 0.09693721342943491,
+   "r2": 0.5563774826499643
+  },
+  "mae_gain_vs_baseline": 0.32149461121950806,
+  "interval_80_coverage": 0.6913965898737472,
+  "interval_80_mean_width": 9.337683987264127,
+  "segment_mae": {
+   "0": 4.888297392303355,
+   "1": 5.206355562361916,
+   "2": 5.381514383751994,
+   "3": 6.913230019866399
+  },
+  "worst_segment_vs_overall": 1.3407330944452875,
+  "leaky_feature_rmse": 1.5533968538140506,
+  "honest_rmse": 11.663539945511348,
+  "random_split_mae": 4.810927508219252,
+  "chronological_mae": 5.156305940763449
+ }
+}

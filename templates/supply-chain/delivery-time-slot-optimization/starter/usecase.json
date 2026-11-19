@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/delivery-time-slot-optimization",
+ "title": "Delivery Time-Slot Pricing & Allocation",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 9017,
+ "knobs": {
+  "n_instances": 189,
+  "noise": 0.413
+ },
+ "blueprintSignals": [
+  {
+   "name": "Marginal insertion cost",
+   "definition": "extra route time of the new stop",
+   "asOfRule": "Routes as-of"
+  },
+  {
+   "name": "Slot capacity remaining",
+   "definition": "slots left per window",
+   "asOfRule": "Real-time"
+  },
+  {
+   "name": "Customer slot-choice propensity",
+   "definition": "choice model probability",
+   "asOfRule": "History"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Delivery Time-Slot Pricing & Allocation\": Offer and price delivery slots at checkout to steer demand toward cheaper-to-serve slots without hurting conversion. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulation uses fixed demand regardless of price."
+}

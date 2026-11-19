@@ -1,0 +1,49 @@
+{
+ "use_case": "healthcare/patient-digital-twin-treatment-response",
+ "engine": "control",
+ "seed": 41583,
+ "knobs": {
+  "days": 52
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.4,
+ "results": {
+  "days": 52,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.052242522884133,
+   "end_of_day_underdelivery_pct": 3.267192093578165,
+   "overshoot_max_pct": 6.7450231694860285,
+   "oscillation": 0.0,
+   "hit_cap": 0.6153846153846154
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.7542240883698073,
+   "end_of_day_underdelivery_pct": 0.8318652758748631,
+   "overshoot_max_pct": 5.8999408229932575,
+   "oscillation": 0.012200952298646397,
+   "hit_cap": 0.4807692307692308
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.0390963826206536,
+   "end_of_day_underdelivery_pct": 0.07319986523462484,
+   "overshoot_max_pct": 1.7923690341864484,
+   "oscillation": 0.09022490061163989,
+   "hit_cap": 0.4230769230769231
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.658516259905175,
+   "end_of_day_underdelivery_pct": 2.624051675054941,
+   "overshoot_max_pct": 13.416129862583976,
+   "oscillation": 0.019583950370812044,
+   "hit_cap": 0.5576923076923077
+  },
+  "rmse_reduction_vs_open_loop": 0.5449250293662538
+ }
+}

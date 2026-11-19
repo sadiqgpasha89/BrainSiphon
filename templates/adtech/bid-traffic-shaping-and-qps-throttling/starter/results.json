@@ -1,0 +1,49 @@
+{
+ "use_case": "adtech/bid-traffic-shaping-and-qps-throttling",
+ "engine": "control",
+ "seed": 45540,
+ "knobs": {
+  "days": 58
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "days": 58,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.975272739874699,
+   "end_of_day_underdelivery_pct": 5.676477777154169,
+   "overshoot_max_pct": 6.416067998904614,
+   "oscillation": 0.0,
+   "hit_cap": 0.5517241379310345
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.7099967440884907,
+   "end_of_day_underdelivery_pct": 0.7226767758305768,
+   "overshoot_max_pct": 5.421461292887776,
+   "oscillation": 0.011182360386218228,
+   "hit_cap": 0.43103448275862066
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.2148018927323927,
+   "end_of_day_underdelivery_pct": 0.05086231883061592,
+   "overshoot_max_pct": 1.8126567853840645,
+   "oscillation": 0.08728995020592176,
+   "hit_cap": 0.4482758620689655
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.395800604034765,
+   "end_of_day_underdelivery_pct": 1.4966353725161887,
+   "overshoot_max_pct": 12.716637279431838,
+   "oscillation": 0.01785642960254067,
+   "hit_cap": 0.6379310344827587
+  },
+  "rmse_reduction_vs_open_loop": 0.6114851927442808
+ }
+}

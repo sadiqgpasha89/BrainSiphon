@@ -1,0 +1,43 @@
+{
+ "use_case": "saas/usage-based-billing-anomaly",
+ "engine": "anomaly",
+ "seed": 7918,
+ "knobs": {
+  "n_series": 86,
+  "anomalies_per_series": 2.013
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 6.5,
+ "results": {
+  "series": 86,
+  "hours": 2016,
+  "events": 184,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.2977435808766318,
+   "recall": 0.5233644859813084,
+   "median_delay_h": 2.5,
+   "events": 107
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6947350220454742,
+   "recall": 0.8317757009345794,
+   "median_delay_h": 0.0,
+   "events": 107
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.4768738653064753,
+   "recall": 0.9719626168224299,
+   "median_delay_h": 0.0,
+   "events": 107
+  }
+ }
+}

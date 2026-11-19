@@ -1,0 +1,36 @@
+{
+ "use_case": "cybersecurity/waf-ml-attack-detection",
+ "engine": "nlp",
+ "seed": 83279,
+ "knobs": {
+  "n_docs": 6290
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.0,
+ "results": {
+  "docs": 6290,
+  "duplicate_share": 0.2538950715421303,
+  "random_split_with_leak": {
+   "macro_f1": 0.8633300533366524,
+   "ece": 0.10698492174421871
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4790839304900001,
+   "ece": 0.06514210609072163
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7877967035129028,
+   "ece": 0.08797008103350482
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4790839304900001,
+   "ece": 0.06514210609072163
+  }
+ }
+}

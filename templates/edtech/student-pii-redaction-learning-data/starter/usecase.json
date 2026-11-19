@@ -1,0 +1,48 @@
+{
+ "slug": "edtech/student-pii-redaction-learning-data",
+ "title": "Student PII Redaction in Learning Data",
+ "domain": "edtech",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 52299,
+ "knobs": {
+  "n_train": 1330
+ },
+ "blueprintSignals": [
+  {
+   "name": "NER entity probabilities",
+   "definition": "token confidence",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Student roster match",
+   "definition": "names from the class roster",
+   "asOfRule": "Roster freshness"
+  },
+  {
+   "name": "Contextual identifiers",
+   "definition": "school, teacher and location mentions",
+   "asOfRule": "Rules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Student PII Redaction in Learning Data\": Remove or pseudonymise student PII in submissions, chats and transcripts before using them for analytics or model training. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluation on synthetic names."
+}

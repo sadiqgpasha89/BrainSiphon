@@ -1,0 +1,16 @@
+contract: business_email_compromise_detection_inputs.v1
+owner: detection-engineering@example.com
+system_of_record: SIEM and security data lake
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: first_contact_flag_with_finance_role, type: double, nullable: false }
+    - { name: display_name_vs_address_mismatch, type: double, nullable: false }
+    - { name: payment_change_intent_score, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

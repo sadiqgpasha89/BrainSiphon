@@ -1,0 +1,16 @@
+contract: account_takeover_detection_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: device_novelty_vs_history, type: double, nullable: false }
+    - { name: impossible_travel_score, type: double, nullable: false }
+    - { name: login_failure_burst, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

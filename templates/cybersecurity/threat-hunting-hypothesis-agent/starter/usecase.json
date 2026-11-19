@@ -1,0 +1,50 @@
+{
+ "slug": "cybersecurity/threat-hunting-hypothesis-agent",
+ "title": "Threat Hunting Hypothesis Generation",
+ "domain": "cybersecurity",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 23315,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Technique coverage gap",
+   "definition": "techniques lacking detections",
+   "asOfRule": "Coverage matrix"
+  },
+  {
+   "name": "Query validity rate",
+   "definition": "queries that run and return",
+   "asOfRule": "Execution"
+  },
+  {
+   "name": "Hit-rate on hypotheses",
+   "definition": "share producing leads",
+   "asOfRule": "Review"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Threat Hunting Hypothesis Generation\": Generate and test threat-hunting hypotheses from fresh intelligence against telemetry, turning reports into validated detections or negative results. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: No ground truth for negative hunts."
+}

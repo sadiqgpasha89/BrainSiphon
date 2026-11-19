@@ -1,0 +1,50 @@
+{
+ "slug": "edtech/teacher-copilot-lesson-planning",
+ "title": "Teacher Copilot for Lesson Planning",
+ "domain": "edtech",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 47006,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Standards alignment score",
+   "definition": "classifier coverage",
+   "asOfRule": "Taxonomy"
+  },
+  {
+   "name": "Reading-level match",
+   "definition": "text complexity",
+   "asOfRule": "Tools"
+  },
+  {
+   "name": "Teacher edit distance",
+   "definition": "edits made",
+   "asOfRule": "Logging"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Teacher Copilot for Lesson Planning\": Draft lesson plans, differentiated materials and rubrics aligned with standards, saving teacher prep time while keeping teachers in control. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Judging plans by polish."
+}

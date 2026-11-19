@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/claims-denial-prediction",
+ "engine": "tabular",
+ "seed": 16493,
+ "knobs": {
+  "n_entities": 1800,
+  "positive_entity_rate": 0.044,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.2,
+ "results": {
+  "rows": 139111,
+  "positive_rate": 0.005786745836058975,
+  "test_rows": 46057,
+  "test_positive_rate": 0.007013049047918883,
+  "baseline_lr": {
+   "pr_auc": 0.7801886784025875,
+   "recall_at_0.5pct_fpr": 0.7678018575851393,
+   "brier": 0.002629119309207725
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7820845100931876,
+   "recall_at_0.5pct_fpr": 0.7585139318885449,
+   "brier": 0.0026449980544078922
+  }
+ }
+}

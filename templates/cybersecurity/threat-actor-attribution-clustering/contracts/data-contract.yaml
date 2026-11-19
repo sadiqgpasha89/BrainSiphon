@@ -1,0 +1,16 @@
+contract: threat_actor_attribution_clustering_inputs.v1
+owner: detection-engineering@example.com
+system_of_record: SIEM and security data lake
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: infrastructure_overlap, type: double, nullable: false }
+    - { name: code_and_tooling_similarity, type: double, nullable: false }
+    - { name: ttp_sequence_similarity, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

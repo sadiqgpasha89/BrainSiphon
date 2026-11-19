@@ -1,0 +1,50 @@
+{
+ "slug": "edtech/learning-analytics-teacher-insights",
+ "title": "Teacher Dashboard Insights & Alerts",
+ "domain": "edtech",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 22332,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Concept-level class mastery gaps",
+   "definition": "share below mastery by concept",
+   "asOfRule": "KT"
+  },
+  {
+   "name": "At-risk student cluster",
+   "definition": "similar struggle patterns",
+   "asOfRule": "Clustering"
+  },
+  {
+   "name": "Insight usefulness score",
+   "definition": "teacher acts on insight",
+   "asOfRule": "Logging"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Teacher Dashboard Insights & Alerts\": Summarise class and student learning data into prioritised, actionable insights for teachers, such as who needs help on which concept. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Rating insights without outcome follow-up."
+}

@@ -1,0 +1,16 @@
+contract: clinical_text_phi_redaction_inputs.v1
+owner: clinical-informatics@example.com
+system_of_record: Electronic health record (EHR)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: ner_entity_confidence, type: double, nullable: false }
+    - { name: pattern_matched_ids, type: double, nullable: false }
+    - { name: dictionary_hit_for_names, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

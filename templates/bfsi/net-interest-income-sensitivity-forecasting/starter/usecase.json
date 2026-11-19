@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/net-interest-income-sensitivity-forecasting",
+ "title": "Net Interest Income Sensitivity Forecasting",
+ "domain": "bfsi",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 51636,
+ "knobs": {
+  "n_series": 188
+ },
+ "blueprintSignals": [
+  {
+   "name": "Deposit beta by product",
+   "definition": "change in own rate per unit change in the policy rate",
+   "asOfRule": "Beta is non-linear and lagged"
+  },
+  {
+   "name": "Prepayment speed",
+   "definition": "monthly prepayment rate of the fixed book",
+   "asOfRule": "Depends on rate incentive"
+  },
+  {
+   "name": "Repricing gap",
+   "definition": "assets minus liabilities repricing within each time bucket",
+   "asOfRule": "Needs behavioural adjustments"
+  },
+  {
+   "name": "Margin on new volume",
+   "definition": "spread on recent originations versus the book",
+   "asOfRule": "New spreads reflect competition"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Net Interest Income Sensitivity Forecasting\": Forecast net interest income under rate scenarios using behavioural models for repricing, prepayment and deposits. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training in a falling-rate era understates deposit beta."
+}

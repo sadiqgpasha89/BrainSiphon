@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/iot-anomaly-detection",
+ "title": "IoT Device Anomaly Detection",
+ "domain": "cybersecurity",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 79287,
+ "knobs": {
+  "n_series": 101,
+  "anomalies_per_series": 3.147
+ },
+ "blueprintSignals": [
+  {
+   "name": "Destination set deviation",
+   "definition": "new endpoints contacted",
+   "asOfRule": "Device profile"
+  },
+  {
+   "name": "Traffic periodicity change",
+   "definition": "change in cadence",
+   "asOfRule": "Spectral"
+  },
+  {
+   "name": "Firmware version and CVE exposure",
+   "definition": "known vulnerabilities",
+   "asOfRule": "Inventory"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"IoT Device Anomaly Detection\": Detect compromised or malfunctioning IoT devices from network and telemetry patterns with models light enough for gateways. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Injected attacks unlike real botnets."
+}

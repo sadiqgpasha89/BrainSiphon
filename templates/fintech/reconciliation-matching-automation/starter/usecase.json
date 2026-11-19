@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/reconciliation-matching-automation",
+ "title": "Payment & Ledger Reconciliation Matching",
+ "domain": "fintech",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 35037,
+ "knobs": {
+  "n_clusters": 1290,
+  "hub_share": 0.16
+ },
+ "blueprintSignals": [
+  {
+   "name": "Amount delta within tolerance",
+   "definition": "absolute and relative difference net of fees",
+   "asOfRule": "Fee tables as-of settlement date"
+  },
+  {
+   "name": "Reference token overlap",
+   "definition": "normalised reference and narrative token similarity",
+   "asOfRule": "Strip bank-injected prefixes"
+  },
+  {
+   "name": "Date proximity",
+   "definition": "value date vs booking date gap",
+   "asOfRule": "Business-day calendars per currency"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Payment & Ledger Reconciliation Matching\": Automatically match bank, processor and ledger entries to close books faster with 98% auto-match and clear exceptions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on already-reconciled easy matches."
+}

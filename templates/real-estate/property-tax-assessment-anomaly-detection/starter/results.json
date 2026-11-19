@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/property-tax-assessment-anomaly-detection",
+ "engine": "regression",
+ "seed": 72617,
+ "knobs": {
+  "n": 16080,
+  "outlier_share": 0.037,
+  "drift": 0.166
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.2,
+ "results": {
+  "rows": 16080,
+  "train_rows": 11256,
+  "test_rows": 4824,
+  "baseline_ridge": {
+   "mae": 7.825131544305132,
+   "rmse": 14.058495996805702,
+   "wape": 0.1472240344988851,
+   "r2": 0.36083430085630985
+  },
+  "challenger_gbm": {
+   "mae": 5.247509026195415,
+   "rmse": 12.376266757084121,
+   "wape": 0.09872798246670339,
+   "r2": 0.5046467001328755
+  },
+  "mae_gain_vs_baseline": 0.32940309099156606,
+  "interval_80_coverage": 0.7269900497512438,
+  "interval_80_mean_width": 9.955402770551979,
+  "segment_mae": {
+   "0": 5.209639683222049,
+   "1": 4.87095091697646,
+   "2": 5.484057225330223,
+   "3": 7.312575940677213
+  },
+  "worst_segment_vs_overall": 1.3935327989286048,
+  "leaky_feature_rmse": 1.6275809349133212,
+  "honest_rmse": 12.376266757084121,
+  "random_split_mae": 5.338566812891694,
+  "chronological_mae": 5.247509026195415
+ }
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/title-and-deed-fraud-detection",
+ "title": "Title & Deed Fraud Detection",
+ "domain": "real-estate",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 76304,
+ "knobs": {
+  "n_entities": 2710,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 8
+ },
+ "blueprintSignals": [
+  {
+   "name": "Ownership change speed",
+   "definition": "days between the first filing and the transfer to a new owner or a loan against the property",
+   "asOfRule": "Legitimate rushed sales exist, so combine with other signals"
+  },
+  {
+   "name": "Notary frequency",
+   "definition": "number of filings by the same notary in the last 30 days compared with their norm",
+   "asOfRule": "Busy notaries are legitimate, so compare with their norm"
+  },
+  {
+   "name": "Vacant or no-mortgage property",
+   "definition": "flag for property that is vacant or has no mortgage",
+   "asOfRule": "Data on occupancy are incomplete"
+  },
+  {
+   "name": "Signature similarity",
+   "definition": "similarity score of the signature against previous filings by the owner",
+   "asOfRule": "Image quality and ageing change signatures, so use a threshold with a review"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Title & Deed Fraud Detection\": Detect forged deeds, owner impersonation and suspicious transfers before closing or recording. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Few labelled cases and many undetected ones make the recall unknowable."
+}

@@ -1,0 +1,21 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: classroom_camera, timeout_ms: 222, on_timeout: fallback_level_1 }
+    - { name: on_device_detector, timeout_ms: 890, on_timeout: fallback_level_1 }
+    - { name: aggregate_computation, timeout_ms: 445, on_timeout: fallback_level_1 }
+    - { name: class_level_metrics, timeout_ms: 334, on_timeout: fallback_level_1 }
+    - { name: outcome_correlation, timeout_ms: 334, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Teacher reflection usage"
+    - "Correlation with learning outcomes"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

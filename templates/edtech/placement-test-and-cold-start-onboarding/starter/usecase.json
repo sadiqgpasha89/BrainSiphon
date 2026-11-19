@@ -1,0 +1,54 @@
+{
+ "slug": "edtech/placement-test-and-cold-start-onboarding",
+ "title": "Placement Test & Cold-Start Onboarding",
+ "domain": "edtech",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 88295,
+ "knobs": {
+  "n": 11880,
+  "label_noise": 0.051,
+  "dup_share": 0.43
+ },
+ "blueprintSignals": [
+  {
+   "name": "Expected information gain per item",
+   "definition": "EIG of next question",
+   "asOfRule": "IRT"
+  },
+  {
+   "name": "Prior from age and grade",
+   "definition": "demographic prior",
+   "asOfRule": "Consent"
+  },
+  {
+   "name": "Response time pattern",
+   "definition": "time per response",
+   "asOfRule": "Timing"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Placement Test & Cold-Start Onboarding\": Estimate a new learner's level in a few questions to place them in the right starting content and initialise the learner model. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on motivated volunteers."
+}

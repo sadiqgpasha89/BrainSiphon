@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/digital-onboarding-dropoff-prediction",
+ "title": "Digital Onboarding Drop-off Prediction & Intervention",
+ "domain": "fintech",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 24481,
+ "knobs": {
+  "n": 38650,
+  "confound": 1.481,
+  "holdout": 0.176
+ },
+ "blueprintSignals": [
+  {
+   "name": "Step dwell time vs peers",
+   "definition": "z-score of dwell on current step",
+   "asOfRule": "Peer baseline per device type"
+  },
+  {
+   "name": "Validation error count",
+   "definition": "form errors encountered on this step",
+   "asOfRule": "Count before the nudge"
+  },
+  {
+   "name": "Document capture retries",
+   "definition": "retries on ID photo",
+   "asOfRule": "Retry source (device vs lighting)"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Digital Onboarding Drop-off Prediction & Intervention\": Predict mid-funnel abandonment during account opening and intervene (nudge, simplified step, assisted help) to lift completion. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Intervention data from non-random triggers."
+}

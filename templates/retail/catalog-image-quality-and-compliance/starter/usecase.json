@@ -1,0 +1,53 @@
+{
+ "slug": "retail/catalog-image-quality-and-compliance",
+ "title": "Catalogue Image Quality & Compliance",
+ "domain": "retail",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 6401,
+ "knobs": {
+  "n": 4100,
+  "prevalence": 0.155
+ },
+ "blueprintSignals": [
+  {
+   "name": "Background uniformity",
+   "definition": "segmentation-based white-background ratio",
+   "asOfRule": "Mask quality"
+  },
+  {
+   "name": "Watermark and overlay detector",
+   "definition": "text overlay area ratio",
+   "asOfRule": "OCR plus detection"
+  },
+  {
+   "name": "Product occupancy ratio",
+   "definition": "product mask area over image area",
+   "asOfRule": "Segmentation consistency"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Catalogue Image Quality & Compliance\": Automatically check marketplace images for resolution, background, watermarks, text overlays and prohibited content at upload. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on moderator labels with inconsistent policy interpretation."
+}

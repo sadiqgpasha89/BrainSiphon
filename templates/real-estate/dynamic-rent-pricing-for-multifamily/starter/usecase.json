@@ -1,0 +1,53 @@
+{
+ "slug": "real-estate/dynamic-rent-pricing-for-multifamily",
+ "title": "Dynamic Rent Pricing for Multifamily",
+ "domain": "real-estate",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 68966,
+ "knobs": {
+  "days": 69
+ },
+ "blueprintSignals": [
+  {
+   "name": "Inquiry velocity",
+   "definition": "enquiries per day for the unit type over 7 days divided by the 28-day mean",
+   "asOfRule": "Noise from marketing campaigns, so adjust for ad spend"
+  },
+  {
+   "name": "Occupancy vs target",
+   "definition": "current occupancy minus the target occupancy for the date",
+   "asOfRule": "Occupancy definitions differ between systems, so use one definition"
+  },
+  {
+   "name": "Competitor asking rents",
+   "definition": "median public asking rent of comparable units within 1 km",
+   "asOfRule": "Asking prices differ from signed rents, so apply a historical discount"
+  },
+  {
+   "name": "Expiry schedule",
+   "definition": "number of leases expiring per month over the next 12 months",
+   "asOfRule": "Early terminations alter the schedule, so refresh it daily"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"Dynamic Rent Pricing for Multifamily\": Set daily asking rents by unit type to maximise revenue subject to occupancy and fairness rules. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: A simulated demand curve is optimistic about how tenants react to price."
+}

@@ -1,0 +1,21 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: alert_context_loader, timeout_ms: 495, on_timeout: fallback_level_1 }
+    - { name: planner_agent, timeout_ms: 989, on_timeout: fallback_level_1 }
+    - { name: siem_and_edr_query_tools, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: identity_and_threat_intel_tools, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: evidence_verifier, timeout_ms: 247, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Investigation time per alert"
+    - "Escalation precision"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

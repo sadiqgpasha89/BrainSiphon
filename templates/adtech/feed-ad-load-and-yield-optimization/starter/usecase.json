@@ -1,0 +1,48 @@
+{
+ "slug": "adtech/feed-ad-load-and-yield-optimization",
+ "title": "Feed Ad Load & Yield Optimisation",
+ "domain": "adtech",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 51206,
+ "knobs": {
+  "days": 59
+ },
+ "blueprintSignals": [
+  {
+   "name": "User ad tolerance",
+   "definition": "historical engagement drop after ads",
+   "asOfRule": "Experiments"
+  },
+  {
+   "name": "Predicted ad value",
+   "definition": "eCPM",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Organic item value",
+   "definition": "predicted engagement of next organic item",
+   "asOfRule": "Calibration"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"Feed Ad Load & Yield Optimisation\": Decide how many ads to show and where in a feed so that long-term revenue is maximised without degrading user engagement. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: A/B tests too short to see retention effects."
+}

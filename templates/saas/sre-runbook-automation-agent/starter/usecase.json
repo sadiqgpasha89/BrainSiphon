@@ -1,0 +1,50 @@
+{
+ "slug": "saas/sre-runbook-automation-agent",
+ "title": "SRE Runbook Automation Agent",
+ "domain": "saas",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-write-actions",
+ "seed": 39131,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Runbook match confidence",
+   "definition": "retrieval relevance",
+   "asOfRule": "Retrieval"
+  },
+  {
+   "name": "Action risk tier",
+   "definition": "read, restart, scale, delete",
+   "asOfRule": "Classification"
+  },
+  {
+   "name": "Post-action health check",
+   "definition": "metrics recover after action",
+   "asOfRule": "Monitors"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"SRE Runbook Automation Agent\": Execute and suggest runbook steps for incidents with typed tools, approvals for risky actions and a full audit trail. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Replay incidents lacking novelty."
+}

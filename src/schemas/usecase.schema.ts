@@ -535,7 +535,7 @@ export const PlaybookBase = z.object({
         .min(3),
     })
     .optional(),
-  /** present only on the free worked example; every other use case has it in BrainSiphon Pro (see content/pro.json) */
+  /** present on every use case: a run on the reference kit, or blueprint-only where no kit exists */
   workedExample: z
     .object({
       /** `reference-kit`: run on the starter kit's synthetic data. `blueprint-only`: a walk-through built from the blueprint with no run and no numbers. */

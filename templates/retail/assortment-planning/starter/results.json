@@ -1,0 +1,45 @@
+{
+ "use_case": "retail/assortment-planning",
+ "engine": "optimize",
+ "seed": 90337,
+ "knobs": {
+  "n_instances": 185,
+  "noise": 0.39
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.4,
+ "results": {
+  "instances": 185,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 131.01140704414985,
+   "promised_cost": 92.39772117517016,
+   "optimism_gap_pct": 41.790733989829455,
+   "regret_vs_oracle_pct": 43.06157759198657
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 117.09598241965372,
+   "promised_cost": 74.19707412909075,
+   "optimism_gap_pct": 57.817520157096624,
+   "regret_vs_oracle_pct": 27.866239685479535
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 111.8785002498808,
+   "promised_cost": 76.75106138249872,
+   "optimism_gap_pct": 45.768017060142014,
+   "regret_vs_oracle_pct": 22.168863807253626
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.57693438681072,
+   "promised_cost": 98.68633992545475,
+   "optimism_gap_pct": -7.204042164309971,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

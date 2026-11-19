@@ -248,7 +248,7 @@ function playbookMarkdown(pb: Playbook, L: string[], origin: string) {
     pb.workedExample.steps.forEach((s) => L.push(`- **${s.stage}** ${s.detail}`));
     L.push('', `**Outcome.** ${pb.workedExample.outcome}`, '');
   } else
-    L.push('### 5. Worked example', '', `The runnable worked template for this use case (its own starter run, documents, contracts and deployment sizing) is in BrainSiphon Pro: ${origin}/pro`, '');
+    L.push('### 5. Worked example', '', `The runnable worked template for this use case (its own starter run, documents, contracts and deployment sizing) is in the repository, in its own folder under templates/`, '');
   L.push('### 6. Test and acceptance plan', '', '| Test | Tool / command | Pass criterion |', '|---|---|---|');
   pb.tests.forEach((t) => L.push(`| ${esc(t.test)} | ${esc(t.tool)} | ${esc(t.pass)} |`));
   L.push('', '### 7. Decisions', '');

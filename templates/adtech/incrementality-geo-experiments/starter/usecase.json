@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/incrementality-geo-experiments",
+ "title": "Geo Experiments & Incrementality Testing",
+ "domain": "adtech",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 79837,
+ "knobs": {
+  "n": 32410,
+  "confound": 1.001,
+  "holdout": 0.126
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pre-period fit quality",
+   "definition": "RMSE of synthetic control",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Geo similarity features",
+   "definition": "pre-period trends and covariates",
+   "asOfRule": "Data"
+  },
+  {
+   "name": "Spillover exposure",
+   "definition": "cross-border exposure",
+   "asOfRule": "Geography"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Geo Experiments & Incrementality Testing\": Design and analyse geo-based holdout tests that measure true incremental effect of ads when user-level tracking is unavailable. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using post-period information in matching."
+}

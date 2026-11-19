@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/collections-propensity-and-next-best-action",
+ "title": "Collections Propensity & Next-Best-Action",
+ "domain": "fintech",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 51196,
+ "knobs": {
+  "n": 36240,
+  "confound": 1.145,
+  "holdout": 0.138
+ },
+ "blueprintSignals": [
+  {
+   "name": "Promise-to-pay reliability",
+   "definition": "share of past promises honoured",
+   "asOfRule": "Promise outcome known only after follow-up date"
+  },
+  {
+   "name": "Channel responsiveness",
+   "definition": "historic response rate by SMS, call and email",
+   "asOfRule": "Exclude responses to the current campaign"
+  },
+  {
+   "name": "Days past due and roll rate",
+   "definition": "current bucket and transition probabilities",
+   "asOfRule": "Bucket at as-of date only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Collections Propensity & Next-Best-Action\": Choose the contact channel, time and offer that maximise cure rate per rupee of collection cost while respecting conduct rules. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on all contacted customers without a holdout."
+}

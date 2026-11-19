@@ -1,0 +1,16 @@
+contract: real_time_card_upi_fraud_detection_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Card management system and authorisation ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: card_velocity_1m_1h_24h, type: double, nullable: false }
+    - { name: device_card_fan_out, type: double, nullable: false }
+    - { name: merchant_risk_drift, type: double, nullable: false }
+sla:
+  freshness_p95: 5 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

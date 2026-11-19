@@ -1,0 +1,22 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: spam_filter, timeout_ms: 481, on_timeout: fallback_level_1 }
+    - { name: aspect_extractor, timeout_ms: 481, on_timeout: fallback_level_1 }
+    - { name: summariser, timeout_ms: 481, on_timeout: fallback_level_1 }
+    - { name: faithfulness_check, timeout_ms: 180, on_timeout: fallback_level_1 }
+    - { name: product_page_cache, timeout_ms: 241, on_timeout: fallback_level_1 }
+    - { name: q_a_retriever, timeout_ms: 361, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Time on page to decision"
+    - "Conversion lift"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/duplicate-listing-detection-across-portals",
+ "title": "Duplicate Listing Detection Across Portals",
+ "domain": "real-estate",
+ "engine": "graph",
+ "fit": "exact",
+ "problemType": "entity-resolution",
+ "seed": 26600,
+ "knobs": {
+  "n_clusters": 1550,
+  "hub_share": 0.102
+ },
+ "blueprintSignals": [
+  {
+   "name": "Address match",
+   "definition": "normalised and geocoded address equality with unit number retained",
+   "asOfRule": "Formats differ between portals, so normalise before comparing"
+  },
+  {
+   "name": "Image hash similarity",
+   "definition": "smallest perceptual-hash distance between any pair of photos across two listings",
+   "asOfRule": "Re-edited and cropped images change the hash, so back it with an embedding match"
+  },
+  {
+   "name": "Price and size agreement",
+   "definition": "relative difference in asking price and in floor area against a tolerance",
+   "asOfRule": "Prices change between portals within days, so use a tolerance not equality"
+  },
+  {
+   "name": "Agent relation",
+   "definition": "whether the two listings come from the same broker or agency",
+   "asOfRule": "Data on agency relationships is incomplete"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Duplicate Listing Detection Across Portals\": Identify the same property listed by several agents and portals so search shows one entry and statistics count it once. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labelled pairs are easy cases chosen by reviewers, so the test overstates accuracy on hard pairs."
+}

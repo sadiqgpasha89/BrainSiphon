@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/mutual-fund-flow-forecasting",
+ "title": "Mutual Fund Flow Forecasting",
+ "domain": "bfsi",
+ "engine": "forecast",
+ "fit": "exact",
+ "problemType": "forecasting",
+ "seed": 83746,
+ "knobs": {
+  "n_series": 238
+ },
+ "blueprintSignals": [
+  {
+   "name": "Day-of-month profile",
+   "definition": "median flow by day type",
+   "asOfRule": "Calendar shifts"
+  },
+  {
+   "name": "Trailing relative performance",
+   "definition": "3 and 12 month return versus category",
+   "asOfRule": "Lagged reporting"
+  },
+  {
+   "name": "Market stress indicator",
+   "definition": "volatility index level",
+   "asOfRule": "Regime changes"
+  },
+  {
+   "name": "Distributor activity",
+   "definition": "orders from the top platforms",
+   "asOfRule": "Data timing"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Mutual Fund Flow Forecasting\": Forecast daily subscriptions and redemptions per fund so portfolio managers hold the right cash and treasury can plan liquidity. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using final data instead of as-known data."
+}

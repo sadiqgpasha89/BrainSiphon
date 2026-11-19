@@ -1,0 +1,50 @@
+{
+ "use_case": "retail/checkout-free-store-vision",
+ "engine": "cv",
+ "seed": 89121,
+ "knobs": {
+  "n": 3980,
+  "prevalence": 0.152
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "images": 3980,
+  "train": 1378,
+  "prevalence": 0.157286432160804,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9272349440947196,
+    "sens_at_95_spec": 0.7010309278350515
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9865807940017303,
+    "sens_at_95_spec": 0.9306930693069307
+   },
+   "site_B": {
+    "auc": 0.7340510294072925,
+    "sens_at_95_spec": 0.2852233676975945
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.32989690721649484,
+    "false_positive_rate": 0.06548672566371681
+   }
+  }
+ }
+}

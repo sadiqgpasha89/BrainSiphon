@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  sepsis-scoring:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - EHR_STREAM_URL=http://mock-ehr:8080
+      - REDIS_REFRACTORY_HOST=redis
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health/liveness"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6380:6379"
+
+volumes:
+  redis_data:
+

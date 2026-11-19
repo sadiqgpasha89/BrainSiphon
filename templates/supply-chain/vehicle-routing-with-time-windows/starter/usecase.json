@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/vehicle-routing-with-time-windows",
+ "title": "Fleet Planning & Vehicle Routing with Time Windows",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 72061,
+ "knobs": {
+  "n_instances": 167,
+  "noise": 0.328
+ },
+ "blueprintSignals": [
+  {
+   "name": "Demand uncertainty scenarios",
+   "definition": "sampled order volumes per lane",
+   "asOfRule": "Scenario generation model"
+  },
+  {
+   "name": "Depot capacity utilisation",
+   "definition": "dock slots per hour",
+   "asOfRule": "Real constraints"
+  },
+  {
+   "name": "Driver-hours remaining",
+   "definition": "regulation tracker",
+   "asOfRule": "Duty rules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Fleet Planning & Vehicle Routing with Time Windows\": Plan multi-day fleet assignments across depots for a regional network, minimising cost under capacity and driver-hour constraints. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Learning on small instances and testing on large ones."
+}

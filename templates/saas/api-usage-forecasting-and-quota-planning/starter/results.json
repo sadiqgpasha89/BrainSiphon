@@ -1,0 +1,46 @@
+{
+ "use_case": "saas/api-usage-forecasting-and-quota-planning",
+ "engine": "forecast",
+ "seed": 24915,
+ "knobs": {
+  "n_series": 158
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.5,
+ "results": {
+  "rows": 14313,
+  "h1": {
+   "wmape_model": 0.11737854205460897,
+   "wmape_baseline": 0.20660509995368154,
+   "fva": 0.43187006477127676
+  },
+  "h3": {
+   "wmape_model": 0.11548336641428897,
+   "wmape_baseline": 0.20801188018399797,
+   "fva": 0.44482321725019947
+  },
+  "h7": {
+   "wmape_model": 0.12066181225143005,
+   "wmape_baseline": 0.2134182759307187,
+   "fva": 0.43462287039278624
+  },
+  "h14": {
+   "wmape_model": 0.15149246535068472,
+   "wmape_baseline": 0.23082055135247176,
+   "fva": 0.34367860893222646
+  },
+  "p90_coverage": 0.8796897924963321,
+  "wmape_sku_level": 0.12589626655473957,
+  "wmape_aggregate": 0.03407298120321456,
+  "late_feed": {
+   "missing_as_zero": 0.1884002264962118,
+   "missing_as_nan": 0.1435723922870411
+  }
+ }
+}

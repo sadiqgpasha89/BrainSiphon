@@ -1,0 +1,9 @@
+# Overrides for deployment/helm/ai-solution in the free BrainSiphon deployment kit, for Model Extraction & Abuse Detection for ML APIs.
+# Modelled sizing at 10M registered users. Replace with your measured peak, and set autoscaling bounds from a load test.
+# Blueprint compute statement: 6 8-vCPU pods for 625 req/s (≈2,500 scores/s per pod (GBDT / small NN, features already in memory)); 3 online feature-store shards and 12 event-bus partitions.
+replicaCount: 6   # modelled pods at peak, including failover headroom
+resources:
+  requests:
+    cpu: '8000m'
+  limits:
+    cpu: '8000m'

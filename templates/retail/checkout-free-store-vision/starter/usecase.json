@@ -1,0 +1,53 @@
+{
+ "slug": "retail/checkout-free-store-vision",
+ "title": "Checkout-Free Store Vision",
+ "domain": "retail",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 89121,
+ "knobs": {
+  "n": 3980,
+  "prevalence": 0.152
+ },
+ "blueprintSignals": [
+  {
+   "name": "Weight-delta match",
+   "definition": "measured shelf weight change vs SKU weight",
+   "asOfRule": "Calibrated load cells"
+  },
+  {
+   "name": "Hand-item interaction score",
+   "definition": "action recogniser output",
+   "asOfRule": "Temporal context"
+  },
+  {
+   "name": "Track-merge confidence",
+   "definition": "cross-camera ReID similarity",
+   "asOfRule": "Spatial constraints"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Checkout-Free Store Vision\": Track shoppers and pick/put events with camera and weight sensors to produce accurate virtual baskets without checkout. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training data from staged shoppers."
+}

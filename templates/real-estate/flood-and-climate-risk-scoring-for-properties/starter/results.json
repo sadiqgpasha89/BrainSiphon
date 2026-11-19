@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/flood-and-climate-risk-scoring-for-properties",
+ "engine": "regression",
+ "seed": 69802,
+ "knobs": {
+  "n": 21570,
+  "outlier_share": 0.026,
+  "drift": 0.283
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.6,
+ "results": {
+  "rows": 21570,
+  "train_rows": 15098,
+  "test_rows": 6472,
+  "baseline_ridge": {
+   "mae": 7.7511975416179535,
+   "rmse": 13.513702122124991,
+   "wape": 0.14650241203456826,
+   "r2": 0.41203420909383104
+  },
+  "challenger_gbm": {
+   "mae": 5.271314992996795,
+   "rmse": 11.509770162299882,
+   "wape": 0.09963110305492424,
+   "r2": 0.5734826738828931
+  },
+  "mae_gain_vs_baseline": 0.3199354080845058,
+  "interval_80_coverage": 0.657601977750309,
+  "interval_80_mean_width": 9.172599636947393,
+  "segment_mae": {
+   "0": 5.290837477449224,
+   "1": 5.0903262620547025,
+   "2": 5.005435166332302,
+   "3": 6.837588280889641
+  },
+  "worst_segment_vs_overall": 1.2971314159699652,
+  "leaky_feature_rmse": 1.7435744371417072,
+  "honest_rmse": 11.509770162299882,
+  "random_split_mae": 4.507331170222227,
+  "chronological_mae": 5.271314992996795
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "slug": "real-estate/tenant-query-assistant",
+ "title": "Property Manager Assistant for Tenant Queries",
+ "domain": "real-estate",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 16473,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Citation validity",
+   "definition": "share of answers whose cited clause actually supports the statement",
+   "asOfRule": "A citation can exist and still not support the claim, so check entailment"
+  },
+  {
+   "name": "Escalation precision",
+   "definition": "share of escalations that a manager agrees needed a person",
+   "asOfRule": "Over-refusal hurts resolution, so track both"
+  },
+  {
+   "name": "Resolution rate",
+   "definition": "share of conversations solved without a person and not reopened in 7 days",
+   "asOfRule": "A resolved flag without a reopening check overstates success"
+  },
+  {
+   "name": "Satisfaction",
+   "definition": "post-conversation rating",
+   "asOfRule": "Rating bias, since unhappy tenants are less likely to rate"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Property Manager Assistant for Tenant Queries\": Answer tenants' questions about leases, rules, payments and repairs from the manager's documents and systems and escalate what needs a person. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: A test set of easy, common questions hides failures on unusual ones."
+}

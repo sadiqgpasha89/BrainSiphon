@@ -1,0 +1,45 @@
+{
+ "use_case": "retail/out-of-stock-substitution",
+ "engine": "recommender",
+ "seed": 31043,
+ "knobs": {
+  "n_sessions": 36940,
+  "bot_share": 0.102
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.6,
+ "results": {
+  "train_sessions": 23233,
+  "test_sessions": 6535,
+  "popularity": {
+   "hit_rate@20": 0.08247895944912012,
+   "mrr@20": 0.02560782765930209,
+   "coverage": 0.017333333333333333,
+   "sessions": 6535
+  },
+  "bag_covisit": {
+   "hit_rate@20": 0.5426166794185157,
+   "mrr@20": 0.2194998650376095,
+   "coverage": 0.9746666666666667,
+   "sessions": 6535
+  },
+  "ordered_transition": {
+   "hit_rate@20": 0.568477429227238,
+   "mrr@20": 0.3090215568572744,
+   "coverage": 0.976,
+   "sessions": 6535
+  },
+  "theme_aware": {
+   "hit_rate@20": 0.5765876052027544,
+   "mrr@20": 0.31528708020975565,
+   "coverage": 1.0,
+   "sessions": 6535
+  }
+ }
+}

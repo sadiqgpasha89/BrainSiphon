@@ -1,0 +1,53 @@
+{
+ "slug": "saas/personalized-onboarding-paths",
+ "title": "Personalised Onboarding Paths",
+ "domain": "saas",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 18267,
+ "knobs": {
+  "n": 35690,
+  "logging_temperature": 0.849
+ },
+ "blueprintSignals": [
+  {
+   "name": "Declared role and goal",
+   "definition": "survey answers",
+   "asOfRule": "Consent"
+  },
+  {
+   "name": "Early action sequence",
+   "definition": "first-session actions",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Template similarity to successful teams",
+   "definition": "embedding similarity",
+   "asOfRule": "Data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Personalised Onboarding Paths\": Tailor onboarding steps and templates to each new user or team to reach first value faster. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Rewarding checklist completion."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/lecture-video-segmentation-and-summarization",
+ "title": "Lecture Video Segmentation & Summarisation",
+ "domain": "edtech",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 17664,
+ "knobs": {
+  "n": 5470,
+  "prevalence": 0.113
+ },
+ "blueprintSignals": [
+  {
+   "name": "Transcript topic-shift score",
+   "definition": "embedding distance between windows",
+   "asOfRule": "ASR quality"
+  },
+  {
+   "name": "Slide-change detection",
+   "definition": "visual change in slides",
+   "asOfRule": "Frame sampling"
+  },
+  {
+   "name": "Term glossary alignment",
+   "definition": "domain terms recognised",
+   "asOfRule": "Glossary"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Lecture Video Segmentation & Summarisation\": Segment lectures into topics, generate chapters, summaries and quiz points so learners can navigate and review efficiently. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on clean slides-only talks."
+}

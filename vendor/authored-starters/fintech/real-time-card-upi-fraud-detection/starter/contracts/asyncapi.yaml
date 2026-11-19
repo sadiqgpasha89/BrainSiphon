@@ -1,0 +1,48 @@
+asyncapi: 3.0.0
+info:
+  title: Fraud Detection Streaming Event Backbone
+  version: 1.2.0
+  description: Event-driven streaming architecture for real-time transactions and audit ledger.
+channels:
+  payment.transactions:
+    address: payment.transactions
+    messages:
+      transactionCreated:
+        summary: Raw payment transaction ingested from payment gateway
+        payload:
+          type: object
+          properties:
+            txn_id: { type: string }
+            card_id: { type: integer }
+            amount: { type: number }
+            merchant_id: { type: integer }
+            device_id: { type: integer }
+            rail: { type: string, enum: [card, upi] }
+            ts: { type: number }
+  fraud.decisions:
+    address: fraud.decisions
+    messages:
+      decisionEmitted:
+        summary: Output decision from inference microservice
+        payload:
+          type: object
+          properties:
+            txn_id: { type: string }
+            decision: { type: string, enum: [ALLOW, STEP_UP, BLOCK] }
+            p_fraud: { type: number }
+            latency_ms: { type: number }
+            model_version: { type: string }
+            timestamp: { type: number }
+  fraud.chargebacks:
+    address: fraud.chargebacks
+    messages:
+      chargebackReported:
+        summary: Delayed ground truth label emitted 14-60 days post-transaction
+        payload:
+          type: object
+          properties:
+            txn_id: { type: string }
+            is_fraud: { type: integer, enum: [0, 1] }
+            label_source: { type: string, enum: [chargeback, complaint, recovery] }
+            label_ts: { type: number }
+

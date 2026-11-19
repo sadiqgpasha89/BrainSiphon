@@ -1,0 +1,34 @@
+{
+ "use_case": "cybersecurity/siem-alert-triage-ml",
+ "engine": "tabular",
+ "seed": 45870,
+ "knobs": {
+  "n_entities": 2810,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "rows": 214935,
+  "positive_rate": 0.0028892455858747996,
+  "test_rows": 72147,
+  "test_positive_rate": 0.003437426365614648,
+  "baseline_lr": {
+   "pr_auc": 0.5514584781451232,
+   "recall_at_0.5pct_fpr": 0.6996592091571281,
+   "brier": 0.002308487873684519
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6683914749740721,
+   "recall_at_0.5pct_fpr": 0.7056451612903226,
+   "brier": 0.0016067478821935829
+  }
+ }
+}

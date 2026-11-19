@@ -1,0 +1,58 @@
+{
+ "use_case": "cybersecurity/voice-deepfake-and-vishing-detection",
+ "engine": "audio",
+ "seed": 37919,
+ "knobs": {
+  "n_train": 1030,
+  "test_snr": 3.2
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.6,
+ "results": {
+  "train_clips": 1030,
+  "test_clips": 600,
+  "sample_rate_hz": 8000,
+  "raw_spectrum_baseline": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 0.6183333333333333,
+    "macro_f1": 0.4930395990084732
+   }
+  },
+  "log_filterbank_challenger": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 0.20333333333333334,
+    "macro_f1": 0.06759002770083103
+   }
+  },
+  "log_filterbank_with_channel_augmentation": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   }
+  },
+  "channel_shift_drop_challenger": 0.7966666666666666,
+  "augmentation_gain_on_shifted_channel": 0.7966666666666666,
+  "wer_simulated": {
+   "clean": 0.032916666666666664,
+   "noisy": 0.20041666666666666
+  }
+ }
+}

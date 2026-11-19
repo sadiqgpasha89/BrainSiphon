@@ -1,0 +1,39 @@
+{
+ "slug": "saas/developer-docs-assistant",
+ "title": "Developer Documentation Assistant",
+ "domain": "saas",
+ "engine": "authored",
+ "fit": "authored",
+ "problemType": "grounded-qa",
+ "seed": null,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "API existence check",
+   "definition": "referenced symbols found in spec",
+   "asOfRule": "Use the OpenAPI spec for the user's version"
+  },
+  {
+   "name": "Snippet execution pass",
+   "definition": "sandbox run succeeds",
+   "asOfRule": "Run against the pinned SDK version in a test harness"
+  },
+  {
+   "name": "Version match",
+   "definition": "docs version equals user version",
+   "asOfRule": "Read the version from request context, not from the question text alone"
+  },
+  {
+   "name": "Citation supports the value",
+   "definition": "the cited passage literally contains the stated value",
+   "asOfRule": "A valid citation alone is not proof, because a changelog can cite both the old and the new value"
+  },
+  {
+   "name": "Abstention precision",
+   "definition": "share of declined questions that are truly unanswerable",
+   "asOfRule": "Needs labelled unanswerable questions kept out of tuning"
+  }
+ ],
+ "engineFeatures": [],
+ "label": "For \"Developer Documentation Assistant\": Answer developer questions about APIs and SDKs with correct, version-specific code snippets and links to authoritative docs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on questions from docs headings."
+}

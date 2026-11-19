@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/cross-channel-budget-allocation",
+ "title": "Cross-Channel Budget Allocation with Bandits",
+ "domain": "adtech",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 61278,
+ "knobs": {
+  "n_instances": 111,
+  "noise": 0.329
+ },
+ "blueprintSignals": [
+  {
+   "name": "Channel incremental ROAS",
+   "definition": "experiment-based",
+   "asOfRule": "Experiments"
+  },
+  {
+   "name": "Posterior uncertainty",
+   "definition": "variance of ROAS",
+   "asOfRule": "Bayesian"
+  },
+  {
+   "name": "Platform-claimed vs incremental ratio",
+   "definition": "inflation factor",
+   "asOfRule": "Tests"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Cross-Channel Budget Allocation with Bandits\": Shift weekly budget between channels using experimentation-informed bandit policies to maximise incremental outcomes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using platform-reported conversions as rewards."
+}

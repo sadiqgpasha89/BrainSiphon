@@ -1,0 +1,16 @@
+contract: synthetic_identity_fraud_detection_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: attribute_sharing_degree, type: double, nullable: false }
+    - { name: identity_age_mismatch, type: double, nullable: false }
+    - { name: email_and_phone_tenure, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

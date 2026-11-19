@@ -1,0 +1,43 @@
+{
+ "use_case": "cybersecurity/ransomware-early-detection",
+ "engine": "anomaly",
+ "seed": 63767,
+ "knobs": {
+  "n_series": 112,
+  "anomalies_per_series": 3.067
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.6,
+ "results": {
+  "series": 112,
+  "hours": 2016,
+  "events": 354,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.24721189591078066,
+   "recall": 0.44751381215469616,
+   "median_delay_h": 3.0,
+   "events": 181
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6226765799256505,
+   "recall": 0.8121546961325967,
+   "median_delay_h": 0.0,
+   "events": 181
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.4944237918215613,
+   "recall": 0.9668508287292817,
+   "median_delay_h": 0.0,
+   "events": 181
+  }
+ }
+}

@@ -1,0 +1,29 @@
+apiVersion: opendatacontract.com/v2alpha1
+kind: DataContract
+id: urn:datacontract:healthcare:icu-vitals-observation
+info:
+  title: Bedside Vitals Telemetry Data Contract
+  version: 1.1.0
+  owner: Clinical Informatics & Data Operations
+  sla:
+    freshness: 30s
+    availability: 99.999%
+models:
+  bedside_vitals:
+    description: Streamed vital signs observations mapped to LOINC standards
+    type: table
+    fields:
+      patient_id: { type: string, primaryKey: true }
+      encounter_id: { type: string }
+      hour_of_stay: { type: integer }
+      hr: { type: float, description: "Heart rate in beats per minute" }
+      sbp: { type: float, description: "Systolic blood pressure in mmHg" }
+      rr: { type: float, description: "Respiratory rate in breaths per minute" }
+      temp: { type: float, description: "Temperature in degrees Celsius" }
+      spo2: { type: float, description: "Pulse oximeter SpO2 percentage" }
+      lactate: { type: float, description: "Arterial blood lactate in mmol/L" }
+    quality:
+      - rule: hr >= 20 and hr <= 250
+      - rule: sbp >= 40 and sbp <= 260
+      - rule: spo2 >= 50 and spo2 <= 100
+

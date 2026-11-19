@@ -1,0 +1,50 @@
+{
+ "use_case": "bfsi/catastrophe-loss-estimation-from-imagery",
+ "engine": "cv",
+ "seed": 47937,
+ "knobs": {
+  "n": 4240,
+  "prevalence": 0.101
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "images": 4240,
+  "train": 1476,
+  "prevalence": 0.09834905660377359,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9478128279118574,
+    "sens_at_95_spec": 0.7455357142857143
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9881276695927085,
+    "sens_at_95_spec": 0.9411764705882353
+   },
+   "site_B": {
+    "auc": 0.7472197758956679,
+    "sens_at_95_spec": 0.32142857142857145
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.36160714285714285,
+    "false_positive_rate": 0.05823714585519412
+   }
+  }
+ }
+}

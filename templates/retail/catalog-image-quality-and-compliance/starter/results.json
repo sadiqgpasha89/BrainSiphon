@@ -1,0 +1,50 @@
+{
+ "use_case": "retail/catalog-image-quality-and-compliance",
+ "engine": "cv",
+ "seed": 6401,
+ "knobs": {
+  "n": 4100,
+  "prevalence": 0.155
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "images": 4100,
+  "train": 1418,
+  "prevalence": 0.1575609756097561,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9309616944569625,
+    "sens_at_95_spec": 0.7129337539432177
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9710377786017386,
+    "sens_at_95_spec": 0.8924731182795699
+   },
+   "site_B": {
+    "auc": 0.7491230283911672,
+    "sens_at_95_spec": 0.3470031545741325
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.35962145110410093,
+    "false_positive_rate": 0.054285714285714284
+   }
+  }
+ }
+}

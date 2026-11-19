@@ -1,0 +1,34 @@
+{
+ "use_case": "fintech/insurance-claims-fraud-detection",
+ "engine": "tabular",
+ "seed": 87481,
+ "knobs": {
+  "n_entities": 2240,
+  "positive_entity_rate": 0.034,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "rows": 172999,
+  "positive_rate": 0.004878640916999521,
+  "test_rows": 58269,
+  "test_positive_rate": 0.006418507268015583,
+  "baseline_lr": {
+   "pr_auc": 0.665168720872158,
+   "recall_at_0.5pct_fpr": 0.8155080213903744,
+   "brier": 0.005213295933308589
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8273583839659986,
+   "recall_at_0.5pct_fpr": 0.8475935828877005,
+   "brier": 0.001969705971070351
+  }
+ }
+}

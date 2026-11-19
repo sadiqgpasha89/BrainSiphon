@@ -1,0 +1,48 @@
+{
+ "slug": "saas/email-assistant-auto-reply",
+ "title": "Email Assistant & Smart Replies",
+ "domain": "saas",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 90956,
+ "knobs": {
+  "n": 277
+ },
+ "blueprintSignals": [
+  {
+   "name": "Draft acceptance rate",
+   "definition": "drafts sent with few edits",
+   "asOfRule": "Logging"
+  },
+  {
+   "name": "Thread context completeness",
+   "definition": "referenced entities resolved",
+   "asOfRule": "Retrieval"
+  },
+  {
+   "name": "Priority score",
+   "definition": "importance prediction",
+   "asOfRule": "Feedback"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Email Assistant & Smart Replies\": Draft replies that match the user's tone and context, and triage inbox priorities, with the user always approving sends. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on generic emails."
+}

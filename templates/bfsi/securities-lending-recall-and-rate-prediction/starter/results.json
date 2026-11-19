@@ -1,0 +1,49 @@
+{
+ "use_case": "bfsi/securities-lending-recall-and-rate-prediction",
+ "engine": "regression",
+ "seed": 35595,
+ "knobs": {
+  "n": 25840,
+  "outlier_share": 0.024,
+  "drift": 0.304
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.0,
+ "results": {
+  "rows": 25840,
+  "train_rows": 18088,
+  "test_rows": 7752,
+  "baseline_ridge": {
+   "mae": 7.21510959019847,
+   "rmse": 12.356191760153106,
+   "wape": 0.13774601673521072,
+   "r2": 0.45555914662005736
+  },
+  "challenger_gbm": {
+   "mae": 4.930390267406948,
+   "rmse": 10.43476055714332,
+   "wape": 0.09412769297474746,
+   "r2": 0.6117187647745979
+  },
+  "mae_gain_vs_baseline": 0.31665760502033824,
+  "interval_80_coverage": 0.6523477812177503,
+  "interval_80_mean_width": 9.149788687928028,
+  "segment_mae": {
+   "0": 4.741451661634432,
+   "1": 4.994339094283027,
+   "2": 5.043851955360892,
+   "3": 6.221592142776565
+  },
+  "worst_segment_vs_overall": 1.2618863427313842,
+  "leaky_feature_rmse": 1.4943709473750129,
+  "honest_rmse": 10.43476055714332,
+  "random_split_mae": 4.453485990944776,
+  "chronological_mae": 4.930390267406948
+ }
+}

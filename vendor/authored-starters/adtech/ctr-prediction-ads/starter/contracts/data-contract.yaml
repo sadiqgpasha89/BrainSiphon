@@ -1,0 +1,26 @@
+apiVersion: opendatacontract.com/v2alpha1
+kind: DataContract
+id: urn:datacontract:adtech:ad-impressions-clicks
+info:
+  title: Ad Impressions and Click Telemetry Contract
+  version: 1.2.0
+  owner: Real-Time Bidding & Ad Targeting Engineering
+  sla:
+    freshness: 1s
+    availability: 99.999%
+models:
+  impressions:
+    description: Streamed impression records with attribution labels
+    type: table
+    fields:
+      ts: { type: float, primaryKey: true }
+      ad: { type: integer, primaryKey: true }
+      advertiser: { type: integer }
+      placement: { type: integer }
+      user: { type: integer }
+      click: { type: integer, description: "1 if clicked, 0 otherwise" }
+      dwell_ms: { type: integer, description: "Post-click dwell time in milliseconds" }
+    quality:
+      - rule: click in (0, 1)
+      - rule: dwell_ms >= 0
+

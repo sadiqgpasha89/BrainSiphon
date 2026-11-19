@@ -1,0 +1,108 @@
+openapi: 3.1.0
+info:
+  title: Bayesian Marketing Mix Modelling API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/marketing-mix-modeling-bayesian/forecasts:
+    post:
+      summary: 'Bayesian Marketing Mix Modelling: request a decision'
+      operationId: marketing_mix_modeling_bayesian
+      description: Illustrative contract taken from the blueprint's low-level design.  Replace the placeholder values
+        with your own fields and keep the error behaviour.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                run_id:
+                  type: string
+                as_of:
+                  type: string
+                series_selector:
+                  type: object
+                  properties:
+                    level:
+                      type: string
+                    filter:
+                      type: string
+                horizon:
+                  type: integer
+                granularity:
+                  type: string
+                quantiles:
+                  type: array
+                  items:
+                    type: number
+                model_version:
+                  type: string
+                covariates:
+                  type: array
+                  items:
+                    type: string
+            example:
+              run_id: fc_20261107_01
+              as_of: '2026-11-07T00:00:00Z'
+              series_selector:
+                level: sku_store
+                filter: active=true
+              horizon: 28
+              granularity: day
+              quantiles:
+              - 0.1
+              - 0.5
+              - 0.9
+              model_version: champion
+              covariates:
+              - adstock_decay_parameter
+              - saturation_half_saturation_point
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  run_id:
+                    type: string
+                  status:
+                    type: string
+                  series_in:
+                    type: integer
+                  series_forecast:
+                    type: integer
+                  series_fallback:
+                    type: integer
+                  horizon:
+                    type: integer
+                  interval_coverage_backtest:
+                    type: number
+                  manifest_uri:
+                    type: string
+              example:
+                run_id: fc_20261107_01
+                status: RUNNING | SUCCEEDED | FAILED_DQ
+                series_in: 0
+                series_forecast: 0
+                series_fallback: 0
+                horizon: 28
+                interval_coverage_backtest: 0.8
+                manifest_uri: s3://…/forecasts/fc_20261107_01/manifest.json
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

@@ -1,0 +1,49 @@
+{
+ "slug": "saas/voice-of-customer-mining",
+ "title": "Voice-of-Customer Mining",
+ "domain": "saas",
+ "engine": "cluster",
+ "fit": "exact",
+ "problemType": "clustering-segmentation",
+ "seed": 40443,
+ "knobs": {
+  "n": 4580,
+  "outlier_share": 0.01
+ },
+ "blueprintSignals": [
+  {
+   "name": "Theme volume trend",
+   "definition": "mentions over time",
+   "asOfRule": "Taxonomy"
+  },
+  {
+   "name": "Revenue-weighted impact",
+   "definition": "ARR of accounts mentioning",
+   "asOfRule": "CRM join"
+  },
+  {
+   "name": "Sentiment by theme",
+   "definition": "aspect-based sentiment",
+   "asOfRule": "Model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "value feature (f0)",
+   "meaning": "in currency units, thousands of times larger than the others"
+  },
+  {
+   "feature": "behaviour features (f1-f3)",
+   "meaning": "separate the segments"
+  },
+  {
+   "feature": "engagement features (f4-f6)",
+   "meaning": "separate some segments"
+  },
+  {
+   "feature": "noise feature (f7)",
+   "meaning": "carries little structure"
+  }
+ ],
+ "label": "For \"Voice-of-Customer Mining\": Turn tickets, reviews, calls and surveys into ranked themes, sentiment and feature requests tied to revenue impact. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Mention counts as importance."
+}

@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/rent-estimation",
+ "engine": "regression",
+ "seed": 74723,
+ "knobs": {
+  "n": 22820,
+  "outlier_share": 0.034,
+  "drift": 0.227
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.9,
+ "results": {
+  "rows": 22820,
+  "train_rows": 15973,
+  "test_rows": 6847,
+  "baseline_ridge": {
+   "mae": 7.689836074979204,
+   "rmse": 13.53096347459602,
+   "wape": 0.14442784277569132,
+   "r2": 0.3926467629212941
+  },
+  "challenger_gbm": {
+   "mae": 5.158348250762521,
+   "rmse": 11.711719424893339,
+   "wape": 0.09688231359930602,
+   "r2": 0.5449855108912449
+  },
+  "mae_gain_vs_baseline": 0.329199192223812,
+  "interval_80_coverage": 0.6935884328903169,
+  "interval_80_mean_width": 9.403281761905657,
+  "segment_mae": {
+   "0": 4.906393540159027,
+   "1": 5.255665068380913,
+   "2": 5.504813969587403,
+   "3": 6.06973858472326
+  },
+  "worst_segment_vs_overall": 1.1766825909487624,
+  "leaky_feature_rmse": 1.469698504289375,
+  "honest_rmse": 11.711719424893339,
+  "random_split_mae": 4.854741327591792,
+  "chronological_mae": 5.158348250762521
+ }
+}

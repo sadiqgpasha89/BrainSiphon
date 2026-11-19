@@ -1,0 +1,38 @@
+{
+ "id": "llm-rag",
+ "label": "Retrieval-augmented answering with a verifier",
+ "summary": "A runnable reference for answering questions from a document collection: versioned chunks, hybrid retrieval, a source filter, an intent check, a verifier that requires the cited passage to contain the value, abstention and a golden set with unanswerable questions held out by product.",
+ "problemTypes": [
+  "grounded-qa",
+  "grounded-generation"
+ ],
+ "traps": [
+  "Letting changelogs be answer sources",
+  "Never abstaining",
+  "Abstaining too much",
+  "Tuning on the test set"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ]
+}

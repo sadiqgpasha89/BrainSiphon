@@ -1,0 +1,36 @@
+{
+ "use_case": "fintech/collections-propensity-and-next-best-action",
+ "engine": "uplift",
+ "seed": 51196,
+ "knobs": {
+  "n": 36240,
+  "confound": 1.145,
+  "holdout": 0.138
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "rows": 36240,
+  "observational_rows": 31229,
+  "holdout_rows": 5011,
+  "true_ate": 0.0700460816777042,
+  "naive_ate": 0.19728088878527053,
+  "naive_bias": 0.12723480710756635,
+  "ipw_ate": 0.0733488873716113,
+  "ipw_bias": 0.0033028056939071043,
+  "holdout_ate": 0.07624723217841498,
+  "holdout_balance_smd_x0": 0.04501752238138603,
+  "observational_balance_smd_x0": 1.0060590085042969,
+  "t_learner_qini_auc": 0.013024731915867708,
+  "random_ranking_qini_auc": -0.0001566793565033027,
+  "top_decile_realised_uplift": 0.12804448147673375,
+  "bottom_decile_realised_uplift": -0.030685001273236562,
+  "share_predicted_negative": 0.15006984633805628
+ }
+}

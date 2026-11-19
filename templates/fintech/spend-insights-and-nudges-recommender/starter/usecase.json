@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/spend-insights-and-nudges-recommender",
+ "title": "Spend Insights & Financial Nudges Recommender",
+ "domain": "fintech",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "personalised-ranking",
+ "seed": 82582,
+ "knobs": {
+  "n_sessions": 51760,
+  "bot_share": 0.117
+ },
+ "blueprintSignals": [
+  {
+   "name": "Savings-gap estimate",
+   "definition": "gap between current savings rate and goal trajectory",
+   "asOfRule": "Uses balances as-of nudge time"
+  },
+  {
+   "name": "Subscription creep",
+   "definition": "new recurring charges relative to last quarter",
+   "asOfRule": "Detection before notification date"
+  },
+  {
+   "name": "Nudge response history",
+   "definition": "open and action rate by nudge type",
+   "asOfRule": "Exclude the nudge under evaluation"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Spend Insights & Financial Nudges Recommender\": Deliver the one financial nudge per week that a user is most likely to act on and benefit from, without notification fatigue. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on opens rather than helpful actions."
+}

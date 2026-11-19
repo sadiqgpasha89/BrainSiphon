@@ -1,0 +1,20 @@
+asyncapi: 3.0.0
+info:
+  title: Learning Activity Stream
+  version: 1.2.0
+channels:
+  lms.interaction.events:
+    address: lms.interaction.events
+    messages:
+      quizCompleted:
+        summary: Student quiz question submission event
+        payload:
+          type: object
+          properties:
+            student_id: { type: string }
+            skill_id: { type: integer }
+            question_id: { type: integer }
+            correct: { type: integer, enum: [0, 1] }
+            response_time_ms: { type: number }
+            timestamp: { type: number }
+

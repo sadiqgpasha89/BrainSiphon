@@ -1,0 +1,9 @@
+# Overrides for deployment/helm/ai-solution in the free BrainSiphon deployment kit, for Alert Noise Reduction & Routing.
+# Modelled sizing at 10M registered users. Replace with your measured peak, and set autoscaling bounds from a load test.
+# Blueprint compute statement: 40 8-vCPU pods for 31,250 req/s (≈800 scores/s per pod (cached neighbourhood embeddings + light head)); 3 online feature-store shards and 12 event-bus partitions.
+replicaCount: 40   # modelled pods at peak, including failover headroom
+resources:
+  requests:
+    cpu: '8000m'
+  limits:
+    cpu: '8000m'

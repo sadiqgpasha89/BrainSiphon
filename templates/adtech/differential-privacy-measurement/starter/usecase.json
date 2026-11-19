@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/differential-privacy-measurement",
+ "title": "Differentially Private Ad Measurement",
+ "domain": "adtech",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 49211,
+ "knobs": {
+  "n": 36060,
+  "confound": 1.55,
+  "holdout": 0.125
+ },
+ "blueprintSignals": [
+  {
+   "name": "Sensitivity bound",
+   "definition": "per-user contribution cap",
+   "asOfRule": "Clipping"
+  },
+  {
+   "name": "Epsilon allocation",
+   "definition": "budget by metric and level",
+   "asOfRule": "Policy"
+  },
+  {
+   "name": "Post-processing consistency",
+   "definition": "non-negativity and hierarchy constraints",
+   "asOfRule": "Consistency"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Differentially Private Ad Measurement\": Provide campaign reach and conversion reporting with formal differential-privacy guarantees and useful accuracy. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating utility without privacy composition."
+}

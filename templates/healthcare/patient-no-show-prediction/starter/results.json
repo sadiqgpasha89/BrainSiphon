@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/patient-no-show-prediction",
+ "engine": "tabular",
+ "seed": 68536,
+ "knobs": {
+  "n_entities": 2010,
+  "positive_entity_rate": 0.04,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "rows": 152772,
+  "positive_rate": 0.005380567119629251,
+  "test_rows": 51188,
+  "test_positive_rate": 0.006017035242634992,
+  "baseline_lr": {
+   "pr_auc": 0.7352780364067016,
+   "recall_at_0.5pct_fpr": 0.7272727272727273,
+   "brier": 0.0028571192208748293
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7462004021775253,
+   "recall_at_0.5pct_fpr": 0.75,
+   "brier": 0.002554017317968263
+  }
+ }
+}

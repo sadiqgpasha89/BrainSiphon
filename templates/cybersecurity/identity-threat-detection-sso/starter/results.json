@@ -1,0 +1,34 @@
+{
+ "use_case": "cybersecurity/identity-threat-detection-sso",
+ "engine": "tabular",
+ "seed": 73887,
+ "knobs": {
+  "n_entities": 2990,
+  "positive_entity_rate": 0.032,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.1,
+ "results": {
+  "rows": 229756,
+  "positive_rate": 0.003925904002507008,
+  "test_rows": 76475,
+  "test_positive_rate": 0.0035305655442955212,
+  "baseline_lr": {
+   "pr_auc": 0.4781698419184394,
+   "recall_at_0.5pct_fpr": 0.5259259259259259,
+   "brier": 0.003755015669843065
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.563732863300572,
+   "recall_at_0.5pct_fpr": 0.5925925925925926,
+   "brier": 0.002155696403587221
+  }
+ }
+}

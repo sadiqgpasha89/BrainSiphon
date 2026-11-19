@@ -1,0 +1,22 @@
+serving:
+  deadline_ms: 80
+  stages:
+    - { name: api_gateway, timeout_ms: 6, on_timeout: fallback_level_1 }
+    - { name: session_and_key_aggregator, timeout_ms: 13, on_timeout: fallback_level_1 }
+    - { name: bot_model, timeout_ms: 25, on_timeout: fallback_level_1 }
+    - { name: risk_policy, timeout_ms: 6, on_timeout: fallback_level_1 }
+    - { name: partner_allow_list, timeout_ms: 10, on_timeout: fallback_level_1 }
+    - { name: confirmed_abuse, timeout_ms: 10, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Scraped records per day"
+    - "Legitimate user friction"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

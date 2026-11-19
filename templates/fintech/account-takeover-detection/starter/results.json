@@ -1,0 +1,34 @@
+{
+ "use_case": "fintech/account-takeover-detection",
+ "engine": "tabular",
+ "seed": 86500,
+ "knobs": {
+  "n_entities": 2160,
+  "positive_entity_rate": 0.025,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.4,
+ "results": {
+  "rows": 166244,
+  "positive_rate": 0.003428695170953538,
+  "test_rows": 56294,
+  "test_positive_rate": 0.004032401321632856,
+  "baseline_lr": {
+   "pr_auc": 0.4076057238202784,
+   "recall_at_0.5pct_fpr": 0.6813723424631297,
+   "brier": 0.007750061550556515
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7694051756248734,
+   "recall_at_0.5pct_fpr": 0.8105726872246696,
+   "brier": 0.001567039998792463
+  }
+ }
+}

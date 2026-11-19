@@ -1,0 +1,43 @@
+{
+ "use_case": "saas/aiops-incident-detection",
+ "engine": "anomaly",
+ "seed": 44134,
+ "knobs": {
+  "n_series": 116,
+  "anomalies_per_series": 2.48
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.8,
+ "results": {
+  "series": 116,
+  "hours": 2016,
+  "events": 297,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.3266247916933726,
+   "recall": 0.5419354838709678,
+   "median_delay_h": 4.0,
+   "events": 155
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.766312011280605,
+   "recall": 0.896774193548387,
+   "median_delay_h": 0.0,
+   "events": 155
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.4989103961030637,
+   "recall": 0.9612903225806452,
+   "median_delay_h": 0.0,
+   "events": 155
+  }
+ }
+}

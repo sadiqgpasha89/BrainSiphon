@@ -1,0 +1,34 @@
+{
+ "use_case": "fintech/ledger-journal-entry-anomaly-audit",
+ "engine": "tabular",
+ "seed": 75490,
+ "knobs": {
+  "n_entities": 2400,
+  "positive_entity_rate": 0.025,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.6,
+ "results": {
+  "rows": 182397,
+  "positive_rate": 0.0036952362155079307,
+  "test_rows": 60037,
+  "test_positive_rate": 0.003247997068474441,
+  "baseline_lr": {
+   "pr_auc": 0.7721400618213314,
+   "recall_at_0.5pct_fpr": 0.8871794871794871,
+   "brier": 0.001515772726096911
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7914173724749426,
+   "recall_at_0.5pct_fpr": 0.9076923076923077,
+   "brier": 0.0011945829486765275
+  }
+ }
+}

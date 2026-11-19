@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/subrogation-recovery-detection",
+ "title": "Subrogation Recovery Detection",
+ "domain": "bfsi",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 27310,
+ "knobs": {
+  "n_docs": 4550
+ },
+ "blueprintSignals": [
+  {
+   "name": "Fault phrases",
+   "definition": "presence of phrases such as rear-ended, third party driver or defective product in the claim notes",
+   "asOfRule": "Phrases need context, since a customer may blame themselves"
+  },
+  {
+   "name": "Police report match",
+   "definition": "whether an attached report assigns fault to another party",
+   "asOfRule": "Reports are not available for every loss"
+  },
+  {
+   "name": "Counterparty insurer known",
+   "definition": "whether the other party and their insurer are identified",
+   "asOfRule": "Data are often incomplete early in the claim"
+  },
+  {
+   "name": "Days to limitation",
+   "definition": "days remaining to the limitation date for the jurisdiction",
+   "asOfRule": "Jurisdiction rules differ and change"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Subrogation Recovery Detection\": Find paid claims where another party is liable so the insurer recovers money it would otherwise lose. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Past flags are biased to obvious cases, so the model repeats the cases staff already found."
+}

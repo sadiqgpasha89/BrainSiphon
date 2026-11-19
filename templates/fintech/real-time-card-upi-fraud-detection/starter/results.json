@@ -1,0 +1,86 @@
+{
+ "use_case": "fintech/real-time-card-upi-fraud-detection",
+ "engine": "authored",
+ "seed": null,
+ "knobs": {},
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "mode": "card",
+  "seed": 7,
+  "rows": 188594,
+  "fraud_rate": 0.0035685122538362834,
+  "test_rows": 63281,
+  "test_fraud_rate": 0.0046459442802737,
+  "policy_assumptions": {
+   "max_false_decline": 0.003,
+   "valid_headroom": 0.5,
+   "step_up_budget": 0.02,
+   "step_up_failure_rate": 0.05
+  },
+  "baseline_lr": {
+   "pr_auc": 0.6886886330352278,
+   "recall_at_0.5pct_fpr": 0.7380952380952381,
+   "brier": 0.002237407716285614,
+   "thresholds": {
+    "step_up": 0.010487319263875966,
+    "block": 0.286300505050505
+   },
+   "policy": {
+    "genuine_rows": 62987,
+    "fraud_rows": 294,
+    "genuine": {
+     "allow": 61561,
+     "step_up": 1311,
+     "block": 115
+    },
+    "fraud": {
+     "allow": 41,
+     "step_up": 53,
+     "block": 200
+    },
+    "false_decline_rate": 0.0028664645085493836,
+    "block_rate_on_genuine": 0.001825773572324448,
+    "step_up_rate_on_genuine": 0.020813818724498705,
+    "fraud_blocked": 0.6802721088435374,
+    "fraud_stepped_up": 0.18027210884353742,
+    "fraud_allowed": 0.13945578231292516
+   }
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7462767307040382,
+   "recall_at_0.5pct_fpr": 0.7585034013605442,
+   "brier": 0.001974320057325603,
+   "thresholds": {
+    "step_up": 0.007365300899664881,
+    "block": 0.19552928085240343
+   },
+   "policy": {
+    "genuine_rows": 62987,
+    "fraud_rows": 294,
+    "genuine": {
+     "allow": 61803,
+     "step_up": 1146,
+     "block": 38
+    },
+    "fraud": {
+     "allow": 32,
+     "step_up": 80,
+     "block": 182
+    },
+    "false_decline_rate": 0.0015130106212393035,
+    "block_rate_on_genuine": 0.0006032990934637306,
+    "step_up_rate_on_genuine": 0.018194230555511455,
+    "fraud_blocked": 0.6190476190476191,
+    "fraud_stepped_up": 0.272108843537415,
+    "fraud_allowed": 0.10884353741496598
+   }
+  }
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/diabetic-retinopathy-screening",
+ "title": "Diabetic Retinopathy Screening",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 69667,
+ "knobs": {
+  "n": 5340,
+  "prevalence": 0.087
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lesion-level evidence",
+   "definition": "microaneurysm and haemorrhage detection maps",
+   "asOfRule": "Annotate with expert segmentation"
+  },
+  {
+   "name": "Image quality score",
+   "definition": "focus, illumination and field coverage",
+   "asOfRule": "Calibrated on device types"
+  },
+  {
+   "name": "Ordinal grade probability",
+   "definition": "distribution over disease grades",
+   "asOfRule": "Calibrate thresholds by population"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Diabetic Retinopathy Screening\": Screen fundus photographs for referable diabetic retinopathy in primary care, with a safe referral path for ungradable images. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Validation on tertiary-hospital images only."
+}

@@ -1,0 +1,42 @@
+{
+ "use_case": "cybersecurity/adversarial-ml-robustness",
+ "engine": "generative",
+ "seed": 54802,
+ "knobs": {
+  "n": 235
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "golden_items": 235,
+  "v1_pass_rate_strict_judge": 0.15319148936170213,
+  "v1_pass_rate_fuzzy_judge": 0.5063829787234042,
+  "v2_pass_rate_fuzzy_judge": 0.6,
+  "v1_pass_rate_ci95": [
+   0.4425531914893617,
+   0.5617021276595745
+  ],
+  "v2_minus_v1": 0.09361702127659574,
+  "v2_minus_v1_ci95": [
+   0.016808510638297885,
+   0.1829787234042553
+  ],
+  "judge_agreement_kappa_v1": 0.2998169221380624,
+  "judge_disagreement_share_v1": 0.35319148936170214,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.44680851063829785,
+   "date_correct": 0.10638297872340426,
+   "within_length": 0.02553191489361702,
+   "no_forbidden_claims": 0.059574468085106386
+  },
+  "ci_width_at_60_items": 0.25000000000000006,
+  "ci_width_at_full_set": 0.11914893617021283
+ }
+}

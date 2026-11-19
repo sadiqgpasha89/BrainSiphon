@@ -1,0 +1,49 @@
+{
+ "use_case": "fintech/telematics-usage-based-insurance-scoring",
+ "engine": "regression",
+ "seed": 30590,
+ "knobs": {
+  "n": 21880,
+  "outlier_share": 0.016,
+  "drift": 0.39
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.0,
+ "results": {
+  "rows": 21880,
+  "train_rows": 15315,
+  "test_rows": 6565,
+  "baseline_ridge": {
+   "mae": 7.206234837382718,
+   "rmse": 11.74623261476864,
+   "wape": 0.1368956518555754,
+   "r2": 0.49417312195945784
+  },
+  "challenger_gbm": {
+   "mae": 5.092454278380663,
+   "rmse": 9.664599140788038,
+   "wape": 0.09674051203094457,
+   "r2": 0.6575695319499542
+  },
+  "mae_gain_vs_baseline": 0.2933266271086128,
+  "interval_80_coverage": 0.6,
+  "interval_80_mean_width": 8.88753487551595,
+  "segment_mae": {
+   "0": 4.991218869670061,
+   "1": 5.016629404834238,
+   "2": 5.174536355600417,
+   "3": 6.304141311002779
+  },
+  "worst_segment_vs_overall": 1.237937734221036,
+  "leaky_feature_rmse": 1.8446487582897415,
+  "honest_rmse": 9.664599140788038,
+  "random_split_mae": 3.9821096728426824,
+  "chronological_mae": 5.092454278380663
+ }
+}

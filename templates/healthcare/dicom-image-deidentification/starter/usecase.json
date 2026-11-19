@@ -1,0 +1,48 @@
+{
+ "slug": "healthcare/dicom-image-deidentification",
+ "title": "Medical Image De-Identification (DICOM)",
+ "domain": "healthcare",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 7387,
+ "knobs": {
+  "n_train": 1270
+ },
+ "blueprintSignals": [
+  {
+   "name": "Burned-in text detections",
+   "definition": "text region detections",
+   "asOfRule": "Per-modality models"
+  },
+  {
+   "name": "DICOM tag allow-list",
+   "definition": "retain allowed tags only",
+   "asOfRule": "Allow-list governance"
+  },
+  {
+   "name": "Face reconstruction risk",
+   "definition": "CT/MR facial features present",
+   "asOfRule": "Defacing algorithm"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Medical Image De-Identification (DICOM)\": Remove PHI from DICOM headers and burned-in pixel text (and facial features in head scans) at scale for research sharing. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Testing on common modalities only."
+}

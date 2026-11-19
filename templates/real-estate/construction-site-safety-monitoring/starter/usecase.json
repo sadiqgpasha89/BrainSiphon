@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/construction-site-safety-monitoring",
+ "title": "Construction Site Safety Monitoring",
+ "domain": "real-estate",
+ "engine": "cv",
+ "fit": "exact",
+ "problemType": "vision-classification",
+ "seed": 77385,
+ "knobs": {
+  "n": 5180,
+  "prevalence": 0.131
+ },
+ "blueprintSignals": [
+  {
+   "name": "PPE detection",
+   "definition": "probability that a detected person wears a helmet and a high-visibility vest",
+   "asOfRule": "Occlusion by machinery lowers accuracy, so require confidence over frames"
+  },
+  {
+   "name": "Zone entry",
+   "definition": "whether a person's position falls inside a polygon for an exclusion zone",
+   "asOfRule": "Camera calibration errors move the polygon, so recalibrate often"
+  },
+  {
+   "name": "Equipment proximity",
+   "definition": "estimated distance between a person and moving plant",
+   "asOfRule": "Depth from a single camera is imprecise"
+  },
+  {
+   "name": "Event persistence",
+   "definition": "number of consecutive frames in which the hazard is seen",
+   "asOfRule": "Longer persistence delays alerts, so balance with the 5 second limit"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Construction Site Safety Monitoring\": Detect missing PPE, exclusion-zone entries and unsafe equipment proximity from site cameras and alert supervisors. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Staged footage is clean and well lit and overstates accuracy on real, cluttered sites."
+}

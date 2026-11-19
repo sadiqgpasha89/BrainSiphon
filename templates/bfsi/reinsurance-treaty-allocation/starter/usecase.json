@@ -1,0 +1,58 @@
+{
+ "slug": "bfsi/reinsurance-treaty-allocation",
+ "title": "Reinsurance Treaty Allocation Optimisation",
+ "domain": "bfsi",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 13782,
+ "knobs": {
+  "n_instances": 101,
+  "noise": 0.427
+ },
+ "blueprintSignals": [
+  {
+   "name": "Loss distribution by line",
+   "definition": "simulated gross losses",
+   "asOfRule": "Model risk"
+  },
+  {
+   "name": "Treaty terms",
+   "definition": "attachment, limit, reinstatement",
+   "asOfRule": "Complexity"
+  },
+  {
+   "name": "Reinsurer credit",
+   "definition": "rating and spread",
+   "asOfRule": "Changes"
+  },
+  {
+   "name": "Capital relief",
+   "definition": "solvency capital change",
+   "asOfRule": "Model dependent"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Reinsurance Treaty Allocation Optimisation\": Choose how risks are ceded across reinsurance treaties to reduce capital and volatility at an acceptable premium. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising against one simulation set."
+}

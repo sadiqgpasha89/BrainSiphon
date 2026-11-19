@@ -1,0 +1,34 @@
+{
+ "use_case": "retail/sponsored-products-ads-ranking",
+ "engine": "tabular",
+ "seed": 72936,
+ "knobs": {
+  "n_entities": 2360,
+  "positive_entity_rate": 0.037,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.6,
+ "results": {
+  "rows": 184271,
+  "positive_rate": 0.004829843002968454,
+  "test_rows": 62321,
+  "test_positive_rate": 0.004155902504773672,
+  "baseline_lr": {
+   "pr_auc": 0.5591773416320477,
+   "recall_at_0.5pct_fpr": 0.7258687258687259,
+   "brier": 0.004035624604026491
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7414209548731641,
+   "recall_at_0.5pct_fpr": 0.7799227799227799,
+   "brier": 0.0017087104903515068
+  }
+ }
+}

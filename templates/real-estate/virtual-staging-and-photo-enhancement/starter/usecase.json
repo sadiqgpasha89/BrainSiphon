@@ -1,0 +1,53 @@
+{
+ "slug": "real-estate/virtual-staging-and-photo-enhancement",
+ "title": "Virtual Staging & Photo Enhancement",
+ "domain": "real-estate",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 8904,
+ "knobs": {
+  "n": 280
+ },
+ "blueprintSignals": [
+  {
+   "name": "Structure preservation",
+   "definition": "edge-map similarity between the original and staged image outside the furniture mask",
+   "asOfRule": "Mask the furniture region, otherwise added furniture lowers the score"
+  },
+  {
+   "name": "Lighting consistency",
+   "definition": "angle between the dominant shadow direction in the room and on the added furniture",
+   "asOfRule": "Estimate light from fixed features, because windows and lamps vary"
+  },
+  {
+   "name": "Style fit",
+   "definition": "style classifier score against the chosen target style such as modern or traditional",
+   "asOfRule": "Taste differs by market, so validate with local raters"
+  },
+  {
+   "name": "Disclosure flag",
+   "definition": "presence of the visible label detected in the final image",
+   "asOfRule": "Test on images after portal resizing and cropping"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Virtual Staging & Photo Enhancement\": Furnish empty rooms and enhance photos with generative models, clearly labelled, to help buyers imagine the space. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating only on easy, simple rooms hides failures in cluttered or oddly shaped ones."
+}

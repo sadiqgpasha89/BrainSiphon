@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/medical-claims-coding-and-payment-integrity",
+ "title": "Medical Claims Coding & Payment Integrity",
+ "domain": "bfsi",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 62066,
+ "knobs": {
+  "n_docs": 6320
+ },
+ "blueprintSignals": [
+  {
+   "name": "Code pair conflict",
+   "definition": "procedure pairs that should not bill together",
+   "asOfRule": "Rule version"
+  },
+  {
+   "name": "Provider peer deviation",
+   "definition": "share of high-level codes versus peers",
+   "asOfRule": "Peer set"
+  },
+  {
+   "name": "Duplicate key",
+   "definition": "same member, provider, date, code",
+   "asOfRule": "Near duplicates"
+  },
+  {
+   "name": "Diagnosis procedure fit",
+   "definition": "likelihood of procedure given diagnosis",
+   "asOfRule": "Coding practice varies"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Medical Claims Coding & Payment Integrity\": Check submitted health claims for coding errors, unbundling and duplicate billing before payment. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Reviewed claims only."
+}

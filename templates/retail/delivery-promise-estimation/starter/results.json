@@ -1,0 +1,46 @@
+{
+ "use_case": "retail/delivery-promise-estimation",
+ "engine": "forecast",
+ "seed": 38474,
+ "knobs": {
+  "n_series": 256
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 8.9,
+ "results": {
+  "rows": 23261,
+  "h1": {
+   "wmape_model": 0.1207080576740573,
+   "wmape_baseline": 0.21935378552022483,
+   "fva": 0.4497106243788631
+  },
+  "h3": {
+   "wmape_model": 0.11766270506245276,
+   "wmape_baseline": 0.2250655196323849,
+   "fva": 0.4772068806690629
+  },
+  "h7": {
+   "wmape_model": 0.11529513703002542,
+   "wmape_baseline": 0.21368192808825978,
+   "fva": 0.460435713672503
+  },
+  "h14": {
+   "wmape_model": 0.14337001717235753,
+   "wmape_baseline": 0.23316248745470286,
+   "fva": 0.38510684657106153
+  },
+  "p90_coverage": 0.8954043248355616,
+  "wmape_sku_level": 0.12395179492596665,
+  "wmape_aggregate": 0.017373487151046835,
+  "late_feed": {
+   "missing_as_zero": 0.20788429448895276,
+   "missing_as_nan": 0.13778159705614024
+  }
+ }
+}

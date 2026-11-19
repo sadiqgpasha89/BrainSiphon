@@ -1,0 +1,49 @@
+{
+ "use_case": "adtech/content-virality-prediction",
+ "engine": "regression",
+ "seed": 14751,
+ "knobs": {
+  "n": 22820,
+  "outlier_share": 0.012,
+  "drift": 0.325
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "rows": 22820,
+  "train_rows": 15973,
+  "test_rows": 6847,
+  "baseline_ridge": {
+   "mae": 6.878456908228184,
+   "rmse": 10.895354126376713,
+   "wape": 0.12972569163638992,
+   "r2": 0.5283469363139321
+  },
+  "challenger_gbm": {
+   "mae": 4.527523855683088,
+   "rmse": 8.604164473342218,
+   "wape": 0.08538777976149811,
+   "r2": 0.7058577799158285
+  },
+  "mae_gain_vs_baseline": 0.34178204267484036,
+  "interval_80_coverage": 0.6401343654155105,
+  "interval_80_mean_width": 8.802103743720599,
+  "segment_mae": {
+   "0": 4.342284956360938,
+   "1": 4.452377017327003,
+   "2": 4.591590036648874,
+   "3": 6.813878883386992
+  },
+  "worst_segment_vs_overall": 1.504990166939485,
+  "leaky_feature_rmse": 1.9187698645239495,
+  "honest_rmse": 8.604164473342218,
+  "random_split_mae": 3.725752345256502,
+  "chronological_mae": 4.527523855683088
+ }
+}

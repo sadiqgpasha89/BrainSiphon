@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: ci_results_stream, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: run_deduplicator, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: flakiness_scorer, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: cause_classifier, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: quarantine_controller, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: owner_ticket, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: fix_verification, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "CI time wasted on retries"
+    - "Flaky test count"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

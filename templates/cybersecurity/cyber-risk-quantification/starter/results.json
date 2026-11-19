@@ -1,0 +1,49 @@
+{
+ "use_case": "cybersecurity/cyber-risk-quantification",
+ "engine": "regression",
+ "seed": 20403,
+ "knobs": {
+  "n": 17410,
+  "outlier_share": 0.02,
+  "drift": 0.274
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.2,
+ "results": {
+  "rows": 17410,
+  "train_rows": 12187,
+  "test_rows": 5223,
+  "baseline_ridge": {
+   "mae": 7.32236452791898,
+   "rmse": 12.495911185212,
+   "wape": 0.13912430458809374,
+   "r2": 0.44472787014862036
+  },
+  "challenger_gbm": {
+   "mae": 4.970722693046484,
+   "rmse": 10.638587116348765,
+   "wape": 0.09444330930720368,
+   "r2": 0.5975259120739771
+  },
+  "mae_gain_vs_baseline": 0.3211588040865857,
+  "interval_80_coverage": 0.6674325100516945,
+  "interval_80_mean_width": 9.246537183506167,
+  "segment_mae": {
+   "0": 4.833326822414577,
+   "1": 5.023176598426966,
+   "2": 4.883131254555315,
+   "3": 6.198617921330928
+  },
+  "worst_segment_vs_overall": 1.2470254938989334,
+  "leaky_feature_rmse": 1.5555264613022675,
+  "honest_rmse": 10.638587116348765,
+  "random_split_mae": 4.295061756055685,
+  "chronological_mae": 4.970722693046484
+ }
+}

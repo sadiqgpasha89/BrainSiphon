@@ -1,0 +1,53 @@
+{
+ "slug": "saas/enterprise-search-relevance",
+ "title": "Enterprise Search Relevance",
+ "domain": "saas",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 13943,
+ "knobs": {
+  "n_sessions": 49760,
+  "bot_share": 0.148
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hybrid lexical-semantic score",
+   "definition": "BM25 plus dense similarity",
+   "asOfRule": "Fusion"
+  },
+  {
+   "name": "Document freshness and activity",
+   "definition": "recent edits and views",
+   "asOfRule": "Metadata"
+  },
+  {
+   "name": "Personal and team affinity",
+   "definition": "user's team's interactions",
+   "asOfRule": "Privacy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Enterprise Search Relevance\": Return the right documents and answers across connected apps (drive, chat, wiki, tickets) respecting each user's permissions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on click logs with position bias."
+}

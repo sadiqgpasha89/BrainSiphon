@@ -1,0 +1,48 @@
+{
+ "slug": "edtech/handwritten-exam-ocr-grading",
+ "title": "Handwritten Exam OCR & Grading Assistance",
+ "domain": "edtech",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 27086,
+ "knobs": {
+  "n_train": 810
+ },
+ "blueprintSignals": [
+  {
+   "name": "Region-to-question mapping",
+   "definition": "layout model confidence",
+   "asOfRule": "Template"
+  },
+  {
+   "name": "OCR confidence per word",
+   "definition": "calibrated confidence",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Pre-score agreement",
+   "definition": "auto-score vs grader",
+   "asOfRule": "Sample"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Handwritten Exam OCR & Grading Assistance\": Digitise handwritten exam scripts and assist graders by locating answers, reading text and pre-scoring objective parts. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test handwriting from few writers."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/dynamic-dispatch-for-ride-gig-couriers",
+ "title": "Dynamic Dispatch for Couriers & Gig Drivers",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 57948,
+ "knobs": {
+  "n_instances": 112,
+  "noise": 0.398
+ },
+ "blueprintSignals": [
+  {
+   "name": "Courier acceptance probability",
+   "definition": "model per courier-order pair",
+   "asOfRule": "Past offers"
+  },
+  {
+   "name": "Spatiotemporal supply-demand ratio",
+   "definition": "couriers per order in cell-hour",
+   "asOfRule": "Forecast not actual"
+  },
+  {
+   "name": "Batch compatibility score",
+   "definition": "detour added by batching",
+   "asOfRule": "Route estimates"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Dynamic Dispatch for Couriers & Gig Drivers\": Match new orders to couriers in real time, balancing delivery time, courier earnings and batch efficiency under fluctuating supply. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulators that assume independent couriers."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/wearable-arrhythmia-detection-ecg",
+ "title": "Wearable Arrhythmia Detection (ECG/PPG)",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 11580,
+ "knobs": {
+  "n_series": 106,
+  "anomalies_per_series": 3.013
+ },
+ "blueprintSignals": [
+  {
+   "name": "RR-interval irregularity",
+   "definition": "beat-to-beat interval entropy",
+   "asOfRule": "Peak detection quality"
+  },
+  {
+   "name": "PPG morphology quality",
+   "definition": "pulse waveform SQI",
+   "asOfRule": "Device-specific calibration"
+  },
+  {
+   "name": "Activity context",
+   "definition": "accelerometer-derived motion level",
+   "asOfRule": "Sync with signal"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Wearable Arrhythmia Detection (ECG/PPG)\": Detect atrial fibrillation and other arrhythmias from wearable signals continuously while limiting false alarms and battery drain. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test data from clean lab recordings."
+}

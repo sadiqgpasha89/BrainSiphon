@@ -1,0 +1,48 @@
+{
+ "slug": "cybersecurity/dark-web-threat-intel-nlp",
+ "title": "Dark-Web & Underground Threat Intelligence",
+ "domain": "cybersecurity",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 11746,
+ "knobs": {
+  "n_train": 960
+ },
+ "blueprintSignals": [
+  {
+   "name": "Entity match with confidence",
+   "definition": "company, domain and employee matches",
+   "asOfRule": "Entity linking"
+  },
+  {
+   "name": "Actor reputation",
+   "definition": "past verified claims",
+   "asOfRule": "Actor graph"
+  },
+  {
+   "name": "Leak freshness and uniqueness",
+   "definition": "novelty vs known dumps",
+   "asOfRule": "Dedup"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Dark-Web & Underground Threat Intelligence\": Mine forums, marketplaces and chat channels for credential leaks, access sales and planned attacks relevant to the organisation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Gold data from sanitised English posts."
+}

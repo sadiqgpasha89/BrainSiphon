@@ -1,0 +1,34 @@
+{
+ "use_case": "fintech/chargeback-dispute-prediction-and-automation",
+ "engine": "tabular",
+ "seed": 57794,
+ "knobs": {
+  "n_entities": 2930,
+  "positive_entity_rate": 0.041,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.5,
+ "results": {
+  "rows": 222138,
+  "positive_rate": 0.005501084911181338,
+  "test_rows": 74941,
+  "test_positive_rate": 0.00475040365087202,
+  "baseline_lr": {
+   "pr_auc": 0.74729978847235,
+   "recall_at_0.5pct_fpr": 0.7780898876404494,
+   "brier": 0.0019787022875238035
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7692879993024928,
+   "recall_at_0.5pct_fpr": 0.7808988764044944,
+   "brier": 0.0018031047448392975
+  }
+ }
+}

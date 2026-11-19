@@ -1,0 +1,34 @@
+{
+ "use_case": "saas/flaky-test-detection",
+ "engine": "tabular",
+ "seed": 59611,
+ "knobs": {
+  "n_entities": 2210,
+  "positive_entity_rate": 0.022,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "rows": 170272,
+  "positive_rate": 0.0028190189813944748,
+  "test_rows": 56771,
+  "test_positive_rate": 0.0020785260079970408,
+  "baseline_lr": {
+   "pr_auc": 0.5670238704108731,
+   "recall_at_0.5pct_fpr": 0.6271186440677966,
+   "brier": 0.0013756316129236576
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.5574029375822322,
+   "recall_at_0.5pct_fpr": 0.635593220338983,
+   "brier": 0.0013145552947035938
+  }
+ }
+}

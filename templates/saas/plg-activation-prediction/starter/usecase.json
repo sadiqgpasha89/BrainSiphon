@@ -1,0 +1,54 @@
+{
+ "slug": "saas/plg-activation-prediction",
+ "title": "Product-Led Growth Activation Prediction",
+ "domain": "saas",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 65569,
+ "knobs": {
+  "n": 44290,
+  "confound": 1.54,
+  "holdout": 0.189
+ },
+ "blueprintSignals": [
+  {
+   "name": "Key-action completion in first session",
+   "definition": "whether the aha action occurred",
+   "asOfRule": "Event definitions"
+  },
+  {
+   "name": "Time-to-first-value",
+   "definition": "minutes to first key action",
+   "asOfRule": "Timing"
+  },
+  {
+   "name": "Team invitations sent",
+   "definition": "collaborators invited",
+   "asOfRule": "Event"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Product-Led Growth Activation Prediction\": Predict which new signups will activate and convert to paid, and trigger in-product guidance or sales assist for those on the edge. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Non-random nudge assignments in training."
+}

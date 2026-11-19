@@ -1,0 +1,50 @@
+{
+ "slug": "healthcare/clinical-decision-support-rag",
+ "title": "Clinical Decision Support with RAG",
+ "domain": "healthcare",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 68618,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Citation entailment rate",
+   "definition": "claims supported by cited passages",
+   "asOfRule": "NLI check"
+  },
+  {
+   "name": "Guideline recency",
+   "definition": "publication date and supersession",
+   "asOfRule": "Index metadata"
+  },
+  {
+   "name": "Patient-context grounding",
+   "definition": "facts used from chart cited",
+   "asOfRule": "Source link"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Clinical Decision Support with RAG\": Answer clinicians' point-of-care questions by retrieving guidelines and patient context with verified citations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Benchmarks leak into training data."
+}

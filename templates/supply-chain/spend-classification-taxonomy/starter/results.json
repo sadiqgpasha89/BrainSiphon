@@ -1,0 +1,36 @@
+{
+ "use_case": "supply-chain/spend-classification-taxonomy",
+ "engine": "nlp",
+ "seed": 12221,
+ "knobs": {
+  "n_docs": 5370
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.6,
+ "results": {
+  "docs": 5370,
+  "duplicate_share": 0.2521415270018622,
+  "random_split_with_leak": {
+   "macro_f1": 0.895024835107201,
+   "ece": 0.1300129627228835
+  },
+  "time_split_clean": {
+   "macro_f1": 0.46396797665574874,
+   "ece": 0.050492392358299186
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7933586338176938,
+   "ece": 0.11059989933355126
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.46396797665574874,
+   "ece": 0.050492392358299186
+  }
+ }
+}

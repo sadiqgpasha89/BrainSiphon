@@ -1,0 +1,53 @@
+{
+ "slug": "real-estate/hvac-energy-optimisation",
+ "title": "HVAC Energy Optimisation",
+ "domain": "real-estate",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 81507,
+ "knobs": {
+  "days": 43
+ },
+ "blueprintSignals": [
+  {
+   "name": "Zone temperature",
+   "definition": "measured air temperature per zone with a sensor-quality flag",
+   "asOfRule": "Sensors are noisy and can be placed badly"
+  },
+  {
+   "name": "Weather forecast",
+   "definition": "forecast outside temperature and solar load for the next 6 hours",
+   "asOfRule": "Forecasts have errors, so use ranges"
+  },
+  {
+   "name": "Occupancy forecast",
+   "definition": "expected number of people per zone from bookings and badge counts",
+   "asOfRule": "Data are aggregate and not personal"
+  },
+  {
+   "name": "Energy price",
+   "definition": "time-of-use tariff and demand charge periods",
+   "asOfRule": "Tariffs change, so load them from a table"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"HVAC Energy Optimisation\": Control heating and cooling setpoints to cut energy use while keeping comfort within limits. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: A simulator that does not match the real building gives gains that vanish on site."
+}

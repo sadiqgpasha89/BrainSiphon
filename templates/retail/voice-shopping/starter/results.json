@@ -1,0 +1,58 @@
+{
+ "use_case": "retail/voice-shopping",
+ "engine": "audio",
+ "seed": 42400,
+ "knobs": {
+  "n_train": 1280,
+  "test_snr": 0.047
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.4,
+ "results": {
+  "train_clips": 1280,
+  "test_clips": 600,
+  "sample_rate_hz": 8000,
+  "raw_spectrum_baseline": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 0.595,
+    "macro_f1": 0.49736448038334835
+   }
+  },
+  "log_filterbank_challenger": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 0.19666666666666666,
+    "macro_f1": 0.06573816155988857
+   }
+  },
+  "log_filterbank_with_channel_augmentation": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   }
+  },
+  "channel_shift_drop_challenger": 0.8033333333333333,
+  "augmentation_gain_on_shifted_channel": 0.8033333333333333,
+  "wer_simulated": {
+   "clean": 0.03625,
+   "noisy": 0.18791666666666668
+  }
+ }
+}

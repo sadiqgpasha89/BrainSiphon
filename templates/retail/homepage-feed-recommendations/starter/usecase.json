@@ -1,0 +1,53 @@
+{
+ "slug": "retail/homepage-feed-recommendations",
+ "title": "Homepage Feed Recommendations",
+ "domain": "retail",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 65614,
+ "knobs": {
+  "n_sessions": 36350,
+  "bot_share": 0.148
+ },
+ "blueprintSignals": [
+  {
+   "name": "User embedding recency",
+   "definition": "exponentially decayed mean of recent item embeddings",
+   "asOfRule": "Decay constants tuned on pre-period"
+  },
+  {
+   "name": "Item freshness and velocity",
+   "definition": "age and rolling interaction velocity",
+   "asOfRule": "Exclude interactions after impression time"
+  },
+  {
+   "name": "Cross features user-category",
+   "definition": "affinity times category popularity",
+   "asOfRule": "Compute from lagged aggregates"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Homepage Feed Recommendations\": Fill a personalised homepage feed that maximises long-term engagement and purchases for 10M users while managing diversity and freshness. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on logged policy without propensities."
+}

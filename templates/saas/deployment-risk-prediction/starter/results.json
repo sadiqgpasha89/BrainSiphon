@@ -1,0 +1,34 @@
+{
+ "use_case": "saas/deployment-risk-prediction",
+ "engine": "tabular",
+ "seed": 61758,
+ "knobs": {
+  "n_entities": 2060,
+  "positive_entity_rate": 0.034,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "rows": 158200,
+  "positive_rate": 0.005252844500632111,
+  "test_rows": 52221,
+  "test_positive_rate": 0.004749047318128722,
+  "baseline_lr": {
+   "pr_auc": 0.835572685607297,
+   "recall_at_0.5pct_fpr": 0.8588709677419355,
+   "brier": 0.0018362443583182667
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8642481937891763,
+   "recall_at_0.5pct_fpr": 0.8911290322580645,
+   "brier": 0.0012941891550170498
+  }
+ }
+}

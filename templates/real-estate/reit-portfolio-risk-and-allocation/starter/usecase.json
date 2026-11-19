@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/reit-portfolio-risk-and-allocation",
+ "title": "REIT Portfolio Risk & Allocation",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 61961,
+ "knobs": {
+  "n": 17960,
+  "outlier_share": 0.035,
+  "drift": 0.325
+ },
+ "blueprintSignals": [
+  {
+   "name": "De-smoothed volatility",
+   "definition": "standard deviation of returns after an autoregressive correction for appraisal smoothing",
+   "asOfRule": "Depends on the smoothing model, so test its sensitivity"
+  },
+  {
+   "name": "Sector correlation",
+   "definition": "rolling correlation of de-smoothed returns between sectors",
+   "asOfRule": "Short histories make correlations unstable, so use shrinkage"
+  },
+  {
+   "name": "Lease expiry concentration",
+   "definition": "share of income expiring in any one year across the portfolio",
+   "asOfRule": "Break options change the dates, so include them"
+  },
+  {
+   "name": "Leverage",
+   "definition": "loan-to-value ratio at asset and portfolio level using current valuations",
+   "asOfRule": "Definitions differ between lenders, so use one convention"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"REIT Portfolio Risk & Allocation\": Estimate portfolio risk across properties and sectors and recommend allocation changes within mandate limits. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Back-tests that use smoothed returns show low risk that does not exist."
+}

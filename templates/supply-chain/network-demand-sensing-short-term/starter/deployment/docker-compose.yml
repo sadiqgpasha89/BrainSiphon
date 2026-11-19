@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  demand-forecasting:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      - LAKEHOUSE_PARQUET_PATH=/data/lakehouse
+    volumes:
+      - forecast_data:/data/lakehouse
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health/liveness"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  forecast_data:
+

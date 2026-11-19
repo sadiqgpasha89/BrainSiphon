@@ -1,0 +1,34 @@
+{
+ "use_case": "fintech/aml-graph-anomaly-detection",
+ "engine": "tabular",
+ "seed": 13720,
+ "knobs": {
+  "n_entities": 2610,
+  "positive_entity_rate": 0.037,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.7,
+ "results": {
+  "rows": 200474,
+  "positive_rate": 0.0054271376836896555,
+  "test_rows": 67133,
+  "test_positive_rate": 0.005675301267632908,
+  "baseline_lr": {
+   "pr_auc": 0.793884987894141,
+   "recall_at_0.5pct_fpr": 0.8346456692913385,
+   "brier": 0.0020774319283761505
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8472324062054635,
+   "recall_at_0.5pct_fpr": 0.868766404199475,
+   "brier": 0.0016444042039892232
+  }
+ }
+}

@@ -1,0 +1,52 @@
+{
+ "slug": "healthcare/icd-cpt-medical-coding-automation",
+ "title": "Medical Coding Automation (ICD-10 / CPT)",
+ "domain": "healthcare",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 82078,
+ "knobs": {
+  "n_docs": 4670
+ },
+ "blueprintSignals": [
+  {
+   "name": "Evidence span match",
+   "definition": "highlighted text span linked to code",
+   "asOfRule": "Span annotation"
+  },
+  {
+   "name": "Code hierarchy consistency",
+   "definition": "parent-child and exclusion rules",
+   "asOfRule": "Code-set version as-of date"
+  },
+  {
+   "name": "Documentation completeness flags",
+   "definition": "missing specificity detected",
+   "asOfRule": "Rule library"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Medical Coding Automation (ICD-10 / CPT)\": Assign accurate diagnosis and procedure codes from clinical documentation to speed billing and cut denials, with coder oversight. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Silver labels from past coding errors."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "bfsi/catastrophe-loss-estimation-from-imagery",
+ "title": "Catastrophe Loss Estimation from Imagery",
+ "domain": "bfsi",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 47937,
+ "knobs": {
+  "n": 4240,
+  "prevalence": 0.101
+ },
+ "blueprintSignals": [
+  {
+   "name": "Footprint damage grade",
+   "definition": "classifier over pre and post imagery per footprint",
+   "asOfRule": "Cloud and angle effects"
+  },
+  {
+   "name": "Hazard intensity",
+   "definition": "wind speed or flood depth at the location",
+   "asOfRule": "Hazard maps are modelled"
+  },
+  {
+   "name": "Construction class",
+   "definition": "roof and wall type from the policy",
+   "asOfRule": "Data quality"
+  },
+  {
+   "name": "Sum insured and deductible",
+   "definition": "policy terms",
+   "asOfRule": "Terms change at renewal"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Catastrophe Loss Estimation from Imagery\": Estimate insured damage within days of a catastrophe from aerial and satellite imagery combined with the policy book, so reserves and claims staffing are set early. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on one event type."
+}

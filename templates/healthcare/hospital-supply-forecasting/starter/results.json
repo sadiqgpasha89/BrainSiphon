@@ -1,0 +1,46 @@
+{
+ "use_case": "healthcare/hospital-supply-forecasting",
+ "engine": "forecast",
+ "seed": 87428,
+ "knobs": {
+  "n_series": 288
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 14.8,
+ "results": {
+  "rows": 26091,
+  "h1": {
+   "wmape_model": 0.11704613633805455,
+   "wmape_baseline": 0.22579301202537638,
+   "fva": 0.48162197187528555
+  },
+  "h3": {
+   "wmape_model": 0.11718677509335457,
+   "wmape_baseline": 0.21531485719128737,
+   "fva": 0.45574227147156443
+  },
+  "h7": {
+   "wmape_model": 0.11907829174014103,
+   "wmape_baseline": 0.21923413213809734,
+   "fva": 0.45684419401841747
+  },
+  "h14": {
+   "wmape_model": 0.14727592253732308,
+   "wmape_baseline": 0.2319922302951278,
+   "fva": 0.3651687284959211
+  },
+  "p90_coverage": 0.8945230155992487,
+  "wmape_sku_level": 0.12483104486843409,
+  "wmape_aggregate": 0.02685524118505115,
+  "late_feed": {
+   "missing_as_zero": 0.19630407977780534,
+   "missing_as_nan": 0.1391368730161961
+  }
+ }
+}

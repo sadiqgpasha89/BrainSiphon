@@ -1,0 +1,53 @@
+{
+ "slug": "retail/inventory-replenishment-optimization",
+ "title": "Inventory Replenishment Optimisation",
+ "domain": "retail",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 42382,
+ "knobs": {
+  "n_instances": 165,
+  "noise": 0.326
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lead-time distribution",
+   "definition": "empirical supplier lead-time quantiles",
+   "asOfRule": "Use delivered, not promised, dates"
+  },
+  {
+   "name": "Demand forecast quantiles",
+   "definition": "50th to 95th percentile over lead time",
+   "asOfRule": "Forecast as-of order date"
+  },
+  {
+   "name": "Holding and stock-out cost ratio",
+   "definition": "item-level critical ratio",
+   "asOfRule": "Finance-approved costs"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Inventory Replenishment Optimisation\": Decide order quantities and timing across a multi-echelon network to hit service levels at minimum inventory cost. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulation uses forecast with look-ahead."
+}

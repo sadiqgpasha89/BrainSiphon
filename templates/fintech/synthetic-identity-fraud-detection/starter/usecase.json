@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/synthetic-identity-fraud-detection",
+ "title": "Synthetic Identity Fraud Detection",
+ "domain": "fintech",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 21158,
+ "knobs": {
+  "n_entities": 2360,
+  "positive_entity_rate": 0.039,
+  "n_flash_sales": 5
+ },
+ "blueprintSignals": [
+  {
+   "name": "Attribute sharing degree",
+   "definition": "number of distinct applicants sharing each identity attribute",
+   "asOfRule": "Count only applicants before the current one"
+  },
+  {
+   "name": "Identity age mismatch",
+   "definition": "claimed DOB age minus credit-file age",
+   "asOfRule": "Needs file-open date from bureau as-of time"
+  },
+  {
+   "name": "Email and phone tenure",
+   "definition": "first-seen date of the contact point in a data consortium",
+   "asOfRule": "Consortium lookback must not include future sightings"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Synthetic Identity Fraud Detection\": Catch fabricated identities built from real and fake attributes at application time, before they bust out on credit lines. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Cluster members split across train and test leak the ring."
+}

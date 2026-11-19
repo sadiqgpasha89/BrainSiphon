@@ -1,0 +1,49 @@
+{
+ "use_case": "fintech/algorithmic-trading-signal-research",
+ "engine": "regression",
+ "seed": 80973,
+ "knobs": {
+  "n": 25220,
+  "outlier_share": 0.023,
+  "drift": 0.217
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.4,
+ "results": {
+  "rows": 25220,
+  "train_rows": 17654,
+  "test_rows": 7566,
+  "baseline_ridge": {
+   "mae": 7.191874017301407,
+   "rmse": 12.193037573171855,
+   "wape": 0.13556570816143504,
+   "r2": 0.4310240600831653
+  },
+  "challenger_gbm": {
+   "mae": 4.598467646849227,
+   "rmse": 10.059565902033237,
+   "wape": 0.08668040089451934,
+   "r2": 0.6127168892678573
+  },
+  "mae_gain_vs_baseline": 0.3606023081346048,
+  "interval_80_coverage": 0.7016917790113666,
+  "interval_80_mean_width": 9.57501674286792,
+  "segment_mae": {
+   "0": 4.365619008532626,
+   "1": 4.828001361251381,
+   "2": 4.351419298745487,
+   "3": 6.1934168469430695
+  },
+  "worst_segment_vs_overall": 1.3468436276129219,
+  "leaky_feature_rmse": 1.6306232669243217,
+  "honest_rmse": 10.059565902033237,
+  "random_split_mae": 4.269728916307942,
+  "chronological_mae": 4.598467646849227
+ }
+}

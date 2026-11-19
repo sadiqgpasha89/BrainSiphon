@@ -1,0 +1,46 @@
+{
+ "use_case": "retail/demand-forecasting-sku-store",
+ "engine": "forecast",
+ "seed": 79173,
+ "knobs": {
+  "n_series": 273
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 8.9,
+ "results": {
+  "rows": 24807,
+  "h1": {
+   "wmape_model": 0.12197713366367634,
+   "wmape_baseline": 0.2140292503195729,
+   "fva": 0.4300912913466316
+  },
+  "h3": {
+   "wmape_model": 0.11674455049887424,
+   "wmape_baseline": 0.2175405244765757,
+   "fva": 0.46334343552874424
+  },
+  "h7": {
+   "wmape_model": 0.12054724050329538,
+   "wmape_baseline": 0.21339653828454436,
+   "fva": 0.43510217423228825
+  },
+  "h14": {
+   "wmape_model": 0.14535448947850746,
+   "wmape_baseline": 0.230099840578326,
+   "fva": 0.36829817390060826
+  },
+  "p90_coverage": 0.8965211432257024,
+  "wmape_sku_level": 0.12592141299049697,
+  "wmape_aggregate": 0.02483367608389322,
+  "late_feed": {
+   "missing_as_zero": 0.19408244515802517,
+   "missing_as_nan": 0.136998732342116
+  }
+ }
+}

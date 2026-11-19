@@ -1,0 +1,45 @@
+{
+ "use_case": "supply-chain/dynamic-dispatch-for-ride-gig-couriers",
+ "engine": "optimize",
+ "seed": 57948,
+ "knobs": {
+  "n_instances": 112,
+  "noise": 0.398
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.4,
+ "results": {
+  "instances": 112,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 133.46210230150146,
+   "promised_cost": 92.65819665011317,
+   "optimism_gap_pct": 44.037016828061105,
+   "regret_vs_oracle_pct": 45.51729395538564
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 117.54565062487488,
+   "promised_cost": 73.40313521817828,
+   "optimism_gap_pct": 60.137098061943156,
+   "regret_vs_oracle_pct": 28.163161678029
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 112.15805208726559,
+   "promised_cost": 76.0403435506469,
+   "optimism_gap_pct": 47.498087002411275,
+   "regret_vs_oracle_pct": 22.288919128336467
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.71562958174566,
+   "promised_cost": 99.77701425024165,
+   "optimism_gap_pct": -8.0794005804563,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

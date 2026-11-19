@@ -1,0 +1,76 @@
+openapi: 3.1.0
+info:
+  title: Developer Docs RAG Assistant API
+  description: Enterprise Q&A API with hybrid retrieval, cited evidence, and Ragas evaluation.
+  version: 1.2.0
+paths:
+  /v1/query:
+    post:
+      summary: Query developer documentation corpus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocQueryRequest'
+      responses:
+        '200':
+          description: Verified answer with chunk citations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocQueryResponse'
+  /v1/evaluate:
+    post:
+      summary: Evaluate RAG answer faithfulness and groundedness
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RagasEvaluationRequest'
+      responses:
+        '200':
+          description: Evaluation metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RagasEvaluationResponse'
+components:
+  schemas:
+    DocQueryRequest:
+      type: object
+      required: [query]
+      properties:
+        query: { type: string }
+        product: { type: string }
+        version: { type: string }
+        top_k: { type: integer, default: 3 }
+    DocQueryResponse:
+      type: object
+      required: [query_id, answer, citations, groundedness_score, is_refusal]
+      properties:
+        query_id: { type: string }
+        answer: { type: string }
+        cited_chunk_id: { type: integer, nullable: true }
+        citations: { type: array, items: { type: object } }
+        groundedness_score: { type: number }
+        is_refusal: { type: boolean }
+        latency_ms: { type: number }
+    RagasEvaluationRequest:
+      type: object
+      required: [question, answer, contexts]
+      properties:
+        question: { type: string }
+        answer: { type: string }
+        contexts: { type: array, items: { type: string } }
+        ground_truth: { type: string, nullable: true }
+    RagasEvaluationResponse:
+      type: object
+      required: [faithfulness, answer_relevance, context_precision, grounded]
+      properties:
+        faithfulness: { type: number }
+        answer_relevance: { type: number }
+        context_precision: { type: number }
+        grounded: { type: boolean }
+

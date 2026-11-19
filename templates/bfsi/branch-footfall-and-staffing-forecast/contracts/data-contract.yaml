@@ -1,0 +1,16 @@
+contract: branch_footfall_and_staffing_forecast_inputs.v1
+owner: branch-operations-analytics@example.com
+system_of_record: Branch queue-management system (tickets and wait times)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: hourly_profile, type: double, nullable: false }
+    - { name: pay_day_effect, type: double, nullable: false }
+    - { name: digital_trend, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

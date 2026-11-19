@@ -1,0 +1,57 @@
+{
+ "slug": "real-estate/short-term-rental-pricing-and-occupancy",
+ "title": "Short-Term Rental Pricing & Occupancy Forecasting",
+ "domain": "real-estate",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 3894,
+ "knobs": {
+  "n_series": 214
+ },
+ "blueprintSignals": [
+  {
+   "name": "Event calendar",
+   "definition": "number and size of events within 5 km in the stay window",
+   "asOfRule": "Event data are patchy, so combine providers"
+  },
+  {
+   "name": "Booking pace",
+   "definition": "bookings so far divided by the normal bookings for this lead time",
+   "asOfRule": "Noisy for new listings, so use a prior"
+  },
+  {
+   "name": "Comparable prices",
+   "definition": "median nightly price of comparable listings for the same date",
+   "asOfRule": "Selection bias, since only unsold nights show prices"
+  },
+  {
+   "name": "Review score",
+   "definition": "average rating over the last 12 months with a minimum count",
+   "asOfRule": "Ratings are inflated, so use relative rank"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Short-Term Rental Pricing & Occupancy Forecasting\": Recommend nightly prices and forecast occupancy for short-term rentals around events and seasons. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Past prices are partly caused by the hosts' own expectations, so demand and price are tangled."
+}

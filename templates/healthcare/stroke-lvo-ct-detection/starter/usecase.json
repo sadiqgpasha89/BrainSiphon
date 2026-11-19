@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/stroke-lvo-ct-detection",
+ "title": "Stroke Large-Vessel Occlusion CT Detection",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 64981,
+ "knobs": {
+  "n": 3740,
+  "prevalence": 0.105
+ },
+ "blueprintSignals": [
+  {
+   "name": "Vessel density asymmetry",
+   "definition": "hyperdense vessel features",
+   "asOfRule": "Registration quality"
+  },
+  {
+   "name": "Collateral score",
+   "definition": "vessel filling in CTA phases",
+   "asOfRule": "Phase timing"
+  },
+  {
+   "name": "Clot burden estimate",
+   "definition": "occlusion extent",
+   "asOfRule": "Annotation"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Stroke Large-Vessel Occlusion CT Detection\": Detect large vessel occlusions on CT angiography within minutes and notify stroke teams in parallel to speed thrombectomy. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Retrospective cohorts with selected cases."
+}

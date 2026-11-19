@@ -1,0 +1,54 @@
+{
+ "slug": "retail/price-elasticity-causal-estimation",
+ "title": "Price Elasticity Estimation (Causal)",
+ "domain": "retail",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 33812,
+ "knobs": {
+  "n": 34940,
+  "confound": 0.863,
+  "holdout": 0.127
+ },
+ "blueprintSignals": [
+  {
+   "name": "Randomised price cell assignment",
+   "definition": "experiment arm ID",
+   "asOfRule": "Randomisation integrity"
+  },
+  {
+   "name": "Cost-shock instrument",
+   "definition": "supplier cost changes",
+   "asOfRule": "Exclusion restriction"
+  },
+  {
+   "name": "Segment descriptors",
+   "definition": "category, brand tier, customer segment",
+   "asOfRule": "Pre-treatment only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Price Elasticity Estimation (Causal)\": Estimate causal price elasticities per category and segment for pricing and promotion decisions using experiments and quasi-experiments. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Conditioning on post-treatment variables."
+}

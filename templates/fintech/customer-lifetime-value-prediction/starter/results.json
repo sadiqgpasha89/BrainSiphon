@@ -1,0 +1,49 @@
+{
+ "use_case": "fintech/customer-lifetime-value-prediction",
+ "engine": "regression",
+ "seed": 78234,
+ "knobs": {
+  "n": 23330,
+  "outlier_share": 0.015,
+  "drift": 0.205
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.1,
+ "results": {
+  "rows": 23330,
+  "train_rows": 16330,
+  "test_rows": 7000,
+  "baseline_ridge": {
+   "mae": 6.871650765717871,
+   "rmse": 11.551938404010194,
+   "wape": 0.1297634110664158,
+   "r2": 0.46981039238121025
+  },
+  "challenger_gbm": {
+   "mae": 4.287527514268758,
+   "rmse": 9.369314841890061,
+   "wape": 0.08096514422244541,
+   "r2": 0.6512315849547174
+  },
+  "mae_gain_vs_baseline": 0.3760556727273019,
+  "interval_80_coverage": 0.699,
+  "interval_80_mean_width": 8.703653179208453,
+  "segment_mae": {
+   "0": 4.28278513251764,
+   "1": 4.0405645165748405,
+   "2": 4.336834270821645,
+   "3": 5.6754669179343304
+  },
+  "worst_segment_vs_overall": 1.3237155677827264,
+  "leaky_feature_rmse": 1.8655356331260438,
+  "honest_rmse": 9.369314841890061,
+  "random_split_mae": 3.9109215984007615,
+  "chronological_mae": 4.287527514268758
+ }
+}

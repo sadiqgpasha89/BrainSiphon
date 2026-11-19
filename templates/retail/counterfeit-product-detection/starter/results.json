@@ -1,0 +1,50 @@
+{
+ "use_case": "retail/counterfeit-product-detection",
+ "engine": "cv",
+ "seed": 65112,
+ "knobs": {
+  "n": 3760,
+  "prevalence": 0.13
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "images": 3760,
+  "train": 1364,
+  "prevalence": 0.12978723404255318,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9479534451562424,
+    "sens_at_95_spec": 0.7423076923076923
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9843630816170862,
+    "sens_at_95_spec": 0.927536231884058
+   },
+   "site_B": {
+    "auc": 0.7712504278937846,
+    "sens_at_95_spec": 0.3576923076923077
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3730769230769231,
+    "false_positive_rate": 0.05149396058486968
+   }
+  }
+ }
+}

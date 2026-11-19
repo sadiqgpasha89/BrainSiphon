@@ -1,0 +1,52 @@
+{
+ "slug": "healthcare/hospital-supply-forecasting",
+ "title": "Hospital Supply & Consumables Forecasting",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 87428,
+ "knobs": {
+  "n_series": 288
+ },
+ "blueprintSignals": [
+  {
+   "name": "Procedure schedule",
+   "definition": "upcoming surgeries by type",
+   "asOfRule": "Schedule as-of"
+  },
+  {
+   "name": "Census and acuity",
+   "definition": "patient days by unit and acuity",
+   "asOfRule": "Forecast census"
+  },
+  {
+   "name": "Lead-time variance",
+   "definition": "supplier delivery variance",
+   "asOfRule": "Delivered dates"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Hospital Supply & Consumables Forecasting\": Forecast consumable demand per ward to prevent stock-outs of critical supplies and reduce expiry waste. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Censored demand during stock-outs."
+}

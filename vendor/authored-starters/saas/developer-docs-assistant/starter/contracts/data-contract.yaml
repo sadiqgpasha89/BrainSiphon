@@ -1,0 +1,26 @@
+apiVersion: opendatacontract.com/v2alpha1
+kind: DataContract
+id: urn:datacontract:saas:developer-docs-chunks
+info:
+  title: Developer Docs Chunk Corpus Contract
+  version: 1.2.0
+  owner: Technical Documentation Platform Team
+  sla:
+    freshness: 300s
+    availability: 99.95%
+models:
+  doc_chunks:
+    description: Semantic chunks with metadata and embeddings
+    type: table
+    fields:
+      chunk_id: { type: integer, primaryKey: true }
+      product: { type: string }
+      version: { type: string }
+      kind: { type: string, description: "reference, guide, changelog, conceptual" }
+      text: { type: string }
+      token_count: { type: integer }
+      embedding: { type: array, description: "Dense 768-dim vector" }
+    quality:
+      - rule: length(text) >= 20
+      - rule: token_count <= 512
+

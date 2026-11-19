@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/algorithmic-trading-signal-research",
+ "title": "Alpha Signal Research Pipeline",
+ "domain": "fintech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 80973,
+ "knobs": {
+  "n": 25220,
+  "outlier_share": 0.023,
+  "drift": 0.217
+ },
+ "blueprintSignals": [
+  {
+   "name": "Cross-sectional rank momentum",
+   "definition": "rank of 12-1 month return across the universe",
+   "asOfRule": "Skip the most recent month to avoid reversal contamination"
+  },
+  {
+   "name": "Earnings surprise drift",
+   "definition": "standardised surprise vs consensus at announcement",
+   "asOfRule": "Use consensus snapshot before the release"
+  },
+  {
+   "name": "Liquidity-adjusted turnover",
+   "definition": "alpha divided by participation-rate cost estimate",
+   "asOfRule": "Volume must be same-period not future"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Alpha Signal Research Pipeline\": Discover and validate cross-sectional return signals that survive costs and decay, and promote them to production with strict overfitting control. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Look-ahead via restated fundamentals."
+}

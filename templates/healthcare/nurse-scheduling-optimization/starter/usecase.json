@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/nurse-scheduling-optimization",
+ "title": "Nurse Scheduling Optimisation",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 90321,
+ "knobs": {
+  "n_instances": 126,
+  "noise": 0.393
+ },
+ "blueprintSignals": [
+  {
+   "name": "Acuity-weighted demand forecast",
+   "definition": "workload units per shift",
+   "asOfRule": "Forecast quality"
+  },
+  {
+   "name": "Preference satisfaction score",
+   "definition": "fraction of requests honoured",
+   "asOfRule": "Fair allocation"
+  },
+  {
+   "name": "Skill coverage per shift",
+   "definition": "required competencies present",
+   "asOfRule": "Credential data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Nurse Scheduling Optimisation\": Generate fair shift schedules that meet predicted patient demand and skill mix while respecting preferences and labour rules. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating only on forecast demand."
+}

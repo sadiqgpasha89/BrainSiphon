@@ -1,0 +1,178 @@
+{
+ "id": "bandit",
+ "label": "Decisions from logged data with off-policy evaluation",
+ "paradigms": [
+  "reinforcement-learning",
+  "tabular"
+ ],
+ "summary": "A runnable reference for choosing actions (offers, prices, notifications, routes, treatments) from logged decisions: a reward model, a learned policy, and four offline estimators compared with the hidden true value of each policy.",
+ "runtime": "Python 3.11+ with numpy, pandas, scikit-learn, scipy and pytest (about 3 seconds)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints 30,000 logged decisions with a reward rate near 33%. baseline.py reports the true value of the best constant action 0.43 and of the learned policy 0.73; the matched-rows estimate says 0.35 and 0.68, inverse-propensity weighting 0.41 and 0.70, self-normalised 0.41 and 0.72 and doubly robust 0.42 and 0.73. pytest reports 5 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "A contextual bandit with hidden reward probabilities, a biased logging policy and logged propensities"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Reward models, a learned policy and the naive, IPS, SNIPS and doubly robust estimators against the true value"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates: determinism, unbiasedness under random logging, bias of matching, ranking and closeness to the truth"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "30,000 logged decisions with 5 context features and 4 actions. A hidden logistic model gives each action's reward probability; the logging policy favours different actions in different contexts and records the probability with which it chose each action.",
+  "knobs": [
+   "n, logging_temperature: size and how biased the logger is (a very high temperature makes it uniform)",
+   "D and K in the file: context features and actions",
+   "seed: identical seed gives an identical log"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "x1",
+   "x2",
+   "x3",
+   "action",
+   "reward",
+   "propensity"
+  ],
+  "rows": [
+   [
+    -1.55,
+    -0.36,
+    -2.37,
+    1,
+    0,
+    0.78
+   ],
+   [
+    -0.17,
+    0.64,
+    0.14,
+    0,
+    0,
+    0.289
+   ],
+   [
+    -0.13,
+    -0.52,
+    -0.86,
+    3,
+    0,
+    0.917
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Log quality",
+   "threshold": "pytest -k deterministic passes; every logged propensity is above 0 and each row's action probabilities sum to 1.0 (tolerance 1e-9)",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Estimator sanity",
+   "threshold": "Inverse-propensity weighting equals the true value within 0.02 when the logger is uniformly random (60,000 rows)",
+   "how": "pytest -k ips_is_unbiased"
+  },
+  "baseline": {
+   "metric": "Naive estimate measured",
+   "threshold": "Averaging reward over rows where the logger matched the policy is further from the truth than self-normalised weighting (the kit: error 0.08 against 0.02)",
+   "how": "python baseline.py; pytest -k matching"
+  },
+  "challenger": {
+   "metric": "Policy value and estimator error",
+   "threshold": "Learned policy true value at least 0.2 above the best constant action and a doubly robust estimate within 0.03 of the truth for both policies (the kit: 0.73 against 0.43, errors under 0.01)",
+   "how": "python baseline.py; pytest -k 'learned_policy or doubly_robust'"
+  }
+ },
+ "tests": [
+  {
+   "test": "Propensities logged",
+   "tool": "pytest test_generator_is_deterministic_and_logs_propensities_that_sum_to_one",
+   "pass": "Every row has a positive propensity and the action probabilities sum to one"
+  },
+  {
+   "test": "IPS unbiased under random logging",
+   "tool": "pytest test_ips_is_unbiased_when_the_logger_is_uniformly_random",
+   "pass": "IPS equals the true value within 0.02"
+  },
+  {
+   "test": "Matching only is biased",
+   "tool": "pytest test_matching_rows_only_is_biased_when_the_logger_is_biased",
+   "pass": "Naive error exceeds self-normalised error by more than 0.02"
+  },
+  {
+   "test": "Learned policy is really better",
+   "tool": "pytest test_the_learned_policy_really_is_better_than_the_best_constant_action",
+   "pass": "True value at least 0.2 higher"
+  },
+  {
+   "test": "Doubly robust is closest to the truth",
+   "tool": "pytest test_offline_estimators_rank_correctly_and_doubly_robust_is_closest_to_the_truth",
+   "pass": "Within 0.03 of the true value and closer than the naive estimate"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "Evaluating a new policy on the rows where it agrees with the old one",
+   "evidence": "The matched-rows estimate says 0.35 for a policy worth 0.43 and 0.68 for one worth 0.73, and only 14-16% of rows match.",
+   "at": "M3"
+  },
+  {
+   "trap": "Not logging propensities",
+   "evidence": "Without the probability of the logged action no unbiased estimate is possible; the kit stores it on every row.",
+   "at": "M1"
+  },
+  {
+   "trap": "Trusting the highest-variance estimator",
+   "evidence": "Inverse-propensity weighting is unbiased but a smallest propensity of 0.0008 makes it noisy; self-normalising and doubly robust estimates are closer.",
+   "at": "M4"
+  },
+  {
+   "trap": "Shipping a policy that only looks better offline",
+   "evidence": "The learned policy's true value is 0.73 against 0.43 for the best constant, and the doubly robust estimate agrees; this is the check to run before any online test.",
+   "at": "M6"
+  }
+ ],
+ "target": "The reward is 1 if the chosen action succeeded and 0 otherwise. For every logged row the action, its reward and the probability of choosing it are recorded; only the chosen action's reward is observed.",
+ "headline": {
+  "baseline": "best constant action, true value 0.43",
+  "challenger": "learned policy, true value 0.73"
+ }
+}

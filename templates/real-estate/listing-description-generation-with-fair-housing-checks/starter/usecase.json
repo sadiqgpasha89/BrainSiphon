@@ -1,0 +1,55 @@
+{
+ "slug": "real-estate/listing-description-generation-with-fair-housing-checks",
+ "title": "Listing Description Generation with Fair-Housing Checks",
+ "domain": "real-estate",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 28142,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Fact match rate",
+   "definition": "share of claims in the description that equal a field in the record",
+   "asOfRule": "Match on meaning and not on string, because the same fact is worded many ways"
+  },
+  {
+   "name": "Prohibited phrase score",
+   "definition": "classifier probability that a sentence steers by a protected characteristic",
+   "asOfRule": "Needs labelled examples from complaints and must be reviewed by counsel"
+  },
+  {
+   "name": "Agent edit rate",
+   "definition": "share of generated words that the agent changed before publishing",
+   "asOfRule": "Edits reflect habit as well as quality, so read it by agent"
+  },
+  {
+   "name": "Coverage",
+   "definition": "share of the record's key features such as beds, parking and outdoor space that appear",
+   "asOfRule": "Depends on what the agent considers key, so weight by market"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Listing Description Generation with Fair-Housing Checks\": Draft accurate listing descriptions from structured facts and photos and block language that could breach fair-housing rules. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on past listings copies the biased language those listings contain."
+}

@@ -1,0 +1,22 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: rulebook_ingestion, timeout_ms: 186, on_timeout: fallback_level_1 }
+    - { name: versioned_index, timeout_ms: 278, on_timeout: fallback_level_1 }
+    - { name: retriever_and_reranker, timeout_ms: 556, on_timeout: fallback_level_1 }
+    - { name: reasoning_llm, timeout_ms: 742, on_timeout: fallback_level_1 }
+    - { name: citation_verifier, timeout_ms: 185, on_timeout: fallback_level_1 }
+    - { name: answer_log, timeout_ms: 278, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Time to prepare report"
+    - "Reviewer edit rate"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

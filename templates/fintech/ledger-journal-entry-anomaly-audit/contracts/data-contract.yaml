@@ -1,0 +1,16 @@
+contract: ledger_journal_entry_anomaly_audit_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: round_amount_and_just_below_threshold, type: double, nullable: false }
+    - { name: unusual_preparer_account_pair, type: double, nullable: false }
+    - { name: posting_time_anomaly, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

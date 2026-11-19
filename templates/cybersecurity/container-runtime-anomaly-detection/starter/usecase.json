@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/container-runtime-anomaly-detection",
+ "title": "Container Runtime Anomaly Detection",
+ "domain": "cybersecurity",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 4127,
+ "knobs": {
+  "n_series": 74,
+  "anomalies_per_series": 3.327
+ },
+ "blueprintSignals": [
+  {
+   "name": "Syscall n-gram novelty",
+   "definition": "rare syscall sequences for the image",
+   "asOfRule": "Profile coverage"
+  },
+  {
+   "name": "Unexpected process spawn",
+   "definition": "shell in a service container",
+   "asOfRule": "Image profile"
+  },
+  {
+   "name": "Outbound connection novelty",
+   "definition": "new destinations",
+   "asOfRule": "Profile"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Container Runtime Anomaly Detection\": Detect compromised containers via syscalls, process trees and network behaviour with low overhead. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulated attacks lacking realism."
+}

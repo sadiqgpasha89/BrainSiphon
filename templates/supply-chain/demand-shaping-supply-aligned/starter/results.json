@@ -1,0 +1,49 @@
+{
+ "use_case": "supply-chain/demand-shaping-supply-aligned",
+ "engine": "control",
+ "seed": 60020,
+ "knobs": {
+  "days": 70
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.6,
+ "results": {
+  "days": 70,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.357862171115685,
+   "end_of_day_underdelivery_pct": 4.490658736419263,
+   "overshoot_max_pct": 7.587121466745079,
+   "oscillation": 0.0,
+   "hit_cap": 0.5714285714285714
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.672257921512755,
+   "end_of_day_underdelivery_pct": 0.9071874590033331,
+   "overshoot_max_pct": 5.62928162439288,
+   "oscillation": 0.012005350412521355,
+   "hit_cap": 0.4
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.1879094336030973,
+   "end_of_day_underdelivery_pct": 0.0317261034811424,
+   "overshoot_max_pct": 2.027987519093461,
+   "oscillation": 0.08983963317507186,
+   "hit_cap": 0.5
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.576152876416458,
+   "end_of_day_underdelivery_pct": 2.0005959085084917,
+   "overshoot_max_pct": 14.000809053798301,
+   "oscillation": 0.019015588324344475,
+   "hit_cap": 0.5571428571428572
+  },
+  "rmse_reduction_vs_open_loop": 0.5796923793577891
+ }
+}

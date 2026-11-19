@@ -1,0 +1,50 @@
+{
+ "slug": "saas/natural-language-to-sql",
+ "title": "Natural Language to SQL for Analytics",
+ "domain": "saas",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 41174,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Schema linking accuracy",
+   "definition": "right tables and columns",
+   "asOfRule": "Metadata quality"
+  },
+  {
+   "name": "Execution validity and sanity",
+   "definition": "runs and passes sanity checks",
+   "asOfRule": "Checks"
+  },
+  {
+   "name": "Query cost estimate",
+   "definition": "planner cost",
+   "asOfRule": "Warehouse"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Natural Language to SQL for Analytics\": Let business users ask questions in plain language and receive correct SQL and results using a governed semantic layer. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Benchmark leakage."
+}

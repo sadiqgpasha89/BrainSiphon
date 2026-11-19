@@ -1,0 +1,173 @@
+{
+ "id": "anomaly",
+ "label": "Anomaly detection on seasonal metrics",
+ "paradigms": [
+  "time-series"
+ ],
+ "summary": "A runnable reference for detecting anomalies in operational metrics: a rolling z-score, a robust seasonal baseline and a calendar-aware version, judged by recall, detection delay and false alerts per series per week at a fixed alert budget.",
+ "runtime": "Python 3.11+ with numpy, pandas, scikit-learn, scipy and pytest (about 10 seconds)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints 120 series by 2,016 hours with about 335 anomalies and 2.7% of points inside benign calendar events. baseline.py reports, at an alert budget of 0.5 false alerts per series per week tuned on the first 60% of time, a rolling z-score recall of 0.48, a seasonal baseline recall of 0.89 (but 0.78 false alerts on held-out time, over budget) and the calendar-aware seasonal detector recall of 0.95 at 0.50 false alerts. pytest reports 7 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Synthetic hourly series with daily and weekly seasonality, three anomaly shapes and benign calendar events"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Rolling z-score, seasonal robust z-score, calendar-aware suppression, alert policy and the event-level evaluation"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates: determinism, no-future scores, refractory period, evaluation arithmetic and the detector comparison"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "120 hourly series over 12 weeks with level, daily and weekly seasonality and noise; about 2.8 anomalies per series (spikes, level shifts and slow drifts) and several benign calendar events per series that move the level on purpose.",
+  "knobs": [
+   "n_series, weeks: size of the panel (defaults 120 and 12)",
+   "anomalies_per_series: average number of real anomalies",
+   "seed: identical seed gives an identical panel"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "series",
+   "hour",
+   "value",
+   "is_anomaly",
+   "calendar_event"
+  ],
+  "rows": [
+   [
+    1,
+    1573,
+    13.36,
+    0,
+    0
+   ],
+   [
+    1,
+    1574,
+    11.86,
+    1,
+    0
+   ],
+   [
+    1,
+    1575,
+    12.87,
+    1,
+    0
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Generator tests",
+   "threshold": "pytest -k deterministic passes; anomalies between 0.5% and 8% of points and benign calendar events above 1%",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "No-future test",
+   "threshold": "Corrupting every value after hour t (set to 1,000,000) changes no score before t (maximum absolute difference 0)",
+   "how": "pytest -k only_the_past"
+  },
+  "baseline": {
+   "metric": "Recall and false alerts at the alert budget",
+   "threshold": "Rolling z-score recorded as the number to beat (the kit: recall 0.48 at 0.27 false alerts per series-week)",
+   "how": "python baseline.py"
+  },
+  "challenger": {
+   "metric": "Recall gain at the same budget",
+   "threshold": "Calendar-aware seasonal detector recall at least 0.30 above the rolling z-score with false alerts at most 0.6 per series-week on held-out time (the kit: 0.95 at 0.50)",
+   "how": "python baseline.py; pytest -k 'seasonal or calendar'"
+  }
+ },
+ "tests": [
+  {
+   "test": "Scores use only the past",
+   "tool": "pytest test_scores_use_only_the_past",
+   "pass": "Setting every value after the cut-off to a huge number changes no earlier score"
+  },
+  {
+   "test": "Alert refractory period",
+   "tool": "pytest test_alert_policy_respects_the_refractory_period",
+   "pass": "Consecutive threshold crossings produce one alert and alerts are at least 6 hours apart"
+  },
+  {
+   "test": "Event-level evaluation arithmetic",
+   "tool": "pytest test_evaluation_counts_late_detection_delay_and_false_alerts",
+   "pass": "Recall, detection delay and false alerts per series-week match a hand-computed example"
+  },
+  {
+   "test": "Seasonal baseline beats rolling z-score",
+   "tool": "pytest test_a_seasonal_baseline_finds_far_more_events_than_a_rolling_z_score",
+   "pass": "Recall at least 0.30 higher at the alert budget"
+  },
+  {
+   "test": "Calendar events",
+   "tool": "pytest test_known_calendar_events_buy_recall_at_the_same_alert_budget",
+   "pass": "Calendar-aware detector has no more false alerts than the plain seasonal one and at least its recall"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "Ignoring seasonality",
+   "evidence": "A rolling z-score finds 48% of events at the alert budget; a seasonal baseline finds 89%.",
+   "at": "M3"
+  },
+  {
+   "trap": "Alerting on events you scheduled",
+   "evidence": "Without the calendar the seasonal detector has 0.78 false alerts per series-week on held-out time against a budget of 0.5; with it, 0.50 at higher recall.",
+   "at": "M4"
+  },
+  {
+   "trap": "Tuning the threshold on the data you report",
+   "evidence": "Thresholds are chosen on the first 60% of time and reported on the last 40%, where the plain seasonal detector drifts over budget.",
+   "at": "M1"
+  },
+  {
+   "trap": "A rolling window that includes the present",
+   "evidence": "The no-future test corrupts everything after hour t and requires earlier scores to be unchanged.",
+   "at": "M2"
+  }
+ ],
+ "target": "A point is anomalous when it lies inside an anomaly interval. An event is detected when an alert fires inside the interval (or up to 3 hours after); delay is measured from the interval's start.",
+ "headline": {
+  "baseline": "recall 0.48 at 0.27 false alerts per series-week (rolling z-score)",
+  "challenger": "recall 0.95 at 0.50 false alerts (calendar-aware seasonal)"
+ }
+}

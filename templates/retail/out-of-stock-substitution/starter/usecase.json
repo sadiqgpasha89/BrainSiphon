@@ -1,0 +1,53 @@
+{
+ "slug": "retail/out-of-stock-substitution",
+ "title": "Out-of-Stock Substitution Recommendations",
+ "domain": "retail",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "personalised-ranking",
+ "seed": 31043,
+ "knobs": {
+  "n_sessions": 36940,
+  "bot_share": 0.102
+ },
+ "blueprintSignals": [
+  {
+   "name": "Historic substitution acceptance",
+   "definition": "acceptance rate for the item pair",
+   "asOfRule": "Matured pairs"
+  },
+  {
+   "name": "Price delta and unit size delta",
+   "definition": "relative price and size difference",
+   "asOfRule": "Normalised units"
+  },
+  {
+   "name": "User substitution tolerance",
+   "definition": "personal acceptance history",
+   "asOfRule": "Excludes the current order"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Out-of-Stock Substitution Recommendations\": Offer the best in-stock substitute when a grocery or retail item is unavailable, preserving the order and customer trust. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Acceptance logged only for offered items."
+}

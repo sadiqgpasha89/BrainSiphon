@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/predictive-maintenance-fleet",
+ "title": "Fleet Predictive Maintenance",
+ "domain": "supply-chain",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 86980,
+ "knobs": {
+  "n": 9620,
+  "dropout": 0.171
+ },
+ "blueprintSignals": [
+  {
+   "name": "Sensor degradation trend",
+   "definition": "slope of vibration, temperature or voltage",
+   "asOfRule": "Sensor calibration"
+  },
+  {
+   "name": "Usage intensity",
+   "definition": "engine hours and load profile",
+   "asOfRule": "Telematics"
+  },
+  {
+   "name": "Service history gap",
+   "definition": "days since last service of the part",
+   "asOfRule": "Maintenance records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Fleet Predictive Maintenance\": Predict component failures from telematics and service history to schedule maintenance before breakdowns. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating replaced parts as non-failures."
+}

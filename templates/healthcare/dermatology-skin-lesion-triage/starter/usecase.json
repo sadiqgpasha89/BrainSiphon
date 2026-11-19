@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/dermatology-skin-lesion-triage",
+ "title": "Dermatology Skin Lesion Triage",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 49552,
+ "knobs": {
+  "n": 4040,
+  "prevalence": 0.103
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lesion segmentation features",
+   "definition": "border irregularity, colour variegation",
+   "asOfRule": "Segmentation quality"
+  },
+  {
+   "name": "Dermoscopy vs clinical photo flag",
+   "definition": "modality",
+   "asOfRule": "Metadata"
+  },
+  {
+   "name": "Prior lesion comparison",
+   "definition": "change over time",
+   "asOfRule": "Same-lesion linking"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Dermatology Skin Lesion Triage\": Triage skin lesion photos from primary care and consumers to urgent, routine or reassure, with strong performance across skin tones. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Public datasets with artefacts."
+}

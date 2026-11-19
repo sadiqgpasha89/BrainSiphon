@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/roof-condition-from-aerial-imagery",
+ "title": "Roof Condition from Aerial Imagery",
+ "domain": "real-estate",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 64315,
+ "knobs": {
+  "n": 4080,
+  "prevalence": 0.113
+ },
+ "blueprintSignals": [
+  {
+   "name": "Roof segmentation",
+   "definition": "intersection-over-union of the predicted roof mask with labelled outlines",
+   "asOfRule": "Shadows and tree edges confuse the mask"
+  },
+  {
+   "name": "Material class",
+   "definition": "predicted material from texture, such as tile, metal, asphalt or flat membrane",
+   "asOfRule": "Rare materials are under-represented"
+  },
+  {
+   "name": "Damage score",
+   "definition": "model score for missing tiles, staining, patching and sagging",
+   "asOfRule": "Resolution limits what the model can see"
+  },
+  {
+   "name": "Image age",
+   "definition": "months since the image capture date",
+   "asOfRule": "Metadata may be wrong, so validate"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Roof Condition from Aerial Imagery\": Classify roof material, age and damage from aerial imagery for underwriting, maintenance and valuation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: The date of the imagery rarely matches the date of the decision, so errors rise in real use."
+}

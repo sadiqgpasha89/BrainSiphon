@@ -1,0 +1,186 @@
+{
+ "slug": "fintech/earnings-call-sentiment-and-esg-signals",
+ "title": "Earnings-Call Sentiment & ESG Signal Extraction",
+ "domain": "fintech",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "authoredStarter": false,
+ "fdePack": false,
+ "seed": 36603,
+ "knobs": {
+  "n_docs": 6740
+ },
+ "blueprintVerified": "2026-11-07",
+ "generator": "1.0.0",
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "runSeconds": 3.9,
+ "files": [
+  {
+   "path": "FIT.md",
+   "bytes": 3562,
+   "sha256": "be1962533f094cd57cdce37fff22b86963a8fa1883ed306d1b3a9eaf21b1c892"
+  },
+  {
+   "path": "README.md",
+   "bytes": 3306,
+   "sha256": "6a6530e8baa87be967405235ada504cc4bb119196b2358c2ab06f958e57d1104"
+  },
+  {
+   "path": "WORKED_EXAMPLE.md",
+   "bytes": 3432,
+   "sha256": "2b35cc93ca40df4c51f6bf6d00aaefb5f3c273de74ace60b29580506f00e553d"
+  },
+  {
+   "path": "contracts/data-contract.yaml",
+   "bytes": 711,
+   "sha256": "38f0f72e4ea71832861d1797330eaed80eaa5b8a8d9508847744fb91023f7878"
+  },
+  {
+   "path": "contracts/events.asyncapi.yaml",
+   "bytes": 1153,
+   "sha256": "82ee2e9f0720c203984f9e2c594eefd7ccab8754ee01d16fa084abfa2647395b"
+  },
+  {
+   "path": "contracts/openapi.yaml",
+   "bytes": 3642,
+   "sha256": "98505fc3d2bbd78987740ece6860b80621287424abedfbe7cd4a1649a995d128"
+  },
+  {
+   "path": "contracts/schema.sql",
+   "bytes": 998,
+   "sha256": "8c837fd1fded1b61bcb4b85cf35225476e21b95bbb521f6d8bb5ee77882ba5ab"
+  },
+  {
+   "path": "deployment/README.md",
+   "bytes": 2152,
+   "sha256": "5c3e87e2871a1cb49fbed5f51e6f4fcf6a0c0d1d1f2a6570741b352c2032b0a1"
+  },
+  {
+   "path": "deployment/config.yaml",
+   "bytes": 873,
+   "sha256": "e2d4d136efbd37e49241b286c7397a3fb3508b61059f910bb9dd59fc73245ce6"
+  },
+  {
+   "path": "deployment/docker-compose.yml",
+   "bytes": 539,
+   "sha256": "08c86a1bb0c1b3c872e743a181e5a5ec0c407112c9c0fe33262de6e5a074a76e"
+  },
+  {
+   "path": "deployment/values.sized.yaml",
+   "bytes": 557,
+   "sha256": "faafc6a3d3462b1e1bb1b49b5bb8e027c6c34b3d9f841e487b32b472fe89df31"
+  },
+  {
+   "path": "docs/00-use-case-brief.md",
+   "bytes": 8702,
+   "sha256": "4828e0b5da4b0b8e851764b34c3e22e796031109fb474588997d92c2a4e9cae5"
+  },
+  {
+   "path": "docs/01-discovery-workbook.md",
+   "bytes": 16207,
+   "sha256": "31b62998d04963475b66b3f10eb29405118afcf0d4f191b25e06ac07ca0a383c"
+  },
+  {
+   "path": "docs/02-delivery-plan.md",
+   "bytes": 32080,
+   "sha256": "29e782e15b4ace547a8f3ee5338abf0cf5c674dad2f04aa8588586e029cca565"
+  },
+  {
+   "path": "docs/03-data-and-features.md",
+   "bytes": 14022,
+   "sha256": "4f4b8e670dc5c2e20365dc67e84c0d02d743a02dbcead4a47468522268f6cdcb"
+  },
+  {
+   "path": "docs/04-evaluation-plan.md",
+   "bytes": 48254,
+   "sha256": "32accd1cf8b3d1f67b2eb41fe8fadcde348cf6def8921473cda462d04c2f42a9"
+  },
+  {
+   "path": "docs/05-risk-and-governance.md",
+   "bytes": 8240,
+   "sha256": "b861e009eff76c78b5ec34c7c17e740d3ae9d7a87fc1c9f27d90792f2d47247d"
+  },
+  {
+   "path": "docs/06-operations-runbook.md",
+   "bytes": 17581,
+   "sha256": "bcf006afb0904462bec963543e4bde770459ad8fad9f22204766e872244abab0"
+  },
+  {
+   "path": "docs/07-model-and-data-cards.md",
+   "bytes": 5480,
+   "sha256": "17f28cc261a34b876f726d1e06f0b435672ccfbdeef3b10eb5fdfce99d5ba6be"
+  },
+  {
+   "path": "docs/08-capacity-and-cost.md",
+   "bytes": 5287,
+   "sha256": "84f9816551cfd06ac166c43e61cd9104e850c9b2b1b35991d5549767d8f905d1"
+  },
+  {
+   "path": "starter/Dockerfile",
+   "bytes": 212,
+   "sha256": "28554f5a1d423d2dd57bf591a24a61e9319f67d551accab0d455131f4146aef0"
+  },
+  {
+   "path": "starter/Makefile",
+   "bytes": 352,
+   "sha256": "f3de79b0b567afbc0354300d404e02cec1003696a1de7f4046706fed30f48d63"
+  },
+  {
+   "path": "starter/baseline.py",
+   "bytes": 2858,
+   "sha256": "046f3db6811bcd594d0a50c554af6c0b6a0655f6cb46fa08121050724b833b56"
+  },
+  {
+   "path": "starter/engine.json",
+   "bytes": 1188,
+   "sha256": "e1163bd1216ab35cc020aab7e059ae23a23721bdf34967e9c720bc6c1bca88a4"
+  },
+  {
+   "path": "starter/gates.py",
+   "bytes": 425,
+   "sha256": "f5b97ad7f1f1b49c0cae864074fb1b462b239abeb938ed238ec0b14585498059"
+  },
+  {
+   "path": "starter/make_data.py",
+   "bytes": 2820,
+   "sha256": "3d10870956d289884abe3b92767b96abe6dfefeec0b6afb5fb4d781f36bad0af"
+  },
+  {
+   "path": "starter/requirements.txt",
+   "bytes": 75,
+   "sha256": "ad943509e5ebcd060eb2b38ae247759f5c9d30197907bedc7858c77d99de374c"
+  },
+  {
+   "path": "starter/results.json",
+   "bytes": 746,
+   "sha256": "857782413856b6bf35c8961bfc0070eccdae7c11ea634a56ba5912231864a516"
+  },
+  {
+   "path": "starter/run_usecase.py",
+   "bytes": 1429,
+   "sha256": "33521c23406b0dcd3f1c22785f5a991dc74544b37d9010d98e146905f64ee6f4"
+  },
+  {
+   "path": "starter/test_starter.py",
+   "bytes": 1635,
+   "sha256": "6465fcf604312b84c472b48e1821d0588c480199013eccb34350f4f2a93fda33"
+  },
+  {
+   "path": "starter/test_usecase.py",
+   "bytes": 1698,
+   "sha256": "da7769d17b703359fc682dd28eb1e14977630a6c2b97d3c4ab1ecdda5ccd8883"
+  },
+  {
+   "path": "starter/usecase.json",
+   "bytes": 1688,
+   "sha256": "5f81b9cd4068878a1a84cd30d231cc3b0b64f3c5a7064cb812c3fd7e7e975bd8"
+  }
+ ]
+}

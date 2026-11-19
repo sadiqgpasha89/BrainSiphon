@@ -1,0 +1,34 @@
+{
+ "use_case": "fintech/credit-model-drift-and-fairness-monitoring",
+ "engine": "tabular",
+ "seed": 85364,
+ "knobs": {
+  "n_entities": 2540,
+  "positive_entity_rate": 0.031,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "rows": 194256,
+  "positive_rate": 0.004499217527386541,
+  "test_rows": 65324,
+  "test_positive_rate": 0.004378176474190191,
+  "baseline_lr": {
+   "pr_auc": 0.47276651521106616,
+   "recall_at_0.5pct_fpr": 0.7587412587412588,
+   "brier": 0.0050485093041265725
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7920244664494942,
+   "recall_at_0.5pct_fpr": 0.7902097902097902,
+   "brier": 0.0015299649405231348
+  }
+ }
+}

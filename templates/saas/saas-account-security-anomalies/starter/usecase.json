@@ -1,0 +1,53 @@
+{
+ "slug": "saas/saas-account-security-anomalies",
+ "title": "SaaS Account Security Anomaly Detection",
+ "domain": "saas",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "tabular-anomaly-detection",
+ "seed": 36904,
+ "knobs": {
+  "n_series": 119,
+  "anomalies_per_series": 2.22
+ },
+ "blueprintSignals": [
+  {
+   "name": "New device or location for user",
+   "definition": "novelty vs history",
+   "asOfRule": "History"
+  },
+  {
+   "name": "Sensitive action burst",
+   "definition": "exports, permission changes in short time",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "API token creation anomalies",
+   "definition": "new tokens after login",
+   "asOfRule": "Event"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"SaaS Account Security Anomaly Detection\": Detect compromised end-user and admin accounts in a multi-tenant SaaS and offer tenants risk signals and automated responses. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels only from reported takeovers."
+}

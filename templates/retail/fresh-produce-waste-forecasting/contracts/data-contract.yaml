@@ -1,0 +1,16 @@
+contract: fresh_produce_waste_forecasting_inputs.v1
+owner: catalogue-operations@example.com
+system_of_record: Product information management (PIM)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: stock_by_age_vector, type: double, nullable: false }
+    - { name: weather_temperature_forecast, type: double, nullable: false }
+    - { name: promo_and_holiday_calendar, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,53 @@
+{
+ "slug": "saas/pricing-and-packaging-optimization",
+ "title": "Pricing & Packaging Optimisation",
+ "domain": "saas",
+ "engine": "bandit",
+ "fit": "adaptable",
+ "problemType": "off-policy-decisioning",
+ "seed": 29154,
+ "knobs": {
+  "n": 20630,
+  "logging_temperature": 1.161
+ },
+ "blueprintSignals": [
+  {
+   "name": "Feature usage by plan",
+   "definition": "usage of gated features",
+   "asOfRule": "Telemetry"
+  },
+  {
+   "name": "Willingness-to-pay estimate",
+   "definition": "conjoint or Van Westendorp",
+   "asOfRule": "Survey bias"
+  },
+  {
+   "name": "Price elasticity by segment",
+   "definition": "randomised test response",
+   "asOfRule": "Test design"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Pricing & Packaging Optimisation\": Estimate willingness-to-pay and feature value to design plans, limits and price points that maximise revenue and satisfaction. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Observational prices confounded by deal size."
+}

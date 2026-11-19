@@ -1,0 +1,49 @@
+{
+ "slug": "edtech/multilingual-lecture-captioning",
+ "title": "Multilingual Lecture Captioning & Translation",
+ "domain": "edtech",
+ "engine": "audio",
+ "fit": "exact",
+ "problemType": "speech-audio",
+ "seed": 30145,
+ "knobs": {
+  "n_train": 1260,
+  "test_snr": 3.318
+ },
+ "blueprintSignals": [
+  {
+   "name": "Contextual biasing list",
+   "definition": "slide text and glossary",
+   "asOfRule": "Extraction"
+  },
+  {
+   "name": "Word confidence",
+   "definition": "calibrated confidence",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Translation quality estimate",
+   "definition": "QE score",
+   "asOfRule": "Model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "log filterbank energies",
+   "meaning": "band energies, normalised per clip"
+  },
+  {
+   "feature": "raw magnitude spectrum",
+   "meaning": "gain-sensitive baseline"
+  },
+  {
+   "feature": "channel augmentation",
+   "meaning": "low-pass and noise added at training time"
+  },
+  {
+   "feature": "word error rate",
+   "meaning": "edit distance over reference words"
+  }
+ ],
+ "label": "For \"Multilingual Lecture Captioning & Translation\": Provide accurate live and recorded captions and translations for lectures in many languages with technical vocabulary. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test set lacks code-switching."
+}

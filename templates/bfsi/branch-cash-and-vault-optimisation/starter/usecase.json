@@ -1,0 +1,58 @@
+{
+ "slug": "bfsi/branch-cash-and-vault-optimisation",
+ "title": "Branch Cash & Vault Optimisation",
+ "domain": "bfsi",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 36366,
+ "knobs": {
+  "n_instances": 107,
+  "noise": 0.273
+ },
+ "blueprintSignals": [
+  {
+   "name": "Withdrawal profile",
+   "definition": "median daily withdrawals by branch and weekday",
+   "asOfRule": "Branch closures change patterns"
+  },
+  {
+   "name": "Pay-day effect",
+   "definition": "days since local payroll dates",
+   "asOfRule": "Pay dates vary by employer"
+  },
+  {
+   "name": "Local event calendar",
+   "definition": "festivals and market days",
+   "asOfRule": "Must be maintained"
+  },
+  {
+   "name": "Digital substitution trend",
+   "definition": "trend in ATM and card use near the branch",
+   "asOfRule": "Slow change"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Branch Cash & Vault Optimisation\": Plan cash holdings and shipments for branch vaults so branches rarely run out and the bank does not hold idle cash. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on stocked-out days underestimates demand."
+}

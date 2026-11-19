@@ -1,0 +1,34 @@
+{
+ "use_case": "fintech/synthetic-identity-fraud-detection",
+ "engine": "tabular",
+ "seed": 21158,
+ "knobs": {
+  "n_entities": 2360,
+  "positive_entity_rate": 0.039,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "rows": 180140,
+  "positive_rate": 0.004935050516265127,
+  "test_rows": 60614,
+  "test_positive_rate": 0.005774243574091794,
+  "baseline_lr": {
+   "pr_auc": 0.7010778920049335,
+   "recall_at_0.5pct_fpr": 0.7457142857142857,
+   "brier": 0.002909756313990717
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7665951268726758,
+   "recall_at_0.5pct_fpr": 0.8085714285714286,
+   "brier": 0.002433050752661728
+  }
+ }
+}

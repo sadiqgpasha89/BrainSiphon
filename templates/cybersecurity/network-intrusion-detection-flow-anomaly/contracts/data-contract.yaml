@@ -1,0 +1,16 @@
+contract: network_intrusion_detection_flow_anomaly_inputs.v1
+owner: detection-engineering@example.com
+system_of_record: SIEM and security data lake
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: fan_out_and_new_destination_rate, type: double, nullable: false }
+    - { name: beaconing_periodicity, type: double, nullable: false }
+    - { name: byte_ratio_asymmetry, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

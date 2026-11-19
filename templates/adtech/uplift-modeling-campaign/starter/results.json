@@ -1,0 +1,36 @@
+{
+ "use_case": "adtech/uplift-modeling-campaign",
+ "engine": "uplift",
+ "seed": 31085,
+ "knobs": {
+  "n": 32350,
+  "confound": 1.6,
+  "holdout": 0.121
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "rows": 32350,
+  "observational_rows": 28471,
+  "holdout_rows": 3879,
+  "true_ate": 0.06871561051004636,
+  "naive_ate": 0.21799287837956252,
+  "naive_bias": 0.14927726786951617,
+  "ipw_ate": 0.08058751557168792,
+  "ipw_bias": 0.011871905061641555,
+  "holdout_ate": 0.05377313842374226,
+  "holdout_balance_smd_x0": 0.01708371366904042,
+  "observational_balance_smd_x0": 1.296041403882104,
+  "t_learner_qini_auc": 0.004846042069809178,
+  "random_ranking_qini_auc": 0.0021775137262601612,
+  "top_decile_realised_uplift": 0.02598644878437628,
+  "bottom_decile_realised_uplift": -0.02454974271012006,
+  "share_predicted_negative": 0.2137148749677752
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "slug": "retail/customer-segmentation-embeddings",
+ "title": "Behavioural Customer Segmentation with Embeddings",
+ "domain": "retail",
+ "engine": "cluster",
+ "fit": "exact",
+ "problemType": "clustering-segmentation",
+ "seed": 3629,
+ "knobs": {
+  "n": 5720,
+  "outlier_share": 0.012
+ },
+ "blueprintSignals": [
+  {
+   "name": "Sequence embedding of purchases",
+   "definition": "transformer over order sequences",
+   "asOfRule": "Fixed observation window"
+  },
+  {
+   "name": "Price-tier mix",
+   "definition": "share of basket by price tier",
+   "asOfRule": "Normalise by category"
+  },
+  {
+   "name": "Channel and device mix",
+   "definition": "online, store, app proportions",
+   "asOfRule": "Consent-aware"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "value feature (f0)",
+   "meaning": "in currency units, thousands of times larger than the others"
+  },
+  {
+   "feature": "behaviour features (f1-f3)",
+   "meaning": "separate the segments"
+  },
+  {
+   "feature": "engagement features (f4-f6)",
+   "meaning": "separate some segments"
+  },
+  {
+   "feature": "noise feature (f7)",
+   "meaning": "carries little structure"
+  }
+ ],
+ "label": "For \"Behavioural Customer Segmentation with Embeddings\": Learn actionable behavioural segments from purchase and browse sequences that marketing, merchandising and CRM can all use. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating clusters only on internal metrics."
+}

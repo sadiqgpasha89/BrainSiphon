@@ -1,0 +1,36 @@
+{
+ "use_case": "retail/promotion-uplift-and-coupon-targeting",
+ "engine": "uplift",
+ "seed": 39206,
+ "knobs": {
+  "n": 43350,
+  "confound": 1.035,
+  "holdout": 0.158
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.3,
+ "results": {
+  "rows": 43350,
+  "observational_rows": 36568,
+  "holdout_rows": 6782,
+  "true_ate": 0.06914025374855824,
+  "naive_ate": 0.19069696118703103,
+  "naive_bias": 0.12155670743847279,
+  "ipw_ate": 0.06498118138281106,
+  "ipw_bias": -0.004159072365747182,
+  "holdout_ate": 0.07675067401935737,
+  "holdout_balance_smd_x0": 0.0001665779140633931,
+  "observational_balance_smd_x0": 0.9236800816409054,
+  "t_learner_qini_auc": 0.008387373192290212,
+  "random_ranking_qini_auc": -0.001100662661979215,
+  "top_decile_realised_uplift": 0.11587743732590533,
+  "bottom_decile_realised_uplift": 0.0038800736085552456,
+  "share_predicted_negative": 0.2087879681509879
+ }
+}

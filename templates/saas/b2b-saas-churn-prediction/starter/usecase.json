@@ -1,0 +1,53 @@
+{
+ "slug": "saas/b2b-saas-churn-prediction",
+ "title": "B2B SaaS Churn Prediction",
+ "domain": "saas",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 1357,
+ "knobs": {
+  "n": 6580,
+  "dropout": 0.214
+ },
+ "blueprintSignals": [
+  {
+   "name": "Admin and champion activity",
+   "definition": "logins and configuration changes by admins",
+   "asOfRule": "Role mapping"
+  },
+  {
+   "name": "Seat utilisation trend",
+   "definition": "active seats over licensed seats, 90-day slope",
+   "asOfRule": "Billing data as-of"
+  },
+  {
+   "name": "Support-ticket sentiment and escalations",
+   "definition": "rate and severity of tickets",
+   "asOfRule": "Matured tickets"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"B2B SaaS Churn Prediction\": Predict account-level churn and contraction 90 days ahead and recommend the intervention that actually retains revenue. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Features computed after the renewal conversation started."
+}

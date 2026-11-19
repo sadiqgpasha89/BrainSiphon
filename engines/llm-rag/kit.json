@@ -1,0 +1,178 @@
+{
+ "id": "llm-rag",
+ "label": "Retrieval-augmented answering with a verifier",
+ "paradigms": [
+  "llm-agents",
+  "nlp"
+ ],
+ "summary": "A runnable reference for answering questions from a document collection: versioned chunks, hybrid retrieval, a source filter, an intent check, a verifier that requires the cited passage to contain the value, abstention and a golden set with unanswerable questions held out by product.",
+ "runtime": "Python 3.11+ with pytest only (the suite runs in under a second); a deterministic extractive reader stands in for the LLM",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints 132 chunks and 132 golden questions with 36 unanswerable. baseline.py reports on the 66 held-out questions: the naive pipeline answers 60% correctly, hallucinates on 100% of unanswerable questions and makes 6 errors by quoting a changelog, with 100% citation support; the guarded pipeline is correct on every answer it gives, abstains on 27% of answerable questions and hallucinates on none. pytest reports 8 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Synthetic documentation chunks, changelog trap and golden questions with unanswerable cases and a held-out split"
+  },
+  {
+   "path": "rag.py",
+   "purpose": "BM25, character n-gram similarity, rank fusion, the extractive reader stand-in, the verifier and the two pipelines"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Evaluation of the naive and guarded pipelines on held-out products"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates for determinism, split, retrieval, reader, verifier and the safety thresholds"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (pytest only)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "132 chunks for 12 products: reference pages for two versions, a changelog per fact quoting old and new values, and tutorials using the same words in other senses. 132 golden questions: latest-version facts, explicit older-version facts and unanswerable questions. Half the products are held out as the test set.",
+  "knobs": [
+   "seed: identical seed gives an identical corpus and question set",
+   "PRODUCTS, FACTS and UNANSWERABLE in the file: add products, facts or phrasings",
+   "dev_products: which products are used for tuning; the rest are the test set"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "chunk_id",
+   "product",
+   "version",
+   "kind",
+   "text"
+  ],
+  "rows": [
+   [
+    0,
+    "events",
+    "any",
+    "changelog",
+    "Changelog, events: in v2 the rate limit changed from 50 requests per minute to 110 requests per minute."
+   ],
+   [
+    2,
+    "audit",
+    "any",
+    "tutorial",
+    "Tutorial: audit webhooks and retries. Store payload data for a few days while you debug; check the size of each message."
+   ],
+   [
+    122,
+    "users",
+    "v1",
+    "reference",
+    "[v1] users API reference, limits. The users API allows 100 requests per minute per API key. Request bodies sent to the users API may be at most 33 MB."
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Corpus and golden-set tests",
+   "threshold": "pytest -k 'deterministic or disjoint' passes; every chunk has product, version and kind; at least 25% of questions unanswerable",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Retrieval and reader tests",
+   "threshold": "BM25 ranks the matching document first on a small corpus, and the reader ignores version tags when reading a value",
+   "how": "pytest -k 'bm25 or version_tag'"
+  },
+  "baseline": {
+   "metric": "Naive pipeline risk measured",
+   "threshold": "Hallucination at least 90% on unanswerable questions and citation support above accuracy (the kit: 100% and 100% against 60%)",
+   "how": "python baseline.py; pytest -k 'naive_rag or valid_citation'"
+  },
+  "challenger": {
+   "metric": "Safety without too many refusals",
+   "threshold": "Hallucination at most 5%, answered precision at least 95%, accuracy 5 points above the baseline, abstention on answerable questions at most 40% (the kit: 0%, 100%, 73% against 60%, 27%)",
+   "how": "python baseline.py; pytest -k guarded"
+  }
+ },
+ "tests": [
+  {
+   "test": "Held-out split",
+   "tool": "pytest test_tuning_and_test_products_are_disjoint",
+   "pass": "No product used for tuning appears in the test set"
+  },
+  {
+   "test": "Verifier",
+   "tool": "pytest test_the_verifier_rejects_a_value_the_cited_chunk_does_not_contain",
+   "pass": "A value absent from the cited chunk, or an abstention, never passes"
+  },
+  {
+   "test": "Hallucination on unanswerable questions",
+   "tool": "pytest test_naive_rag_hallucinates_on_unanswerable_questions_and_guarded_does_not",
+   "pass": "Naive at least 90% and guarded at most 5%"
+  },
+  {
+   "test": "Precision, accuracy and abstention cost",
+   "tool": "pytest test_guarded_answers_are_correct_when_given_and_better_overall",
+   "pass": "Answered precision at least 95%, accuracy 5 points above naive, abstention at most 40%, zero stale errors"
+  },
+  {
+   "test": "Citation is not correctness",
+   "tool": "pytest test_a_valid_citation_does_not_prove_the_answer_is_right",
+   "pass": "Naive citation support is at least 99% while its accuracy is below 70%"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "Letting changelogs be answer sources",
+   "evidence": "The naive pipeline makes 6 stale-value errors by quoting a changelog that mentions both the old and the new value, each with a valid citation.",
+   "at": "M1"
+  },
+  {
+   "trap": "Never abstaining",
+   "evidence": "On the 18 unanswerable test questions the naive pipeline hallucinated on all of them; the guarded pipeline on none.",
+   "at": "M3"
+  },
+  {
+   "trap": "Abstaining too much",
+   "evidence": "The guarded pipeline abstains on 27% of answerable questions because its intent vocabulary is narrow; reviewing abstentions is how the vocabulary grows.",
+   "at": "M4"
+  },
+  {
+   "trap": "Tuning on the test set",
+   "evidence": "Half the products are held out and never used for tuning, so reported numbers are not the tuning numbers.",
+   "at": "M2"
+  }
+ ],
+ "target": "Each golden question carries the expected value for the right version, or none when the documents never state it. A response is correct only when it gives that value or abstains on an unanswerable question.",
+ "headline": {
+  "baseline": "60% accuracy and 100% hallucination on unanswerable questions",
+  "challenger": "every given answer correct, 27% abstentions, no hallucination"
+ }
+}

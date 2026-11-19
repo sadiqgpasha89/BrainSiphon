@@ -1,0 +1,45 @@
+{
+ "use_case": "fintech/portfolio-optimization-risk-parity",
+ "engine": "optimize",
+ "seed": 12081,
+ "knobs": {
+  "n_instances": 145,
+  "noise": 0.262
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "instances": 145,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 120.48985610692486,
+   "promised_cost": 100.89402259641756,
+   "optimism_gap_pct": 19.422194701158734,
+   "regret_vs_oracle_pct": 31.12351391257868
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 104.98134988085373,
+   "promised_cost": 82.72255987800469,
+   "optimism_gap_pct": 26.907762568850927,
+   "regret_vs_oracle_pct": 14.246326922721536
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 102.46758452917042,
+   "promised_cost": 84.01603380117916,
+   "optimism_gap_pct": 21.96193975504268,
+   "regret_vs_oracle_pct": 11.510712849351751
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.89035018330627,
+   "promised_cost": 94.61087909270819,
+   "optimism_gap_pct": -2.8754926869838124,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

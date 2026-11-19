@@ -1,0 +1,16 @@
+contract: conversational_language_practice_agent_inputs.v1
+owner: learning-engineering@example.com
+system_of_record: Learning management system (LMS)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: learner_cefr_estimate, type: double, nullable: false }
+    - { name: error_pattern_frequency, type: double, nullable: false }
+    - { name: new_vocabulary_exposure, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,35 @@
+{
+ "use_case": "real-estate/duplicate-listing-detection-across-portals",
+ "engine": "graph",
+ "seed": 26600,
+ "knobs": {
+  "n_clusters": 1550,
+  "hub_share": 0.102
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "entities": 2745,
+  "test_entities": 1033,
+  "candidate_pairs_test": 1234,
+  "hub_pairs_share": 0.5008103727714749,
+  "any_shared_value": {
+   "pair_precision": 0.03476275057092108,
+   "pair_recall": 0.86489898989899,
+   "purity": 0.7812197483059051,
+   "largest_cluster": 195
+  },
+  "weighted_pair_model": {
+   "pair_precision": 0.8216019417475728,
+   "pair_recall": 0.8547979797979798,
+   "purity": 0.9816069699903195,
+   "largest_cluster": 14
+  }
+ }
+}

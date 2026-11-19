@@ -1,0 +1,46 @@
+{
+ "use_case": "supply-chain/eta-prediction-for-shipments",
+ "engine": "forecast",
+ "seed": 4650,
+ "knobs": {
+  "n_series": 186
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 6.6,
+ "results": {
+  "rows": 16946,
+  "h1": {
+   "wmape_model": 0.1168227194878276,
+   "wmape_baseline": 0.21702112395896514,
+   "fva": 0.4616988551311866
+  },
+  "h3": {
+   "wmape_model": 0.11225359100765749,
+   "wmape_baseline": 0.2064543686496901,
+   "fva": 0.4562789262254442
+  },
+  "h7": {
+   "wmape_model": 0.11942954318926764,
+   "wmape_baseline": 0.22488695862909036,
+   "fva": 0.46893522008875277
+  },
+  "h14": {
+   "wmape_model": 0.1529338235787957,
+   "wmape_baseline": 0.24137259211893533,
+   "fva": 0.3663993818178072
+  },
+  "p90_coverage": 0.8841024430544081,
+  "wmape_sku_level": 0.12494027525204666,
+  "wmape_aggregate": 0.025136492527402795,
+  "late_feed": {
+   "missing_as_zero": 0.19753016694056588,
+   "missing_as_nan": 0.14220648999814098
+  }
+ }
+}

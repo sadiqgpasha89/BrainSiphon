@@ -1,0 +1,54 @@
+{
+ "slug": "supply-chain/carbon-footprint-estimation-logistics",
+ "title": "Logistics Carbon Footprint Estimation",
+ "domain": "supply-chain",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 80962,
+ "knobs": {
+  "n": 16160,
+  "outlier_share": 0.012,
+  "drift": 0.271
+ },
+ "blueprintSignals": [
+  {
+   "name": "Load factor",
+   "definition": "utilisation of vehicle capacity",
+   "asOfRule": "Weight data"
+  },
+  {
+   "name": "Mode and vehicle class",
+   "definition": "mode, fuel type, Euro class",
+   "asOfRule": "Fleet data"
+  },
+  {
+   "name": "Actual vs planned distance",
+   "definition": "distance driven",
+   "asOfRule": "Telematics"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Logistics Carbon Footprint Estimation\": Estimate emissions per shipment, lane and product to report accurately and steer decisions toward lower-carbon options. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Validated only on own fleet."
+}

@@ -1,0 +1,48 @@
+{
+ "slug": "saas/feature-flag-rollout-safety",
+ "title": "Feature-Flag Progressive Rollout with Guardrails",
+ "domain": "saas",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 90302,
+ "knobs": {
+  "days": 66
+ },
+ "blueprintSignals": [
+  {
+   "name": "Guardrail metric deltas",
+   "definition": "error rate, latency, conversion deltas",
+   "asOfRule": "Metric definitions"
+  },
+  {
+   "name": "Exposure balance",
+   "definition": "SRM check on exposure",
+   "asOfRule": "Assignment"
+  },
+  {
+   "name": "Concurrent-flag overlap",
+   "definition": "flags active on same users",
+   "asOfRule": "Registry"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"Feature-Flag Progressive Rollout with Guardrails\": Automatically ramp feature flags while monitoring guardrail metrics, rolling back at the first statistically credible harm. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Peeking without correction."
+}
