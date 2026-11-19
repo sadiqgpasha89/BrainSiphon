@@ -7,7 +7,7 @@ export function SiteHeader() {
       <div className="relative mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 lg:gap-6">
         <a
           href="https://sadiqgpasha89.github.io"
-          className="mr-1 flex shrink-0 items-center gap-1.5 border-r border-line pr-3 text-xs font-semibold text-mute no-underline transition hover:text-ink"
+          className="mr-1 hidden shrink-0 items-center gap-1.5 border-r border-line pr-3 text-xs font-semibold text-mute no-underline transition hover:text-ink sm:flex"
           title="Return to Sadiq G Pasha Portfolio"
           data-testid="header-portfolio"
         >
