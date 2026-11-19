@@ -1,0 +1,54 @@
+{
+ "slug": "healthcare/virtual-screening-docking-surrogate",
+ "title": "Virtual Screening with Docking Surrogates",
+ "domain": "healthcare",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 10070,
+ "knobs": {
+  "n": 22590,
+  "outlier_share": 0.026,
+  "drift": 0.344
+ },
+ "blueprintSignals": [
+  {
+   "name": "Surrogate rank score",
+   "definition": "model predicted docking rank",
+   "asOfRule": "Calibrate on top tail"
+  },
+  {
+   "name": "Pocket descriptors",
+   "definition": "binding-site features",
+   "asOfRule": "Structure version"
+  },
+  {
+   "name": "Library diversity coverage",
+   "definition": "cluster coverage among selected",
+   "asOfRule": "Clustering"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Virtual Screening with Docking Surrogates\": Screen billion-molecule libraries by training fast surrogate models on docking scores, then dock only the top fraction. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training and test molecules share scaffolds."
+}

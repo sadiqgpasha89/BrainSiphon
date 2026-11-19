@@ -1,0 +1,187 @@
+{
+ "slug": "healthcare/wearable-arrhythmia-detection-ecg",
+ "title": "Wearable Arrhythmia Detection (ECG/PPG)",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "authoredStarter": false,
+ "fdePack": false,
+ "seed": 11580,
+ "knobs": {
+  "n_series": 106,
+  "anomalies_per_series": 3.013
+ },
+ "blueprintVerified": "2026-11-07",
+ "generator": "1.0.0",
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "runSeconds": 14.6,
+ "files": [
+  {
+   "path": "FIT.md",
+   "bytes": 3739,
+   "sha256": "57edb50a7f87afdeadb758da403a1130067acf21764a7dbf6e0e3b26c400e829"
+  },
+  {
+   "path": "README.md",
+   "bytes": 3363,
+   "sha256": "593410c44729989b42d198fa863c8214347b3a7499885fdfba74e8b772044db4"
+  },
+  {
+   "path": "WORKED_EXAMPLE.md",
+   "bytes": 3748,
+   "sha256": "f9ceaaefe4f52bb9ff42862fe61ce766e175700dffe48bddf4bdb9043d9a8c90"
+  },
+  {
+   "path": "contracts/data-contract.yaml",
+   "bytes": 703,
+   "sha256": "1ca3befe1cd49a510c8b505561c0fc3d3b4b6ce1fa31c9f99c3f20c631783cee"
+  },
+  {
+   "path": "contracts/events.asyncapi.yaml",
+   "bytes": 1329,
+   "sha256": "44f9ad48a88417978ad07e740df54cbcaa514fc532233ef7053d73c917141134"
+  },
+  {
+   "path": "contracts/openapi.yaml",
+   "bytes": 3132,
+   "sha256": "47483637cb68f3663a3c6c7e89df1ea29242954f10aa9bb5fa15a967a6fc79aa"
+  },
+  {
+   "path": "contracts/schema.sql",
+   "bytes": 1360,
+   "sha256": "af53f6a3147ced23a6398b754f5a1fc93a75212a2901f824aab026bc6e17db76"
+  },
+  {
+   "path": "deployment/README.md",
+   "bytes": 2231,
+   "sha256": "eff7ea7e2a685665eb32bd409a88e7aaddc407a12b72d2ee220edfe938bcd400"
+  },
+  {
+   "path": "deployment/config.yaml",
+   "bytes": 833,
+   "sha256": "af92e8734b2a74725e8fea49d1f27cf28ddf6cf100291dd6e8500dbf0797a13f"
+  },
+  {
+   "path": "deployment/docker-compose.yml",
+   "bytes": 527,
+   "sha256": "779df9756340243fc49c95890779795603f3dceb8c5e5d9722eeafda3e447ef5"
+  },
+  {
+   "path": "deployment/values.sized.yaml",
+   "bytes": 590,
+   "sha256": "69bfca39e44605cdd515d431c237faafaa7d93675091be0e7f4606806d3dc6ce"
+  },
+  {
+   "path": "docs/00-use-case-brief.md",
+   "bytes": 8470,
+   "sha256": "967a4b9f2133ef34aced76d8193acfd8979f890a8b8c2816a5ccc6d6692decfa"
+  },
+  {
+   "path": "docs/01-discovery-workbook.md",
+   "bytes": 16920,
+   "sha256": "eff217edd9a8e0a92b8efbc16cba0ef873349de8c054231eab968751ce5a60a4"
+  },
+  {
+   "path": "docs/02-delivery-plan.md",
+   "bytes": 32132,
+   "sha256": "273287f88fa74d4ff195f6732bf509cba6e4c9ac326015bd59425f2aeb702bd8"
+  },
+  {
+   "path": "docs/03-data-and-features.md",
+   "bytes": 14273,
+   "sha256": "224ce32327d62eb67ee163eaaed4f8ee7545437c16d169bd5da8c6935b53cc17"
+  },
+  {
+   "path": "docs/04-evaluation-plan.md",
+   "bytes": 49552,
+   "sha256": "f5b1c014ff1b97270f939f215e377bfd56fef7869cb4fb6262fedc820b02b022"
+  },
+  {
+   "path": "docs/05-risk-and-governance.md",
+   "bytes": 7948,
+   "sha256": "db26679f2e454f1ef0625295c0604672f77aae7ea5e90d0c5ced11833b742de1"
+  },
+  {
+   "path": "docs/06-operations-runbook.md",
+   "bytes": 18413,
+   "sha256": "00e2912ffd4a53fa46262c3a66568072ecd642e0095c649097e78fbad6a6b3f4"
+  },
+  {
+   "path": "docs/07-model-and-data-cards.md",
+   "bytes": 5466,
+   "sha256": "348f774a99ccfc98eb6acd86e7f7755760318a95b9722e130172067cb6de963a"
+  },
+  {
+   "path": "docs/08-capacity-and-cost.md",
+   "bytes": 5458,
+   "sha256": "f22dc161c84f72408a96383061cedd82b061c7af802b56e35f9e7afa08bb8312"
+  },
+  {
+   "path": "starter/Dockerfile",
+   "bytes": 212,
+   "sha256": "28554f5a1d423d2dd57bf591a24a61e9319f67d551accab0d455131f4146aef0"
+  },
+  {
+   "path": "starter/Makefile",
+   "bytes": 352,
+   "sha256": "f3de79b0b567afbc0354300d404e02cec1003696a1de7f4046706fed30f48d63"
+  },
+  {
+   "path": "starter/baseline.py",
+   "bytes": 4254,
+   "sha256": "45d40b2dcfca0ffaad11449eaac1693f37b7a39ee0259dae99e948ce7b0571c4"
+  },
+  {
+   "path": "starter/engine.json",
+   "bytes": 1219,
+   "sha256": "5657d957c96b944446b1788a8167c5f1d1f0144df39d1df820724bd1d69c9052"
+  },
+  {
+   "path": "starter/gates.py",
+   "bytes": 369,
+   "sha256": "7b403f2dfd518a64c1797e7c07746d59cec3e6a0dc4f0dbbdee3e9009decc240"
+  },
+  {
+   "path": "starter/make_data.py",
+   "bytes": 2913,
+   "sha256": "57cfb3a44500718c23cb54ce098186ae337bd8f1a8c70b32c908538a527bab7f"
+  },
+  {
+   "path": "starter/requirements.txt",
+   "bytes": 75,
+   "sha256": "ad943509e5ebcd060eb2b38ae247759f5c9d30197907bedc7858c77d99de374c"
+  },
+  {
+   "path": "starter/results.json",
+   "bytes": 912,
+   "sha256": "709644ccb269041f3aa58d3f5c6e92378fdec750e7163540efdd33dab77d3383"
+  },
+  {
+   "path": "starter/run_usecase.py",
+   "bytes": 1429,
+   "sha256": "33521c23406b0dcd3f1c22785f5a991dc74544b37d9010d98e146905f64ee6f4"
+  },
+  {
+   "path": "starter/test_starter.py",
+   "bytes": 2252,
+   "sha256": "dec81ef46824820edf0546061ade0b52befc7c833385ed197330a3c6bfb13edf"
+  },
+  {
+   "path": "starter/test_usecase.py",
+   "bytes": 1698,
+   "sha256": "da7769d17b703359fc682dd28eb1e14977630a6c2b97d3c4ab1ecdda5ccd8883"
+  },
+  {
+   "path": "starter/usecase.json",
+   "bytes": 1727,
+   "sha256": "bea1b2ed5396ceda13d483545e7011a5857e2929d12cde9e1d69bb683cd0b67c"
+  }
+ ]
+}

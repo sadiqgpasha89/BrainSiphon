@@ -1,0 +1,16 @@
+contract: loan_underwriting_copilot_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: spread_reconciliation_delta, type: double, nullable: false }
+    - { name: dscr_computation_trace, type: double, nullable: false }
+    - { name: covenant_clause_retrieval, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

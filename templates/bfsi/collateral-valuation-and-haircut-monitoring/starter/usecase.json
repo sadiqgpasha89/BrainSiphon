@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/collateral-valuation-and-haircut-monitoring",
+ "title": "Collateral Valuation & Haircut Monitoring",
+ "domain": "bfsi",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 10235,
+ "knobs": {
+  "n": 19730,
+  "outlier_share": 0.029,
+  "drift": 0.331
+ },
+ "blueprintSignals": [
+  {
+   "name": "Price momentum and volatility",
+   "definition": "20-day return and realised volatility of the reference price",
+   "asOfRule": "Use settlement prices, not stale quotes"
+  },
+  {
+   "name": "Liquidity proxy",
+   "definition": "traded volume and quoted spread over 30 days",
+   "asOfRule": "Volumes are missing for private assets"
+  },
+  {
+   "name": "Valuation age",
+   "definition": "days since the last independent valuation",
+   "asOfRule": "Ageing must use the valuation date, not the booking date"
+  },
+  {
+   "name": "Concentration index",
+   "definition": "share of total pledged value in the same asset or region",
+   "asOfRule": "Group borrowers by common ownership first"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Collateral Valuation & Haircut Monitoring\": Revalue pledged collateral continuously and set haircuts so the bank is not under-secured when prices fall or liquidity dries up. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Back-test on calm markets misses stressed haircuts."
+}

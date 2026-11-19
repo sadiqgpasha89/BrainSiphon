@@ -1,0 +1,34 @@
+{
+ "use_case": "real-estate/buyer-lead-scoring-and-routing",
+ "engine": "tabular",
+ "seed": 13312,
+ "knobs": {
+  "n_entities": 2540,
+  "positive_entity_rate": 0.037,
+  "n_flash_sales": 3
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.0,
+ "results": {
+  "rows": 195457,
+  "positive_rate": 0.004850171649007198,
+  "test_rows": 64501,
+  "test_positive_rate": 0.005348754282879335,
+  "baseline_lr": {
+   "pr_auc": 0.6863476374897438,
+   "recall_at_0.5pct_fpr": 0.6695652173913044,
+   "brier": 0.0029782897374473595
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7967549336827435,
+   "recall_at_0.5pct_fpr": 0.8,
+   "brier": 0.0020488097963570775
+  }
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "use_case": "retail/cart-abandonment-and-basket-completion",
+ "engine": "uplift",
+ "seed": 78406,
+ "knobs": {
+  "n": 33650,
+  "confound": 1.393,
+  "holdout": 0.152
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "rows": 33650,
+  "observational_rows": 28565,
+  "holdout_rows": 5085,
+  "true_ate": 0.06933997028231798,
+  "naive_ate": 0.21667396280099005,
+  "naive_bias": 0.14733399251867207,
+  "ipw_ate": 0.06645095961014535,
+  "ipw_bias": -0.0028890106721726205,
+  "holdout_ate": 0.04676173630227154,
+  "holdout_balance_smd_x0": -0.038325320606525326,
+  "observational_balance_smd_x0": 1.181363133603273,
+  "t_learner_qini_auc": 0.005732553715739776,
+  "random_ranking_qini_auc": 0.001024960968736133,
+  "top_decile_realised_uplift": 0.114840662055336,
+  "bottom_decile_realised_uplift": -0.063126159554731,
+  "share_predicted_negative": 0.15476892822025565
+ }
+}

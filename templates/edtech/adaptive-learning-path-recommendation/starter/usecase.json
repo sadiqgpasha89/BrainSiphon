@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/adaptive-learning-path-recommendation",
+ "title": "Adaptive Learning Path Recommendation",
+ "domain": "edtech",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 3740,
+ "knobs": {
+  "n": 35140,
+  "logging_temperature": 1.098
+ },
+ "blueprintSignals": [
+  {
+   "name": "Zone of proximal development fit",
+   "definition": "probability of success near 70%",
+   "asOfRule": "Calibrated KT"
+  },
+  {
+   "name": "Prerequisite satisfaction",
+   "definition": "mastery of required skills",
+   "asOfRule": "Graph"
+  },
+  {
+   "name": "Recent frustration indicators",
+   "definition": "quick abandon and repeated failures",
+   "asOfRule": "Event features"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Adaptive Learning Path Recommendation\": Recommend the next activity for each learner that maximises mastery gain while sustaining engagement and respecting prerequisites. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising engagement instead of learning."
+}

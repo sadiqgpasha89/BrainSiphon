@@ -1,0 +1,46 @@
+{
+ "use_case": "healthcare/icu-deterioration-prediction",
+ "engine": "forecast",
+ "seed": 51872,
+ "knobs": {
+  "n_series": 208
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 12.2,
+ "results": {
+  "rows": 18913,
+  "h1": {
+   "wmape_model": 0.11539706737869257,
+   "wmape_baseline": 0.2024543396856192,
+   "fva": 0.43000941566435835
+  },
+  "h3": {
+   "wmape_model": 0.11660100727991012,
+   "wmape_baseline": 0.2118447397160539,
+   "fva": 0.4495921520817733
+  },
+  "h7": {
+   "wmape_model": 0.12199705453783147,
+   "wmape_baseline": 0.2117911185676887,
+   "fva": 0.4239746436825156
+  },
+  "h14": {
+   "wmape_model": 0.14080349514662566,
+   "wmape_baseline": 0.2226710020491456,
+   "fva": 0.36766128570459755
+  },
+  "p90_coverage": 0.8864273251202877,
+  "wmape_sku_level": 0.12332564155881764,
+  "wmape_aggregate": 0.02548040109404401,
+  "late_feed": {
+   "missing_as_zero": 0.20507829341825723,
+   "missing_as_nan": 0.13288680160803193
+  }
+ }
+}

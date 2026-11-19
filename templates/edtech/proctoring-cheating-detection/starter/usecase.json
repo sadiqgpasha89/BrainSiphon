@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/proctoring-cheating-detection",
+ "title": "Remote Proctoring & Cheating Detection",
+ "domain": "edtech",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 50142,
+ "knobs": {
+  "n": 4650,
+  "prevalence": 0.129
+ },
+ "blueprintSignals": [
+  {
+   "name": "Multiple-face detection",
+   "definition": "additional person in frame",
+   "asOfRule": "Detector quality"
+  },
+  {
+   "name": "Gaze-away duration",
+   "definition": "time looking off-screen",
+   "asOfRule": "Disability confounds"
+  },
+  {
+   "name": "Prohibited-device detection",
+   "definition": "phone or notes detection",
+   "asOfRule": "Object detector"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Remote Proctoring & Cheating Detection\": Detect suspicious behaviour during remote exams (second person, devices, impersonation) with human review of flagged segments, protecting privacy and fairness. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test set staged cheating."
+}

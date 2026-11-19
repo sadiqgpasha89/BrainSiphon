@@ -1,0 +1,34 @@
+{
+ "use_case": "bfsi/ifrs9-ecl-stage-allocation",
+ "engine": "tabular",
+ "seed": 52553,
+ "knobs": {
+  "n_entities": 1950,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.2,
+ "results": {
+  "rows": 149097,
+  "positive_rate": 0.0038967920213015686,
+  "test_rows": 51202,
+  "test_positive_rate": 0.005077926643490488,
+  "baseline_lr": {
+   "pr_auc": 0.7805703176162488,
+   "recall_at_0.5pct_fpr": 0.8038461538461539,
+   "brier": 0.0018986485166029893
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7713207692989942,
+   "recall_at_0.5pct_fpr": 0.7769230769230769,
+   "brier": 0.0019355663964977182
+  }
+ }
+}

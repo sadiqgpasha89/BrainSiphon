@@ -1,0 +1,34 @@
+{
+ "use_case": "cybersecurity/network-intrusion-detection-flow-anomaly",
+ "engine": "tabular",
+ "seed": 32307,
+ "knobs": {
+  "n_entities": 2670,
+  "positive_entity_rate": 0.041,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "rows": 206302,
+  "positive_rate": 0.005792478987115976,
+  "test_rows": 68384,
+  "test_positive_rate": 0.0075310014038371545,
+  "baseline_lr": {
+   "pr_auc": 0.7737587429554369,
+   "recall_at_0.5pct_fpr": 0.7790760517799353,
+   "brier": 0.0027397661428687314
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8073115557258844,
+   "recall_at_0.5pct_fpr": 0.8077669902912621,
+   "brier": 0.002771748212936649
+  }
+ }
+}

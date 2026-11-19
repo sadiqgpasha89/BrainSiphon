@@ -1,0 +1,16 @@
+contract: short_term_rental_pricing_and_occupancy_inputs.v1
+owner: portfolio-data-team@example.com
+system_of_record: Property and portfolio management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: event_calendar, type: double, nullable: false }
+    - { name: booking_pace, type: double, nullable: false }
+    - { name: comparable_prices, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

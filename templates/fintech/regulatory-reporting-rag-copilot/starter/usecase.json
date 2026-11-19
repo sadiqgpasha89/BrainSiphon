@@ -1,0 +1,50 @@
+{
+ "slug": "fintech/regulatory-reporting-rag-copilot",
+ "title": "Regulatory Reporting RAG Copilot",
+ "domain": "fintech",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 32756,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Clause-level retrieval recall",
+   "definition": "share of ground-truth clauses retrieved in top 10",
+   "asOfRule": "Evaluate with expert-labelled clauses"
+  },
+  {
+   "name": "Effective-date match",
+   "definition": "rule version vs report period",
+   "asOfRule": "Date from filing period not today"
+  },
+  {
+   "name": "Definition linking",
+   "definition": "expanded defined terms inside the answer context",
+   "asOfRule": "Link to the defining paragraph"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Regulatory Reporting RAG Copilot\": Answer compliance questions and pre-fill regulatory reports from rule books and internal data with exact citations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test questions copied from document headings."
+}

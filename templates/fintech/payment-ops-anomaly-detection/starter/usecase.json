@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/payment-ops-anomaly-detection",
+ "title": "Payments Operations Anomaly Detection",
+ "domain": "fintech",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 51663,
+ "knobs": {
+  "n_series": 90,
+  "anomalies_per_series": 3.473
+ },
+ "blueprintSignals": [
+  {
+   "name": "Success-rate residual z-score",
+   "definition": "residual of success rate vs seasonal forecast",
+   "asOfRule": "Forecast uses only past data"
+  },
+  {
+   "name": "Volume-weighted impact",
+   "definition": "residual times affected volume",
+   "asOfRule": "Use rolling volume baseline"
+  },
+  {
+   "name": "Dimension co-movement",
+   "definition": "which dimension values explain the drop",
+   "asOfRule": "Control for multiple comparisons"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Payments Operations Anomaly Detection\": Detect abnormal drops in success rate, latency or volume across thousands of payment dimensions within minutes of onset. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Synthetic injected anomalies unlike real outages."
+}

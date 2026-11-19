@@ -1,0 +1,49 @@
+{
+ "use_case": "cybersecurity/red-team-attack-simulation-rl",
+ "engine": "control",
+ "seed": 39394,
+ "knobs": {
+  "days": 78
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.7,
+ "results": {
+  "days": 78,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 5.910771570503719,
+   "end_of_day_underdelivery_pct": 4.104882467563213,
+   "overshoot_max_pct": 7.282154042805819,
+   "oscillation": 0.0,
+   "hit_cap": 0.6025641025641025
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.4165993003785005,
+   "end_of_day_underdelivery_pct": 0.8439351120951796,
+   "overshoot_max_pct": 5.532698960677587,
+   "oscillation": 0.011369734081157995,
+   "hit_cap": 0.41025641025641024
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 0.9714722143671477,
+   "end_of_day_underdelivery_pct": 0.04679304938818751,
+   "overshoot_max_pct": 2.0729894984767316,
+   "oscillation": 0.08928394720654753,
+   "hit_cap": 0.47435897435897434
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.389511487973226,
+   "end_of_day_underdelivery_pct": 2.020360381980612,
+   "overshoot_max_pct": 13.019615799191078,
+   "oscillation": 0.0184451508583133,
+   "hit_cap": 0.5769230769230769
+  },
+  "rmse_reduction_vs_open_loop": 0.5911533254917248
+ }
+}

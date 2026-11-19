@@ -1,0 +1,52 @@
+{
+ "slug": "healthcare/patient-feedback-sentiment-and-complaints",
+ "title": "Patient Feedback & Complaint Mining",
+ "domain": "healthcare",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 7316,
+ "knobs": {
+  "n_docs": 4580
+ },
+ "blueprintSignals": [
+  {
+   "name": "Topic-level sentiment",
+   "definition": "sentiment per theme",
+   "asOfRule": "Topic model stable"
+  },
+  {
+   "name": "Unit attribution",
+   "definition": "location entity extraction",
+   "asOfRule": "Entity linking"
+  },
+  {
+   "name": "Severity flags",
+   "definition": "harm or safety mention detector",
+   "asOfRule": "Recall priority"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Patient Feedback & Complaint Mining\": Mine surveys, reviews and complaints to surface actionable service and safety issues by unit and theme. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels from star ratings only."
+}

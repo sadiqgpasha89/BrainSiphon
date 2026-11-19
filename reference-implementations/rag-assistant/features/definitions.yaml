@@ -1,0 +1,15 @@
+# The "feature registry" of a RAG system: how a document becomes retrievable units. The index stores these fields per chunk
+# and serving refuses an index built with a different list.
+entities:
+  chunk: {key: chunk_id, description: "A passage of one document version: <doc_id>#<n>"}
+views:
+  doc_chunk:
+    description: One retrievable passage with the metadata needed for filtering, citation and freshness
+    owner: developer-experience
+    features:
+      - {name: chunk_id, dtype: string, description: Stable id used in citations}
+      - {name: doc_id, dtype: string, description: Source document}
+      - {name: doc_version, dtype: int, description: Version of the document the passage came from}
+      - {name: title, dtype: string, description: Document title (prepended to the text for retrieval)}
+      - {name: visibility, dtype: string, description: public or internal; enforced at query time}
+      - {name: text, dtype: string, description: The passage}

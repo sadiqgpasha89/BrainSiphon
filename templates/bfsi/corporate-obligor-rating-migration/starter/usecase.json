@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/corporate-obligor-rating-migration",
+ "title": "Corporate Obligor Rating Migration Prediction",
+ "domain": "bfsi",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 12638,
+ "knobs": {
+  "n": 14330,
+  "label_noise": 0.073,
+  "dup_share": 0.284
+ },
+ "blueprintSignals": [
+  {
+   "name": "Rating age and prior moves",
+   "definition": "months since last review and number of changes in 24 months",
+   "asOfRule": "Review dates may be late"
+  },
+  {
+   "name": "Margin and coverage trend",
+   "definition": "change in EBITDA margin and interest cover over 2 years",
+   "asOfRule": "Use contractual definitions"
+  },
+  {
+   "name": "Sector stress index",
+   "definition": "sector default rate and credit spread level",
+   "asOfRule": "Index must be as at the date"
+  },
+  {
+   "name": "Account behaviour",
+   "definition": "drawdown speed and covenant waiver count",
+   "asOfRule": "Waivers can be recorded late"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Corporate Obligor Rating Migration Prediction\": Predict the probability that a corporate borrower's internal rating moves up or down within 12 months to guide limits, pricing and watchlists. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Pooling cycles in a random split understates downturn risk."
+}

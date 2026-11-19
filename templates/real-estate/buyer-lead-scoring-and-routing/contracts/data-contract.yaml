@@ -1,0 +1,16 @@
+contract: buyer_lead_scoring_and_routing_inputs.v1
+owner: portfolio-data-team@example.com
+system_of_record: Property and portfolio management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: viewing_depth, type: double, nullable: false }
+    - { name: finance_readiness, type: double, nullable: false }
+    - { name: agent_response_time, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

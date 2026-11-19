@@ -1,0 +1,49 @@
+{
+ "use_case": "healthcare/drug-discovery-molecular-property-prediction",
+ "engine": "regression",
+ "seed": 52085,
+ "knobs": {
+  "n": 21800,
+  "outlier_share": 0.026,
+  "drift": 0.295
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.0,
+ "results": {
+  "rows": 21800,
+  "train_rows": 15259,
+  "test_rows": 6541,
+  "baseline_ridge": {
+   "mae": 7.283134799210354,
+   "rmse": 12.325312031315802,
+   "wape": 0.13750771925910757,
+   "r2": 0.45214340857767255
+  },
+  "challenger_gbm": {
+   "mae": 4.85843317184468,
+   "rmse": 10.374788277330895,
+   "wape": 0.091728641999814,
+   "r2": 0.611823239989178
+  },
+  "mae_gain_vs_baseline": 0.33292005355009546,
+  "interval_80_coverage": 0.6758905366151965,
+  "interval_80_mean_width": 9.255869502263355,
+  "segment_mae": {
+   "0": 4.687545021224575,
+   "1": 5.024006217715795,
+   "2": 4.673575010554772,
+   "3": 6.179062754874303
+  },
+  "worst_segment_vs_overall": 1.2718221155501042,
+  "leaky_feature_rmse": 1.5011108652074328,
+  "honest_rmse": 10.374788277330895,
+  "random_split_mae": 4.384186045823844,
+  "chronological_mae": 4.85843317184468
+ }
+}

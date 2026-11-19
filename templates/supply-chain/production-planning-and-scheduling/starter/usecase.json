@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/production-planning-and-scheduling",
+ "title": "Production Planning & Shop-Floor Scheduling",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 41937,
+ "knobs": {
+  "n_instances": 119,
+  "noise": 0.284
+ },
+ "blueprintSignals": [
+  {
+   "name": "Setup time matrix",
+   "definition": "changeover durations",
+   "asOfRule": "MES data"
+  },
+  {
+   "name": "Machine health state",
+   "definition": "predicted downtime risk",
+   "asOfRule": "Sensors"
+  },
+  {
+   "name": "Job slack",
+   "definition": "due date minus remaining processing",
+   "asOfRule": "Routing"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Production Planning & Shop-Floor Scheduling\": Sequence jobs on machines to meet due dates with minimal changeovers and WIP, adapting to breakdowns and rush orders. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using actual processing times known after the fact."
+}

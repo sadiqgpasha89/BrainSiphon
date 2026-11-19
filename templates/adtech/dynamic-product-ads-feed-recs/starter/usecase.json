@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/dynamic-product-ads-feed-recs",
+ "title": "Dynamic Product Ads & Feed Recommendations",
+ "domain": "adtech",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 66308,
+ "knobs": {
+  "n_sessions": 44350,
+  "bot_share": 0.103
+ },
+ "blueprintSignals": [
+  {
+   "name": "Recent item views",
+   "definition": "last viewed items",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Product popularity within category",
+   "definition": "trending score",
+   "asOfRule": "Time"
+  },
+  {
+   "name": "Stock and price status",
+   "definition": "feed freshness flags",
+   "asOfRule": "Real-time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Dynamic Product Ads & Feed Recommendations\": Select and rank products in dynamic ads from the advertiser catalogue per user to maximise conversions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on retargeted users biased toward high intent."
+}

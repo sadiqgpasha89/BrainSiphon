@@ -5,7 +5,7 @@ import { PROBLEM_LABEL } from '../../lib/problem-types';
 import type { Playbook } from '../../schemas/usecase.schema';
 import { ArtifactLegend, KindBadge } from '../ArtifactKind';
 import { CodeBlock } from '../Code';
-import { ProLockedWorkedExample } from './ProLock';
+import { TEMPLATES_URL } from '../../lib/nav';
 import { List, Section, TableWrap } from './Sections';
 
 const Label = ({ children }: { children: React.ReactNode }) => (
@@ -614,10 +614,14 @@ export async function PlaybookSection({ pb, slug, title }: { pb: Playbook; slug:
               <strong>Outcome. </strong>
               {pb.workedExample.outcome}
             </p>
+          <p className="text-sm text-mute" data-prose>
+              The full worked template for this use case, with its starter, tests, saved results, documents and contracts, is in the repository:{' '}
+              <a href={`${TEMPLATES_URL}/${slug}`} className="text-signal hover:underline">
+                templates/{slug}
+              </a>
+            </p>
           </>
-        ) : (
-          <ProLockedWorkedExample slug={slug} title={title} />
-        )}
+        ) : null}
       </Sub>
 
       <Sub id="pb-tests" title="6 · Test and acceptance plan">

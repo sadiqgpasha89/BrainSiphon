@@ -1,0 +1,16 @@
+contract: automated_valuation_model_inputs.v1
+owner: valuation-and-collateral-analytics@example.com
+system_of_record: Property registry, cadastre and assessor records
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: comparable_sale_density, type: double, nullable: false }
+    - { name: price_per_square_metre_by_micro_area, type: double, nullable: false }
+    - { name: condition_score_from_photos, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

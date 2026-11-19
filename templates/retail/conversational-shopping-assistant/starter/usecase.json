@@ -1,0 +1,50 @@
+{
+ "slug": "retail/conversational-shopping-assistant",
+ "title": "Conversational Shopping Assistant",
+ "domain": "retail",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 59286,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Catalogue grounding rate",
+   "definition": "fraction of mentioned products found in catalogue",
+   "asOfRule": "Exact ID verification"
+  },
+  {
+   "name": "Attribute constraint satisfaction",
+   "definition": "do recommended items meet stated constraints",
+   "asOfRule": "Parse constraints deterministically"
+  },
+  {
+   "name": "Session conversion and assist rate",
+   "definition": "purchase after assistant use",
+   "asOfRule": "Holdout design"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Conversational Shopping Assistant\": Let shoppers describe needs in natural language and get grounded, buyable product recommendations with comparisons and follow-ups. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Golden queries written by developers."
+}

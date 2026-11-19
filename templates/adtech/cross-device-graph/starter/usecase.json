@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/cross-device-graph",
+ "title": "Cross-Device Graph for Measurement",
+ "domain": "adtech",
+ "engine": "graph",
+ "fit": "exact",
+ "problemType": "entity-resolution",
+ "seed": 47311,
+ "knobs": {
+  "n_clusters": 1490,
+  "hub_share": 0.126
+ },
+ "blueprintSignals": [
+  {
+   "name": "Shared login events",
+   "definition": "authenticated co-occurrence",
+   "asOfRule": "Hashing"
+  },
+  {
+   "name": "IP co-occurrence over time",
+   "definition": "repeated shared networks",
+   "asOfRule": "Public IP filter"
+  },
+  {
+   "name": "Behavioural similarity",
+   "definition": "co-browsing patterns",
+   "asOfRule": "Consent"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Cross-Device Graph for Measurement\": Link devices belonging to the same person or household to unify reach, frequency and attribution measurement. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on deterministic links only."
+}

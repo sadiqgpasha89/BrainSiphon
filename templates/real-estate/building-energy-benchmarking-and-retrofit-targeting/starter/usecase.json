@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/building-energy-benchmarking-and-retrofit-targeting",
+ "title": "Building Energy Benchmarking & Retrofit Targeting",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 84018,
+ "knobs": {
+  "n": 25610,
+  "outlier_share": 0.029,
+  "drift": 0.235
+ },
+ "blueprintSignals": [
+  {
+   "name": "Normalised EUI",
+   "definition": "annual kilowatt-hours per square metre after weather and occupancy adjustment",
+   "asOfRule": "Area definitions differ, so use the standard gross internal area"
+  },
+  {
+   "name": "Peer percentile",
+   "definition": "rank of the building's normalised EUI within its peer group",
+   "asOfRule": "Peer groups with few members are unstable"
+  },
+  {
+   "name": "Envelope age",
+   "definition": "year of construction and of the last major facade or window upgrade",
+   "asOfRule": "Records are often missing, so use the building age as a fallback"
+  },
+  {
+   "name": "System type",
+   "definition": "heating and cooling system class, such as gas boiler, heat pump or chiller",
+   "asOfRule": "Recorded types are often outdated"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Building Energy Benchmarking & Retrofit Targeting\": Benchmark building energy use against peers and rank buildings for retrofit by savings and payback. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Retrofitted buildings differ from the rest, so their results are not comparable with unretrofitted ones."
+}

@@ -1,0 +1,36 @@
+{
+ "use_case": "edtech/admissions-application-scoring-fairness",
+ "engine": "nlp",
+ "seed": 82630,
+ "knobs": {
+  "n_docs": 5250
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.7,
+ "results": {
+  "docs": 5250,
+  "duplicate_share": 0.25542857142857145,
+  "random_split_with_leak": {
+   "macro_f1": 0.90597182010421,
+   "ece": 0.15526930178690299
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4439978485465909,
+   "ece": 0.05535149284516258
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7914059179359189,
+   "ece": 0.10202619098888821
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4439978485465909,
+   "ece": 0.05535149284516258
+  }
+ }
+}

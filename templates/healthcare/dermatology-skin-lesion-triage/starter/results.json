@@ -1,0 +1,50 @@
+{
+ "use_case": "healthcare/dermatology-skin-lesion-triage",
+ "engine": "cv",
+ "seed": 49552,
+ "knobs": {
+  "n": 4040,
+  "prevalence": 0.103
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.7,
+ "results": {
+  "images": 4040,
+  "train": 1423,
+  "prevalence": 0.09851485148514852,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9547120591731607,
+    "sens_at_95_spec": 0.7661691542288557
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9851050439056553,
+    "sens_at_95_spec": 0.9344262295081968
+   },
+   "site_B": {
+    "auc": 0.7327329062651345,
+    "sens_at_95_spec": 0.3034825870646766
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3034825870646766,
+    "false_positive_rate": 0.05254424778761062
+   }
+  }
+ }
+}

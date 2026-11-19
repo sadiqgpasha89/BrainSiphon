@@ -1,0 +1,36 @@
+{
+ "use_case": "fintech/insider-trading-surveillance",
+ "engine": "nlp",
+ "seed": 69967,
+ "knobs": {
+  "n_docs": 4950
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.7,
+ "results": {
+  "docs": 4950,
+  "duplicate_share": 0.2527272727272727,
+  "random_split_with_leak": {
+   "macro_f1": 0.9004617335136987,
+   "ece": 0.14437875476935552
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4759654111544339,
+   "ece": 0.04300256382516431
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7945592443786625,
+   "ece": 0.10460793124443873
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4759654111544339,
+   "ece": 0.04300256382516431
+  }
+ }
+}

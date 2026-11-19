@@ -1,0 +1,37 @@
+{
+ "use_case": "adtech/frequency-cap-optimization",
+ "engine": "bandit",
+ "seed": 47163,
+ "knobs": {
+  "n": 30430,
+  "logging_temperature": 1.237
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "logged_rows": 30430,
+  "logging_reward_rate": 0.3862964180085442,
+  "always_best_average_action": {
+   "true_value": 0.39913129859443114,
+   "naive_matched": 0.5537,
+   "ips": 0.4259,
+   "snips": 0.4297,
+   "doubly_robust": 0.4147,
+   "match_rate": 0.2758
+  },
+  "learned_greedy": {
+   "true_value": 0.6920470564489979,
+   "naive_matched": 0.7334,
+   "ips": 0.6906,
+   "snips": 0.7032,
+   "doubly_robust": 0.702,
+   "match_rate": 0.2199
+  }
+ }
+}

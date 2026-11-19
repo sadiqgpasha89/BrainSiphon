@@ -1,0 +1,36 @@
+{
+ "use_case": "cybersecurity/secret-leak-detection-in-code",
+ "engine": "nlp",
+ "seed": 20556,
+ "knobs": {
+  "n_docs": 6330
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.2,
+ "results": {
+  "docs": 6330,
+  "duplicate_share": 0.2511848341232228,
+  "random_split_with_leak": {
+   "macro_f1": 0.8972300942632471,
+   "ece": 0.12732305716177345
+  },
+  "time_split_clean": {
+   "macro_f1": 0.45283411757731507,
+   "ece": 0.03816529928055317
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7978945494903731,
+   "ece": 0.08622167875677168
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.45283411757731507,
+   "ece": 0.03816529928055317
+  }
+ }
+}

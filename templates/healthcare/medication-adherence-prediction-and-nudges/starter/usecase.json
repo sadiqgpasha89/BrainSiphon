@@ -1,0 +1,54 @@
+{
+ "slug": "healthcare/medication-adherence-prediction-and-nudges",
+ "title": "Medication Adherence Prediction & Nudges",
+ "domain": "healthcare",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 22922,
+ "knobs": {
+  "n": 18630,
+  "outlier_share": 0.031,
+  "drift": 0.275
+ },
+ "blueprintSignals": [
+  {
+   "name": "Refill gap pattern",
+   "definition": "days late on past refills",
+   "asOfRule": "Matured fills only"
+  },
+  {
+   "name": "Cost-sharing change",
+   "definition": "copay change at fill",
+   "asOfRule": "Plan year"
+  },
+  {
+   "name": "Side-effect reports",
+   "definition": "patient-reported or call-centre notes",
+   "asOfRule": "Consent"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Medication Adherence Prediction & Nudges\": Identify patients likely to stop therapy and choose the supportive nudge that most improves adherence within a contact budget. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Missing fills at other pharmacies counted as non-adherence."
+}

@@ -1,0 +1,36 @@
+{
+ "use_case": "bfsi/operational-risk-event-classification",
+ "engine": "nlp",
+ "seed": 12618,
+ "knobs": {
+  "n_docs": 6070
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.1,
+ "results": {
+  "docs": 6070,
+  "duplicate_share": 0.2535420098846788,
+  "random_split_with_leak": {
+   "macro_f1": 0.9065477245918339,
+   "ece": 0.12376382990229673
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4572191287163069,
+   "ece": 0.05235426613427468
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8020022663961582,
+   "ece": 0.10279669224980938
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4572191287163069,
+   "ece": 0.05235426613427468
+  }
+ }
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/securities-lending-recall-and-rate-prediction",
+ "title": "Securities Lending Recall & Rate Prediction",
+ "domain": "bfsi",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 35595,
+ "knobs": {
+  "n": 25840,
+  "outlier_share": 0.024,
+  "drift": 0.304
+ },
+ "blueprintSignals": [
+  {
+   "name": "Utilisation trend",
+   "definition": "change in the share of lendable inventory on loan",
+   "asOfRule": "Data lags by a day"
+  },
+  {
+   "name": "Corporate event proximity",
+   "definition": "days to dividends, votes and index rebalances",
+   "asOfRule": "Event dates change"
+  },
+  {
+   "name": "Short interest",
+   "definition": "reported short interest versus float",
+   "asOfRule": "Delayed publication"
+  },
+  {
+   "name": "Owner sell propensity",
+   "definition": "probability the beneficial owner sells in the next 5 days",
+   "asOfRule": "Portfolio data is limited"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Securities Lending Recall & Rate Prediction\": Predict lending demand, fee rates and recall risk per security so the lending desk prices loans and holds back what it expects to need. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Survivorship in security lists."
+}

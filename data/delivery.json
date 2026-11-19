@@ -1,0 +1,1467 @@
+[
+ {
+  "id": "p0",
+  "n": 0,
+  "name": "Discovery and business requirements",
+  "goal": "Agree which decision the system will support, for whom, how success is measured and whether AI is warranted at all, before anyone designs or builds anything.",
+  "weeks": "Weeks 1–2",
+  "lead": "Business Analyst",
+  "accountable": "Executive sponsor",
+  "entry": "A sponsor has named a problem and can give you access to the people who do the work today.",
+  "steps": [
+   {
+    "id": "0.1",
+    "title": "Pick the use case and read its blueprint once, end to end",
+    "owner": "Delivery lead (project manager)",
+    "with": [
+     "Business Analyst",
+     "Solution Architect",
+     "AI Architect",
+     "Forward Deployed Engineer"
+    ],
+    "when": "Week 1, day 1",
+    "output": "A one-page note: what we adopt from the blueprint, and what differs here.",
+    "read": [
+     "signal-noise",
+     "problem",
+     "validation"
+    ]
+   },
+   {
+    "id": "0.2",
+    "title": "Name the sponsor, the decision owner and every stakeholder",
+    "owner": "Business Analyst",
+    "with": [
+     "Executive sponsor",
+     "Product owner (decision owner)",
+     "Delivery lead (project manager)"
+    ],
+    "when": "Week 1, days 1–2",
+    "output": "Stakeholder map with a named decision owner.",
+    "read": [
+     "disc-stakeholders"
+    ]
+   },
+   {
+    "id": "0.3",
+    "title": "Answer the eight discovery questions with evidence",
+    "owner": "Business Analyst",
+    "with": [
+     "Product owner (decision owner)",
+     "Domain expert (subject-matter expert)",
+     "End users and process owners"
+    ],
+    "when": "Week 1, days 2–5",
+    "output": "Discovery log: eight questions, each with a confirmed answer, its owner and its evidence.",
+    "read": [
+     "disc-questions"
+    ]
+   },
+   {
+    "id": "0.4",
+    "title": "Map the AS-IS process and design the TO-BE process",
+    "owner": "Business Analyst",
+    "with": [
+     "End users and process owners",
+     "Domain expert (subject-matter expert)",
+     "Solution Architect"
+    ],
+    "when": "Week 1, days 3–5",
+    "output": "AS-IS and TO-BE process maps and user journeys, agreed with the people who run them.",
+    "read": [
+     "disc-process",
+     "disc-stakeholders"
+    ]
+   },
+   {
+    "id": "0.5",
+    "title": "Measure the baseline",
+    "owner": "Data Analyst",
+    "with": [
+     "Data owner (data steward)",
+     "Data Engineer",
+     "Data Scientist",
+     "Business Analyst"
+    ],
+    "when": "Weeks 1–2",
+    "output": "Baseline report with KPI definitions. Measured, not estimated.",
+    "read": [
+     "disc-case",
+     "metrics"
+    ]
+   },
+   {
+    "id": "0.6",
+    "title": "Decide whether AI is warranted at all",
+    "owner": "AI Architect",
+    "with": [
+     "Data Scientist",
+     "Product owner (decision owner)",
+     "Domain expert (subject-matter expert)"
+    ],
+    "when": "Week 2",
+    "output": "AI go/no-go recommendation with the completed decision matrix.",
+    "read": [
+     "ent-decision",
+     "signal-noise",
+     "agentic"
+    ]
+   },
+   {
+    "id": "0.7",
+    "title": "Classify the data and confirm the risk tier",
+    "owner": "Security Engineer",
+    "with": [
+     "Risk, compliance, legal and privacy",
+     "Data owner (data steward)",
+     "AI Architect"
+    ],
+    "when": "Week 2",
+    "output": "Data classification, confirmed risk tier and the approval path.",
+    "read": [
+     "governance",
+     "gov-approvals",
+     "gov-regulatory"
+    ]
+   },
+   {
+    "id": "0.8",
+    "title": "Write the requirements and acceptance criteria",
+    "owner": "Business Analyst",
+    "with": [
+     "Product owner (decision owner)",
+     "QA / Test Engineer",
+     "Solution Architect",
+     "Platform Engineer"
+    ],
+    "when": "Week 2",
+    "output": "Approved requirements, testable acceptance criteria and a scope boundary.",
+    "read": [
+     "disc-requirements",
+     "ent-nfr"
+    ]
+   },
+   {
+    "id": "0.9",
+    "title": "Agree the RACI, the team and the plan",
+    "owner": "Delivery lead (project manager)",
+    "with": [
+     "Executive sponsor",
+     "Product owner (decision owner)",
+     "Business Analyst"
+    ],
+    "when": "Week 2",
+    "output": "RACI, staffing plan, dated delivery plan and risk register.",
+    "read": [
+     "disc-raci",
+     "role-lenses"
+    ]
+   },
+   {
+    "id": "0.10",
+    "title": "Build the business case",
+    "owner": "Business Analyst",
+    "with": [
+     "Finance (FinOps)",
+     "Executive sponsor",
+     "Data Analyst"
+    ],
+    "when": "Week 2",
+    "output": "Business case with an ROI measurement plan.",
+    "read": [
+     "disc-case",
+     "scale",
+     "xp-value"
+    ]
+   },
+   {
+    "id": "0.11",
+    "title": "Discover the customer environment and open every access request",
+    "owner": "Forward Deployed Engineer",
+    "with": [
+     "Solution Architect",
+     "Platform Engineer",
+     "Security Engineer",
+     "Data owner (data steward)"
+    ],
+    "when": "Week 1, in parallel with the interviews",
+    "output": "Completed environment templates, a readiness report, an access and firewall request log with owners and tickets, and the agreed deployment mode.",
+    "read": [
+     "implementation",
+     "impl-access",
+     "ent-technology"
+    ]
+   }
+  ],
+  "gate": {
+   "name": "Gate 0 · Scope approved",
+   "convenedBy": "Delivery lead (project manager)",
+   "signedBy": [
+    "Executive sponsor",
+    "Product owner (decision owner)"
+   ],
+   "checks": [
+    "Every discovery question has a confirmed answer with a named owner.",
+    "The baseline is measured from real records.",
+    "The decision that AI is (or is not) warranted is recorded with its reasons.",
+    "Requirements and acceptance criteria are approved, and the out-of-scope list exists.",
+    "The risk tier and its approval path are confirmed by risk and compliance.",
+    "The RACI is agreed and every role has a named person.",
+    "The business case is approved and the next phase is funded."
+   ]
+  },
+  "traps": [
+   "Starting with the model. Nothing in Phase 1 or later starts before this gate.",
+   "Accepting an estimated baseline. Without a measured one you can never show the system helped.",
+   "Treating the sponsor as the user. The person who pays is rarely the person who does the work.",
+   "A scope with no out-of-scope list.",
+   "No single named decision owner."
+  ]
+ },
+ {
+  "id": "p1",
+  "n": 1,
+  "name": "Architecture and design",
+  "goal": "Turn the approved requirements into a design that fits your enterprise, meets its non-functional targets and can be built, tested, released and rolled back.",
+  "weeks": "Weeks 2–4",
+  "lead": "Solution Architect",
+  "accountable": "Solution Architect",
+  "entry": "Gate 0 is signed.",
+  "steps": [
+   {
+    "id": "1.1",
+    "title": "Place the system in your enterprise landscape",
+    "owner": "Solution Architect",
+    "with": [
+     "Platform Engineer",
+     "Data Engineer",
+     "Business Analyst",
+     "Forward Deployed Engineer"
+    ],
+    "when": "Week 2",
+    "output": "C4 context and container views and an integration matrix.",
+    "read": [
+     "ent-application",
+     "ent-business",
+     "ent-technology"
+    ]
+   },
+   {
+    "id": "1.2",
+    "title": "Fix the non-functional requirements and the latency budget",
+    "owner": "Solution Architect",
+    "with": [
+     "SRE / DevOps Engineer",
+     "Inference Engineer",
+     "Product owner (decision owner)"
+    ],
+    "when": "Week 2",
+    "output": "NFR matrix with a per-stage latency budget.",
+    "read": [
+     "ent-nfr",
+     "hld",
+     "sequence"
+    ]
+   },
+   {
+    "id": "1.3",
+    "title": "Choose the model strategy and the human-oversight points",
+    "owner": "AI Architect",
+    "with": [
+     "Data Scientist",
+     "AI Engineer",
+     "Product owner (decision owner)"
+    ],
+    "when": "Weeks 2–3",
+    "output": "Model strategy and oversight design, recorded as a decision record.",
+    "read": [
+     "blueprint",
+     "ent-decision",
+     "agentic"
+    ]
+   },
+   {
+    "id": "1.4",
+    "title": "Design the high-level architecture and the fallback ladder",
+    "owner": "Solution Architect",
+    "with": [
+     "AI Architect",
+     "Platform Engineer",
+     "SRE / DevOps Engineer"
+    ],
+    "when": "Week 3",
+    "output": "High-level design, sequence diagram and fallback ladder.",
+    "read": [
+     "hld",
+     "sequence",
+     "gov-guardrails",
+     "edge-cases"
+    ]
+   },
+   {
+    "id": "1.5",
+    "title": "Write the low-level design",
+    "owner": "ML Engineer",
+    "with": [
+     "AI Engineer",
+     "Data Engineer",
+     "QA / Test Engineer"
+    ],
+    "when": "Weeks 3–4",
+    "output": "Low-level design: API contract, data model and event schema, reviewed by its consumers.",
+    "read": [
+     "lld"
+    ]
+   },
+   {
+    "id": "1.6",
+    "title": "Design the data architecture and draft the data contracts",
+    "owner": "Data Engineer",
+    "with": [
+     "Data Analyst",
+     "Data owner (data steward)",
+     "Solution Architect"
+    ],
+    "when": "Weeks 3–4",
+    "output": "Data architecture and draft data contracts.",
+    "read": [
+     "ent-data",
+     "features"
+    ]
+   },
+   {
+    "id": "1.7",
+    "title": "Threat-model the design",
+    "owner": "Security Engineer",
+    "with": [
+     "Solution Architect",
+     "AI Architect",
+     "Platform Engineer",
+     "Risk, compliance, legal and privacy"
+    ],
+    "when": "Week 3",
+    "output": "Threat model and security requirements.",
+    "read": [
+     "gov-security",
+     "ent-technology",
+     "gov-data"
+    ]
+   },
+   {
+    "id": "1.8",
+    "title": "Size capacity and cost",
+    "owner": "Inference Engineer",
+    "with": [
+     "Platform Engineer",
+     "Finance (FinOps)",
+     "SRE / DevOps Engineer"
+    ],
+    "when": "Week 3",
+    "output": "Capacity and cost model inside the business case.",
+    "read": [
+     "scale"
+    ]
+   },
+   {
+    "id": "1.9",
+    "title": "Define environments, the release path and the SLOs",
+    "owner": "MLOps Engineer",
+    "with": [
+     "SRE / DevOps Engineer",
+     "Platform Engineer",
+     "QA / Test Engineer"
+    ],
+    "when": "Weeks 3–4",
+    "output": "Release and environment design, and an SLO document.",
+    "read": [
+     "mlops",
+     "operations"
+    ]
+   },
+   {
+    "id": "1.10",
+    "title": "Write the test strategy",
+    "owner": "QA / Test Engineer",
+    "with": [
+     "Business Analyst",
+     "ML Engineer",
+     "Data Scientist"
+    ],
+    "when": "Week 4",
+    "output": "Test strategy with a traceability matrix.",
+    "read": [
+     "evaluation",
+     "edge-cases",
+     "pb-tests"
+    ]
+   },
+   {
+    "id": "1.11",
+    "title": "Record the decisions and hold the architecture review",
+    "owner": "Solution Architect",
+    "with": [
+     "AI Architect",
+     "Security Engineer",
+     "Product owner (decision owner)",
+     "Business Analyst"
+    ],
+    "when": "Week 4",
+    "output": "Decision records and architecture review minutes with actions.",
+    "read": [
+     "ent-adr",
+     "ent-buildbuy"
+    ]
+   },
+   {
+    "id": "1.12",
+    "title": "Specify every integration and prove the environment can carry it",
+    "owner": "Forward Deployed Engineer",
+    "with": [
+     "Solution Architect",
+     "Data Engineer",
+     "Platform Engineer",
+     "Security Engineer"
+    ],
+    "when": "Week 4",
+    "output": "An integration specification per hop with sequence diagrams and tests, the adapter selection, and a readiness report for the target environment.",
+    "read": [
+     "implementation",
+     "impl-integrations",
+     "impl-connectors"
+    ]
+   }
+  ],
+  "gate": {
+   "name": "Gate 1 · Design approved",
+   "convenedBy": "Delivery lead (project manager)",
+   "signedBy": [
+    "Solution Architect",
+    "AI Architect",
+    "Security Engineer",
+    "Product owner (decision owner)"
+   ],
+   "checks": [
+    "Context, container, high-level, sequence and low-level designs are reviewed.",
+    "The stage budgets add up to the p99 latency target.",
+    "Every non-functional requirement has a target and a test that will prove it.",
+    "Every threat has a control and named evidence.",
+    "Capacity and cost fit inside the business case.",
+    "The release path, the SLOs and the rollback mechanism are defined.",
+    "Every acceptance criterion traces to a test.",
+    "Significant decisions are recorded."
+   ]
+  },
+  "traps": [
+   "Copying the blueprint’s diagram without replacing its generic systems with your own.",
+   "Sizing for average load instead of peak.",
+   "No answer to “what does the user get when the model is down?”",
+   "Leaving the rollback decision to the day of the incident.",
+   "Choosing an agent because it is fashionable. Read the blueprint’s verdict first."
+  ]
+ },
+ {
+  "id": "p2",
+  "n": 2,
+  "name": "Data",
+  "goal": "Get lawful access to the data, prove it is fit for purpose, and turn it into reproducible, leak-free datasets and feature pipelines.",
+  "weeks": "Weeks 3–7",
+  "lead": "Data Engineer",
+  "accountable": "Data owner (data steward)",
+  "entry": "Gate 0 is signed and the data architecture from step 1.6 is drafted.",
+  "steps": [
+   {
+    "id": "2.1",
+    "title": "Get access and sign the agreements",
+    "owner": "Forward Deployed Engineer",
+    "with": [
+     "Data Engineer",
+     "Data owner (data steward)",
+     "Security Engineer",
+     "Risk, compliance, legal and privacy"
+    ],
+    "when": "Week 3",
+    "output": "Access approvals, signed data contracts, the privacy impact assessment and a customer-environment checklist with every blocker owned.",
+    "read": [
+     "gov-data",
+     "ent-data",
+     "pb-prereqs"
+    ]
+   },
+   {
+    "id": "2.2",
+    "title": "Profile the data",
+    "owner": "Data Analyst",
+    "with": [
+     "Data Engineer",
+     "Domain expert (subject-matter expert)"
+    ],
+    "when": "Weeks 3–4",
+    "output": "Data profiling report and a quality issues log.",
+    "read": [
+     "features",
+     "pb-data"
+    ]
+   },
+   {
+    "id": "2.3",
+    "title": "Write the source-to-target mapping",
+    "owner": "Data Analyst",
+    "with": [
+     "Data Engineer",
+     "Business Analyst"
+    ],
+    "when": "Week 4",
+    "output": "Source-to-target mapping that reconciles to a trusted report.",
+    "read": [
+     "ent-data",
+     "features"
+    ]
+   },
+   {
+    "id": "2.4",
+    "title": "Define the label and the prediction point",
+    "owner": "Data Scientist",
+    "with": [
+     "Domain expert (subject-matter expert)",
+     "Data Analyst",
+     "Product owner (decision owner)",
+     "AI Engineer"
+    ],
+    "when": "Week 4",
+    "output": "Label specification approved by the domain expert.",
+    "read": [
+     "problem",
+     "xp-data",
+     "pb-data"
+    ]
+   },
+   {
+    "id": "2.5",
+    "title": "Build the ingestion pipelines",
+    "owner": "Data Engineer",
+    "with": [
+     "Platform Engineer",
+     "MLOps Engineer"
+    ],
+    "when": "Weeks 4–6",
+    "output": "Ingestion pipelines running in development, with lineage.",
+    "read": [
+     "blueprint",
+     "lld",
+     "ent-data"
+    ]
+   },
+   {
+    "id": "2.6",
+    "title": "Add automated data-quality gates",
+    "owner": "Data Engineer",
+    "with": [
+     "Data Analyst",
+     "MLOps Engineer"
+    ],
+    "when": "Weeks 5–6",
+    "output": "Automated quality checks that block bad data, and a dashboard.",
+    "read": [
+     "ent-data",
+     "metrics"
+    ]
+   },
+   {
+    "id": "2.7",
+    "title": "Build the features, correct as of the prediction time",
+    "owner": "Data Engineer",
+    "with": [
+     "Data Scientist",
+     "ML Engineer"
+    ],
+    "when": "Weeks 5–7",
+    "output": "Feature pipelines and feature definitions, with a test that proves no feature uses future data.",
+    "read": [
+     "features",
+     "signal-noise",
+     "pb-milestones"
+    ]
+   },
+   {
+    "id": "2.8",
+    "title": "Create the training, validation and test datasets",
+    "owner": "Data Scientist",
+    "with": [
+     "Data Engineer"
+    ],
+    "when": "Weeks 6–7",
+    "output": "Versioned datasets with a dataset card, reproducible from code.",
+    "read": [
+     "ev-offline",
+     "xp-data"
+    ]
+   },
+   {
+    "id": "2.9",
+    "title": "Explore the data and confirm the signal",
+    "owner": "Data Scientist",
+    "with": [
+     "Data Analyst",
+     "Domain expert (subject-matter expert)"
+    ],
+    "when": "Weeks 6–7",
+    "output": "Exploration report with signal and leakage findings.",
+    "read": [
+     "signal-noise",
+     "features",
+     "xp-model"
+    ]
+   }
+  ],
+  "gate": {
+   "name": "Gate 2 · Data ready",
+   "convenedBy": "Delivery lead (project manager)",
+   "signedBy": [
+    "Data owner (data steward)",
+    "Data Scientist",
+    "Security Engineer"
+   ],
+   "checks": [
+    "Access is approved for this purpose and the data contracts are signed.",
+    "Quality checks are automated and passing.",
+    "The label definition is approved by the domain expert.",
+    "A test proves no feature uses information from after the prediction time.",
+    "Datasets are versioned and can be rebuilt from code.",
+    "The signal is confirmed against the baseline, or the work has gone back to Gate 0."
+   ]
+  },
+  "traps": [
+   "A random train/test split on time-dependent data.",
+   "A feature filled in after the outcome is known.",
+   "A one-off notebook extraction nobody can re-run.",
+   "Defining the label without the domain expert.",
+   "Different feature code for training and for serving."
+  ]
+ },
+ {
+  "id": "p3",
+  "n": 3,
+  "name": "Model and application build",
+  "goal": "Build a baseline, beat it with a candidate, and turn the result into packaged, reproducible, callable software inside the user’s workflow.",
+  "weeks": "Weeks 5–10",
+  "lead": "Data Scientist",
+  "accountable": "AI Architect",
+  "entry": "Gate 1 is signed. Model training starts when Gate 2 is signed; repository and serving work can start earlier.",
+  "steps": [
+   {
+    "id": "3.1",
+    "title": "Set up the repository, CI and experiment tracking",
+    "owner": "MLOps Engineer",
+    "with": [
+     "ML Engineer",
+     "Platform Engineer",
+     "Forward Deployed Engineer"
+    ],
+    "when": "Week 5",
+    "output": "Repository, CI, experiment tracking and model registry.",
+    "read": [
+     "mlops",
+     "mlops-toolchain"
+    ]
+   },
+   {
+    "id": "3.2",
+    "title": "Run the starter kit and build the baseline",
+    "owner": "Data Scientist",
+    "with": [
+     "ML Engineer"
+    ],
+    "when": "Weeks 5–6",
+    "output": "Baseline with an evaluation report: the number every later model must beat.",
+    "read": [
+     "playbook",
+     "pb-milestones",
+     "blueprint",
+     "evaluation"
+    ]
+   },
+   {
+    "id": "3.3",
+    "title": "Build the candidate model",
+    "owner": "Data Scientist",
+    "with": [
+     "ML Engineer",
+     "AI Engineer",
+     "Domain expert (subject-matter expert)"
+    ],
+    "when": "Weeks 6–8",
+    "output": "Candidate model, experiment log and error analysis.",
+    "read": [
+     "blueprint",
+     "problem",
+     "pb-milestones"
+    ]
+   },
+   {
+    "id": "3.4",
+    "title": "Evaluate, calibrate and set the operating point",
+    "owner": "Data Scientist",
+    "with": [
+     "Product owner (decision owner)",
+     "Domain expert (subject-matter expert)",
+     "AI Architect"
+    ],
+    "when": "Week 8",
+    "output": "Evaluation report and an operating point signed by the decision owner.",
+    "read": [
+     "ev-thresholds",
+     "ev-offline",
+     "xp-model"
+    ]
+   },
+   {
+    "id": "3.5",
+    "title": "Package the model and build the training pipeline",
+    "owner": "ML Engineer",
+    "with": [
+     "MLOps Engineer",
+     "Data Scientist"
+    ],
+    "when": "Weeks 7–9",
+    "output": "Reproducible training pipeline and a registered model.",
+    "read": [
+     "mlops",
+     "lld"
+    ]
+   },
+   {
+    "id": "3.6",
+    "title": "Build the serving path",
+    "owner": "ML Engineer",
+    "with": [
+     "Inference Engineer",
+     "AI Engineer",
+     "Data Engineer"
+    ],
+    "when": "Weeks 7–9",
+    "output": "Inference service running in development, with its fallbacks.",
+    "read": [
+     "lld",
+     "sequence",
+     "hld"
+    ]
+   },
+   {
+    "id": "3.7",
+    "title": "Optimise inference",
+    "owner": "Inference Engineer",
+    "with": [
+     "ML Engineer",
+     "Platform Engineer"
+    ],
+    "when": "Weeks 8–9",
+    "output": "Performance report: the latency budget is met at the planned cost.",
+    "read": [
+     "scale",
+     "hld"
+    ]
+   },
+   {
+    "id": "3.8",
+    "title": "Build the application and the human-in-the-loop",
+    "owner": "AI Engineer",
+    "with": [
+     "Business Analyst",
+     "End users and process owners",
+     "ML Engineer"
+    ],
+    "when": "Weeks 8–10",
+    "output": "Application integrated into the workflow, with feedback capture.",
+    "read": [
+     "agentic",
+     "disc-process",
+     "sequence"
+    ]
+   },
+   {
+    "id": "3.9",
+    "title": "Build the evaluation harness and the guardrails",
+    "owner": "AI Engineer",
+    "with": [
+     "Data Scientist",
+     "QA / Test Engineer",
+     "Security Engineer"
+    ],
+    "when": "Weeks 9–10",
+    "output": "Evaluation harness in CI and guardrails in the request path.",
+    "read": [
+     "evaluation",
+     "gov-guardrails",
+     "gov-security"
+    ]
+   },
+   {
+    "id": "3.10",
+    "title": "Write the model card",
+    "owner": "Data Scientist",
+    "with": [
+     "AI Architect",
+     "Risk, compliance, legal and privacy"
+    ],
+    "when": "Week 10",
+    "output": "Model card and, where required, the governance submission.",
+    "read": [
+     "gov-model",
+     "gov-rai",
+     "validation"
+    ]
+   }
+  ],
+  "gate": {
+   "name": "Gate 3 · Build complete",
+   "convenedBy": "Delivery lead (project manager)",
+   "signedBy": [
+    "AI Architect",
+    "Product owner (decision owner)",
+    "Data Scientist"
+   ],
+   "checks": [
+    "The candidate beats the baseline on the untouched test set by the agreed margin, or the baseline is what ships.",
+    "The operating point is approved by the decision owner.",
+    "The training pipeline reproduces the metrics from a clean checkout.",
+    "Serving meets the latency budget in development.",
+    "The fallback ladder is implemented and tested.",
+    "The evaluation harness runs in CI.",
+    "The model card is complete."
+   ]
+  },
+  "traps": [
+   "Skipping the baseline, so nobody knows what the complex model added.",
+   "Tuning on the test set.",
+   "A model that only runs in a notebook.",
+   "A threshold chosen by the data scientist alone.",
+   "Reporting only the average metric and never the slices.",
+   "No fallback path."
+  ]
+ },
+ {
+  "id": "p4",
+  "n": 4,
+  "name": "Platform, security and verification",
+  "goal": "Prove, in an environment that resembles production, that the system meets its requirements, is secure, can be observed, and can be rolled back.",
+  "weeks": "Weeks 8–12",
+  "lead": "QA / Test Engineer",
+  "accountable": "Delivery lead (project manager)",
+  "entry": "Gate 1 is signed for platform work. Testing of a component starts as soon as it exists; the full run needs Gate 3.",
+  "steps": [
+   {
+    "id": "4.1",
+    "title": "Provision the environments as code",
+    "owner": "Platform Engineer",
+    "with": [
+     "SRE / DevOps Engineer",
+     "Security Engineer",
+     "Forward Deployed Engineer"
+    ],
+    "when": "Weeks 8–9",
+    "output": "Staging and production environments created from code.",
+    "read": [
+     "ent-technology",
+     "hld",
+     "scale"
+    ]
+   },
+   {
+    "id": "4.2",
+    "title": "Build the deployment pipeline",
+    "owner": "MLOps Engineer",
+    "with": [
+     "Platform Engineer",
+     "ML Engineer"
+    ],
+    "when": "Weeks 9–10",
+    "output": "Deployment pipeline with promotion gates and rollback.",
+    "read": [
+     "mlops",
+     "mlops-retraining"
+    ]
+   },
+   {
+    "id": "4.3",
+    "title": "Instrument observability",
+    "owner": "SRE / DevOps Engineer",
+    "with": [
+     "MLOps Engineer",
+     "Data Engineer",
+     "ML Engineer"
+    ],
+    "when": "Weeks 9–11",
+    "output": "Dashboards, alerts and a prediction log.",
+    "read": [
+     "metrics",
+     "operations",
+     "mt-failure-monitors"
+    ]
+   },
+   {
+    "id": "4.4",
+    "title": "Run functional, contract and integration tests",
+    "owner": "QA / Test Engineer",
+    "with": [
+     "ML Engineer",
+     "AI Engineer",
+     "Data Engineer",
+     "Solution Architect"
+    ],
+    "when": "Weeks 9–11",
+    "output": "Test report and automated suites.",
+    "read": [
+     "pb-tests",
+     "lld",
+     "disc-requirements"
+    ]
+   },
+   {
+    "id": "4.5",
+    "title": "Load-test and inject faults",
+    "owner": "QA / Test Engineer",
+    "with": [
+     "Inference Engineer",
+     "SRE / DevOps Engineer"
+    ],
+    "when": "Weeks 10–11",
+    "output": "Performance and resilience report.",
+    "read": [
+     "scale",
+     "edge-cases",
+     "operations"
+    ]
+   },
+   {
+    "id": "4.6",
+    "title": "Test security and give sign-off",
+    "owner": "Security Engineer",
+    "with": [
+     "Platform Engineer",
+     "AI Engineer"
+    ],
+    "when": "Weeks 10–11",
+    "output": "Security test report and sign-off.",
+    "read": [
+     "gov-security",
+     "gov-regulatory"
+    ]
+   },
+   {
+    "id": "4.7",
+    "title": "Review responsible AI and compliance",
+    "owner": "Risk, compliance, legal and privacy",
+    "with": [
+     "Data Scientist",
+     "AI Architect",
+     "Security Engineer"
+    ],
+    "when": "Week 11",
+    "output": "Compliance evidence pack and approvals.",
+    "read": [
+     "gov-rai",
+     "gov-regulatory",
+     "gov-approvals"
+    ]
+   },
+   {
+    "id": "4.8",
+    "title": "Run user acceptance testing",
+    "owner": "Business Analyst",
+    "with": [
+     "End users and process owners",
+     "Product owner (decision owner)",
+     "QA / Test Engineer",
+     "Domain expert (subject-matter expert)"
+    ],
+    "when": "Weeks 11–12",
+    "output": "Acceptance test report signed by the product owner.",
+    "read": [
+     "disc-requirements",
+     "disc-stakeholders"
+    ]
+   },
+   {
+    "id": "4.9",
+    "title": "Write the runbooks and train support",
+    "owner": "SRE / DevOps Engineer",
+    "with": [
+     "Support and service desk",
+     "MLOps Engineer",
+     "ML Engineer"
+    ],
+    "when": "Weeks 11–12",
+    "output": "Runbooks, on-call rota and trained support.",
+    "read": [
+     "operations",
+     "edge-cases"
+    ]
+   },
+   {
+    "id": "4.10",
+    "title": "Rehearse rollback and disaster recovery",
+    "owner": "SRE / DevOps Engineer",
+    "with": [
+     "MLOps Engineer",
+     "Platform Engineer"
+    ],
+    "when": "Week 12",
+    "output": "Rollback and recovery rehearsal record, with timings.",
+    "read": [
+     "mlops-retraining",
+     "operations",
+     "ent-nfr"
+    ]
+   },
+   {
+    "id": "4.11",
+    "title": "Run customer acceptance testing and plan adoption",
+    "owner": "Forward Deployed Engineer",
+    "with": [
+     "Product owner (decision owner)",
+     "End users and process owners",
+     "QA / Test Engineer",
+     "Support and service desk"
+    ],
+    "when": "Weeks 12–13",
+    "output": "Signed customer acceptance, a defect and exception log, training records and an adoption plan.",
+    "read": [
+     "implementation",
+     "impl-acceptance",
+     "pb-tests"
+    ]
+   }
+  ],
+  "gate": {
+   "name": "Gate 4 · Ready for release",
+   "convenedBy": "Delivery lead (project manager)",
+   "signedBy": [
+    "QA / Test Engineer",
+    "Security Engineer",
+    "SRE / DevOps Engineer",
+    "Product owner (decision owner)"
+   ],
+   "checks": [
+    "Every acceptance criterion passes.",
+    "No critical or high defect or vulnerability is open.",
+    "The load test meets the non-functional targets at peak.",
+    "Every failure scenario has an alert and a runbook, and has been exercised.",
+    "Rollback has been rehearsed and timed.",
+    "User acceptance is signed.",
+    "The compliance approvals are in hand."
+   ]
+  },
+  "traps": [
+   "A staging environment that does not resemble production.",
+   "Testing only the happy path.",
+   "Alerts with no owner.",
+   "“We will write the runbooks after go-live.”",
+   "A rollback nobody has ever run."
+  ]
+ },
+ {
+  "id": "p5",
+  "n": 5,
+  "name": "Release and deployment",
+  "goal": "Put the system in front of real traffic gradually, prove the business effect with a planned experiment, and hand a working service to operations.",
+  "weeks": "Weeks 12–14, with hypercare to week 16",
+  "lead": "MLOps Engineer",
+  "accountable": "Product owner (decision owner)",
+  "entry": "Gate 4 is signed.",
+  "steps": [
+   {
+    "id": "5.1",
+    "title": "Prepare the business change",
+    "owner": "Business Analyst",
+    "with": [
+     "Product owner (decision owner)",
+     "End users and process owners",
+     "Support and service desk",
+     "Forward Deployed Engineer"
+    ],
+    "when": "Week 12",
+    "output": "Users trained, communication sent, procedures updated.",
+    "read": [
+     "disc-process",
+     "ent-operating"
+    ]
+   },
+   {
+    "id": "5.2",
+    "title": "Plan the cut-over and the experiment",
+    "owner": "MLOps Engineer",
+    "with": [
+     "Data Scientist",
+     "Solution Architect",
+     "Product owner (decision owner)"
+    ],
+    "when": "Week 12",
+    "output": "Rollout and experiment plan, written before any traffic moves.",
+    "read": [
+     "ev-online",
+     "xp-design",
+     "xp-metrics"
+    ]
+   },
+   {
+    "id": "5.3",
+    "title": "Hold the go/no-go review",
+    "owner": "Product owner (decision owner)",
+    "with": [
+     "Executive sponsor",
+     "AI Architect",
+     "SRE / DevOps Engineer",
+     "Security Engineer",
+     "QA / Test Engineer",
+     "MLOps Engineer",
+     "Risk, compliance, legal and privacy"
+    ],
+    "when": "Week 12",
+    "output": "Recorded go/no-go decision and an approved change request.",
+    "read": [
+     "gov-approvals",
+     "validation"
+    ]
+   },
+   {
+    "id": "5.4",
+    "title": "Deploy to production with no user impact",
+    "owner": "Forward Deployed Engineer",
+    "with": [
+     "MLOps Engineer",
+     "Platform Engineer",
+     "SRE / DevOps Engineer",
+     "ML Engineer"
+    ],
+    "when": "Week 12",
+    "output": "Production deployment verified, with users still on the old path.",
+    "read": [
+     "mlops",
+     "operations"
+    ]
+   },
+   {
+    "id": "5.5",
+    "title": "Run in shadow",
+    "owner": "MLOps Engineer",
+    "with": [
+     "Data Scientist",
+     "SRE / DevOps Engineer"
+    ],
+    "when": "Weeks 12–13",
+    "output": "Shadow report: production behaves as offline evaluation predicted.",
+    "read": [
+     "xp-design",
+     "pb-milestones",
+     "metrics"
+    ]
+   },
+   {
+    "id": "5.6",
+    "title": "Canary, then ramp",
+    "owner": "MLOps Engineer",
+    "with": [
+     "SRE / DevOps Engineer",
+     "Product owner (decision owner)",
+     "Data Scientist"
+    ],
+    "when": "Weeks 13–14",
+    "output": "Ramp log with the decision taken at each step.",
+    "read": [
+     "xp-metrics",
+     "mlops-retraining",
+     "operations"
+    ]
+   },
+   {
+    "id": "5.7",
+    "title": "Measure the business effect",
+    "owner": "Data Scientist",
+    "with": [
+     "Data Analyst",
+     "Product owner (decision owner)",
+     "Finance (FinOps)"
+    ],
+    "when": "Weeks 13–16, once labels mature",
+    "output": "Experiment readout.",
+    "read": [
+     "xp-value",
+     "xp-metrics",
+     "metrics"
+    ]
+   },
+   {
+    "id": "5.8",
+    "title": "Run hypercare and hand over to operations",
+    "owner": "Forward Deployed Engineer",
+    "with": [
+     "SRE / DevOps Engineer",
+     "Support and service desk",
+     "MLOps Engineer",
+     "Delivery lead (project manager)"
+    ],
+    "when": "Weeks 14–16",
+    "output": "Production handover package and a signed acceptance record: the service is accepted by operations.",
+    "read": [
+     "pb-30",
+     "operations"
+    ]
+   },
+   {
+    "id": "5.9",
+    "title": "Close the release",
+    "owner": "Delivery lead (project manager)",
+    "with": [
+     "Executive sponsor",
+     "Product owner (decision owner)",
+     "MLOps Engineer"
+    ],
+    "when": "Week 16",
+    "output": "Release record and retrospective actions.",
+    "read": [
+     "validation",
+     "mlops"
+    ]
+   }
+  ],
+  "gate": {
+   "name": "Gate 5 · Live and accepted",
+   "convenedBy": "Delivery lead (project manager)",
+   "signedBy": [
+    "Product owner (decision owner)",
+    "SRE / DevOps Engineer",
+    "Executive sponsor"
+   ],
+   "checks": [
+    "The planned share of traffic has been served inside the SLO for the agreed period.",
+    "No guardrail metric was breached.",
+    "The experiment readout is delivered.",
+    "Rollback stayed available throughout the ramp.",
+    "Operations has accepted the handover.",
+    "The release evidence is archived."
+   ]
+  },
+  "traps": [
+   "A big-bang release to everyone at once.",
+   "Declaring success before the labels have matured.",
+   "Changing the success metric after seeing the data.",
+   "Nobody owns the rollback decision.",
+   "Skipping user training."
+  ]
+ },
+ {
+  "id": "p6",
+  "n": 6,
+  "name": "Operate, monitor and improve",
+  "goal": "Keep the service reliable, the model accurate, the cost under control and the benefit visible, for as long as the system runs.",
+  "weeks": "From week 14, continuously",
+  "lead": "SRE / DevOps Engineer",
+  "accountable": "Product owner (decision owner)",
+  "entry": "Gate 5 is signed. This phase does not end: it repeats until the system is retired.",
+  "steps": [
+   {
+    "id": "6.1",
+    "title": "Watch service health",
+    "owner": "SRE / DevOps Engineer",
+    "with": [
+     "Platform Engineer",
+     "Support and service desk",
+     "Forward Deployed Engineer"
+    ],
+    "when": "Continuously, reviewed daily",
+    "output": "SLO report.",
+    "read": [
+     "operations",
+     "metrics"
+    ]
+   },
+   {
+    "id": "6.2",
+    "title": "Monitor data quality and drift",
+    "owner": "MLOps Engineer",
+    "with": [
+     "Data Engineer",
+     "Data Scientist"
+    ],
+    "when": "Every pipeline run, reviewed daily",
+    "output": "Drift and data-quality dashboard with alerts.",
+    "read": [
+     "metrics",
+     "mt-failure-monitors",
+     "mlops"
+    ]
+   },
+   {
+    "id": "6.3",
+    "title": "Monitor model performance",
+    "owner": "Data Scientist",
+    "with": [
+     "MLOps Engineer",
+     "Data Analyst"
+    ],
+    "when": "As labels mature, reviewed weekly",
+    "output": "Weekly model performance review.",
+    "read": [
+     "ev-continuous",
+     "metrics",
+     "xp-model"
+    ]
+   },
+   {
+    "id": "6.4",
+    "title": "Track business value and adoption",
+    "owner": "Business Analyst",
+    "with": [
+     "Data Analyst",
+     "Product owner (decision owner)",
+     "Finance (FinOps)"
+    ],
+    "when": "Monthly, with a quarterly value review",
+    "output": "Benefit report against the baseline.",
+    "read": [
+     "disc-case",
+     "xp-value",
+     "metrics"
+    ]
+   },
+   {
+    "id": "6.5",
+    "title": "Control the cost",
+    "owner": "Inference Engineer",
+    "with": [
+     "Platform Engineer",
+     "Finance (FinOps)"
+    ],
+    "when": "Monthly",
+    "output": "Cost report and optimisation actions.",
+    "read": [
+     "scale",
+     "operations"
+    ]
+   },
+   {
+    "id": "6.6",
+    "title": "Handle incidents and learn from them",
+    "owner": "SRE / DevOps Engineer",
+    "with": [
+     "Support and service desk",
+     "Product owner (decision owner)",
+     "QA / Test Engineer",
+     "ML Engineer"
+    ],
+    "when": "Whenever an alert fires",
+    "output": "Incident record and review actions.",
+    "read": [
+     "operations",
+     "edge-cases"
+    ]
+   },
+   {
+    "id": "6.7",
+    "title": "Retrain, challenge and roll back",
+    "owner": "MLOps Engineer",
+    "with": [
+     "Data Scientist",
+     "ML Engineer",
+     "AI Engineer",
+     "AI Architect"
+    ],
+    "when": "On a trigger: drift, a performance drop, a schedule or a data change",
+    "output": "Retraining record: a new champion, or a documented rejection.",
+    "read": [
+     "mlops-retraining",
+     "ev-continuous",
+     "mlops"
+    ]
+   },
+   {
+    "id": "6.8",
+    "title": "Keep security and compliance current",
+    "owner": "Security Engineer",
+    "with": [
+     "Risk, compliance, legal and privacy",
+     "Platform Engineer"
+    ],
+    "when": "Continuous scanning, quarterly access review, periodic model review",
+    "output": "Compliance evidence log.",
+    "read": [
+     "governance",
+     "gov-regulatory"
+    ]
+   },
+   {
+    "id": "6.9",
+    "title": "Collect feedback and manage the backlog",
+    "owner": "Product owner (decision owner)",
+    "with": [
+     "End users and process owners",
+     "Support and service desk",
+     "Business Analyst"
+    ],
+    "when": "Every sprint",
+    "output": "Prioritised backlog.",
+    "read": [
+     "role-lenses",
+     "disc-requirements"
+    ]
+   },
+   {
+    "id": "6.10",
+    "title": "Review the service: continue, change or retire",
+    "owner": "Product owner (decision owner)",
+    "with": [
+     "Executive sponsor",
+     "AI Architect",
+     "Finance (FinOps)"
+    ],
+    "when": "Quarterly",
+    "output": "Quarterly service review decision.",
+    "read": [
+     "ent-decision",
+     "disc-case",
+     "validation"
+    ]
+   },
+   {
+    "id": "6.11",
+    "title": "Coordinate customer-side incidents and change windows",
+    "owner": "Forward Deployed Engineer",
+    "with": [
+     "SRE / DevOps Engineer",
+     "Support and service desk",
+     "Product owner (decision owner)"
+    ],
+    "when": "Continuous, reviewed monthly",
+    "output": "An incident and change log for customer-side events, current environment documentation and a monthly report to the product owner.",
+    "read": [
+     "implementation",
+     "impl-rollout",
+     "operations"
+    ]
+   }
+  ],
+  "gate": {
+   "name": "Gate 6 · Quarterly service review",
+   "convenedBy": "Product owner (decision owner)",
+   "signedBy": [
+    "Product owner (decision owner)",
+    "Executive sponsor"
+   ],
+   "checks": [
+    "The SLOs were met, or the error-budget policy was applied.",
+    "Model performance is inside the agreed band, or a retrain has been done.",
+    "The realised benefit is reported against the baseline.",
+    "Incidents are reviewed and their actions closed.",
+    "Cost is inside the budget.",
+    "The compliance evidence is current."
+   ]
+  },
+  "traps": [
+   "Monitoring uptime only. A model can be up, fast and wrong.",
+   "No way for the true outcomes to flow back, so performance is never measured.",
+   "Automatic retraining with no evaluation gate.",
+   "So many alerts that people stop reading them.",
+   "Nobody owns the model once the project team has moved on."
+  ]
+ }
+]

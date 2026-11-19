@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/ltv-based-bidding",
+ "title": "LTV-Based Bidding",
+ "domain": "adtech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 46352,
+ "knobs": {
+  "n": 23250,
+  "outlier_share": 0.018,
+  "drift": 0.226
+ },
+ "blueprintSignals": [
+  {
+   "name": "First-week engagement",
+   "definition": "sessions and purchases in 7 days",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Acquisition source",
+   "definition": "channel and campaign",
+   "asOfRule": "Prior"
+  },
+  {
+   "name": "Product-mix at acquisition",
+   "definition": "category of first purchase",
+   "asOfRule": "Product"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"LTV-Based Bidding\": Bid for acquisition using predicted customer lifetime value rather than first-purchase value to unlock profitable growth. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Immature labels in evaluation."
+}

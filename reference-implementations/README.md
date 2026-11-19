@@ -1,6 +1,6 @@
 # Reference implementations
 
-A blueprint tells you what to build. The directory here is one **complete, runnable system**, for card and UPI fraud, the free worked example (three more systems, for forecasting, RAG and agentic workflows, are in BrainSiphon Pro, which this repository does not contain):
+A blueprint tells you what to build. Each directory here is one **complete, runnable system** for a family of blueprints:
 clone, `make setup`, `make demo`, and a source system, CDC, validation, features, training, a registry, serving, an API with
 authentication, a consuming application, human review, monitoring and a retraining loop run on your machine and check
 themselves. No cloud account, no API key and no Docker are needed for the default profile.
@@ -8,12 +8,12 @@ themselves. No cloud account, no API key and no Docker are needed for the defaul
 | Implementation | Solution family (blueprint archetype) | Worked use case | What makes it different | Checks |
 |---|---|---|---|---|
 | [realtime-decisioning](realtime-decisioning/) | Real-time decisioning | Card and UPI fraud | A model in the request path under a deadline; streaming features; delayed labels; every block reviewed | 26 tests, 19-check verification |
-| batch-forecasting (BrainSiphon Pro) | Forecasting; the scheduled-batch shape of Batch analytics | Demand sensing | No model in a request path; nightly run; restatements; rolling-origin backtest; planner overrides scored | 16 tests, 21-check verification |
-| rag-assistant (BrainSiphon Pro) | Retrieval-augmented generation | Developer documentation assistant | The index is the versioned artefact; access control before ranking; cited answers or a refusal; reviews grow the evaluation set | 15 tests, 21-check verification |
-| agentic-workflow (BrainSiphon Pro) | Agentic workflow | SOC alert triage | A planner inside a harness; read-only tools; approval-gated actions with four-eyes; measured against analysts | 17 tests, 23-check verification |
+| [batch-forecasting](batch-forecasting/) | Forecasting; the scheduled-batch shape of Batch analytics | Demand sensing | No model in a request path; nightly run; restatements; rolling-origin backtest; planner overrides scored | 16 tests, 21-check verification |
+| [rag-assistant](rag-assistant/) | Retrieval-augmented generation | Developer documentation assistant | The index is the versioned artefact; access control before ranking; cited answers or a refusal; reviews grow the evaluation set | 15 tests, 21-check verification |
+| [agentic-workflow](agentic-workflow/) | Agentic workflow | SOC alert triage | A planner inside a harness; read-only tools; approval-gated actions with four-eyes; measured against analysts | 17 tests, 23-check verification |
 
-The four systems are separate implementations because they are different in kind: they do not share an endpoint, a data
-model, a failure mode or a definition of "correct". They do share a platform layer, which is here.
+These four are separate implementations because the systems are different in kind: they do not share an endpoint, a data
+model, a failure mode or a definition of "correct". They do share a platform layer.
 
 ## Coverage of the 500 blueprints
 
@@ -21,13 +21,13 @@ Every blueprint has one of nine solution archetypes (`src/content/archetype-lld.
 
 | Archetype | Blueprints | Reference implementation |
 |---|---|---|
-| Batch analytics | 119 | **Adapt** batch-forecasting (BrainSiphon Pro): same pipeline; replace the model, the run's output table and the accuracy join |
+| Batch analytics | 119 | **Adapt** [batch-forecasting](batch-forecasting/docs/ARCHITECTURE.md#adapting-it): same pipeline; replace the model, the run's output table and the accuracy join |
 | Real-time decisioning | 100 | [realtime-decisioning](realtime-decisioning/) |
 | Computer vision | 66 | **None yet** |
 | Document and language extraction | 48 | **None yet** |
-| Retrieval-augmented generation | 44 | rag-assistant (BrainSiphon Pro) |
-| Forecasting | 35 | batch-forecasting (BrainSiphon Pro) |
-| Agentic workflow | 35 | agentic-workflow (BrainSiphon Pro) |
+| Retrieval-augmented generation | 44 | [rag-assistant](rag-assistant/) |
+| Forecasting | 35 | [batch-forecasting](batch-forecasting/) |
+| Agentic workflow | 35 | [agentic-workflow](agentic-workflow/) |
 | Optimisation and planning | 32 | **None yet** |
 | Recommendation and ranking | 21 | **None yet** |
 
@@ -68,9 +68,9 @@ teardown), a `Makefile` and a pinned `requirements.txt`.
 
 ```bash
 cd reference-implementations
-make setup     # one virtual environment, and a generated .env in each implementation
-make test      # the platform tests + the implementation tests
-make demo      # the end-to-end demo, from a clean state
+make setup     # one virtual environment for all four, and a generated .env in each
+make test      # 17 platform tests + 74 implementation tests
+make demo      # the four end-to-end demos, each from a clean state
 ```
 
 Or work in one directory: every implementation has its own `make setup` and is self-contained.

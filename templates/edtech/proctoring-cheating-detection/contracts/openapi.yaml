@@ -1,0 +1,119 @@
+openapi: 3.1.0
+info:
+  title: Remote Proctoring & Cheating Detection API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/proctoring-cheating-detection/frames:
+    post:
+      summary: 'Remote Proctoring & Cheating Detection: request a decision'
+      operationId: proctoring_cheating_detection
+      description: 'Illustrative contract taken from the blueprint''s low-level design. End-to-end deadline: 2500
+        ms. Replace the placeholder values with your own fields and keep the error behaviour.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source_id:
+                  type: string
+                captured_at:
+                  type: string
+                frame_uri:
+                  type: string
+                roi:
+                  type: array
+                  items:
+                    type: integer
+                model_profile:
+                  type: string
+                deadline_ms:
+                  type: integer
+            example:
+              source_id: cam_14
+              captured_at: '2026-11-07T10:15:30.120Z'
+              frame_uri: s3://…/f_001.jpg
+              roi:
+              - 0
+              - 0
+              - 1920
+              - 1080
+              model_profile: default
+              deadline_ms: 2500
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  source_id:
+                    type: string
+                  frame_id:
+                    type: string
+                  detections:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        class:
+                          type: string
+                        bbox:
+                          type: array
+                          items:
+                            type: integer
+                        score:
+                          type: number
+                        track_id:
+                          type: integer
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        zone:
+                          type: string
+                  model_version:
+                    type: string
+                  latency_ms:
+                    type: integer
+                  dropped_frames:
+                    type: integer
+              example:
+                source_id: cam_14
+                frame_id: f_001
+                detections:
+                - class: defect
+                  bbox:
+                  - 412
+                  - 220
+                  - 90
+                  - 64
+                  score: 0.91
+                  track_id: 7
+                events:
+                - type: ZONE_VIOLATION
+                  zone: z2
+                model_version: 2026-11-03.r1
+                latency_ms: 31
+                dropped_frames: 0
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

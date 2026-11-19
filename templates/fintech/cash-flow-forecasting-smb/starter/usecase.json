@@ -1,0 +1,52 @@
+{
+ "slug": "fintech/cash-flow-forecasting-smb",
+ "title": "Cash-Flow Forecasting for Small Businesses",
+ "domain": "fintech",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 54635,
+ "knobs": {
+  "n_series": 289
+ },
+ "blueprintSignals": [
+  {
+   "name": "Recurring payment schedule",
+   "definition": "detected periodic outflows with amount and day pattern",
+   "asOfRule": "Detect only on data before forecast origin"
+  },
+  {
+   "name": "Receivable ageing",
+   "definition": "open invoices by days outstanding and payer behaviour",
+   "asOfRule": "Use invoice status as-of origin"
+  },
+  {
+   "name": "Seasonality index by sector",
+   "definition": "normalised monthly pattern for the business sector",
+   "asOfRule": "Fit on rolling windows to avoid regime leakage"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Cash-Flow Forecasting for Small Businesses\": Forecast 13-week cash positions per SMB account to power overdraft alerts, lending offers and working-capital advice. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Random cross-validation across time."
+}

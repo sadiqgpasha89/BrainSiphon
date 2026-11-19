@@ -1,0 +1,21 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: plan_intake, timeout_ms: 171, on_timeout: fallback_level_1 }
+    - { name: take_off_extractor, timeout_ms: 685, on_timeout: fallback_level_1 }
+    - { name: spec_parser, timeout_ms: 171, on_timeout: fallback_level_1 }
+    - { name: cost_model, timeout_ms: 685, on_timeout: fallback_level_1 }
+    - { name: similar_projects, timeout_ms: 513, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Estimate vs final cost"
+    - "Estimator time"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

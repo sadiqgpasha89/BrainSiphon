@@ -1,0 +1,57 @@
+{
+ "slug": "real-estate/maintenance-request-triage-and-dispatch",
+ "title": "Maintenance Request Triage & Dispatch",
+ "domain": "real-estate",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 51930,
+ "knobs": {
+  "n_docs": 4840
+ },
+ "blueprintSignals": [
+  {
+   "name": "Safety phrases",
+   "definition": "presence of terms such as gas smell, flooding, no heating or sparks in the text",
+   "asOfRule": "Terms vary by language and dialect, so test on local phrasing"
+  },
+  {
+   "name": "Image classifier",
+   "definition": "probability that the photo shows a leak, mould, broken glass or electrical damage",
+   "asOfRule": "Photo quality varies, so require a confidence margin"
+  },
+  {
+   "name": "Asset history",
+   "definition": "number and type of repairs on the unit and the equipment in the last 24 months",
+   "asOfRule": "Records are incomplete for older buildings"
+  },
+  {
+   "name": "Weather",
+   "definition": "temperature and rain forecast at the building on the day",
+   "asOfRule": "Forecasts are uncertain, so use it as context and not as a rule"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Maintenance Request Triage & Dispatch\": Classify tenant maintenance requests by urgency and trade and dispatch the right technician with the right parts. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels come from staff habits and may reflect past dispatch practice and not need."
+}

@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/multi-touch-attribution",
+ "title": "Multi-Touch Attribution",
+ "domain": "adtech",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 44723,
+ "knobs": {
+  "n": 36180,
+  "confound": 1.245,
+  "holdout": 0.168
+ },
+ "blueprintSignals": [
+  {
+   "name": "Path sequence embedding",
+   "definition": "RNN or transformer over touchpoints",
+   "asOfRule": "Windows"
+  },
+  {
+   "name": "Channel time-decay",
+   "definition": "recency weighting",
+   "asOfRule": "Fit"
+  },
+  {
+   "name": "Experiment-calibrated lift",
+   "definition": "geo or user holdout results",
+   "asOfRule": "Experiments"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Multi-Touch Attribution\": Estimate each marketing touchpoint's causal contribution to conversion for budget decisions, beyond last-click bias. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating attribution by conversion prediction alone."
+}

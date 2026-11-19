@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 80
+  stages:
+    - { name: product_page_request, timeout_ms: 5, on_timeout: fallback_level_1 }
+    - { name: offer_fetch, timeout_ms: 9, on_timeout: fallback_level_1 }
+    - { name: seller_metrics_lookup, timeout_ms: 9, on_timeout: fallback_level_1 }
+    - { name: offer_value_model, timeout_ms: 19, on_timeout: fallback_level_1 }
+    - { name: fairness_and_policy_gate, timeout_ms: 5, on_timeout: fallback_level_1 }
+    - { name: winner_selection, timeout_ms: 19, on_timeout: fallback_level_1 }
+    - { name: outcome_logs, timeout_ms: 4, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Defect rate of buy-box orders"
+    - "Seller diversity"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

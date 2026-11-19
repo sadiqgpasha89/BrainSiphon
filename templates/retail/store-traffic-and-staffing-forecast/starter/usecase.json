@@ -1,0 +1,52 @@
+{
+ "slug": "retail/store-traffic-and-staffing-forecast",
+ "title": "Store Traffic & Staffing Forecast",
+ "domain": "retail",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 8858,
+ "knobs": {
+  "n_series": 199
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hourly seasonality profile",
+   "definition": "day-of-week by hour baseline",
+   "asOfRule": "Decay old seasons"
+  },
+  {
+   "name": "Local event calendar",
+   "definition": "sports, concerts, holidays nearby",
+   "asOfRule": "Known in advance"
+  },
+  {
+   "name": "Weather forecast",
+   "definition": "forecast rain or heat at store",
+   "asOfRule": "Use forecast not actual"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Store Traffic & Staffing Forecast\": Forecast footfall and transactions per store-hour to build schedules that match labour to demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using actual weather instead of forecast."
+}

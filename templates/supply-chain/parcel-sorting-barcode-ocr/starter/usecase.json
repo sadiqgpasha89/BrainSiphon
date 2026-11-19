@@ -1,0 +1,48 @@
+{
+ "slug": "supply-chain/parcel-sorting-barcode-ocr",
+ "title": "Parcel Sorting: Label Reading & Address OCR",
+ "domain": "supply-chain",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 40638,
+ "knobs": {
+  "n_train": 870
+ },
+ "blueprintSignals": [
+  {
+   "name": "Barcode decode confidence",
+   "definition": "decoder checksum success",
+   "asOfRule": "Hardware"
+  },
+  {
+   "name": "OCR confidence by field",
+   "definition": "per-field probabilities",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Address validity score",
+   "definition": "fuzzy match to postal database",
+   "asOfRule": "Database version"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Parcel Sorting: Label Reading & Address OCR\": Read barcodes and address text from parcels on fast conveyors with high first-pass read rate to reduce manual coding. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test images with clean labels."
+}

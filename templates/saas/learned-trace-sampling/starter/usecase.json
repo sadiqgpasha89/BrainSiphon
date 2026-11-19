@@ -1,0 +1,53 @@
+{
+ "slug": "saas/learned-trace-sampling",
+ "title": "Learned Trace & Telemetry Sampling",
+ "domain": "saas",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "tabular-anomaly-detection",
+ "seed": 47882,
+ "knobs": {
+  "n_series": 112,
+  "anomalies_per_series": 3.08
+ },
+ "blueprintSignals": [
+  {
+   "name": "Error and latency outlier flags",
+   "definition": "error status, latency percentiles",
+   "asOfRule": "Thresholds"
+  },
+  {
+   "name": "Path rarity",
+   "definition": "rarity of call path",
+   "asOfRule": "Sketches"
+  },
+  {
+   "name": "Customer or SLO importance",
+   "definition": "tier of tenant",
+   "asOfRule": "Config"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Learned Trace & Telemetry Sampling\": Decide in real time which traces and logs to keep so that rare errors and slow requests are retained while costs drop by 80%. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on already-sampled data."
+}

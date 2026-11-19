@@ -1,0 +1,16 @@
+contract: life_accelerated_underwriting_inputs.v1
+owner: core-banking-it@example.com
+system_of_record: Core banking or policy administration system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: disclosure_consistency, type: double, nullable: false }
+    - { name: prescription_history_flags, type: double, nullable: false }
+    - { name: motor_record, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

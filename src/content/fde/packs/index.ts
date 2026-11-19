@@ -28,7 +28,7 @@ export interface AuthoredPack {
 
 /**
  * The use cases with an executable pack under fde-packs/, keyed by `<domain>/<slug>`. The free site ships one (card and UPI fraud);
- * the other nine packs are in BrainSiphon Pro, so their use cases get the derived implementation playbook only.
+ * the other nine packs are in fde-packs/ in this repository and the site does not render them, so their use cases get the derived implementation playbook only.
  */
 export const AUTHORED: Record<string, AuthoredPack> = {
   'fintech/real-time-card-upi-fraud-detection': FINTECH_FRAUD,

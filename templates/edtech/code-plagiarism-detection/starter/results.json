@@ -1,0 +1,36 @@
+{
+ "use_case": "edtech/code-plagiarism-detection",
+ "engine": "nlp",
+ "seed": 5765,
+ "knobs": {
+  "n_docs": 6690
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.3,
+ "results": {
+  "docs": 6690,
+  "duplicate_share": 0.2511210762331838,
+  "random_split_with_leak": {
+   "macro_f1": 0.9115945324454475,
+   "ece": 0.13124919127594442
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4587421746400336,
+   "ece": 0.04147727246031898
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7932360816770188,
+   "ece": 0.09034487564237692
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4587421746400336,
+   "ece": 0.04147727246031898
+  }
+ }
+}

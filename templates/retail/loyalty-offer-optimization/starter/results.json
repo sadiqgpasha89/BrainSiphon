@@ -1,0 +1,37 @@
+{
+ "use_case": "retail/loyalty-offer-optimization",
+ "engine": "bandit",
+ "seed": 38346,
+ "knobs": {
+  "n": 38430,
+  "logging_temperature": 1.263
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "logged_rows": 38430,
+  "logging_reward_rate": 0.3387457715326568,
+  "always_best_average_action": {
+   "true_value": 0.32626200901143293,
+   "naive_matched": 0.4202,
+   "ips": 0.3239,
+   "snips": 0.3339,
+   "doubly_robust": 0.3353,
+   "match_rate": 0.2566
+  },
+  "learned_greedy": {
+   "true_value": 0.6779078726876628,
+   "naive_matched": 0.5898,
+   "ips": 0.6729,
+   "snips": 0.6732,
+   "doubly_robust": 0.682,
+   "match_rate": 0.1605
+  }
+ }
+}

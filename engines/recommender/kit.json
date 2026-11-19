@@ -1,0 +1,186 @@
+{
+ "id": "recommender",
+ "label": "Next-item ranking from sessions",
+ "paradigms": [
+  "recommender"
+ ],
+ "summary": "A runnable reference for recommending the next item from the current session: bot filtering, popularity, bag co-visitation, ordered transitions and a theme-aware model, evaluated by hit rate, MRR and coverage on a time split.",
+ "runtime": "Python 3.11+ with numpy, pandas, scipy and pytest (about 25 seconds per run; the tests take about 30 seconds)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints 60,000 sessions, about 360,000 clicks and 10% bot sessions. baseline.py reports HitRate@20 of 0.076 for popularity, 0.557 for bag co-visitation, 0.588 for ordered transitions and 0.597 for the theme-aware model (MRR 0.025, 0.224, 0.315 and 0.327). Leaving bots in training drops the theme-aware MRR to 0.273. pytest reports 8 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Synthetic sessions with asymmetric item flow, themes, a sale and crawler bots"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Time split, bot filter, four recommenders, leave-last-out evaluation and the two trap experiments"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates for determinism, split, bot filter, evaluation protocol, model ordering and both traps"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "60,000 sessions (about 360,000 clicks) over 30 days on a 1,500-item catalogue with asymmetric item-to-item flow, a theme per session, a sale from day 22 and 10% crawler sessions that walk the catalogue in id order.",
+  "knobs": [
+   "bot_share: share of crawler sessions (default 10%)",
+   "n_sessions, n_items, days: scale of the log",
+   "seed: identical seed gives an identical log"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "session",
+   "day",
+   "step",
+   "item",
+   "category",
+   "dwell_s",
+   "is_bot"
+  ],
+  "rows": [
+   [
+    5,
+    0,
+    0,
+    1482,
+    21,
+    9.76,
+    0
+   ],
+   [
+    5,
+    0,
+    1,
+    1162,
+    6,
+    6.12,
+    0
+   ],
+   [
+    0,
+    0,
+    1,
+    553,
+    10,
+    0.37,
+    1
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Generator, split and protocol tests",
+   "threshold": "pytest -k 'deterministic or time_split or never_credits' passes: 0 sessions shared between train and test, with a gap day between them",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Bot filter quality",
+   "threshold": "At least 95% of crawler sessions removed and at least 98% of human sessions kept",
+   "how": "pytest -k bot_filter"
+  },
+  "baseline": {
+   "metric": "Order and personalisation over popularity",
+   "threshold": "Ordered transitions beat bag co-visitation on MRR by at least 0.04, and co-visitation reaches five times popularity's hit rate (the kit: MRR 0.315 against 0.224)",
+   "how": "python baseline.py; pytest -k order_matters"
+  },
+  "challenger": {
+   "metric": "No regression and a measured trap cost",
+   "threshold": "Challenger within 0.005 of the ordered model on HitRate@20 and MRR@20, coverage above 50%, and bots in training cutting MRR by more than 10% (the kit: 0.597 and 0.327, and a 16% loss)",
+   "how": "python baseline.py; pytest -k 'theme_aware or bots_in_training'"
+  }
+ },
+ "tests": [
+  {
+   "test": "Time split",
+   "tool": "pytest test_time_split_has_a_gap_and_no_shared_session",
+   "pass": "Training ends before the test window and no session id is on both sides"
+  },
+  {
+   "test": "Bot filter quality",
+   "tool": "pytest test_bot_filter_catches_crawlers_and_keeps_humans",
+   "pass": "At least 95% of crawler sessions removed and 98% of humans kept"
+  },
+  {
+   "test": "Evaluation protocol",
+   "tool": "pytest test_evaluation_never_credits_a_repeat_of_what_the_user_just_saw",
+   "pass": "A recommender that echoes the last item scores a hit rate of 0"
+  },
+  {
+   "test": "Order matters",
+   "tool": "pytest test_order_matters_and_everything_beats_popularity",
+   "pass": "Ordered MRR exceeds bag MRR by 0.04 and co-visitation reaches five times popularity's hit rate"
+  },
+  {
+   "test": "Bots hurt ranking quality",
+   "tool": "pytest test_leaving_bots_in_training_hurts_ranking_quality",
+   "pass": "MRR with bots left in training is below 90% of MRR with the filter"
+  },
+  {
+   "test": "Random splits flatter the baseline",
+   "tool": "pytest test_random_session_splits_flatter_the_popularity_baseline",
+   "pass": "Popularity hit rate on a random split exceeds the time-split figure by more than 10%"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "Counting every click as a human signal",
+   "evidence": "About 4,200 crawler sessions create a spurious transition for every item that outranks the real top successor; leaving them in training cuts MRR from 0.327 to 0.273.",
+   "at": "M2"
+  },
+  {
+   "trap": "Treating the session as a bag of items",
+   "evidence": "Ignoring click order scores MRR 0.224 against 0.315 when order is honoured.",
+   "at": "M3"
+  },
+  {
+   "trap": "Splitting sessions at random",
+   "evidence": "A random split gives popularity a hit rate of 0.096 against 0.076 on a time split because a sale's popularity shift sits on both sides.",
+   "at": "M1"
+  },
+  {
+   "trap": "Choosing a heavy model before measuring headroom",
+   "evidence": "The theme-aware model adds only about one point of hit rate over plain ordered transitions.",
+   "at": "M4"
+  }
+ ],
+ "target": "There is no separate label: for each test session the prefix of clicks is the input and the final click is the target (leave-last-out). Sessions shorter than three clicks are skipped.",
+ "headline": {
+  "baseline": "HitRate@20 0.588 and MRR 0.315 for ordered transitions",
+  "challenger": "HitRate@20 0.597 and MRR 0.327"
+ }
+}

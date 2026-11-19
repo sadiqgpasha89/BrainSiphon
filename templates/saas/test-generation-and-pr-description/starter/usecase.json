@@ -1,0 +1,48 @@
+{
+ "slug": "saas/test-generation-and-pr-description",
+ "title": "Unit Test & PR Description Generation",
+ "domain": "saas",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 60903,
+ "knobs": {
+  "n": 213
+ },
+ "blueprintSignals": [
+  {
+   "name": "Compile and pass rate",
+   "definition": "generated tests that run",
+   "asOfRule": "CI"
+  },
+  {
+   "name": "Mutation score",
+   "definition": "killed mutants share",
+   "asOfRule": "Mutation tool"
+  },
+  {
+   "name": "Coverage delta",
+   "definition": "new covered lines",
+   "asOfRule": "Coverage tool"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Unit Test & PR Description Generation\": Generate meaningful unit tests and PR descriptions from code changes, validated by execution and coverage. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Rewarding coverage."
+}

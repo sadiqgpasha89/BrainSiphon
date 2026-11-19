@@ -1,0 +1,52 @@
+{
+ "slug": "healthcare/bed-capacity-and-ed-demand-forecasting",
+ "title": "ED Demand & Bed Capacity Forecasting",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 60407,
+ "knobs": {
+  "n_series": 249
+ },
+ "blueprintSignals": [
+  {
+   "name": "Syndromic surveillance signals",
+   "definition": "ILI, RSV regional counts",
+   "asOfRule": "Reporting lag"
+  },
+  {
+   "name": "Discharge-before-noon rate",
+   "definition": "share of discharges by noon",
+   "asOfRule": "Unit-level"
+  },
+  {
+   "name": "Weather and event calendar",
+   "definition": "temperature extremes, mass gatherings",
+   "asOfRule": "Forecast values"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"ED Demand & Bed Capacity Forecasting\": Forecast ED arrivals, admissions and discharges hourly to staff, open beds and divert flow before crowding hits. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Backtesting only in non-surge periods."
+}

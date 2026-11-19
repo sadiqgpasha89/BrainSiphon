@@ -1,0 +1,49 @@
+{
+ "use_case": "retail/buy-box-seller-ranking",
+ "engine": "regression",
+ "seed": 11149,
+ "knobs": {
+  "n": 16310,
+  "outlier_share": 0.034,
+  "drift": 0.339
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "rows": 16310,
+  "train_rows": 11417,
+  "test_rows": 4893,
+  "baseline_ridge": {
+   "mae": 8.188488216886105,
+   "rmse": 14.660860096897473,
+   "wape": 0.15407383692008322,
+   "r2": 0.3811187723671329
+  },
+  "challenger_gbm": {
+   "mae": 6.152173402341786,
+   "rmse": 13.28401699001812,
+   "wape": 0.1157587257122466,
+   "r2": 0.4919022691174435
+  },
+  "mae_gain_vs_baseline": 0.24868019109376982,
+  "interval_80_coverage": 0.6292662987941958,
+  "interval_80_mean_width": 9.883609012616189,
+  "segment_mae": {
+   "0": 5.903799741955967,
+   "1": 6.141057827036452,
+   "2": 6.2861258262277575,
+   "3": 8.093915066983476
+  },
+  "worst_segment_vs_overall": 1.3156188126788784,
+  "leaky_feature_rmse": 1.4080081902635522,
+  "honest_rmse": 13.28401699001812,
+  "random_split_mae": 5.354809304442866,
+  "chronological_mae": 6.152173402341786
+ }
+}

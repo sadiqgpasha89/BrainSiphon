@@ -1,0 +1,52 @@
+{
+ "slug": "retail/fresh-produce-waste-forecasting",
+ "title": "Fresh Produce Waste & Order Forecasting",
+ "domain": "retail",
+ "engine": "forecast",
+ "fit": "exact",
+ "problemType": "forecasting",
+ "seed": 40899,
+ "knobs": {
+  "n_series": 152
+ },
+ "blueprintSignals": [
+  {
+   "name": "Stock-by-age vector",
+   "definition": "units by remaining shelf life",
+   "asOfRule": "Snapshot at order time"
+  },
+  {
+   "name": "Weather-temperature forecast",
+   "definition": "forecast temperature",
+   "asOfRule": "Forecast not actual"
+  },
+  {
+   "name": "Promo and holiday calendar",
+   "definition": "planned events",
+   "asOfRule": "Known at order time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Fresh Produce Waste & Order Forecasting\": Forecast daily demand and shelf-life decay for perishables to cut waste while keeping availability above target. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Backtest ignores shelf-life state."
+}

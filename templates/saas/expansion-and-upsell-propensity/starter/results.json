@@ -1,0 +1,34 @@
+{
+ "use_case": "saas/expansion-and-upsell-propensity",
+ "engine": "tabular",
+ "seed": 11306,
+ "knobs": {
+  "n_entities": 2930,
+  "positive_entity_rate": 0.025,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "rows": 219850,
+  "positive_rate": 0.0037798498976574935,
+  "test_rows": 73120,
+  "test_positive_rate": 0.004581509846827134,
+  "baseline_lr": {
+   "pr_auc": 0.792391840954459,
+   "recall_at_0.5pct_fpr": 0.8417590618336888,
+   "brier": 0.0016037850533384644
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8144518971099108,
+   "recall_at_0.5pct_fpr": 0.8238805970149253,
+   "brier": 0.001521515364311431
+  }
+ }
+}

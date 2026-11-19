@@ -1,0 +1,50 @@
+{
+ "slug": "saas/llm-app-eval-and-regression-testing",
+ "title": "LLM Application Evals & Regression Testing",
+ "domain": "saas",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 28253,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Task success on golden set",
+   "definition": "pass rate on curated cases",
+   "asOfRule": "Dataset curation"
+  },
+  {
+   "name": "Judge-human agreement",
+   "definition": "kappa",
+   "asOfRule": "Anchor set"
+  },
+  {
+   "name": "Regression diff by slice",
+   "definition": "slice-level change",
+   "asOfRule": "Slicing"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"LLM Application Evals & Regression Testing\": Maintain golden datasets and automated evaluations so prompt, model and tool changes are gated on measured quality, safety and cost. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating only on the tuned set."
+}

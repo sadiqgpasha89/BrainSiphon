@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/radiotherapy-autocontouring",
+ "title": "Radiotherapy Auto-Contouring",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 88575,
+ "knobs": {
+  "n": 5350,
+  "prevalence": 0.095
+ },
+ "blueprintSignals": [
+  {
+   "name": "Organ-at-risk segmentation masks",
+   "definition": "3D U-Net masks",
+   "asOfRule": "Atlas protocol"
+  },
+  {
+   "name": "Boundary uncertainty maps",
+   "definition": "ensemble variance at boundaries",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Anatomy variation flags",
+   "definition": "unusual anatomy detection",
+   "asOfRule": "Rare cases"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Radiotherapy Auto-Contouring\": Auto-segment organs at risk and target volumes on CT/MR to cut planning time from hours to minutes with clinician edits. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Contours from the same clinicians used to train."
+}

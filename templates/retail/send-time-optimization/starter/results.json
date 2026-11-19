@@ -1,0 +1,37 @@
+{
+ "use_case": "retail/send-time-optimization",
+ "engine": "bandit",
+ "seed": 59984,
+ "knobs": {
+  "n": 38120,
+  "logging_temperature": 1.135
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.3,
+ "results": {
+  "logged_rows": 38120,
+  "logging_reward_rate": 0.3899265477439664,
+  "always_best_average_action": {
+   "true_value": 0.4067266599398624,
+   "naive_matched": 0.4904,
+   "ips": 0.3895,
+   "snips": 0.404,
+   "doubly_robust": 0.3957,
+   "match_rate": 0.2701
+  },
+  "learned_greedy": {
+   "true_value": 0.6896832669729703,
+   "naive_matched": 0.6919,
+   "ips": 0.6415,
+   "snips": 0.6864,
+   "doubly_robust": 0.6913,
+   "match_rate": 0.2583
+  }
+ }
+}

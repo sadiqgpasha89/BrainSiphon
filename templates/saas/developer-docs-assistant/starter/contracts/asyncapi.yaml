@@ -1,0 +1,31 @@
+asyncapi: 3.0.0
+info:
+  title: Document Ingestion and Indexing Stream
+  version: 1.2.0
+channels:
+  docs.ingestion.events:
+    address: docs.ingestion.events
+    messages:
+      documentUpdated:
+        summary: Documentation markdown or OpenAPI file changed in Git repository
+        payload:
+          type: object
+          properties:
+            doc_id: { type: string }
+            product: { type: string }
+            version: { type: string }
+            content: { type: string }
+            commit_sha: { type: string }
+  rag.query.feedback:
+    address: rag.query.feedback
+    messages:
+      feedbackSubmitted:
+        summary: Developer thumbs up / thumbs down with citation rating
+        payload:
+          type: object
+          properties:
+            query_id: { type: string }
+            rating: { type: integer, enum: [-1, 1] }
+            user_feedback: { type: string }
+            timestamp: { type: number }
+

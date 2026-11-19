@@ -1,0 +1,49 @@
+{
+ "use_case": "fintech/insurance-claim-damage-estimation-vision",
+ "engine": "regression",
+ "seed": 67413,
+ "knobs": {
+  "n": 18940,
+  "outlier_share": 0.039,
+  "drift": 0.19
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.2,
+ "results": {
+  "rows": 18940,
+  "train_rows": 13258,
+  "test_rows": 5682,
+  "baseline_ridge": {
+   "mae": 8.01376743162511,
+   "rmse": 14.45327493343891,
+   "wape": 0.15163075200869847,
+   "r2": 0.3602520206285167
+  },
+  "challenger_gbm": {
+   "mae": 5.496959177814724,
+   "rmse": 12.741195817480273,
+   "wape": 0.10400951375302596,
+   "r2": 0.5028393174609785
+  },
+  "mae_gain_vs_baseline": 0.31406055582274406,
+  "interval_80_coverage": 0.71770503343893,
+  "interval_80_mean_width": 10.006624728396025,
+  "segment_mae": {
+   "0": 5.333137771848881,
+   "1": 5.116337006760318,
+   "2": 6.125926342400007,
+   "3": 7.46365724638663
+  },
+  "worst_segment_vs_overall": 1.3577792748596964,
+  "leaky_feature_rmse": 1.6749617286726541,
+  "honest_rmse": 12.741195817480273,
+  "random_split_mae": 5.275981249726488,
+  "chronological_mae": 5.496959177814724
+ }
+}

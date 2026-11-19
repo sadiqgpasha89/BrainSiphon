@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/claims-triage-and-straight-through-processing",
+ "title": "Claims Triage & Straight-Through Processing",
+ "domain": "bfsi",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 15658,
+ "knobs": {
+  "n": 11690,
+  "label_noise": 0.069,
+  "dup_share": 0.411
+ },
+ "blueprintSignals": [
+  {
+   "name": "First notice text",
+   "definition": "encoder embedding of the claim description mapped to complexity classes",
+   "asOfRule": "Language varies, so test across channels"
+  },
+  {
+   "name": "Coverage check",
+   "definition": "policy in force on the loss date and the peril covered, as binary flags",
+   "asOfRule": "Data quality issues in policy records cause false denials"
+  },
+  {
+   "name": "Claimant history",
+   "definition": "number of claims by the claimant in the last 3 years",
+   "asOfRule": "Fair-use rules limit how it can be used"
+  },
+  {
+   "name": "Reserve estimate",
+   "definition": "initial reserve set by claim type and loss description",
+   "asOfRule": "Initial reserves are rough, so treat it as a prior"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Claims Triage & Straight-Through Processing\": Route each insurance claim to straight-through payment, standard handling or a specialist based on complexity and risk. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels come from past routing decisions, so the model learns the old process and its biases."
+}

@@ -1,0 +1,50 @@
+{
+ "slug": "healthcare/radiology-report-generation-llm",
+ "title": "Radiology Report Drafting with Multimodal LLMs",
+ "domain": "healthcare",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 26134,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Finding-entity F1",
+   "definition": "F1 over extracted clinical entities",
+   "asOfRule": "Extraction model validated"
+  },
+  {
+   "name": "Laterality and negation checks",
+   "definition": "rule-based consistency check",
+   "asOfRule": "Deterministic checks"
+  },
+  {
+   "name": "Prior-comparison grounding",
+   "definition": "statements referencing prior studies verified",
+   "asOfRule": "Prior retrieval correctness"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Radiology Report Drafting with Multimodal LLMs\": Draft structured radiology findings and impressions from images and priors for radiologist edit, cutting dictation time without introducing errors. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Reference reports contain errors too."
+}

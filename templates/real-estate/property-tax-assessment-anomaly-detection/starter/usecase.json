@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/property-tax-assessment-anomaly-detection",
+ "title": "Property Tax Assessment Anomaly Detection",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 72617,
+ "knobs": {
+  "n": 16080,
+  "outlier_share": 0.037,
+  "drift": 0.166
+ },
+ "blueprintSignals": [
+  {
+   "name": "Assessment ratio",
+   "definition": "assessed value divided by the adjusted sale price for recent sales",
+   "asOfRule": "Few sales in an area give noisy ratios"
+  },
+  {
+   "name": "Neighbourhood ratio",
+   "definition": "median ratio of comparable properties in the same neighbourhood",
+   "asOfRule": "Neighbourhood boundaries are arbitrary"
+  },
+  {
+   "name": "Unrecorded changes",
+   "definition": "building permits and aerial change detections not reflected in the record",
+   "asOfRule": "Permit data are incomplete"
+  },
+  {
+   "name": "Sale price gap",
+   "definition": "difference between the last sale price and the current assessment, adjusted for market movement",
+   "asOfRule": "Non-arm's-length sales distort it"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Property Tax Assessment Anomaly Detection\": Find properties whose assessed value is far from their expected market value so assessors fix inequity and appeal risk. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Sales selection, since sales are not a random sample of properties."
+}

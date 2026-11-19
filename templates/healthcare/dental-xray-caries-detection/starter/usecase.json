@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/dental-xray-caries-detection",
+ "title": "Dental X-Ray Caries & Pathology Detection",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 54181,
+ "knobs": {
+  "n": 3630,
+  "prevalence": 0.112
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lesion segmentation map",
+   "definition": "pixel-level mask",
+   "asOfRule": "Annotation protocol"
+  },
+  {
+   "name": "Tooth numbering",
+   "definition": "FDI tooth identification",
+   "asOfRule": "Tooth detection accuracy"
+  },
+  {
+   "name": "Bone-level measurement",
+   "definition": "distance CEJ to bone",
+   "asOfRule": "Calibrated pixel size"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Dental X-Ray Caries & Pathology Detection\": Highlight caries, bone loss and periapical lesions on dental radiographs to improve diagnostic consistency and patient communication. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Single clinic data."
+}

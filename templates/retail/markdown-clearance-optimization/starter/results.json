@@ -1,0 +1,49 @@
+{
+ "use_case": "retail/markdown-clearance-optimization",
+ "engine": "control",
+ "seed": 81029,
+ "knobs": {
+  "days": 67
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "days": 67,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.222467733206202,
+   "end_of_day_underdelivery_pct": 4.656695944779112,
+   "overshoot_max_pct": 7.724554241335792,
+   "oscillation": 0.0,
+   "hit_cap": 0.5522388059701493
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.600506372466603,
+   "end_of_day_underdelivery_pct": 1.246971350845142,
+   "overshoot_max_pct": 5.780883976810285,
+   "oscillation": 0.011467187162794337,
+   "hit_cap": 0.26865671641791045
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.0787438380220407,
+   "end_of_day_underdelivery_pct": 0.03696081996420397,
+   "overshoot_max_pct": 1.7114683915388997,
+   "oscillation": 0.08720604532707762,
+   "hit_cap": 0.3880597014925373
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.560606216757833,
+   "end_of_day_underdelivery_pct": 2.0343092308860555,
+   "overshoot_max_pct": 14.003168212971566,
+   "oscillation": 0.018552935685777507,
+   "hit_cap": 0.5970149253731343
+  },
+  "rmse_reduction_vs_open_loop": 0.5820779658544473
+ }
+}

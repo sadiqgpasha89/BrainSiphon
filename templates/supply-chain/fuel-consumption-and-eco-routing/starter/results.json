@@ -1,0 +1,49 @@
+{
+ "use_case": "supply-chain/fuel-consumption-and-eco-routing",
+ "engine": "regression",
+ "seed": 33539,
+ "knobs": {
+  "n": 21610,
+  "outlier_share": 0.026,
+  "drift": 0.393
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.0,
+ "results": {
+  "rows": 21610,
+  "train_rows": 15126,
+  "test_rows": 6484,
+  "baseline_ridge": {
+   "mae": 7.677468889511314,
+   "rmse": 12.62836873656147,
+   "wape": 0.14510175926969374,
+   "r2": 0.4861777475693039
+  },
+  "challenger_gbm": {
+   "mae": 5.485265798171786,
+   "rmse": 10.760131645857486,
+   "wape": 0.1036698069156577,
+   "r2": 0.6269615745276391
+  },
+  "mae_gain_vs_baseline": 0.28553721583091507,
+  "interval_80_coverage": 0.5980876002467612,
+  "interval_80_mean_width": 9.237312415794557,
+  "segment_mae": {
+   "0": 5.482638047811538,
+   "1": 5.396948838593242,
+   "2": 5.3143746316631395,
+   "3": 6.658841871948137
+  },
+  "worst_segment_vs_overall": 1.2139506300984537,
+  "leaky_feature_rmse": 1.571364464293057,
+  "honest_rmse": 10.760131645857486,
+  "random_split_mae": 4.743753090554668,
+  "chronological_mae": 5.485265798171786
+ }
+}

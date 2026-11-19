@@ -1,0 +1,38 @@
+{
+ "id": "graph",
+ "label": "Entity resolution and link clustering",
+ "summary": "A runnable reference for deciding which records belong to the same real-world group from shared attributes: candidate blocking, rarity-weighted pair features, a pair classifier, clustering by connected components and a check on the largest cluster.",
+ "problemTypes": [
+  "entity-resolution",
+  "graph-analytics"
+ ],
+ "traps": [
+  "Linking everything that shares any value",
+  "Ignoring how rare a shared value is",
+  "Evaluating on clusters the model has seen",
+  "Forgetting that clustering is transitive"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ]
+}

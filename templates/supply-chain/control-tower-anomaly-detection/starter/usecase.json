@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/control-tower-anomaly-detection",
+ "title": "Supply-Chain Control Tower Anomaly Detection",
+ "domain": "supply-chain",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 75477,
+ "knobs": {
+  "n_series": 76,
+  "anomalies_per_series": 3.38
+ },
+ "blueprintSignals": [
+  {
+   "name": "Residual to expected milestone time",
+   "definition": "actual minus predicted",
+   "asOfRule": "Predictor"
+  },
+  {
+   "name": "Revenue-at-risk",
+   "definition": "value of downstream orders affected",
+   "asOfRule": "Graph join"
+  },
+  {
+   "name": "Alert correlation cluster",
+   "definition": "shared cause across entities",
+   "asOfRule": "Clustering"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Supply-Chain Control Tower Anomaly Detection\": Detect abnormal events across orders, shipments and inventory in real time and prioritise by business impact. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels from alerts people acted upon."
+}

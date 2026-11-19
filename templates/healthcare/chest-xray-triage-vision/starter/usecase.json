@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/chest-xray-triage-vision",
+ "title": "Chest X-Ray Triage",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 44205,
+ "knobs": {
+  "n": 5290,
+  "prevalence": 0.132
+ },
+ "blueprintSignals": [
+  {
+   "name": "Finding probability per class",
+   "definition": "multi-label probabilities",
+   "asOfRule": "Calibrated per site"
+  },
+  {
+   "name": "Image quality score",
+   "definition": "positioning and exposure adequacy",
+   "asOfRule": "Apply before inference"
+  },
+  {
+   "name": "Prior comparison change",
+   "definition": "difference from prior study",
+   "asOfRule": "Prior must be before exam"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Chest X-Ray Triage\": Prioritise radiology worklists by flagging critical findings (pneumothorax, large effusion) on chest radiographs within seconds of acquisition. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Single-site training and testing."
+}

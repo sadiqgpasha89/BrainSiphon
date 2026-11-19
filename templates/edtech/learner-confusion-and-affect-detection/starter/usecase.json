@@ -1,0 +1,54 @@
+{
+ "slug": "edtech/learner-confusion-and-affect-detection",
+ "title": "Learner Confusion & Affect Detection",
+ "domain": "edtech",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 67558,
+ "knobs": {
+  "n": 14210,
+  "label_noise": 0.073,
+  "dup_share": 0.281
+ },
+ "blueprintSignals": [
+  {
+   "name": "Response latency anomaly",
+   "definition": "time vs personal baseline",
+   "asOfRule": "Baseline"
+  },
+  {
+   "name": "Rapid-guessing flag",
+   "definition": "answers faster than reading time",
+   "asOfRule": "Timing"
+  },
+  {
+   "name": "Help-request pattern",
+   "definition": "hint requests",
+   "asOfRule": "Event logs"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Learner Confusion & Affect Detection\": Infer confusion, frustration and boredom from interaction signals (and optional consented video) to adapt help in real time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels from lab settings."
+}

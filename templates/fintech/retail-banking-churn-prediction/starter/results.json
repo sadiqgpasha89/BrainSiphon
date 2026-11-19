@@ -1,0 +1,36 @@
+{
+ "use_case": "fintech/retail-banking-churn-prediction",
+ "engine": "uplift",
+ "seed": 67502,
+ "knobs": {
+  "n": 39710,
+  "confound": 1.581,
+  "holdout": 0.174
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.3,
+ "results": {
+  "rows": 39710,
+  "observational_rows": 32711,
+  "holdout_rows": 6999,
+  "true_ate": 0.06959179048098715,
+  "naive_ate": 0.22077597909731034,
+  "naive_bias": 0.15118418861632318,
+  "ipw_ate": 0.07842487636028464,
+  "ipw_bias": 0.008833085879297486,
+  "holdout_ate": 0.0762103205227144,
+  "holdout_balance_smd_x0": -0.023101742731410874,
+  "observational_balance_smd_x0": 1.316408831968443,
+  "t_learner_qini_auc": 0.009910022329688073,
+  "random_ranking_qini_auc": -0.00012199016350909785,
+  "top_decile_realised_uplift": 0.12434640522875817,
+  "bottom_decile_realised_uplift": -0.06072629894516837,
+  "share_predicted_negative": 0.20517216745249323
+ }
+}

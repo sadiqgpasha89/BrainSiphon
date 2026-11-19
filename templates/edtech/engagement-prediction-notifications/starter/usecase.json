@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/engagement-prediction-notifications",
+ "title": "Learner Engagement Prediction & Notifications",
+ "domain": "edtech",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 28316,
+ "knobs": {
+  "n": 21180,
+  "logging_temperature": 0.802
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lapse hazard",
+   "definition": "probability of missing the next 3 days",
+   "asOfRule": "Survival"
+  },
+  {
+   "name": "Preferred study time",
+   "definition": "personal time-of-day",
+   "asOfRule": "History"
+  },
+  {
+   "name": "Notification fatigue",
+   "definition": "recent notifications and ignores",
+   "asOfRule": "Counters"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Learner Engagement Prediction & Notifications\": Predict lapse risk and send the right reminder at the right time to keep learners practising, without notification fatigue. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising opens."
+}

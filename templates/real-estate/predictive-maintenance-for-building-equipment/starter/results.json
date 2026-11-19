@@ -1,0 +1,43 @@
+{
+ "use_case": "real-estate/predictive-maintenance-for-building-equipment",
+ "engine": "anomaly",
+ "seed": 85243,
+ "knobs": {
+  "n_series": 114,
+  "anomalies_per_series": 3.36
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 6.2,
+ "results": {
+  "series": 114,
+  "hours": 2016,
+  "events": 341,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.21548294528141917,
+   "recall": 0.45454545454545453,
+   "median_delay_h": 1.0,
+   "events": 176
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6391443292245483,
+   "recall": 0.8409090909090909,
+   "median_delay_h": 0.0,
+   "events": 176
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5387073632035478,
+   "recall": 0.9431818181818182,
+   "median_delay_h": 0.0,
+   "events": 176
+  }
+ }
+}

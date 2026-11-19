@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/data-exfiltration-detection",
+ "title": "Data Exfiltration Detection",
+ "domain": "cybersecurity",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 14500,
+ "knobs": {
+  "n_series": 85,
+  "anomalies_per_series": 3.447
+ },
+ "blueprintSignals": [
+  {
+   "name": "Volume z-score vs personal baseline",
+   "definition": "outbound bytes vs 30-day baseline",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Destination rarity",
+   "definition": "first-seen external destination",
+   "asOfRule": "Graph"
+  },
+  {
+   "name": "Sensitive-source ratio",
+   "definition": "share of data from sensitive stores",
+   "asOfRule": "Classification"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Data Exfiltration Detection\": Detect abnormal data movement by users, services and endpoints toward external destinations, separating exfiltration from legitimate transfers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Synthetic exfil unlike real incidents."
+}

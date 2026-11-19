@@ -1,0 +1,53 @@
+{
+ "slug": "saas/aiops-incident-detection",
+ "title": "AIOps Incident Detection",
+ "domain": "saas",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 44134,
+ "knobs": {
+  "n_series": 116,
+  "anomalies_per_series": 2.48
+ },
+ "blueprintSignals": [
+  {
+   "name": "SLI burn rate",
+   "definition": "error budget burn over multiple windows",
+   "asOfRule": "Window choices"
+  },
+  {
+   "name": "Seasonal residual",
+   "definition": "residual vs forecast",
+   "asOfRule": "Forecast quality"
+  },
+  {
+   "name": "Deploy and change events",
+   "definition": "recent deployments",
+   "asOfRule": "Event feed"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"AIOps Incident Detection\": Detect production incidents from metrics, traces and logs within minutes, with low alert noise and clear scope. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Synthetic anomalies only."
+}

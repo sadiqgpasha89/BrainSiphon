@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/construction-cost-estimation-from-plans",
+ "engine": "regression",
+ "seed": 57797,
+ "knobs": {
+  "n": 25960,
+  "outlier_share": 0.019,
+  "drift": 0.373
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.0,
+ "results": {
+  "rows": 25960,
+  "train_rows": 18172,
+  "test_rows": 7788,
+  "baseline_ridge": {
+   "mae": 7.122062667101391,
+   "rmse": 11.596140660192548,
+   "wape": 0.13486539936070446,
+   "r2": 0.5034759321430142
+  },
+  "challenger_gbm": {
+   "mae": 4.864500118860824,
+   "rmse": 9.410302451074188,
+   "wape": 0.09211555442369708,
+   "r2": 0.6730205044069407
+  },
+  "mae_gain_vs_baseline": 0.3169815619102623,
+  "interval_80_coverage": 0.6145351823317925,
+  "interval_80_mean_width": 8.83857381833655,
+  "segment_mae": {
+   "0": 4.990578084204648,
+   "1": 4.745680155262643,
+   "2": 4.379224223972674,
+   "3": 5.8139014198200005
+  },
+  "worst_segment_vs_overall": 1.1951693447962148,
+  "leaky_feature_rmse": 1.7496831721352961,
+  "honest_rmse": 9.410302451074188,
+  "random_split_mae": 4.089653860695975,
+  "chronological_mae": 4.864500118860824
+ }
+}

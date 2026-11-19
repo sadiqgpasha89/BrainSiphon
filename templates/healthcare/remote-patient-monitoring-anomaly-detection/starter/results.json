@@ -1,0 +1,43 @@
+{
+ "use_case": "healthcare/remote-patient-monitoring-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 47868,
+ "knobs": {
+  "n_series": 62,
+  "anomalies_per_series": 1.833
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.5,
+ "results": {
+  "series": 62,
+  "hours": 2016,
+  "events": 118,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.32905624175560616,
+   "recall": 0.5849056603773585,
+   "median_delay_h": 0.0,
+   "events": 53
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.7319822520685934,
+   "recall": 0.9433962264150944,
+   "median_delay_h": 0.0,
+   "events": 53
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.6144621657273054,
+   "recall": 0.9622641509433962,
+   "median_delay_h": 0.0,
+   "events": 53
+  }
+ }
+}

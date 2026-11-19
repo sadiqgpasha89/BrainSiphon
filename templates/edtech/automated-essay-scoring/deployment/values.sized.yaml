@@ -1,0 +1,8 @@
+# Overrides for deployment/helm/ai-solution in the free BrainSiphon deployment kit, for Automated Essay Scoring.
+# Modelled sizing at 10M registered users. Replace with your measured peak, and set autoscaling bounds from a load test.
+# Blueprint compute statement: 6 GPUs (L4/L40S class) for 16 req/s (≈350 inferences/s per GPU (encoder ≤ 512 tokens, dynamic batching)); 3 online feature-store shards and 12 event-bus partitions.
+# GPU-bound: size the GPU node pools from the count below, then derive replicas from GPUs per pod.
+# provisioned GPUs (modelled): 6
+resources:
+  limits:
+    nvidia.com/gpu: 1

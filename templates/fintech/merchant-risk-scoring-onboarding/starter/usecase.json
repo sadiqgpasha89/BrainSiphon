@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/merchant-risk-scoring-onboarding",
+ "title": "Merchant Risk Scoring at Onboarding",
+ "domain": "fintech",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 49997,
+ "knobs": {
+  "n_entities": 2340,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 5
+ },
+ "blueprintSignals": [
+  {
+   "name": "MCC-site mismatch",
+   "definition": "classifier probability that the site belongs to the declared MCC",
+   "asOfRule": "Crawl at onboarding time and freeze"
+  },
+  {
+   "name": "Shared-director risk",
+   "definition": "max risk score among entities sharing directors or addresses",
+   "asOfRule": "Graph snapshot as-of application"
+  },
+  {
+   "name": "Projected volume anomaly",
+   "definition": "declared monthly volume versus category quantiles",
+   "asOfRule": "Declared value not observed future volume"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Merchant Risk Scoring at Onboarding\": Score new merchants for fraud, regulatory and credit risk during onboarding, auto-approving the safe majority within a minute. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Outcomes only observed for approved merchants."
+}

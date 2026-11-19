@@ -1,0 +1,53 @@
+{
+ "slug": "retail/loyalty-offer-optimization",
+ "title": "Loyalty Programme Offer Optimisation",
+ "domain": "retail",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 38346,
+ "knobs": {
+  "n": 38430,
+  "logging_temperature": 1.263
+ },
+ "blueprintSignals": [
+  {
+   "name": "Reward elasticity",
+   "definition": "spend response to reward intensity",
+   "asOfRule": "Randomised test cells"
+  },
+  {
+   "name": "Tier proximity",
+   "definition": "gap to next tier threshold",
+   "asOfRule": "Rolling spend as-of"
+  },
+  {
+   "name": "Breakage propensity",
+   "definition": "probability points expire unused",
+   "asOfRule": "Historic expiry rates"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Loyalty Programme Offer Optimisation\": Choose personalised points, tier and reward offers that raise lifetime value subject to a programme cost budget. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Logged data lacks randomisation."
+}

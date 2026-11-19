@@ -1,0 +1,42 @@
+{
+ "use_case": "saas/code-completion-assistant",
+ "engine": "generative",
+ "seed": 1402,
+ "knobs": {
+  "n": 252
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "golden_items": 252,
+  "v1_pass_rate_strict_judge": 0.15873015873015872,
+  "v1_pass_rate_fuzzy_judge": 0.49206349206349204,
+  "v2_pass_rate_fuzzy_judge": 0.5833333333333334,
+  "v1_pass_rate_ci95": [
+   0.43253968253968256,
+   0.5634920634920635
+  ],
+  "v2_minus_v1": 0.09126984126984126,
+  "v2_minus_v1_ci95": [
+   -9.920634920634355e-05,
+   0.17063492063492064
+  ],
+  "judge_agreement_kappa_v1": 0.32603158430973,
+  "judge_disagreement_share_v1": 0.3333333333333333,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.46825396825396826,
+   "date_correct": 0.12301587301587301,
+   "within_length": 0.027777777777777776,
+   "no_forbidden_claims": 0.051587301587301584
+  },
+  "ci_width_at_60_items": 0.23374999999999996,
+  "ci_width_at_full_set": 0.13095238095238093
+ }
+}

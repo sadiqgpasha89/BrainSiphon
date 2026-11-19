@@ -1,0 +1,16 @@
+contract: skill_graph_and_job_matching_inputs.v1
+owner: learning-engineering@example.com
+system_of_record: Learning management system (LMS)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: canonical_skill_entities, type: double, nullable: false }
+    - { name: proficiency_estimate, type: double, nullable: false }
+    - { name: skill_co_occurrence_graph, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

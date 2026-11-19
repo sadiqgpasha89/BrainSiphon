@@ -1,0 +1,54 @@
+{
+ "slug": "edtech/irt-calibration-and-adaptive-testing",
+ "title": "IRT Item Calibration & Computerised Adaptive Testing",
+ "domain": "edtech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 5609,
+ "knobs": {
+  "n": 22430,
+  "outlier_share": 0.025,
+  "drift": 0.344
+ },
+ "blueprintSignals": [
+  {
+   "name": "Item information at current ability",
+   "definition": "Fisher information of item",
+   "asOfRule": "Ability estimate precision"
+  },
+  {
+   "name": "Item exposure rate",
+   "definition": "share of test-takers seeing the item",
+   "asOfRule": "Sympson-Hetter control"
+  },
+  {
+   "name": "DIF statistic by group",
+   "definition": "Mantel-Haenszel or IRT-based",
+   "asOfRule": "Group definitions"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"IRT Item Calibration & Computerised Adaptive Testing\": Calibrate item parameters from response data and run adaptive tests that estimate ability precisely with fewer questions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Calibrating on self-selected samples."
+}

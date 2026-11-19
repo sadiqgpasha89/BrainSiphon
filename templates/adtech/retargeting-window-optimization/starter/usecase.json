@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/retargeting-window-optimization",
+ "title": "Retargeting Window & Churn Optimisation",
+ "domain": "adtech",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 86622,
+ "knobs": {
+  "n": 6600,
+  "dropout": 0.182
+ },
+ "blueprintSignals": [
+  {
+   "name": "Time since last visit",
+   "definition": "hours since visit",
+   "asOfRule": "Clock"
+  },
+  {
+   "name": "Depth of engagement",
+   "definition": "pages and cart adds",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Prior conversion flag",
+   "definition": "converted already",
+   "asOfRule": "Real-time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Retargeting Window & Churn Optimisation\": Decide whether, when and how long to retarget each visitor to maximise incremental conversions and avoid chasing converted users. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Observational lift inflated by selection."
+}

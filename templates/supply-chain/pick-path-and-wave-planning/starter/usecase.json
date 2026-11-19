@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/pick-path-and-wave-planning",
+ "title": "Pick-Path & Wave Planning",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 18343,
+ "knobs": {
+  "n_instances": 182,
+  "noise": 0.267
+ },
+ "blueprintSignals": [
+  {
+   "name": "Order due-time slack",
+   "definition": "time to carrier cut-off",
+   "asOfRule": "Cut-off table"
+  },
+  {
+   "name": "Zone workload",
+   "definition": "pending lines per zone",
+   "asOfRule": "Real-time"
+  },
+  {
+   "name": "Aisle congestion estimate",
+   "definition": "pickers per aisle",
+   "asOfRule": "Sensors or WMS"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Pick-Path & Wave Planning\": Group orders into waves and sequence picks to meet cut-off times with minimal labour and congestion. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Travel time assumptions from empty warehouse."
+}

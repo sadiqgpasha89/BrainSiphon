@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/healthcare-fraud-waste-abuse-detection",
+ "engine": "tabular",
+ "seed": 3838,
+ "knobs": {
+  "n_entities": 2050,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "rows": 153792,
+  "positive_rate": 0.003556751976695797,
+  "test_rows": 50791,
+  "test_positive_rate": 0.0013781969246520053,
+  "baseline_lr": {
+   "pr_auc": 0.5340608353653763,
+   "recall_at_0.5pct_fpr": 0.7428571428571429,
+   "brier": 0.001001971669965969
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.5089594532451577,
+   "recall_at_0.5pct_fpr": 0.7428571428571429,
+   "brier": 0.0009660303620729553
+  }
+ }
+}

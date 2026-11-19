@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/settlement-fail-prediction",
+ "title": "Settlement Fail Prediction",
+ "domain": "bfsi",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 40916,
+ "knobs": {
+  "n_entities": 2540,
+  "positive_entity_rate": 0.031,
+  "n_flash_sales": 6
+ },
+ "blueprintSignals": [
+  {
+   "name": "Counterparty fail rate 30d",
+   "definition": "fails divided by trades in 30 days by counterparty and market",
+   "asOfRule": "Window must end the previous day"
+  },
+  {
+   "name": "Instrument liquidity",
+   "definition": "average daily volume and borrow availability",
+   "asOfRule": "Borrow data comes from lenders"
+  },
+  {
+   "name": "Matching status",
+   "definition": "whether both sides' instructions have matched",
+   "asOfRule": "Status snapshots must be as at 04:00"
+  },
+  {
+   "name": "Cut-off proximity",
+   "definition": "time between trade and the cut-off for the market",
+   "asOfRule": "Time zones need care"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Settlement Fail Prediction\": Predict which trades will fail to settle on the intended date so operations can chase the counterparty, borrow securities or fund early. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using post-cut-off status."
+}

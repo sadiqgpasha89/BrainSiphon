@@ -1,0 +1,191 @@
+{
+ "slug": "healthcare/bed-capacity-and-ed-demand-forecasting",
+ "title": "ED Demand & Bed Capacity Forecasting",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "authoredStarter": false,
+ "fdePack": false,
+ "seed": 60407,
+ "knobs": {
+  "n_series": 249
+ },
+ "blueprintVerified": "2026-11-07",
+ "generator": "1.0.0",
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "runSeconds": 12.0,
+ "files": [
+  {
+   "path": "FIT.md",
+   "bytes": 3761,
+   "sha256": "a9e50892353ec5bb9a0f94cc47ed21e4c45ecab0b6fe5976906ec5d4def5b7e9"
+  },
+  {
+   "path": "README.md",
+   "bytes": 3382,
+   "sha256": "45ddaffe335daf71b008bcaadc5763ffbb58609a0aee030d95daaf001193ccad"
+  },
+  {
+   "path": "WORKED_EXAMPLE.md",
+   "bytes": 3631,
+   "sha256": "6be5470a9fd143af26674e095c41ffc28c70ee6c808ace476222ce8cdc3c1dff"
+  },
+  {
+   "path": "contracts/data-contract.yaml",
+   "bytes": 738,
+   "sha256": "1aa85742efa859dee3368ec4769f2f4691b4005afd054c9bfd9c65c2441a3cac"
+  },
+  {
+   "path": "contracts/events.asyncapi.yaml",
+   "bytes": 1237,
+   "sha256": "6879677b0f661055ab79cb3fb1a4f409b0ec0b7497f9400cc70412d07f0a7a84"
+  },
+  {
+   "path": "contracts/openapi.yaml",
+   "bytes": 3595,
+   "sha256": "3a53c640de8966cd17c6c6e5a4ef8d28fae651287e49e227b81412a1e3715348"
+  },
+  {
+   "path": "contracts/schema.sql",
+   "bytes": 1358,
+   "sha256": "de1676915e23718e45b6a55f6f86ccb80200deca1f7435bf3de10bd59be8fa35"
+  },
+  {
+   "path": "deployment/README.md",
+   "bytes": 2127,
+   "sha256": "9e791d4f2478ddd0b82d367c715044b0657eadca050a291235eeb027f2b6e620"
+  },
+  {
+   "path": "deployment/config.yaml",
+   "bytes": 931,
+   "sha256": "cfe586b230c1671920122e49ef1646a97e56dfbb7a0cbe68ff815757a83ab7f5"
+  },
+  {
+   "path": "deployment/docker-compose.yml",
+   "bytes": 537,
+   "sha256": "f8bc0a02afc5cd12d25cad2b8f775664030b277e12cc8fea9122f1ed1eb5a168"
+  },
+  {
+   "path": "deployment/values.sized.yaml",
+   "bytes": 557,
+   "sha256": "680a19f66efc6425e2c9251d3e4da09d8a79a2a5c71fac831154449dee7d98b2"
+  },
+  {
+   "path": "docs/00-use-case-brief.md",
+   "bytes": 8320,
+   "sha256": "2cf08cbda9261b87875d96d707aa21ba3bb70f47827b6de9e6709f07a52a7503"
+  },
+  {
+   "path": "docs/01-discovery-workbook.md",
+   "bytes": 16646,
+   "sha256": "4f993c3935e26f9addfefc95a2e26b5d1961e5d0ef4c27b2b0739747c64987a6"
+  },
+  {
+   "path": "docs/02-delivery-plan.md",
+   "bytes": 31671,
+   "sha256": "e0eb197041a770809c6d557c8b6bf032c0f89f7808d1c27325da293ecadc1945"
+  },
+  {
+   "path": "docs/03-data-and-features.md",
+   "bytes": 13952,
+   "sha256": "c9f8b8363fe6f9fb60917ea5bddfa621c54a5f45a1f46a8b530359f605e6c015"
+  },
+  {
+   "path": "docs/04-evaluation-plan.md",
+   "bytes": 37930,
+   "sha256": "04f967f9bd8fc0fc7b8417d4d314c4ac67c37d3347a9b742a0fcff0356bc0ae5"
+  },
+  {
+   "path": "docs/05-risk-and-governance.md",
+   "bytes": 8004,
+   "sha256": "ea7a50c03c357edf08349cbb95eba0b239d42aa621aff5ec31d4d94edb1e618b"
+  },
+  {
+   "path": "docs/06-operations-runbook.md",
+   "bytes": 18117,
+   "sha256": "51155353a83f427bb7ea864d80c6055b7cc52d5017c894b6d5ccbbd1fb321a33"
+  },
+  {
+   "path": "docs/07-model-and-data-cards.md",
+   "bytes": 5349,
+   "sha256": "d8c52382f2621870e14ac14cd7494886b48139805e97c99793ce87beac94ec44"
+  },
+  {
+   "path": "docs/08-capacity-and-cost.md",
+   "bytes": 5246,
+   "sha256": "122583598c587e88f0efc503287e9c34cab32bf7b12cdbc1d601c2d8218bfc96"
+  },
+  {
+   "path": "starter/Dockerfile",
+   "bytes": 212,
+   "sha256": "28554f5a1d423d2dd57bf591a24a61e9319f67d551accab0d455131f4146aef0"
+  },
+  {
+   "path": "starter/Makefile",
+   "bytes": 352,
+   "sha256": "f3de79b0b567afbc0354300d404e02cec1003696a1de7f4046706fed30f48d63"
+  },
+  {
+   "path": "starter/baseline.py",
+   "bytes": 3386,
+   "sha256": "57193ce405f76e33600a47ea428f8f798bcceb9ae0a7b49ce7f8df8dcfb0c508"
+  },
+  {
+   "path": "starter/engine.json",
+   "bytes": 1160,
+   "sha256": "efab83abddc2ee6c80399d362222da9f92d8b4f84c7588703948f853298c1983"
+  },
+  {
+   "path": "starter/features.py",
+   "bytes": 3140,
+   "sha256": "501fb797bebd988e5652637c58249a749f72c358edd4f420e0de42605fcdd515"
+  },
+  {
+   "path": "starter/gates.py",
+   "bytes": 401,
+   "sha256": "23856e27608e19d1b78fab73c1881e802bb28480ee87ea69c709208545012461"
+  },
+  {
+   "path": "starter/make_data.py",
+   "bytes": 3145,
+   "sha256": "b85a61a7c3e3915b429f821a3cf82b8f1d4466b74b56300053d66ffaf0c1c174"
+  },
+  {
+   "path": "starter/requirements.txt",
+   "bytes": 75,
+   "sha256": "ad943509e5ebcd060eb2b38ae247759f5c9d30197907bedc7858c77d99de374c"
+  },
+  {
+   "path": "starter/results.json",
+   "bytes": 1050,
+   "sha256": "a60cbff81589fc278cde9bee04912827dd5bbba33841e05746fe2882516235d4"
+  },
+  {
+   "path": "starter/run_usecase.py",
+   "bytes": 1429,
+   "sha256": "33521c23406b0dcd3f1c22785f5a991dc74544b37d9010d98e146905f64ee6f4"
+  },
+  {
+   "path": "starter/test_starter.py",
+   "bytes": 2714,
+   "sha256": "8e76e211e37326f770b3475be54decf4ed7254c97df036b43b9481242ec1b25a"
+  },
+  {
+   "path": "starter/test_usecase.py",
+   "bytes": 1698,
+   "sha256": "da7769d17b703359fc682dd28eb1e14977630a6c2b97d3c4ab1ecdda5ccd8883"
+  },
+  {
+   "path": "starter/usecase.json",
+   "bytes": 1707,
+   "sha256": "46af43bd7c547d0322d743a1e1d5bfcd839adf6c3ef35f86439e9e46541e2132"
+  }
+ ]
+}

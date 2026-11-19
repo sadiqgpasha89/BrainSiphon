@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/trade-break-exception-triage",
+ "title": "Trade Break & Reconciliation Exception Triage",
+ "domain": "bfsi",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 76661,
+ "knobs": {
+  "n": 12640,
+  "label_noise": 0.09,
+  "dup_share": 0.281
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field mismatch pattern",
+   "definition": "which fields differ between sides",
+   "asOfRule": "Needs normalisation"
+  },
+  {
+   "name": "Counterparty history",
+   "definition": "past break types for the counterparty",
+   "asOfRule": "Changes with systems"
+  },
+  {
+   "name": "Amount and tolerance",
+   "definition": "difference relative to tolerance",
+   "asOfRule": "Currency conversions"
+  },
+  {
+   "name": "Break age",
+   "definition": "days since first seen",
+   "asOfRule": "Clock must start from first detection"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Trade Break & Reconciliation Exception Triage\": Classify and route reconciliation breaks between internal records and counterparties or custodians to the right owner with a suggested fix. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Labels from past manual assignment."
+}

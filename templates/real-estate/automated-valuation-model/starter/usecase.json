@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/automated-valuation-model",
+ "title": "Automated Valuation Model (AVM)",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 51622,
+ "knobs": {
+  "n": 22200,
+  "outlier_share": 0.01,
+  "drift": 0.15
+ },
+ "blueprintSignals": [
+  {
+   "name": "Comparable sale density",
+   "definition": "count and recency of sales within 0.5 km and 90 days",
+   "asOfRule": "Only sales that closed before the valuation date"
+  },
+  {
+   "name": "Price per square metre by micro-area",
+   "definition": "trailing median adjusted for size and type",
+   "asOfRule": "Neighbourhood boundaries must be stable"
+  },
+  {
+   "name": "Condition score from photos",
+   "definition": "vision model grade of kitchen, bathroom and exterior",
+   "asOfRule": "Listing photos are staged and flattering"
+  },
+  {
+   "name": "Renovation permits",
+   "definition": "permits for kitchen, extension or roof in the last 10 years",
+   "asOfRule": "Permit data quality varies by municipality"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Automated Valuation Model (AVM)\": Estimate the market value of a home from its attributes, location, nearby sales and photos, with a confidence range, for lenders, portals and owners. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on sales after the valuation date leaks the trend."
+}

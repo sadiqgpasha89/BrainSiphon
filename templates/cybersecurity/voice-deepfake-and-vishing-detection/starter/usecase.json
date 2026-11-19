@@ -1,0 +1,49 @@
+{
+ "slug": "cybersecurity/voice-deepfake-and-vishing-detection",
+ "title": "Voice Deepfake & Vishing Detection",
+ "domain": "cybersecurity",
+ "engine": "audio",
+ "fit": "exact",
+ "problemType": "speech-audio",
+ "seed": 37919,
+ "knobs": {
+  "n_train": 1030,
+  "test_snr": 3.2
+ },
+ "blueprintSignals": [
+  {
+   "name": "Spectral artefact score",
+   "definition": "model on spectral and phase features",
+   "asOfRule": "Codec simulation"
+  },
+  {
+   "name": "Social-engineering intent",
+   "definition": "urgency, secrecy and payment requests",
+   "asOfRule": "Transcript"
+  },
+  {
+   "name": "Caller-ID and call-path anomaly",
+   "definition": "spoofing indicators",
+   "asOfRule": "STIR/SHAKEN data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "log filterbank energies",
+   "meaning": "band energies, normalised per clip"
+  },
+  {
+   "feature": "raw magnitude spectrum",
+   "meaning": "gain-sensitive baseline"
+  },
+  {
+   "feature": "channel augmentation",
+   "meaning": "low-pass and noise added at training time"
+  },
+  {
+   "feature": "word error rate",
+   "meaning": "edit distance over reference words"
+  }
+ ],
+ "label": "For \"Voice Deepfake & Vishing Detection\": Detect synthetic or cloned voices and social-engineering call patterns in contact-centre and enterprise calls in near real time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test deepfakes from the same generators as training."
+}

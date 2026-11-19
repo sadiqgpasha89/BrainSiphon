@@ -1,0 +1,43 @@
+{
+ "use_case": "saas/saas-account-security-anomalies",
+ "engine": "anomaly",
+ "seed": 36904,
+ "knobs": {
+  "n_series": 119,
+  "anomalies_per_series": 2.22
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 6.7,
+ "results": {
+  "series": 119,
+  "hours": 2016,
+  "events": 249,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.29214957358408045,
+   "recall": 0.5073529411764706,
+   "median_delay_h": 1.0,
+   "events": 136
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6070413295429695,
+   "recall": 0.8382352941176471,
+   "median_delay_h": 0.0,
+   "events": 136
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5353159851301116,
+   "recall": 1.0,
+   "median_delay_h": 0.0,
+   "events": 136
+  }
+ }
+}

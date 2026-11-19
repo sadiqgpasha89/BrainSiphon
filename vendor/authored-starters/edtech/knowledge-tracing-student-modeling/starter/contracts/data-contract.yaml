@@ -1,0 +1,24 @@
+apiVersion: opendatacontract.com/v2alpha1
+kind: DataContract
+id: urn:datacontract:edtech:student-interactions
+info:
+  title: Student Learning Interaction Logs Contract
+  version: 1.2.0
+  owner: Adaptive Learning & Cognitive Modeling Team
+  sla:
+    freshness: 60s
+    availability: 99.9%
+models:
+  student_answers:
+    description: Chronological record of student practice items
+    type: table
+    fields:
+      student: { type: integer, primaryKey: true }
+      question: { type: integer, primaryKey: true }
+      skill: { type: integer }
+      correct: { type: integer, description: "1 if correct, 0 if incorrect" }
+      ts: { type: float, description: "Hours elapsed since course commencement" }
+    quality:
+      - rule: correct in (0, 1)
+      - rule: skill >= 0
+

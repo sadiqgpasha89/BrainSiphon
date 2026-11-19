@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/content-virality-prediction",
+ "title": "Content Virality & Engagement Prediction",
+ "domain": "adtech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 14751,
+ "knobs": {
+  "n": 22820,
+  "outlier_share": 0.012,
+  "drift": 0.325
+ },
+ "blueprintSignals": [
+  {
+   "name": "Early velocity",
+   "definition": "engagement in the first 10 minutes",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Cascade structure",
+   "definition": "depth and breadth of shares",
+   "asOfRule": "Graph"
+  },
+  {
+   "name": "Creator baseline reach",
+   "definition": "typical engagement",
+   "asOfRule": "History"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Content Virality & Engagement Prediction\": Predict early whether a post or video will go viral to allocate promotion budget and inform creators. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using future engagement leaked into features."
+}

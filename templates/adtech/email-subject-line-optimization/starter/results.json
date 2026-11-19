@@ -1,0 +1,36 @@
+{
+ "use_case": "adtech/email-subject-line-optimization",
+ "engine": "nlp",
+ "seed": 74029,
+ "knobs": {
+  "n_docs": 6850
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.1,
+ "results": {
+  "docs": 6850,
+  "duplicate_share": 0.24861313868613144,
+  "random_split_with_leak": {
+   "macro_f1": 0.9142360157578601,
+   "ece": 0.12355109435770782
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4412464343802085,
+   "ece": 0.04754060150664942
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8050697173776853,
+   "ece": 0.08914042785602744
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4412464343802085,
+   "ece": 0.04754060150664942
+  }
+ }
+}

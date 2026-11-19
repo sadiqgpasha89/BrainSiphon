@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/sanctions-name-screening-fuzzy-matching",
+ "title": "Sanctions Name Screening with Fuzzy Matching",
+ "domain": "fintech",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 77339,
+ "knobs": {
+  "n_clusters": 2070,
+  "hub_share": 0.085
+ },
+ "blueprintSignals": [
+  {
+   "name": "Phonetic-embedding similarity",
+   "definition": "cosine of character-aware name embeddings",
+   "asOfRule": "Evaluate on held-out alias families"
+  },
+  {
+   "name": "Secondary identifier agreement",
+   "definition": "DOB, nationality and ID overlap score",
+   "asOfRule": "Missing values must be neutral not negative"
+  },
+  {
+   "name": "Alias-graph distance",
+   "definition": "shortest alias path between the query and list entity",
+   "asOfRule": "Alias updates versioned by list date"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Sanctions Name Screening with Fuzzy Matching\": Screen payments and customers against sanctions lists with high recall across transliterations while cutting false hits by 60%. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test set made of synthetic typos only."
+}

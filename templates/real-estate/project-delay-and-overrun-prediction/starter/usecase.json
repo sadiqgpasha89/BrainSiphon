@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/project-delay-and-overrun-prediction",
+ "title": "Construction Project Delay & Overrun Prediction",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 44750,
+ "knobs": {
+  "n": 21880,
+  "outlier_share": 0.03,
+  "drift": 0.198
+ },
+ "blueprintSignals": [
+  {
+   "name": "Schedule performance index",
+   "definition": "earned value divided by planned value to date",
+   "asOfRule": "Depends on honest progress reporting, so cross-check with quantities"
+  },
+  {
+   "name": "Critical path float",
+   "definition": "days of float on the tasks that drive the finish date",
+   "asOfRule": "Schedules are updated irregularly"
+  },
+  {
+   "name": "Delivery lateness",
+   "definition": "average days late of the last ten key deliveries",
+   "asOfRule": "Logs may record receipt and not site-ready dates"
+  },
+  {
+   "name": "Weather lost days",
+   "definition": "days lost to rain or wind against the allowance",
+   "asOfRule": "Weather days are claimed inconsistently"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Construction Project Delay & Overrun Prediction\": Predict schedule and cost overruns on live projects from progress, supply and weather data so managers act early. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Only completed projects are in the data, so cancelled or abandoned ones are missing."
+}

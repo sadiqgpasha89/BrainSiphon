@@ -1,0 +1,49 @@
+{
+ "use_case": "healthcare/polygenic-risk-scoring",
+ "engine": "regression",
+ "seed": 51199,
+ "knobs": {
+  "n": 18710,
+  "outlier_share": 0.01,
+  "drift": 0.323
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.7,
+ "results": {
+  "rows": 18710,
+  "train_rows": 13097,
+  "test_rows": 5613,
+  "baseline_ridge": {
+   "mae": 6.786321895104314,
+   "rmse": 10.84990614582684,
+   "wape": 0.12874604465080738,
+   "r2": 0.5167830133932123
+  },
+  "challenger_gbm": {
+   "mae": 4.364112524208163,
+   "rmse": 8.412031608938639,
+   "wape": 0.08279333556343414,
+   "r2": 0.7095361953837934
+  },
+  "mae_gain_vs_baseline": 0.35692521049488457,
+  "interval_80_coverage": 0.6376269374665954,
+  "interval_80_mean_width": 8.507502303938736,
+  "segment_mae": {
+   "0": 3.9642665504752044,
+   "1": 4.675721869129074,
+   "2": 4.726654070320394,
+   "3": 5.233674591562798
+  },
+  "worst_segment_vs_overall": 1.1992528979331052,
+  "leaky_feature_rmse": 2.1631665195503667,
+  "honest_rmse": 8.412031608938639,
+  "random_split_mae": 3.6539350725431428,
+  "chronological_mae": 4.364112524208163
+ }
+}

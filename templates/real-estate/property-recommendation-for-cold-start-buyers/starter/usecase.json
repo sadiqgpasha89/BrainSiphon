@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/property-recommendation-for-cold-start-buyers",
+ "title": "Property Recommendation for Cold-Start Buyers",
+ "domain": "real-estate",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "personalised-ranking",
+ "seed": 53849,
+ "knobs": {
+  "n_sessions": 52240,
+  "bot_share": 0.137
+ },
+ "blueprintSignals": [
+  {
+   "name": "Questionnaire answers",
+   "definition": "budget range, bedrooms and preferred area one-hot encoded",
+   "asOfRule": "Self-report is imprecise, so treat it as a prior and not a rule"
+  },
+  {
+   "name": "Early views",
+   "definition": "embedding of the first three viewed homes averaged with decaying weights",
+   "asOfRule": "Curiosity clicks are noisy, so weight saves above views"
+  },
+  {
+   "name": "Item embedding",
+   "definition": "vector from home attributes, images and text trained on engagement",
+   "asOfRule": "Needs retraining as the market changes"
+  },
+  {
+   "name": "Lookalike buyers",
+   "definition": "similarity of early action sequences to established buyers' early sequences",
+   "asOfRule": "Sparse in the first sessions, so use it with a small weight"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Property Recommendation for Cold-Start Buyers\": Recommend homes to new buyers from a few early actions or a short questionnaire and refine as signals arrive. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Historical logs are dominated by popular homes so offline scores favour popularity."
+}

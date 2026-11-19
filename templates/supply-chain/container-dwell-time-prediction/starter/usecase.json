@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/container-dwell-time-prediction",
+ "title": "Container Dwell-Time Prediction",
+ "domain": "supply-chain",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 76239,
+ "knobs": {
+  "n": 6310,
+  "dropout": 0.294
+ },
+ "blueprintSignals": [
+  {
+   "name": "Customs status stage",
+   "definition": "cleared, hold, pending",
+   "asOfRule": "Event times"
+  },
+  {
+   "name": "Consignee dwell history",
+   "definition": "median dwell of past boxes",
+   "asOfRule": "Prior only"
+  },
+  {
+   "name": "Weekend and holiday gap",
+   "definition": "days until next working day",
+   "asOfRule": "Calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Container Dwell-Time Prediction\": Predict how long import containers stay in port to plan yard capacity, trucking and demurrage exposure. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on completed containers only."
+}

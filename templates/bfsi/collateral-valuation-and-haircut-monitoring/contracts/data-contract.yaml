@@ -1,0 +1,16 @@
+contract: collateral_valuation_and_haircut_inputs.v1
+owner: core-banking-it@example.com
+system_of_record: Core banking or policy administration system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: price_momentum_and_volatility, type: double, nullable: false }
+    - { name: liquidity_proxy, type: double, nullable: false }
+    - { name: valuation_age, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

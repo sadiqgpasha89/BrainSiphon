@@ -1,0 +1,43 @@
+{
+ "use_case": "adtech/campaign-performance-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 90083,
+ "knobs": {
+  "n_series": 112,
+  "anomalies_per_series": 2.233
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 13.7,
+ "results": {
+  "series": 112,
+  "hours": 2016,
+  "events": 283,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.2843866171003717,
+   "recall": 0.5140845070422535,
+   "median_delay_h": 1.0,
+   "events": 142
+  },
+  "seasonal_z": {
+   "threshold": 4.0,
+   "false_alerts_per_series_week": 0.828996282527881,
+   "recall": 0.971830985915493,
+   "median_delay_h": 0.0,
+   "events": 142
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.4944237918215613,
+   "recall": 0.971830985915493,
+   "median_delay_h": 0.0,
+   "events": 142
+  }
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "retail/counterfeit-product-detection",
+ "title": "Counterfeit Product Detection",
+ "domain": "retail",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 65112,
+ "knobs": {
+  "n": 3760,
+  "prevalence": 0.13
+ },
+ "blueprintSignals": [
+  {
+   "name": "Logo and tag fidelity",
+   "definition": "fine-grained logo similarity to brand references",
+   "asOfRule": "Reference set curated by brand"
+  },
+  {
+   "name": "Price-to-MSRP ratio",
+   "definition": "price divided by MSRP floor",
+   "asOfRule": "MSRP as-of"
+  },
+  {
+   "name": "Seller risk and authorised flag",
+   "definition": "authorisation status and history",
+   "asOfRule": "Brand-provided lists"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Counterfeit Product Detection\": Find counterfeit listings using images, text, price and seller signals, supporting brand-owner takedowns with strong evidence. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fakes in training from easy known sellers."
+}

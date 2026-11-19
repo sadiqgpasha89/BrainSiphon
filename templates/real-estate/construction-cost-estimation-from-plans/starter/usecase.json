@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/construction-cost-estimation-from-plans",
+ "title": "Construction Cost Estimation from Plans",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 57797,
+ "knobs": {
+  "n": 25960,
+  "outlier_share": 0.019,
+  "drift": 0.373
+ },
+ "blueprintSignals": [
+  {
+   "name": "Gross area and storeys",
+   "definition": "gross floor area and number of storeys read from the plans",
+   "asOfRule": "Plans differ on what counts as gross, so define it"
+  },
+  {
+   "name": "Spec level",
+   "definition": "classifier score from finish schedules and notes for low, medium, high and luxury",
+   "asOfRule": "Specifications are text and often incomplete"
+  },
+  {
+   "name": "Region index",
+   "definition": "construction cost index of the project region relative to a base",
+   "asOfRule": "Indices lag, so update them often"
+  },
+  {
+   "name": "Similar project cost",
+   "definition": "cost per square metre of the five most similar past projects, escalated to today",
+   "asOfRule": "Matching is subjective, so show the projects used"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Construction Cost Estimation from Plans\": Estimate construction cost early from drawings, specifications and past projects, with quantity take-off support. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: The final cost in the data includes changes, so it is not the cost of the plan as drawn."
+}

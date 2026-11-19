@@ -1,0 +1,53 @@
+{
+ "slug": "saas/cloud-cost-anomaly-finops",
+ "title": "Cloud Cost Anomaly Detection & FinOps Forecasting",
+ "domain": "saas",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 29222,
+ "knobs": {
+  "n_series": 115,
+  "anomalies_per_series": 2.88
+ },
+ "blueprintSignals": [
+  {
+   "name": "Cost per unit of traffic",
+   "definition": "spend divided by requests",
+   "asOfRule": "Join"
+  },
+  {
+   "name": "New resource spikes",
+   "definition": "new instance types or services",
+   "asOfRule": "Inventory"
+  },
+  {
+   "name": "Commitment coverage",
+   "definition": "share covered by savings plans",
+   "asOfRule": "Billing"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Cloud Cost Anomaly Detection & FinOps Forecasting\": Detect cost spikes by service and team early and forecast spend so engineers can fix waste before the invoice. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Raw cost comparisons without traffic."
+}

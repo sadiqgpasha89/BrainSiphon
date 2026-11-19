@@ -1,0 +1,52 @@
+{
+ "slug": "retail/demand-forecasting-sku-store",
+ "title": "SKU-Store Demand Forecasting",
+ "domain": "retail",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 79173,
+ "knobs": {
+  "n_series": 273
+ },
+ "blueprintSignals": [
+  {
+   "name": "Promo calendar flag with depth",
+   "definition": "promotion type and discount depth known in advance",
+   "asOfRule": "Only plans known at forecast origin"
+  },
+  {
+   "name": "Price index",
+   "definition": "price relative to base",
+   "asOfRule": "Future prices must be planned values"
+  },
+  {
+   "name": "Lag-7 and lag-364 demand",
+   "definition": "same weekday and year-ago demand",
+   "asOfRule": "Alignment by retail calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"SKU-Store Demand Forecasting\": Forecast daily demand for millions of SKU-store pairs to drive replenishment with calibrated uncertainty and promo awareness. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Random CV over time."
+}

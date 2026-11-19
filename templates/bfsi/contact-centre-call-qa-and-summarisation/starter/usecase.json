@@ -1,0 +1,55 @@
+{
+ "slug": "bfsi/contact-centre-call-qa-and-summarisation",
+ "title": "Contact-Centre Call QA & Summarisation",
+ "domain": "bfsi",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 33860,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Disclosure detection",
+   "definition": "detected spans for each required statement, with confidence",
+   "asOfRule": "Speech recognition errors cause misses, so use fuzzy matching"
+  },
+  {
+   "name": "Summary faithfulness",
+   "definition": "share of summary claims supported by the transcript",
+   "asOfRule": "Needs an entailment check, not only overlap"
+  },
+  {
+   "name": "Sentiment shift",
+   "definition": "change in sentiment between the first and last minute of the call",
+   "asOfRule": "Weak and noisy, so use with other signals"
+  },
+  {
+   "name": "Silence and talk ratio",
+   "definition": "share of the call that is dead air and agent-to-customer talk ratio",
+   "asOfRule": "Noisy, as silence is often legitimate"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Contact-Centre Call QA & Summarisation\": Transcribe, summarise and score calls against the quality and compliance checklist so supervisors review the right calls and agents spend less time on notes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Supervisor labels are inconsistent between reviewers, so the ceiling is lower than it appears."
+}

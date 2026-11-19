@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/progress-monitoring-from-drone-imagery",
+ "title": "Progress Monitoring from Drone Imagery",
+ "domain": "real-estate",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 36611,
+ "knobs": {
+  "n": 3770,
+  "prevalence": 0.092
+ },
+ "blueprintSignals": [
+  {
+   "name": "Point cloud registration",
+   "definition": "root-mean-square error of aligned points to BIM control points",
+   "asOfRule": "Drift over a large site needs control markers"
+  },
+  {
+   "name": "Element completion",
+   "definition": "classifier probability that an element is built, per element",
+   "asOfRule": "Occlusion hides elements, so report visibility alongside"
+  },
+  {
+   "name": "Deviation",
+   "definition": "millimetres between the as-built surface and the BIM surface per element",
+   "asOfRule": "Noise in the point cloud limits precision, so state the error margin"
+  },
+  {
+   "name": "Schedule variance",
+   "definition": "planned finish minus predicted finish by task, in days",
+   "asOfRule": "Depends on a current plan"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Progress Monitoring from Drone Imagery\": Compare drone captures to the BIM or schedule to estimate progress by element and flag deviations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on one site hides failures on sites with different structures and materials."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/remote-patient-monitoring-anomaly-detection",
+ "title": "Remote Patient Monitoring Anomaly Detection",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 47868,
+ "knobs": {
+  "n_series": 62,
+  "anomalies_per_series": 1.833
+ },
+ "blueprintSignals": [
+  {
+   "name": "Deviation from personal baseline",
+   "definition": "robust z-score over 14 days",
+   "asOfRule": "Window excludes current reading"
+  },
+  {
+   "name": "Trend slope over 3 days",
+   "definition": "weight gain slope for heart-failure patients",
+   "asOfRule": "Measurement timing adjustment"
+  },
+  {
+   "name": "Measurement gap duration",
+   "definition": "days since last reading",
+   "asOfRule": "Distinguish device failure"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Remote Patient Monitoring Anomaly Detection\": Detect clinically meaningful changes in home-monitoring data (weight, BP, glucose, SpO2) and escalate to care teams with minimal noise. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Alerts judged only by acted-upon ones."
+}

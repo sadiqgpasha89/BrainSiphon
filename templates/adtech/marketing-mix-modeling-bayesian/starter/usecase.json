@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/marketing-mix-modeling-bayesian",
+ "title": "Bayesian Marketing Mix Modelling",
+ "domain": "adtech",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 15239,
+ "knobs": {
+  "n": 44590,
+  "confound": 0.819,
+  "holdout": 0.165
+ },
+ "blueprintSignals": [
+  {
+   "name": "Adstock decay parameter",
+   "definition": "geometric carryover per channel",
+   "asOfRule": "Prior"
+  },
+  {
+   "name": "Saturation half-saturation point",
+   "definition": "Hill curve parameter",
+   "asOfRule": "Spend range"
+  },
+  {
+   "name": "Seasonality and baseline",
+   "definition": "trend and holidays",
+   "asOfRule": "Calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Bayesian Marketing Mix Modelling\": Estimate channel-level incremental ROI and saturation curves from aggregate data to guide cross-channel budgets. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Overfitting with many parameters on short history."
+}

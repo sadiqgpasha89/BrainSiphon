@@ -1,0 +1,48 @@
+{
+ "slug": "retail/product-catalog-attribute-extraction-llm",
+ "title": "Catalogue Attribute Extraction with LLMs",
+ "domain": "retail",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 3230,
+ "knobs": {
+  "n_train": 910
+ },
+ "blueprintSignals": [
+  {
+   "name": "Extraction confidence calibration",
+   "definition": "agreement across self-consistency samples",
+   "asOfRule": "Calibrate per attribute"
+  },
+  {
+   "name": "Image-text agreement",
+   "definition": "VLM attribute vs text attribute",
+   "asOfRule": "Image quality gating"
+  },
+  {
+   "name": "Attribute coverage lift",
+   "definition": "search filter coverage after enrichment",
+   "asOfRule": "Compare vs control categories"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Catalogue Attribute Extraction with LLMs\": Fill and normalise product attributes (size, material, compatibility) from titles, descriptions and images to power search, filters and recommendations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Gold set from easy categories."
+}

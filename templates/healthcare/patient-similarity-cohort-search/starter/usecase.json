@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/patient-similarity-cohort-search",
+ "title": "Patient Similarity & Cohort Search",
+ "domain": "healthcare",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 47030,
+ "knobs": {
+  "n_sessions": 35880,
+  "bot_share": 0.133
+ },
+ "blueprintSignals": [
+  {
+   "name": "Longitudinal code embedding",
+   "definition": "sequence-based patient embedding",
+   "asOfRule": "Time window"
+  },
+  {
+   "name": "Lab trajectory features",
+   "definition": "summary of lab trends",
+   "asOfRule": "Units normalised"
+  },
+  {
+   "name": "Note-derived phenotypes",
+   "definition": "extracted conditions",
+   "asOfRule": "Negation handling"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Patient Similarity & Cohort Search\": Let clinicians and researchers find similar patients and build cohorts from structured data and notes using natural-language queries. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Gold cohorts from one disease."
+}

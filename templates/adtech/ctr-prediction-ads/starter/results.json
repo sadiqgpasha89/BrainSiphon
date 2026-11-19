@@ -1,0 +1,47 @@
+{
+ "use_case": "adtech/ctr-prediction-ads",
+ "engine": "authored",
+ "seed": null,
+ "knobs": {},
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 26.5,
+ "results": {
+  "impressions": 300000,
+  "ctr": 0.0432,
+  "explore_rows": 1346,
+  "accidental_clicks_in_train": 171,
+  "lr_no_position": {
+   "logloss": 0.16792700695383928,
+   "ne": 0.9230898309353589,
+   "ece": 0.0075114320885134546,
+   "auc_logged": 0.7283713235068129,
+   "bias_position_1": 0.7497261616244382,
+   "bias_position_5": 1.788829837520675
+  },
+  "lr_hashed": {
+   "logloss": 0.16568787844071545,
+   "ne": 0.9107814071855675,
+   "ece": 0.007713512292516468,
+   "auc_logged": 0.7434366589429147,
+   "bias_position_1": 0.9685204236389359,
+   "bias_position_5": 1.0263321432656447,
+   "cold_start_ne": 0.9333726648542934
+  },
+  "gbdt": {
+   "logloss": 0.16569705629633708,
+   "ne": 0.910831857588679,
+   "ece": 0.0040100977606888685,
+   "auc_logged": 0.7383569020614805,
+   "bias_position_1": 1.0178176609944554,
+   "bias_position_5": 1.1382077748795771,
+   "cold_start_ne": 0.9294182351591016
+  },
+  "cold_start_rows": 4826
+ }
+}

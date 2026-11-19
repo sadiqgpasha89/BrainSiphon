@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/ambulance-dispatch-and-response-time-optimization",
+ "engine": "optimize",
+ "seed": 77774,
+ "knobs": {
+  "n_instances": 108,
+  "noise": 0.321
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "instances": 108,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 123.43855194207605,
+   "promised_cost": 95.89948423495152,
+   "optimism_gap_pct": 28.7165962641201,
+   "regret_vs_oracle_pct": 34.97178100212037
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 110.0720455957339,
+   "promised_cost": 78.22798853300652,
+   "optimism_gap_pct": 40.706731260629944,
+   "regret_vs_oracle_pct": 20.356402427454935
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 106.71869239727923,
+   "promised_cost": 80.15285166512332,
+   "optimism_gap_pct": 33.14397451901942,
+   "regret_vs_oracle_pct": 16.68973551988321
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.45508122185693,
+   "promised_cost": 95.56708684455067,
+   "optimism_gap_pct": -4.302742459213315,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

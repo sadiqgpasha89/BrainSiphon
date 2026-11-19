@@ -1,0 +1,54 @@
+{
+ "slug": "supply-chain/reverse-logistics-returns-flow-optimization",
+ "title": "Reverse Logistics Disposition Optimisation",
+ "domain": "supply-chain",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 27450,
+ "knobs": {
+  "n": 36760,
+  "confound": 1.101,
+  "holdout": 0.138
+ },
+ "blueprintSignals": [
+  {
+   "name": "Condition grade prediction",
+   "definition": "grade from images",
+   "asOfRule": "Labelled grades"
+  },
+  {
+   "name": "Resale price model",
+   "definition": "expected resale value by channel",
+   "asOfRule": "Market data"
+  },
+  {
+   "name": "Processing cost by route",
+   "definition": "labour and shipping cost",
+   "asOfRule": "Rate card"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Reverse Logistics Disposition Optimisation\": Decide for each returned item whether to restock, refurbish, liquidate, donate or recycle, maximising recovered value. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Resale prices assumed constant."
+}

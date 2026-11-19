@@ -1,0 +1,34 @@
+{
+ "use_case": "bfsi/commercial-loan-covenant-early-warning",
+ "engine": "tabular",
+ "seed": 58855,
+ "knobs": {
+  "n_entities": 2020,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "rows": 153400,
+  "positive_rate": 0.0030573663624511084,
+  "test_rows": 52529,
+  "test_positive_rate": 0.00428334824573093,
+  "baseline_lr": {
+   "pr_auc": 0.6107297815439918,
+   "recall_at_0.5pct_fpr": 0.7713590643274854,
+   "brier": 0.007356792415224154
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.73144804134608,
+   "recall_at_0.5pct_fpr": 0.7777777777777778,
+   "brier": 0.0021177315126644104
+  }
+ }
+}

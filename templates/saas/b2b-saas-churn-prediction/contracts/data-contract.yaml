@@ -1,0 +1,16 @@
+contract: b2b_saas_churn_prediction_inputs.v1
+owner: product-analytics@example.com
+system_of_record: Tenant and entitlement service
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: admin_and_champion_activity, type: double, nullable: false }
+    - { name: seat_utilisation_trend, type: double, nullable: false }
+    - { name: support_ticket_sentiment_and_escalations, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

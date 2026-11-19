@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/ultrasound-guidance-and-measurement",
+ "title": "Ultrasound Guidance & Auto-Measurement",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 37163,
+ "knobs": {
+  "n": 3790,
+  "prevalence": 0.14
+ },
+ "blueprintSignals": [
+  {
+   "name": "View-quality score",
+   "definition": "probability of a standard diagnostic view",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Anatomical landmark heatmaps",
+   "definition": "keypoint localisations",
+   "asOfRule": "Landmark annotation"
+  },
+  {
+   "name": "Cardiac phase detection",
+   "definition": "end-diastole and systole frames",
+   "asOfRule": "Tracking"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Ultrasound Guidance & Auto-Measurement\": Provide real-time probe guidance and automatic measurements (fetal biometry, cardiac EF) so non-experts acquire diagnostic-quality scans. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on expert-acquired scans only."
+}

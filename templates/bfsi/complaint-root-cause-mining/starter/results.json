@@ -1,0 +1,36 @@
+{
+ "use_case": "bfsi/complaint-root-cause-mining",
+ "engine": "nlp",
+ "seed": 63617,
+ "knobs": {
+  "n_docs": 5190
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.7,
+ "results": {
+  "docs": 5190,
+  "duplicate_share": 0.26223506743737957,
+  "random_split_with_leak": {
+   "macro_f1": 0.8985586049897311,
+   "ece": 0.1273099908550759
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4449363495264381,
+   "ece": 0.04114010048312523
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8168394872941729,
+   "ece": 0.11745162437099436
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4449363495264381,
+   "ece": 0.04114010048312523
+  }
+ }
+}

@@ -1,0 +1,16 @@
+contract: usage_based_billing_anomaly_inputs.v1
+owner: product-analytics@example.com
+system_of_record: Tenant and entitlement service
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: meter_reconciliation_gap, type: double, nullable: false }
+    - { name: usage_spike_vs_baseline, type: double, nullable: false }
+    - { name: rate_card_change_events, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

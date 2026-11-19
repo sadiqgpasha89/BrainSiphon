@@ -1,0 +1,16 @@
+contract: merchant_risk_scoring_onboarding_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: mcc_site_mismatch, type: double, nullable: false }
+    - { name: shared_director_risk, type: double, nullable: false }
+    - { name: projected_volume_anomaly, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

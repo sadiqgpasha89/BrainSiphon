@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 8
+  stages:
+    - { name: feed_handler, timeout_ms: 1, on_timeout: fallback_level_1 }
+    - { name: microstructure_features, timeout_ms: 1.3, on_timeout: fallback_level_1 }
+    - { name: quote_policy, timeout_ms: 0.6, on_timeout: fallback_level_1 }
+    - { name: risk_wrapper, timeout_ms: 1, on_timeout: fallback_level_1 }
+    - { name: order_entry, timeout_ms: 1, on_timeout: fallback_level_1 }
+    - { name: kill_switch_monitor, timeout_ms: 0.9, on_timeout: fallback_level_1 }
+    - { name: offline_replay, timeout_ms: 0.9, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "PnL per unit risk"
+    - "Adverse selection cost"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

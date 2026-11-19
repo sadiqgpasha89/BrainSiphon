@@ -1,0 +1,36 @@
+{
+ "use_case": "adtech/differential-privacy-measurement",
+ "engine": "uplift",
+ "seed": 49211,
+ "knobs": {
+  "n": 36060,
+  "confound": 1.55,
+  "holdout": 0.125
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.3,
+ "results": {
+  "rows": 36060,
+  "observational_rows": 31599,
+  "holdout_rows": 4461,
+  "true_ate": 0.06868469217970048,
+  "naive_ate": 0.21617122496492522,
+  "naive_bias": 0.14748653278522472,
+  "ipw_ate": 0.07565541774000842,
+  "ipw_bias": 0.006970725560307936,
+  "holdout_ate": 0.07962547915632304,
+  "holdout_balance_smd_x0": -0.0188565629336592,
+  "observational_balance_smd_x0": 1.2784183792400101,
+  "t_learner_qini_auc": 0.010502235479291343,
+  "random_ranking_qini_auc": 0.005859707289111643,
+  "top_decile_realised_uplift": 0.13829358685143406,
+  "bottom_decile_realised_uplift": 0.004905297721539248,
+  "share_predicted_negative": 0.2004034969737727
+ }
+}

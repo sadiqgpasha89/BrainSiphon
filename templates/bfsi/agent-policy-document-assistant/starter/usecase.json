@@ -1,0 +1,55 @@
+{
+ "slug": "bfsi/agent-policy-document-assistant",
+ "title": "Insurance Agent Policy Document Assistant",
+ "domain": "bfsi",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 32711,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Citation validity",
+   "definition": "share of statements supported by the cited clause",
+   "asOfRule": "A real clause can still not support the statement, so test entailment"
+  },
+  {
+   "name": "Version match",
+   "definition": "whether the version cited is the one in force at the policy date",
+   "asOfRule": "Version metadata are often wrong"
+  },
+  {
+   "name": "Escalation precision",
+   "definition": "share of escalations that an underwriter agrees were needed",
+   "asOfRule": "Over-refusal makes the assistant unhelpful, so track both"
+  },
+  {
+   "name": "Retrieval recall",
+   "definition": "share of questions where the relevant clause is in the top k results",
+   "asOfRule": "Gold sets are costly to build"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Insurance Agent Policy Document Assistant\": Answer agents' and brokers' questions about product features, exclusions and underwriting rules from the insurer's current documents, with citations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Testing only on current documents hides failures on older versions agents still sell."
+}

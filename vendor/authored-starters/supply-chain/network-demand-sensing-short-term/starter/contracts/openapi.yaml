@@ -1,0 +1,73 @@
+openapi: 3.1.0
+info:
+  title: Supply Chain Demand Sensing API
+  description: Short-term demand forecasting API with order book leading indicators and reconciliation.
+  version: 1.1.0
+paths:
+  /v1/forecast:
+    post:
+      summary: Generate multi-horizon demand forecasts with quantile bounds
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DemandForecastRequest'
+      responses:
+        '200':
+          description: Quantile forecasts for requested horizons
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemandForecastResponse'
+  /v1/reconcile:
+    post:
+      summary: Reconcile sub-series forecasts up the echelon hierarchy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReconcileRequest'
+      responses:
+        '200':
+          description: Coherent reconciled hierarchy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconcileResponse'
+components:
+  schemas:
+    DemandForecastRequest:
+      type: object
+      required: [series_id, recent_mean_7d]
+      properties:
+        series_id: { type: string }
+        origin_day: { type: integer, default: 0 }
+        horizons: { type: array, items: { type: integer } }
+        recent_mean_7d: { type: number }
+        prebooked_orders_1d: { type: number }
+        on_hand_inventory: { type: number }
+    DemandForecastResponse:
+      type: object
+      required: [series_id, predictions, total_expected_demand]
+      properties:
+        series_id: { type: string }
+        predictions: { type: array, items: { type: object } }
+        total_expected_demand: { type: number }
+        lead_indicator_lift: { type: number }
+        latency_ms: { type: number }
+    ReconcileRequest:
+      type: object
+      required: [parent_id, child_forecasts]
+      properties:
+        parent_id: { type: string }
+        child_forecasts: { type: object, additionalProperties: { type: number } }
+    ReconcileResponse:
+      type: object
+      required: [parent_id, reconciled_total, is_coherent]
+      properties:
+        parent_id: { type: string }
+        reconciled_total: { type: number }
+        is_coherent: { type: boolean }
+

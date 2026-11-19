@@ -1,0 +1,58 @@
+{
+ "slug": "bfsi/mortgage-prepayment-and-default-risk",
+ "title": "Mortgage Prepayment & Default Risk Modelling",
+ "domain": "bfsi",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 78696,
+ "knobs": {
+  "n": 6360,
+  "dropout": 0.236
+ },
+ "blueprintSignals": [
+  {
+   "name": "Refinance incentive",
+   "definition": "current coupon minus prevailing offer rate for the borrower's LTV and score band",
+   "asOfRule": "Market rate must be as at the month, not today"
+  },
+  {
+   "name": "Loan seasoning curve",
+   "definition": "piecewise hazard by months since origination",
+   "asOfRule": "Vintage and seasoning mix if not stratified"
+  },
+  {
+   "name": "Current LTV with house price index",
+   "definition": "balance divided by indexed property value using the local HPI",
+   "asOfRule": "HPI release lags the decision date"
+  },
+  {
+   "name": "Payment shock",
+   "definition": "scheduled payment change at the next reset divided by current payment",
+   "asOfRule": "The reset date must be known contractually, not learned from the outcome"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Mortgage Prepayment & Default Risk Modelling\": Forecast monthly prepayment and default for each mortgage so pricing, hedging, provisioning and servicing capacity use the right cash flows. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Random split leaks vintages across train and test."
+}

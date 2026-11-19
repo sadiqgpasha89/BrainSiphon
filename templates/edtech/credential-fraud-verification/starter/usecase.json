@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/credential-fraud-verification",
+ "title": "Credential & Certificate Fraud Detection",
+ "domain": "edtech",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 61889,
+ "knobs": {
+  "n": 5180,
+  "prevalence": 0.117
+ },
+ "blueprintSignals": [
+  {
+   "name": "Issuer verification result",
+   "definition": "direct verification status",
+   "asOfRule": "API availability"
+  },
+  {
+   "name": "Template conformity",
+   "definition": "font and layout vs issuer template",
+   "asOfRule": "Template library"
+  },
+  {
+   "name": "Diploma-mill match",
+   "definition": "institution accreditation and mill list",
+   "asOfRule": "Data freshness"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Credential & Certificate Fraud Detection\": Detect forged diplomas, transcripts and certificates in admissions and hiring flows by combining document forensics, issuer verification and network signals. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Synthetic forgeries differ from real ones."
+}

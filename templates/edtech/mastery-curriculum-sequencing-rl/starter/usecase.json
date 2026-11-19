@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/mastery-curriculum-sequencing-rl",
+ "title": "Mastery-Based Curriculum Sequencing",
+ "domain": "edtech",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 69775,
+ "knobs": {
+  "n": 37800,
+  "logging_temperature": 0.961
+ },
+ "blueprintSignals": [
+  {
+   "name": "Prerequisite readiness",
+   "definition": "mastery of parent skills",
+   "asOfRule": "DAG"
+  },
+  {
+   "name": "Forgetting-adjusted mastery",
+   "definition": "decayed mastery",
+   "asOfRule": "Memory model"
+  },
+  {
+   "name": "Expected gain of an activity",
+   "definition": "model-estimated gain",
+   "asOfRule": "KT"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Mastery-Based Curriculum Sequencing\": Learn long-horizon curriculum sequences that maximise mastery across a skill graph, accounting for prerequisites and forgetting. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulator trained on the same logs as the policy."
+}

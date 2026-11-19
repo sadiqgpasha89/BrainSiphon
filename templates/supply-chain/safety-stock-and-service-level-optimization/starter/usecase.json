@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/safety-stock-and-service-level-optimization",
+ "title": "Safety Stock & Service-Level Optimisation",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 88746,
+ "knobs": {
+  "n_instances": 113,
+  "noise": 0.343
+ },
+ "blueprintSignals": [
+  {
+   "name": "Demand over lead time distribution",
+   "definition": "simulated convolution",
+   "asOfRule": "Lead-time data"
+  },
+  {
+   "name": "Item value and criticality",
+   "definition": "margin and criticality",
+   "asOfRule": "Master data"
+  },
+  {
+   "name": "Forecast bias",
+   "definition": "mean error of forecasts",
+   "asOfRule": "Matured"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Safety Stock & Service-Level Optimisation\": Allocate a working-capital budget to safety stock across SKUs to maximise overall service level. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Normality assumed."
+}

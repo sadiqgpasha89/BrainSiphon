@@ -1,0 +1,50 @@
+{
+ "slug": "healthcare/prior-authorization-automation",
+ "title": "Prior Authorization Automation",
+ "domain": "healthcare",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 37929,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Criteria coverage",
+   "definition": "share of policy criteria with chart evidence",
+   "asOfRule": "Evidence retrieval accuracy"
+  },
+  {
+   "name": "Policy version match",
+   "definition": "policy in force at request date",
+   "asOfRule": "Effective-date lookup"
+  },
+  {
+   "name": "Approval confidence",
+   "definition": "calibrated probability criteria met",
+   "asOfRule": "Calibrated per payer"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Prior Authorization Automation\": Assemble clinical evidence against payer policies to auto-approve straightforward prior authorisation requests and speed up the rest. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on historical approvals biased by prior reviewers."
+}

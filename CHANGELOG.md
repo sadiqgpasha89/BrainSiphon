@@ -2,6 +2,18 @@
 
 Architecture, framework, version and implementation changes. Content changes to individual blueprints are visible in the git history of `content/usecases/`; each blueprint page shows the content version it was built from.
 
+## Unreleased: one free site, with the worked templates in the repository
+
+### Changed
+- The Pro repository is merged into this one and is free: the 500 worked templates (`templates/`), the 20 starter engines (`engines/`), the generator and tools (`tools/`, `vendor/`, `data/`), the ten implementation packs (`fde-packs/`), the four reference implementations (`reference-implementations/`) and their CI (`.github/workflows/templates-ci.yml`).
+- Licence: MIT, in `LICENSE.md`. This replaces the Pro licence, which no longer applies to this repository.
+- Every use case page shows its worked example, and links to its folder under `templates/`. The worked example was previously withheld on all but one use case.
+- Home page, header, footer and the implementations page describe what is free instead of Pro. The "Worked templates" link in the header and footer points at the `templates/` folder on GitHub.
+- The owner-only notes that were in the Pro repository are not part of this repository.
+
+### Removed
+- `/pro`, its prices and its early-access buttons. `src/lib/pro.ts`, `src/components/reader/ProLock.tsx`, `content/pro.json` and `content/pro-catalog.json`. Links to `/pro` now return 404.
+
 ## Unreleased: simpler navigation and home page for newcomers
 
 ### Changed

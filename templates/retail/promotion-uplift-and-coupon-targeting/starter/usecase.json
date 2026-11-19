@@ -1,0 +1,54 @@
+{
+ "slug": "retail/promotion-uplift-and-coupon-targeting",
+ "title": "Promotion Uplift & Coupon Targeting",
+ "domain": "retail",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 39206,
+ "knobs": {
+  "n": 43350,
+  "confound": 1.035,
+  "holdout": 0.158
+ },
+ "blueprintSignals": [
+  {
+   "name": "Price sensitivity score",
+   "definition": "historical response to discount depth",
+   "asOfRule": "Randomised promos only"
+  },
+  {
+   "name": "Purchase recency gap",
+   "definition": "days since last order vs typical cycle",
+   "asOfRule": "Cycle estimate from prior data"
+  },
+  {
+   "name": "Category exposure",
+   "definition": "share of basket in coupon category",
+   "asOfRule": "Pre-campaign window"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Promotion Uplift & Coupon Targeting\": Send coupons only to customers whose purchase probability rises because of the coupon, maximising incremental margin per promotion dollar. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on non-randomised past promotions."
+}

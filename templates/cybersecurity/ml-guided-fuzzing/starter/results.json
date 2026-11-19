@@ -1,0 +1,49 @@
+{
+ "use_case": "cybersecurity/ml-guided-fuzzing",
+ "engine": "control",
+ "seed": 8407,
+ "knobs": {
+  "days": 67
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.1,
+ "results": {
+  "days": 67,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.2447723760966785,
+   "end_of_day_underdelivery_pct": 3.7296714683339114,
+   "overshoot_max_pct": 8.152188370973187,
+   "oscillation": 0.0,
+   "hit_cap": 0.5671641791044776
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.894074696587653,
+   "end_of_day_underdelivery_pct": 1.0905148998586194,
+   "overshoot_max_pct": 6.374715809879456,
+   "oscillation": 0.012942261659751455,
+   "hit_cap": 0.34328358208955223
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.1816064169978586,
+   "end_of_day_underdelivery_pct": 0.044680706383591014,
+   "overshoot_max_pct": 1.9594990653575837,
+   "oscillation": 0.08917699434006406,
+   "hit_cap": 0.44776119402985076
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.808218474914718,
+   "end_of_day_underdelivery_pct": 2.0975753238025026,
+   "overshoot_max_pct": 14.596243560579094,
+   "oscillation": 0.019871597530298383,
+   "hit_cap": 0.6417910447761194
+  },
+  "rmse_reduction_vs_open_loop": 0.5365604184925301
+ }
+}

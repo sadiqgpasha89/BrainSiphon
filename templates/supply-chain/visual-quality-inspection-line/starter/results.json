@@ -1,0 +1,50 @@
+{
+ "use_case": "supply-chain/visual-quality-inspection-line",
+ "engine": "cv",
+ "seed": 44734,
+ "knobs": {
+  "n": 4830,
+  "prevalence": 0.109
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "images": 4830,
+  "train": 1668,
+  "prevalence": 0.1041407867494824,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9375087395475014,
+    "sens_at_95_spec": 0.6781609195402298
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9666651371937232,
+    "sens_at_95_spec": 0.8529411764705882
+   },
+   "site_B": {
+    "auc": 0.7616655480045865,
+    "sens_at_95_spec": 0.3524904214559387
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3524904214559387,
+    "false_positive_rate": 0.04927007299270073
+   }
+  }
+ }
+}

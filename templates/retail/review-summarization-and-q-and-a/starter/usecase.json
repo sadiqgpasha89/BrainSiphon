@@ -1,0 +1,50 @@
+{
+ "slug": "retail/review-summarization-and-q-and-a",
+ "title": "Review Summarisation & Product Q&A",
+ "domain": "retail",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 13029,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Aspect coverage",
+   "definition": "share of frequent aspects represented",
+   "asOfRule": "Aspects extracted offline"
+  },
+  {
+   "name": "Review quality weight",
+   "definition": "helpfulness and verified-purchase weight",
+   "asOfRule": "Votes as-of"
+  },
+  {
+   "name": "Support rate",
+   "definition": "share of summary claims supported by cited reviews",
+   "asOfRule": "Entailment check"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Review Summarisation & Product Q&A\": Summarise thousands of reviews into balanced pros/cons and answer product questions with citations from reviews and specs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Summaries judged for fluency not support."
+}

@@ -1,0 +1,58 @@
+{
+ "use_case": "edtech/pronunciation-assessment-speech",
+ "engine": "audio",
+ "seed": 3348,
+ "knobs": {
+  "n_train": 1200,
+  "test_snr": 2.8
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.9,
+ "results": {
+  "train_clips": 1200,
+  "test_clips": 600,
+  "sample_rate_hz": 8000,
+  "raw_spectrum_baseline": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 0.6133333333333333,
+    "macro_f1": 0.4975556316330024
+   }
+  },
+  "log_filterbank_challenger": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 0.19,
+    "macro_f1": 0.06386554621848739
+   }
+  },
+  "log_filterbank_with_channel_augmentation": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   }
+  },
+  "channel_shift_drop_challenger": 0.81,
+  "augmentation_gain_on_shifted_channel": 0.81,
+  "wer_simulated": {
+   "clean": 0.035,
+   "noisy": 0.19625
+  }
+ }
+}

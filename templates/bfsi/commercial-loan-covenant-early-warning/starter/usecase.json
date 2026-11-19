@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/commercial-loan-covenant-early-warning",
+ "title": "Commercial Loan Covenant Breach Early Warning",
+ "domain": "bfsi",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 58855,
+ "knobs": {
+  "n_entities": 2020,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 6
+ },
+ "blueprintSignals": [
+  {
+   "name": "Covenant headroom and slope",
+   "definition": "current ratio minus threshold, plus 4-quarter linear trend",
+   "asOfRule": "Use as-reported contractual definitions only"
+  },
+  {
+   "name": "Revenue momentum",
+   "definition": "quarter-on-quarter revenue growth from management accounts",
+   "asOfRule": "Management accounts arrive late and are sometimes restated"
+  },
+  {
+   "name": "Liquidity cushion",
+   "definition": "undrawn committed lines plus cash divided by next-12-month debt service",
+   "asOfRule": "Facility availability must be as at the date, not current"
+  },
+  {
+   "name": "Account behaviour",
+   "definition": "change in overdraft usage and payment timing on the bank's own accounts",
+   "asOfRule": "Only valid for borrowers whose main account is held here"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Commercial Loan Covenant Breach Early Warning\": Predict which corporate borrowers will breach a financial covenant in the next two quarters so relationship managers act before the breach. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using final accounts instead of as-reported ones inflates accuracy."
+}

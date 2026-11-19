@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/credit-default-survival-modeling",
+ "title": "Credit Default Survival Modeling",
+ "domain": "fintech",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 57114,
+ "knobs": {
+  "n": 6550,
+  "dropout": 0.247
+ },
+ "blueprintSignals": [
+  {
+   "name": "Months-on-book hazard shape",
+   "definition": "baseline hazard as piecewise-constant by account age",
+   "asOfRule": "Vintage effects mix with age if not stratified"
+  },
+  {
+   "name": "Utilisation trend 6m",
+   "definition": "slope of revolving utilisation over 6 months",
+   "asOfRule": "Use statement-date values, never month-end after the fact"
+  },
+  {
+   "name": "Payment-to-minimum ratio",
+   "definition": "payment divided by minimum due, 3-month rolling",
+   "asOfRule": "Delinquency flags computed after default leak the label"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Credit Default Survival Modeling\": Estimate time-to-default curves per borrower to set provisions, pricing and limits under IFRS 9 / CECL. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using current delinquency status instead of status as-of observation time."
+}

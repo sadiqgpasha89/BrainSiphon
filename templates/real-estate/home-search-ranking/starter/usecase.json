@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/home-search-ranking",
+ "title": "Home Search Ranking",
+ "domain": "real-estate",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 46900,
+ "knobs": {
+  "n_sessions": 32590,
+  "bot_share": 0.115
+ },
+ "blueprintSignals": [
+  {
+   "name": "Price fit",
+   "definition": "position of the price within the buyer's stated range, scaled from 0 to 1",
+   "asOfRule": "The range changes during a search, so use the current one"
+  },
+  {
+   "name": "Saved and shared",
+   "definition": "saves and shares of this listing by buyers with similar filters in the last 7 days",
+   "asOfRule": "Sparse for new listings, so smooth with a prior"
+  },
+  {
+   "name": "Listing freshness",
+   "definition": "hours since the listing went live, passed through a decay function",
+   "asOfRule": "Decay too steeply and a good older home disappears"
+  },
+  {
+   "name": "Commute fit",
+   "definition": "travel time from the home to the buyer's saved workplace at rush hour",
+   "asOfRule": "Routing data is expensive, so precompute for common destinations"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Home Search Ranking\": Rank homes for a buyer's search by the likelihood of engagement and fit, balancing relevance, freshness and seller fairness. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Position bias in click logs means top results look better than they are."
+}

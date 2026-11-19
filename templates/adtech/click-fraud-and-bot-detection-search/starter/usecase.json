@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/click-fraud-and-bot-detection-search",
+ "title": "Click Fraud Detection for Search Ads",
+ "domain": "adtech",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 11943,
+ "knobs": {
+  "n_entities": 2010,
+  "positive_entity_rate": 0.039,
+  "n_flash_sales": 8
+ },
+ "blueprintSignals": [
+  {
+   "name": "Post-click dwell and bounce",
+   "definition": "seconds on landing page",
+   "asOfRule": "Consent"
+  },
+  {
+   "name": "Advertiser-competitor click pattern",
+   "definition": "repeated clicks from rivals' networks",
+   "asOfRule": "Known competitors"
+  },
+  {
+   "name": "Session-level click sequence",
+   "definition": "click timing patterns",
+   "asOfRule": "Window"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Click Fraud Detection for Search Ads\": Detect competitor clicking and click farms on paid search to protect advertisers' budgets and keep trust. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Confirmed fraud sample biased to obvious cases."
+}

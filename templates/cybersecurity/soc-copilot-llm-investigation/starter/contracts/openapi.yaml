@@ -1,0 +1,80 @@
+openapi: 3.1.0
+info:
+  title: SOC Copilot Investigation API
+  description: Autonomous security incident investigation with prompt injection defenses and HITL approval.
+  version: 1.2.0
+paths:
+  /v1/investigate:
+    post:
+      summary: Autonomous ReAct triage and evidence gathering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncidentInvestigationRequest'
+      responses:
+        '200':
+          description: Correlated verdict and proposed containment action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentInvestigationResponse'
+  /v1/approve_action:
+    post:
+      summary: Dual-analyst authorization for disruptive containment action
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionApprovalRequest'
+      responses:
+        '200':
+          description: Action executed with cryptographic receipt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionApprovalResponse'
+        '403':
+          description: Dual authorization violation
+components:
+  schemas:
+    IncidentInvestigationRequest:
+      type: object
+      required: [incident_id, alert_type, affected_host]
+      properties:
+        incident_id: { type: string }
+        alert_type: { type: string }
+        affected_host: { type: string }
+        affected_user: { type: string }
+        raw_logs: { type: array, items: { type: object } }
+    IncidentInvestigationResponse:
+      type: object
+      required: [incident_id, verdict, confidence, proposed_action, requires_human_approval]
+      properties:
+        incident_id: { type: string }
+        verdict: { type: string, enum: [TRUE_POSITIVE, FALSE_POSITIVE, BENIGN_ANOMALY, SUSPICIOUS_UNCONFIRMED] }
+        confidence: { type: number }
+        proposed_action: { type: string, enum: [isolate_host, revoke_credentials, block_ip_perimeter, monitor_only] }
+        requires_human_approval: { type: boolean }
+        injection_attempt_detected: { type: boolean }
+        summary: { type: string }
+    ActionApprovalRequest:
+      type: object
+      required: [incident_id, action, analyst_id, approver_id, justification]
+      properties:
+        incident_id: { type: string }
+        action: { type: string }
+        analyst_id: { type: string }
+        approver_id: { type: string }
+        justification: { type: string }
+    ActionApprovalResponse:
+      type: object
+      required: [incident_id, action, executed, execution_receipt]
+      properties:
+        incident_id: { type: string }
+        action: { type: string }
+        executed: { type: boolean }
+        execution_receipt: { type: string }
+

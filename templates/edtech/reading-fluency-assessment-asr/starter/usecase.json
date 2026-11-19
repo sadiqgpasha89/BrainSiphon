@@ -1,0 +1,49 @@
+{
+ "slug": "edtech/reading-fluency-assessment-asr",
+ "title": "Reading Fluency Assessment for Children",
+ "domain": "edtech",
+ "engine": "audio",
+ "fit": "exact",
+ "problemType": "speech-audio",
+ "seed": 84606,
+ "knobs": {
+  "n_train": 1100,
+  "test_snr": 5.788
+ },
+ "blueprintSignals": [
+  {
+   "name": "Words correct per minute",
+   "definition": "aligned correct words per minute",
+   "asOfRule": "Timing"
+  },
+  {
+   "name": "Miscue types",
+   "definition": "omissions, substitutions, repetitions",
+   "asOfRule": "Alignment"
+  },
+  {
+   "name": "Self-correction rate",
+   "definition": "self-corrections",
+   "asOfRule": "Detection"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "log filterbank energies",
+   "meaning": "band energies, normalised per clip"
+  },
+  {
+   "feature": "raw magnitude spectrum",
+   "meaning": "gain-sensitive baseline"
+  },
+  {
+   "feature": "channel augmentation",
+   "meaning": "low-pass and noise added at training time"
+  },
+  {
+   "feature": "word error rate",
+   "meaning": "edit distance over reference words"
+  }
+ ],
+ "label": "For \"Reading Fluency Assessment for Children\": Measure oral reading fluency (words correct per minute, accuracy) from child audio to identify struggling readers early. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Adult speech used for evaluation."
+}

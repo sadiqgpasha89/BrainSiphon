@@ -1,0 +1,33 @@
+{
+ "use_case": "healthcare/sepsis-early-warning",
+ "engine": "authored",
+ "seed": null,
+ "knobs": {},
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 31.4,
+ "results": {
+  "patients": 2400,
+  "train_patients": 1440,
+  "test_patients": 480,
+  "mews_like": {
+   "threshold": 3.0,
+   "alerts_per_100_patient_days": 10.048309178743962,
+   "sensitivity": 0.6153846153846154,
+   "median_lead_time_h": 2.0,
+   "n_sepsis": 52
+  },
+  "gbdt": {
+   "threshold": 0.09227411891028309,
+   "alerts_per_100_patient_days": 6.128364389233955,
+   "sensitivity": 0.9807692307692307,
+   "median_lead_time_h": 3.0,
+   "n_sepsis": 52
+  }
+ }
+}

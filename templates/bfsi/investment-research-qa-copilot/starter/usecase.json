@@ -1,0 +1,55 @@
+{
+ "slug": "bfsi/investment-research-qa-copilot",
+ "title": "Investment Research Q&A Copilot",
+ "domain": "bfsi",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 87066,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Citation validity",
+   "definition": "share of claims whose cited passage entails the claim",
+   "asOfRule": "A passage may exist and not support the claim, so test entailment"
+  },
+  {
+   "name": "Retrieval recall",
+   "definition": "share of questions where the gold passage is in the top k",
+   "asOfRule": "Gold sets are costly to build, so sample across sectors"
+  },
+  {
+   "name": "Abstention precision",
+   "definition": "share of refusals that were correct because the evidence was missing",
+   "asOfRule": "Over-refusal lowers usefulness, so track both"
+  },
+  {
+   "name": "Freshness",
+   "definition": "age in days of each cited source against the latest available version",
+   "asOfRule": "Dating metadata are often missing or wrong"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Investment Research Q&A Copilot\": Answer analysts' questions from the firm's research notes, filings and data with citations and clear abstention. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on questions where the relevant notes are known flatters retrieval."
+}

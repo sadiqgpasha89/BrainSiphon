@@ -1,0 +1,54 @@
+{
+ "slug": "retail/size-and-fit-recommendation",
+ "title": "Size & Fit Recommendation",
+ "domain": "retail",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 86654,
+ "knobs": {
+  "n": 13550,
+  "label_noise": 0.075,
+  "dup_share": 0.335
+ },
+ "blueprintSignals": [
+  {
+   "name": "Brand-size offset",
+   "definition": "learned bias of a brand versus a reference scale",
+   "asOfRule": "Estimated on matured returns"
+  },
+  {
+   "name": "Shopper anchor items",
+   "definition": "sizes the user kept in similar brands",
+   "asOfRule": "Only kept items"
+  },
+  {
+   "name": "Garment measurements vs user profile",
+   "definition": "difference between spec and user measures",
+   "asOfRule": "Self-reported noise correction"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Size & Fit Recommendation\": Recommend the right size per item and shopper to cut size-related returns without discouraging purchase. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using kept items as correct without checking wear."
+}

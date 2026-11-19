@@ -1,0 +1,52 @@
+{
+ "slug": "supply-chain/eta-prediction-for-shipments",
+ "title": "Shipment ETA Prediction",
+ "domain": "supply-chain",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 4650,
+ "knobs": {
+  "n_series": 186
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hub dwell-time distribution",
+   "definition": "recent dwell quantiles at the next hub",
+   "asOfRule": "Window before prediction"
+  },
+  {
+   "name": "Remaining-leg progress",
+   "definition": "fraction of leg completed by GPS",
+   "asOfRule": "GPS timestamp alignment"
+  },
+  {
+   "name": "Weather and disruption on route",
+   "definition": "alerts in corridor",
+   "asOfRule": "Known at prediction time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Shipment ETA Prediction\": Predict arrival times for in-transit shipments with calibrated uncertainty so customers and planners can act before delays hit. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating only on delivered shipments."
+}

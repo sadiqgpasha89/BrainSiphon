@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/surgical-video-phase-recognition",
+ "title": "Surgical Video Phase Recognition",
+ "domain": "healthcare",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 6456,
+ "knobs": {
+  "n": 3880,
+  "prevalence": 0.089
+ },
+ "blueprintSignals": [
+  {
+   "name": "Instrument presence and state",
+   "definition": "detected instruments per frame",
+   "asOfRule": "Detector quality"
+  },
+  {
+   "name": "Temporal context embedding",
+   "definition": "transformer over 5-minute window",
+   "asOfRule": "Window length"
+  },
+  {
+   "name": "Anatomy segmentation",
+   "definition": "organ masks",
+   "asOfRule": "Annotation consistency"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Surgical Video Phase Recognition\": Recognise surgical phases and critical-view events in laparoscopic video for documentation, training and safety checklists. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Frames from the same surgery in train and test."
+}

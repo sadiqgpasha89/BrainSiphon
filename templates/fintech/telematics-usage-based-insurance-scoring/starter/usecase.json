@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/telematics-usage-based-insurance-scoring",
+ "title": "Telematics Usage-Based Insurance Scoring",
+ "domain": "fintech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 30590,
+ "knobs": {
+  "n": 21880,
+  "outlier_share": 0.016,
+  "drift": 0.39
+ },
+ "blueprintSignals": [
+  {
+   "name": "Harsh events per 100km by road class",
+   "definition": "events normalised by distance and road class",
+   "asOfRule": "Map-match to road class"
+  },
+  {
+   "name": "Speed over limit percentage",
+   "definition": "fraction of distance over posted limit",
+   "asOfRule": "Map speed limits as-of date"
+  },
+  {
+   "name": "Phone distraction minutes",
+   "definition": "touch and motion-based screen use while moving",
+   "asOfRule": "Respect passenger exclusion"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Telematics Usage-Based Insurance Scoring\": Score driving behaviour from phone and device sensors to offer fair, behaviour-based premiums and reduce claims through feedback. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Short observation windows with no claims yet."
+}

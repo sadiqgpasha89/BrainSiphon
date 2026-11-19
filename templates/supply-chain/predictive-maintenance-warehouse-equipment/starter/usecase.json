@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/predictive-maintenance-warehouse-equipment",
+ "title": "Warehouse Equipment Anomaly Detection",
+ "domain": "supply-chain",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 57843,
+ "knobs": {
+  "n_series": 95,
+  "anomalies_per_series": 2.813
+ },
+ "blueprintSignals": [
+  {
+   "name": "Spectral vibration features",
+   "definition": "band energies and harmonics",
+   "asOfRule": "Sampling rate"
+  },
+  {
+   "name": "Motor current signature",
+   "definition": "harmonic ratios",
+   "asOfRule": "Load condition"
+  },
+  {
+   "name": "Residual to healthy model",
+   "definition": "reconstruction error by mode",
+   "asOfRule": "Mode label"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Warehouse Equipment Anomaly Detection\": Detect abnormal vibration, current and temperature in conveyors, sorters and AGVs in real time to prevent line stoppages. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Seeded faults unlike real failures."
+}

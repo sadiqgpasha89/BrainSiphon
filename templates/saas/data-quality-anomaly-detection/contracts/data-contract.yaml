@@ -1,0 +1,16 @@
+contract: data_quality_anomaly_detection_inputs.v1
+owner: product-analytics@example.com
+system_of_record: Tenant and entitlement service
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: freshness_delay_vs_expected, type: double, nullable: false }
+    - { name: volume_and_null_rate_deviation, type: double, nullable: false }
+    - { name: downstream_consumer_count, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

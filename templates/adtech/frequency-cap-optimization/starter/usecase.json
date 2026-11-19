@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/frequency-cap-optimization",
+ "title": "Frequency Cap & Exposure Optimisation",
+ "domain": "adtech",
+ "engine": "bandit",
+ "fit": "adaptable",
+ "problemType": "off-policy-decisioning",
+ "seed": 47163,
+ "knobs": {
+  "n": 30430,
+  "logging_temperature": 1.237
+ },
+ "blueprintSignals": [
+  {
+   "name": "Marginal conversion gain",
+   "definition": "conversion probability change per exposure",
+   "asOfRule": "Experiments"
+  },
+  {
+   "name": "Recent exposure count",
+   "definition": "impressions in 24h and 7d",
+   "asOfRule": "Counters"
+  },
+  {
+   "name": "User responsiveness",
+   "definition": "prior response to the advertiser",
+   "asOfRule": "History"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Frequency Cap & Exposure Optimisation\": Decide how often to show ads to each user to maximise conversions while limiting wasted impressions and annoyance. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Observational frequency effects confounded by targeting."
+}

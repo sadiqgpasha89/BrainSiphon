@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/mobile-retention-roas-prediction",
+ "title": "Mobile Retention & ROAS Prediction",
+ "domain": "adtech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 65040,
+ "knobs": {
+  "n": 17490,
+  "outlier_share": 0.015,
+  "drift": 0.3
+ },
+ "blueprintSignals": [
+  {
+   "name": "Day-1 and day-3 retention",
+   "definition": "early retention",
+   "asOfRule": "Cohort windows"
+  },
+  {
+   "name": "Early ARPDAU",
+   "definition": "revenue per active user",
+   "asOfRule": "Period"
+  },
+  {
+   "name": "Install source mix",
+   "definition": "channel mix",
+   "asOfRule": "Aggregates"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Mobile Retention & ROAS Prediction\": Predict day-30 to day-365 retention and revenue from early cohort signals to steer user-acquisition budgets. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Early curves extrapolated beyond observed range."
+}

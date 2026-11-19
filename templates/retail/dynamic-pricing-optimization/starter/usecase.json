@@ -1,0 +1,54 @@
+{
+ "slug": "retail/dynamic-pricing-optimization",
+ "title": "Dynamic Pricing Optimisation",
+ "domain": "retail",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 78122,
+ "knobs": {
+  "n": 16270,
+  "outlier_share": 0.02,
+  "drift": 0.172
+ },
+ "blueprintSignals": [
+  {
+   "name": "Own-price elasticity",
+   "definition": "log-log slope from randomised price cells",
+   "asOfRule": "Randomisation required for validity"
+  },
+  {
+   "name": "Competitor price index",
+   "definition": "own price divided by matched competitor median",
+   "asOfRule": "Matching must be accurate"
+  },
+  {
+   "name": "Days of cover",
+   "definition": "stock divided by forecast demand",
+   "asOfRule": "Forecast as-of, not realised"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Dynamic Pricing Optimisation\": Set prices per SKU and channel to maximise margin dollars under inventory, competitor and brand-guardrail constraints. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Elasticities estimated from observational price changes."
+}

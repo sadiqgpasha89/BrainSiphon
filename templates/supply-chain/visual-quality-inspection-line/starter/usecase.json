@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/visual-quality-inspection-line",
+ "title": "Visual Quality Inspection on the Production Line",
+ "domain": "supply-chain",
+ "engine": "cv",
+ "fit": "exact",
+ "problemType": "vision-classification",
+ "seed": 44734,
+ "knobs": {
+  "n": 4830,
+  "prevalence": 0.109
+ },
+ "blueprintSignals": [
+  {
+   "name": "Anomaly score map",
+   "definition": "patch-feature distance to normal",
+   "asOfRule": "Normal set coverage"
+  },
+  {
+   "name": "Part pose and alignment",
+   "definition": "registration residual",
+   "asOfRule": "Fixtures"
+  },
+  {
+   "name": "Defect-class classifier",
+   "definition": "few-shot classes",
+   "asOfRule": "Labels"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Visual Quality Inspection on the Production Line\": Detect surface defects and assembly errors on products at line speed with minimal false rejects. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test defects staged not natural."
+}

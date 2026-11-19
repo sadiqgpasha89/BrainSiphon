@@ -1,0 +1,34 @@
+{
+ "use_case": "supply-chain/first-attempt-delivery-failure-prediction",
+ "engine": "tabular",
+ "seed": 23471,
+ "knobs": {
+  "n_entities": 2820,
+  "positive_entity_rate": 0.043,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "rows": 217729,
+  "positive_rate": 0.005676781687326906,
+  "test_rows": 72665,
+  "test_positive_rate": 0.004582673914539324,
+  "baseline_lr": {
+   "pr_auc": 0.6601100532637817,
+   "recall_at_0.5pct_fpr": 0.6936936936936937,
+   "brier": 0.003872329969367668
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7550542449826977,
+   "recall_at_0.5pct_fpr": 0.7717717717717718,
+   "brier": 0.0017799068314683026
+  }
+ }
+}

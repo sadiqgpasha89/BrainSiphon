@@ -1,0 +1,34 @@
+{
+ "use_case": "adtech/click-fraud-and-bot-detection-search",
+ "engine": "tabular",
+ "seed": 11943,
+ "knobs": {
+  "n_entities": 2010,
+  "positive_entity_rate": 0.039,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.4,
+ "results": {
+  "rows": 158840,
+  "positive_rate": 0.0052505666079073286,
+  "test_rows": 53406,
+  "test_positive_rate": 0.006796989102348051,
+  "baseline_lr": {
+   "pr_auc": 0.7751467543704592,
+   "recall_at_0.5pct_fpr": 0.8070080676898859,
+   "brier": 0.0025894984106102415
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.799790825980994,
+   "recall_at_0.5pct_fpr": 0.8154269972451791,
+   "brier": 0.0024112436891426405
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/branch-footfall-and-staffing-forecast",
+ "title": "Branch Footfall & Staffing Forecast",
+ "domain": "bfsi",
+ "engine": "forecast",
+ "fit": "exact",
+ "problemType": "forecasting",
+ "seed": 79568,
+ "knobs": {
+  "n_series": 253
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hourly profile",
+   "definition": "median visits by hour for each day type, such as normal, pay day or holiday",
+   "asOfRule": "Closures and refits distort it, so exclude them"
+  },
+  {
+   "name": "Pay day effect",
+   "definition": "days since the last typical pay day",
+   "asOfRule": "Pay cycles vary by employer in the area"
+  },
+  {
+   "name": "Digital trend",
+   "definition": "monthly change in digital transactions in the catchment",
+   "asOfRule": "The trend is slow but real"
+  },
+  {
+   "name": "Local events",
+   "definition": "markets, fairs and sports events within walking distance on the date",
+   "asOfRule": "The calendar needs a feed"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Branch Footfall & Staffing Forecast\": Forecast branch visits by hour so rosters match demand and queues stay short. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Closed days in the history look like zero demand and bias the forecast."
+}

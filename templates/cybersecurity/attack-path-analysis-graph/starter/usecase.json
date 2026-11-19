@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/attack-path-analysis-graph",
+ "title": "Attack Path Analysis on Enterprise Graphs",
+ "domain": "cybersecurity",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 39644,
+ "knobs": {
+  "n_clusters": 1650,
+  "hub_share": 0.148
+ },
+ "blueprintSignals": [
+  {
+   "name": "Edge exploit probability",
+   "definition": "exploit likelihood for the technique",
+   "asOfRule": "Vulnerability data"
+  },
+  {
+   "name": "Betweenness of nodes",
+   "definition": "paths passing through",
+   "asOfRule": "Graph"
+  },
+  {
+   "name": "Crown-jewel proximity",
+   "definition": "hops to critical assets",
+   "asOfRule": "Definitions"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Attack Path Analysis on Enterprise Graphs\": Compute and rank the most plausible attack paths from entry points to crown-jewel assets, guiding the smallest set of fixes that break them. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Validation lacking red-team ground truth."
+}

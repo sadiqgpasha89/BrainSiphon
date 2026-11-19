@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/course-recommendation-career-paths",
+ "title": "Course & Career Path Recommendation",
+ "domain": "edtech",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 68483,
+ "knobs": {
+  "n_sessions": 40470,
+  "bot_share": 0.136
+ },
+ "blueprintSignals": [
+  {
+   "name": "Skill-gap vector",
+   "definition": "target role skills minus current skills",
+   "asOfRule": "Skills graph"
+  },
+  {
+   "name": "Course completion likelihood",
+   "definition": "predicted completion for learner",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Market demand for skill",
+   "definition": "job-posting trends",
+   "asOfRule": "Data freshness"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Course & Career Path Recommendation\": Recommend courses and learning paths aligned with learner goals and labour-market skills, balancing interest and career outcomes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on enrolments that reflect past recommendations."
+}

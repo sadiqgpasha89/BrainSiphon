@@ -1,0 +1,190 @@
+{
+ "id": "forecast",
+ "label": "Multi-horizon forecasting from an origin snapshot",
+ "paradigms": [
+  "time-series",
+  "tabular"
+ ],
+ "summary": "A runnable reference for forecasting many series at several horizons with origin-safe features, quantile boosting, forecast value added against a seasonal baseline, censored demand and late feeds.",
+ "runtime": "Python 3.11+ with numpy, pandas, scikit-learn, scipy and pytest (about 15 seconds)",
+ "run": [
+  "python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt",
+  "python make_data.py",
+  "python baseline.py",
+  "pytest"
+ ],
+ "expected": "make_data.py prints 300 series by 730 days with about 2.5% constrained days. baseline.py reports WMAPE about 0.12 for the model against 0.20-0.22 for the seasonal baseline (forecast value added 0.43 at horizons 1, 3 and 7 and 0.36 at 14), P90 coverage near 0.89, aggregate WMAPE 0.026 against 0.123 at series level, and 0.198 against 0.141 when a late feed is read as zero instead of missing. pytest reports 8 passed.",
+ "files": [
+  {
+   "path": "make_data.py",
+   "purpose": "Synthetic series with seasonality, promotions, shocks, a leading indicator and capped (censored) days"
+  },
+  {
+   "path": "features.py",
+   "purpose": "Origin-safe features per series, origin and horizon, including late-feed handling"
+  },
+  {
+   "path": "baseline.py",
+   "purpose": "Origin-based split, seasonal baseline, P50 and P90 boosting, forecast value added, coverage and the late-feed experiment"
+  },
+  {
+   "path": "test_starter.py",
+   "purpose": "Executable gates: determinism, origin safety, late feeds, split order, value added, coverage and the aggregate trap"
+  },
+  {
+   "path": "requirements.txt",
+   "purpose": "Python dependencies (exact versions)"
+  }
+ ],
+ "synthetic": {
+  "file": "make_data.py",
+  "description": "300 series over 730 days with weekly and annual seasonality, trend, planned promotions, shared external shocks, a 14-day leading indicator, noise of about 18%, and capped days (2.5%) where the observed value understates demand.",
+  "knobs": [
+   "n_series, days: number of series and history length (defaults 300 and 730)",
+   "seed: identical seed gives an identical table",
+   "constants in the file: promotion uplift, shock sensitivity, leading-indicator share by horizon, censoring depth"
+  ]
+ },
+ "sample": {
+  "columns": [
+   "sid",
+   "day",
+   "sales",
+   "promo",
+   "ext_signal",
+   "prebooked_1",
+   "prebooked_7",
+   "constrained"
+  ],
+  "rows": [
+   [
+    3,
+    598,
+    12,
+    0,
+    0,
+    8,
+    3,
+    0
+   ],
+   [
+    3,
+    599,
+    17,
+    0,
+    0,
+    5,
+    3,
+    0
+   ],
+   [
+    3,
+    600,
+    9,
+    0,
+    0,
+    6,
+    3,
+    0
+   ]
+  ]
+ },
+ "slots": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "gates": {
+  "data": {
+   "metric": "Generator and split tests",
+   "threshold": "pytest -k 'deterministic or precede' passes; the leading indicator correlates above 0.5 with next-day demand",
+   "how": "Run pytest in the kit directory"
+  },
+  "features": {
+   "metric": "Origin and late-feed tests",
+   "threshold": "Corrupting every value after the origin (set to 1,000,000) changes no feature; a late day counts as missing_7 = 1, not as zero",
+   "how": "pytest -k 'ignore_everything or late_pos'"
+  },
+  "baseline": {
+   "metric": "Baseline error per horizon",
+   "threshold": "Recorded per horizon at series level and in aggregate (the kit's seasonal baseline has WMAPE 0.20-0.22)",
+   "how": "python baseline.py"
+  },
+  "challenger": {
+   "metric": "Forecast value added and band coverage",
+   "threshold": "At least 0.25 at every horizon and P90 coverage between 85% and 95% (the kit reaches 0.36-0.43 and 89%)",
+   "how": "python baseline.py; pytest -k adds_value"
+  }
+ },
+ "tests": [
+  {
+   "test": "Origin safety",
+   "tool": "pytest test_features_ignore_everything_after_the_origin",
+   "pass": "Setting every value after the origin to 1,000,000 changes no feature"
+  },
+  {
+   "test": "Late feed handling",
+   "tool": "pytest test_a_late_pos_day_is_missing_not_zero",
+   "pass": "A missing latest day is counted and does not pull the recent mean down"
+  },
+  {
+   "test": "Forecast value added and band coverage",
+   "tool": "pytest test_model_adds_value_over_the_seasonal_baseline_at_every_horizon",
+   "pass": "At least 0.25 at horizons 1, 3, 7 and 14 and P90 coverage between 85% and 95%"
+  },
+  {
+   "test": "Aggregate versus series error",
+   "tool": "pytest test_aggregate_accuracy_hides_sku_level_error",
+   "pass": "Aggregate WMAPE is below half the series-level WMAPE"
+  },
+  {
+   "test": "Late feed experiment",
+   "tool": "pytest test_zero_filling_a_late_feed_hurts_more_than_leaving_it_missing",
+   "pass": "WMAPE with the day left missing is below 85% of WMAPE with the day zero-filled"
+  }
+ ],
+ "lessons": [
+  {
+   "trap": "Reading a late feed as zero",
+   "evidence": "With the newest day missing for every series, zero-filling gives WMAPE 0.198 and leaving it missing gives 0.141 (0.123 with a complete feed).",
+   "at": "M2"
+  },
+  {
+   "trap": "Training on capped values",
+   "evidence": "On the 2.3% of capped days the observed values were 44% of the demand the model expected, so those days are excluded from training and scoring.",
+   "at": "M2"
+  },
+  {
+   "trap": "Judging a model against nothing",
+   "evidence": "WMAPE 0.12 sounds good until the seasonal baseline turns out to be 0.20 on the same data; forecast value added is 0.43 at short horizons.",
+   "at": "M3"
+  },
+  {
+   "trap": "Reporting aggregate accuracy",
+   "evidence": "The same forecasts score WMAPE 0.026 in aggregate but 0.123 at series level, about a fifth.",
+   "at": "M4"
+  }
+ ],
+ "target": "The target is the observed value on day t+h divided by the series' recent average at forecast origin t, so one model serves every series. Capped days are excluded.",
+ "headline": {
+  "baseline": "WMAPE 0.20-0.22 for the seasonal baseline",
+  "challenger": "WMAPE about 0.12 (forecast value added 0.36-0.43)"
+ }
+}

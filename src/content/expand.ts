@@ -10,7 +10,6 @@ import {
 import type { RawUseCase } from './parse';
 import { bottlenecksFor, buildLLD, buildStages, EDGE_MS, hldDiagram, pipelineDiagram, RESERVE_MS, resilienceFor, sequenceDiagram, snake, TOTAL_BUDGET_MS } from './design';
 import { computeScale, modeOf } from './scale';
-import { isFreeWorkedExample } from '../lib/pro';
 import { loadPlaybook } from './playbook';
 import { generateAgentic } from './agentic-gen';
 import { buildE2E, buildNarrative } from './narrative';
@@ -154,10 +153,7 @@ export function expand(raw: RawUseCase, domain: Domain, verifiedAt = VERIFIED_AT
     ? (loadPlaybook(root, domain, raw, latency, scale, (authored) => buildAuthoredCompatibility(raw, paradigms, latency, stages, domain, slug, root, authored)) ??
       generatePlaybook(root, raw, domain, paradigms, latency, difficulty, scale, stages, buildCompatibility(raw, paradigms, latency, stages, domain, slug, root)))
     : undefined;
-  // freemium: the worked example is the one thing a use case's playbook keeps back. Only the free worked example publishes it; every
-  // other use case has it in BrainSiphon Pro, so it is removed here and nothing downstream (JSON, Markdown, HTML) can leak it.
-  const playbook =
-    fullPlaybook && !isFreeWorkedExample(slug) ? { ...fullPlaybook, workedExample: undefined } : fullPlaybook;
+  const playbook = fullPlaybook;
 
   const agentic = generateAgentic(raw, domain, paradigms, latency, difficulty, stages);
   const experimentation = buildExperimentation(raw, domain, archetype, latency, stages.some((s) => s.kind === 'human'));

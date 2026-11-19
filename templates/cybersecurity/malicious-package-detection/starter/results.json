@@ -1,0 +1,36 @@
+{
+ "use_case": "cybersecurity/malicious-package-detection",
+ "engine": "nlp",
+ "seed": 90475,
+ "knobs": {
+  "n_docs": 4580
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "docs": 4580,
+  "duplicate_share": 0.24694323144104802,
+  "random_split_with_leak": {
+   "macro_f1": 0.8739002430866041,
+   "ece": 0.13871257107775944
+  },
+  "time_split_clean": {
+   "macro_f1": 0.46426569677080837,
+   "ece": 0.052457327482713034
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.820704547302085,
+   "ece": 0.13142194059889709
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.46426569677080837,
+   "ece": 0.052457327482713034
+  }
+ }
+}

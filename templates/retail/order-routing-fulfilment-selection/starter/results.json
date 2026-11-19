@@ -1,0 +1,45 @@
+{
+ "use_case": "retail/order-routing-fulfilment-selection",
+ "engine": "optimize",
+ "seed": 86531,
+ "knobs": {
+  "n_instances": 127,
+  "noise": 0.254
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.7,
+ "results": {
+  "instances": 127,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 119.32307007786117,
+   "promised_cost": 101.2207905091394,
+   "optimism_gap_pct": 17.88395395616603,
+   "regret_vs_oracle_pct": 30.506147803471766
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 103.02673306005019,
+   "promised_cost": 82.90485686941214,
+   "optimism_gap_pct": 24.271046293865613,
+   "regret_vs_oracle_pct": 12.682501746478273
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 100.80060588466868,
+   "promised_cost": 84.20120431778379,
+   "optimism_gap_pct": 19.71397167223059,
+   "regret_vs_oracle_pct": 10.247739700965274
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.43099546356153,
+   "promised_cost": 93.76563809700575,
+   "optimism_gap_pct": -2.4898701494772544,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

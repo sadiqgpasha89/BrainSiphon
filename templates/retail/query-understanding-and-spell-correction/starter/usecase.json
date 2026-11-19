@@ -1,0 +1,52 @@
+{
+ "slug": "retail/query-understanding-and-spell-correction",
+ "title": "Query Understanding & Spell Correction",
+ "domain": "retail",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 61186,
+ "knobs": {
+  "n_docs": 5960
+ },
+ "blueprintSignals": [
+  {
+   "name": "Catalogue token frequency",
+   "definition": "frequency of the token in titles and past successful queries",
+   "asOfRule": "Update daily and exclude spam titles"
+  },
+  {
+   "name": "Reformulation graph",
+   "definition": "queries users rewrote to and then purchased",
+   "asOfRule": "Only completed sessions with purchases"
+  },
+  {
+   "name": "Intent distribution",
+   "definition": "softmax over category intents",
+   "asOfRule": "Calibrate on production queries"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Query Understanding & Spell Correction\": Normalise, correct and classify user queries into intents and attributes within a few milliseconds before retrieval. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test queries are clean while production is noisy."
+}

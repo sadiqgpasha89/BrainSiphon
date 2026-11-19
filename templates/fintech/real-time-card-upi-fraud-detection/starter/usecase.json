@@ -1,0 +1,49 @@
+{
+ "slug": "fintech/real-time-card-upi-fraud-detection",
+ "title": "Real-Time Card & UPI Fraud Detection",
+ "domain": "fintech",
+ "engine": "authored",
+ "fit": "authored",
+ "problemType": "binary-event-classification",
+ "seed": null,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Card velocity 1m/1h/24h",
+   "definition": "count and sum of authorisations in sliding windows keyed by card token",
+   "asOfRule": "Windows must close strictly before decision time"
+  },
+  {
+   "name": "Device-card fan-out",
+   "definition": "distinct cards seen on the device fingerprint in 24h",
+   "asOfRule": "Fingerprint must be hashed at event time, not retro-joined"
+  },
+  {
+   "name": "Merchant risk drift",
+   "definition": "7-day chargeback rate of the merchant versus its 90-day baseline",
+   "asOfRule": "Chargebacks mature in 30-90 days so use matured labels only"
+  },
+  {
+   "name": "New device for card",
+   "definition": "first time this card token is seen on this device fingerprint",
+   "asOfRule": "The first-seen table must be built from events before the decision, not from full history"
+  },
+  {
+   "name": "Amount versus card baseline",
+   "definition": "amount divided by the card's trailing 90-day median ticket",
+   "asOfRule": "The baseline must exclude the scored transaction and any fraud already known"
+  },
+  {
+   "name": "Mule-ring risk scalar",
+   "definition": "component risk and hop distance to known mule seeds, written to the online store every few seconds by a streaming graph worker (Flink with Neo4j or TigerGraph, or incremental connected components)",
+   "asOfRule": "Seed list and graph snapshot must be frozen at decision time"
+  },
+  {
+   "name": "Payload-only score inputs",
+   "definition": "amount, payee MCC, device fingerprint and a local Bloom-filter blocklist hit, all present in the request",
+   "asOfRule": "Must read nothing from the store or the fallback silently depends on it"
+  }
+ ],
+ "engineFeatures": [],
+ "label": "For \"Real-Time Card & UPI Fraud Detection\": Block fraudulent authorisations inside the payment auth path while keeping false declines under 0.3% of genuine volume. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on confirmed fraud only hides review-queue selection bias."
+}

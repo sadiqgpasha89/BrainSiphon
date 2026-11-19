@@ -1,0 +1,36 @@
+{
+ "use_case": "retail/fake-review-detection",
+ "engine": "nlp",
+ "seed": 7641,
+ "knobs": {
+  "n_docs": 6030
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.1,
+ "results": {
+  "docs": 6030,
+  "duplicate_share": 0.24859038142620227,
+  "random_split_with_leak": {
+   "macro_f1": 0.8951166782751676,
+   "ece": 0.11553359155205928
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4308332779821261,
+   "ece": 0.04974432041550973
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7980968005794529,
+   "ece": 0.09987323155421582
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4308332779821261,
+   "ece": 0.04974432041550973
+  }
+ }
+}

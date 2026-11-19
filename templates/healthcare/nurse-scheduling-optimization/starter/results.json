@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/nurse-scheduling-optimization",
+ "engine": "optimize",
+ "seed": 90321,
+ "knobs": {
+  "n_instances": 126,
+  "noise": 0.393
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.5,
+ "results": {
+  "instances": 126,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 132.31199930705668,
+   "promised_cost": 93.40741256412844,
+   "optimism_gap_pct": 41.65042759986364,
+   "regret_vs_oracle_pct": 45.139262285897956
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 115.9266915488016,
+   "promised_cost": 73.32927699847389,
+   "optimism_gap_pct": 58.09059668106947,
+   "regret_vs_oracle_pct": 27.16544666210436
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 111.6569783845656,
+   "promised_cost": 75.64678764449765,
+   "optimism_gap_pct": 47.603066648775595,
+   "regret_vs_oracle_pct": 22.48179724198296
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.16209991919767,
+   "promised_cost": 98.01191676497379,
+   "optimism_gap_pct": -6.98875919568182,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

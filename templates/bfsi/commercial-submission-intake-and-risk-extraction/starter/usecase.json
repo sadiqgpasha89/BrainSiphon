@@ -1,0 +1,53 @@
+{
+ "slug": "bfsi/commercial-submission-intake-and-risk-extraction",
+ "title": "Commercial Insurance Submission Intake & Risk Extraction",
+ "domain": "bfsi",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 83736,
+ "knobs": {
+  "n_train": 1300
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field confidence",
+   "definition": "calibrated probability that each extracted field is correct",
+   "asOfRule": "Calibrate per field type, as amounts and dates differ"
+  },
+  {
+   "name": "Appetite match",
+   "definition": "match of class, size and geography to the underwriting appetite rules",
+   "asOfRule": "Appetite rules change often, so version them"
+  },
+  {
+   "name": "Loss run totals",
+   "definition": "sum of paid and incurred losses parsed from the loss runs",
+   "asOfRule": "Parsing errors change the total, so compare with the printed total"
+  },
+  {
+   "name": "Missing data count",
+   "definition": "number of required fields absent from the submission",
+   "asOfRule": "The definition of required varies by class"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Commercial Insurance Submission Intake & Risk Extraction\": Read broker submissions (emails, ACORD forms, spreadsheets, loss runs) and extract structured risk data so underwriters can quote faster. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Clean test submissions are better formatted than live ones."
+}

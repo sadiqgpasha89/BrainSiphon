@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/binary-code-similarity",
+ "title": "Binary Code Similarity & Vulnerability Matching",
+ "domain": "cybersecurity",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 15295,
+ "knobs": {
+  "n_clusters": 1650,
+  "hub_share": 0.081
+ },
+ "blueprintSignals": [
+  {
+   "name": "Control-flow-graph embedding",
+   "definition": "GNN over CFG",
+   "asOfRule": "Disassembly quality"
+  },
+  {
+   "name": "Constants and string references",
+   "definition": "immediate values and strings",
+   "asOfRule": "Stripped binaries"
+  },
+  {
+   "name": "Patch-diff features",
+   "definition": "differences in guard conditions",
+   "asOfRule": "Reference pairs"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Binary Code Similarity & Vulnerability Matching\": Find known vulnerable functions inside stripped binaries and firmware across compilers and architectures at scale. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluation only on same-compiler pairs."
+}

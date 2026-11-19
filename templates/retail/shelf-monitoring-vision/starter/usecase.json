@@ -1,0 +1,53 @@
+{
+ "slug": "retail/shelf-monitoring-vision",
+ "title": "Shelf Monitoring & Planogram Compliance",
+ "domain": "retail",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 85133,
+ "knobs": {
+  "n": 5350,
+  "prevalence": 0.096
+ },
+ "blueprintSignals": [
+  {
+   "name": "Facing count vs planogram",
+   "definition": "detected facings minus planned facings",
+   "asOfRule": "Accurate planogram version"
+  },
+  {
+   "name": "Empty-slot detection",
+   "definition": "empty gaps along the shelf edge",
+   "asOfRule": "Occlusion handling"
+  },
+  {
+   "name": "Price-tag OCR match",
+   "definition": "tag price vs system price",
+   "asOfRule": "Tag detection quality"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Shelf Monitoring & Planogram Compliance\": Detect out-of-stock, misplaced and non-compliant products from shelf photos and robot images to cut lost sales. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluation on clean shelf photos."
+}

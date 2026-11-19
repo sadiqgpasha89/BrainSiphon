@@ -1,0 +1,50 @@
+{
+ "use_case": "fintech/liveness-and-deepfake-selfie-detection",
+ "engine": "cv",
+ "seed": 83187,
+ "knobs": {
+  "n": 3550,
+  "prevalence": 0.116
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.1,
+ "results": {
+  "images": 3550,
+  "train": 1226,
+  "prevalence": 0.11549295774647887,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9531917735042735,
+    "sens_at_95_spec": 0.7932692307692307
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9707330523496278,
+    "sens_at_95_spec": 0.8679245283018868
+   },
+   "site_B": {
+    "auc": 0.7691731012043511,
+    "sens_at_95_spec": 0.35096153846153844
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.32211538461538464,
+    "false_positive_rate": 0.037247474747474744
+   }
+  }
+ }
+}

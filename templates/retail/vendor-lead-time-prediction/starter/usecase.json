@@ -1,0 +1,54 @@
+{
+ "slug": "retail/vendor-lead-time-prediction",
+ "title": "Vendor Lead-Time Prediction",
+ "domain": "retail",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 73430,
+ "knobs": {
+  "n": 19330,
+  "outlier_share": 0.023,
+  "drift": 0.356
+ },
+ "blueprintSignals": [
+  {
+   "name": "Vendor on-time history",
+   "definition": "rolling on-time rate and variance",
+   "asOfRule": "Window before PO date"
+  },
+  {
+   "name": "Lane congestion indicator",
+   "definition": "port or lane delay index",
+   "asOfRule": "As-of index"
+  },
+  {
+   "name": "Order size vs vendor capacity",
+   "definition": "PO quantity over vendor usual",
+   "asOfRule": "Normalise by vendor"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Vendor Lead-Time Prediction\": Predict real delivery lead times per vendor, lane and item to set accurate safety stock and avoid stock-outs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using received dates for undelivered open orders."
+}

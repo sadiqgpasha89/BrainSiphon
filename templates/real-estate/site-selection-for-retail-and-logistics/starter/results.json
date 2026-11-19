@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/site-selection-for-retail-and-logistics",
+ "engine": "regression",
+ "seed": 83969,
+ "knobs": {
+  "n": 20900,
+  "outlier_share": 0.027,
+  "drift": 0.239
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.3,
+ "results": {
+  "rows": 20900,
+  "train_rows": 14629,
+  "test_rows": 6271,
+  "baseline_ridge": {
+   "mae": 7.516499387075654,
+   "rmse": 13.088729053912532,
+   "wape": 0.14151300588181978,
+   "r2": 0.40868269769549237
+  },
+  "challenger_gbm": {
+   "mae": 5.136436297137465,
+   "rmse": 11.400562025769583,
+   "wape": 0.0967035986430382,
+   "r2": 0.5513804915100724
+  },
+  "mae_gain_vs_baseline": 0.3166451518682514,
+  "interval_80_coverage": 0.6831446340296603,
+  "interval_80_mean_width": 9.26859225491344,
+  "segment_mae": {
+   "0": 5.1477269346255685,
+   "1": 5.0976553002442655,
+   "2": 4.665434026904153,
+   "3": 6.684536092845056
+  },
+  "worst_segment_vs_overall": 1.3013956965786468,
+  "leaky_feature_rmse": 1.526392747784463,
+  "honest_rmse": 11.400562025769583,
+  "random_split_mae": 4.585277342734927,
+  "chronological_mae": 5.136436297137465
+ }
+}

@@ -1,0 +1,54 @@
+{
+ "slug": "saas/expansion-and-upsell-propensity",
+ "title": "Expansion & Upsell Propensity",
+ "domain": "saas",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 11306,
+ "knobs": {
+  "n_entities": 2930,
+  "positive_entity_rate": 0.025,
+  "n_flash_sales": 5
+ },
+ "blueprintSignals": [
+  {
+   "name": "Seat utilisation near cap",
+   "definition": "active seats over licensed",
+   "asOfRule": "Billing"
+  },
+  {
+   "name": "Gated-feature hits",
+   "definition": "attempts to use paid features",
+   "asOfRule": "Paywall events"
+  },
+  {
+   "name": "New-team adoption",
+   "definition": "new departments active",
+   "asOfRule": "Org graph"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Expansion & Upsell Propensity\": Identify accounts ready to expand seats or tiers, and the right product to propose, to prioritise sales effort. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using signals recorded after sales engagement."
+}

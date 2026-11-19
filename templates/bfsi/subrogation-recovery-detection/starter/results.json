@@ -1,0 +1,36 @@
+{
+ "use_case": "bfsi/subrogation-recovery-detection",
+ "engine": "nlp",
+ "seed": 27310,
+ "knobs": {
+  "n_docs": 4550
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "docs": 4550,
+  "duplicate_share": 0.24791208791208796,
+  "random_split_with_leak": {
+   "macro_f1": 0.8889092274718529,
+   "ece": 0.13753489367141133
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4202076916876916,
+   "ece": 0.0432174283011392
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7931317370836737,
+   "ece": 0.11301054131504486
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4202076916876916,
+   "ece": 0.0432174283011392
+  }
+ }
+}

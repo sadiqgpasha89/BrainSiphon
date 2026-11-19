@@ -1,0 +1,21 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: user_request, timeout_ms: 351, on_timeout: fallback_level_1 }
+    - { name: context_builder, timeout_ms: 469, on_timeout: fallback_level_1 }
+    - { name: planner_llm, timeout_ms: 937, on_timeout: fallback_level_1 }
+    - { name: tool_gateway, timeout_ms: 234, on_timeout: fallback_level_1 }
+    - { name: execution, timeout_ms: 234, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Feature adoption via copilot"
+    - "Support tickets avoided"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

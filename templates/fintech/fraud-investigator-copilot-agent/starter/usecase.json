@@ -1,0 +1,50 @@
+{
+ "slug": "fintech/fraud-investigator-copilot-agent",
+ "title": "Fraud Investigator Copilot Agent",
+ "domain": "fintech",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 47471,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Evidence link rate",
+   "definition": "share of claims with valid record IDs",
+   "asOfRule": "Verify IDs against the source system"
+  },
+  {
+   "name": "Tool-call success path",
+   "definition": "steps needed and failures per case type",
+   "asOfRule": "Sample by case complexity"
+  },
+  {
+   "name": "Disposition agreement",
+   "definition": "agreement between copilot suggestion and senior analyst",
+   "asOfRule": "Blind comparison"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Fraud Investigator Copilot Agent\": Give fraud analysts a copilot that assembles the case timeline, links entities and proposes dispositions, cutting investigation time by 50%. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Replay set contains cases the model was tuned on."
+}

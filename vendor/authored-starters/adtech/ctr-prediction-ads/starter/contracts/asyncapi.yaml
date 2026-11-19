@@ -1,0 +1,32 @@
+asyncapi: 3.0.0
+info:
+  title: Ad Exchange Event Streams
+  version: 1.2.0
+channels:
+  ad.auctions.won:
+    address: ad.auctions.won
+    messages:
+      auctionWon:
+        summary: Event emitted when ad wins RTB auction
+        payload:
+          type: object
+          properties:
+            auction_id: { type: string }
+            ad_id: { type: integer }
+            clearing_ecpm: { type: number }
+            p_ctr: { type: number }
+            timestamp: { type: number }
+  ad.clicks.attributed:
+    address: ad.clicks.attributed
+    messages:
+      clickLogged:
+        summary: Validated ad click event excluding mis-taps (< 1000ms dwell)
+        payload:
+          type: object
+          properties:
+            auction_id: { type: string }
+            ad_id: { type: integer }
+            dwell_ms: { type: integer }
+            is_valid_click: { type: boolean }
+            timestamp: { type: number }
+

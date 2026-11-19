@@ -1,0 +1,16 @@
+contract: voice_of_customer_mining_inputs.v1
+owner: product-analytics@example.com
+system_of_record: Tenant and entitlement service
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: theme_volume_trend, type: double, nullable: false }
+    - { name: revenue_weighted_impact, type: double, nullable: false }
+    - { name: sentiment_by_theme, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

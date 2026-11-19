@@ -1,0 +1,58 @@
+{
+ "use_case": "edtech/multilingual-lecture-captioning",
+ "engine": "audio",
+ "seed": 30145,
+ "knobs": {
+  "n_train": 1260,
+  "test_snr": 3.318
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "train_clips": 1260,
+  "test_clips": 600,
+  "sample_rate_hz": 8000,
+  "raw_spectrum_baseline": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 0.6183333333333333,
+    "macro_f1": 0.5096646942800789
+   }
+  },
+  "log_filterbank_challenger": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 0.23166666666666666,
+    "macro_f1": 0.07523680649526387
+   }
+  },
+  "log_filterbank_with_channel_augmentation": {
+   "same_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   },
+   "shifted_channel": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+   }
+  },
+  "channel_shift_drop_challenger": 0.7683333333333333,
+  "augmentation_gain_on_shifted_channel": 0.7683333333333333,
+  "wer_simulated": {
+   "clean": 0.03875,
+   "noisy": 0.18208333333333335
+  }
+ }
+}

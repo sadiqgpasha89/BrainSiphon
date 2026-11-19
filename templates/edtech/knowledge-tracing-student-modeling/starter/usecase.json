@@ -1,0 +1,39 @@
+{
+ "slug": "edtech/knowledge-tracing-student-modeling",
+ "title": "Knowledge Tracing & Student Modelling",
+ "domain": "edtech",
+ "engine": "authored",
+ "fit": "authored",
+ "problemType": "binary-event-classification",
+ "seed": null,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Recent correctness with recency weighting",
+   "definition": "exponentially weighted correct rate per skill",
+   "asOfRule": "Order by timestamp not insertion"
+  },
+  {
+   "name": "Item difficulty parameter",
+   "definition": "IRT difficulty of the question",
+   "asOfRule": "Calibrate on other students"
+  },
+  {
+   "name": "Time-since-last-practice",
+   "definition": "gap since skill practice",
+   "asOfRule": "Use server-side timestamps because device clocks drift"
+  },
+  {
+   "name": "Prior failures on the skill",
+   "definition": "count of earlier wrong answers on the same skill",
+   "asOfRule": "Count only answers given before the current one"
+  },
+  {
+   "name": "Question difficulty from other learners",
+   "definition": "smoothed correct rate of the question among training students",
+   "asOfRule": "Compute on training students only, never including the learner being scored"
+  }
+ ],
+ "engineFeatures": [],
+ "label": "For \"Knowledge Tracing & Student Modelling\": Estimate each learner's evolving mastery per skill from their answer history to drive practice selection and progress reports. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Predicting next answers with student leakage."
+}

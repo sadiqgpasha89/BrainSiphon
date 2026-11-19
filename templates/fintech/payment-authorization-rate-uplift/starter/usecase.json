@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/payment-authorization-rate-uplift",
+ "title": "Payment Authorization Rate Uplift (Issuer-Side Retry & Tokenisation)",
+ "domain": "fintech",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 31584,
+ "knobs": {
+  "n": 35880,
+  "confound": 1.584,
+  "holdout": 0.182
+ },
+ "blueprintSignals": [
+  {
+   "name": "Decline code family",
+   "definition": "normalised scheme response code group",
+   "asOfRule": "Map codes per scheme and version"
+  },
+  {
+   "name": "Time to payday proximity",
+   "definition": "days since typical salary credit for the segment",
+   "asOfRule": "Compute from past cycles not future credits"
+  },
+  {
+   "name": "Prior retry outcomes",
+   "definition": "success rate of previous retries for this BIN and code",
+   "asOfRule": "Exclude the current retry chain"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Payment Authorization Rate Uplift (Issuer-Side Retry & Tokenisation)\": Recover soft-declined payments by predicting when a retry, network token or 3DS step-up will succeed, lifting authorisation rates by 1-3 points. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Observational retry data confounded by who was retried."
+}

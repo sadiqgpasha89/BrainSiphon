@@ -1,0 +1,52 @@
+{
+ "slug": "healthcare/pharmacy-demand-and-expiry-forecasting",
+ "title": "Pharmacy Demand & Expiry Forecasting",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 9401,
+ "knobs": {
+  "n_series": 283
+ },
+ "blueprintSignals": [
+  {
+   "name": "Prescription trend signals",
+   "definition": "new prescriptions and refills",
+   "asOfRule": "Rx data lag"
+  },
+  {
+   "name": "Shortage and recall alerts",
+   "definition": "supplier shortage feed",
+   "asOfRule": "Feed latency"
+  },
+  {
+   "name": "Days-to-expiry distribution",
+   "definition": "stock by expiry bucket",
+   "asOfRule": "Batch tracking"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Pharmacy Demand & Expiry Forecasting\": Forecast drug demand and manage expiry across pharmacy locations to balance availability and waste, including cold-chain items. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Backtests ignoring shortage events."
+}

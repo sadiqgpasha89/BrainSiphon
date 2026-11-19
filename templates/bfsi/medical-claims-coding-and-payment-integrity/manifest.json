@@ -1,0 +1,186 @@
+{
+ "slug": "bfsi/medical-claims-coding-and-payment-integrity",
+ "title": "Medical Claims Coding & Payment Integrity",
+ "domain": "bfsi",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "authoredStarter": false,
+ "fdePack": false,
+ "seed": 62066,
+ "knobs": {
+  "n_docs": 6320
+ },
+ "blueprintVerified": "2026-11-07",
+ "generator": "1.0.0",
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "runSeconds": 4.1,
+ "files": [
+  {
+   "path": "FIT.md",
+   "bytes": 3156,
+   "sha256": "4c0b403f8818a76f99a0246ae151e6a7effadc7b556e7ecf3dfcbd393ab096da"
+  },
+  {
+   "path": "README.md",
+   "bytes": 3370,
+   "sha256": "303792aeea375b02a699f0f99fe907546796d434a4c3cf4a5c16904eb2b0e4d5"
+  },
+  {
+   "path": "WORKED_EXAMPLE.md",
+   "bytes": 3427,
+   "sha256": "a535dd4aea0f46f83eb9b9ba8b1f1b254d0a8a0e355a71bd9a071e28b17da56c"
+  },
+  {
+   "path": "contracts/data-contract.yaml",
+   "bytes": 704,
+   "sha256": "032d7bd14d3e2ce66363b3bed6711195a67b12625fdaf1df22e49ae16ccd4d15"
+  },
+  {
+   "path": "contracts/events.asyncapi.yaml",
+   "bytes": 1151,
+   "sha256": "c3093ded7822b65a062ca648912c05b0611e710194a28df1394eb65163ab826d"
+  },
+  {
+   "path": "contracts/openapi.yaml",
+   "bytes": 3660,
+   "sha256": "55ec93688fdd780b8df20f7bf5001d1aa8a0108b4622e61b3016b1c92012f938"
+  },
+  {
+   "path": "contracts/schema.sql",
+   "bytes": 990,
+   "sha256": "fbdb6f96ac1d9d1f628fc0e0ca594505a6408c1f0be47922e39b952cf737815d"
+  },
+  {
+   "path": "deployment/README.md",
+   "bytes": 2222,
+   "sha256": "a88d33e7d9a75a17a2e04e2488022a4c00030fa0a302e0be46e47287571cecf0"
+  },
+  {
+   "path": "deployment/config.yaml",
+   "bytes": 813,
+   "sha256": "e7da210595861e74ce4ee3500f96f43fd58895a2fae20b7b916240079a942309"
+  },
+  {
+   "path": "deployment/docker-compose.yml",
+   "bytes": 547,
+   "sha256": "528e40f31f636475b439728e642b1b87b04edd8bda057e19d4c31343446d15d1"
+  },
+  {
+   "path": "deployment/values.sized.yaml",
+   "bytes": 627,
+   "sha256": "83ef9bff8e276fd83788bf1548dc8d786bf7a04af0b0d367dc68ae641d75a9b5"
+  },
+  {
+   "path": "docs/00-use-case-brief.md",
+   "bytes": 8327,
+   "sha256": "dd64b552f7e60922908a36f7ae3aa3799681240668c2e4936c1838c951ab7c81"
+  },
+  {
+   "path": "docs/01-discovery-workbook.md",
+   "bytes": 16289,
+   "sha256": "80751c0e5bb8b15f82a87f47e3919a3025a1325c57a74d41715ee1d9d9a6c343"
+  },
+  {
+   "path": "docs/02-delivery-plan.md",
+   "bytes": 32027,
+   "sha256": "db0ef7a8b0df523cabbd517ac711e7484f2c507b47ccc53fa70e19b7925e6a89"
+  },
+  {
+   "path": "docs/03-data-and-features.md",
+   "bytes": 15053,
+   "sha256": "e2aa1dccc51d4a44c20bb0a3850d060ff4cbfd77c87e2734354305df927ce69c"
+  },
+  {
+   "path": "docs/04-evaluation-plan.md",
+   "bytes": 48504,
+   "sha256": "636648a4cfe72b8bd1954900acfbfd0320e5a264d7ed1bb77d1d1d2f93237787"
+  },
+  {
+   "path": "docs/05-risk-and-governance.md",
+   "bytes": 9077,
+   "sha256": "43727f0f0b0a33d679e70d243485f63416e5b7a39ca450122408e84892775a9c"
+  },
+  {
+   "path": "docs/06-operations-runbook.md",
+   "bytes": 17829,
+   "sha256": "6ee847aea67963106144f0fc9efaecd887a528c5f0c2ee20a7c4d10deff5158e"
+  },
+  {
+   "path": "docs/07-model-and-data-cards.md",
+   "bytes": 5426,
+   "sha256": "eac070458c0da71929283d5c7c795a88533e143c7b631fe788f05a246f0a2f0f"
+  },
+  {
+   "path": "docs/08-capacity-and-cost.md",
+   "bytes": 5365,
+   "sha256": "2cf4c1093933a3a106edb61f61b3e206ec2a80befa16e7739cc57ea4d1e1c29a"
+  },
+  {
+   "path": "starter/Dockerfile",
+   "bytes": 212,
+   "sha256": "28554f5a1d423d2dd57bf591a24a61e9319f67d551accab0d455131f4146aef0"
+  },
+  {
+   "path": "starter/Makefile",
+   "bytes": 352,
+   "sha256": "f3de79b0b567afbc0354300d404e02cec1003696a1de7f4046706fed30f48d63"
+  },
+  {
+   "path": "starter/baseline.py",
+   "bytes": 2858,
+   "sha256": "046f3db6811bcd594d0a50c554af6c0b6a0655f6cb46fa08121050724b833b56"
+  },
+  {
+   "path": "starter/engine.json",
+   "bytes": 1188,
+   "sha256": "e1163bd1216ab35cc020aab7e059ae23a23721bdf34967e9c720bc6c1bca88a4"
+  },
+  {
+   "path": "starter/gates.py",
+   "bytes": 425,
+   "sha256": "f5b97ad7f1f1b49c0cae864074fb1b462b239abeb938ed238ec0b14585498059"
+  },
+  {
+   "path": "starter/make_data.py",
+   "bytes": 2820,
+   "sha256": "3d10870956d289884abe3b92767b96abe6dfefeec0b6afb5fb4d781f36bad0af"
+  },
+  {
+   "path": "starter/requirements.txt",
+   "bytes": 75,
+   "sha256": "ad943509e5ebcd060eb2b38ae247759f5c9d30197907bedc7858c77d99de374c"
+  },
+  {
+   "path": "starter/results.json",
+   "bytes": 750,
+   "sha256": "c98042cf36ead7eecd31f491703bb2ee42c7d73dab2d214ff6f03ae27cee7422"
+  },
+  {
+   "path": "starter/run_usecase.py",
+   "bytes": 1429,
+   "sha256": "33521c23406b0dcd3f1c22785f5a991dc74544b37d9010d98e146905f64ee6f4"
+  },
+  {
+   "path": "starter/test_starter.py",
+   "bytes": 1635,
+   "sha256": "6465fcf604312b84c472b48e1821d0588c480199013eccb34350f4f2a93fda33"
+  },
+  {
+   "path": "starter/test_usecase.py",
+   "bytes": 1698,
+   "sha256": "da7769d17b703359fc682dd28eb1e14977630a6c2b97d3c4ab1ecdda5ccd8883"
+  },
+  {
+   "path": "starter/usecase.json",
+   "bytes": 1725,
+   "sha256": "8505979901bf23ff954d113d079a518aa8068080309fcdad08b91f590df69fed"
+  }
+ ]
+}

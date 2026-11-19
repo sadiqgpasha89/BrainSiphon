@@ -1,0 +1,42 @@
+openapi: 3.1.0
+info:
+  title: Retail Session Recommendation API
+  description: Low-latency candidate retrieval and reranking for ecommerce sessions.
+  version: 1.2.0
+paths:
+  /v1/recommend:
+    post:
+      summary: Get diverse next-item recommendations for current session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRecommendRequest'
+      responses:
+        '200':
+          description: Ranked items satisfying diversity constraints
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRecommendResponse'
+components:
+  schemas:
+    SessionRecommendRequest:
+      type: object
+      required: [session_id, current_item_id]
+      properties:
+        session_id: { type: string }
+        current_item_id: { type: integer }
+        session_history: { type: array, items: { type: integer } }
+        user_agent: { type: string }
+        top_k: { type: integer, default: 5 }
+    SessionRecommendResponse:
+      type: object
+      required: [session_id, recommendations, is_bot_traffic]
+      properties:
+        session_id: { type: string }
+        recommendations: { type: array, items: { type: object } }
+        is_bot_traffic: { type: boolean }
+        latency_ms: { type: number }
+

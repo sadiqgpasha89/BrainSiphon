@@ -1,0 +1,55 @@
+{
+ "slug": "bfsi/regulatory-change-impact-analysis",
+ "title": "Regulatory Change Impact Analysis",
+ "domain": "bfsi",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 45696,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Obligation extraction precision",
+   "definition": "share of extracted obligations accepted by the owner",
+   "asOfRule": "Needs a labelled test set"
+  },
+  {
+   "name": "Policy mapping recall",
+   "definition": "share of true links found",
+   "asOfRule": "Gold links are costly to build"
+  },
+  {
+   "name": "Effective date correctness",
+   "definition": "extracted date versus the official date",
+   "asOfRule": "Phased dates are common"
+  },
+  {
+   "name": "Gap flag",
+   "definition": "obligation without a mapped control",
+   "asOfRule": "False gaps waste time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Regulatory Change Impact Analysis\": Read new regulations and consultations, map them to the bank's policies, processes and systems, and draft an impact assessment for compliance owners. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluation on documents seen in prompts."
+}

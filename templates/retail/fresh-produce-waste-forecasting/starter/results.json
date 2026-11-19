@@ -1,0 +1,46 @@
+{
+ "use_case": "retail/fresh-produce-waste-forecasting",
+ "engine": "forecast",
+ "seed": 40899,
+ "knobs": {
+  "n_series": 152
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 7.0,
+ "results": {
+  "rows": 13779,
+  "h1": {
+   "wmape_model": 0.11703256877363075,
+   "wmape_baseline": 0.21048762662315593,
+   "fva": 0.44399311897245797
+  },
+  "h3": {
+   "wmape_model": 0.11565997292482783,
+   "wmape_baseline": 0.20159455532973852,
+   "fva": 0.426274322063667
+  },
+  "h7": {
+   "wmape_model": 0.12380660288136228,
+   "wmape_baseline": 0.21209248433138464,
+   "fva": 0.4162612443733734
+  },
+  "h14": {
+   "wmape_model": 0.15099063645882982,
+   "wmape_baseline": 0.22682403728501313,
+   "fva": 0.3343270040242504
+  },
+  "p90_coverage": 0.8926627476594818,
+  "wmape_sku_level": 0.12621619642272208,
+  "wmape_aggregate": 0.022172100110282464,
+  "late_feed": {
+   "missing_as_zero": 0.19880715532494941,
+   "missing_as_nan": 0.14445040690889002
+  }
+ }
+}

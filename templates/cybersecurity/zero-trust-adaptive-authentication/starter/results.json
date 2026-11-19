@@ -1,0 +1,34 @@
+{
+ "use_case": "cybersecurity/zero-trust-adaptive-authentication",
+ "engine": "tabular",
+ "seed": 1114,
+ "knobs": {
+  "n_entities": 2100,
+  "positive_entity_rate": 0.026,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "rows": 155712,
+  "positive_rate": 0.0036028051787916154,
+  "test_rows": 52320,
+  "test_positive_rate": 0.0035168195718654435,
+  "baseline_lr": {
+   "pr_auc": 0.5973002395892242,
+   "recall_at_0.5pct_fpr": 0.6739130434782609,
+   "brier": 0.002208591550675296
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6442446525276371,
+   "recall_at_0.5pct_fpr": 0.6902173913043478,
+   "brier": 0.0017721831501897611
+  }
+ }
+}

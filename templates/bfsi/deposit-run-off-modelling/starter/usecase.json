@@ -1,0 +1,57 @@
+{
+ "slug": "bfsi/deposit-run-off-modelling",
+ "title": "Deposit Run-Off Modelling",
+ "domain": "bfsi",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 50328,
+ "knobs": {
+  "n_series": 268
+ },
+ "blueprintSignals": [
+  {
+   "name": "Rate gap",
+   "definition": "own deposit rate minus the best competitor rate for the segment",
+   "asOfRule": "Competitor rates are collected irregularly"
+  },
+  {
+   "name": "Balance volatility",
+   "definition": "90-day coefficient of variation of the account balance",
+   "asOfRule": "Salary accounts look volatile around payday"
+  },
+  {
+   "name": "Product and tenure",
+   "definition": "account age and number of active products",
+   "asOfRule": "Needs consistent product mapping"
+  },
+  {
+   "name": "Digital activity",
+   "definition": "login and transfer frequency",
+   "asOfRule": "Channel mix shifts over time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Deposit Run-Off Modelling\": Estimate how fast deposits leave under rate moves and stress so liquidity buffers and funding plans are set with evidence. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on a rate-stable era understates sensitivity."
+}

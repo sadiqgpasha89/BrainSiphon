@@ -1,0 +1,12 @@
+# Passwords come from USER_<NAME>_PASSWORD in the environment (`make setup` generates them into .env).
+users:
+  - username: svc-replenishment   # the downstream system that consumes forecasts
+    roles: [consumer]
+  - username: planner
+    roles: [planner, consumer]
+  - username: ml-admin
+    roles: [ml-admin, planner, consumer]
+roles:
+  consumer: read published forecasts
+  planner: start runs, review held series, override forecasts, read accuracy
+  ml-admin: promote and roll back models

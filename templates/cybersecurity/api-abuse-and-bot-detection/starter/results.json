@@ -1,0 +1,34 @@
+{
+ "use_case": "cybersecurity/api-abuse-and-bot-detection",
+ "engine": "tabular",
+ "seed": 66306,
+ "knobs": {
+  "n_entities": 1890,
+  "positive_entity_rate": 0.027,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "rows": 146764,
+  "positive_rate": 0.0038769725545774168,
+  "test_rows": 48965,
+  "test_positive_rate": 0.00512611048708261,
+  "baseline_lr": {
+   "pr_auc": 0.7176666047325755,
+   "recall_at_0.5pct_fpr": 0.8366533864541833,
+   "brier": 0.0033694997429389983
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8678173905485568,
+   "recall_at_0.5pct_fpr": 0.8685258964143426,
+   "brier": 0.0015264465466144793
+  }
+ }
+}

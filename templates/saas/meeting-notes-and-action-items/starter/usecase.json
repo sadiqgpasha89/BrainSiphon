@@ -1,0 +1,50 @@
+{
+ "slug": "saas/meeting-notes-and-action-items",
+ "title": "Meeting Notes & Action-Item Extraction",
+ "domain": "saas",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 6162,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Owner-resolution accuracy",
+   "definition": "correct person for each action",
+   "asOfRule": "Diarisation"
+  },
+  {
+   "name": "Decision detection",
+   "definition": "decision statements",
+   "asOfRule": "Classifier"
+  },
+  {
+   "name": "Span support rate",
+   "definition": "notes with transcript support",
+   "asOfRule": "Alignment"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Meeting Notes & Action-Item Extraction\": Turn meeting recordings into accurate notes, decisions and owned action items that sync to task tools. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating summaries not actions."
+}

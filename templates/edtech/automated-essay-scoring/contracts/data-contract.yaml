@@ -1,0 +1,16 @@
+contract: automated_essay_scoring_inputs.v1
+owner: learning-engineering@example.com
+system_of_record: Learning management system (LMS)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: rubric_trait_scores, type: double, nullable: false }
+    - { name: discourse_coherence_features, type: double, nullable: false }
+    - { name: prompt_relevance, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

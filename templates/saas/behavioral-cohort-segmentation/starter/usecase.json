@@ -1,0 +1,49 @@
+{
+ "slug": "saas/behavioral-cohort-segmentation",
+ "title": "Behavioural Cohorts & User Segmentation",
+ "domain": "saas",
+ "engine": "cluster",
+ "fit": "exact",
+ "problemType": "clustering-segmentation",
+ "seed": 41585,
+ "knobs": {
+  "n": 6450,
+  "outlier_share": 0.02
+ },
+ "blueprintSignals": [
+  {
+   "name": "Feature-usage embedding",
+   "definition": "sequence embedding of actions",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Frequency and recency profile",
+   "definition": "usage cadence",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Collaboration breadth",
+   "definition": "teammates active",
+   "asOfRule": "Org graph"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "value feature (f0)",
+   "meaning": "in currency units, thousands of times larger than the others"
+  },
+  {
+   "feature": "behaviour features (f1-f3)",
+   "meaning": "separate the segments"
+  },
+  {
+   "feature": "engagement features (f4-f6)",
+   "meaning": "separate some segments"
+  },
+  {
+   "feature": "noise feature (f7)",
+   "meaning": "carries little structure"
+  }
+ ],
+ "label": "For \"Behavioural Cohorts & User Segmentation\": Discover behaviour-based user cohorts that predict retention and expansion to drive lifecycle messaging and product decisions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Internal metrics only."
+}

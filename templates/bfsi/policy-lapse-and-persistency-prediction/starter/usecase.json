@@ -1,0 +1,58 @@
+{
+ "slug": "bfsi/policy-lapse-and-persistency-prediction",
+ "title": "Policy Lapse & Persistency Prediction",
+ "domain": "bfsi",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 19137,
+ "knobs": {
+  "n": 8450,
+  "dropout": 0.249
+ },
+ "blueprintSignals": [
+  {
+   "name": "Premium shock",
+   "definition": "renewal premium change",
+   "asOfRule": "Known at renewal"
+  },
+  {
+   "name": "Missed payment count",
+   "definition": "missed or late payments",
+   "asOfRule": "Grace period"
+  },
+  {
+   "name": "Surrender charge expiry",
+   "definition": "months until the charge ends",
+   "asOfRule": "Contract data"
+  },
+  {
+   "name": "Service contacts",
+   "definition": "complaints and calls",
+   "asOfRule": "Logging"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Policy Lapse & Persistency Prediction\": Predict which policies will lapse so retention teams and the actuary can plan interventions and reserves. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Contacted customers differ."
+}

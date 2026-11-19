@@ -1,0 +1,54 @@
+{
+ "slug": "supply-chain/freight-rate-prediction-and-pricing",
+ "title": "Freight Rate Prediction & Pricing",
+ "domain": "supply-chain",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 37876,
+ "knobs": {
+  "n": 20590,
+  "outlier_share": 0.01,
+  "drift": 0.307
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lane market index",
+   "definition": "rolling spot index per lane",
+   "asOfRule": "Index lag"
+  },
+  {
+   "name": "Capacity tightness",
+   "definition": "load-to-truck ratio",
+   "asOfRule": "Real-time"
+  },
+  {
+   "name": "Customer price sensitivity",
+   "definition": "quote-win history",
+   "asOfRule": "Prior"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Freight Rate Prediction & Pricing\": Quote spot and contract freight rates instantly using lane market data, capacity and customer value, balancing win rate and margin. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Won quotes only in training."
+}

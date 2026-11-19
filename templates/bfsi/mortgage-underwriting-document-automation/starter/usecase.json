@@ -1,0 +1,53 @@
+{
+ "slug": "bfsi/mortgage-underwriting-document-automation",
+ "title": "Mortgage Underwriting Document Automation",
+ "domain": "bfsi",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 51422,
+ "knobs": {
+  "n_train": 1120
+ },
+ "blueprintSignals": [
+  {
+   "name": "Net pay to statement credit match",
+   "definition": "absolute difference between payslip net pay and matched salary credit within 3 days of pay date",
+   "asOfRule": "Matching window must use document dates, not upload dates"
+  },
+  {
+   "name": "Document tamper score",
+   "definition": "font, compression and metadata inconsistency score per page",
+   "asOfRule": "Scanner and phone-camera files must not be scored against born-digital files"
+  },
+  {
+   "name": "Field confidence margin",
+   "definition": "gap between top and second extraction hypothesis per field",
+   "asOfRule": "Margin must come from a calibrated model, not raw softmax"
+  },
+  {
+   "name": "Pay frequency consistency",
+   "definition": "implied annual income from payslip versus year-to-date figure",
+   "asOfRule": "Year-to-date fields are absent on some payslips"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Mortgage Underwriting Document Automation\": Classify, extract and cross-check the documents in a mortgage file (payslips, bank statements, tax returns, ID, valuation) so underwriters review exceptions instead of retyping fields. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test files from the same broker as training inflate extraction accuracy."
+}

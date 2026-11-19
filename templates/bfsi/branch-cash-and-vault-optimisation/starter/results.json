@@ -1,0 +1,45 @@
+{
+ "use_case": "bfsi/branch-cash-and-vault-optimisation",
+ "engine": "optimize",
+ "seed": 36366,
+ "knobs": {
+  "n_instances": 107,
+  "noise": 0.273
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.4,
+ "results": {
+  "instances": 107,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 120.35025037059762,
+   "promised_cost": 100.11955536229611,
+   "optimism_gap_pct": 20.206537009771978,
+   "regret_vs_oracle_pct": 31.227631586982863
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 105.4796453126315,
+   "promised_cost": 81.8232067821768,
+   "optimism_gap_pct": 28.911649226155347,
+   "regret_vs_oracle_pct": 15.013005726104307
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 103.24610756027351,
+   "promised_cost": 83.29674425833637,
+   "optimism_gap_pct": 23.949751553393515,
+   "regret_vs_oracle_pct": 12.577598500946934
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.71105880305758,
+   "promised_cost": 95.59976545951021,
+   "optimism_gap_pct": -4.06769476657307,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

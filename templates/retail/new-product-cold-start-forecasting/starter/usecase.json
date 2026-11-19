@@ -1,0 +1,52 @@
+{
+ "slug": "retail/new-product-cold-start-forecasting",
+ "title": "New Product Cold-Start Forecasting",
+ "domain": "retail",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 86204,
+ "knobs": {
+  "n_series": 188
+ },
+ "blueprintSignals": [
+  {
+   "name": "Attribute-image embedding",
+   "definition": "joint embedding of attributes and images",
+   "asOfRule": "Embeddings trained on prior seasons only"
+  },
+  {
+   "name": "Launch price position",
+   "definition": "price percentile within category",
+   "asOfRule": "Planned launch price"
+  },
+  {
+   "name": "First-week velocity",
+   "definition": "sales in days 1-7 vs analogue velocity",
+   "asOfRule": "Adjust for stock availability"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"New Product Cold-Start Forecasting\": Forecast demand for products with no sales history using attributes, images and analogues to set first buys and launch allocation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Analogues drawn from future seasons."
+}

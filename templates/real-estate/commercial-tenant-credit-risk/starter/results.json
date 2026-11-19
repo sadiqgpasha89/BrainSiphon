@@ -1,0 +1,34 @@
+{
+ "use_case": "real-estate/commercial-tenant-credit-risk",
+ "engine": "tabular",
+ "seed": 67852,
+ "knobs": {
+  "n_entities": 2320,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.5,
+ "results": {
+  "rows": 174351,
+  "positive_rate": 0.0032061760471692163,
+  "test_rows": 57702,
+  "test_positive_rate": 0.002842189178884614,
+  "baseline_lr": {
+   "pr_auc": 0.7302803158993132,
+   "recall_at_0.5pct_fpr": 0.8170731707317073,
+   "brier": 0.002118464056287432
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8102106571754583,
+   "recall_at_0.5pct_fpr": 0.8536585365853658,
+   "brier": 0.0009832044292182155
+  }
+ }
+}

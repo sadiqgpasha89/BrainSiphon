@@ -1,0 +1,58 @@
+{
+ "slug": "real-estate/floor-plan-extraction-from-images",
+ "title": "Floor-Plan Extraction from Images",
+ "domain": "real-estate",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-detection-segmentation",
+ "seed": 75090,
+ "knobs": {
+  "n": 4760,
+  "prevalence": 0.157
+ },
+ "blueprintSignals": [
+  {
+   "name": "Wall segmentation",
+   "definition": "intersection-over-union of the predicted wall mask against labelled plans",
+   "asOfRule": "Clutter such as furniture symbols and hatching confuses the mask, so evaluate per drawing style"
+  },
+  {
+   "name": "Dimension OCR",
+   "definition": "recognised numbers and units next to walls, converted to metres",
+   "asOfRule": "A misread digit changes the scale by ten, so validate against the stated area"
+  },
+  {
+   "name": "Room label OCR",
+   "definition": "recognised room names mapped to a fixed room taxonomy",
+   "asOfRule": "Names are in many languages and abbreviations, so normalise by locale"
+  },
+  {
+   "name": "Area consistency",
+   "definition": "sum of room areas divided by the stated total area",
+   "asOfRule": "Stated totals include or exclude walls and balconies, so allow for the convention"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Floor-Plan Extraction from Images\": Convert floor-plan images into structured rooms, dimensions and layouts for search, valuation and 3D tours. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on clean CAD exports hides failures on the hand-drawn and scanned plans that most listings contain."
+}

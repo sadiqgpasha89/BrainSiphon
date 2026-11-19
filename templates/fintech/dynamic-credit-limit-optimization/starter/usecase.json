@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/dynamic-credit-limit-optimization",
+ "title": "Dynamic Credit Limit Optimization",
+ "domain": "fintech",
+ "engine": "bandit",
+ "fit": "exact",
+ "problemType": "off-policy-decisioning",
+ "seed": 7314,
+ "knobs": {
+  "n": 39690,
+  "logging_temperature": 0.806
+ },
+ "blueprintSignals": [
+  {
+   "name": "Spend-to-limit headroom",
+   "definition": "peak utilisation divided by limit over 3 cycles",
+   "asOfRule": "Use pre-decision cycles"
+  },
+  {
+   "name": "Early-delinquency hazard",
+   "definition": "model-predicted 6-month default probability",
+   "asOfRule": "Score at action time not later"
+  },
+  {
+   "name": "Elasticity estimate",
+   "definition": "causal forest estimate of spend change per limit step",
+   "asOfRule": "Needs randomised limit-test cohorts"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"Dynamic Credit Limit Optimization\": Raise or lower card limits monthly to maximise risk-adjusted revenue subject to loss and capital constraints. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Naive A/B of limit changes confounded by selection."
+}

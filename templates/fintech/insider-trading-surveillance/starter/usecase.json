@@ -1,0 +1,52 @@
+{
+ "slug": "fintech/insider-trading-surveillance",
+ "title": "Insider Trading & Market Abuse Surveillance",
+ "domain": "fintech",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 69967,
+ "knobs": {
+  "n_docs": 4950
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pre-announcement abnormal return",
+   "definition": "cumulative abnormal return relative to a market model",
+   "asOfRule": "Event dates must be public timestamps"
+  },
+  {
+   "name": "Position change vs baseline",
+   "definition": "deviation from the trader's historical position in the name",
+   "asOfRule": "Baseline excludes the window"
+  },
+  {
+   "name": "Communication proximity",
+   "definition": "graph distance and message volume to insiders",
+   "asOfRule": "Respect chinese-wall data scoping"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Insider Trading & Market Abuse Surveillance\": Detect suspicious trading ahead of material news by linking trader activity, communications and corporate events for compliance review. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Enforcement cases are a tiny biased positive set."
+}

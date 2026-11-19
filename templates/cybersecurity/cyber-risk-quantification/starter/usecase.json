@@ -1,0 +1,54 @@
+{
+ "slug": "cybersecurity/cyber-risk-quantification",
+ "title": "Cyber Risk Quantification",
+ "domain": "cybersecurity",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 20403,
+ "knobs": {
+  "n": 17410,
+  "outlier_share": 0.02,
+  "drift": 0.274
+ },
+ "blueprintSignals": [
+  {
+   "name": "Control coverage and efficacy",
+   "definition": "detection and prevention rates by control",
+   "asOfRule": "Telemetry"
+  },
+  {
+   "name": "Asset value and exposure",
+   "definition": "data records and revenue at risk",
+   "asOfRule": "Business data"
+  },
+  {
+   "name": "Industry incident frequency",
+   "definition": "external base rates",
+   "asOfRule": "Source quality"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Cyber Risk Quantification\": Estimate annualised loss exposure from cyber events by combining threat likelihood, control strength and asset impact, to justify security investments. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Few incidents to validate."
+}

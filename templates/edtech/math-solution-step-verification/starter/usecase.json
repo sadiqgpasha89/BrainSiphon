@@ -1,0 +1,48 @@
+{
+ "slug": "edtech/math-solution-step-verification",
+ "title": "Math Solution Step Verification",
+ "domain": "edtech",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 88305,
+ "knobs": {
+  "n": 312
+ },
+ "blueprintSignals": [
+  {
+   "name": "Step equivalence check",
+   "definition": "CAS equivalence of consecutive steps",
+   "asOfRule": "Parsing"
+  },
+  {
+   "name": "Rule-application classifier",
+   "definition": "which rule was used",
+   "asOfRule": "Taxonomy"
+  },
+  {
+   "name": "Solution-path similarity",
+   "definition": "closeness to valid solution paths",
+   "asOfRule": "Graph"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Math Solution Step Verification\": Check each step of a student's mathematical working for validity and pinpoint the first error with an explanation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test problems from training distribution."
+}

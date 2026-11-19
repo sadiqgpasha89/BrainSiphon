@@ -1,0 +1,32 @@
+{
+ "id": "audio",
+ "label": "Speech and audio classification under channel shift, plus word error rate",
+ "summary": "Raw spectrum against a log filterbank with per-clip normalisation, with and without channel augmentation, on synthetic 8 kHz clips whose test channel is noisier and band-limited; includes a tested word-error-rate implementation.",
+ "problemTypes": [
+  "speech-audio"
+ ],
+ "traps": [
+  "A noisier, band-limited test channel",
+  "Recording gain mistaken for signal",
+  "A feature that collapses when a band disappears"
+ ],
+ "origin": "brainsiphon-pro",
+ "slots": [
+  {
+   "feature": "log filterbank energies",
+   "meaning": "band energies, normalised per clip"
+  },
+  {
+   "feature": "raw magnitude spectrum",
+   "meaning": "gain-sensitive baseline"
+  },
+  {
+   "feature": "channel augmentation",
+   "meaning": "low-pass and noise added at training time"
+  },
+  {
+   "feature": "word error rate",
+   "meaning": "edit distance over reference words"
+  }
+ ]
+}

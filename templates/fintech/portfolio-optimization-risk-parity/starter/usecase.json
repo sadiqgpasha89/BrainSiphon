@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/portfolio-optimization-risk-parity",
+ "title": "Robo-Advisor Portfolio Optimization",
+ "domain": "fintech",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 12081,
+ "knobs": {
+  "n_instances": 145,
+  "noise": 0.262
+ },
+ "blueprintSignals": [
+  {
+   "name": "Shrunk covariance matrix",
+   "definition": "Ledoit-Wolf shrinkage on rolling returns",
+   "asOfRule": "Rolling window must not include rebalance date"
+  },
+  {
+   "name": "Drift from target",
+   "definition": "L1 distance of current weights to target",
+   "asOfRule": "Use pre-trade market values"
+  },
+  {
+   "name": "Tax-lot loss harvesting value",
+   "definition": "unrealised loss available net of wash-sale rules",
+   "asOfRule": "Check wash-sale window across accounts"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Robo-Advisor Portfolio Optimization\": Construct and rebalance goal-based portfolios for millions of retail users that stay within each user's risk tolerance while minimising taxes and costs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Backtest ignores taxes and transaction costs."
+}

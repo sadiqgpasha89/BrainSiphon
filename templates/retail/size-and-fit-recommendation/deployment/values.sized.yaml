@@ -1,0 +1,8 @@
+# Overrides for deployment/helm/ai-solution in the free BrainSiphon deployment kit, for Size & Fit Recommendation.
+# Modelled sizing at 10M registered users. Replace with your measured peak, and set autoscaling bounds from a load test.
+# Blueprint compute statement: 6 GPUs (L4/L40S class) for 625 req/s (≈600 ranked requests/s per GPU (1,500 candidates per request, batched, fp16)); 3 online feature-store shards and 12 event-bus partitions.
+# GPU-bound: size the GPU node pools from the count below, then derive replicas from GPUs per pod.
+# provisioned GPUs (modelled): 6
+resources:
+  limits:
+    nvidia.com/gpu: 1

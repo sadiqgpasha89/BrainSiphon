@@ -1,0 +1,37 @@
+{
+ "use_case": "adtech/first-price-bid-shading",
+ "engine": "bandit",
+ "seed": 16302,
+ "knobs": {
+  "n": 38120,
+  "logging_temperature": 0.829
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.2,
+ "results": {
+  "logged_rows": 38120,
+  "logging_reward_rate": 0.3512329485834208,
+  "always_best_average_action": {
+   "true_value": 0.5056284560651595,
+   "naive_matched": 0.5138,
+   "ips": 0.4967,
+   "snips": 0.5094,
+   "doubly_robust": 0.5137,
+   "match_rate": 0.177
+  },
+  "learned_greedy": {
+   "true_value": 0.6655890028020037,
+   "naive_matched": 0.6862,
+   "ips": 0.5893,
+   "snips": 0.6442,
+   "doubly_robust": 0.6477,
+   "match_rate": 0.1946
+  }
+ }
+}

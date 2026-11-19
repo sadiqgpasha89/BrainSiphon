@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/patient-similarity-cohort-search",
+ "engine": "recommender",
+ "seed": 47030,
+ "knobs": {
+  "n_sessions": 35880,
+  "bot_share": 0.133
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 7.1,
+ "results": {
+  "train_sessions": 21867,
+  "test_sessions": 6243,
+  "popularity": {
+   "hit_rate@20": 0.07047893640877784,
+   "mrr@20": 0.019869425144112975,
+   "coverage": 0.017333333333333333,
+   "sessions": 6243
+  },
+  "bag_covisit": {
+   "hit_rate@20": 0.5367611725132148,
+   "mrr@20": 0.21495887520389706,
+   "coverage": 0.9706666666666667,
+   "sessions": 6243
+  },
+  "ordered_transition": {
+   "hit_rate@20": 0.5639916706711516,
+   "mrr@20": 0.30189804581012386,
+   "coverage": 0.978,
+   "sessions": 6243
+  },
+  "theme_aware": {
+   "hit_rate@20": 0.568957232099952,
+   "mrr@20": 0.3130525655844643,
+   "coverage": 1.0,
+   "sessions": 6243
+  }
+ }
+}

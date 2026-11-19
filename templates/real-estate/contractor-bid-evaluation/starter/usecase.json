@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/contractor-bid-evaluation",
+ "title": "Contractor Bid Evaluation",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 63399,
+ "knobs": {
+  "n": 25370,
+  "outlier_share": 0.038,
+  "drift": 0.365
+ },
+ "blueprintSignals": [
+  {
+   "name": "Scope gap",
+   "definition": "number of bill-of-quantities items missing or priced at zero",
+   "asOfRule": "Parsing errors in the bid documents, so check by hand"
+  },
+  {
+   "name": "Past overrun rate",
+   "definition": "average percentage cost overrun of the contractor's last ten projects",
+   "asOfRule": "Data are patchy and project types differ"
+  },
+  {
+   "name": "Bid outlier",
+   "definition": "z-score of the bid compared with the other bids and the estimate",
+   "asOfRule": "Few bids make the z-score unstable, so use the estimate as well"
+  },
+  {
+   "name": "Capacity",
+   "definition": "the contractor's current workload relative to capacity",
+   "asOfRule": "Data are self-reported"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Contractor Bid Evaluation\": Compare contractor bids on price, scope coverage, risk and track record to recommend a shortlist. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Data only on winners, since the performance of unsuccessful bidders is never observed."
+}

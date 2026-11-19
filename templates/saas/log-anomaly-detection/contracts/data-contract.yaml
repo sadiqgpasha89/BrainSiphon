@@ -1,0 +1,16 @@
+contract: log_anomaly_detection_inputs.v1
+owner: product-analytics@example.com
+system_of_record: Tenant and entitlement service
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: new_template_appearance, type: double, nullable: false }
+    - { name: template_frequency_shift, type: double, nullable: false }
+    - { name: sequence_perplexity, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

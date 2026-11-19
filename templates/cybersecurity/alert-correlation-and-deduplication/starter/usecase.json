@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/alert-correlation-and-deduplication",
+ "title": "Alert Correlation & Deduplication",
+ "domain": "cybersecurity",
+ "engine": "graph",
+ "fit": "exact",
+ "problemType": "entity-resolution",
+ "seed": 15366,
+ "knobs": {
+  "n_clusters": 1200,
+  "hub_share": 0.155
+ },
+ "blueprintSignals": [
+  {
+   "name": "Shared entity overlap",
+   "definition": "host, user, IP overlap",
+   "asOfRule": "Entity resolution"
+  },
+  {
+   "name": "Temporal proximity",
+   "definition": "time gap",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Technique adjacency",
+   "definition": "ATT&CK stage ordering",
+   "asOfRule": "Mapping"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Alert Correlation & Deduplication\": Group related alerts into incidents and deduplicate repeats, cutting analyst queue size by an order of magnitude. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Analyst groupings inconsistent."
+}

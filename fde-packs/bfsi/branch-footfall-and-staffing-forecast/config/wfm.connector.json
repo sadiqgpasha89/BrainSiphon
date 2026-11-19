@@ -1,0 +1,51 @@
+{
+  "adapter": "wfm-roster",
+  "name": "wfm-shifts",
+  "connection": {
+    "base_url": "${WFM_BASE_URL}",
+    "auth": {
+      "type": "oauth2_client_credentials",
+      "token_url": "${WFM_TOKEN_URL}",
+      "client_id_env": "WFM_CLIENT_ID",
+      "client_secret_env": "WFM_CLIENT_SECRET",
+      "scope": "shifts.read proposals.write"
+    }
+  },
+  "read": {
+    "resource": "shifts",
+    "location_id": "BR-0012",
+    "key_field": "id"
+  },
+  "write": {
+    "idempotency_fields": ["proposal_id"]
+  },
+  "mapping": {
+    "fields": {
+      "shift_id": {
+        "from": "id",
+        "required": true
+      },
+      "employee": {
+        "from": "emp",
+        "required": true
+      },
+      "date": {
+        "from": "date"
+      },
+      "start_hour": {
+        "from": "start",
+        "transform": ["to_int"]
+      },
+      "end_hour": {
+        "from": "end",
+        "transform": ["to_int"]
+      },
+      "branch": {
+        "from": "location_id"
+      }
+    }
+  },
+  "retry": {
+    "max_attempts": 4
+  }
+}

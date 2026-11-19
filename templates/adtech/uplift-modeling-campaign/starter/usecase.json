@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/uplift-modeling-campaign",
+ "title": "Uplift Modelling for Campaigns",
+ "domain": "adtech",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 31085,
+ "knobs": {
+  "n": 32350,
+  "confound": 1.6,
+  "holdout": 0.121
+ },
+ "blueprintSignals": [
+  {
+   "name": "Treatment propensity (known)",
+   "definition": "randomisation probability",
+   "asOfRule": "Design"
+  },
+  {
+   "name": "Pre-treatment engagement",
+   "definition": "activity before campaign",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Prior campaign response",
+   "definition": "response history",
+   "asOfRule": "Exclude current"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Uplift Modelling for Campaigns\": Target ads or offers only to users whose conversion probability rises because of the treatment, to maximise incremental conversions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on non-randomised past targeting."
+}

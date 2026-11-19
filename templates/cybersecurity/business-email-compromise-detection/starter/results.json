@@ -1,0 +1,36 @@
+{
+ "use_case": "cybersecurity/business-email-compromise-detection",
+ "engine": "nlp",
+ "seed": 73106,
+ "knobs": {
+  "n_docs": 5500
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.0,
+ "results": {
+  "docs": 5500,
+  "duplicate_share": 0.24418181818181817,
+  "random_split_with_leak": {
+   "macro_f1": 0.8676993572787266,
+   "ece": 0.11152985395735955
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4600084520357632,
+   "ece": 0.05440189396266046
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7800685064246942,
+   "ece": 0.10164634790652435
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4600084520357632,
+   "ece": 0.05440189396266046
+  }
+ }
+}

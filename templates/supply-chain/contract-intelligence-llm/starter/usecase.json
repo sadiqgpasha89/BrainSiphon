@@ -1,0 +1,48 @@
+{
+ "slug": "supply-chain/contract-intelligence-llm",
+ "title": "Contract Intelligence & Obligation Extraction",
+ "domain": "supply-chain",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 69621,
+ "knobs": {
+  "n_train": 870
+ },
+ "blueprintSignals": [
+  {
+   "name": "Clause recall",
+   "definition": "share of ground-truth clauses retrieved",
+   "asOfRule": "Annotated set"
+  },
+  {
+   "name": "Cross-reference resolution",
+   "definition": "linked defined terms",
+   "asOfRule": "Parser"
+  },
+  {
+   "name": "Renewal and notice date extraction",
+   "definition": "normalised dates",
+   "asOfRule": "Date format handling"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Contract Intelligence & Obligation Extraction\": Extract clauses, obligations, prices and renewal dates from supplier and logistics contracts and answer questions with citations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test contracts of a single template."
+}

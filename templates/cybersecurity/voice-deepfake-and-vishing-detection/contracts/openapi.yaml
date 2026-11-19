@@ -1,0 +1,91 @@
+openapi: 3.1.0
+info:
+  title: Voice Deepfake & Vishing Detection API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/voice-deepfake-and-vishing-detection/decide:
+    post:
+      summary: 'Voice Deepfake & Vishing Detection: request a decision'
+      operationId: voice_deepfake_and_vishing_detection
+      description: 'Illustrative contract taken from the blueprint''s low-level design. End-to-end deadline: 2500
+        ms. Replace the placeholder values with your own fields and keep the error behaviour.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_id:
+                  type: string
+                entity_id:
+                  type: string
+                occurred_at:
+                  type: string
+                inline_signals:
+                  type: object
+                  properties:
+                    spectral_artefact_score:
+                      type: integer
+                    social_engineering_intent:
+                      type: integer
+                deadline_ms:
+                  type: integer
+            example:
+              request_id: 01JABCDEF…
+              entity_id: ent_8f3a
+              occurred_at: '2026-11-07T10:15:30Z'
+              inline_signals:
+                spectral_artefact_score: 0
+                social_engineering_intent: 3
+              deadline_ms: 2500
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                  decision:
+                    type: string
+                  score:
+                    type: number
+                  reason_codes:
+                    type: array
+                    items:
+                      type: string
+                  model_version:
+                    type: string
+                  latency_ms:
+                    type: number
+                  degraded:
+                    type: boolean
+              example:
+                request_id: 01JABCDEF…
+                decision: PASS | REVIEW | ACT
+                score: 0.0134
+                reason_codes:
+                - spectral_artefact_score
+                - social_engineering_intent
+                model_version: 2026-11-03.r2
+                latency_ms: 4.2
+                degraded: false
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

@@ -1,0 +1,34 @@
+{
+ "use_case": "supply-chain/supplier-risk-and-disruption-prediction",
+ "engine": "tabular",
+ "seed": 43517,
+ "knobs": {
+  "n_entities": 2290,
+  "positive_entity_rate": 0.022,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "rows": 175166,
+  "positive_rate": 0.002865852962332873,
+  "test_rows": 59234,
+  "test_positive_rate": 0.002599858189553297,
+  "baseline_lr": {
+   "pr_auc": 0.5547772301645099,
+   "recall_at_0.5pct_fpr": 0.6753246753246753,
+   "brier": 0.002550896851040881
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6468677286575859,
+   "recall_at_0.5pct_fpr": 0.6818181818181818,
+   "brier": 0.0012597288689329652
+  }
+ }
+}

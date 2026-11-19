@@ -1,0 +1,54 @@
+{
+ "slug": "healthcare/polygenic-risk-scoring",
+ "title": "Polygenic Risk Scoring",
+ "domain": "healthcare",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 51199,
+ "knobs": {
+  "n": 18710,
+  "outlier_share": 0.01,
+  "drift": 0.323
+ },
+ "blueprintSignals": [
+  {
+   "name": "Shrunk SNP effect sizes",
+   "definition": "LDpred2 or PRS-CS posterior effects",
+   "asOfRule": "Use external GWAS only"
+  },
+  {
+   "name": "Ancestry principal components",
+   "definition": "genetic PCs for calibration",
+   "asOfRule": "Reference panel version"
+  },
+  {
+   "name": "Clinical covariates",
+   "definition": "age, sex, family history",
+   "asOfRule": "Documented definitions"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Polygenic Risk Scoring\": Combine genome-wide variant effects into calibrated disease risk scores that are valid across ancestries and actionable for prevention programmes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Validating in the same biobank used for GWAS."
+}

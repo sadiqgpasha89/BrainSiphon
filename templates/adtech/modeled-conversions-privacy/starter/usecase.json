@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/modeled-conversions-privacy",
+ "title": "Modelled Conversions under Privacy Constraints",
+ "domain": "adtech",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 65305,
+ "knobs": {
+  "n": 44180,
+  "confound": 1.258,
+  "holdout": 0.194
+ },
+ "blueprintSignals": [
+  {
+   "name": "Consented-user conversion rate",
+   "definition": "rate in observable population",
+   "asOfRule": "Sampling"
+  },
+  {
+   "name": "Consent-rate by segment",
+   "definition": "share consenting",
+   "asOfRule": "Estimates"
+  },
+  {
+   "name": "Aggregate click-to-conversion lag",
+   "definition": "lag distribution",
+   "asOfRule": "Windows"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Modelled Conversions under Privacy Constraints\": Estimate unobservable conversions from aggregate and consented signals to keep measurement accurate as identifiers disappear. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Consented users differ from non-consented."
+}

@@ -1,0 +1,54 @@
+{
+ "slug": "healthcare/or-scheduling-and-case-duration-prediction",
+ "title": "OR Scheduling & Surgical Case Duration Prediction",
+ "domain": "healthcare",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 54059,
+ "knobs": {
+  "n": 25450,
+  "outlier_share": 0.031,
+  "drift": 0.4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Surgeon-procedure history",
+   "definition": "surgeon's median duration for procedure",
+   "asOfRule": "Window before case date"
+  },
+  {
+   "name": "Patient complexity indicators",
+   "definition": "BMI, ASA class, comorbidity count",
+   "asOfRule": "Pre-op data"
+  },
+  {
+   "name": "Team and room factors",
+   "definition": "resident presence, room type",
+   "asOfRule": "Rosters as-of"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"OR Scheduling & Surgical Case Duration Prediction\": Predict surgical case durations and sequence operating-room blocks to cut overtime and idle time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using actual durations booked after the fact."
+}

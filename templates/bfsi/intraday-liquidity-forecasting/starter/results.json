@@ -1,0 +1,46 @@
+{
+ "use_case": "bfsi/intraday-liquidity-forecasting",
+ "engine": "forecast",
+ "seed": 48232,
+ "knobs": {
+  "n_series": 222
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 10.4,
+ "results": {
+  "rows": 20133,
+  "h1": {
+   "wmape_model": 0.113525190720385,
+   "wmape_baseline": 0.2048520212837848,
+   "fva": 0.445818547413224
+  },
+  "h3": {
+   "wmape_model": 0.11802453329234383,
+   "wmape_baseline": 0.2061434124760726,
+   "fva": 0.4274639588299086
+  },
+  "h7": {
+   "wmape_model": 0.12141906601204373,
+   "wmape_baseline": 0.21161292278770785,
+   "fva": 0.42622093011846673
+  },
+  "h14": {
+   "wmape_model": 0.14256647802015315,
+   "wmape_baseline": 0.22333748585448424,
+   "fva": 0.3616545047299293
+  },
+  "p90_coverage": 0.891173694928724,
+  "wmape_sku_level": 0.12362902591860053,
+  "wmape_aggregate": 0.02529561890698964,
+  "late_feed": {
+   "missing_as_zero": 0.17540877479792324,
+   "missing_as_nan": 0.1415536337231072
+  }
+ }
+}

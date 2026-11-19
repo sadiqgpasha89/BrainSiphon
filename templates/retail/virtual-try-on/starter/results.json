@@ -1,0 +1,42 @@
+{
+ "use_case": "retail/virtual-try-on",
+ "engine": "generative",
+ "seed": 78949,
+ "knobs": {
+  "n": 275
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "golden_items": 275,
+  "v1_pass_rate_strict_judge": 0.1781818181818182,
+  "v1_pass_rate_fuzzy_judge": 0.49454545454545457,
+  "v2_pass_rate_fuzzy_judge": 0.6181818181818182,
+  "v1_pass_rate_ci95": [
+   0.43636363636363634,
+   0.5600909090909091
+  ],
+  "v2_minus_v1": 0.12363636363636364,
+  "v2_minus_v1_ci95": [
+   0.039909090909090915,
+   0.20363636363636364
+  ],
+  "judge_agreement_kappa_v1": 0.3627986257224277,
+  "judge_disagreement_share_v1": 0.31636363636363635,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.44727272727272727,
+   "date_correct": 0.14545454545454545,
+   "within_length": 0.03272727272727273,
+   "no_forbidden_claims": 0.09090909090909091
+  },
+  "ci_width_at_60_items": 0.2666666666666666,
+  "ci_width_at_full_set": 0.12372727272727274
+ }
+}

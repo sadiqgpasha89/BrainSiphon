@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/influencer-matching-and-fraud",
+ "title": "Influencer Matching & Fake-Follower Detection",
+ "domain": "adtech",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 75570,
+ "knobs": {
+  "n_clusters": 1220,
+  "hub_share": 0.14
+ },
+ "blueprintSignals": [
+  {
+   "name": "Engagement authenticity score",
+   "definition": "comment diversity and timing",
+   "asOfRule": "NLP"
+  },
+  {
+   "name": "Follower growth anomalies",
+   "definition": "sudden spikes",
+   "asOfRule": "Time series"
+  },
+  {
+   "name": "Audience affinity embedding",
+   "definition": "audience interests vs brand",
+   "asOfRule": "Aggregates"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Influencer Matching & Fake-Follower Detection\": Match brands to authentic creators with audiences that fit, and detect inflated followings and engagement pods. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Platform-provided signals manipulated."
+}

@@ -40,7 +40,7 @@ export const DOWNLOAD_BUNDLES = [
     dir: 'fde-packs',
     zip: 'brainsiphon-fde-use-case-pack.zip',
     title: 'Use-case implementation pack',
-    note: 'One executable pack with its tests, fixtures and customer documentation: card and UPI fraud. The other nine packs (forecasting, sepsis, ETA, CTR, phishing, knowledge tracing, ticket triage, branch footfall and valuation) are in BrainSiphon Pro.',
+    note: 'One executable pack with its tests, fixtures and customer documentation: card and UPI fraud. The other nine packs (forecasting, sepsis, ETA, CTR, phishing, knowledge tracing, ticket triage, branch footfall and valuation) are in the fde-packs/ folder of this repository.',
   },
 ] as const;
 export type BundleId = (typeof DOWNLOAD_BUNDLES)[number]['id'];

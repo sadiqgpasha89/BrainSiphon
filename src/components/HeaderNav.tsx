@@ -4,7 +4,7 @@ import { ChevronDown, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
-import { GUIDE_LINK, MORE_LINKS, PRO_LINK, START_LINK, isHere } from '../lib/nav';
+import { GUIDE_LINK, MORE_LINKS, TEMPLATES_LINK, START_LINK, isHere } from '../lib/nav';
 import { DOMAINS, DOMAIN_META } from '../schemas/usecase.schema';
 import { SearchTrigger } from './SearchTrigger';
 import { ThemeToggle } from './ThemeToggle';
@@ -18,7 +18,7 @@ const tone = (on: boolean) => (on ? 'text-ink' : 'text-mute hover:text-ink');
 
 /**
  * Everything to the right of the logo. Four things in the bar on a desktop: Start here, Blueprints (a menu of the ten industries),
- * the delivery guide, and More (a menu of the specialised pages, each with a plain-language line). Pro is a separate button so
+ * the delivery guide, and More (a menu of the specialised pages, each with a plain-language line). The worked templates are a separate button so
  * it is never mistaken for free content. On a phone the same lists open as one menu panel; nothing changes by screen size
  * except where it is shown.
  */
@@ -161,12 +161,12 @@ export function HeaderNav() {
         <SearchTrigger />
         <ThemeToggle />
         <Link
-          href={PRO_LINK.href}
-          aria-current={here(PRO_LINK.href) ? 'page' : undefined}
-          data-testid="nav-pro"
-          className="hidden items-center rounded-lg border border-warn/40 bg-warn/10 px-3 py-1.5 text-sm font-medium text-warn no-underline transition hover:bg-warn/20 md:inline-flex"
+          href={TEMPLATES_LINK.href}
+          aria-current={here(TEMPLATES_LINK.href) ? 'page' : undefined}
+          data-testid="nav-templates"
+          className="hidden items-center rounded-lg border border-line bg-raised px-3 py-1.5 text-sm font-medium text-ink no-underline transition hover:bg-raised md:inline-flex"
         >
-          {PRO_LINK.label}
+          {TEMPLATES_LINK.label}
         </Link>
         <button
           type="button"
@@ -189,7 +189,7 @@ export function HeaderNav() {
       >
         <nav aria-label="Mobile" className="mx-auto max-w-7xl space-y-6 px-4 py-5">
           <ul className="space-y-1">
-            {[START_LINK, GUIDE_LINK, PRO_LINK].map((l) => (
+            {[START_LINK, GUIDE_LINK, TEMPLATES_LINK].map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
@@ -197,7 +197,7 @@ export function HeaderNav() {
                   className={`${ITEM} ${here(l.href) ? 'bg-raised' : ''}`}
                 >
                   <span
-                    className={`block text-base font-semibold ${l.href === START_LINK.href ? 'text-signal' : l.href === PRO_LINK.href ? 'text-warn' : 'text-ink'}`}
+                    className={`block text-base font-semibold ${l.href === START_LINK.href ? 'text-signal' : 'text-ink'}`}
                   >
                     {l.label}
                   </span>

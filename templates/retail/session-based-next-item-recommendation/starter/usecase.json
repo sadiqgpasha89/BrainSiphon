@@ -1,0 +1,39 @@
+{
+ "slug": "retail/session-based-next-item-recommendation",
+ "title": "Session-Based Next-Item Recommendation",
+ "domain": "retail",
+ "engine": "authored",
+ "fit": "authored",
+ "problemType": "next-item-recommendation",
+ "seed": null,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Last-k item embeddings",
+   "definition": "transformer encoding of last 20 interactions",
+   "asOfRule": "Cap sequence length so latency stays inside the budget"
+  },
+  {
+   "name": "Dwell and scroll depth",
+   "definition": "seconds on item pages and scroll fraction",
+   "asOfRule": "Bots inflate or deflate dwell, so filter them first"
+  },
+  {
+   "name": "Session goal inference",
+   "definition": "classifier over browse vs compare vs purchase",
+   "asOfRule": "Label from the eventual purchase carefully to avoid leakage"
+  },
+  {
+   "name": "Session theme category",
+   "definition": "share of recent items in each category",
+   "asOfRule": "Compute from the prefix only, never including the item to be predicted"
+  },
+  {
+   "name": "Transition recency",
+   "definition": "how recently each item-to-item transition was observed, decayed over days",
+   "asOfRule": "Decay by event time and keep the training cut-off before the test window"
+  }
+ ],
+ "engineFeatures": [],
+ "label": "For \"Session-Based Next-Item Recommendation\": Recommend the next item for anonymous or logged-in sessions in real time, using only in-session behaviour when history is absent. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Random session splits leak popularity."
+}

@@ -1,0 +1,521 @@
+{
+  "_readme": "Compatibility contract of each reference starter kit: the one problem it implements (problemTypes), the neighbouring problems whose reusable parts can be adapted with named changes (adaptable), what it provides on each dimension, and what it cannot represent. The generator matches a use case's problem profile against these contracts; a kit that is not listed for the use case's problem type is never silently substituted. Edit this file, not the generator, to change what a kit claims. 'caveats' name sub-structures a kit does not implement: when a use case's own text matches a caveat pattern, the matching dimension is marked 'adapt' with the change shown, so a kit for the same problem is not called an exact match for a structurally different one.",
+  "tabular": {
+    "problemTypes": [
+      "binary-event-classification"
+    ],
+    "adaptable": {
+      "multiclass-classification": [
+        "Replace the binary delayed label with the use case's class label, and score with macro-F1 and per-class precision and recall instead of PR-AUC at a fixed false-positive rate",
+        "Replace the calibrated logistic baseline and boosted challenger with multi-class versions (one-vs-rest or softmax) and calibrate per class",
+        "Keep the chronological split, the label-maturity rule and the point-in-time leakage test unchanged"
+      ],
+      "regression-estimation": [
+        "Replace the binary label with the continuous target and the loss with the use case's error measure (for example absolute or squared error, or a quantile loss)",
+        "Replace PR-AUC and recall at a fixed false-positive rate with error metrics and interval coverage, reported by segment",
+        "Replace the calibrated logistic baseline with the use case's baseline (a linear or generalised linear model, or a rule) and the boosted classifier with a boosted regressor",
+        "Keep the chronological split, the point-in-time features and the leakage test unchanged"
+      ]
+    },
+    "provides": {
+      "label": "A binary outcome confirmed after a delay (a positive 7 to 21 days later; a negative only after the full maturity window)",
+      "validation": "Chronological split with entity separation and a label-maturity rule; leakage test on every feature",
+      "metrics": "PR-AUC and recall at a fixed false-positive rate, plus calibration",
+      "metricFamilies": [
+        "rare-event-ranking",
+        "discrimination",
+        "calibration"
+      ],
+      "data": "Event-level rows with point-in-time windowed features and group fan-out features",
+      "dataShapes": [
+        "event-tabular"
+      ],
+      "model": "Calibrated logistic regression baseline against a regularised gradient-boosted challenger",
+      "modelFamilies": [
+        "gbdt",
+        "linear"
+      ],
+      "serving": "Offline scripts only: no scoring service, deadline, feature store or load test",
+      "integrations": "None. Runs locally on synthetic card-authorisation data with pandas and scikit-learn",
+      "vocabulary": "Card authorisations, cards, merchants, devices, mule devices, chargebacks and fraud"
+    },
+    "reusable": [
+      "Chronological, entity-safe split with a label-maturity rule",
+      "Point-in-time feature builders and the leakage test",
+      "Calibrated baseline versus boosted challenger comparison",
+      "Recall at a fixed false-positive rate"
+    ],
+    "cannotRepresent": [
+      "Right-censored time-to-event labels",
+      "Treatment effects and counterfactual outcomes",
+      "Ranking within a group or a query",
+      "Text, images or graph structure as the primary input"
+    ]
+  },
+  "forecast": {
+    "problemTypes": [
+      "forecasting"
+    ],
+    "adaptable": {},
+    "provides": {
+      "label": "The observed value h days after a forecast origin, divided by the series' recent average at the origin, so one model serves every series",
+      "validation": "Rolling forecast origins with origin-safe features and late-arriving feeds",
+      "metrics": "Weighted absolute percentage error by horizon, forecast value added against a seasonal baseline and prediction-band coverage",
+      "metricFamilies": [
+        "forecast-error"
+      ],
+      "data": "Many daily series with calendar effects, planned events, censored demand (stock-outs) and late feeds",
+      "dataShapes": [
+        "panel-time-series"
+      ],
+      "model": "Seasonal baseline against quantile gradient boosting",
+      "modelFamilies": [
+        "gbdt",
+        "statistical"
+      ],
+      "serving": "Offline backtest scripts only: no scheduled pipeline, publishing or reconciliation",
+      "integrations": "None. Runs locally on synthetic retail-style demand",
+      "vocabulary": "Series, SKUs, stores, promotions, stock-outs and demand"
+    },
+    "reusable": [
+      "Rolling-origin backtest and origin-safe features",
+      "Forecast value added against a seasonal baseline",
+      "Quantile band coverage by horizon",
+      "Handling of censored demand and late feeds"
+    ],
+    "cannotRepresent": [
+      "Event-level classification",
+      "Hierarchical reconciliation across levels",
+      "Intermittent-demand count models",
+      "Survival or time-to-event targets"
+    ],
+    "caveats": [
+      {
+        "pattern": "hourly|intraday|minute|real time",
+        "dimension": "data",
+        "change": "The kit forecasts daily series: change the granularity, calendar features and horizons to hourly or intraday"
+      },
+      {
+        "pattern": "shipment|eta|delivery promise",
+        "dimension": "data",
+        "change": "The kit forecasts a series; this use case predicts a per-shipment or per-order quantity with an interval, so change the unit of prediction and its features"
+      },
+      {
+        "pattern": "hierarch|reconcil|new product|cold start|intermittent",
+        "dimension": "model",
+        "change": "Add hierarchical reconciliation, cold-start or intermittent-demand handling, which the kit does not implement"
+      }
+    ]
+  },
+  "anomaly": {
+    "problemTypes": [
+      "time-series-anomaly-detection"
+    ],
+    "adaptable": {
+      "tabular-anomaly-detection": [
+        "Replace the seasonal metric series with the entity-level feature stream the use case scores, and define the anomaly interval for it",
+        "Replace the seasonal residual and calendar features with the use case's behavioural features and their baselines",
+        "Keep the alert budget, the detection-delay measure and the no-future test unchanged"
+      ]
+    },
+    "provides": {
+      "label": "A point is anomalous when it lies inside a known anomaly interval; an event is detected when an alert fires inside it (or shortly after)",
+      "validation": "Chronological evaluation with a fixed alert budget and no-future features",
+      "metrics": "Recall, detection delay and false alerts per series per week at a fixed alert budget",
+      "metricFamilies": [
+        "rare-event-ranking",
+        "detection-delay"
+      ],
+      "data": "Operational metric series with daily and weekly seasonality, level shifts, drift and calendar effects",
+      "dataShapes": [
+        "panel-time-series"
+      ],
+      "model": "Rolling z-score, robust seasonal baseline and a calendar-aware version",
+      "modelFamilies": [
+        "statistical",
+        "linear"
+      ],
+      "serving": "Offline scripts only: no streaming scorer, alert routing or suppression service",
+      "integrations": "None. Runs locally on synthetic operational metrics",
+      "vocabulary": "Metric series, seasonal residuals, alerts and incidents"
+    },
+    "reusable": [
+      "Seasonal baselines and calendar features",
+      "Alert budget and refractory period",
+      "Detection-delay and false-alert measurement"
+    ],
+    "cannotRepresent": [
+      "Labelled event classification at scale",
+      "Multivariate dependency graphs between services",
+      "Forecasting with prediction bands as the product"
+    ],
+    "caveats": [
+      {
+        "pattern": "multivariate|graph|session|command|network|container|host|log",
+        "dimension": "data",
+        "change": "The kit scores single metric series: define the entity stream this use case scores (sessions, hosts, containers or logs) and its features"
+      }
+    ]
+  },
+  "recommender": {
+    "problemTypes": [
+      "next-item-recommendation"
+    ],
+    "adaptable": {
+      "personalised-ranking": [
+        "Replace leave-last-out next-click evaluation with the use case's own relevance signal (purchase, conversion, engagement or profit-weighted outcome) and its time split",
+        "Add user and context features, and a candidate-generation stage if the catalogue is too large to score in full",
+        "Keep the bot and dwell filtering, the time split and the coverage measurement unchanged"
+      ],
+      "search-ranking": [
+        "Add a query: the kit has none, so add query-product retrieval (lexical and semantic) before the ranker and index the catalogue",
+        "Replace next-click labels with graded relevance from human judgements or position-debiased click logs, and evaluate with NDCG on those judgements",
+        "Add multi-objective ranking (relevance, conversion, margin, sponsored or business rules) and a debiasing method for position",
+        "Keep the time split, the bot filtering and the coverage measurement unchanged"
+      ]
+    },
+    "provides": {
+      "label": "No separate label: for each test session the prefix of clicks is the input and the final click is the target (leave-last-out)",
+      "validation": "Time split by session with a leave-last-out protocol; sessions under three clicks are skipped",
+      "metrics": "Hit rate at 20, mean reciprocal rank and catalogue coverage",
+      "metricFamilies": [
+        "ranking"
+      ],
+      "data": "Anonymous browsing sessions of item clicks, with dwell time and bot traffic",
+      "dataShapes": [
+        "sessions"
+      ],
+      "model": "Popularity, co-visitation, ordered transitions and a theme-aware model",
+      "modelFamilies": [
+        "statistical"
+      ],
+      "serving": "Offline evaluation only: no retrieval index, session store, re-ranker or latency path",
+      "integrations": "None. Runs locally on synthetic sessions",
+      "vocabulary": "Sessions, items, clicks, dwell time and bots"
+    },
+    "reusable": [
+      "Time-split session evaluation protocol",
+      "Bot filtering",
+      "Co-visitation and transition baselines",
+      "Hit rate, MRR and coverage measurement"
+    ],
+    "cannotRepresent": [
+      "Query text and query-document relevance",
+      "Graded relevance judgements",
+      "Multi-objective or sponsored ranking",
+      "Exposure and position-bias correction"
+    ]
+  },
+  "graph": {
+    "problemTypes": [
+      "entity-resolution"
+    ],
+    "adaptable": {
+      "graph-analytics": [
+        "Replace pair labels (same real-world group) with the use case's own target on nodes, edges or clusters, and its evaluation (for example cluster purity against analyst groupings)",
+        "Replace shared-attribute blocking with the graph the use case really has (transactions, accounts, hosts, services) and its construction rules",
+        "Keep the transitivity test, the hub and cluster-size checks and the split that separates groups"
+      ]
+    },
+    "provides": {
+      "label": "A pair of records is positive when both belong to the same hidden true cluster; clusters are connected components over the pairs the model links",
+      "validation": "Group-separated split with blocking and transitivity tests and a check on the largest cluster",
+      "metrics": "Pair precision and recall, with the size of the largest cluster",
+      "metricFamilies": [
+        "resolution"
+      ],
+      "data": "Records with shared attributes (names, devices, addresses) that link them into groups",
+      "dataShapes": [
+        "graph-records"
+      ],
+      "model": "Rarity-weighted pair features with a pair classifier, clustered by connected components",
+      "modelFamilies": [
+        "gbdt",
+        "graph"
+      ],
+      "serving": "Offline scripts only: no incremental linking service or merge workflow",
+      "integrations": "None. Runs locally on synthetic records",
+      "vocabulary": "Records, shared attributes, hubs, groups and clusters"
+    },
+    "reusable": [
+      "Candidate blocking",
+      "Rarity-weighted pair features",
+      "Connected-component clustering with a cluster-size check"
+    ],
+    "cannotRepresent": [
+      "Node classification on a transaction graph",
+      "Learned graph neural networks",
+      "Streaming graph updates"
+    ]
+  },
+  "nlp": {
+    "problemTypes": [
+      "text-classification"
+    ],
+    "adaptable": {
+      "information-extraction": [
+        "Replace the document label with span or field labels, and score field-level or entity-level precision, recall and F1 instead of document macro-F1",
+        "Replace TF-IDF with logistic regression by a tagger or extractor suited to spans (a sequence model or a rule-plus-model hybrid)",
+        "Keep the thread-grouped split, the leak-token filter and the drift check unchanged"
+      ]
+    },
+    "provides": {
+      "label": "The class of the whole document, assigned by the person who handled it; documents in one thread share a label",
+      "validation": "Time and thread-grouped split with a post-hoc leak-token filter and a vocabulary-drift alarm",
+      "metrics": "Honest macro-F1 compared with the optimistic number",
+      "metricFamilies": [
+        "classification-f1"
+      ],
+      "data": "A text corpus of tickets or documents with duplicate threads and vocabulary drift",
+      "dataShapes": [
+        "text"
+      ],
+      "model": "TF-IDF with logistic regression",
+      "modelFamilies": [
+        "linear"
+      ],
+      "serving": "Offline scripts only: no inference service, queue routing or human-handoff path",
+      "integrations": "None. Runs locally on synthetic text",
+      "vocabulary": "Tickets, documents, threads, topics and leak tokens"
+    },
+    "reusable": [
+      "Thread-grouped, time-ordered split",
+      "Leak-token filter",
+      "Optimistic versus honest evaluation gap",
+      "Vocabulary-drift alarm"
+    ],
+    "cannotRepresent": [
+      "Sequence labelling and span extraction",
+      "Generated text",
+      "Speech or audio input",
+      "Multilingual models"
+    ]
+  },
+  "cv": {
+    "problemTypes": [
+      "vision-classification"
+    ],
+    "adaptable": {
+      "vision-detection-segmentation": [
+        "Replace image-level labels with box or mask annotations, and score mAP, IoU or Dice, and per-finding sensitivity, instead of per-image AUC",
+        "Replace pooled local-contrast features with a detector or segmentation model fine-tuned on the use case's images",
+        "Keep the split by physical item, the lighting-shortcut check and the site-shift threshold carry-over"
+      ]
+    },
+    "provides": {
+      "label": "An image is positive when it contains the finding (a defect, a lesion, a tampered region); labels are per image and images of one item share a group",
+      "validation": "Split by physical item with a shortcut test and a site-to-site operating-threshold check",
+      "metrics": "AUC and false-alarm rate at a fixed threshold across sites",
+      "metricFamilies": [
+        "discrimination",
+        "rare-event-ranking"
+      ],
+      "data": "Small synthetic images with a lighting shortcut and two capture sites",
+      "dataShapes": [
+        "images"
+      ],
+      "model": "Pixel baseline against pooled local-contrast features",
+      "modelFamilies": [
+        "linear"
+      ],
+      "serving": "Offline scripts only: no camera ingest, edge runtime or latency path",
+      "integrations": "None. Runs locally on generated images",
+      "vocabulary": "Images, items, defects, sites and lighting"
+    },
+    "reusable": [
+      "Split by physical item",
+      "Shortcut and invariance tests",
+      "Site-shift threshold carry-over"
+    ],
+    "cannotRepresent": [
+      "Object detection and segmentation",
+      "Video and temporal models",
+      "Pretrained deep backbones",
+      "Optical character recognition"
+    ]
+  },
+  "bandit": {
+    "problemTypes": [
+      "off-policy-decisioning"
+    ],
+    "adaptable": {
+      "uplift-causal-effect": [
+        "Replace the single reward with the use case's outcome and treat the action as treatment versus control, with the assignment probability logged",
+        "Replace the policy-value estimators with an uplift learner and score with Qini or AUUC on a randomised holdout, keeping the inverse-propensity check as a sanity test",
+        "Keep the logged propensities and the estimator-error measurement against a known true effect"
+      ]
+    },
+    "provides": {
+      "label": "The reward is 1 if the chosen action succeeded and 0 otherwise; only the chosen action's reward is observed and its selection probability is logged",
+      "validation": "Logged decisions with propensities; offline estimators compared with the hidden true value of each policy",
+      "metrics": "Policy value and the error of four off-policy estimators",
+      "metricFamilies": [
+        "ope"
+      ],
+      "data": "Logged context, action, propensity and reward rows",
+      "dataShapes": [
+        "logged-decisions"
+      ],
+      "model": "A reward model and a learned policy against the best constant action",
+      "modelFamilies": [
+        "linear",
+        "policy"
+      ],
+      "serving": "Offline scripts only: no decision service, exploration controller or live experiment",
+      "integrations": "None. Runs locally on synthetic logged decisions",
+      "vocabulary": "Contexts, actions, propensities, rewards and policies"
+    },
+    "reusable": [
+      "Logging of action and propensity",
+      "Inverse-propensity and doubly-robust estimators",
+      "Comparison of estimates with a known true value"
+    ],
+    "cannotRepresent": [
+      "Simulator-based reinforcement learning",
+      "Multi-step sequential decisions",
+      "Continuous-action control",
+      "Uplift models and Qini evaluation"
+    ]
+  },
+  "optimize": {
+    "problemTypes": [
+      "optimisation-allocation"
+    ],
+    "adaptable": {},
+    "provides": {
+      "label": "The quantity to minimise is realised total cost; predictions are inputs only and the plan is scored against true costs, with the optimal plan under true costs as the reference",
+      "validation": "Instances with known true costs; regret against the oracle and the gap between promised and realised cost",
+      "metrics": "Realised cost, regret against the oracle and optimism of the promise",
+      "metricFamilies": [
+        "optimisation"
+      ],
+      "data": "Assignment instances with predicted costs, uncertainty and hard constraints",
+      "dataShapes": [
+        "instances"
+      ],
+      "model": "Greedy assignment, optimal assignment on predictions and optimal assignment with an uncertainty penalty",
+      "modelFamilies": [
+        "solver"
+      ],
+      "serving": "Offline scripts only: no scheduled planner, re-optimisation trigger or plan publication",
+      "integrations": "None. Runs locally on synthetic assignment instances",
+      "vocabulary": "Assignments, costs, constraints and plans"
+    },
+    "reusable": [
+      "Realised-cost scoring against an oracle",
+      "Uncertainty penalty on predicted costs",
+      "Promised-versus-realised optimism check",
+      "Plan-churn measurement"
+    ],
+    "cannotRepresent": [
+      "Vehicle routing with time windows",
+      "Scheduling with precedence constraints",
+      "Bin packing and multi-resource planning",
+      "Simulation of a network over time"
+    ],
+    "caveats": [
+      {
+        "pattern": "routing|route|vehicle|time window|dispatch|last mile",
+        "dimension": "model",
+        "change": "Add route and time-window structure: the kit assigns items one at a time and has no routes, sequences or travel times. Replace the assignment solver with a routing solver and score tours, not assignments"
+      },
+      {
+        "pattern": "schedul|timetab|sequenc|wave|production|yard|stack|cross dock|slotting",
+        "dimension": "model",
+        "change": "Add the scheduling structure the kit does not model (time slots, precedence, capacity over time) and score the schedule against true durations"
+      },
+      {
+        "pattern": "packing|consolidat|multi echelon|inventory|safety stock|replenish|promising|atp",
+        "dimension": "model",
+        "change": "Add the multi-period, multi-resource structure (inventory, packing or network flow) that the kit's one-shot assignment lacks"
+      }
+    ]
+  },
+  "llm-rag": {
+    "problemTypes": [
+      "grounded-qa"
+    ],
+    "adaptable": {
+      "grounded-generation": [
+        "Replace answer-value correctness with the use case's output measure (for example faithfulness, unsupported-statement rate or figure exact match) and a golden set of the documents it must produce",
+        "Keep the verifier that requires the cited passage to support each claim, and extend it to every generated statement rather than a single value",
+        "Add the output template or structure the use case requires, with review before release"
+      ]
+    },
+    "provides": {
+      "label": "Each golden question carries the expected value for the right document version, or none when the documents never state it; correct means the expected value or an abstention",
+      "validation": "Golden set with unanswerable questions held out by product, and a verifier that checks the cited passage",
+      "metrics": "Answer accuracy, hallucination on unanswerable questions and abstention rate",
+      "metricFamilies": [
+        "grounding"
+      ],
+      "data": "A versioned document collection with chunks, source types and intents",
+      "dataShapes": [
+        "documents"
+      ],
+      "model": "Hybrid retrieval, a source filter, an intent check and a verifier, with a deterministic stand-in for the language model",
+      "modelFamilies": [
+        "retrieval-llm"
+      ],
+      "serving": "Offline harness only: no document ingestion, vector store, model gateway or answer API",
+      "integrations": "None. A deterministic stand-in replaces the model; no provider or index is connected",
+      "vocabulary": "Documents, versions, passages, questions and citations"
+    },
+    "reusable": [
+      "Versioned chunking and hybrid retrieval",
+      "Citation verifier",
+      "Abstention policy",
+      "Golden set with unanswerable questions"
+    ],
+    "cannotRepresent": [
+      "Free-form generation quality",
+      "Multi-turn dialogue",
+      "Tool use or actions",
+      "A real language model"
+    ]
+  },
+  "llm-agent": {
+    "problemTypes": [
+      "agentic-read-only"
+    ],
+    "adaptable": {
+      "agentic-write-actions": [
+        "Replace the scripted planner with a model-driven planner behind the same typed tool interface and step budget",
+        "Add the product operations the use case must perform as typed write tools, authorised on behalf of the signed-in user with that user's own permissions, and keep the approval token in front of every write",
+        "Add execution verification: read the system state back after each write, confirm the intended change happened, and reverse it (or compensate) when it did not",
+        "Extend the replay set with write scenarios, partial failures and permission denials, and keep the planted-instruction tests"
+      ]
+    },
+    "provides": {
+      "label": "Every case carries a verdict and the evidence lines that decide it; correct means the verdict matches, every claim cites a real supporting line and the agent escalates when the deciding lines are unavailable",
+      "validation": "Replay set with planted instructions, tool outages and missing evidence; permission and approval tests",
+      "metrics": "Verdict accuracy, injection success, unsafe actions and honest escalation",
+      "metricFamilies": [
+        "agent-task"
+      ],
+      "data": "Replayed investigation cases with evidence lines and untrusted fields",
+      "dataShapes": [
+        "cases"
+      ],
+      "model": "A scripted planner with typed read-only tools, an approval gate for writes and a claim verifier, with a deterministic stand-in for the language model",
+      "modelFamilies": [
+        "retrieval-llm"
+      ],
+      "serving": "Offline harness only: no agent runtime, queue, identity or tool gateway",
+      "integrations": "None. Read-only tools over synthetic cases; the approval token is simulated and no real system is written to",
+      "vocabulary": "Cases, evidence lines, tools, verdicts, approvals and indicators"
+    },
+    "reusable": [
+      "Typed tool interface and step budget",
+      "Planted-instruction (injection) tests",
+      "Approval token in front of writes",
+      "Claim verifier and honest escalation"
+    ],
+    "cannotRepresent": [
+      "A real model-driven planner",
+      "User-authorised calls to product APIs",
+      "Execution verification and reversal of writes",
+      "Long-running or multi-agent coordination"
+    ]
+  }
+}

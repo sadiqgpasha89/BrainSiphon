@@ -1,0 +1,50 @@
+{
+ "slug": "fintech/loan-underwriting-copilot",
+ "title": "Loan Underwriting Copilot",
+ "domain": "fintech",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 17891,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Spread reconciliation delta",
+   "definition": "assets minus liabilities minus equity from extracted values",
+   "asOfRule": "Run after normalising units and currency"
+  },
+  {
+   "name": "DSCR computation trace",
+   "definition": "formula plus cell references used",
+   "asOfRule": "Never let the LLM do arithmetic, use a calculator tool"
+  },
+  {
+   "name": "Covenant clause retrieval",
+   "definition": "clause text matched to covenant taxonomy",
+   "asOfRule": "Pin to the executed version of the agreement"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Loan Underwriting Copilot\": Reduce commercial loan underwriting from days to hours by extracting financials, spreading statements and drafting credit memos with evidence links. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on clean PDFs only."
+}

@@ -1,0 +1,49 @@
+{
+ "use_case": "real-estate/reit-portfolio-risk-and-allocation",
+ "engine": "regression",
+ "seed": 61961,
+ "knobs": {
+  "n": 17960,
+  "outlier_share": 0.035,
+  "drift": 0.325
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.1,
+ "results": {
+  "rows": 17960,
+  "train_rows": 12572,
+  "test_rows": 5388,
+  "baseline_ridge": {
+   "mae": 7.879663271623261,
+   "rmse": 14.004735203069856,
+   "wape": 0.14831165058558032,
+   "r2": 0.4035859474993623
+  },
+  "challenger_gbm": {
+   "mae": 5.696942398466613,
+   "rmse": 12.359779247896753,
+   "wape": 0.10722830421578394,
+   "r2": 0.5354638756089006
+  },
+  "mae_gain_vs_baseline": 0.277006871729811,
+  "interval_80_coverage": 0.6544172234595397,
+  "interval_80_mean_width": 9.584680703647464,
+  "segment_mae": {
+   "0": 5.502720406055458,
+   "1": 6.097670423071369,
+   "2": 5.020827774215202,
+   "3": 7.197909308540005
+  },
+  "worst_segment_vs_overall": 1.263468858396285,
+  "leaky_feature_rmse": 1.4808796647463562,
+  "honest_rmse": 12.359779247896753,
+  "random_split_mae": 5.217983002669198,
+  "chronological_mae": 5.696942398466613
+ }
+}

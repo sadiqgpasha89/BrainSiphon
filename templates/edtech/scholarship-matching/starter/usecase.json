@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/scholarship-matching",
+ "title": "Scholarship & Financial Aid Matching",
+ "domain": "edtech",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 88399,
+ "knobs": {
+  "n_sessions": 31060,
+  "bot_share": 0.134
+ },
+ "blueprintSignals": [
+  {
+   "name": "Eligibility rule satisfaction",
+   "definition": "structured criteria match",
+   "asOfRule": "Parsing"
+  },
+  {
+   "name": "Historical win likelihood",
+   "definition": "past winners profile",
+   "asOfRule": "Bias"
+  },
+  {
+   "name": "Deadline proximity",
+   "definition": "days to deadline",
+   "asOfRule": "Calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Scholarship & Financial Aid Matching\": Match students to scholarships they are eligible for and likely to win, improving access and application quality. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on historical winners with bias."
+}

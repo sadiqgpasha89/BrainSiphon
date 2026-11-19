@@ -1,0 +1,49 @@
+{
+ "use_case": "adtech/floor-price-optimization-publisher",
+ "engine": "control",
+ "seed": 59176,
+ "knobs": {
+  "days": 52
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "days": 52,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.323639700833663,
+   "end_of_day_underdelivery_pct": 4.5388747265719545,
+   "overshoot_max_pct": 7.349973540164134,
+   "oscillation": 0.0,
+   "hit_cap": 0.5384615384615384
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.5304486340764116,
+   "end_of_day_underdelivery_pct": 0.8894405152485081,
+   "overshoot_max_pct": 5.529283232448463,
+   "oscillation": 0.01130755524474853,
+   "hit_cap": 0.40384615384615385
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.0448118348968896,
+   "end_of_day_underdelivery_pct": 0.0377540394367862,
+   "overshoot_max_pct": 1.8141751683860379,
+   "oscillation": 0.09012588065530056,
+   "hit_cap": 0.4807692307692308
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.216258064589525,
+   "end_of_day_underdelivery_pct": 1.1490368475734472,
+   "overshoot_max_pct": 13.223749951177751,
+   "oscillation": 0.017887424360419492,
+   "hit_cap": 0.7115384615384616
+  },
+  "rmse_reduction_vs_open_loop": 0.5998430091229241
+ }
+}

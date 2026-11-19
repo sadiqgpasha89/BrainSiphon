@@ -1,0 +1,42 @@
+{
+ "use_case": "edtech/question-generation-llm",
+ "engine": "generative",
+ "seed": 4069,
+ "knobs": {
+  "n": 228
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "golden_items": 228,
+  "v1_pass_rate_strict_judge": 0.18421052631578946,
+  "v1_pass_rate_fuzzy_judge": 0.4868421052631579,
+  "v2_pass_rate_fuzzy_judge": 0.5350877192982456,
+  "v1_pass_rate_ci95": [
+   0.42532894736842103,
+   0.5614035087719298
+  ],
+  "v2_minus_v1": 0.04824561403508772,
+  "v2_minus_v1_ci95": [
+   -0.05263157894736842,
+   0.14473684210526316
+  ],
+  "judge_agreement_kappa_v1": 0.384507042253521,
+  "judge_disagreement_share_v1": 0.3026315789473684,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4868421052631579,
+   "date_correct": 0.11403508771929824,
+   "within_length": 0.013157894736842105,
+   "no_forbidden_claims": 0.04824561403508772
+  },
+  "ci_width_at_60_items": 0.24999999999999994,
+  "ci_width_at_full_set": 0.13607456140350876
+ }
+}

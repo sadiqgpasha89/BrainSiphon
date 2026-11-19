@@ -1,0 +1,48 @@
+{
+ "slug": "edtech/oral-exam-viva-llm",
+ "title": "Oral Exam & Viva Assessment with LLMs",
+ "domain": "edtech",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 25014,
+ "knobs": {
+  "n": 286
+ },
+ "blueprintSignals": [
+  {
+   "name": "Rubric criterion evidence",
+   "definition": "transcript spans per criterion",
+   "asOfRule": "Transcript quality"
+  },
+  {
+   "name": "Follow-up depth reached",
+   "definition": "levels of probing",
+   "asOfRule": "Dialogue"
+  },
+  {
+   "name": "ASR confidence",
+   "definition": "word-level confidence",
+   "asOfRule": "Calibration"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Oral Exam & Viva Assessment with LLMs\": Conduct structured oral assessments where an AI asks follow-up questions to probe understanding, with transcripts graded by rubric and reviewed by instructors. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Calibrated on a few instructors."
+}

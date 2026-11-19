@@ -1,0 +1,16 @@
+contract: retail_banking_churn_prediction_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: salary_credit_shift, type: double, nullable: false }
+    - { name: digital_engagement_decay, type: double, nullable: false }
+    - { name: product_depth, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

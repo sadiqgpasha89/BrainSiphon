@@ -1,0 +1,48 @@
+{
+ "slug": "fintech/financial-document-extraction-invoices",
+ "title": "Financial Document & Invoice Extraction",
+ "domain": "fintech",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 59412,
+ "knobs": {
+  "n_train": 1320
+ },
+ "blueprintSignals": [
+  {
+   "name": "Subtotal-tax-total identity",
+   "definition": "sum of lines times tax rate versus total",
+   "asOfRule": "Rounding rules per currency"
+  },
+  {
+   "name": "Vendor template memory",
+   "definition": "per-vendor field position priors",
+   "asOfRule": "Template drift when vendors redesign"
+  },
+  {
+   "name": "Field confidence margin",
+   "definition": "calibrated probability of top candidate versus runner-up",
+   "asOfRule": "Calibrate per field type"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Financial Document & Invoice Extraction\": Extract line items, totals and tax from invoices, receipts and statements with 98% field accuracy and straight-through processing above 70%. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test set from the same vendors as train."
+}

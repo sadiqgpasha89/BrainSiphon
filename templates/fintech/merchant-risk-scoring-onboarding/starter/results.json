@@ -1,0 +1,34 @@
+{
+ "use_case": "fintech/merchant-risk-scoring-onboarding",
+ "engine": "tabular",
+ "seed": 49997,
+ "knobs": {
+  "n_entities": 2340,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.6,
+ "results": {
+  "rows": 176681,
+  "positive_rate": 0.00365064721164132,
+  "test_rows": 58849,
+  "test_positive_rate": 0.0038233444918350356,
+  "baseline_lr": {
+   "pr_auc": 0.7975856069137701,
+   "recall_at_0.5pct_fpr": 0.8488888888888889,
+   "brier": 0.0013969297350371966
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8143478989421492,
+   "recall_at_0.5pct_fpr": 0.8222222222222222,
+   "brier": 0.0011809539639809712
+  }
+ }
+}

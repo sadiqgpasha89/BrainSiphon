@@ -1,0 +1,13 @@
+# The evidence an investigation may collect, and the tool that provides each item. This is the agent's "feature view": a
+# tool not listed in configs/pipeline.yaml -> agent.tools cannot be called, and its output is validated before use.
+entities:
+  case: {key: case_id, description: One alert under investigation}
+views:
+  case_evidence:
+    description: Facts gathered by read-only tools during an investigation
+    owner: security-operations
+    features:
+      - {name: host, dtype: object, description: "get_host: owner, criticality, isolation state"}
+      - {name: auth_history, dtype: object, description: "auth_history: recent logins of the user with source IP, country and outcome"}
+      - {name: intel, dtype: object, description: "intel_lookup: threat-intelligence verdict for an IP or file hash"}
+      - {name: processes, dtype: object, description: "process_tree: recent processes on the host with parent, command line and hash"}

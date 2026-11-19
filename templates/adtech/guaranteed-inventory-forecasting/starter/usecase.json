@@ -1,0 +1,52 @@
+{
+ "slug": "adtech/guaranteed-inventory-forecasting",
+ "title": "Guaranteed Inventory & Delivery Forecasting",
+ "domain": "adtech",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 41809,
+ "knobs": {
+  "n_series": 288
+ },
+ "blueprintSignals": [
+  {
+   "name": "Historical impressions by placement",
+   "definition": "daily counts",
+   "asOfRule": "Cleaning"
+  },
+  {
+   "name": "Event calendar",
+   "definition": "sports and holidays",
+   "asOfRule": "Known"
+  },
+  {
+   "name": "Booked inventory so far",
+   "definition": "existing commitments",
+   "asOfRule": "Real-time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Guaranteed Inventory & Delivery Forecasting\": Forecast available impressions by audience and placement to sell guaranteed deals without under- or over-delivery. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Ignoring overlap between audiences."
+}

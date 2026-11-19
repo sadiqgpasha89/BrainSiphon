@@ -2,7 +2,7 @@
  * The site's navigation, written once. The header, the phone menu and the footer all read these lists, so a link can never be
  * present in one and missing from another, and the order a newcomer meets things in is the same everywhere.
  *
- * The rule behind the lists: a beginner sees three things first (Start here, the blueprints, the delivery guide) plus Pro.
+ * The rule behind the lists: a beginner sees three things first (Start here, the blueprints, the delivery guide) plus the worked templates.
  * Everything specialised sits one click away under "More", each with a plain-language line saying what it is.
  */
 
@@ -26,10 +26,13 @@ export const GUIDE_LINK: NavLink = {
   blurb: 'Every step from scoping to monitoring, with who does it and what it produces.',
 };
 
-export const PRO_LINK: NavLink = {
-  href: '/pro',
-  label: 'Pro',
-  blurb: 'A runnable worked template for every blueprint.',
+/** The worked template for every blueprint lives in this repository; the link goes to its folder on GitHub. */
+export const TEMPLATES_URL = 'https://github.com/sadiqgpasha89/BrainSiphon/tree/main/templates';
+
+export const TEMPLATES_LINK: NavLink = {
+  href: TEMPLATES_URL,
+  label: 'Worked templates',
+  blurb: 'A runnable worked template for every blueprint, free, in the repository.',
 };
 
 /** Specialised material, grouped under "More" so the top bar stays short. */

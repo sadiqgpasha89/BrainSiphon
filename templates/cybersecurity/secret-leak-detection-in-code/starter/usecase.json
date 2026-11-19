@@ -1,0 +1,52 @@
+{
+ "slug": "cybersecurity/secret-leak-detection-in-code",
+ "title": "Secret & Credential Leak Detection in Code",
+ "domain": "cybersecurity",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 20556,
+ "knobs": {
+  "n_docs": 6330
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pattern match for provider format",
+   "definition": "key prefix and checksum",
+   "asOfRule": "Format updates"
+  },
+  {
+   "name": "Entropy and character class",
+   "definition": "string statistics",
+   "asOfRule": "Threshold"
+  },
+  {
+   "name": "Surrounding context tokens",
+   "definition": "variable names like api_key",
+   "asOfRule": "Language"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Secret & Credential Leak Detection in Code\": Find API keys, tokens and credentials in commits and repos with high precision to prevent leaks before merge. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Positives from synthetic keys."
+}

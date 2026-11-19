@@ -1,0 +1,22 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: query_result_sampler, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: rubric_prompt_builder, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: llm_judge_ensemble, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: calibrator, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: metric_aggregator, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: anchor_set_refresh, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Release decisions matching later A/B outcomes"
+    - "Evaluation cost per experiment"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

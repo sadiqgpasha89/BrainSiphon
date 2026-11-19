@@ -1,0 +1,48 @@
+{
+ "slug": "fintech/order-execution-slippage-minimization",
+ "title": "Order Execution & Slippage Minimisation",
+ "domain": "fintech",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 72933,
+ "knobs": {
+  "days": 77
+ },
+ "blueprintSignals": [
+  {
+   "name": "Order-book imbalance",
+   "definition": "(bid depth - ask depth) / total depth at top 5 levels",
+   "asOfRule": "Snapshot at decision time"
+  },
+  {
+   "name": "Spread and depth ratio",
+   "definition": "spread over mid and depth at touch",
+   "asOfRule": "Use pre-trade quotes only"
+  },
+  {
+   "name": "Remaining-time urgency",
+   "definition": "residual quantity over remaining horizon",
+   "asOfRule": "Normalise by expected volume curve"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"Order Execution & Slippage Minimisation\": Slice large parent orders into child orders that minimise implementation shortfall against arrival price. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Simulator lacks market impact."
+}

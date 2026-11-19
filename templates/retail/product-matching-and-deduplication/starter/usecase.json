@@ -1,0 +1,53 @@
+{
+ "slug": "retail/product-matching-and-deduplication",
+ "title": "Product Matching & Deduplication",
+ "domain": "retail",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 67308,
+ "knobs": {
+  "n_clusters": 1780,
+  "hub_share": 0.086
+ },
+ "blueprintSignals": [
+  {
+   "name": "GTIN or MPN agreement",
+   "definition": "exact or normalised identifier match",
+   "asOfRule": "Validate check digits"
+  },
+  {
+   "name": "Attribute conflict flags",
+   "definition": "mismatch in size, colour, pack count",
+   "asOfRule": "Parsed attributes only"
+  },
+  {
+   "name": "Image embedding similarity",
+   "definition": "multimodal similarity",
+   "asOfRule": "Normalise backgrounds"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Product Matching & Deduplication\": Identify identical products across sellers and sources to merge listings, power price comparison and avoid catalogue bloat. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Positive pairs mined from GTIN only."
+}

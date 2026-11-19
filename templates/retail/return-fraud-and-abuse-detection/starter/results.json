@@ -1,0 +1,34 @@
+{
+ "use_case": "retail/return-fraud-and-abuse-detection",
+ "engine": "tabular",
+ "seed": 31936,
+ "knobs": {
+  "n_entities": 2290,
+  "positive_entity_rate": 0.026,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.5,
+ "results": {
+  "rows": 174268,
+  "positive_rate": 0.003632336401404733,
+  "test_rows": 58420,
+  "test_positive_rate": 0.004416295789113317,
+  "baseline_lr": {
+   "pr_auc": 0.7548609471745409,
+   "recall_at_0.5pct_fpr": 0.8604651162790697,
+   "brier": 0.002993237683553544
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8791516278591054,
+   "recall_at_0.5pct_fpr": 0.9186046511627907,
+   "brier": 0.00116485837527658
+  }
+ }
+}

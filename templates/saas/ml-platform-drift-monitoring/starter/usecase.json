@@ -1,0 +1,53 @@
+{
+ "slug": "saas/ml-platform-drift-monitoring",
+ "title": "ML Platform: Drift & Quality Monitoring",
+ "domain": "saas",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "tabular-anomaly-detection",
+ "seed": 61641,
+ "knobs": {
+  "n_series": 102,
+  "anomalies_per_series": 2.547
+ },
+ "blueprintSignals": [
+  {
+   "name": "Importance-weighted PSI",
+   "definition": "PSI weighted by feature importance",
+   "asOfRule": "Importance estimates"
+  },
+  {
+   "name": "Prediction distribution shift",
+   "definition": "score distribution change",
+   "asOfRule": "Reference window"
+  },
+  {
+   "name": "Delayed-label performance estimate",
+   "definition": "CBPE-style estimates",
+   "asOfRule": "Calibration"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"ML Platform: Drift & Quality Monitoring\": Give every deployed model automatic monitoring for data drift, prediction drift and performance with label delay awareness. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Drift without link to performance."
+}

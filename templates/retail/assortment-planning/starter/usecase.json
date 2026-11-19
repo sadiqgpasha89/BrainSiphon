@@ -1,0 +1,53 @@
+{
+ "slug": "retail/assortment-planning",
+ "title": "Assortment Planning & Space Optimisation",
+ "domain": "retail",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 90337,
+ "knobs": {
+  "n_instances": 185,
+  "noise": 0.39
+ },
+ "blueprintSignals": [
+  {
+   "name": "Substitution matrix",
+   "definition": "estimated demand transfer between SKUs",
+   "asOfRule": "Estimated from stock-out natural experiments"
+  },
+  {
+   "name": "Local demand index",
+   "definition": "category share vs chain average",
+   "asOfRule": "Normalise by store traffic"
+  },
+  {
+   "name": "Space elasticity",
+   "definition": "sales response to facings",
+   "asOfRule": "Controlled planogram tests"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Assortment Planning & Space Optimisation\": Choose which SKUs each store cluster carries to maximise margin given space limits, substitution and local demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using sales as demand when items were unavailable."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "real-estate/lease-abstraction-and-obligation-extraction",
+ "title": "Lease Abstraction & Obligation Extraction",
+ "domain": "real-estate",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 86487,
+ "knobs": {
+  "n_train": 1190
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field confidence",
+   "definition": "calibrated probability that the extracted value is correct, per field type",
+   "asOfRule": "Calibrate by field type, as dates and amounts behave differently"
+  },
+  {
+   "name": "Cross-document consistency",
+   "definition": "difference between the rent in the abstract and the rent in the rent roll",
+   "asOfRule": "The rent roll itself contains errors, so treat a mismatch as a question and not a verdict"
+  },
+  {
+   "name": "Clause type classifier",
+   "definition": "predicted clause class for each paragraph, such as rent review, break option or repair",
+   "asOfRule": "Clause wording varies between firms and jurisdictions, so test per template"
+  },
+  {
+   "name": "Amendment ordering",
+   "definition": "date order and reference chain linking each amendment to what it changes",
+   "asOfRule": "Missing pages and undated amendments break the chain and must be flagged"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Lease Abstraction & Obligation Extraction\": Read commercial leases and amendments and extract the dates, rents, options, break clauses and obligations into a structured abstract with page citations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluation on clean, modern leases hides failures on the old scans that dominate real portfolios."
+}

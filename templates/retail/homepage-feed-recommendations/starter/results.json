@@ -1,0 +1,45 @@
+{
+ "use_case": "retail/homepage-feed-recommendations",
+ "engine": "recommender",
+ "seed": 65614,
+ "knobs": {
+  "n_sessions": 36350,
+  "bot_share": 0.148
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.5,
+ "results": {
+  "train_sessions": 21618,
+  "test_sessions": 6146,
+  "popularity": {
+   "hit_rate@20": 0.07875040676863,
+   "mrr@20": 0.02413965906347873,
+   "coverage": 0.017333333333333333,
+   "sessions": 6146
+  },
+  "bag_covisit": {
+   "hit_rate@20": 0.5315652456882525,
+   "mrr@20": 0.2127445729791857,
+   "coverage": 0.9746666666666667,
+   "sessions": 6146
+  },
+  "ordered_transition": {
+   "hit_rate@20": 0.5637813211845103,
+   "mrr@20": 0.30224809690432014,
+   "coverage": 0.9853333333333333,
+   "sessions": 6146
+  },
+  "theme_aware": {
+   "hit_rate@20": 0.5660592255125285,
+   "mrr@20": 0.31046900715558523,
+   "coverage": 1.0,
+   "sessions": 6146
+  }
+ }
+}

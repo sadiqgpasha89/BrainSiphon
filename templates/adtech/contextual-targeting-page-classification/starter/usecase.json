@@ -1,0 +1,52 @@
+{
+ "slug": "adtech/contextual-targeting-page-classification",
+ "title": "Contextual Targeting & Page Classification",
+ "domain": "adtech",
+ "engine": "nlp",
+ "fit": "exact",
+ "problemType": "text-classification",
+ "seed": 10685,
+ "knobs": {
+  "n_docs": 6820
+ },
+ "blueprintSignals": [
+  {
+   "name": "Page text embedding",
+   "definition": "text encoder embedding",
+   "asOfRule": "Cleaning"
+  },
+  {
+   "name": "Entity and keyword extraction",
+   "definition": "NER and keyphrases",
+   "asOfRule": "Quality"
+  },
+  {
+   "name": "Title and URL tokens",
+   "definition": "URL path tokens",
+   "asOfRule": "Regex"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Contextual Targeting & Page Classification\": Classify page and video content into IAB topics and sentiment in real time to target ads without user identifiers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on clean article pages only."
+}

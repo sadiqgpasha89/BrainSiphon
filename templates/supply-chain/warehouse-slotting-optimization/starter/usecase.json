@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/warehouse-slotting-optimization",
+ "title": "Warehouse Slotting Optimisation",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 74193,
+ "knobs": {
+  "n_instances": 116,
+  "noise": 0.381
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pick frequency forecast",
+   "definition": "expected picks per SKU next 4 weeks",
+   "asOfRule": "Forecast as-of"
+  },
+  {
+   "name": "Co-pick affinity matrix",
+   "definition": "lift of SKU pairs in orders",
+   "asOfRule": "Matured orders"
+  },
+  {
+   "name": "Cube and weight attributes",
+   "definition": "handling constraints",
+   "asOfRule": "Master data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Warehouse Slotting Optimisation\": Assign SKUs to pick locations to cut travel time and congestion, adapting to demand and affinity patterns. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Travel savings ignoring congestion."
+}

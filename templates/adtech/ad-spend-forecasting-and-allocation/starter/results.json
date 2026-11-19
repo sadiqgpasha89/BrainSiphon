@@ -1,0 +1,45 @@
+{
+ "use_case": "adtech/ad-spend-forecasting-and-allocation",
+ "engine": "optimize",
+ "seed": 56951,
+ "knobs": {
+  "n_instances": 186,
+  "noise": 0.332
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "instances": 186,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 127.00485368683783,
+   "promised_cost": 97.36294100839658,
+   "optimism_gap_pct": 30.44475893131139,
+   "regret_vs_oracle_pct": 38.14265689723498
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 111.77888519100193,
+   "promised_cost": 78.2137680878981,
+   "optimism_gap_pct": 42.914588983083796,
+   "regret_vs_oracle_pct": 21.581433599149726
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 107.6876630930924,
+   "promised_cost": 80.36790414894021,
+   "optimism_gap_pct": 33.99336990737296,
+   "regret_vs_oracle_pct": 17.131428153251754
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.93746272110387,
+   "promised_cost": 97.28335649486122,
+   "optimism_gap_pct": -5.495178174737154,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

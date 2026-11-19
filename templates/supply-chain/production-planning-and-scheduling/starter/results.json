@@ -1,0 +1,45 @@
+{
+ "use_case": "supply-chain/production-planning-and-scheduling",
+ "engine": "optimize",
+ "seed": 41937,
+ "knobs": {
+  "n_instances": 119,
+  "noise": 0.284
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.5,
+ "results": {
+  "instances": 119,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 121.77944647534602,
+   "promised_cost": 99.10341790798726,
+   "optimism_gap_pct": 22.88117710371236,
+   "regret_vs_oracle_pct": 32.92806118109923
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 107.01440991364706,
+   "promised_cost": 81.52658456221032,
+   "optimism_gap_pct": 31.263207563893225,
+   "regret_vs_oracle_pct": 16.811321121749163
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 104.13226138834207,
+   "promised_cost": 83.28211304696785,
+   "optimism_gap_pct": 25.03556595594009,
+   "regret_vs_oracle_pct": 13.665318848021323
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.6130464804083,
+   "promised_cost": 95.37452914880078,
+   "optimism_gap_pct": -3.943906934024189,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

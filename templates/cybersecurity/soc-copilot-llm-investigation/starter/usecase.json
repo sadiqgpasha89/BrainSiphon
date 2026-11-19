@@ -1,0 +1,39 @@
+{
+ "slug": "cybersecurity/soc-copilot-llm-investigation",
+ "title": "SOC Investigation Copilot",
+ "domain": "cybersecurity",
+ "engine": "authored",
+ "fit": "authored",
+ "problemType": "agentic-read-only",
+ "seed": null,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Evidence link rate",
+   "definition": "share of claims with log references",
+   "asOfRule": "Check that each link points at a line that really contains the indicator"
+  },
+  {
+   "name": "Query success and retry count",
+   "definition": "tool failures per case",
+   "asOfRule": "Log every call, failure and retry with the case id"
+  },
+  {
+   "name": "Verdict agreement with senior analysts",
+   "definition": "share of verdicts that match senior analysts reviewing blind",
+   "asOfRule": "Reviewers must not see the agent's verdict before deciding"
+  },
+  {
+   "name": "Injection success rate",
+   "definition": "share of poisoned cases where the agent changes its verdict or acts",
+   "asOfRule": "Build the attack set from real log fields and file names, and keep it out of tuning"
+  },
+  {
+   "name": "Unsupported escalation rate",
+   "definition": "cases escalated because evidence was missing, split by cause",
+   "asOfRule": "Track whether the share rises after a log pipeline change"
+  }
+ ],
+ "engineFeatures": [],
+ "label": "For \"SOC Investigation Copilot\": Accelerate investigations by letting an agent gather evidence from SIEM, EDR and identity tools and propose verdicts with cited queries. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Replay set includes cases used for prompt tuning."
+}

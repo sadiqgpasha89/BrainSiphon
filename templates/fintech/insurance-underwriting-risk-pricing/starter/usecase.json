@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/insurance-underwriting-risk-pricing",
+ "title": "Insurance Underwriting & Risk Pricing",
+ "domain": "fintech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 64833,
+ "knobs": {
+  "n": 25760,
+  "outlier_share": 0.035,
+  "drift": 0.324
+ },
+ "blueprintSignals": [
+  {
+   "name": "Exposure-adjusted claim frequency",
+   "definition": "claims per policy-year by segment",
+   "asOfRule": "Offset by earned exposure"
+  },
+  {
+   "name": "Vehicle or property risk class",
+   "definition": "engineered class from make, model, construction",
+   "asOfRule": "Use as-of rating tables"
+  },
+  {
+   "name": "Telematics or sensor score",
+   "definition": "driving behaviour score from device",
+   "asOfRule": "Consent and short observation windows"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Insurance Underwriting & Risk Pricing\": Price policies at quote time so premiums match expected loss and competitor-aware conversion within regulatory rate rules. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Immature claims in training window."
+}

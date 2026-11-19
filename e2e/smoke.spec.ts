@@ -403,7 +403,7 @@ test('a newcomer sees a short header: two links, two menus and Pro, with one pri
   // the bar holds Start here and Delivery guide, plus the Blueprints and More menus; everything else is inside a menu
   await expect(main.getByRole('link')).toHaveCount(2);
   await expect(main.getByRole('button')).toHaveCount(2);
-  await expect(page.getByTestId('nav-pro')).toBeVisible();
+  await expect(page.getByTestId('nav-templates')).toBeVisible();
   // the home page has one primary button, and a search box that opens the palette
   await expect(page.locator('main .btn-primary')).toHaveCount(1);
   await page.getByTestId('hero-search').click();
@@ -418,7 +418,7 @@ test('on a phone the header becomes one menu that carries every destination, wit
   await expect(page.getByRole('navigation', { name: 'Main', exact: true })).toBeHidden();
   await page.getByTestId('nav-menu').click();
   const menu = page.getByRole('navigation', { name: 'Mobile', exact: true });
-  for (const name of ['Start here', 'Delivery guide', 'Pro', 'FinTech', 'Real Estate', 'Patterns', 'About']) {
+  for (const name of ['Start here', 'Delivery guide', 'Worked templates', 'FinTech', 'Real Estate', 'Patterns', 'About']) {
     await expect(menu.getByRole('link', { name: new RegExp(`^${name}`) }).first()).toBeVisible();
   }
   await page.keyboard.press('Escape');
@@ -689,7 +689,7 @@ test('every blueprint carries a five-level maturity scorecard with evidence and 
   await expect(page.locator('#feasibility-warnings')).toContainText('Recommended remediation');
 });
 
-test('reference implementations page shows one free system, describes three Pro systems and says what is not covered', async ({
+test('reference implementations page shows one free system, describes three more systems in the repository and says what is not covered', async ({
   page,
 }) => {
   await page.goto('/implementations');
@@ -698,8 +698,8 @@ test('reference implementations page shows one free system, describes three Pro 
   for (const dir of ['realtime-decisioning', 'batch-forecasting', 'rag-assistant', 'agentic-workflow']) {
     await expect(list).toContainText(dir);
   }
-  await expect(page.getByTestId('implementation-pro')).toHaveCount(3);
-  await expect(page.getByTestId('implementation-pro').first()).toContainText('Pro');
+  await expect(page.getByTestId('implementation-repo')).toHaveCount(3);
+  await expect(page.getByTestId('implementation-repo').first()).toContainText('In repo');
   const coverage = page.getByTestId('implementations-coverage');
   await expect(coverage.getByRole('row')).toHaveCount(10); // header + nine archetypes
   await expect(coverage).toContainText('No reference implementation yet');
@@ -803,38 +803,20 @@ test('diagrams can be redrawn on AWS, Azure, GCP and OpenStack, and the choice i
   await expect(hld.getByTestId('diagram').first()).toBeVisible();
 });
 
-test('freemium: one worked example is free, every other use case shows what Pro adds and publishes no worked example', async ({
+test('one open site: every use case shows its worked example and links to its template in the repository', async ({
   page,
 }) => {
-  // the free worked use case keeps its worked example and has no lock
   await page.goto('/fintech/real-time-card-upi-fraud-detection');
-  await expect(page.getByTestId('pro-locked-example')).toHaveCount(0);
   await expect(page.locator('#pb-example')).toContainText('Outcome');
+  await expect(page.locator('#pb-example a[href*="/templates/fintech/real-time-card-upi-fraud-detection"]')).toHaveCount(1);
 
-  // any other use case: a locked panel in the worked-example slot, with a way to ask for or buy Pro
+  // any other use case shows its worked example too, with a link to its own template folder
   await page.goto('/saas/in-app-ai-copilot');
-  const lock = page.getByTestId('pro-locked-example');
-  await expect(lock).toBeVisible();
-  await expect(lock).toContainText('BrainSiphon Pro');
-  await expect(lock).toContainText('WORKED_EXAMPLE.md');
-  await expect(lock.getByTestId('pro-cta')).toHaveAttribute('href', /^(mailto:|https:)/);
-  await expect(page.locator('#pb-example')).not.toContainText('Outcome.');
+  await expect(page.locator('#pb-example')).toContainText('Outcome');
+  await expect(page.locator('#pb-example a[href*="/templates/saas/in-app-ai-copilot"]')).toHaveCount(1);
 
-  // nothing leaks through the Markdown export either
+  // the Markdown export carries the worked example as well
   const md = await (await page.request.get('/saas/in-app-ai-copilot.md')).text();
-  expect(md).toContain('/pro');
-  expect(md).not.toContain('*Basis: ');
-  const free = await (await page.request.get('/fintech/real-time-card-upi-fraud-detection.md')).text();
-  expect(free).toContain('*Basis: ');
-
-  // the Pro page says what is in it, what stays free and what it costs
-  await page.goto('/pro');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('500');
-  await expect(page.getByTestId('pro-plans').locator(':scope > div')).toHaveCount(2);
-  await expect(page.getByTestId('pro-compare')).toContainText('card and UPI fraud');
-  await expect(page.getByTestId('pro-steps').getByRole('listitem')).toHaveCount(3);
-  // the engine list is reference detail, so it opens on request
-  await page.getByTestId('pro-engines-toggle').click();
-  await expect(page.getByTestId('pro-engines').getByRole('listitem')).toHaveCount(20);
-  await expect(page.getByTestId('pro-page')).toContainText('What a worked template is not');
+  expect(md).toContain('### 5. Worked example');
+  expect(md).toContain('*Basis: ');
 });

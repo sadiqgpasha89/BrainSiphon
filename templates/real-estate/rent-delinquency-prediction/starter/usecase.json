@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/rent-delinquency-prediction",
+ "title": "Rent Delinquency Prediction",
+ "domain": "real-estate",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 64706,
+ "knobs": {
+  "n_entities": 2040,
+  "positive_entity_rate": 0.039,
+  "n_flash_sales": 6
+ },
+ "blueprintSignals": [
+  {
+   "name": "Payment timing drift",
+   "definition": "change in days between the due date and payment over the last 4 months",
+   "asOfRule": "Autopay hides it, so analyse autopay tenants through a different signal"
+  },
+  {
+   "name": "Portal activity",
+   "definition": "visits to the payment page without a payment in the 10 days before the due date",
+   "asOfRule": "Noisy, and depends on how often tenants log in"
+  },
+  {
+   "name": "Rent burden change",
+   "definition": "percentage rent increase minus any change in verified income",
+   "asOfRule": "Income data are often missing, so mark unknown explicitly"
+  },
+  {
+   "name": "Maintenance disputes",
+   "definition": "count of open maintenance complaints older than 14 days",
+   "asOfRule": "Logging is inconsistent, so use only closed-loop ticket data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Rent Delinquency Prediction\": Predict which tenants will miss rent in the next month so property managers can reach out early with payment plans. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Outreach changes outcomes, so a tenant helped by a plan looks like a false alarm."
+}

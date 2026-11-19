@@ -1,0 +1,55 @@
+{
+ "slug": "bfsi/credit-committee-memo-copilot",
+ "title": "Credit Committee Memo Drafting Copilot",
+ "domain": "bfsi",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 35103,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Citation coverage",
+   "definition": "share of sentences with at least one valid source link",
+   "asOfRule": "Links must be checked against the retrieved text, not just present"
+  },
+  {
+   "name": "Figure match rate",
+   "definition": "share of numbers in the draft equal to the spreading system value",
+   "asOfRule": "Rounding rules differ by section"
+  },
+  {
+   "name": "Section completeness",
+   "definition": "required template sections filled versus required",
+   "asOfRule": "A filled section can still be empty of substance"
+  },
+  {
+   "name": "Analyst edit distance",
+   "definition": "tokens changed by the analyst before sign-off",
+   "asOfRule": "Low distance can mean rubber-stamping, review a sample"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Credit Committee Memo Drafting Copilot\": Draft the credit memo for a corporate facility from the bank's own sources, with every number and claim cited, so analysts spend their time on judgment. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on memos the retriever has seen inflates grounding."
+}

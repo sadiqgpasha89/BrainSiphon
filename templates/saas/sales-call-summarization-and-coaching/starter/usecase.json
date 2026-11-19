@@ -1,0 +1,50 @@
+{
+ "slug": "saas/sales-call-summarization-and-coaching",
+ "title": "Sales Call Summarisation & Coaching",
+ "domain": "saas",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 63688,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Evidence-linked extraction accuracy",
+   "definition": "field accuracy with spans",
+   "asOfRule": "Annotations"
+  },
+  {
+   "name": "Question and objection patterns",
+   "definition": "classified moments",
+   "asOfRule": "Taxonomy"
+  },
+  {
+   "name": "Next-step commitment detection",
+   "definition": "commitments extracted",
+   "asOfRule": "Extraction"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Sales Call Summarisation & Coaching\": Transcribe calls, extract next steps, objections and competitor mentions and deliver coaching insights, writing back to CRM. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating summaries not field accuracy."
+}

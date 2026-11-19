@@ -1,0 +1,53 @@
+{
+ "slug": "retail/customer-churn-and-repurchase-prediction",
+ "title": "Customer Repurchase & Churn Prediction",
+ "domain": "retail",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 56712,
+ "knobs": {
+  "n": 9200,
+  "dropout": 0.211
+ },
+ "blueprintSignals": [
+  {
+   "name": "Recency over expected interval",
+   "definition": "days since last order divided by personal median interval",
+   "asOfRule": "Median from prior orders"
+  },
+  {
+   "name": "Category mix breadth",
+   "definition": "number of categories purchased",
+   "asOfRule": "Cumulative to date"
+  },
+  {
+   "name": "Return and complaint ratio",
+   "definition": "returns plus complaints over orders",
+   "asOfRule": "Use settled events"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Customer Repurchase & Churn Prediction\": Predict who will order again in the next 30/60/90 days to time retention actions and acquisition value estimates. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Random split mixing customer periods."
+}

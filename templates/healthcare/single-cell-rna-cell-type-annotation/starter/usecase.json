@@ -1,0 +1,54 @@
+{
+ "slug": "healthcare/single-cell-rna-cell-type-annotation",
+ "title": "Single-Cell RNA Cell-Type Annotation",
+ "domain": "healthcare",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 50530,
+ "knobs": {
+  "n": 11410,
+  "label_noise": 0.084,
+  "dup_share": 0.328
+ },
+ "blueprintSignals": [
+  {
+   "name": "Highly variable gene set",
+   "definition": "selected by dispersion across batches",
+   "asOfRule": "Fix set at training"
+  },
+  {
+   "name": "Latent embedding from scVI-like model",
+   "definition": "batch-corrected embedding",
+   "asOfRule": "Seed variance"
+  },
+  {
+   "name": "Marker gene scores",
+   "definition": "known marker panel scores",
+   "asOfRule": "Curated list version"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Single-Cell RNA Cell-Type Annotation\": Annotate millions of cells with cell types automatically, flagging novel populations for biologists. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test batches seen in training."
+}

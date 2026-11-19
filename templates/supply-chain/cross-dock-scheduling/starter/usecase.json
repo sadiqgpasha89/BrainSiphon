@@ -1,0 +1,53 @@
+{
+ "slug": "supply-chain/cross-dock-scheduling",
+ "title": "Cross-Dock Door & Wave Scheduling",
+ "domain": "supply-chain",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 82640,
+ "knobs": {
+  "n_instances": 164,
+  "noise": 0.319
+ },
+ "blueprintSignals": [
+  {
+   "name": "Truck arrival ETA distribution",
+   "definition": "predicted arrival with uncertainty",
+   "asOfRule": "Telematics"
+  },
+  {
+   "name": "Inbound-outbound flow matrix",
+   "definition": "volume between lanes",
+   "asOfRule": "Plan"
+  },
+  {
+   "name": "Labour availability",
+   "definition": "workers per shift",
+   "asOfRule": "Roster"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Cross-Dock Door & Wave Scheduling\": Assign inbound and outbound trucks to doors and sequence handling to minimise dwell and labour in cross-dock facilities. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Planning with perfect arrival knowledge."
+}

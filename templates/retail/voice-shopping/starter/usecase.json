@@ -1,0 +1,49 @@
+{
+ "slug": "retail/voice-shopping",
+ "title": "Voice Shopping (ASR + NLU)",
+ "domain": "retail",
+ "engine": "audio",
+ "fit": "exact",
+ "problemType": "speech-audio",
+ "seed": 42400,
+ "knobs": {
+  "n_train": 1280,
+  "test_snr": 0.047
+ },
+ "blueprintSignals": [
+  {
+   "name": "Contextual biasing list",
+   "definition": "user history and catalogue entity prior",
+   "asOfRule": "Updated frequently"
+  },
+  {
+   "name": "ASR confidence by span",
+   "definition": "token-level confidence",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Reorder intent confidence",
+   "definition": "likelihood the request is a repeat purchase",
+   "asOfRule": "Order history as-of"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "log filterbank energies",
+   "meaning": "band energies, normalised per clip"
+  },
+  {
+   "feature": "raw magnitude spectrum",
+   "meaning": "gain-sensitive baseline"
+  },
+  {
+   "feature": "channel augmentation",
+   "meaning": "low-pass and noise added at training time"
+  },
+  {
+   "feature": "word error rate",
+   "meaning": "edit distance over reference words"
+  }
+ ],
+ "label": "For \"Voice Shopping (ASR + NLU)\": Understand spoken shopping requests, resolve products and handle reorders reliably across accents and noisy environments. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test audio recorded in quiet rooms."
+}

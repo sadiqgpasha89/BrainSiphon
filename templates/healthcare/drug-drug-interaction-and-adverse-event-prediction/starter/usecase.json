@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/drug-drug-interaction-and-adverse-event-prediction",
+ "title": "Drug-Drug Interaction & Adverse-Event Prediction",
+ "domain": "healthcare",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 63191,
+ "knobs": {
+  "n_clusters": 1890,
+  "hub_share": 0.139
+ },
+ "blueprintSignals": [
+  {
+   "name": "Interaction knowledge-graph embedding",
+   "definition": "link-prediction score between drugs",
+   "asOfRule": "Training on known pairs only"
+  },
+  {
+   "name": "Renal and hepatic function context",
+   "definition": "eGFR and liver labs",
+   "asOfRule": "Latest result before order"
+  },
+  {
+   "name": "Polypharmacy count",
+   "definition": "number of concurrent active meds",
+   "asOfRule": "Active medication list"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Drug-Drug Interaction & Adverse-Event Prediction\": Warn prescribers of clinically significant interactions and predicted adverse events in real time while minimising alert fatigue. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Held-out pairs share drugs with train pairs."
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "bfsi/fund-nav-break-detection",
+ "engine": "tabular",
+ "seed": 10421,
+ "knobs": {
+  "n_entities": 2990,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "rows": 223998,
+  "positive_rate": 0.0036473539942320915,
+  "test_rows": 74879,
+  "test_positive_rate": 0.002403878256921166,
+  "baseline_lr": {
+   "pr_auc": 0.5172575847497246,
+   "recall_at_0.5pct_fpr": 0.5833333333333334,
+   "brier": 0.0021296619206984655
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.5734029347117822,
+   "recall_at_0.5pct_fpr": 0.6666666666666666,
+   "brier": 0.001412823754207379
+  }
+ }
+}

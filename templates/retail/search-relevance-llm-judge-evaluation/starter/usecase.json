@@ -1,0 +1,48 @@
+{
+ "slug": "retail/search-relevance-llm-judge-evaluation",
+ "title": "Search Relevance Evaluation with LLM Judges",
+ "domain": "retail",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 84915,
+ "knobs": {
+  "n": 265
+ },
+ "blueprintSignals": [
+  {
+   "name": "Judge-human agreement",
+   "definition": "Cohen's kappa on anchor set",
+   "asOfRule": "Refresh anchors quarterly"
+  },
+  {
+   "name": "Rubric attribute coverage",
+   "definition": "fraction of query attributes verified",
+   "asOfRule": "Parse attributes deterministically"
+  },
+  {
+   "name": "Inter-judge variance",
+   "definition": "disagreement across prompts and seeds",
+   "asOfRule": "Sampling at fixed temperature"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Search Relevance Evaluation with LLM Judges\": Replace expensive human relevance labelling with calibrated LLM judges to evaluate ranking changes daily at scale. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Judge and ranker share a base model."
+}

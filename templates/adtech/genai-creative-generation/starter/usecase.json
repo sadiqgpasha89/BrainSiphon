@@ -1,0 +1,48 @@
+{
+ "slug": "adtech/genai-creative-generation",
+ "title": "GenAI Ad Creative Generation",
+ "domain": "adtech",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 64501,
+ "knobs": {
+  "n": 266
+ },
+ "blueprintSignals": [
+  {
+   "name": "Predicted CTR of creative",
+   "definition": "performance model score",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Policy classifier score",
+   "definition": "policy violation probability",
+   "asOfRule": "Taxonomy"
+  },
+  {
+   "name": "Brand-similarity score",
+   "definition": "embedding similarity to brand corpus",
+   "asOfRule": "Corpus"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"GenAI Ad Creative Generation\": Generate on-brand headlines, copy and image variants at scale and filter them by predicted performance and policy. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Predicted CTR trained on human-made creatives."
+}

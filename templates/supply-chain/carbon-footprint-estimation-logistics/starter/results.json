@@ -1,0 +1,49 @@
+{
+ "use_case": "supply-chain/carbon-footprint-estimation-logistics",
+ "engine": "regression",
+ "seed": 80962,
+ "knobs": {
+  "n": 16160,
+  "outlier_share": 0.012,
+  "drift": 0.271
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "rows": 16160,
+  "train_rows": 11312,
+  "test_rows": 4848,
+  "baseline_ridge": {
+   "mae": 6.661757158111545,
+   "rmse": 10.449394026759624,
+   "wape": 0.12642765756781071,
+   "r2": 0.5361877433203036
+  },
+  "challenger_gbm": {
+   "mae": 4.231376064444464,
+   "rmse": 8.031783632729569,
+   "wape": 0.08030358228606835,
+   "r2": 0.7259788968377512
+  },
+  "mae_gain_vs_baseline": 0.36482583138110636,
+  "interval_80_coverage": 0.6555280528052805,
+  "interval_80_mean_width": 8.62388939018885,
+  "segment_mae": {
+   "0": 4.285795658447799,
+   "1": 4.057909451987631,
+   "2": 3.7795413585831117,
+   "3": 6.332633632482868
+  },
+  "worst_segment_vs_overall": 1.4965896521689281,
+  "leaky_feature_rmse": 1.5639894434970354,
+  "honest_rmse": 8.031783632729569,
+  "random_split_mae": 3.745388059396783,
+  "chronological_mae": 4.231376064444464
+ }
+}

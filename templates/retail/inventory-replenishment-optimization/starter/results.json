@@ -1,0 +1,45 @@
+{
+ "use_case": "retail/inventory-replenishment-optimization",
+ "engine": "optimize",
+ "seed": 42382,
+ "knobs": {
+  "n_instances": 165,
+  "noise": 0.326
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "instances": 165,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 126.02749642828955,
+   "promised_cost": 97.39222326231373,
+   "optimism_gap_pct": 29.402011995198325,
+   "regret_vs_oracle_pct": 37.650663996112854
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 109.91028945807574,
+   "promised_cost": 78.76522357272862,
+   "optimism_gap_pct": 39.5416460115663,
+   "regret_vs_oracle_pct": 20.047011586219302
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 106.82954047196772,
+   "promised_cost": 80.62518434674789,
+   "optimism_gap_pct": 32.501452663378394,
+   "regret_vs_oracle_pct": 16.68213363845798
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.55603959298625,
+   "promised_cost": 96.53381273877463,
+   "optimism_gap_pct": -5.156507346558953,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

@@ -1,0 +1,54 @@
+{
+ "slug": "retail/pre-purchase-return-risk",
+ "title": "Pre-Purchase Return Risk & Prevention",
+ "domain": "retail",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 6937,
+ "knobs": {
+  "n_entities": 2780,
+  "positive_entity_rate": 0.021,
+  "n_flash_sales": 4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Bracketing behaviour",
+   "definition": "multiple sizes of same item in cart",
+   "asOfRule": "Cart state at time"
+  },
+  {
+   "name": "Item return-rate by size",
+   "definition": "historic return rate for that item size",
+   "asOfRule": "Matured outcomes"
+  },
+  {
+   "name": "Reviews mention fit",
+   "definition": "share of reviews flagging fit issues",
+   "asOfRule": "Review snapshot"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Pre-Purchase Return Risk & Prevention\": Predict the likelihood a specific order line will be returned and use gentle interventions (fit info, alternate size) to prevent avoidable returns. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on observational nudges."
+}

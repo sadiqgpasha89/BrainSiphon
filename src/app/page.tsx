@@ -4,7 +4,7 @@ import { SearchBar } from '../components/SearchTrigger';
 import { ManifestSummary } from '../components/ReleaseReport';
 import { ALL_STEPS, DELIVERY_PHASES } from '../content/delivery';
 import { getIndex, getRelease } from '../lib/content';
-import { PRO_CURRENCY, PRO_PLANS } from '../lib/pro';
+import { TEMPLATES_URL } from '../lib/nav';
 import { SECTION_GROUPS } from '../lib/roles';
 import { DOMAINS, DOMAIN_META } from '../schemas/usecase.schema';
 
@@ -20,8 +20,6 @@ const FEATURED = [
   'saas/in-app-ai-copilot',
 ];
 
-const fromPrice = Math.min(...PRO_PLANS.map((p) => p.price));
-const money = (n: number) => `${PRO_CURRENCY === 'USD' ? '$' : ''}${n}`;
 
 export default async function Home() {
   const all = await getIndex();
@@ -217,17 +215,17 @@ export default async function Home() {
           </ul>
         </section>
 
-        {/* ── 4. What is free, and what is Pro? ── */}
-        <section aria-labelledby="free-pro" className="border-t border-line/60 py-14">
-          <p className="section-kicker">Free and Pro</p>
-          <h2 id="free-pro" className="section-title">
-            Free to learn. Pro to build faster.
+        {/* ── 4. Everything is free ── */}
+        <section aria-labelledby="free-all" className="border-t border-line/60 py-14">
+          <p className="section-kicker">Free</p>
+          <h2 id="free-all" className="section-title">
+            Every blueprint, and a worked template for each one.
           </h2>
           <p className="section-lead">
-            Everything you need to understand and plan a system is free, and stays free. Pro is for when you
-            are ready to build.
+            Nothing here is paid. Read the blueprints, then take the worked template for your use case from the
+            repository and run it.
           </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-2" data-testid="home-free-pro">
+          <div className="mt-8 grid gap-4 md:grid-cols-2" data-testid="home-free">
             <div className="card flex flex-col p-6">
               <p className="chip chip-signal self-start">Free</p>
               <h3 className="mt-3 text-xl font-semibold text-ink">Read, learn and plan</h3>
@@ -236,7 +234,7 @@ export default async function Home() {
                   `All ${all.length} blueprints`,
                   `The ${ALL_STEPS.length}-step delivery guide and its templates`,
                   'Pattern kits with runnable code',
-                  'One complete worked use case: card and UPI fraud',
+                  'Reference implementations and customer implementation packs',
                 ].map((t) => (
                   <li key={t} className="flex gap-2">
                     <Check size={16} className="mt-0.5 shrink-0 text-signal" aria-hidden />
@@ -245,29 +243,27 @@ export default async function Home() {
                 ))}
               </ul>
               <Link href="/start" className="btn-secondary mt-6 self-start">
-                Start free
+                Start here
               </Link>
             </div>
-            <div className="card flex flex-col border-warn/40 p-6">
-              <p className="chip self-start !border-warn/40 !bg-warn/10 !text-warn">
-                Pro · from {money(fromPrice)}, once
-              </p>
+            <div className="card flex flex-col p-6">
+              <p className="chip chip-signal self-start">Free</p>
               <h3 className="mt-3 text-xl font-semibold text-ink">Start building on day one</h3>
               <ul className="mt-4 flex-1 space-y-2 text-sm text-ink/90">
                 {[
-                  `A runnable starter for each of the ${all.length} use cases`,
+                  `A worked template for each of the ${all.length} use cases`,
                   'Filled-in project documents, contracts and deployment sizing',
-                  'No subscription, and every update to version 1',
+                  'Starter engines with tests and gates, under the MIT licence',
                 ].map((t) => (
                   <li key={t} className="flex gap-2">
-                    <Check size={16} className="mt-0.5 shrink-0 text-warn" aria-hidden />
+                    <Check size={16} className="mt-0.5 shrink-0 text-signal" aria-hidden />
                     {t}
                   </li>
                 ))}
               </ul>
-              <Link href="/pro" className="btn-pro mt-6 self-start">
-                See what Pro includes
-              </Link>
+              <a href={TEMPLATES_URL} className="btn-secondary mt-6 self-start">
+                Browse the templates
+              </a>
             </div>
           </div>
         </section>

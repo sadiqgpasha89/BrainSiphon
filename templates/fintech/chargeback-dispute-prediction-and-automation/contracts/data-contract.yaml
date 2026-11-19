@@ -1,0 +1,16 @@
+contract: chargeback_dispute_prediction_and_inputs.v1
+owner: payments-engineering@example.com
+system_of_record: Core banking ledger
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: evidence_completeness_score, type: double, nullable: false }
+    - { name: f_3ds_liability_shift_flag, type: double, nullable: false }
+    - { name: delivery_confirmation_lag, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

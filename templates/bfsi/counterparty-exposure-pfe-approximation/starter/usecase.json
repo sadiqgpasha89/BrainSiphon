@@ -1,0 +1,59 @@
+{
+ "slug": "bfsi/counterparty-exposure-pfe-approximation",
+ "title": "Counterparty Exposure (PFE) Approximation with ML",
+ "domain": "bfsi",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 24172,
+ "knobs": {
+  "n": 22430,
+  "outlier_share": 0.019,
+  "drift": 0.2
+ },
+ "blueprintSignals": [
+  {
+   "name": "Trade sensitivities",
+   "definition": "delta, vega and DV01 of the trade and the set",
+   "asOfRule": "Computed on the same curves"
+  },
+  {
+   "name": "Market volatility level",
+   "definition": "implied volatility of the main risk factors",
+   "asOfRule": "Source differences"
+  },
+  {
+   "name": "Netting set composition",
+   "definition": "notional by product and tenor",
+   "asOfRule": "Changes each day"
+  },
+  {
+   "name": "Collateral terms",
+   "definition": "threshold and margin period of risk",
+   "asOfRule": "Contract data quality"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Counterparty Exposure (PFE) Approximation with ML\": Approximate potential future exposure for trade-level pre-deal checks fast enough for traders, matching the full Monte Carlo engine within tolerance. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on calm periods."
+}

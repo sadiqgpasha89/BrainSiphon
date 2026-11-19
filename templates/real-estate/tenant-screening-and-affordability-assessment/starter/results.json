@@ -1,0 +1,34 @@
+{
+ "use_case": "real-estate/tenant-screening-and-affordability-assessment",
+ "engine": "tabular",
+ "seed": 39762,
+ "knobs": {
+  "n_entities": 2290,
+  "positive_entity_rate": 0.038,
+  "n_flash_sales": 3
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "rows": 173473,
+  "positive_rate": 0.005499414894536902,
+  "test_rows": 58579,
+  "test_positive_rate": 0.004506734495296949,
+  "baseline_lr": {
+   "pr_auc": 0.7102707585797484,
+   "recall_at_0.5pct_fpr": 0.7386363636363636,
+   "brier": 0.0026523285094830046
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7583748455942274,
+   "recall_at_0.5pct_fpr": 0.7689393939393939,
+   "brier": 0.0017467105523012742
+  }
+ }
+}

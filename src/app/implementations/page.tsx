@@ -7,7 +7,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: 'Reference implementations — BrainSiphon',
   description:
-    'One complete, runnable system is free and three more are in BrainSiphon Pro, one per solution family: source system, CDC, validation, features, training, registry, serving, API, application, authentication, human review, monitoring and retraining. Clone, make setup, make demo.',
+    'One complete, runnable system is free and three more are in the reference-implementations folder, one per solution family: source system, CDC, validation, features, training, registry, serving, API, application, authentication, human review, monitoring and retraining. Clone, make setup, make demo.',
 };
 
 const REPO = 'https://github.com/sadiqgpasha89/BrainSiphon/tree/main/reference-implementations';
@@ -35,8 +35,8 @@ const IMPLS: Impl[] = [
   },
 ];
 
-/** The other three systems live in the private BrainSiphon Pro repository; the free site describes them and does not link to them. */
-const PRO_IMPLS: Impl[] = [
+/** The other three systems live in reference-implementations/ in this repository; each card links to its folder. */
+const REPO_IMPLS: Impl[] = [
   {
     dir: 'batch-forecasting',
     family: 'Forecasting, and the scheduled-batch shape of batch analytics',
@@ -80,14 +80,14 @@ const COVERAGE: {
     archetype: 'batch-analytics',
     count: 119,
     status: 'adapt',
-    note: 'Adapt batch-forecasting (Pro): same pipeline, different model, output table and accuracy join',
+    note: 'Adapt batch-forecasting (in the repo): same pipeline, different model, output table and accuracy join',
   },
   { archetype: 'realtime-decisioning', count: 100, status: 'own', note: 'realtime-decisioning' },
   { archetype: 'computer-vision', count: 66, status: 'none', note: 'No reference implementation yet' },
   { archetype: 'document-extraction', count: 48, status: 'none', note: 'No reference implementation yet' },
-  { archetype: 'rag', count: 44, status: 'pro', note: 'rag-assistant (Pro)' },
-  { archetype: 'forecasting', count: 35, status: 'pro', note: 'batch-forecasting (Pro)' },
-  { archetype: 'agentic-workflow', count: 35, status: 'pro', note: 'agentic-workflow (Pro)' },
+  { archetype: 'rag', count: 44, status: 'pro', note: 'rag-assistant (in the repo)' },
+  { archetype: 'forecasting', count: 35, status: 'pro', note: 'batch-forecasting (in the repo)' },
+  { archetype: 'agentic-workflow', count: 35, status: 'pro', note: 'agentic-workflow (in the repo)' },
   { archetype: 'optimisation', count: 32, status: 'none', note: 'No reference implementation yet' },
   { archetype: 'recommendation', count: 21, status: 'none', note: 'No reference implementation yet' },
 ];
@@ -140,7 +140,7 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
 
       <section className="space-y-5" data-testid="implementations-list">
         <h2 className="text-xl font-semibold text-ink">
-          Four systems, because the families differ in kind: one free, three in Pro
+          Four systems, because the families differ in kind: one free to read on the site, three more in the repository
         </h2>
         <div className="grid gap-5 md:grid-cols-2">
           {IMPLS.map((i) => (
@@ -174,13 +174,13 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
               </p>
             </article>
           ))}
-          {PRO_IMPLS.map((i) => (
-            <article key={i.dir} className="card space-y-3 p-6" data-testid="implementation-pro">
+          {REPO_IMPLS.map((i) => (
+            <article key={i.dir} className="card space-y-3 p-6" data-testid="implementation-repo">
               <p className="font-mono text-xs uppercase tracking-wide text-dim">{i.family}</p>
               <h3 className="flex items-center gap-2 text-lg font-semibold text-ink">
                 <Lock size={15} className="text-signal" aria-hidden />
                 {i.dir}
-                <span className="chip chip-accent">Pro</span>
+                <span className="chip chip-accent">In repo</span>
               </h3>
               <p className="text-sm leading-relaxed text-mute">{i.different}</p>
               <p className="text-xs text-mute">
@@ -193,8 +193,8 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
                 {i.checks}-check end-to-end verification
               </p>
               <p className="text-xs">
-                <Link href="/pro" className="text-signal hover:underline">
-                  Included in BrainSiphon Pro
+                <Link href={`https://github.com/sadiqgpasha89/BrainSiphon/tree/main/reference-implementations/${i.dir}`} className="text-signal hover:underline">
+                  View the source
                 </Link>
               </p>
             </article>
@@ -206,7 +206,7 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
         <h2 className="text-xl font-semibold text-ink">Coverage of the 500 blueprints</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-mute">
           Every blueprint has one of nine solution archetypes. 214 blueprints have an implementation of their
-          own family (one is free, the others are in Pro), 119 have one to adapt with named changes, and 167
+          own family (all of them are in the repository), 119 have one to adapt with named changes, and 167
           have none yet. Where there is none, the site says so instead of pointing at the nearest look-alike.
         </p>
         <div className="overflow-x-auto">

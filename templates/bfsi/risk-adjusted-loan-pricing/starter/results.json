@@ -1,0 +1,34 @@
+{
+ "use_case": "bfsi/risk-adjusted-loan-pricing",
+ "engine": "tabular",
+ "seed": 2451,
+ "knobs": {
+  "n_entities": 2370,
+  "positive_entity_rate": 0.039,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.1,
+ "results": {
+  "rows": 184332,
+  "positive_rate": 0.004898769611353428,
+  "test_rows": 61982,
+  "test_positive_rate": 0.005082120615662612,
+  "baseline_lr": {
+   "pr_auc": 0.6847151402407635,
+   "recall_at_0.5pct_fpr": 0.8222222222222222,
+   "brier": 0.004297296575038032
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8469257817642386,
+   "recall_at_0.5pct_fpr": 0.8666666666666667,
+   "brier": 0.001528352959026581
+  }
+ }
+}

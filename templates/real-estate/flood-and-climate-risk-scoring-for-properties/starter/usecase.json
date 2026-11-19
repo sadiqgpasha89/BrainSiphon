@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/flood-and-climate-risk-scoring-for-properties",
+ "title": "Flood & Climate Risk Scoring for Properties",
+ "domain": "real-estate",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 69802,
+ "knobs": {
+  "n": 21570,
+  "outlier_share": 0.026,
+  "drift": 0.283
+ },
+ "blueprintSignals": [
+  {
+   "name": "Elevation above river",
+   "definition": "metres between the lowest floor and the 100-year flood level from LiDAR data",
+   "asOfRule": "LiDAR resolution and age limit precision"
+  },
+  {
+   "name": "Distance to water",
+   "definition": "distance to the nearest river, coast or drainage channel along the flow path",
+   "asOfRule": "Straight-line distance misleads, so use flow paths"
+  },
+  {
+   "name": "Vegetation fuel",
+   "definition": "fuel load and density within 100 metres from imagery",
+   "asOfRule": "Seasonal, so use the dry-season image"
+  },
+  {
+   "name": "Historic claims density",
+   "definition": "insurance claims per property in the area over 20 years",
+   "asOfRule": "Privacy-restricted, and claims depend on take-up"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Flood & Climate Risk Scoring for Properties\": Score each property's exposure to flood, wildfire, heat and wind under current and future climate for buyers, lenders and insurers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Claims come from a few events, so models fit those events and miss others."
+}

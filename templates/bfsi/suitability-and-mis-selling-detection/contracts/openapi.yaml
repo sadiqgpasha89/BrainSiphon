@@ -1,0 +1,108 @@
+openapi: 3.1.0
+info:
+  title: Suitability & Mis-Selling Detection API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/suitability-and-mis-selling-detection/documents:
+    post:
+      summary: 'Suitability & Mis-Selling Detection: request a decision'
+      operationId: suitability_and_mis_selling_detection
+      description: Illustrative contract taken from the blueprint's low-level design.  Replace the placeholder values
+        with your own fields and keep the error behaviour.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                document_id:
+                  type: string
+                source_uri:
+                  type: string
+                document_type_hint:
+                  type: string
+                fields:
+                  type: array
+                  items:
+                    type: string
+                language:
+                  type: string
+                callback_url:
+                  type: string
+            example:
+              document_id: doc_5521
+              source_uri: s3://…/scan.pdf
+              document_type_hint: auto
+              fields:
+              - risk_mismatch
+              - concentration_after_sale
+              language: auto
+              callback_url: https://…/hooks/extraction
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  document_id:
+                    type: string
+                  status:
+                    type: string
+                  document_type:
+                    type: string
+                  fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        value:
+                          type: string
+                        confidence:
+                          type: number
+                        page:
+                          type: integer
+                        bbox:
+                          type: array
+                          items:
+                            type: integer
+                  pages:
+                    type: integer
+                  model_version:
+                    type: string
+              example:
+                document_id: doc_5521
+                status: EXTRACTED | NEEDS_REVIEW | REJECTED
+                document_type: invoice
+                fields:
+                - name: risk_mismatch
+                  value: 1,240.00
+                  confidence: 0.97
+                  page: 1
+                  bbox:
+                  - 120
+                  - 640
+                  - 80
+                  - 18
+                pages: 3
+                model_version: 2026-11-03.r2
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

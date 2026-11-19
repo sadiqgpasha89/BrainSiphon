@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/credit-card-offer-personalization",
+ "title": "Credit Card Offer Personalisation",
+ "domain": "fintech",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "personalised-ranking",
+ "seed": 24153,
+ "knobs": {
+  "n_sessions": 51060,
+  "bot_share": 0.061
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pre-approval probability",
+   "definition": "model score for approval of this offer",
+   "asOfRule": "Compute with current bureau pull date"
+  },
+  {
+   "name": "Spend category affinity",
+   "definition": "share of spend in offer's reward category",
+   "asOfRule": "Trailing 6 months excluding offer period"
+  },
+  {
+   "name": "Expected profit margin",
+   "definition": "model-based NPV of acquiring this customer",
+   "asOfRule": "Uses forward-looking estimates with lag"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Credit Card Offer Personalisation\": Show each customer the card or reward offer with the highest expected lifetime value subject to eligibility and risk policy. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on clicks ignores approval outcome."
+}

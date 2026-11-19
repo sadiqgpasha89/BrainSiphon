@@ -1,0 +1,49 @@
+{
+ "use_case": "bfsi/collateral-valuation-and-haircut-monitoring",
+ "engine": "regression",
+ "seed": 10235,
+ "knobs": {
+  "n": 19730,
+  "outlier_share": 0.029,
+  "drift": 0.331
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.5,
+ "results": {
+  "rows": 19730,
+  "train_rows": 13811,
+  "test_rows": 5919,
+  "baseline_ridge": {
+   "mae": 7.749046012761751,
+   "rmse": 13.350165619432275,
+   "wape": 0.14625737881864473,
+   "r2": 0.4114314412787048
+  },
+  "challenger_gbm": {
+   "mae": 5.395742558504639,
+   "rmse": 11.543946282545887,
+   "wape": 0.10184055715857572,
+   "r2": 0.5599192766509635
+  },
+  "mae_gain_vs_baseline": 0.3036894413043234,
+  "interval_80_coverage": 0.6428450751816185,
+  "interval_80_mean_width": 9.267011905271879,
+  "segment_mae": {
+   "0": 5.2476666061424115,
+   "1": 5.561393553234903,
+   "2": 5.100474097880988,
+   "3": 6.75465615951075
+  },
+  "worst_segment_vs_overall": 1.251849228585642,
+  "leaky_feature_rmse": 1.5302911179111502,
+  "honest_rmse": 11.543946282545887,
+  "random_split_mae": 4.77956003541463,
+  "chronological_mae": 5.395742558504639
+ }
+}

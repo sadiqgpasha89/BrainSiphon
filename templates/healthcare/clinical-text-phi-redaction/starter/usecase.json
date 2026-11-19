@@ -1,0 +1,48 @@
+{
+ "slug": "healthcare/clinical-text-phi-redaction",
+ "title": "Clinical Text PHI Redaction",
+ "domain": "healthcare",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 84554,
+ "knobs": {
+  "n_train": 1070
+ },
+ "blueprintSignals": [
+  {
+   "name": "NER entity confidence",
+   "definition": "token-level probabilities",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Pattern-matched IDs",
+   "definition": "regex for MRN, phone",
+   "asOfRule": "Local formats"
+  },
+  {
+   "name": "Dictionary hit for names",
+   "definition": "name lists and clinician rosters",
+   "asOfRule": "Updated lists"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Clinical Text PHI Redaction\": Redact or pseudonymise PHI in clinical notes consistently so notes can be used for research and model training. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluation on synthetic or clean notes."
+}

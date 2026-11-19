@@ -1,0 +1,12 @@
+# Passwords come from USER_<NAME>_PASSWORD in the environment (`make setup` generates them into .env).
+users:
+  - username: analyst           # tier-1 analyst: investigates, decides verdicts, requests actions
+    roles: [analyst]
+  - username: responder         # incident responder: approves containment actions
+    roles: [analyst, approver]
+  - username: soc-lead          # second approver for critical assets; manages agent versions
+    roles: [analyst, approver, agent-admin]
+roles:
+  analyst: read cases and traces, start investigations, set the final verdict
+  approver: approve or reject proposed containment actions (never one's own request)
+  agent-admin: evaluate, promote and roll back agent versions

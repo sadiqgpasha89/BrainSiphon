@@ -1,0 +1,48 @@
+{
+ "slug": "saas/document-workflow-classification-extraction",
+ "title": "Document Workflow Classification & Extraction",
+ "domain": "saas",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 56937,
+ "knobs": {
+  "n_train": 1100
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field confidence margin",
+   "definition": "calibrated per-field confidence",
+   "asOfRule": "Calibration"
+  },
+  {
+   "name": "Layout similarity to exemplars",
+   "definition": "embedding of page layout",
+   "asOfRule": "Exemplar set"
+  },
+  {
+   "name": "Validation rule pass",
+   "definition": "business rules on fields",
+   "asOfRule": "Rule library"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Document Workflow Classification & Extraction\": Classify and extract fields from uploaded documents (contracts, forms, invoices) to automate customer workflows. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Test documents from the same templates as training."
+}

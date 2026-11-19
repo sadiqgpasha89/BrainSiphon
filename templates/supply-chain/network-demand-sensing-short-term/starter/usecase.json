@@ -1,0 +1,39 @@
+{
+ "slug": "supply-chain/network-demand-sensing-short-term",
+ "title": "Short-Term Demand Sensing",
+ "domain": "supply-chain",
+ "engine": "authored",
+ "fit": "authored",
+ "problemType": "forecasting",
+ "seed": null,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Open order book",
+   "definition": "confirmed orders not yet shipped by SKU",
+   "asOfRule": "Take the snapshot as it stood at forecast time"
+  },
+  {
+   "name": "Sell-through momentum",
+   "definition": "7-day vs 28-day velocity ratio",
+   "asOfRule": "Align calendar days across the two windows"
+  },
+  {
+   "name": "External event signal",
+   "definition": "weather, strikes, promotions known in advance",
+   "asOfRule": "Use the forecast published at the origin, not the observed value"
+  },
+  {
+   "name": "Planned promotion flag",
+   "definition": "whether the target day sits inside a scheduled promotion",
+   "asOfRule": "The flag must be the plan as of the origin, not the promotion as finally run"
+  },
+  {
+   "name": "Same-weekday history",
+   "definition": "mean of the last two or three same-weekday sales before the origin",
+   "asOfRule": "Only same weekdays that fall on or before the origin day may be used"
+  }
+ ],
+ "engineFeatures": [],
+ "label": "For \"Short-Term Demand Sensing\": Blend point-of-sale, order and external signals into 1-14 day demand forecasts that react to what is actually happening this week. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training with signals that arrive after the forecast time."
+}

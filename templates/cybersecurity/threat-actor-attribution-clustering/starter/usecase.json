@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/threat-actor-attribution-clustering",
+ "title": "Threat Actor Attribution & Campaign Clustering",
+ "domain": "cybersecurity",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 70068,
+ "knobs": {
+  "n_clusters": 1930,
+  "hub_share": 0.099
+ },
+ "blueprintSignals": [
+  {
+   "name": "Infrastructure overlap",
+   "definition": "shared IPs, certificates and registrants",
+   "asOfRule": "Time-bounded"
+  },
+  {
+   "name": "Code and tooling similarity",
+   "definition": "binary and script similarity",
+   "asOfRule": "Library reuse"
+  },
+  {
+   "name": "TTP sequence similarity",
+   "definition": "ATT&CK technique ordering",
+   "asOfRule": "Mapping"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Threat Actor Attribution & Campaign Clustering\": Cluster intrusion sets and campaigns by shared infrastructure, tooling and TTPs to support attribution confidence levels. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Ground truth is analyst opinion."
+}

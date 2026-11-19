@@ -1,0 +1,50 @@
+{
+ "use_case": "retail/ugc-content-moderation-marketplace",
+ "engine": "cv",
+ "seed": 45111,
+ "knobs": {
+  "n": 4420,
+  "prevalence": 0.135
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.4,
+ "results": {
+  "images": 4420,
+  "train": 1525,
+  "prevalence": 0.12217194570135746,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9507081868967322,
+    "sens_at_95_spec": 0.7545787545787546
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9833217189314751,
+    "sens_at_95_spec": 0.92
+   },
+   "site_B": {
+    "auc": 0.7631022466298695,
+    "sens_at_95_spec": 0.28205128205128205
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.304029304029304,
+    "false_positive_rate": 0.05879371515458692
+   }
+  }
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "retail/seller-fraud-marketplace-onboarding",
+ "engine": "tabular",
+ "seed": 28993,
+ "knobs": {
+  "n_entities": 2780,
+  "positive_entity_rate": 0.021,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.2,
+ "results": {
+  "rows": 210824,
+  "positive_rate": 0.002831745911281448,
+  "test_rows": 69813,
+  "test_positive_rate": 0.002392104622348273,
+  "baseline_lr": {
+   "pr_auc": 0.5394334411879623,
+   "recall_at_0.5pct_fpr": 0.7005988023952096,
+   "brier": 0.001437519158691769
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6886827320248881,
+   "recall_at_0.5pct_fpr": 0.7964071856287425,
+   "brier": 0.0011266197017390984
+  }
+ }
+}

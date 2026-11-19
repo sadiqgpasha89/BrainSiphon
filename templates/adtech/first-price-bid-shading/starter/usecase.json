@@ -1,0 +1,53 @@
+{
+ "slug": "adtech/first-price-bid-shading",
+ "title": "First-Price Auction Bid Shading",
+ "domain": "adtech",
+ "engine": "bandit",
+ "fit": "adaptable",
+ "problemType": "off-policy-decisioning",
+ "seed": 16302,
+ "knobs": {
+  "n": 38120,
+  "logging_temperature": 0.829
+ },
+ "blueprintSignals": [
+  {
+   "name": "Predicted clearing price",
+   "definition": "distribution quantiles of the market price",
+   "asOfRule": "Exchange feedback"
+  },
+  {
+   "name": "Value estimate",
+   "definition": "expected impression value",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Competition intensity",
+   "definition": "recent win rate at multipliers",
+   "asOfRule": "Windowed"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "context features",
+   "meaning": "what is known about the situation when the decision is made"
+  },
+  {
+   "feature": "action",
+   "meaning": "the option chosen: offer, price, route or treatment"
+  },
+  {
+   "feature": "logged propensity",
+   "meaning": "the probability with which the logging policy chose that action"
+  },
+  {
+   "feature": "reward model",
+   "meaning": "predicted reward for each action in each context"
+  },
+  {
+   "feature": "policy",
+   "meaning": "the rule that maps context to action"
+  }
+ ],
+ "label": "For \"First-Price Auction Bid Shading\": Shade bids below private value in first-price auctions to retain surplus while preserving win rate. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on win prices only."
+}

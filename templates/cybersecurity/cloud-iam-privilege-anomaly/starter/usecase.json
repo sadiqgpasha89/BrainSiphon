@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/cloud-iam-privilege-anomaly",
+ "title": "Cloud IAM Privilege Anomaly & Least-Privilege",
+ "domain": "cybersecurity",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 85269,
+ "knobs": {
+  "n_clusters": 1680,
+  "hub_share": 0.112
+ },
+ "blueprintSignals": [
+  {
+   "name": "Permission use ratio",
+   "definition": "used divided by granted permissions",
+   "asOfRule": "Window length"
+  },
+  {
+   "name": "Role-assumption chain depth",
+   "definition": "chain length to powerful role",
+   "asOfRule": "Graph"
+  },
+  {
+   "name": "Unusual API call for principal",
+   "definition": "rarity of call for this identity",
+   "asOfRule": "Baseline"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Cloud IAM Privilege Anomaly & Least-Privilege\": Detect abnormal permission use and recommend least-privilege policies by learning actual usage across identities and roles. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Short usage windows."
+}

@@ -1,0 +1,48 @@
+{
+ "slug": "saas/llm-schema-matching-data-integration",
+ "title": "Schema Matching & Data Integration with LLMs",
+ "domain": "saas",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 73943,
+ "knobs": {
+  "n_train": 1080
+ },
+ "blueprintSignals": [
+  {
+   "name": "Column name and description similarity",
+   "definition": "embedding similarity",
+   "asOfRule": "Descriptions"
+  },
+  {
+   "name": "Value-distribution match",
+   "definition": "type and distribution compatibility",
+   "asOfRule": "Sampling"
+  },
+  {
+   "name": "Constraint checks",
+   "definition": "uniqueness, nullability, referential",
+   "asOfRule": "Rules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Schema Matching & Data Integration with LLMs\": Map columns between customer data sources and the product's canonical schema, generating validated transformations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating with clean schemas."
+}

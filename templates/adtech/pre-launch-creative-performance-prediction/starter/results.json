@@ -1,0 +1,42 @@
+{
+ "use_case": "adtech/pre-launch-creative-performance-prediction",
+ "engine": "generative",
+ "seed": 69936,
+ "knobs": {
+  "n": 299
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "golden_items": 299,
+  "v1_pass_rate_strict_judge": 0.15719063545150502,
+  "v1_pass_rate_fuzzy_judge": 0.49498327759197325,
+  "v2_pass_rate_fuzzy_judge": 0.5652173913043478,
+  "v1_pass_rate_ci95": [
+   0.43812709030100333,
+   0.5452341137123745
+  ],
+  "v2_minus_v1": 0.07023411371237458,
+  "v2_minus_v1_ci95": [
+   -0.013377926421404682,
+   0.1505016722408027
+  ],
+  "judge_agreement_kappa_v1": 0.31973509337057643,
+  "judge_disagreement_share_v1": 0.3377926421404682,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4816053511705686,
+   "date_correct": 0.13377926421404682,
+   "within_length": 0.013377926421404682,
+   "no_forbidden_claims": 0.06354515050167224
+  },
+  "ci_width_at_60_items": 0.2666666666666666,
+  "ci_width_at_full_set": 0.10710702341137118
+ }
+}

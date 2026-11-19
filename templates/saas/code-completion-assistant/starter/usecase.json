@@ -1,0 +1,48 @@
+{
+ "slug": "saas/code-completion-assistant",
+ "title": "Code Completion Assistant",
+ "domain": "saas",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 1402,
+ "knobs": {
+  "n": 252
+ },
+ "blueprintSignals": [
+  {
+   "name": "Context window quality",
+   "definition": "relevant files retrieved",
+   "asOfRule": "Retrieval"
+  },
+  {
+   "name": "Acceptance and persistence rate",
+   "definition": "accepted and kept after 30 s",
+   "asOfRule": "Telemetry"
+  },
+  {
+   "name": "Latency percentile",
+   "definition": "p95 time to first token",
+   "asOfRule": "Infrastructure"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Code Completion Assistant\": Provide fast, context-aware code suggestions in the editor that developers accept often, with licence and security safeguards. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Public benchmarks contaminated."
+}

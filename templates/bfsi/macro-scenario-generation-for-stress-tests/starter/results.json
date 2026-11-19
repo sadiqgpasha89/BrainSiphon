@@ -1,0 +1,42 @@
+{
+ "use_case": "bfsi/macro-scenario-generation-for-stress-tests",
+ "engine": "generative",
+ "seed": 39055,
+ "knobs": {
+  "n": 293
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.7,
+ "results": {
+  "golden_items": 293,
+  "v1_pass_rate_strict_judge": 0.17064846416382254,
+  "v1_pass_rate_fuzzy_judge": 0.4812286689419795,
+  "v2_pass_rate_fuzzy_judge": 0.6075085324232082,
+  "v1_pass_rate_ci95": [
+   0.4232081911262799,
+   0.5358361774744027
+  ],
+  "v2_minus_v1": 0.12627986348122866,
+  "v2_minus_v1_ci95": [
+   0.04778156996587031,
+   0.2049488054607507
+  ],
+  "judge_agreement_kappa_v1": 0.3630891240474884,
+  "judge_disagreement_share_v1": 0.310580204778157,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.48464163822525597,
+   "date_correct": 0.13993174061433447,
+   "within_length": 0.023890784982935155,
+   "no_forbidden_claims": 0.051194539249146756
+  },
+  "ci_width_at_60_items": 0.25000000000000006,
+  "ci_width_at_full_set": 0.11262798634812282
+ }
+}

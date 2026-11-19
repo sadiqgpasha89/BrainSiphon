@@ -1,0 +1,42 @@
+{
+ "use_case": "retail/session-based-next-item-recommendation",
+ "engine": "authored",
+ "seed": null,
+ "knobs": {},
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 18.3,
+ "results": {
+  "train_sessions": 37911,
+  "test_sessions": 10808,
+  "popularity": {
+   "hit_rate@20": 0.07586972612879349,
+   "mrr@20": 0.02474786689190138,
+   "coverage": 0.018666666666666668,
+   "sessions": 10808
+  },
+  "bag_covisit": {
+   "hit_rate@20": 0.5566247224278312,
+   "mrr@20": 0.22368193045681406,
+   "coverage": 0.986,
+   "sessions": 10808
+  },
+  "ordered_transition": {
+   "hit_rate@20": 0.5878053293856402,
+   "mrr@20": 0.31547455677941993,
+   "coverage": 0.9806666666666667,
+   "sessions": 10808
+  },
+  "theme_aware": {
+   "hit_rate@20": 0.596780162842339,
+   "mrr@20": 0.3268078077361132,
+   "coverage": 1.0,
+   "sessions": 10808
+  }
+ }
+}

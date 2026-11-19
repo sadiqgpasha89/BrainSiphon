@@ -1,0 +1,16 @@
+contract: ddos_detection_and_mitigation_inputs.v1
+owner: detection-engineering@example.com
+system_of_record: SIEM and security data lake
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: packet_rate_deviation_per_destination, type: double, nullable: false }
+    - { name: source_entropy, type: double, nullable: false }
+    - { name: header_payload_pattern_clustering, type: double, nullable: false }
+sla:
+  freshness_p95: 5 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,16 @@
+contract: student_pii_redaction_learning_data_inputs.v1
+owner: learning-engineering@example.com
+system_of_record: Learning management system (LMS)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: ner_entity_probabilities, type: double, nullable: false }
+    - { name: student_roster_match, type: double, nullable: false }
+    - { name: contextual_identifiers, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

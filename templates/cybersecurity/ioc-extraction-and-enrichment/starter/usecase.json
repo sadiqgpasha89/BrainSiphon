@@ -1,0 +1,48 @@
+{
+ "slug": "cybersecurity/ioc-extraction-and-enrichment",
+ "title": "IOC Extraction & Enrichment",
+ "domain": "cybersecurity",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 7519,
+ "knobs": {
+  "n_train": 1310
+ },
+ "blueprintSignals": [
+  {
+   "name": "Indicator context window",
+   "definition": "sentence role (victim, attacker, benign)",
+   "asOfRule": "Parsing"
+  },
+  {
+   "name": "Multi-source corroboration",
+   "definition": "sources reporting the indicator",
+   "asOfRule": "Source independence"
+  },
+  {
+   "name": "Infrastructure reputation",
+   "definition": "hosting and ASN risk",
+   "asOfRule": "Data feeds"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"IOC Extraction & Enrichment\": Extract indicators of compromise and TTPs from reports and feeds, deduplicate them and score confidence for blocking and hunting. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating extraction without role context."
+}

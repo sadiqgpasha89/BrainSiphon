@@ -1,0 +1,59 @@
+{
+ "slug": "real-estate/appraisal-review-and-valuation-anomaly-detection",
+ "title": "Appraisal Review & Valuation Anomaly Detection",
+ "domain": "real-estate",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 10088,
+ "knobs": {
+  "n_entities": 1880,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Appraisal to AVM gap",
+   "definition": "log difference scaled by AVM interval",
+   "asOfRule": "AVM coverage"
+  },
+  {
+   "name": "Comparable selection quality",
+   "definition": "similarity of chosen vs available comps",
+   "asOfRule": "Comp pool"
+  },
+  {
+   "name": "Appraiser history",
+   "definition": "past review outcomes",
+   "asOfRule": "Fairness"
+  },
+  {
+   "name": "Narrative inconsistency",
+   "definition": "text contradicting the data",
+   "asOfRule": "Text extraction"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Appraisal Review & Valuation Anomaly Detection\": Flag appraisals that look inflated, inconsistent or non-compliant before a lender relies on them. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Confirmed issues are those that defaulted."
+}

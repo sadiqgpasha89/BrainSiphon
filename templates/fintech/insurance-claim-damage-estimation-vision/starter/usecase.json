@@ -1,0 +1,54 @@
+{
+ "slug": "fintech/insurance-claim-damage-estimation-vision",
+ "title": "Vehicle Damage Estimation from Photos",
+ "domain": "fintech",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 67413,
+ "knobs": {
+  "n": 18940,
+  "outlier_share": 0.039,
+  "drift": 0.19
+ },
+ "blueprintSignals": [
+  {
+   "name": "Damaged part segmentation",
+   "definition": "mask and severity per vehicle part",
+   "asOfRule": "Use a part taxonomy per model year"
+  },
+  {
+   "name": "Photo integrity score",
+   "definition": "EXIF, duplication and manipulation checks",
+   "asOfRule": "Reverse-image search against prior claims"
+  },
+  {
+   "name": "Vehicle identification",
+   "definition": "make, model, year from VIN and image",
+   "asOfRule": "Decode VIN before image model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Vehicle Damage Estimation from Photos\": Estimate repair cost from customer photos within seconds, enabling instant settlement of simple claims. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on estimates instead of final invoices."
+}

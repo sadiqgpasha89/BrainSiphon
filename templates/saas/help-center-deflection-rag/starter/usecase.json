@@ -1,0 +1,50 @@
+{
+ "slug": "saas/help-center-deflection-rag",
+ "title": "Help-Centre Deflection with RAG",
+ "domain": "saas",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 53234,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Answer groundedness",
+   "definition": "claims supported by docs",
+   "asOfRule": "NLI"
+  },
+  {
+   "name": "Recontact rate within 7 days",
+   "definition": "same user opens a ticket",
+   "asOfRule": "Windows"
+  },
+  {
+   "name": "Query-coverage gap",
+   "definition": "queries with no good doc",
+   "asOfRule": "Retrieval confidence"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Help-Centre Deflection with RAG\": Resolve customer questions in self-service with a grounded assistant, deflecting tickets while keeping satisfaction and escalation safe. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Counting abandonment as deflection."
+}

@@ -1,0 +1,54 @@
+{
+ "slug": "adtech/ctv-audience-measurement",
+ "title": "Cross-Platform Audience Measurement (TV + Digital)",
+ "domain": "adtech",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 62454,
+ "knobs": {
+  "n": 40530,
+  "confound": 0.979,
+  "holdout": 0.183
+ },
+ "blueprintSignals": [
+  {
+   "name": "Panel reach curves",
+   "definition": "frequency distributions",
+   "asOfRule": "Sampling"
+  },
+  {
+   "name": "Census impression counts",
+   "definition": "server-side counts",
+   "asOfRule": "Coverage"
+  },
+  {
+   "name": "Overlap model parameters",
+   "definition": "cross-platform duplication",
+   "asOfRule": "Estimation"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Cross-Platform Audience Measurement (TV + Digital)\": Estimate deduplicated reach and frequency across linear TV, CTV and digital by fusing panel and census data. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Panel evaluated on itself."
+}

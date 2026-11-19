@@ -1,0 +1,53 @@
+{
+ "slug": "edtech/classroom-allocation-and-timetable",
+ "title": "Course Timetabling & Classroom Allocation",
+ "domain": "edtech",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 18843,
+ "knobs": {
+  "n_instances": 144,
+  "noise": 0.332
+ },
+ "blueprintSignals": [
+  {
+   "name": "Enrolment forecast",
+   "definition": "predicted course enrolment",
+   "asOfRule": "Model"
+  },
+  {
+   "name": "Travel time between rooms",
+   "definition": "campus distances",
+   "asOfRule": "Maps"
+  },
+  {
+   "name": "Teacher preferences",
+   "definition": "availability windows",
+   "asOfRule": "Survey"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Course Timetabling & Classroom Allocation\": Allocate courses to times and rooms to maximise utilisation and student/teacher preferences under capacity and accessibility constraints. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising on forecasts without uncertainty."
+}

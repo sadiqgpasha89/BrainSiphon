@@ -1,0 +1,14 @@
+# Contract for the history window a forecast run reads. A failing dataset rule stops the run: no forecast is better than a wrong one.
+dataset: forecast_input
+version: 1
+owner: demand-planning-ml
+fields:
+  - {name: store_id, type: string}
+  - {name: sku, type: string}
+  - {name: day, type: string}
+  - {name: units, type: integer, min: 0}
+dataset_rules:
+  min_rows: 1000
+  max_bad_row_rate: 0.001
+  unique: [[store_id, sku, day]]
+  max_null_rate: {units: 0.0}

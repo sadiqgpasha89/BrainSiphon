@@ -1,0 +1,53 @@
+{
+ "slug": "fintech/trade-surveillance-spoofing-detection",
+ "title": "Trade Surveillance: Spoofing & Layering Detection",
+ "domain": "fintech",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 35647,
+ "knobs": {
+  "n_series": 113,
+  "anomalies_per_series": 2.333
+ },
+ "blueprintSignals": [
+  {
+   "name": "Opposite-side execution after cancel",
+   "definition": "execution on side B within 500 ms of cancelling side A",
+   "asOfRule": "Use exchange sequence numbers"
+  },
+  {
+   "name": "Large-order fleeting time",
+   "definition": "lifetime of large resting orders",
+   "asOfRule": "Normalise by instrument liquidity"
+  },
+  {
+   "name": "Price impact of cancelled orders",
+   "definition": "quote move caused by the resting order",
+   "asOfRule": "Counterfactual using same-time books"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Trade Surveillance: Spoofing & Layering Detection\": Detect order-book manipulation patterns (spoofing, layering, wash trades) in near real time for regulators and venues. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Few labelled cases drawn from enforcement bias."
+}

@@ -1,0 +1,50 @@
+{
+ "use_case": "healthcare/chest-xray-triage-vision",
+ "engine": "cv",
+ "seed": 44205,
+ "knobs": {
+  "n": 5290,
+  "prevalence": 0.132
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 5290,
+  "train": 1863,
+  "prevalence": 0.13005671077504727,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9444193368584385,
+    "sens_at_95_spec": 0.764367816091954
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9640434782608696,
+    "sens_at_95_spec": 0.84
+   },
+   "site_B": {
+    "auc": 0.7542168190697137,
+    "sens_at_95_spec": 0.31896551724137934
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3390804597701149,
+    "false_positive_rate": 0.06028833551769332
+   }
+  }
+ }
+}

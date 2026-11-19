@@ -1,0 +1,53 @@
+{
+ "slug": "cybersecurity/ddos-detection-and-mitigation",
+ "title": "DDoS Detection & Mitigation",
+ "domain": "cybersecurity",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 32218,
+ "knobs": {
+  "n_series": 62,
+  "anomalies_per_series": 2.4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Packet-rate deviation per destination",
+   "definition": "z-score vs seasonal baseline",
+   "asOfRule": "Seasonal model"
+  },
+  {
+   "name": "Source entropy",
+   "definition": "distribution of source IPs",
+   "asOfRule": "Window"
+  },
+  {
+   "name": "Header/payload pattern clustering",
+   "definition": "dominant patterns in sampled traffic",
+   "asOfRule": "Sampling"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"DDoS Detection & Mitigation\": Detect volumetric and application-layer DDoS within seconds and drive mitigation without dropping legitimate traffic. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Lab floods unlike real attacks."
+}

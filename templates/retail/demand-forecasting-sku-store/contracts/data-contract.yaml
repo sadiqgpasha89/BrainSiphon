@@ -1,0 +1,16 @@
+contract: demand_forecasting_sku_store_inputs.v1
+owner: merchandise-planning@example.com
+system_of_record: Product information management (SKU and hierarchy master)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: promo_calendar_flag_with_depth, type: double, nullable: false }
+    - { name: price_index, type: double, nullable: false }
+    - { name: lag_7_and_lag_364_demand, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

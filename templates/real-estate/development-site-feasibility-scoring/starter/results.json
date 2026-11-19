@@ -1,0 +1,34 @@
+{
+ "use_case": "real-estate/development-site-feasibility-scoring",
+ "engine": "tabular",
+ "seed": 84623,
+ "knobs": {
+  "n_entities": 3000,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.13",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.2,
+ "results": {
+  "rows": 232298,
+  "positive_rate": 0.003917381983486728,
+  "test_rows": 76937,
+  "test_positive_rate": 0.005108075438345659,
+  "baseline_lr": {
+   "pr_auc": 0.7866269329043402,
+   "recall_at_0.5pct_fpr": 0.7816284987277354,
+   "brier": 0.001896761983551232
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.841219086162884,
+   "recall_at_0.5pct_fpr": 0.8473282442748091,
+   "brier": 0.001594456193164507
+  }
+ }
+}

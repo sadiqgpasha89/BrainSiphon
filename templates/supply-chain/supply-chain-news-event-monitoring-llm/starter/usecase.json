@@ -1,0 +1,50 @@
+{
+ "slug": "supply-chain/supply-chain-news-event-monitoring-llm",
+ "title": "Supply-Chain Event Monitoring with LLM Agents",
+ "domain": "supply-chain",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 41258,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Network impact score",
+   "definition": "exposure of company flows to event location",
+   "asOfRule": "Graph join"
+  },
+  {
+   "name": "Source corroboration count",
+   "definition": "independent sources reporting",
+   "asOfRule": "Dedup"
+  },
+  {
+   "name": "Event severity classification",
+   "definition": "severity class",
+   "asOfRule": "Taxonomy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Supply-Chain Event Monitoring with LLM Agents\": Monitor global news, port notices and weather to detect events affecting specific lanes and suppliers and propose mitigation actions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluation set built from major events only."
+}
