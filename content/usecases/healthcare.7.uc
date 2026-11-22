@@ -60,7 +60,7 @@ pipe: Confirmed change intake @ case system ; Impact graph traversal @ graph sto
 edge: Stale knowledge graph | impacts are missed | Graph freshness checks and a manual scope review
 edge: Change affects only some facilities | scope is too broad | Facility scope rules and owner confirmation
 edge: Conflicting owner records | tasks go to the wrong person | Directory reconciliation and a fallback owner
-edge: Injected instruction in a change record | tool misuse | Allow-listed tools and content isolation
+edge: Injected instruction in a change record | the planner is steered into unapproved tool use | Allow-listed tools and content isolation
 off: Impact recall and precision against expert-built impact maps ; Task-plan acceptance rate ; Deadline accuracy
 on: Time to approved implementation plan ; Missed impacts found late ; Planning effort per change
 gap: Auto-creating tasks without approval ; Letting the model compute dates ; Trusting an outdated graph
@@ -120,7 +120,7 @@ noise: Control identifier | label
 base: Annual control rating by self-assessment.
 prod: Deterministic control rules plus a discrete-time survival and gradient-boosted model over test, exception, incident and evidence features, with signal explanations and a next-test recommender.
 pipe: Control and event intake @ GRC extracts ; Control rules @ deterministic checks ; Failure risk model @ discrete-time survival ; Signal explainer @ feature attribution ; Next-test scheduler @ capacity-aware ranking ; Risk owner validation @ human ; Outcome and audit log @ lakehouse
-edge: New control | no history | Category prior and a low-confidence flag
+edge: New control | no test history to estimate failure risk from | Category prior and a low-confidence flag
 edge: Control redesigned | history no longer applies | Version reset with lineage
 edge: Test results delayed | the signal is stale | Data freshness flag
 edge: Shared control across processes | failure is counted twice | Control-level aggregation
@@ -154,7 +154,7 @@ prod: Citation-grounded extraction of obligations, candidate-edge retrieval and 
 pipe: Source and policy intake @ approved stores ; Obligation extractor @ document AI with spans ; Candidate edge retriever @ embedding search ; Mapping ranker @ cross-encoder ; Obligation graph builder @ graph store ; Compliance expert confirmation @ human ; Graph versioning and audit @ graph store
 edge: Requirement split across several clauses | the mapping is partial | Requirement grouping and a review prompt
 edge: Policy retired | edges point to nothing | Lifecycle states and an orphan report
-edge: Same word different meaning | false edges | Defined-term checks and a reviewer prompt
+edge: Same word different meaning | false edges link unrelated requirements and policies | Defined-term checks and a reviewer prompt
 edge: Rare obligation type | ranker is uncertain | Abstain and route
 off: Recall at ten of confirmed mappings ; Edge precision after expert review ; Uncovered-obligation detection recall
 on: Mappings confirmed per expert hour ; Uncovered obligations found before audit ; Policy conflicts resolved
@@ -246,8 +246,8 @@ noise: Policy length | not risk
 base: A periodic manual comparison of policies against procedures.
 prod: Semantic comparison of policy and procedure text, configuration rules against snapshots, process-variant analysis on event logs and a severity classifier, combined into a reviewed drift list.
 pipe: Policy and record intake @ document and configuration extracts ; Policy statement extractor @ document AI ; Semantic comparator @ embeddings and cross-encoder ; Configuration rule checks @ deterministic rules ; Process variant detector @ process mining ; Policy owner review @ human ; Review outcome and audit @ case system
-edge: Policy updated but procedures lag | expected drift | Effective-date grace period
-edge: Intended local variation | false drift | Approved exception register
+edge: Policy updated but procedures lag | expected drift is flagged as a finding | Effective-date grace period
+edge: Intended local variation | approved differences are flagged as false drift | Approved exception register
 edge: Snapshot unavailable | a setting is unknown | Unknown status instead of pass
 edge: Ambiguous policy wording | comparison is unclear | Route to the owner for clarification
 off: Drift precision at the review capacity ; Recall on seeded drift ; Severity agreement with owners
@@ -278,8 +278,8 @@ noise: Appointment booking channel | not workload
 base: Next quarter coverage is copied from the same quarter last year.
 prod: A hierarchical probabilistic forecaster over appointment, procedure, census and referral drivers, reconciled across specialty, site and shift, with a rules layer for minimum coverage and a scenario view.
 pipe: Demand and roster intake @ warehouse extracts ; Feature builder @ point-in-time features ; Hierarchical forecaster @ gradient boosting with quantiles ; Reconciliation @ hierarchical reconciliation ; Coverage rules and shortage risk @ policy rules ; Medical group leader approval @ human ; Forecast and outcome log @ lakehouse
-edge: New clinic or service line | no history | Peer prior and a low-confidence flag
-edge: Demand spike from an outbreak | history breaks | Event driver and a manual override with a log
+edge: New clinic or service line | no demand history to forecast coverage from | Peer prior and a low-confidence flag
+edge: Demand spike from an outbreak | history breaks and coverage is under-forecast | Event driver and a manual override with a log
 edge: Roster not yet final | supply is uncertain | Scenario ranges
 edge: Holiday timing shifts | seasonality is wrong | Calendar tables by year
 off: Weighted quantile loss and coverage of prediction intervals ; Hierarchical consistency error ; Shortage-risk precision at the review capacity
@@ -313,7 +313,7 @@ pipe: Roster and rules intake @ scheduling extracts ; Constraint builder @ rule 
 edge: Infeasible coverage | no rotation satisfies all rules | Show the binding rules and options for leadership
 edge: Mid-cycle leave | the plan breaks | Re-plan with frozen assignments
 edge: Privilege change | a physician becomes ineligible | Privilege register as a live constraint
-edge: Contested fairness group | metrics differ | Group definition owned by leadership
+edge: Contested fairness group | metrics differ depending on who is compared | Group definition owned by leadership
 off: Hard-constraint violations (must be zero) ; Burden dispersion within groups ; Solver gap and time to feasible
 on: Coverage gaps ; Share of rotations published without manual rework ; Physician-reported fairness
 gap: Soft-penalising a rest rule ; Publishing without approval ; Using total call counts as fairness
@@ -342,7 +342,7 @@ noise: Physician seniority | not a conflict factor
 base: Schedulers find conflicts when physicians or patients complain.
 prod: A temporal and spatial rules engine over merged schedule events with travel-time modelling, event correlation across systems and a severity ranker, producing conflict records with proposed fixes for the scheduling office.
 pipe: Schedule event intake @ scheduling feeds ; Event normaliser and merger @ identity and time rules ; Temporal and spatial conflict checker @ deterministic rules ; Severity ranker @ gradient boosting ; Fix proposer @ rules ; Scheduling office review @ human ; Change and outcome log @ scheduling system
-edge: Time zone difference between systems | false overlaps | Single time standard on ingest
+edge: Time zone difference between systems | false overlaps appear between systems | Single time standard on ingest
 edge: Telehealth from a remote site | travel rules do not apply | Location type rules
 edge: Cancelled but not removed event | phantom conflict | Event status in the checks
 edge: Recurring series with exceptions | the pattern is misread | Series expansion with exception handling
@@ -374,7 +374,7 @@ base: Coverage gaps are discovered by the scheduling office as they appear.
 prod: A deterministic minimum-coverage check plus a calibrated gradient-boosted model of future gap probability by specialty, site and week, with a cause classifier and a contingency option list.
 pipe: Roster, leave and demand intake @ warehouse extracts ; Minimum coverage rules @ deterministic checks ; Gap risk model @ gradient boosting with calibration ; Cause classifier @ rules and attribution ; Contingency option builder @ rules ; Clinical operations validation @ human ; Outcome and audit log @ lakehouse
 edge: Rare specialty with few gaps | the model has little data | Specialty-group prior and a low-confidence flag
-edge: Late leave request | risk jumps | Event-driven re-score
+edge: Late leave request | coverage risk jumps with little lead time | Event-driven re-score
 edge: Credential lapse | supply drops without notice | Credential feed with early warning
 edge: Shared coverage across sites | the gap is counted twice | Site-level aggregation rules
 off: PR-AUC and precision at the review capacity ; Lead time of correct gap warnings ; Calibration of gap probabilities
@@ -405,8 +405,8 @@ base: A scheduler compares call counts in a spreadsheet when a complaint arrives
 prod: Defined burden metrics adjusted for FTE and approved exceptions, within-group dispersion and persistence analysis with small-group suppression, and a constrained what-if optimiser for leaders.
 pipe: Schedule and roster intake @ warehouse extracts ; Burden metric builder @ metric definitions ; Group comparison and dispersion @ descriptive statistics ; Small-group suppression @ privacy rules ; What-if optimizer @ constrained solver ; Leadership review @ human ; Decision and audit log @ lakehouse
 edge: Very small group | individuals are identifiable | Suppression and pooling rules
-edge: Approved exception added late | metrics change | Effective-dated exceptions
-edge: Metric definition disputed | results differ | Versioned definitions and a sensitivity view
+edge: Approved exception added late | fairness metrics change after review has begun | Effective-dated exceptions
+edge: Metric definition disputed | results differ between leaders and trust falls | Versioned definitions and a sensitivity view
 edge: Part-year physicians | burden is understated | FTE-time normalisation
 off: Metric reproducibility against a manual audit ; Disparity-detection agreement with leaders ; Privacy-rule compliance
 on: Disparity reduced across cycles ; Leader time to prepare fairness reviews ; Physician-reported fairness
@@ -439,7 +439,7 @@ pipe: Preference and roster intake @ scheduling extracts ; Constraint and object
 edge: Many conflicting requests | satisfaction is low | Show the binding constraints and options
 edge: Late preference change | the plan is stale | Re-solve with frozen assignments
 edge: Contract rule revised | a schedule becomes invalid | Rule version in the constraints
-edge: Gaming of preference rankings | unfair gains | Normalised weights and a fairness term
+edge: Gaming of preference rankings | some physicians gain unfair advantage in the schedule | Normalised weights and a fairness term
 off: Hard-constraint violations (must be zero) ; Preference satisfaction and its dispersion across physicians ; Committee acceptance rate of the top schedule
 on: Preference satisfaction ; Manual rework per cycle ; Schedule publication lead time
 gap: Treating preferences as hard constraints ; Optimising total satisfaction only ; Publishing without committee approval

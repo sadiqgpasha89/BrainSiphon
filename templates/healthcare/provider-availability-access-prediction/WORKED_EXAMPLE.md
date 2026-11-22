@@ -1,6 +1,6 @@
 # Provider Availability & Access Prediction: worked example
 
-> Run on synthetic data with `forecast` engine, seed 28886, knobs {"n_series": 225}, in 41.8 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `forecast` engine, seed 28886, knobs {"n_series": 225}, in 42.1 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

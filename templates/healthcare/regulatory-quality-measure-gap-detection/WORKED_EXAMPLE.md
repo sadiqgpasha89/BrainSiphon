@@ -1,6 +1,6 @@
 # Regulatory Quality Measure Gap Detection: worked example
 
-> Run on synthetic data with `llm-rag` engine, seed 41325, knobs {}, in 4.6 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `llm-rag` engine, seed 41325, knobs {}, in 4.5 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

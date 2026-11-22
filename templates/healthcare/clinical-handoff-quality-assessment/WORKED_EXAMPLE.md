@@ -1,6 +1,6 @@
 # Clinical Handoff Quality Assessment: worked example
 
-> Run on synthetic data with `extraction` engine, seed 37460, knobs {"n_train": 1360}, in 25.6 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `extraction` engine, seed 37460, knobs {"n_train": 1360}, in 22.6 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

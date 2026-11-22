@@ -1,6 +1,6 @@
 # Healthcare Contract Price & Terms Benchmarking: worked example
 
-> Run on synthetic data with `regression` engine, seed 54926, knobs {"n": 25960, "outlier_share": 0.013, "drift": 0.235}, in 14.6 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `regression` engine, seed 54926, knobs {"n": 25960, "outlier_share": 0.013, "drift": 0.235}, in 15.2 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

@@ -1,6 +1,6 @@
 # Healthcare Purchase Demand Consolidation Optimization: worked example
 
-> Run on synthetic data with `optimize` engine, seed 8084, knobs {"n_instances": 179, "noise": 0.26}, in 2.6 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `optimize` engine, seed 8084, knobs {"n_instances": 179, "noise": 0.26}, in 3.0 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

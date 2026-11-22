@@ -154,7 +154,7 @@ pipe: Payroll and volume intake @ SFTP extracts ; Data-quality gate @ validation
 edge: Unit changes service mix | the baseline no longer applies | Baseline reset on a declared service change with a short burn-in flagged as low confidence
 edge: Payroll system migration | mapping gaps look like leakage | Migration flag that suppresses findings until mapping is certified
 edge: Budget revised mid-year | variance changes with no change in behaviour | Budget versions with effective dates
-edge: Very small cost centres | noisy ratios | Pooling with stated minimum volume
+edge: Very small cost centres | ratios swing on a few hours and look like leakage | Pooling with stated minimum volume
 off: Precision of investigation leads at a review budget ; Exposure estimate error against closed investigations ; Data-defect share of flags
 on: Recovered or explained exposure ; Time to close an investigation ; Share of leads closed as data defects
 gap: Calling a data gap a leakage finding ; Scoring on unnormalised hours ; Reporting individual-level flags
@@ -312,7 +312,7 @@ pipe: Aggregate absence intake @ governed extracts ; Suppression and aggregation
 edge: Small unit with sparse counts | unstable estimates | Pool with peer units above the minimum size
 edge: Outbreak week | absence jumps beyond history | Regime flag and widened intervals
 edge: Leave policy change | definitions shift | Versioned absence definitions
-edge: Roster reorganisation | series breaks | Hierarchy versioning and a transition period
+edge: Roster reorganisation | series break and history no longer lines up | Hierarchy versioning and a transition period
 off: WAPE and pinball loss by horizon ; Interval coverage ; Contingency hours shortfall at the 90th percentile
 on: Contingency cover available when needed ; Premium hours on high-absence days ; Short-notice gap rate
 gap: Training with individual reasons ; Ignoring suppression in the test set ; Judging only on mean error

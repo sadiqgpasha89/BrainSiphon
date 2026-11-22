@@ -26,7 +26,7 @@ prod: Measure-specific hierarchical time-series and regression models with exoge
 pipe: Measure data intake @ warehouse extracts ; Denominator and version validator @ measure rules ; Completeness nowcaster @ lag-adjusted model ; Quality measure forecaster @ hierarchical quantile model ; Target-gap and scenario builder @ rules ; Quality specialist review @ human ; Forecast archive and feedback @ lakehouse
 edge: Measure specification changes | history is no longer comparable | Version tag per series and a break in the training window
 edge: Late data corrections | past values change | As-of snapshots and a restatement log
-edge: New unit | no history | Peer-unit prior with wide intervals
+edge: New unit | no history to forecast from and the first weeks are unstable | Peer-unit prior with wide intervals
 edge: Coding practice change | measured rates move with no change in care | Coding-change annotation and a manual review
 off: WAPE and pinball loss by measure and horizon ; Interval coverage by denominator size ; Target-miss detection precision at the review budget
 on: Share of measures reaching target ; Lead time between a forecast miss and an intervention ; Improvement-plan completion
@@ -57,7 +57,7 @@ prod: A rules-as-code calculator of the program's scoring methodology by year, M
 pipe: Performance and payment intake @ warehouse extracts ; Program-year rule loader @ versioned rule tables ; Exposure scenario calculator @ deterministic policy calculator ; Input uncertainty sampler @ Monte Carlo from forecast models ; Sensitivity and gap report @ rules ; Finance and compliance review @ human ; Scenario archive and audit @ lakehouse
 edge: Program rule change mid-year | outputs use stale rules | Rule version check with a mandatory refresh on publication
 edge: Benchmarks published late | achievement thresholds unknown | Use prior-year thresholds with a flagged assumption
-edge: Measure suppressed for low volume | the score is undefined | Follow program suppression logic and show it
+edge: Measure suppressed for low volume | no score can be computed | Follow program suppression logic and show it
 edge: Facility merger | combined payment base | Mapping with lineage and a restated base
 off: Absolute error of estimated exposure vs the official result by program year ; Interval coverage of the exposure range ; Rule-replication agreement with published examples
 on: Exposure estimate error at year end ; Share of exposure explained by the top three measures ; Time to refresh after a rule publication
@@ -89,7 +89,7 @@ pipe: Report intake and PHI redaction @ intake service ; Mandatory escalation ru
 edge: New event type not in the taxonomy | classifier mislabels | Out-of-vocabulary detector and a manual route
 edge: Report written in another language | text model degrades | Language detection and a manual route
 edge: Delayed severity update | label changes after review | Use the label after safety review and track revisions
-edge: Bulk submission after an incident | queue floods | Duplicate grouping and an incident-level view
+edge: Bulk submission after an incident | the queue floods and real signals are buried | Duplicate grouping and an incident-level view
 off: Recall for high-severity reports at the review capacity ; Macro-F1 by event category ; Calibration error and subgroup parity
 on: Time from report to first review for high-severity events ; Escalations missed by rules ; Reviewer re-prioritisation rate
 gap: Training on reporter-assigned severity ; Random split that leaks duplicate reports ; Letting the model override a mandatory rule
@@ -182,7 +182,7 @@ base: Overdue-action report and a manual 90-day check.
 prod: Rule-based workflow tracking with a discrete-time survival model for time to recurrence of the event pattern, action-strength and evidence features, and a monitoring layer that reports whether recurrence fell relative to a pre-action baseline.
 pipe: Action and incident intake @ CAPA system extracts ; Workflow state rules @ overdue and evidence checks ; Recurrence risk model @ discrete-time survival ; Effectiveness monitor @ pre-post comparison ; Quality committee review @ human ; Outcome and audit log @ lakehouse
 edge: Concurrent changes | recurrence falls for another reason | Flag overlapping initiatives and avoid effect claims
-edge: Low event volume | wide intervals | Report uncertainty and extend the follow-up window
+edge: Low event volume | intervals are too wide to act on | Report uncertainty and extend the follow-up window
 edge: Action reopened | timeline resets | Event history with reopen events
 edge: Reclassified event | recurrence definition shifts | Versioned event taxonomy
 off: Concordance index and time-dependent AUC at 6 and 12 months ; Calibration of recurrence risk ; Overdue-action rule precision
@@ -308,7 +308,7 @@ noise: Badge reader brand | hardware artefact
 base: Report of vendor access outside scheduled hours.
 prod: A policy allow-list and rule engine for hard violations, a temporal and graph-based anomaly model over per-vendor baselines for the rest, and a reviewer view that shows the baseline, the unusual pattern and the authorisation context.
 pipe: Access event intake @ access control stream ; Policy and allow-list rules @ role-based policy rules ; Baseline builder @ per-vendor profiles ; Sequence and graph anomaly detector @ isolation forest with graph paths ; Explanation builder @ rule trace and baseline view ; Security reviewer @ human ; Case outcome and audit @ case workflow
-edge: New vendor | no baseline | Peer-group baseline with low confidence
+edge: New vendor | no baseline exists and normal activity looks unusual | Peer-group baseline with low confidence
 edge: Emergency repair outside normal hours | pattern is legitimate | Emergency authorisation records as context
 edge: Reader outage | missing events look like absence | Reader health feed and suppression
 edge: Credential sharing suspicion | evidence is partial | Neutral case wording and security review before any step
@@ -340,7 +340,7 @@ base: Same-weekday trailing average of visits.
 prod: Hierarchical count forecasting with service-line and booking-pace drivers, quantile outputs at the hour level and a capacity planner that converts the peak quantile into desk staffing.
 pipe: Visit and booking intake @ visitor system extracts ; Calendar and driver builder @ feature store ; Visit demand forecaster @ hierarchical count model ; Capacity planner @ rule table ; Facility operations review @ human ; Forecast archive @ lakehouse
 edge: Facility closure | zero visits for a period | Calendar flags and a closure mask
-edge: New vendor programme | step increase | Manual override with a ramp assumption
+edge: New vendor programme | visits step up and look like an anomaly | Manual override with a ramp assumption
 edge: Check-in outage | missing arrivals | Gap fill from bookings with a flag
 edge: Policy change in access windows | the shape of demand shifts | Policy version as a driver
 off: WAPE and pinball loss by hour and facility ; Peak-hour coverage at the 90th percentile ; Interval coverage
@@ -437,8 +437,8 @@ prod: Policy checks first, then a sequence and graph anomaly model over role-con
 pipe: Access event intake @ access control stream ; Policy rule checks @ role and zone rules ; Context joiner for shifts and roles @ feature store ; Sequence and graph anomaly model @ isolation forest with path features ; Explanation builder @ path and baseline view ; Security triage @ human ; Case and audit log @ case workflow
 edge: Reorganisation changes roles | baselines mislead | Role versioning and a re-baseline window
 edge: Large event or drill | many unusual paths | Event calendar suppression
-edge: Reader failure | events missing | Reader health feed
-edge: Request for a named list | misuse | Access control denies and logs the request
+edge: Reader failure | badge events go missing and gaps look like activity changes | Reader health feed
+edge: Request for a named list | the output is misused to single out individuals | Access control denies and logs the request
 off: Precision and recall of triaged findings at the alert budget ; Path-explanation usefulness rating ; Rule-versus-model agreement
 on: Confirmed findings per 1000 alerts ; Triage time per alert ; Reader and policy issues discovered
 gap: Treating anomalies as violations ; Ignoring shift context ; Retaining badge data beyond the stated purpose

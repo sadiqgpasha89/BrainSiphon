@@ -90,7 +90,7 @@ pipe: Enrollment and status intake @ EDI and portal extracts ; Stage and event n
 edge: Payer changes process | historic turnaround no longer applies | Change-point test and a switch to a recent window
 edge: Application withdrawn | censoring looks like completion | Explicit competing-risk label
 edge: Roster file rejected | all providers in the file are delayed | Batch-level alert and file validation before submission
-edge: New payer | no history | Conservative prior from similar payers and a wide interval
+edge: New payer | no enrolment history to learn the delay from | Conservative prior from similar payers and a wide interval
 off: Concordance index and time-dependent AUC at 30 and 60 days ; Date-range coverage ; Bottleneck top-1 accuracy
 on: Days from submission to effective date ; Providers scheduled before enrollment completes ; Follow-ups that unblock a case
 gap: Starting the clock before the file is complete ; Using final status as a feature ; Pooling all payers into one model
@@ -121,7 +121,7 @@ prod: Process mining on the event log with duration models per task, critical-pa
 pipe: Workflow event intake @ process-mining log ; Dependency graph builder @ workflow definitions ; Duration predictor @ gradient boosting survival ; Critical-path scheduler @ constraint solver ; Policy and mandatory-step rules @ rules ; Onboarding coordinator review @ human ; Outcome and audit log @ lakehouse
 edge: Missing events from one system | the process looks shorter than it is | Event-completeness checks per source before mining
 edge: Task reopened | duration is double counted | Event types distinguish rework from first pass
-edge: Owner team on leave | capacity falls | Capacity calendar as an input to the scheduler
+edge: Owner team on leave | onboarding capacity falls and cycle times stretch | Capacity calendar as an input to the scheduler
 edge: Start date fixed by contract | optimisation cannot move it | Hard deadline mode that surfaces risks and mitigations
 off: Remaining-time error by case ; Critical-path hit rate ; Simulated lateness against the best plan in hindsight
 on: Days from offer to start-readiness ; Cases starting on the planned date ; Idle wait per case

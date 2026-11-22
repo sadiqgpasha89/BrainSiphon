@@ -1,6 +1,6 @@
 # Patient Safety Event Root-Cause Discovery: worked example
 
-> Run on synthetic data with `graph` engine, seed 35487, knobs {"n_clusters": 1870, "hub_share": 0.158}, in 5.8 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `graph` engine, seed 35487, knobs {"n_clusters": 1870, "hub_share": 0.158}, in 5.9 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

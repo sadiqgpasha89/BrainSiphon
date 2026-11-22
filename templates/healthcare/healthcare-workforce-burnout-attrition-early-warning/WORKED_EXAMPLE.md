@@ -1,6 +1,6 @@
 # Healthcare Workforce Burnout & Attrition Early Warning: worked example
 
-> Run on synthetic data with `survival` engine, seed 17158, knobs {"n": 6140, "dropout": 0.235}, in 0.7 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `survival` engine, seed 17158, knobs {"n": 6140, "dropout": 0.235}, in 0.6 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

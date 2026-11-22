@@ -1,6 +1,6 @@
 # Clinical Quality Performance Anomaly Detection: worked example
 
-> Run on synthetic data with `anomaly` engine, seed 63264, knobs {"n_series": 95, "anomalies_per_series": 2.233}, in 35.8 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `anomaly` engine, seed 63264, knobs {"n_series": 95, "anomalies_per_series": 2.233}, in 31.0 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 
