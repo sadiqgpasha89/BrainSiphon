@@ -584,7 +584,9 @@ export default async function AboutPage() {
             575 Use Cases Across 10 Industries
           </h2>
           <p className="mt-1 text-sm text-mute">
-            Each domain has 50 reference blueprints, except healthcare, which has 125 (50 clinical and life-sciences blueprints plus 75 healthcare operations blueprints), grouped into specialized industry tracks:
+            Each domain has 50 reference blueprints, except healthcare, which has 125 (50 clinical and
+            life-sciences blueprints plus 75 healthcare operations blueprints), grouped into specialized
+            industry tracks:
           </p>
         </div>
 
@@ -599,7 +601,9 @@ export default async function AboutPage() {
                 {DOMAIN_META[domain].short}
               </span>
               <p className="mt-1 line-clamp-2 text-[11px] text-mute">{DOMAIN_META[domain].blurb}</p>
-              <span className="mt-2 block font-mono text-[10px] text-dim">{domain === 'healthcare' ? 125 : 50} Blueprints →</span>
+              <span className="mt-2 block font-mono text-[10px] text-dim">
+                {domain === 'healthcare' ? 125 : 50} Blueprints →
+              </span>
             </Link>
           ))}
         </div>
