@@ -1,6 +1,6 @@
 # Schedule vs Actual Time Discrepancy Detection: worked example
 
-> Run on synthetic data with `anomaly` engine, seed 38947, knobs {"n_series": 100, "anomalies_per_series": 2.413}, in 30.1 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `anomaly` engine, seed 38947, knobs {"n_series": 100, "anomalies_per_series": 2.413}, in 29.7 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

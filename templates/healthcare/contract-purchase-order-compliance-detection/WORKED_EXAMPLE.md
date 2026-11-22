@@ -1,6 +1,6 @@
 # Contract vs Purchase Order Compliance Detection: worked example
 
-> Run on synthetic data with `extraction` engine, seed 18013, knobs {"n_train": 900}, in 19.2 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `extraction` engine, seed 18013, knobs {"n_train": 900}, in 21.4 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

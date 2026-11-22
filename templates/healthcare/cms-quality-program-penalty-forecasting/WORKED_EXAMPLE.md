@@ -1,6 +1,6 @@
 # CMS Quality Program Penalty Forecasting: worked example
 
-> Run on synthetic data with `regression` engine, seed 76391, knobs {"n": 16040, "outlier_share": 0.013, "drift": 0.358}, in 10.9 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `regression` engine, seed 76391, knobs {"n": 16040, "outlier_share": 0.013, "drift": 0.358}, in 11.1 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

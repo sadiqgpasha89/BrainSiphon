@@ -1,6 +1,6 @@
 # Provider Directory Accuracy & Drift Detection: worked example
 
-> Run on synthetic data with `tabular` engine, seed 16692, knobs {"n_entities": 2310, "positive_entity_rate": 0.022, "n_flash_sales": 4}, in 11.5 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `tabular` engine, seed 16692, knobs {"n_entities": 2310, "positive_entity_rate": 0.022, "n_flash_sales": 4}, in 10.7 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

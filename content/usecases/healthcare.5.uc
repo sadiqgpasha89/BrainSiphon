@@ -228,7 +228,7 @@ down: Leadership portfolio review ; Quality council decision record ; Resource a
 opt: Published intervention evidence ; Peer programme results
 proto: Governed inputs in a portfolio workbook and an optimisation API; weights are set in a versioned decision-criteria table
 own: Quality and patient safety ; Strategy office ; Finance ; Health equity office
-con: Leadership sets criteria weights and makes the final portfolio decision ; Hard constraints cover budget, staffing capacity and mandatory compliance projects ; The scoring method is transparent with sensitivity to weights ; Assumptions and evidence strength are shown beside every score ; Equity impact is an explicit criterion ; Infeasibility reports which constraint binds
+con: Leadership sets criteria weights and makes the final portfolio decision ; Hard constraints cover budget, staffing capacity and mandatory compliance projects ; The scoring method is transparent and its weights are versioned ; Assumptions and evidence strength are shown beside every score ; Equity impact is an explicit criterion ; Infeasibility reports which constraint binds
 loss: \max\;\sum_k x_k\big(\sum_m w_m\,\text{score}_{km}\big)\quad\text{s.t.}\quad\sum_k c_k x_k\le B
 sn: Method | Multi-criteria decision analysis with explicit weights | Single opaque score | Leaders must be able to challenge a ranking
 sn: Evidence | Evidence strength as a criterion and an uncertainty | Point benefit estimate | Weak evidence deserves a discount
@@ -244,7 +244,7 @@ noise: Project name or branding | not value
 noise: Past project success rate of the team | confounded
 base: Ranking by sponsor request and a cost threshold.
 prod: Multi-criteria scoring with versioned weights, a constrained portfolio optimiser for resource allocation under budget and capacity limits, a rank-stability sensitivity analysis and a decision record generator.
-pipe: Proposal and gap intake @ portfolio workbook ; Criteria scoring @ MCDA with versioned weights ; Portfolio optimizer for resource allocation @ integer program ; Sensitivity and equity analysis @ scenario engine ; Leadership review @ human ; Decision record and benefit tracking @ portfolio system
+pipe: Proposal and gap intake @ portfolio workbook ; Criteria scoring @ MCDA with versioned weights ; Portfolio optimizer under budget and capacity constraints @ integer program ; Sensitivity and equity analysis @ scenario engine ; Leadership review @ human ; Decision record and benefit tracking @ portfolio system
 edge: Weights disputed | different leaders prefer different weights | Scenario views per weight set and a recorded decision
 edge: Cost estimates change | the portfolio is no longer feasible | Re-run with versioned inputs
 edge: Dependencies between projects | independent scoring misleads | Dependency constraints in the optimiser

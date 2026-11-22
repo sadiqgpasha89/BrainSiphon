@@ -1,6 +1,6 @@
 # Healthcare Spend Category Optimization: worked example
 
-> Run on synthetic data with `optimize` engine, seed 74701, knobs {"n_instances": 131, "noise": 0.36}, in 3.1 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `optimize` engine, seed 74701, knobs {"n_instances": 131, "noise": 0.36}, in 2.6 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 
