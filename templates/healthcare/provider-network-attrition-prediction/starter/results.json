@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/provider-network-attrition-prediction",
+ "engine": "survival",
+ "seed": 16247,
+ "knobs": {
+  "n": 8050,
+  "dropout": 0.3
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.6,
+ "results": {
+  "subjects": 8050,
+  "train_subjects": 5232,
+  "test_subjects": 2818,
+  "event_share": 0.6218633540372671,
+  "censored_share": 0.3781366459627329,
+  "at_month": 12,
+  "km_event_rate": 0.5197120967865312,
+  "naive_drop_censored_event_rate": 0.7013574660633484,
+  "naive_bias_vs_km": 0.18164536927681718,
+  "count_all_rows_event_rate": 0.44002838892831797,
+  "count_all_rows_bias_vs_km": -0.07968370785821322,
+  "discrete_time_mean_predicted_risk": 0.5189025670174399,
+  "c_index": 0.7198897371756995,
+  "decile_calibration_mean_abs_gap": 0.014597744130216783,
+  "decile_calibration_max_abs_gap": 0.04193202580782962
+ }
+}

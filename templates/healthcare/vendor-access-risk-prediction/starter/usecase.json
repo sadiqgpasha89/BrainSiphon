@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/vendor-access-risk-prediction",
+ "title": "Vendor Access Risk Prediction",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 28161,
+ "knobs": {
+  "n_series": 71,
+  "anomalies_per_series": 2.8
+ },
+ "blueprintSignals": [
+  {
+   "name": "Time and zone deviation",
+   "definition": "distance of a visit from the vendor's usual time and zones",
+   "asOfRule": "Baselines from earlier periods"
+  },
+  {
+   "name": "Frequency change",
+   "definition": "change in visit rate against the vendor baseline",
+   "asOfRule": "Trailing windows"
+  },
+  {
+   "name": "Access path novelty",
+   "definition": "whether the sequence of zones is new for the vendor",
+   "asOfRule": "Past paths only"
+  },
+  {
+   "name": "Authorisation gap",
+   "definition": "access outside the scheduled visit window or purpose",
+   "asOfRule": "Schedule snapshot at the time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Vendor Access Risk Prediction\": Identify unusual vendor access patterns, such as unexpected location, time or frequency and policy deviations, so security staff can review with explainable context and no automatic accusation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on investigated cases only."
+}

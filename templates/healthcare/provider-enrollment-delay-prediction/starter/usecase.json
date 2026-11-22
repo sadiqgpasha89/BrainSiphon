@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/provider-enrollment-delay-prediction",
+ "title": "Provider Enrollment Delay Prediction",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 82740,
+ "knobs": {
+  "n": 7690,
+  "dropout": 0.288
+ },
+ "blueprintSignals": [
+  {
+   "name": "Completeness at submission",
+   "definition": "share of required items present on submission",
+   "asOfRule": "As of the submission event"
+  },
+  {
+   "name": "Payer SLA position",
+   "definition": "days elapsed against the payer's stated turnaround",
+   "asOfRule": "Use payer SLA table versions"
+  },
+  {
+   "name": "Stage dwell time",
+   "definition": "time spent in the current stage relative to the payer median",
+   "asOfRule": "Computed from event time"
+  },
+  {
+   "name": "Follow-up count",
+   "definition": "number of status follow-ups made so far",
+   "asOfRule": "Count only prior follow-ups"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Provider Enrollment Delay Prediction\": Predict payer enrollment and roster delays that affect network participation, scheduling and reimbursement, and tell enrollment specialists the likely bottleneck and next best follow-up. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Starting the clock before the file is complete."
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "healthcare/physician-schedule-fairness-analytics",
+ "title": "Physician Schedule Fairness Analytics",
+ "domain": "healthcare",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 11623,
+ "knobs": {
+  "n_entities": 2280,
+  "positive_entity_rate": 0.026,
+  "n_flash_sales": 7
+ },
+ "blueprintSignals": [
+  {
+   "name": "Burden index",
+   "definition": "weighted count of nights, weekends, holidays and call per FTE",
+   "asOfRule": "Actual schedule"
+  },
+  {
+   "name": "Dispersion within group",
+   "definition": "spread of the burden index in a comparable group",
+   "asOfRule": "Closed cycles"
+  },
+  {
+   "name": "Exception-adjusted share",
+   "definition": "burden after approved exceptions",
+   "asOfRule": "Exceptions register"
+  },
+  {
+   "name": "Persistence across cycles",
+   "definition": "repeat high burden for the same person or group",
+   "asOfRule": "Several cycles"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Physician Schedule Fairness Analytics\": Measure how nights, weekends, holidays, call burden, undesirable shifts and workload are distributed across comparable physician groups, and show disparities and what-if adjustments to leaders. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Ranking individual physicians."
+}

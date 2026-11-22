@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/physician-on-call-rotation-optimization",
+ "engine": "optimize",
+ "seed": 2526,
+ "knobs": {
+  "n_instances": 184,
+  "noise": 0.368
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.1,
+ "results": {
+  "instances": 184,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 129.4382629415626,
+   "promised_cost": 95.25044440973413,
+   "optimism_gap_pct": 35.89255540348393,
+   "regret_vs_oracle_pct": 42.40995733043581
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 114.27577708561536,
+   "promised_cost": 75.47288689470167,
+   "optimism_gap_pct": 51.413019678246485,
+   "regret_vs_oracle_pct": 25.727958401389326
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 109.52758882796313,
+   "promised_cost": 77.87453101995423,
+   "optimism_gap_pct": 40.646225914218675,
+   "regret_vs_oracle_pct": 20.503929031693527
+  },
+  "oracle_true_costs": {
+   "realised_cost": 90.89130097920415,
+   "promised_cost": 96.84896308942386,
+   "optimism_gap_pct": -6.151498085445486,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

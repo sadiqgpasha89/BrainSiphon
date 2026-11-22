@@ -15,7 +15,7 @@ themselves. No cloud account, no API key and no Docker are needed for the defaul
 These four are separate implementations because the systems are different in kind: they do not share an endpoint, a data
 model, a failure mode or a definition of "correct". They do share a platform layer.
 
-## Coverage of the 500 blueprints
+## Coverage of the original 500 blueprints
 
 Every blueprint has one of nine solution archetypes (`src/content/archetype-lld.ts`). Counts from the current content build:
 

@@ -1,0 +1,36 @@
+{
+ "id": "survival",
+ "label": "Time-to-event with censoring",
+ "summary": "Kaplan-Meier, a naive complete-case classifier and a discrete-time hazard model on cohorts with administrative censoring and drop-out, scored with a concordance index and decile calibration.",
+ "problemTypes": [
+  "survival-time-to-event"
+ ],
+ "traps": [
+  "Administrative censoring that grows for recent cohorts",
+  "Drop-out before the event",
+  "Treating censored subjects as non-events"
+ ],
+ "origin": "brainsiphon-pro",
+ "slots": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ]
+}

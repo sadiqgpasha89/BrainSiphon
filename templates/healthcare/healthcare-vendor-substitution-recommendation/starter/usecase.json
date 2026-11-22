@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/healthcare-vendor-substitution-recommendation",
+ "title": "Healthcare Vendor Substitution Recommendation",
+ "domain": "healthcare",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "personalised-ranking",
+ "seed": 43306,
+ "knobs": {
+  "n_sessions": 54240,
+  "bot_share": 0.051
+ },
+ "blueprintSignals": [
+  {
+   "name": "Approved-equivalence status",
+   "definition": "status in the clinical equivalence register",
+   "asOfRule": "Register version"
+  },
+  {
+   "name": "Supply risk of the alternative",
+   "definition": "availability and lead time of the candidate",
+   "asOfRule": "Latest feed"
+  },
+  {
+   "name": "Price delta",
+   "definition": "candidate price relative to current price after tier and contract",
+   "asOfRule": "Contract status"
+  },
+  {
+   "name": "Supplier reliability",
+   "definition": "performance score of the candidate supplier",
+   "asOfRule": "Earlier periods"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Healthcare Vendor Substitution Recommendation\": Recommend alternative suppliers or items when supply, price, quality or contract risk requires substitution, ranking only options that clinical and biomedical teams have approved as equivalent. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using embedding similarity for equivalence."
+}

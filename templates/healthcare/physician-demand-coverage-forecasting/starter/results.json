@@ -1,0 +1,46 @@
+{
+ "use_case": "healthcare/physician-demand-coverage-forecasting",
+ "engine": "forecast",
+ "seed": 72811,
+ "knobs": {
+  "n_series": 251
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 48.9,
+ "results": {
+  "rows": 22844,
+  "h1": {
+   "wmape_model": 0.11336486163585428,
+   "wmape_baseline": 0.2065975001867922,
+   "fva": 0.45127670212196636
+  },
+  "h3": {
+   "wmape_model": 0.11932545629629362,
+   "wmape_baseline": 0.22146811930701912,
+   "fva": 0.4612070727395581
+  },
+  "h7": {
+   "wmape_model": 0.12106867061364988,
+   "wmape_baseline": 0.21270034044874012,
+   "fva": 0.43080170742450263
+  },
+  "h14": {
+   "wmape_model": 0.15082065881754797,
+   "wmape_baseline": 0.22980317661337132,
+   "fva": 0.3436963707804015
+  },
+  "p90_coverage": 0.8955962178252496,
+  "wmape_sku_level": 0.12558782549276934,
+  "wmape_aggregate": 0.0245129146338744,
+  "late_feed": {
+   "missing_as_zero": 0.18480596941878077,
+   "missing_as_nan": 0.14150895532837454
+  }
+ }
+}

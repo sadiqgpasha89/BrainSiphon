@@ -1,0 +1,43 @@
+{
+ "use_case": "healthcare/schedule-actual-time-discrepancy-detection",
+ "engine": "anomaly",
+ "seed": 38947,
+ "knobs": {
+  "n_series": 100,
+  "anomalies_per_series": 2.413
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 29.9,
+ "results": {
+  "series": 100,
+  "hours": 2016,
+  "events": 276,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.31851301115241637,
+   "recall": 0.5586206896551724,
+   "median_delay_h": 0.0,
+   "events": 145
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6328624535315985,
+   "recall": 0.8275862068965517,
+   "median_delay_h": 0.0,
+   "events": 145
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5162825278810409,
+   "recall": 0.9724137931034482,
+   "median_delay_h": 0.0,
+   "events": 145
+  }
+ }
+}

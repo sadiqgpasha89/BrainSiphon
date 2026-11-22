@@ -1,0 +1,16 @@
+contract: care_team_coordination_bottleneck_inputs.v1
+owner: process-owners@example.com
+system_of_record: Workflow and task management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: stage_waiting_time, type: double, nullable: false }
+    - { name: handoff_volume_and_queue_length, type: double, nullable: false }
+    - { name: variant_frequency, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

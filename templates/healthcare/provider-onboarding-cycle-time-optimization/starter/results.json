@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/provider-onboarding-cycle-time-optimization",
+ "engine": "optimize",
+ "seed": 65922,
+ "knobs": {
+  "n_instances": 129,
+  "noise": 0.342
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "instances": 129,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 127.25091557786357,
+   "promised_cost": 96.0178846342458,
+   "optimism_gap_pct": 32.52834725800465,
+   "regret_vs_oracle_pct": 38.77029664221064
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 111.47046621030454,
+   "promised_cost": 77.30510177469694,
+   "optimism_gap_pct": 44.195484710933286,
+   "regret_vs_oracle_pct": 21.561323096212067
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 108.31424205768371,
+   "promised_cost": 79.56450421591457,
+   "optimism_gap_pct": 36.13387417553794,
+   "regret_vs_oracle_pct": 18.119381952295505
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.69895767100122,
+   "promised_cost": 96.44640959334085,
+   "optimism_gap_pct": -4.9223728932542965,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

@@ -1,0 +1,16 @@
+contract: clinical_handoff_quality_assessment_inputs.v1
+owner: clinical-operations@example.com
+system_of_record: Electronic health record handoff tool
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: element_presence, type: double, nullable: false }
+    - { name: structured_versus_narrative_consistency, type: double, nullable: false }
+    - { name: extraction_confidence, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

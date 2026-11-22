@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/vendor-compliance-document-intelligence",
+ "title": "Vendor Compliance Document Intelligence",
+ "domain": "healthcare",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 37234,
+ "knobs": {
+  "n_train": 1340
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field confidence",
+   "definition": "calibrated confidence per extracted field",
+   "asOfRule": "Held-out document groups"
+  },
+  {
+   "name": "Coverage versus requirement",
+   "definition": "extracted limits against required limits",
+   "asOfRule": "Requirement catalogue version"
+  },
+  {
+   "name": "Named-entity agreement",
+   "definition": "vendor and insured names versus vendor master",
+   "asOfRule": "Master as at scoring"
+  },
+  {
+   "name": "Expiry proximity",
+   "definition": "days to the document expiry",
+   "asOfRule": "Document dates"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Vendor Compliance Document Intelligence\": Extract and validate insurance, licences, certificates, training records, attestations and contract-linked evidence from vendor documents, with provenance, expiry alerts and a discrepancy queue for reviewers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Splitting by page not by vendor."
+}

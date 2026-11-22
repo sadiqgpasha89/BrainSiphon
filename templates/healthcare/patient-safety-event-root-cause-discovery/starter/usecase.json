@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/patient-safety-event-root-cause-discovery",
+ "title": "Patient Safety Event Root-Cause Discovery",
+ "domain": "healthcare",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 35487,
+ "knobs": {
+  "n_clusters": 1870,
+  "hub_share": 0.158
+ },
+ "blueprintSignals": [
+  {
+   "name": "Semantic cluster membership",
+   "definition": "embedding-based cluster of narratives with coherence score",
+   "asOfRule": "De-identified text only"
+  },
+  {
+   "name": "Temporal concentration",
+   "definition": "cluster counts by month and unit",
+   "asOfRule": "Event time"
+  },
+  {
+   "name": "Process-step co-occurrence",
+   "definition": "workflow step linked to an event in the graph",
+   "asOfRule": "Mapped by taxonomy"
+  },
+  {
+   "name": "Factor co-occurrence graph",
+   "definition": "co-occurring contributing factors across events",
+   "asOfRule": "Only taxonomy-coded factors"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Patient Safety Event Root-Cause Discovery\": Find recurring contributing factors and system patterns across de-identified safety events, giving investigators hypotheses and evidence links without asserting causality from correlation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Reporting a correlation as a cause."
+}

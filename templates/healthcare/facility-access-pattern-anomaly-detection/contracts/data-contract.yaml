@@ -1,0 +1,16 @@
+contract: facility_access_pattern_anomaly_inputs.v1
+owner: facility-security@example.com
+system_of_record: Facility access control system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: path_novelty, type: double, nullable: false }
+    - { name: schedule_alignment, type: double, nullable: false }
+    - { name: role_zone_fit, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/clinical-communication-delay-escalation-risk-prediction",
+ "title": "Clinical Communication Delay & Escalation Risk Prediction",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 7366,
+ "knobs": {
+  "n": 6770,
+  "dropout": 0.196
+ },
+ "blueprintSignals": [
+  {
+   "name": "Queue depth and arrival rate",
+   "definition": "open messages and recent arrivals in the target queue",
+   "asOfRule": "Event stream"
+  },
+  {
+   "name": "Role availability",
+   "definition": "on-shift staff in the target role",
+   "asOfRule": "Roster snapshot"
+  },
+  {
+   "name": "Urgency and channel",
+   "definition": "category and channel of the message",
+   "asOfRule": "Message metadata"
+  },
+  {
+   "name": "Recent response times",
+   "definition": "trailing response times for the role and queue",
+   "asOfRule": "Earlier periods"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Clinical Communication Delay & Escalation Risk Prediction\": Predict which messages are likely to miss acknowledgement or response service levels or stay unresolved, and give the escalation owner a time-to-response estimate and a trigger, while urgent deterministic escalation always overrides the model. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the score replace urgent timers."
+}

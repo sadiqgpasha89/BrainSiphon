@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/patient-safety-incident-prioritization",
+ "title": "Patient Safety Incident Prioritization",
+ "domain": "healthcare",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 60376,
+ "knobs": {
+  "n_docs": 6950
+ },
+ "blueprintSignals": [
+  {
+   "name": "Narrative risk phrases",
+   "definition": "model-extracted harm, equipment, medication and escalation cues",
+   "asOfRule": "Redacted text as at report time"
+  },
+  {
+   "name": "Event type and location risk",
+   "definition": "event category with unit risk profile",
+   "asOfRule": "Taxonomy version"
+  },
+  {
+   "name": "Recurrence",
+   "definition": "similar event count in the same unit or process in the last 90 days",
+   "asOfRule": "Count only earlier events"
+  },
+  {
+   "name": "Report completeness",
+   "definition": "share of required fields filled",
+   "asOfRule": "At submission"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Patient Safety Incident Prioritization\": Triage patient-safety incident reports by potential severity, urgency, recurrence and required review pathway, so safety professionals open the highest-risk reports first and mandatory escalations are never delayed. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on reporter-assigned severity."
+}

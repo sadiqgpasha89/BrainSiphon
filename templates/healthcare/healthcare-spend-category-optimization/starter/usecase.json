@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/healthcare-spend-category-optimization",
+ "title": "Healthcare Spend Category Optimization",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 74701,
+ "knobs": {
+  "n_instances": 131,
+  "noise": 0.36
+ },
+ "blueprintSignals": [
+  {
+   "name": "Price dispersion",
+   "definition": "spread of unit price for equivalent items across facilities",
+   "asOfRule": "After normalisation"
+  },
+  {
+   "name": "Volume concentration",
+   "definition": "share of spend in few suppliers",
+   "asOfRule": "Spend as at period end"
+  },
+  {
+   "name": "Standardisation gap",
+   "definition": "number of equivalent items used in a category",
+   "asOfRule": "Clinical approvals"
+  },
+  {
+   "name": "Switching feasibility",
+   "definition": "clinical, contractual and inventory barriers",
+   "asOfRule": "Contract and approval status"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Healthcare Spend Category Optimization\": Identify category-level savings opportunities while accounting for clinical equivalence, quality, availability, standardisation and switching costs, and present ranges with trade-offs for value analysis and procurement leadership. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Counting gross savings."
+}

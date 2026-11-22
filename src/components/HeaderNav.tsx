@@ -90,7 +90,7 @@ export function HeaderNav() {
             className="card absolute left-0 top-full z-50 mt-2 w-[36rem] p-2 shadow-xl shadow-black/20"
           >
             <nav aria-label="Industries">
-              <p className={LABEL}>{DOMAINS.length} industries · 50 blueprints each</p>
+              <p className={LABEL}>{DOMAINS.length} industries · 575 blueprints</p>
               <ul className="grid grid-cols-2 gap-0.5">
                 {DOMAINS.map((d) => (
                   <li key={d}>

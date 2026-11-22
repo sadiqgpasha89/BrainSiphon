@@ -1,0 +1,43 @@
+{
+ "use_case": "healthcare/vendor-access-risk-prediction",
+ "engine": "anomaly",
+ "seed": 28161,
+ "knobs": {
+  "n_series": 71,
+  "anomalies_per_series": 2.8
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 22.4,
+ "results": {
+  "series": 71,
+  "hours": 2016,
+  "events": 186,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.32252997539138173,
+   "recall": 0.5232558139534884,
+   "median_delay_h": 0.0,
+   "events": 86
+  },
+  "seasonal_z": {
+   "threshold": 5.0,
+   "false_alerts_per_series_week": 0.6098748625582491,
+   "recall": 0.8488372093023255,
+   "median_delay_h": 0.0,
+   "events": 86
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5248442326823394,
+   "recall": 0.9651162790697675,
+   "median_delay_h": 0.0,
+   "events": 86
+  }
+ }
+}

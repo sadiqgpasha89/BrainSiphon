@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/physician-demand-coverage-forecasting",
+ "title": "Physician Demand & Coverage Forecasting",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 72811,
+ "knobs": {
+  "n_series": 251
+ },
+ "blueprintSignals": [
+  {
+   "name": "Booked and referred demand",
+   "definition": "appointments and referrals already scheduled",
+   "asOfRule": "Snapshot at forecast time"
+  },
+  {
+   "name": "Seasonality and calendar",
+   "definition": "holidays, school terms and service calendars",
+   "asOfRule": "Calendar tables"
+  },
+  {
+   "name": "Census and admission trend",
+   "definition": "recent inpatient census and admissions",
+   "asOfRule": "Earlier periods"
+  },
+  {
+   "name": "Available physician capacity",
+   "definition": "rostered availability and leave",
+   "asOfRule": "Roster snapshot"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Physician Demand & Coverage Forecasting\": Forecast physician coverage requirements by specialty, facility, clinic, shift and service line, with uncertainty and shortage risk, so medical group leaders can plan coverage ahead of demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on random splits."
+}

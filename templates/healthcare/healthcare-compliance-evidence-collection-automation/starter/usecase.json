@@ -1,0 +1,55 @@
+{
+ "slug": "healthcare/healthcare-compliance-evidence-collection-automation",
+ "title": "Healthcare Compliance Evidence Collection Automation",
+ "domain": "healthcare",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 32966,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Requirement match score",
+   "definition": "match between an artifact and the evidence requirement",
+   "asOfRule": "Reviewed mappings"
+  },
+  {
+   "name": "Evidence age versus period",
+   "definition": "evidence date against the audit window",
+   "asOfRule": "Document metadata"
+  },
+  {
+   "name": "Completeness ratio",
+   "definition": "share of requirements with accepted evidence per control",
+   "asOfRule": "Binder state"
+  },
+  {
+   "name": "Source reliability",
+   "definition": "system-generated versus manually uploaded",
+   "asOfRule": "Source register"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Healthcare Compliance Evidence Collection Automation\": Gather, classify, validate and organise the evidence that audits, accreditation and regulatory reviews require, so control owners attest to a complete, time-stamped binder instead of assembling it by hand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the agent fill missing evidence."
+}

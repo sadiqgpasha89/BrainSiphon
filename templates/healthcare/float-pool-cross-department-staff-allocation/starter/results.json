@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/float-pool-cross-department-staff-allocation",
+ "engine": "optimize",
+ "seed": 14946,
+ "knobs": {
+  "n_instances": 190,
+  "noise": 0.317
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.9,
+ "results": {
+  "instances": 190,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 125.17610460912209,
+   "promised_cost": 97.45686994467499,
+   "optimism_gap_pct": 28.442566111740454,
+   "regret_vs_oracle_pct": 36.62199113323209
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 109.2833510749662,
+   "promised_cost": 79.09749274453712,
+   "optimism_gap_pct": 38.16285103741657,
+   "regret_vs_oracle_pct": 19.276031701068572
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 105.24093093327113,
+   "promised_cost": 81.07125036089819,
+   "optimism_gap_pct": 29.81288738582268,
+   "regret_vs_oracle_pct": 14.863979652636191
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.62222243346746,
+   "promised_cost": 95.95567317053037,
+   "optimism_gap_pct": -4.516096436905405,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

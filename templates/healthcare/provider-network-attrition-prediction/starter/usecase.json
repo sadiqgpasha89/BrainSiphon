@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/provider-network-attrition-prediction",
+ "title": "Provider Network Attrition Prediction",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 16247,
+ "knobs": {
+  "n": 8050,
+  "dropout": 0.3
+ },
+ "blueprintSignals": [
+  {
+   "name": "Contract end proximity",
+   "definition": "time to the contract end or renewal date",
+   "asOfRule": "Contract records"
+  },
+  {
+   "name": "Participation trend",
+   "definition": "change in claims volume or panel size",
+   "asOfRule": "Earlier periods"
+  },
+  {
+   "name": "Service issue history",
+   "definition": "unresolved issues and escalations",
+   "asOfRule": "Issue log"
+  },
+  {
+   "name": "Network role",
+   "definition": "criticality of the provider to access in the area",
+   "asOfRule": "Network rules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Provider Network Attrition Prediction\": Predict provider or group departures or reduced participation so network teams can plan retention and continuity, with explainable operational drivers and a retention workflow, and no punitive use. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using the score in payment or contracting decisions."
+}

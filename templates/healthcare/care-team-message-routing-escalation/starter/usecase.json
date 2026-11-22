@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/care-team-message-routing-escalation",
+ "title": "Care-Team Message Routing & Escalation",
+ "domain": "healthcare",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 28783,
+ "knobs": {
+  "n_docs": 6950
+ },
+ "blueprintSignals": [
+  {
+   "name": "Intent class",
+   "definition": "classified request type such as medication question, result follow-up or logistics",
+   "asOfRule": "Message text"
+  },
+  {
+   "name": "Care-team relationship",
+   "definition": "roles assigned to the patient and the unit",
+   "asOfRule": "Assignment records"
+  },
+  {
+   "name": "On-call and service hours",
+   "definition": "who is on call and whether the service is open",
+   "asOfRule": "Roster snapshot"
+  },
+  {
+   "name": "Acknowledgement history",
+   "definition": "past acknowledgement times for the target role and queue",
+   "asOfRule": "Earlier periods"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Care-Team Message Routing & Escalation\": Recommend the correct role or team for a message using specialty, location, patient-care relationship, on-call roster and escalation policy, with a fallback route, an acknowledgement timer and a defined escalation chain. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the model pick the recipient."
+}

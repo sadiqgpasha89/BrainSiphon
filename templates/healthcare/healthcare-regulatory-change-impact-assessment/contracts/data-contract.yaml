@@ -1,0 +1,16 @@
+contract: healthcare_regulatory_change_impact_inputs.v1
+owner: compliance@example.com
+system_of_record: Compliance case system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: graph_distance_to_the_changed, type: double, nullable: false }
+    - { name: owner_and_facility_scope, type: double, nullable: false }
+    - { name: prior_change_similarity, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

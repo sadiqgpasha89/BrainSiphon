@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/clinical-communication-workload-optimization",
+ "engine": "optimize",
+ "seed": 47899,
+ "knobs": {
+  "n_instances": 150,
+  "noise": 0.439
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "instances": 150,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 135.52702475052527,
+   "promised_cost": 90.13829346433126,
+   "optimism_gap_pct": 50.35454915080553,
+   "regret_vs_oracle_pct": 47.258909208135094
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 123.54801933988813,
+   "promised_cost": 70.81935573357191,
+   "optimism_gap_pct": 74.45515856524547,
+   "regret_vs_oracle_pct": 34.242942293669664
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 116.50103276441155,
+   "promised_cost": 73.78680711622549,
+   "optimism_gap_pct": 57.88870303183688,
+   "regret_vs_oracle_pct": 26.58593397212433
+  },
+  "oracle_true_costs": {
+   "realised_cost": 92.03315811539251,
+   "promised_cost": 101.58426638133125,
+   "optimism_gap_pct": -9.402153115016247,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

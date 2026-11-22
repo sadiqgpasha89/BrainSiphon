@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/healthcare-workforce-demand-forecasting-by-unit",
+ "title": "Healthcare Workforce Demand Forecasting by Unit",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 12222,
+ "knobs": {
+  "n_series": 201
+ },
+ "blueprintSignals": [
+  {
+   "name": "Acuity-weighted workload",
+   "definition": "sum of acuity scores times expected hours of care per patient-day",
+   "asOfRule": "Use the acuity score as charted at forecast time"
+  },
+  {
+   "name": "Planned procedure load",
+   "definition": "scheduled cases by service line and day with historical conversion to inpatient stays",
+   "asOfRule": "Use the schedule snapshot as it stood at forecast time, not the cases that finally happened"
+  },
+  {
+   "name": "Admission and discharge rhythm",
+   "definition": "day-of-week and hour-of-day arrival and discharge profile per unit",
+   "asOfRule": "Compute from event time not from the processing time of the feed"
+  },
+  {
+   "name": "Holiday and event calendar",
+   "definition": "distance to the nearest holiday and local event windows",
+   "asOfRule": "Only calendars published before the forecast date"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Healthcare Workforce Demand Forecasting by Unit\": Forecast role- and skill-specific staffing demand for every facility, unit and shift so leaders can plan rosters and contingency cover days or weeks ahead instead of discovering shortfalls at shift start. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on paid hours that reflect past shortages."
+}

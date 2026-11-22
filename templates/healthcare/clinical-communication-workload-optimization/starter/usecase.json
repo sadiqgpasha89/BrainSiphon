@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/clinical-communication-workload-optimization",
+ "title": "Clinical Communication Workload Optimization",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 47899,
+ "knobs": {
+  "n_instances": 150,
+  "noise": 0.439
+ },
+ "blueprintSignals": [
+  {
+   "name": "Duplicate cluster size",
+   "definition": "messages in a cluster of near-identical content to the same group",
+   "asOfRule": "Message text and metadata"
+  },
+  {
+   "name": "Acknowledgement rate by category",
+   "definition": "share of messages acknowledged and acted on",
+   "asOfRule": "Earlier periods"
+  },
+  {
+   "name": "Team workload",
+   "definition": "messages per staff member per shift",
+   "asOfRule": "Roster and message data"
+  },
+  {
+   "name": "Policy category",
+   "definition": "policy class of each notification",
+   "asOfRule": "Policy register"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Clinical Communication Workload Optimization\": Reduce avoidable message overload by finding duplicates, bundling and routing improvements and by forecasting workload, while making sure urgent information still reaches an accountable recipient. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising volume while ignoring urgent categories."
+}

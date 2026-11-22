@@ -1,0 +1,46 @@
+{
+ "use_case": "healthcare/vendor-visit-demand-forecasting",
+ "engine": "forecast",
+ "seed": 74303,
+ "knobs": {
+  "n_series": 184
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 15.8,
+ "results": {
+  "rows": 16755,
+  "h1": {
+   "wmape_model": 0.1189002026669522,
+   "wmape_baseline": 0.21200923489655885,
+   "fva": 0.43917441744948216
+  },
+  "h3": {
+   "wmape_model": 0.11758114251859325,
+   "wmape_baseline": 0.22007763066943162,
+   "fva": 0.46572878778758564
+  },
+  "h7": {
+   "wmape_model": 0.12302958184556916,
+   "wmape_baseline": 0.20940269587783913,
+   "fva": 0.41247374428578576
+  },
+  "h14": {
+   "wmape_model": 0.1493423685597426,
+   "wmape_baseline": 0.231686850072397,
+   "fva": 0.35541284059463707
+  },
+  "p90_coverage": 0.8778871978513877,
+  "wmape_sku_level": 0.12668304827588878,
+  "wmape_aggregate": 0.02973361650577576,
+  "late_feed": {
+   "missing_as_zero": 0.23294738057774747,
+   "missing_as_nan": 0.14055778796713858
+  }
+ }
+}

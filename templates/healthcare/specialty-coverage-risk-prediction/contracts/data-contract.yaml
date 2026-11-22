@@ -1,0 +1,16 @@
+contract: specialty_coverage_risk_prediction_inputs.v1
+owner: clinical-operations@example.com
+system_of_record: Coverage roster and scheduling system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: coverage_depth, type: double, nullable: false }
+    - { name: demand_to_capacity_ratio, type: double, nullable: false }
+    - { name: credential_and_privilege_expiry, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

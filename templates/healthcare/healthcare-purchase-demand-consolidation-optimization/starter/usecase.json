@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/healthcare-purchase-demand-consolidation-optimization",
+ "title": "Healthcare Purchase Demand Consolidation Optimization",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 8084,
+ "knobs": {
+  "n_instances": 179,
+  "noise": 0.26
+ },
+ "blueprintSignals": [
+  {
+   "name": "Forecast demand with uncertainty",
+   "definition": "expected demand and variance per item and facility",
+   "asOfRule": "Forecast snapshot at planning time"
+  },
+  {
+   "name": "Tier proximity",
+   "definition": "distance to the next price tier",
+   "asOfRule": "Contract terms"
+  },
+  {
+   "name": "Lead-time variability",
+   "definition": "variance of supplier lead time",
+   "asOfRule": "Receipts history"
+  },
+  {
+   "name": "Expiry risk",
+   "definition": "shelf life remaining against forecast consumption",
+   "asOfRule": "Lot data as at planning"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Healthcare Purchase Demand Consolidation Optimization\": Aggregate compatible demand across facilities to improve contract leverage, reduce fragmented orders and optimise replenishment while keeping safety stock for critical supplies. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising price while ignoring holding cost."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/workforce-productivity-fte-leakage-detection",
+ "title": "Workforce Productivity & FTE Leakage Detection",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 51878,
+ "knobs": {
+  "n_series": 97,
+  "anomalies_per_series": 2.807
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hours per workload unit",
+   "definition": "worked hours divided by acuity-weighted workload",
+   "asOfRule": "Use the settled workload for the period"
+  },
+  {
+   "name": "Variance decomposition",
+   "definition": "volume effect, mix effect, rate effect and unexplained residual",
+   "asOfRule": "Decomposition must reconcile to the ledger"
+  },
+  {
+   "name": "Budget-to-actual drift",
+   "definition": "cumulative FTE variance over rolling periods",
+   "asOfRule": "Use closed periods for scoring"
+  },
+  {
+   "name": "Data-quality index",
+   "definition": "share of missing punches, unmapped cost centres and late entries",
+   "asOfRule": "Computed from the same extract as the metric"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Workforce Productivity & FTE Leakage Detection\": Detect unexplained variance between staffed hours, workload, service volume and approved budgets, and queue it as an investigation lead with an estimated financial exposure and no allegation attached. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Calling a data gap a leakage finding."
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "healthcare/provider-directory-accuracy-prediction",
+ "title": "Provider Directory Accuracy Prediction",
+ "domain": "healthcare",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 45838,
+ "knobs": {
+  "n_entities": 1980,
+  "positive_entity_rate": 0.02,
+  "n_flash_sales": 7
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field age since verification",
+   "definition": "days since the field was last confirmed from a trusted source",
+   "asOfRule": "Use verification events"
+  },
+  {
+   "name": "Cross-source disagreement",
+   "definition": "disagreement between directory, scheduling and credentialing for the field",
+   "asOfRule": "Use the snapshot at scoring"
+  },
+  {
+   "name": "Activity mismatch",
+   "definition": "absence of appointments or claims at a listed location",
+   "asOfRule": "Use a lagged window"
+  },
+  {
+   "name": "Provider change propensity",
+   "definition": "historical rate of changes for similar practices",
+   "asOfRule": "Past data only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Provider Directory Accuracy Prediction\": Predict which provider directory fields such as location, specialty, affiliation, accepting-patients status and contact details are stale or inconsistent, so a health system can target attestation outreach where errors are most likely. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on records where change implies error."
+}

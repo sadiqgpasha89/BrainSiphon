@@ -1,0 +1,55 @@
+{
+ "slug": "healthcare/provider-recredentialing-automation",
+ "title": "Provider Recredentialing Automation",
+ "domain": "healthcare",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 30115,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Evidence completeness",
+   "definition": "required items received and verified by the checklist",
+   "asOfRule": "Checklist version as of the due date"
+  },
+  {
+   "name": "Exception severity",
+   "definition": "rule-classified severity of each discrepancy",
+   "asOfRule": "Rule output not the model's opinion"
+  },
+  {
+   "name": "Citation coverage",
+   "definition": "share of summary statements with a source span",
+   "asOfRule": "Check against retrieved sources"
+  },
+  {
+   "name": "Time to due date",
+   "definition": "days left against the average cycle",
+   "asOfRule": "Calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Provider Recredentialing Automation\": Orchestrate periodic recredentialing cycles, evidence collection, verification, exception routing and committee packet preparation with a deterministic case state machine and human sign-off for every adverse finding. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the agent finalise a case."
+}

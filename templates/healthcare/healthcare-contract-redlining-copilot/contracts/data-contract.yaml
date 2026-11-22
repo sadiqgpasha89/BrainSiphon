@@ -1,0 +1,16 @@
+contract: healthcare_contract_redlining_copilot_inputs.v1
+owner: legal@example.com
+system_of_record: Contract management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: playbook_match, type: double, nullable: false }
+    - { name: deviation_severity, type: double, nullable: false }
+    - { name: acceptance_history, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

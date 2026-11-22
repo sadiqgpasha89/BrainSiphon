@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/provider-network-expansion-optimization",
+ "title": "Provider Network Expansion Optimization",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 38762,
+ "knobs": {
+  "n_instances": 138,
+  "noise": 0.316
+ },
+ "blueprintSignals": [
+  {
+   "name": "Access gain per candidate",
+   "definition": "additional members reached within the standard if the candidate joins",
+   "asOfRule": "Gap model snapshot"
+  },
+  {
+   "name": "Contracting cost estimate",
+   "definition": "expected cost of adding the candidate",
+   "asOfRule": "Contract tables"
+  },
+  {
+   "name": "Candidate capacity",
+   "definition": "accepting status and appointment capacity",
+   "asOfRule": "Candidate data"
+  },
+  {
+   "name": "Demand growth",
+   "definition": "forecast demand change in the area",
+   "asOfRule": "Forecast snapshot"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Provider Network Expansion Optimization\": Recommend where and which provider capacity to add to improve access, adequacy, cost and service coverage, and give strategy and contracting teams ranked expansion scenarios with the expected access improvement, cost and trade-offs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Ignoring candidate capacity."
+}

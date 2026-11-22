@@ -1,0 +1,32 @@
+{
+ "id": "extraction",
+ "label": "Information extraction with a layout the model has never seen",
+ "summary": "Layout-specific rules against a token tagger on invoices in three layouts, one of them unseen in training; reports per-field F1, the drop on the new layout and how far a few labelled documents recover it.",
+ "problemTypes": [
+  "information-extraction"
+ ],
+ "traps": [
+  "A new template at test time",
+  "A multi-token field with no fixed shape",
+  "Rules written for a single layout"
+ ],
+ "origin": "brainsiphon-pro",
+ "slots": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ]
+}

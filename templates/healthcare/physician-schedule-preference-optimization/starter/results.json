@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/physician-schedule-preference-optimization",
+ "engine": "optimize",
+ "seed": 63126,
+ "knobs": {
+  "n_instances": 187,
+  "noise": 0.28
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "instances": 187,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 121.45580953176281,
+   "promised_cost": 99.33692568802377,
+   "optimism_gap_pct": 22.266527467545465,
+   "regret_vs_oracle_pct": 32.82289906295915
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 105.66993649325988,
+   "promised_cost": 81.1246955853824,
+   "optimism_gap_pct": 30.256188612805367,
+   "regret_vs_oracle_pct": 15.559620926680026
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 103.0033627292993,
+   "promised_cost": 82.59544076385089,
+   "optimism_gap_pct": 24.70829113170643,
+   "regret_vs_oracle_pct": 12.643481638984222
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.4419203229345,
+   "promised_cost": 93.75073040558182,
+   "optimism_gap_pct": -2.4627115678555422,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

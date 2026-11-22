@@ -2,9 +2,9 @@
 
     python3 tools/validate_repo.py
 
-For each of the 500 packs: every required file exists and is non-trivial; contracts parse; the manifest lists exactly the files on disk
+For each of the 575 packs: every required file exists and is non-trivial; contracts parse; the manifest lists exactly the files on disk
 with matching hashes; results.json exists and belongs to this pack; no placeholder text is left behind; the README names the right use
-case. Across the repository: 500 packs, 50 per domain, no pack without a blueprint, no blueprint without a pack.
+case. Across the repository: 575 packs (125 healthcare, 50 in each other domain), no pack without a blueprint, no blueprint without a pack.
 """
 from __future__ import annotations
 
@@ -38,8 +38,9 @@ def main() -> int:
     per_domain: dict[str, int] = {}
     for slug in slugs:
         per_domain[slug.split("/")[0]] = per_domain.get(slug.split("/")[0], 0) + 1
-    if any(n != 50 for n in per_domain.values()) or len(per_domain) != 10:
-        problems.append(f"expected 10 domains with 50 packs each, found {per_domain}")
+    expected = {d: (125 if d == "healthcare" else 50) for d in per_domain}
+    if per_domain != expected or len(per_domain) != 10:
+        problems.append(f"expected 10 domains (healthcare 125, the others 50 each), found {per_domain}")
 
     for slug in slugs:
         pack = ROOT / "templates" / slug

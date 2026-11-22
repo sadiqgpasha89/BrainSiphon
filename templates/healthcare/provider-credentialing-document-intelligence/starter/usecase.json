@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/provider-credentialing-document-intelligence",
+ "title": "Provider Credentialing Document Intelligence",
+ "domain": "healthcare",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 68277,
+ "knobs": {
+  "n_train": 1270
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field confidence",
+   "definition": "calibrated extraction confidence per field and document",
+   "asOfRule": "Calibrate on held-out document groups"
+  },
+  {
+   "name": "Document-type completeness",
+   "definition": "required documents present for the credential type",
+   "asOfRule": "Requirements as of the application date"
+  },
+  {
+   "name": "Cross-source agreement",
+   "definition": "match score between application, licence and verification response",
+   "asOfRule": "Compare against verification responses received before scoring"
+  },
+  {
+   "name": "Expiry window",
+   "definition": "days between document expiry and decision date",
+   "asOfRule": "Use document dates not upload dates"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Provider Credentialing Document Intelligence\": Ingest provider applications and supporting evidence, classify each document, extract fields with page-level provenance, validate completeness and reconcile values across sources so credentialing staff review a ready evidence packet instead of raw paperwork. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Splitting train and test by page and not by provider."
+}

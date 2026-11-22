@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/physician-availability-schedule-conflict-detection",
+ "title": "Physician Availability & Schedule Conflict Detection",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 87915,
+ "knobs": {
+  "n_series": 96,
+  "anomalies_per_series": 1.927
+ },
+ "blueprintSignals": [
+  {
+   "name": "Overlap duration",
+   "definition": "minutes of overlap between commitments",
+   "asOfRule": "Event times"
+  },
+  {
+   "name": "Travel infeasibility margin",
+   "definition": "travel time plus buffer against the gap between commitments",
+   "asOfRule": "Travel-time table version"
+  },
+  {
+   "name": "Privilege and site eligibility",
+   "definition": "whether the physician may practise at the site",
+   "asOfRule": "Privilege register"
+  },
+  {
+   "name": "Affected patient volume",
+   "definition": "appointments and procedures touched by the conflict",
+   "asOfRule": "Schedule snapshot"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Physician Availability & Schedule Conflict Detection\": Detect overlapping clinic, operating room, call, telehealth and multi-facility commitments, including travel-time infeasibility, and propose resolutions with the affected appointments and coverage. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using a model for logical conflicts."
+}

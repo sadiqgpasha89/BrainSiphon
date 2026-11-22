@@ -1,0 +1,55 @@
+{
+ "slug": "healthcare/regulatory-quality-measure-gap-detection",
+ "title": "Regulatory Quality Measure Gap Detection",
+ "domain": "healthcare",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 41325,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Evidence coverage",
+   "definition": "share of requirement elements with a cited evidence span",
+   "asOfRule": "Retrieved from approved sources"
+  },
+  {
+   "name": "Evidence freshness",
+   "definition": "age of the evidence relative to the required period",
+   "asOfRule": "Document dates"
+  },
+  {
+   "name": "Citation precision",
+   "definition": "share of cited spans that actually support the claim",
+   "asOfRule": "Judged on a labelled set"
+  },
+  {
+   "name": "Owner responsiveness",
+   "definition": "days from gap assignment to closure in prior cycles",
+   "asOfRule": "Past cycles only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Regulatory Quality Measure Gap Detection\": Identify missing documentation, measure evidence, workflow steps and data fields needed to satisfy selected quality requirements, with a requirement-to-evidence map that cites its sources and rule versions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Scoring answers without checking citations."
+}

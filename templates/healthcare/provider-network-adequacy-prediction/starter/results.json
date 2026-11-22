@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/provider-network-adequacy-prediction",
+ "engine": "tabular",
+ "seed": 44183,
+ "knobs": {
+  "n_entities": 2620,
+  "positive_entity_rate": 0.027,
+  "n_flash_sales": 3
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 11.5,
+ "results": {
+  "rows": 195129,
+  "positive_rate": 0.003525872627851319,
+  "test_rows": 64934,
+  "test_positive_rate": 0.0030030492500077,
+  "baseline_lr": {
+   "pr_auc": 0.6687462955178398,
+   "recall_at_0.5pct_fpr": 0.7230769230769231,
+   "brier": 0.0016599056160191176
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7031081730730944,
+   "recall_at_0.5pct_fpr": 0.7384615384615385,
+   "brier": 0.0012577585912078
+  }
+ }
+}

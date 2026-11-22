@@ -1,0 +1,16 @@
+contract: healthcare_vendor_substitution_inputs.v1
+owner: materials-management@example.com
+system_of_record: Item master and clinical equivalence register
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: approved_equivalence_status, type: double, nullable: false }
+    - { name: supply_risk_of_the_alternative, type: double, nullable: false }
+    - { name: price_delta, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

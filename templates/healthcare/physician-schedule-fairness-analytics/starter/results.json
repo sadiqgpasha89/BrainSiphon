@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/physician-schedule-fairness-analytics",
+ "engine": "tabular",
+ "seed": 11623,
+ "knobs": {
+  "n_entities": 2280,
+  "positive_entity_rate": 0.026,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 10.2,
+ "results": {
+  "rows": 177414,
+  "positive_rate": 0.0033931933218348045,
+  "test_rows": 59103,
+  "test_positive_rate": 0.003316244522274673,
+  "baseline_lr": {
+   "pr_auc": 0.7577826792367737,
+   "recall_at_0.5pct_fpr": 0.8418367346938775,
+   "brier": 0.0014724557147888023
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7786932959457253,
+   "recall_at_0.5pct_fpr": 0.8469387755102041,
+   "brier": 0.0011888121304684646
+  }
+ }
+}

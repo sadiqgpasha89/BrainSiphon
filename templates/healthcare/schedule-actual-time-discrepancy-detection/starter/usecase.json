@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/schedule-actual-time-discrepancy-detection",
+ "title": "Schedule vs Actual Time Discrepancy Detection",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 38947,
+ "knobs": {
+  "n_series": 100,
+  "anomalies_per_series": 2.413
+ },
+ "blueprintSignals": [
+  {
+   "name": "Punch-to-schedule delta",
+   "definition": "minutes between scheduled and actual start and end",
+   "asOfRule": "Use punch time not the entry time"
+  },
+  {
+   "name": "Edit history",
+   "definition": "number and recency of manual edits to a record",
+   "asOfRule": "Use only edits logged before scoring"
+  },
+  {
+   "name": "Duplicate signature",
+   "definition": "same person with overlapping or near-identical entries",
+   "asOfRule": "Match on pseudonymous ID and time window"
+  },
+  {
+   "name": "Approval gap",
+   "definition": "worked hours beyond schedule without a recorded approval",
+   "asOfRule": "Approval records as of the cut-off"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Schedule vs Actual Time Discrepancy Detection\": Identify missed punches, schedule deviations, unapproved overtime, duplicate time entries and reconciliation exceptions before payroll closes, with a supporting timeline and a documented correction path. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on already-corrected data."
+}

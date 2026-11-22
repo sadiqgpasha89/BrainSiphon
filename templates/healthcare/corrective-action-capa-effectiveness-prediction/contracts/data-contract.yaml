@@ -1,0 +1,16 @@
+contract: corrective_action_capa_effectiveness_inputs.v1
+owner: quality-and-patient-safety@example.com
+system_of_record: Quality management and CAPA system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: action_strength, type: double, nullable: false }
+    - { name: implementation_evidence, type: double, nullable: false }
+    - { name: pre_action_event_rate, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

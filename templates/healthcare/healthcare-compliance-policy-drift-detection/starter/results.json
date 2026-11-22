@@ -1,0 +1,36 @@
+{
+ "use_case": "healthcare/healthcare-compliance-policy-drift-detection",
+ "engine": "nlp",
+ "seed": 54001,
+ "knobs": {
+  "n_docs": 6840
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 16.0,
+ "results": {
+  "docs": 6840,
+  "duplicate_share": 0.24941520467836253,
+  "random_split_with_leak": {
+   "macro_f1": 0.9079349042140876,
+   "ece": 0.11813820180505452
+  },
+  "time_split_clean": {
+   "macro_f1": 0.5013181269196298,
+   "ece": 0.04168361053022315
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8497724968743876,
+   "ece": 0.1144823885957381
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.5013181269196298,
+   "ece": 0.04168361053022315
+  }
+ }
+}

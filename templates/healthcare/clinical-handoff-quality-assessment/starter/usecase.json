@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/clinical-handoff-quality-assessment",
+ "title": "Clinical Handoff Quality Assessment",
+ "domain": "healthcare",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 37460,
+ "knobs": {
+  "n_train": 1360
+ },
+ "blueprintSignals": [
+  {
+   "name": "Element presence",
+   "definition": "whether each required checklist element appears",
+   "asOfRule": "Extracted fields"
+  },
+  {
+   "name": "Structured-versus-narrative consistency",
+   "definition": "agreement of narrative statements with structured observations",
+   "asOfRule": "Record snapshot"
+  },
+  {
+   "name": "Extraction confidence",
+   "definition": "calibrated confidence for each extracted field",
+   "asOfRule": "Held-out notes"
+  },
+  {
+   "name": "Handoff context",
+   "definition": "unit, shift and patient acuity from workflow data",
+   "asOfRule": "Workflow records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Clinical Handoff Quality Assessment\": Check whether handoff records contain the structured elements an approved checklist requires and are internally consistent, and give the reviewer a completeness checklist with missing-field flags, contradictions and exact source text. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the model grade quality."
+}

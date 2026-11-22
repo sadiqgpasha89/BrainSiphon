@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/facility-access-pattern-anomaly-detection",
+ "title": "Facility Access Pattern Anomaly Detection",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 16002,
+ "knobs": {
+  "n_series": 90,
+  "anomalies_per_series": 1.867
+ },
+ "blueprintSignals": [
+  {
+   "name": "Path novelty",
+   "definition": "whether the zone sequence is unseen for the identity and role",
+   "asOfRule": "Past paths"
+  },
+  {
+   "name": "Schedule alignment",
+   "definition": "access time relative to the rostered shift",
+   "asOfRule": "Roster snapshot"
+  },
+  {
+   "name": "Role-zone fit",
+   "definition": "zones accessed against the role's allowed set",
+   "asOfRule": "Role as of the event"
+  },
+  {
+   "name": "Peer deviation",
+   "definition": "difference from peers with the same role and unit",
+   "asOfRule": "Same period"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Facility Access Pattern Anomaly Detection\": Detect unusual access patterns across facilities, staff, contractors and authorised visitors, show the affected access path and evidence, and send the case to security triage with hard policy checks run first. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating anomalies as violations."
+}
