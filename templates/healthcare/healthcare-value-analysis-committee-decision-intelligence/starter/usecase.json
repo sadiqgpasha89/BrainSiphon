@@ -1,0 +1,55 @@
+{
+ "slug": "healthcare/healthcare-value-analysis-committee-decision-intelligence",
+ "title": "Healthcare Value Analysis Committee Decision Intelligence",
+ "domain": "healthcare",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 12077,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Evidence grade",
+   "definition": "study design and risk-of-bias grade per source",
+   "asOfRule": "Grading scheme version"
+  },
+  {
+   "name": "Internal utilisation and cost",
+   "definition": "actual use and total cost of ownership",
+   "asOfRule": "Period as stated"
+  },
+  {
+   "name": "Citation coverage",
+   "definition": "share of statements with a supporting source span",
+   "asOfRule": "Checked against retrieved text"
+  },
+  {
+   "name": "Conflict flags",
+   "definition": "disclosed interests of authors and sponsors",
+   "asOfRule": "Disclosure data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Healthcare Value Analysis Committee Decision Intelligence\": Prepare evidence-based review packets that compare products and services on clinical outcomes, safety, total cost, utilisation, implementation and alternatives, with source citations, uncertainty and conflict-of-interest disclosures. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Judging fluency over citations."
+}

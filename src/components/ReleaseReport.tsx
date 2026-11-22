@@ -161,7 +161,7 @@ export function KitRunsTable({ release }: { release: ReleaseManifest }) {
   );
 }
 
-/** The three kinds of thing the site holds, and how many of the 500 blueprints are at each, so documentation is never mistaken for a solution. */
+/** The three kinds of thing the site holds, and how many of the 575 blueprints are at each, so documentation is never mistaken for a solution. */
 export function EvidenceLayers({ release }: { release: ReleaseManifest }) {
   const total = release.checks.schema.useCases;
   const met = (id: string) => release.maturity.find((m) => m.id === id)?.met ?? 0;

@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/healthcare-workforce-skill-mix-optimization",
+ "engine": "optimize",
+ "seed": 55920,
+ "knobs": {
+  "n_instances": 121,
+  "noise": 0.365
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "instances": 121,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 128.72339708436687,
+   "promised_cost": 95.60274326909644,
+   "optimism_gap_pct": 34.644041251038736,
+   "regret_vs_oracle_pct": 39.773222881103884
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 114.53019716805724,
+   "promised_cost": 76.34657162340363,
+   "optimism_gap_pct": 50.01354315293003,
+   "regret_vs_oracle_pct": 24.361655596267667
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 110.16390338029179,
+   "promised_cost": 78.68106007541904,
+   "optimism_gap_pct": 40.0132424178006,
+   "regret_vs_oracle_pct": 19.62055204722344
+  },
+  "oracle_true_costs": {
+   "realised_cost": 92.09446160790297,
+   "promised_cost": 98.4348205926287,
+   "optimism_gap_pct": -6.4411749282961805,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

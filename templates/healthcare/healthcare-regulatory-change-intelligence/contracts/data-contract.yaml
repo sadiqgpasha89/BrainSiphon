@@ -1,0 +1,16 @@
+contract: healthcare_regulatory_change_inputs.v1
+owner: compliance@example.com
+system_of_record: Approved regulatory and accreditation source feeds
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: text_diff_magnitude, type: double, nullable: false }
+    - { name: applicability_match, type: double, nullable: false }
+    - { name: effective_date_proximity, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

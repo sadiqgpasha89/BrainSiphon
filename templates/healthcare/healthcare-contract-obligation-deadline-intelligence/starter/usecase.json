@@ -1,0 +1,55 @@
+{
+ "slug": "healthcare/healthcare-contract-obligation-deadline-intelligence",
+ "title": "Healthcare Contract Obligation & Deadline Intelligence",
+ "domain": "healthcare",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 72961,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Obligation extraction confidence",
+   "definition": "calibrated confidence for each field",
+   "asOfRule": "Held-out contract groups"
+  },
+  {
+   "name": "Notice window",
+   "definition": "computed latest action date for the clause",
+   "asOfRule": "Rule-computed"
+  },
+  {
+   "name": "Owner suggestion match",
+   "definition": "similarity of obligation to a team's responsibilities in the directory",
+   "asOfRule": "Directory as at assignment"
+  },
+  {
+   "name": "Penalty exposure",
+   "definition": "stated penalties and caps for the obligation",
+   "asOfRule": "Extracted with provenance"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Healthcare Contract Obligation & Deadline Intelligence\": Extract obligations, owners, milestones, notice periods, service levels, renewal windows, penalties and dependencies from agreements into a cited obligation register, and draft follow-up tasks for owners to confirm. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the model compute dates."
+}

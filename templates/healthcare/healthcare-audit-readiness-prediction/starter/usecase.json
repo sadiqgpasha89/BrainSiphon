@@ -1,0 +1,59 @@
+{
+ "slug": "healthcare/healthcare-audit-readiness-prediction",
+ "title": "Healthcare Audit Readiness Prediction",
+ "domain": "healthcare",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 3242,
+ "knobs": {
+  "n": 25730,
+  "outlier_share": 0.034,
+  "drift": 0.226
+ },
+ "blueprintSignals": [
+  {
+   "name": "Criteria completion share",
+   "definition": "share of criteria with accepted evidence and passing tests",
+   "asOfRule": "Status at scoring"
+  },
+  {
+   "name": "Open findings by severity and age",
+   "definition": "unresolved findings weighted by severity and days open",
+   "asOfRule": "Findings tracker"
+  },
+  {
+   "name": "Remediation on-time rate",
+   "definition": "share of past remediation actions closed on schedule",
+   "asOfRule": "Earlier periods"
+  },
+  {
+   "name": "Days to audit",
+   "definition": "time left to the audit date",
+   "asOfRule": "Audit calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Healthcare Audit Readiness Prediction\": Estimate readiness for a defined audit or accreditation scope and identify the unresolved gaps before the audit date, with a transparent score that is never presented as a certification. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Presenting readiness as certification."
+}

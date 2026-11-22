@@ -1,0 +1,59 @@
+{
+ "slug": "healthcare/healthcare-supplier-performance-risk-scoring",
+ "title": "Healthcare Supplier Performance & Risk Scoring",
+ "domain": "healthcare",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 43199,
+ "knobs": {
+  "n_entities": 2430,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 8
+ },
+ "blueprintSignals": [
+  {
+   "name": "On-time-in-full rate trend",
+   "definition": "trailing on-time-in-full against target and its slope",
+   "asOfRule": "Receipts as logged"
+  },
+  {
+   "name": "Quality incident rate",
+   "definition": "incidents and recalls per volume",
+   "asOfRule": "Incidents as recorded"
+  },
+  {
+   "name": "Single-source exposure",
+   "definition": "share of critical items with no qualified alternative",
+   "asOfRule": "Item qualification tables"
+  },
+  {
+   "name": "External risk flags",
+   "definition": "approved financial and disruption indicators",
+   "asOfRule": "Feed timestamps"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Healthcare Supplier Performance & Risk Scoring\": Predict supplier delivery, quality, continuity and financial or operational risks that could disrupt care operations, with an explainable scorecard that separates observed facts from external signals. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Mixing facts with unverified external signals."
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/hospital-quality-measure-performance-forecasting",
+ "title": "Hospital Quality Measure Performance Forecasting",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 86509,
+ "knobs": {
+  "n_series": 198
+ },
+ "blueprintSignals": [
+  {
+   "name": "Risk-adjusted rate trend",
+   "definition": "rolling observed to expected ratio with case-mix adjustment",
+   "asOfRule": "Use the final adjusted data"
+  },
+  {
+   "name": "Denominator drift",
+   "definition": "change in volume and exclusion share over time",
+   "asOfRule": "Use closed periods"
+  },
+  {
+   "name": "Process-measure lead indicator",
+   "definition": "compliance with the care process that drives the outcome",
+   "asOfRule": "Same definition as the process measure"
+  },
+  {
+   "name": "Reporting completeness",
+   "definition": "share of expected records present at the cut-off",
+   "asOfRule": "Compute at each historical cut-off"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Hospital Quality Measure Performance Forecasting\": Forecast quality measure outcomes and identify the facilities and units likely to miss internal or external performance targets early enough for improvement work to change the result. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Backtesting on final data without reporting lag."
+}

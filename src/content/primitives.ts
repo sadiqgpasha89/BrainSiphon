@@ -1,5 +1,5 @@
 /**
- * Canonical architectural primitives. Across 500 blueprints the same mechanisms repeat (point-in-time joins, budget pacers,
+ * Canonical architectural primitives. Across 575 blueprints the same mechanisms repeat (point-in-time joins, budget pacers,
  * load shedding, outbox + CDC ...). Each is explained once here, at /patterns/primitives/<id>, and blueprints link to it
  * instead of re-deriving it. Client-safe: plain data, no Node imports.
  */

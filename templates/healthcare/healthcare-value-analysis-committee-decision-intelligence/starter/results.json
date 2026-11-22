@@ -1,0 +1,41 @@
+{
+ "use_case": "healthcare/healthcare-value-analysis-committee-decision-intelligence",
+ "engine": "llm-rag",
+ "seed": 12077,
+ "knobs": {},
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.4,
+ "results": {
+  "chunks": 132,
+  "golden": 132,
+  "test_questions": 66,
+  "naive": {
+   "answerable": 48,
+   "unanswerable": 18,
+   "accuracy": 0.5625,
+   "answered_precision": 0.5625,
+   "abstained_on_answerable": 0.0,
+   "hallucination_rate": 1.0,
+   "stale_or_changelog_errors": 8,
+   "recall@5": 1.0,
+   "citation_support": 1.0
+  },
+  "guarded": {
+   "answerable": 48,
+   "unanswerable": 18,
+   "accuracy": 0.7083333333333334,
+   "answered_precision": 1.0,
+   "abstained_on_answerable": 0.2916666666666667,
+   "hallucination_rate": 0.0,
+   "stale_or_changelog_errors": 0,
+   "recall@5": 1.0,
+   "citation_support": 1.0
+  }
+ }
+}

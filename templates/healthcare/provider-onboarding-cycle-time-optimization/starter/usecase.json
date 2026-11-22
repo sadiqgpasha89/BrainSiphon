@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/provider-onboarding-cycle-time-optimization",
+ "title": "Provider Onboarding Cycle-Time Optimization",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 65922,
+ "knobs": {
+  "n_instances": 129,
+  "noise": 0.342
+ },
+ "blueprintSignals": [
+  {
+   "name": "Critical-path slack",
+   "definition": "latest start minus earliest start for each open task",
+   "asOfRule": "Use the dependency graph at scoring time"
+  },
+  {
+   "name": "Queue wait time",
+   "definition": "median waiting time before a task is picked up by the owner team",
+   "asOfRule": "Event timestamps"
+  },
+  {
+   "name": "Rework rate",
+   "definition": "share of tasks reopened for missing information",
+   "asOfRule": "Past cycles only"
+  },
+  {
+   "name": "Predicted start-readiness",
+   "definition": "modelled completion date of the slowest required stream",
+   "asOfRule": "Computed from open tasks and queue state"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Provider Onboarding Cycle-Time Optimization\": Find the bottlenecks across HR, credentialing, IT, facilities, payer enrollment and department readiness and recommend the task sequencing that shortens time to start-readiness. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Learning order from history rather than rules."
+}

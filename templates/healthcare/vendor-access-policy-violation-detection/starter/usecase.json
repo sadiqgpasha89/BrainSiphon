@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/vendor-access-policy-violation-detection",
+ "title": "Vendor Access Policy Violation Detection",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 62236,
+ "knobs": {
+  "n_series": 116,
+  "anomalies_per_series": 2.707
+ },
+ "blueprintSignals": [
+  {
+   "name": "Authorisation mismatch",
+   "definition": "access outside the approved window, area or purpose",
+   "asOfRule": "Authorisations as at the event"
+  },
+  {
+   "name": "Credential state at event time",
+   "definition": "whether required credentials were valid",
+   "asOfRule": "Point-in-time status"
+  },
+  {
+   "name": "Restricted-area sensitivity",
+   "definition": "zone risk class",
+   "asOfRule": "From the zone register"
+  },
+  {
+   "name": "Repeat-pattern count",
+   "definition": "similar events by the same vendor in the last 30 days",
+   "asOfRule": "Past events"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Vendor Access Policy Violation Detection\": Detect access attempts that conflict with approved hours, locations, credentials, visit purpose or restricted-area rules, with an evidence timeline, a severity and an escalation path for security staff. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting an anomaly model define a violation."
+}

@@ -1,0 +1,43 @@
+{
+ "use_case": "healthcare/vendor-access-policy-violation-detection",
+ "engine": "anomaly",
+ "seed": 62236,
+ "knobs": {
+  "n_series": 116,
+  "anomalies_per_series": 2.707
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 29.0,
+ "results": {
+  "series": 116,
+  "hours": 2016,
+  "events": 315,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.24945519805153185,
+   "recall": 0.5802469135802469,
+   "median_delay_h": 1.5,
+   "events": 162
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6514549416741443,
+   "recall": 0.8827160493827161,
+   "median_delay_h": 0.0,
+   "events": 162
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5078836046660684,
+   "recall": 0.9753086419753086,
+   "median_delay_h": 0.0,
+   "events": 162
+  }
+ }
+}

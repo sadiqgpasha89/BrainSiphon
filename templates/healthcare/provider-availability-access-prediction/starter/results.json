@@ -1,0 +1,46 @@
+{
+ "use_case": "healthcare/provider-availability-access-prediction",
+ "engine": "forecast",
+ "seed": 28886,
+ "knobs": {
+  "n_series": 225
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 41.8,
+ "results": {
+  "rows": 20423,
+  "h1": {
+   "wmape_model": 0.11833666957280084,
+   "wmape_baseline": 0.23244894600778218,
+   "fva": 0.4909132882502335
+  },
+  "h3": {
+   "wmape_model": 0.11819253292617685,
+   "wmape_baseline": 0.22838689169674098,
+   "fva": 0.4824898572413846
+  },
+  "h7": {
+   "wmape_model": 0.12043115192133115,
+   "wmape_baseline": 0.2345839115399018,
+   "fva": 0.48661802452362
+  },
+  "h14": {
+   "wmape_model": 0.15383887349421874,
+   "wmape_baseline": 0.24987760739950693,
+   "fva": 0.38434309862644256
+  },
+  "p90_coverage": 0.8981540420114577,
+  "wmape_sku_level": 0.12723904215311302,
+  "wmape_aggregate": 0.022389393675221064,
+  "late_feed": {
+   "missing_as_zero": 0.1988407131894552,
+   "missing_as_nan": 0.13866153050716185
+  }
+ }
+}

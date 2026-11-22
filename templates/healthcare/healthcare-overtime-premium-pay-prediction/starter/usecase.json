@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/healthcare-overtime-premium-pay-prediction",
+ "title": "Healthcare Overtime & Premium Pay Prediction",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 2223,
+ "knobs": {
+  "n_series": 252
+ },
+ "blueprintSignals": [
+  {
+   "name": "Vacancy hours",
+   "definition": "open budgeted hours per cost centre and role",
+   "asOfRule": "Use the vacancy snapshot at forecast time"
+  },
+  {
+   "name": "Absence and call-in rate",
+   "definition": "trailing aggregate sick and unplanned absence by unit-shift",
+   "asOfRule": "Aggregate only and no individual health data"
+  },
+  {
+   "name": "Census-driven demand gap",
+   "definition": "forecast demand minus rostered hours",
+   "asOfRule": "Use the forecast snapshot at the time of the scheduling decision"
+  },
+  {
+   "name": "Pay-period position",
+   "definition": "days remaining and hours banked towards threshold",
+   "asOfRule": "Use payroll calendars as published"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Healthcare Overtime & Premium Pay Prediction\": Forecast overtime, agency, premium and incentive labour hours and cost by facility, unit, role and pay period, and name the feasible lower-cost actions that respect labour agreements. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using scheduled hours as the target."
+}

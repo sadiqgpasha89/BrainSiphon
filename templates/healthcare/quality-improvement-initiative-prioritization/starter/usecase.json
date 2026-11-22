@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/quality-improvement-initiative-prioritization",
+ "title": "Quality Improvement Initiative Prioritization",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 7848,
+ "knobs": {
+  "n_instances": 114,
+  "noise": 0.426
+ },
+ "blueprintSignals": [
+  {
+   "name": "Expected patient impact",
+   "definition": "estimated harm avoided or outcomes gained with evidence grade",
+   "asOfRule": "Estimates from the stated source"
+  },
+  {
+   "name": "Compliance urgency",
+   "definition": "days to a mandatory deadline and penalty exposure",
+   "asOfRule": "Calendar"
+  },
+  {
+   "name": "Feasibility",
+   "definition": "resource requirement against available capacity",
+   "asOfRule": "Current capacity"
+  },
+  {
+   "name": "Equity benefit",
+   "definition": "expected reduction in disparities by group",
+   "asOfRule": "Group definitions agreed in advance"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Quality Improvement Initiative Prioritization\": Rank proposed improvement projects by patient impact, compliance urgency, feasibility, cost, equity and expected benefit, giving leaders a transparent portfolio with trade-offs and assumptions to decide from. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating estimated benefits as certain."
+}

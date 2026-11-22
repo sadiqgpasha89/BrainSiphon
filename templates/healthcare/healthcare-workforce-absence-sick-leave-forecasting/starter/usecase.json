@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/healthcare-workforce-absence-sick-leave-forecasting",
+ "title": "Healthcare Workforce Absence & Sick Leave Forecasting",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 85157,
+ "knobs": {
+  "n_series": 228
+ },
+ "blueprintSignals": [
+  {
+   "name": "Weekday and season profile",
+   "definition": "day-of-week and week-of-year effects per unit",
+   "asOfRule": "Fit on past periods only"
+  },
+  {
+   "name": "Recent absence trend",
+   "definition": "trailing 7 and 28 day aggregate absence rate",
+   "asOfRule": "Aggregate and lag"
+  },
+  {
+   "name": "Shift-pattern load",
+   "definition": "share of night and long shifts in the unit",
+   "asOfRule": "Use the roster snapshot"
+  },
+  {
+   "name": "Holiday proximity",
+   "definition": "days to and from public holidays",
+   "asOfRule": "Public calendar only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Healthcare Workforce Absence & Sick Leave Forecasting\": Forecast aggregate absence levels by role, unit, location and shift so leaders can size contingency staffing, using aggregate data only and never inferring any individual's health. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training with individual reasons."
+}

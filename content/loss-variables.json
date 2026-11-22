@@ -1626,5 +1626,151 @@
  "hvac-energy-optimisation": {
   "\\text{energy}": "Energy consumed in step t, to be minimised.",
   "\\text{discomfort}": "The comfort violation in step t: degrees outside the allowed band, weighted by occupancy."
+ },
+ "healthcare-workforce-demand-forecasting-by-unit": {
+  "u": "The forecast error for one unit-shift series: actual demand minus the quantile forecast, weighted asymmetrically by the quantile level q."
+ },
+ "float-pool-cross-department-staff-allocation": {
+  "\\text{shortage}": "Required hours still unmet on unit u after the allocation.",
+  "\\text{float burden imbalance}": "How unevenly float shifts fall across the pool, for example the gap between the most and least floated staff.",
+  "\\text{extra cost}": "Premium pay, travel and agency cost above the baseline roster.",
+  "\\text{continuity breaks}": "Assignments to a unit the person has not worked on recently, which cost familiarity and handover time.",
+  "\\lambda": "Weight on float burden imbalance: how strongly unfair float distribution counts against coverage.",
+  "\\mu": "Weight on extra cost: how strongly spend counts against coverage.",
+  "\\nu": "Weight on continuity breaks: how strongly unfamiliar assignments count against coverage.",
+  "u": "Index over units that have a shortage."
+ },
+ "healthcare-overtime-premium-pay-prediction": {
+  "u": "The forecast error for one cost-centre and role series: actual premium hours minus the quantile forecast, weighted asymmetrically by the quantile level q."
+ },
+ "healthcare-shift-incentive-optimization": {
+  "a": "The incentive offered, chosen from the approved menu and caps.",
+  "s": "Index over open shifts.",
+  "V": "The value to the organisation of filling shift s, for example the avoided premium or the avoided coverage gap.",
+  "\\text{fill}": "Whether the shift is filled; Pr(fill | s, a) is the probability that it is filled when incentive a is offered.",
+  "\\text{cost}": "The expected spend of offering incentive a, counted only if the shift is filled.",
+  "B": "The incentive budget for the period: total spend must stay at or below it."
+ },
+ "healthcare-workforce-skill-mix-optimization": {
+  "\\text{skill gap}": "Required competency hours not covered on shift s.",
+  "\\text{experience imbalance}": "How far the mix of experience bands on a shift is from the target mix.",
+  "\\text{preference loss}": "Staff preferences not honoured on shift s.",
+  "\\text{supervision breach}": "Cases where a person who needs supervision is rostered without an available supervisor.",
+  "\\lambda": "Weight on experience imbalance: how strongly it counts against closing skill gaps.",
+  "\\mu": "Weight on preference loss: how strongly unmet preferences count against the main objective.",
+  "\\nu": "Weight on supervision breaches: set high so that a breach is almost never traded for another objective.",
+  "s": "Index over shifts."
+ },
+ "healthcare-workforce-absence-sick-leave-forecasting": {
+  "u": "The forecast error for one unit-shift-role series: actual absence count minus the quantile forecast, weighted asymmetrically by the quantile level q."
+ },
+ "provider-onboarding-cycle-time-optimization": {
+  "\\text{lateness}": "Days by which case c is past its planned start-readiness date.",
+  "\\text{idle wait}": "Time tasks sit in a queue waiting for an owner team rather than being worked.",
+  "\\text{rework}": "Tasks reopened because the previous handoff lacked information.",
+  "\\lambda": "Weight on idle wait: how strongly queue time counts against lateness.",
+  "\\mu": "Weight on rework: how strongly reopened tasks count against lateness.",
+  "c": "Index over onboarding cases."
+ },
+ "provider-data-quality-entity-resolution": {
+  "m": "Steward-confirmed truth for a pair of records: 1 if records i and j are the same provider and 0 if they are not.",
+  "p": "The model's probability that records i and j are the same provider.",
+  "i": "Index over candidate record pairs, with j the second record in the pair."
+ },
+ "provider-recredentialing-automation": {
+  "\\text{case}": "The case context the agent conditions on: the due date, evidence on file and the policy version.",
+  "\\mathrm{PolicyViolation}": "A penalty when a draft or tool call breaks a permission, approval gate or citation rule."
+ },
+ "provider-privilege-scope-of-practice-validation": {
+  "y": "Whether the committee upheld exception i after review: 1 if it was a real mismatch.",
+  "p": "The ranker's probability that exception i will be upheld.",
+  "w": "A weight on exception i, for example higher for higher-risk procedures."
+ },
+ "hospital-quality-measure-performance-forecasting": {
+  "u": "The forecast error for one measure-by-unit series: actual rate minus the quantile forecast, weighted asymmetrically by the quantile level q."
+ },
+ "vendor-visit-demand-forecasting": {
+  "u": "The forecast error for one facility-department-hour series: actual visits minus the quantile forecast, weighted asymmetrically by the quantile level q."
+ },
+ "patient-safety-event-root-cause-discovery": {
+  "z": "The embedding vector of a de-identified report: reports that describe similar events are pulled close together."
+ },
+ "regulatory-quality-measure-gap-detection": {
+  "\\text{requirement}": "The text of the regulatory or policy requirement being checked, at the version in force.",
+  "\\text{evidence}": "The retrieved passages from approved repositories that the explanation must be grounded in."
+ },
+ "quality-improvement-initiative-prioritization": {
+  "\\text{score}": "The score of project k on criterion m after normalisation and evidence discount; w_m is the weight on criterion m.",
+  "c": "The cost or resource requirement of project k.",
+  "B": "The budget or capacity limit for the period: selected projects must cost no more than this.",
+  "x": "Whether project k is selected: 1 if it is in the portfolio and 0 if it is not."
+ },
+ "healthcare-spend-category-optimization": {
+  "\\text{saving}": "The estimated annual saving from moving item group g to the proposed supplier or item, before switching costs.",
+  "\\text{switch cost}": "The one-off cost of switching item group g: re-contracting, clinical trials, training and inventory write-off.",
+  "x": "Whether item group g is moved: 1 if the proposal is selected and 0 if it is not."
+ },
+ "healthcare-purchase-demand-consolidation-optimization": {
+  "\\text{holding cost}": "The cost of holding stock of item i over the plan, including capital and expiry waste.",
+  "\\text{order cost}": "The fixed cost of placing and receiving orders for item i.",
+  "\\text{stockout penalty}": "The penalty for expected shortfall of item i, weighted higher for critical supplies.",
+  "\\text{tier saving}": "The price saving for item i from reaching a contract volume tier."
+ },
+ "healthcare-value-analysis-committee-decision-intelligence": {
+  "\\text{evidence}": "The retrieved evidence passages and internal analytics the packet must be grounded in."
+ },
+ "healthcare-contract-obligation-deadline-intelligence": {
+  "\\text{clause}": "The contract clause text from which the obligation is extracted.",
+  "\\mathrm{PolicyViolation}": "A penalty when a draft, task or tool call breaks a permission, approval gate or citation rule."
+ },
+ "healthcare-contract-compliance-monitoring": {
+  "\\text{evidence}": "The linked service, transaction and invoice records the summary must be grounded in.",
+  "\\mathrm{PolicyViolation}": "A penalty when a draft, task or tool call breaks a permission, approval gate or citation rule."
+ },
+ "healthcare-contract-negotiation-intelligence": {
+  "\\text{brief inputs}": "The retrieved contract, playbook, performance and approved benchmark material the brief must be grounded in."
+ },
+ "healthcare-contract-redlining-copilot": {
+  "\\text{clause}": "The contract clause being reviewed.",
+  "\\text{playbook}": "The approved playbook language and fallback positions retrieved for the clause.",
+  "\\mathrm{PolicyViolation}": "A penalty when a draft, task or tool call breaks a permission, approval gate or citation rule."
+ },
+ "healthcare-regulatory-change-intelligence": {
+  "\\text{source text}": "The retrieved passages of the approved official sources, at the stated version, that the summary must be grounded in."
+ },
+ "healthcare-regulatory-change-impact-assessment": {
+  "\\text{change record}": "The approved change record and the retrieved policy, control and process passages the plan must be grounded in.",
+  "\\mathrm{PolicyViolation}": "A penalty when a draft, task or tool call breaks a permission, approval gate or citation rule."
+ },
+ "healthcare-compliance-evidence-collection-automation": {
+  "\\text{artifact}": "The retrieved document or system report being classified and matched to an evidence requirement.",
+  "\\mathrm{PolicyViolation}": "A penalty when a draft, task or tool call breaks a permission, approval gate or citation rule."
+ },
+ "healthcare-compliance-remediation-prioritization": {
+  "x": "Whether finding f is scheduled for remediation in the period: 1 if scheduled and 0 if not.",
+  "\\text{risk reduction}": "The estimated reduction in patient, regulatory and operational risk from remediating finding f."
+ },
+ "physician-on-call-rotation-optimization": {
+  "\\text{burden}": "The weighted count of nights, weekends, holidays and call assigned to physician p, per FTE.",
+  "\\text{rule violation}": "The number of soft-rule breaches for physician p; hard rules cannot be broken.",
+  "\\mu": "The penalty weight on soft-rule breaches relative to burden dispersion."
+ },
+ "physician-schedule-preference-optimization": {
+  "x": "Whether physician p is assigned to shift s: 1 if assigned and 0 if not.",
+  "\\text{preference}": "The weighted preference score of physician p for shift s from their ranked requests."
+ },
+ "clinical-handoff-quality-assessment": {
+  "\\text{note}": "The handoff note text, with its structured observations, from which the checklist fields are extracted."
+ },
+ "clinical-communication-workload-optimization": {
+  "\\text{load}": "The weighted message load on team g after bundling and routing changes.",
+  "\\text{missed urgent}": "The count of urgent or safety-critical messages that would not reach an accountable recipient under proposal k; it must stay at zero.",
+  "\\mu": "A large penalty weight on any missed urgent message relative to load."
+ },
+ "provider-network-expansion-optimization": {
+  "x": "Whether candidate j is added to the network: 1 if added and 0 if not.",
+  "\\text{access gain}": "The additional members brought within the access standard if candidate j joins.",
+  "\\text{cost}": "The expected contracting and onboarding cost of candidate j.",
+  "\\lambda": "The weight that trades cost against access gain."
  }
 }

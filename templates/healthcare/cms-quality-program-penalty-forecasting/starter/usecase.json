@@ -1,0 +1,59 @@
+{
+ "slug": "healthcare/cms-quality-program-penalty-forecasting",
+ "title": "CMS Quality Program Penalty Forecasting",
+ "domain": "healthcare",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 76391,
+ "knobs": {
+  "n": 16040,
+  "outlier_share": 0.013,
+  "drift": 0.358
+ },
+ "blueprintSignals": [
+  {
+   "name": "Measure score gap to benchmark",
+   "definition": "distance from achievement and improvement thresholds",
+   "asOfRule": "Benchmarks of the right year"
+  },
+  {
+   "name": "Payment base",
+   "definition": "program payment base for the period",
+   "asOfRule": "Use the declared base"
+  },
+  {
+   "name": "Sensitivity per measure",
+   "definition": "change in exposure per unit change in the measure",
+   "asOfRule": "Computed by the calculator"
+  },
+  {
+   "name": "Pending data share",
+   "definition": "share of the period not yet reported",
+   "asOfRule": "As of the run"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"CMS Quality Program Penalty Forecasting\": Estimate potential financial exposure under applicable quality-linked payment programs by combining current program rules with validated performance data, clearly labelled as scenario estimates and never as official determinations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Calling a statistical estimate the penalty."
+}

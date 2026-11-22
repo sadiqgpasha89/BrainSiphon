@@ -1,0 +1,53 @@
+{
+ "slug": "healthcare/contract-purchase-order-compliance-detection",
+ "title": "Contract vs Purchase Order Compliance Detection",
+ "domain": "healthcare",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 18013,
+ "knobs": {
+  "n_train": 900
+ },
+ "blueprintSignals": [
+  {
+   "name": "Price variance to schedule",
+   "definition": "order price minus contracted price for the item and tier",
+   "asOfRule": "Contract version at order date"
+  },
+  {
+   "name": "Channel and supplier match",
+   "definition": "whether supplier and channel match the contract",
+   "asOfRule": "Contract scope tables"
+  },
+  {
+   "name": "Volume tier position",
+   "definition": "cumulative volume against tier thresholds",
+   "asOfRule": "Cumulative at order date"
+  },
+  {
+   "name": "Approval chain completeness",
+   "definition": "required approvals present",
+   "asOfRule": "Policy version"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Contract vs Purchase Order Compliance Detection\": Detect purchase orders that violate contracted price, supplier, volume, term, approval or purchasing-channel conditions by extracting contract terms and testing each order line against them. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Checking orders against superseded terms."
+}

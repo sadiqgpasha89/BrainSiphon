@@ -2,6 +2,17 @@
 
 Architecture, framework, version and implementation changes. Content changes to individual blueprints are visible in the git history of `content/usecases/`; each blueprint page shows the content version it was built from.
 
+## Unreleased: healthcare operations expansion (50 to 125 healthcare blueprints)
+
+### Added
+- 75 vendor-neutral healthcare operations use cases in `content/usecases/healthcare.3.uc` to `healthcare.8.uc`: workforce (10), provider lifecycle (8), quality and safety (8), vendor and facility access (6), procurement and spend (8), contract and legal (8), regulatory compliance (8), physician scheduling and coverage (6), clinical communications (6), payer and provider network (7). The register, with overlap accounting and what was and was not verified, is `docs/healthcare-operations-expansion.md`.
+- Ten healthcare tracks in `content/tracks.json`; per-use-case loss-symbol explanations in `content/loss-variables.json`; two problem-type overrides with reasons in `content/kit-compatibility.json`.
+- 75 generated worked templates under `templates/healthcare/` (synthetic data, saved results), and regenerated `catalog.json`, `INDEX.md`, `public-catalog.json` and `data/blueprints.json.gz`.
+
+### Changed
+- Totals are now 575 blueprints and 575 worked templates (healthcare 125, the other nine domains 50 each). `tools/validate_repo.py` expects that split, `tools/render_results.py` writes the index title from the catalogue count, and the README, About, Deployment, Patterns and Implementations pages, the command palette and two tests carry the new count.
+- Coverage figures in the README that were measured on the original 500 blueprints were not recomputed.
+
 ## Unreleased: one free site, with the worked templates in the repository
 
 ### Changed

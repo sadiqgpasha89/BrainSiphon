@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/healthcare-contract-renewal-termination-risk-prediction",
+ "title": "Healthcare Contract Renewal & Termination Risk Prediction",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 77468,
+ "knobs": {
+  "n": 6030,
+  "dropout": 0.112
+ },
+ "blueprintSignals": [
+  {
+   "name": "Days to notice deadline minus review lead time",
+   "definition": "remaining time before the latest action date less the usual review cycle",
+   "asOfRule": "Rule-computed"
+  },
+  {
+   "name": "Spend and criticality",
+   "definition": "annual value and clinical or operational criticality",
+   "asOfRule": "Verified records"
+  },
+  {
+   "name": "Performance and dispute history",
+   "definition": "service-level misses and open disputes",
+   "asOfRule": "Earlier periods"
+  },
+  {
+   "name": "Alternative availability",
+   "definition": "qualified alternative suppliers",
+   "asOfRule": "Qualification tables"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Healthcare Contract Renewal & Termination Risk Prediction\": Prioritise upcoming renewals and termination windows by value, performance, risk, utilisation and lead time, so owners start review early enough to renegotiate, renew or exit deliberately. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Predicting dates that the contract states."
+}

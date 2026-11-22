@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/provider-data-reconciliation-across-payer-systems",
+ "title": "Provider Data Reconciliation Across Payer Systems",
+ "domain": "healthcare",
+ "engine": "graph",
+ "fit": "exact",
+ "problemType": "entity-resolution",
+ "seed": 18595,
+ "knobs": {
+  "n_clusters": 1880,
+  "hub_share": 0.103
+ },
+ "blueprintSignals": [
+  {
+   "name": "Identifier agreement",
+   "definition": "agreement of NPIs and other identifiers across records",
+   "asOfRule": "Source records"
+  },
+  {
+   "name": "Attribute similarity",
+   "definition": "similarity of name, address, specialty and affiliation",
+   "asOfRule": "Normalised fields"
+  },
+  {
+   "name": "Graph consistency",
+   "definition": "whether linked records form a consistent cluster",
+   "asOfRule": "Cluster at scoring"
+  },
+  {
+   "name": "Source authority and freshness",
+   "definition": "authority tier and age of each source",
+   "asOfRule": "Source register"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Provider Data Reconciliation Across Payer Systems\": Reconcile provider identity, demographics, specialties, affiliations, contract status and effective dates across payer, credentialing, claims and directory systems, and give data stewards matched records, conflicts, source-of-truth recommendations and a temporal history. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Auto-merging fuzzy matches."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/healthcare-workforce-burnout-attrition-early-warning",
+ "title": "Healthcare Workforce Burnout & Attrition Early Warning",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 17158,
+ "knobs": {
+  "n": 6140,
+  "dropout": 0.235
+ },
+ "blueprintSignals": [
+  {
+   "name": "Schedule churn",
+   "definition": "share of shifts changed within 72 hours at unit level",
+   "asOfRule": "Use schedule snapshots prior to the outcome window"
+  },
+  {
+   "name": "Overtime load",
+   "definition": "unit mean and tail of overtime hours per head",
+   "asOfRule": "Aggregate and lag it"
+  },
+  {
+   "name": "Vacancy burden",
+   "definition": "open positions relative to budgeted FTE",
+   "asOfRule": "Use the vacancy snapshot"
+  },
+  {
+   "name": "Consecutive-shift pressure",
+   "definition": "share of staff on long runs of consecutive shifts in the unit",
+   "asOfRule": "Aggregate only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Healthcare Workforce Burnout & Attrition Early Warning\": Identify aggregate working conditions associated with elevated burnout, absence or voluntary attrition risk at team and unit level so leaders can improve those conditions, never to score or manage individuals. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on a random split of employees rather than by period."
+}

@@ -1,0 +1,16 @@
+contract: provider_privilege_scope_of_practice_inputs.v1
+owner: medical-staff-office@example.com
+system_of_record: Credentialing and privileging system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: privilege_coverage, type: double, nullable: false }
+    - { name: credential_validity_at_date, type: double, nullable: false }
+    - { name: supervision_requirement, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

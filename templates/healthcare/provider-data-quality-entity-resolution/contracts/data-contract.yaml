@@ -1,0 +1,16 @@
+contract: provider_data_quality_entity_resolution_inputs.v1
+owner: provider-data-governance@example.com
+system_of_record: Provider master data
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: identifier_agreement, type: double, nullable: false }
+    - { name: name_and_alias_similarity, type: double, nullable: false }
+    - { name: affiliation_and_address_overlap, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,43 @@
+{
+ "use_case": "healthcare/facility-access-pattern-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 16002,
+ "knobs": {
+  "n_series": 90,
+  "anomalies_per_series": 1.867
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 34.4,
+ "results": {
+  "series": 90,
+  "hours": 2016,
+  "events": 162,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.32614622057001236,
+   "recall": 0.569620253164557,
+   "median_delay_h": 0.0,
+   "events": 79
+  },
+  "seasonal_z": {
+   "threshold": 4.0,
+   "false_alerts_per_series_week": 0.7957042544403139,
+   "recall": 0.9493670886075949,
+   "median_delay_h": 0.0,
+   "events": 79
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5944650970673275,
+   "recall": 0.9873417721518988,
+   "median_delay_h": 0.0,
+   "events": 79
+  }
+ }
+}

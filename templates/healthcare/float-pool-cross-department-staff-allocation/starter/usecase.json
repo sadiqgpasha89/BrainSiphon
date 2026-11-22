@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/float-pool-cross-department-staff-allocation",
+ "title": "Float Pool & Cross-Department Staff Allocation",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 14946,
+ "knobs": {
+  "n_instances": 190,
+  "noise": 0.317
+ },
+ "blueprintSignals": [
+  {
+   "name": "Coverage gain",
+   "definition": "reduction in unmet required hours if the person is assigned",
+   "asOfRule": "Use the shortage list at solve time"
+  },
+  {
+   "name": "Continuity score",
+   "definition": "prior shifts the person worked on the receiving unit",
+   "asOfRule": "Count only completed past shifts"
+  },
+  {
+   "name": "Float burden",
+   "definition": "float shifts in the trailing 8 weeks relative to the pool median",
+   "asOfRule": "Window must end before the solve"
+  },
+  {
+   "name": "Travel and rest margin",
+   "definition": "hours of rest and travel time between consecutive assignments",
+   "asOfRule": "Use the published roster at solve time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Float Pool & Cross-Department Staff Allocation\": Allocate eligible float-pool and cross-trained staff to units with shortages, improving coverage while preserving continuity, fairness, rest periods and cost limits. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Scoring plans on forecast shortage only."
+}

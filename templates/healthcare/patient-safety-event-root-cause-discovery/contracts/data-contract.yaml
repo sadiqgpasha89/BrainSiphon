@@ -1,0 +1,16 @@
+contract: patient_safety_event_root_cause_inputs.v1
+owner: patient-safety-office@example.com
+system_of_record: Incident reporting system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: semantic_cluster_membership, type: double, nullable: false }
+    - { name: temporal_concentration, type: double, nullable: false }
+    - { name: process_step_co_occurrence, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,55 @@
+{
+ "slug": "healthcare/healthcare-contract-negotiation-intelligence",
+ "title": "Healthcare Contract Negotiation Intelligence",
+ "domain": "healthcare",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 75682,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Leverage indicators",
+   "definition": "spend share, alternatives and switching cost",
+   "asOfRule": "Latest verified data"
+  },
+  {
+   "name": "Performance record",
+   "definition": "service level misses and incidents",
+   "asOfRule": "Verified records"
+  },
+  {
+   "name": "Term deviation from portfolio norms",
+   "definition": "how far current terms differ from similar contracts",
+   "asOfRule": "Normalised terms"
+  },
+  {
+   "name": "Benchmark comparability",
+   "definition": "match of benchmark scope to the contract",
+   "asOfRule": "Source metadata"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Healthcare Contract Negotiation Intelligence\": Prepare negotiation briefs using historical terms, approved playbooks, performance, spend, risk and alternative suppliers, giving negotiators evidence-based priorities, fallback positions and draft talking points. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Accepting fluent benchmarks without a source."
+}

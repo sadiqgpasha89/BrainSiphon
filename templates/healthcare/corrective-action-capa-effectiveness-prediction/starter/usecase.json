@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/corrective-action-capa-effectiveness-prediction",
+ "title": "Corrective Action & CAPA Effectiveness Prediction",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 52232,
+ "knobs": {
+  "n": 9040,
+  "dropout": 0.275
+ },
+ "blueprintSignals": [
+  {
+   "name": "Action strength",
+   "definition": "classification on an action-strength hierarchy",
+   "asOfRule": "From the plan"
+  },
+  {
+   "name": "Implementation evidence",
+   "definition": "evidence type and date relative to the due date",
+   "asOfRule": "As at scoring"
+  },
+  {
+   "name": "Pre-action event rate",
+   "definition": "events per month before the action",
+   "asOfRule": "Window before the action date"
+  },
+  {
+   "name": "Owner load",
+   "definition": "open actions per owner",
+   "asOfRule": "Counts as at scoring"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Corrective Action & CAPA Effectiveness Prediction\": Estimate recurrence risk and monitor whether corrective and preventive actions are implemented and effective, flagging overdue or weak actions and evidence gaps for the quality committee. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating closure as effectiveness."
+}

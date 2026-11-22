@@ -21,7 +21,7 @@ type Row = { capability: string; staticMode: string; docker: string; cloud: stri
 
 const ROWS: Row[] = [
   {
-    capability: 'All 500 blueprints, diagrams, role lenses and sizing calculator',
+    capability: 'All 575 blueprints, diagrams, role lenses and sizing calculator',
     staticMode: 'Yes, prebuilt HTML and client-side code',
     docker: 'Yes',
     cloud: 'Yes',
@@ -97,7 +97,7 @@ export default function DeploymentPage() {
           </div>
           <h2 className="text-xl font-bold text-ink">Deploying BrainSiphon Itself</h2>
           <p className="text-sm leading-relaxed text-mute">
-            BrainSiphon is a web application and knowledge portal containing 500 system blueprints, delivery
+            BrainSiphon is a web application and knowledge portal containing 575 system blueprints, delivery
             guides, and reference models. It can be deployed in three documentation modes:
           </p>
           <ul className="space-y-2 text-xs text-mute">

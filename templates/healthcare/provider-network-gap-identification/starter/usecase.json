@@ -1,0 +1,54 @@
+{
+ "slug": "healthcare/provider-network-gap-identification",
+ "title": "Provider Network Gap Identification",
+ "domain": "healthcare",
+ "engine": "cluster",
+ "fit": "exact",
+ "problemType": "clustering-segmentation",
+ "seed": 18596,
+ "knobs": {
+  "n": 4940,
+  "outlier_share": 0.019
+ },
+ "blueprintSignals": [
+  {
+   "name": "Unserved demand share",
+   "definition": "demand outside the travel-time standard",
+   "asOfRule": "Demand and travel-time snapshot"
+  },
+  {
+   "name": "Provider density per member",
+   "definition": "qualified providers per member by area",
+   "asOfRule": "Directory snapshot"
+  },
+  {
+   "name": "Travel-time reach",
+   "definition": "members within the standard of a qualified provider",
+   "asOfRule": "Road network version"
+  },
+  {
+   "name": "Demand growth",
+   "definition": "forecast change in member demand",
+   "asOfRule": "Forecast snapshot"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "value feature (f0)",
+   "meaning": "in currency units, thousands of times larger than the others"
+  },
+  {
+   "feature": "behaviour features (f1-f3)",
+   "meaning": "separate the segments"
+  },
+  {
+   "feature": "engagement features (f4-f6)",
+   "meaning": "separate some segments"
+  },
+  {
+   "feature": "noise feature (f7)",
+   "meaning": "carries little structure"
+  }
+ ],
+ "label": "For \"Provider Network Gap Identification\": Find geographic and specialty coverage gaps against member demand, population distribution and service requirements, and give network planners gap maps, underserved cohorts and areas, and candidate expansion options with the access impact. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using straight-line distance."
+}

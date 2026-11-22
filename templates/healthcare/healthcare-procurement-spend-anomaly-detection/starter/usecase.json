@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/healthcare-procurement-spend-anomaly-detection",
+ "title": "Healthcare Procurement Spend Anomaly Detection",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 59886,
+ "knobs": {
+  "n_series": 82,
+  "anomalies_per_series": 2.307
+ },
+ "blueprintSignals": [
+  {
+   "name": "Unit-price deviation",
+   "definition": "invoiced unit price versus contract or trailing median price",
+   "asOfRule": "Use normalised units and the price at the order date"
+  },
+  {
+   "name": "Order-frequency change",
+   "definition": "change in order frequency for the item and cost centre",
+   "asOfRule": "Trailing windows"
+  },
+  {
+   "name": "Supplier-concentration shift",
+   "definition": "share of category spend moving between suppliers",
+   "asOfRule": "Contract status as at purchase"
+  },
+  {
+   "name": "Budget burn rate",
+   "definition": "spend to date versus budget pace",
+   "asOfRule": "Ledger as at the day"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Healthcare Procurement Spend Anomaly Detection\": Identify unusual purchasing amounts, frequency, unit prices, suppliers, categories and cost-centre patterns, and give procurement and finance a ranked exception queue with the expected-versus-actual variance and the evidence behind it. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Comparing unnormalised units."
+}

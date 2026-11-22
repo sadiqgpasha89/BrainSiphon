@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/clinical-quality-performance-anomaly-detection",
+ "title": "Clinical Quality Performance Anomaly Detection",
+ "domain": "healthcare",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 63264,
+ "knobs": {
+  "n_series": 95,
+  "anomalies_per_series": 2.233
+ },
+ "blueprintSignals": [
+  {
+   "name": "Adjusted deviation from baseline",
+   "definition": "standardised residual after seasonality and case mix",
+   "asOfRule": "Baseline fit on earlier periods"
+  },
+  {
+   "name": "Data completeness at cut-off",
+   "definition": "share of expected records present",
+   "asOfRule": "At the cut-off"
+  },
+  {
+   "name": "Definition change flag",
+   "definition": "measure or coding version change in the window",
+   "asOfRule": "Version tags"
+  },
+  {
+   "name": "Cross-unit coherence",
+   "definition": "whether peer units show the same shift",
+   "asOfRule": "Same period"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Clinical Quality Performance Anomaly Detection\": Detect unexpected changes in quality indicators across facilities, units, specialties and time, and tell analysts whether a change is more likely a data problem or a real performance shift before escalating. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating data defects as performance."
+}

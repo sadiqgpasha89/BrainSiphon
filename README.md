@@ -4,7 +4,7 @@ URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
 **What this is, in five lines**
 
-1. BrainSiphon is a static website of **500 enterprise AI/ML system blueprints** across 10 industries (50 each), written for engineers who have to design, build and run them.
+1. BrainSiphon is a static website of **575 enterprise AI/ML system blueprints** across 10 industries (50 each, except healthcare with 125), written for engineers who have to design, build and run them.
 2. Every blueprint separates the **signal** that moves the metric from the **noise** that wastes your quarter, then goes from the business problem through the high-level design, sequence diagram, low-level design, MLOps, governance and operations.
 3. Every design is sized for **10 million users** with a transparent capacity and cost model, and a live calculator you can re-run with your own traffic.
 4. Each page also has a **metrics catalogue** (business, model, data, system, cost, safety, plus RAG, LLM and agent metrics where they apply), the edge cases that break the system, and a **build playbook** with milestones and exit gates.
@@ -14,11 +14,11 @@ URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
 ## Free and open: the blueprints and the worked templates
 
-Everything in this repository is free and MIT licensed (see `LICENSE.md`). Read the 500 blueprints on the site, then take the worked template for your use case from `templates/<domain>/<use-case>/`: a runnable starter on synthetic data with its tests and saved results, the project documents filled in from the blueprint, the contracts, and the deployment sizing.
+Everything in this repository is free and MIT licensed (see `LICENSE.md`). Read the 575 blueprints on the site, then take the worked template for your use case from `templates/<domain>/<use-case>/`: a runnable starter on synthetic data with its tests and saved results, the project documents filled in from the blueprint, the contracts, and the deployment sizing.
 
 | Path | What it is |
 |---|---|
-| `templates/<domain>/<use-case>/` | **500 worked templates**, one per use case (see `INDEX.md` and `catalog.json`) |
+| `templates/<domain>/<use-case>/` | **575 worked templates**, one per use case (see `INDEX.md` and `catalog.json`) |
 | `engines/` | The 20 starter engines, one for each kind of problem, each with its own tests |
 | `tools/` | The generator, the runner, the validator and the release builder |
 | `data/` | The blueprint snapshot the generator reads |
@@ -39,7 +39,7 @@ Each template's `README.md`, `WORKED_EXAMPLE.md` and `FIT.md` say what it does, 
 ## Delivery guide: from project scoping to deployment and monitoring
 
 A blueprint is the worked answer for one use case. The **delivery guide** is the order to do the work in, and it is the same for
-all 500: **7 phases, 69 steps**. Every step names its owner, who takes part, when, how, the output and the blueprint section to
+all 575: **7 phases, 69 steps**. Every step names its owner, who takes part, when, how, the output and the blueprint section to
 read; every phase ends in a gate with named signers.
 
 - On the site: [`/delivery`](https://sadiqgpasha89.github.io/BrainSiphon/delivery/). Choose a use case and each step links into
@@ -97,8 +97,9 @@ API, a consuming application, authentication and authorisation, human-in-the-loo
 infrastructure (Docker, Compose, Kubernetes, CI) and a feedback and retraining loop, with a README covering prerequisites,
 environment variables, commands, expected results, troubleshooting and teardown.
 
-They cover 214 of the 500 blueprints by family, and 119 more (batch analytics) by adaptation with named changes. Computer
-vision, document extraction, optimisation and recommendation (167 blueprints) have **no** reference implementation yet.
+They cover 214 of the original 500 blueprints by family, and 119 more (batch analytics) by adaptation with named changes. Computer
+vision, document extraction, optimisation and recommendation (167 of those 500 blueprints) have **no** reference implementation yet. These
+coverage figures were measured before the 75 healthcare operations use cases were added and have not been recomputed for them.
 What was run, what was only syntax-checked and what is simulated is stated in
 [`reference-implementations/README.md`](reference-implementations/README.md#what-has-and-has-not-been-verified) and on the
 site at [`/implementations`](https://sadiqgpasha89.github.io/BrainSiphon/implementations/).
@@ -112,13 +113,13 @@ the one to build from.
 BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineering execution through dedicated implementation assets:
 
 - **Guided Implementation Workspace (`/workspace`):** Direct in-browser hub for Forward Deployed Engineers (FDEs). Select deployment profiles (Profile A: Local Dev, Profile B: Cloud-Native, Profile C: Private Cloud, Profile D: Regulated), review technology decision trees (Kafka vs SQS, Feast vs Redis, K8s vs Serverless, RAG vs Fine-tuning), and inspect operational incident runbooks.
-- **The free Golden Path worked use case:** *FinTech: Real-Time Card & UPI Fraud Detection* ships with an executable serving microservice (FastAPI), OpenAPI 3.1 and AsyncAPI 3.0 contracts, an OpenDataContract schema, a Docker Compose stack and a test suite: a sub-15ms inference service, a three-action decision policy (ALLOW, STEP_UP, BLOCK) and a decisions WAL ledger with SHA-256 chaining. The other seven hand-written starters (sepsis early warning, developer documentation assistant, network demand sensing, session-based recommendation, knowledge tracing, SOC copilot agent and real-time CTR prediction) are in this repository, together with a generated worked template for every one of the 500 use cases.
+- **The free Golden Path worked use case:** *FinTech: Real-Time Card & UPI Fraud Detection* ships with an executable serving microservice (FastAPI), OpenAPI 3.1 and AsyncAPI 3.0 contracts, an OpenDataContract schema, a Docker Compose stack and a test suite: a sub-15ms inference service, a three-action decision policy (ALLOW, STEP_UP, BLOCK) and a decisions WAL ledger with SHA-256 chaining. The other seven hand-written starters (sepsis early warning, developer documentation assistant, network demand sensing, session-based recommendation, knowledge tracing, SOC copilot agent and real-time CTR prediction) are in this repository, together with a generated worked template for every one of the 575 use cases.
 - **Phase 0 to Phase 3 Downloadable Implementation Packages:** Standardized templates in `delivery/templates/` for Client Discovery, Production BRDs, C4 Architecture Suites, Sequence Diagrams, OpenAPI/AsyncAPI contracts, Data Quality Suites, and FastAPI microservices.
 - **10 Production Operational Runbooks (`deployment/runbooks/`):** Reference incident runbooks (RB-01 through RB-10) with exact Prometheus triggers, triage steps (<5m), mitigation actions (<15m), and diagnostic CLI commands.
 
 ## Forward deployed engineers: the customer implementation playbook, hub and toolkit
 
-Every one of the 500 blueprints has a **Customer implementation playbook** (the `implementation` section, plus `/implementation/<domain>/<slug>.md` and
+Every one of the 575 blueprints has a **Customer implementation playbook** (the `implementation` section, plus `/implementation/<domain>/<slug>.md` and
 `.json`): who does what (FDE RACI, independent versus approval-required work, escalation), what is missing for production (tasks from the
 maturity gap), discovery questions, customer systems and alternatives, **every integration in four layers** (external protocol, connector and
 transformation, internal contract, acknowledgement) with mappings, sequence diagrams and tests, identity, permissions, network and firewall
@@ -159,11 +160,11 @@ playbook says it is derived. Workspaces live in the browser (localStorage, evide
 
 Screenshots of the live site, using one blueprint (Real-Time Card & UPI Fraud Detection) as the example.
 
-**1. Pick a use case.** The home page is three steps: pick a use case, follow the delivery guide, build from the blueprint. Ten industries, 50 blueprints each.
+**1. Pick a use case.** The home page is three steps: pick a use case, follow the delivery guide, build from the blueprint. Ten industries: 50 blueprints each, except healthcare with 125.
 
 ![Home page: signal in, noise out, and the three steps from a use case to a delivered system](docs/screenshots/01-home.png)
 
-**2. Start where the site tells you to.** Each domain opens with a three-step "start here" path and 7 to 8 tracks that filter its 50 blueprints.
+**2. Start where the site tells you to.** Each domain opens with a three-step "start here" path and 7 to 8 tracks that filter its blueprints (healthcare has 18).
 
 ![FinTech domain page with a start-here path and tracks](docs/screenshots/02-domain-tracks.png)
 
@@ -183,7 +184,7 @@ Screenshots of the live site, using one blueprint (Real-Time Card & UPI Fraud De
 
 ![Role lens bar and the metrics catalogue with its metric tree](docs/screenshots/06-role-lens-and-metrics.png)
 
-Zero-noise **enterprise AI architecture and engineering playbook** — **500 use cases, 10 domains × 50**. Every blueprint
+Zero-noise **enterprise AI architecture and engineering playbook** — **575 use cases, 10 domains (healthcare 125, the other nine 50 each)**. Every blueprint
 teaches the _signal_ that moves the metric, names the _noise_ that wastes your quarter, and takes the solution from the
 enterprise context (business, applications, data, security, operating model) through HLD, sequence diagram, LLD, MLOps,
 governance and production operations to a capacity/cost model for **10 million users**, with evaluation and edge cases.
@@ -263,7 +264,7 @@ and summarised in the header of each blueprint's `.md` twin):
 | `contentVersion` / `contentDigest`        | `<package version>+<12 hex>` and the sha256 over every content input (`content/`, `src/content/`, `src/schemas/`) |
 | `validatedAt`                             | When `validate:content` last passed for exactly this content (null if no matching report)         |
 | `deployedAt`                              | When the deployment artefact was built (null for a build that is not a deployment)                |
-| `checks.schema` / `checks.feasibility`    | Status of the schema and architecture-feasibility checks across all 500 blueprints; feasibility counts passed, not applicable, warnings and failures separately and lists every warning with its remediation |
+| `checks.schema` / `checks.feasibility`    | Status of the schema and architecture-feasibility checks across all 575 blueprints; feasibility counts passed, not applicable, warnings and failures separately and lists every warning with its remediation |
 | `checks.executable`                       | Starter-kit results (one entry per kit: status, test counts, line coverage, seconds) and when they ran |
 | `maturity`                                | For each of the five maturity levels, how many blueprints meet it and how many are classified at it |
 
@@ -410,7 +411,7 @@ end-to-end breakdown. The 8 pilot use cases carry **hand-written** versions in `
 signals, traps, metrics and pipeline stages, and are marked "generated". An authored file replaces the generated text for
 that use case; its rationale table must list exactly the pipeline's stages in order, which the build checks.
 
-## Build playbooks (all 500: 8 hand-written, 492 generated)
+## Build playbooks (all 575: 8 hand-written, 567 generated)
 
 A blueprint explains *what a good system looks like*. A **Build playbook** is what an intermediate engineer needs to
 *build it*: the domain knowledge and terminology to learn first, where the data comes from, ordered milestones with numeric
@@ -459,7 +460,7 @@ The outcome is one of three, shown on every blueprint (header chip, "Fit with th
   No starter code, no synthetic data and no kit numbers are shipped, the worked example is blueprint-only, and the page names the
   closest kit for background reading only, with the reason it is not a starter.
 
-Today, of the 500 blueprints: 8 hand-written exact starters, about 100 exact generated matches, about 320 adaptable and 70 with no
+Today, of the 575 blueprints: 8 hand-written exact starters, about 103 exact generated matches, about 385 adaptable and 79 with no
 compatible kit (`npm run validate:content` prints the current counts). The generator **never picks a kit on its own**: it receives the
 verdict, and the schema rejects a playbook that ships a kit its verdict does not allow. `validate:content` (`src/content/kit-gate.ts`)
 fails the build if a kit is shipped for a problem its contract does not claim, if an adjacent problem is called an exact match, if the
@@ -507,7 +508,7 @@ numbers come from *synthetic* data (far easier than production); the dataset lin
 
 ## Architecture
 
-- **Next.js 15 App Router**, RSC + `generateStaticParams` (556 statically generated pages in the static export: the 500 blueprints, 10 domain hubs, 11 pattern hubs, 27 primitive pages and a handful of site pages; every blueprint also has a static `.md` twin) + ISR; Tailwind; Radix; `cmdk`; KaTeX; Shiki (server-side); Mermaid (lazy, client).
+- **Next.js 15 App Router**, RSC + `generateStaticParams` (631 statically generated pages in the static export: the 575 blueprints, 10 domain hubs, 11 pattern hubs, 27 primitive pages and a handful of site pages; every blueprint also has a static `.md` twin) + ISR; Tailwind; Radix; `cmdk`; KaTeX; Shiki (server-side); Mermaid (lazy, client).
 - **Search** (`/api/search`): Redis cache → Postgres hybrid (full-text `ts_rank_cd` + `pgvector` cosine, fused by **Reciprocal Rank Fusion**) behind an 800 ms **circuit breaker** → build-time **MiniSearch** fallback. Embeddings are deterministic feature-hashing vectors (`src/lib/search/embed.ts`), the single swap-in point for a learned encoder.
 - **Rate limiting**: Redis sliding-window (atomic Lua) with in-memory LRU fallback. **Validation**: Zod on every query parameter.
 - **Ops**: OpenTelemetry (`@vercel/otel`), Pino JSON logs with `x-request-id` correlation and redaction, `/api/health/liveness`, `/api/health/readiness` (2 s dependency timeouts, 200/503), strict CSP + HSTS + nosniff + Referrer/Permissions-Policy.

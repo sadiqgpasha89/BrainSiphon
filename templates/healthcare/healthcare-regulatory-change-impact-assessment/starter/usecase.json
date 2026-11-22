@@ -1,0 +1,55 @@
+{
+ "slug": "healthcare/healthcare-regulatory-change-impact-assessment",
+ "title": "Healthcare Regulatory Change Impact Assessment",
+ "domain": "healthcare",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 88549,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Graph distance to the changed requirement",
+   "definition": "hops from the requirement to a policy, control or process",
+   "asOfRule": "Graph at assessment time"
+  },
+  {
+   "name": "Owner and facility scope",
+   "definition": "facilities and owners connected to impacted nodes",
+   "asOfRule": "Directory as at assessment"
+  },
+  {
+   "name": "Prior-change similarity",
+   "definition": "overlap with earlier changes and their actual impact",
+   "asOfRule": "Closed change projects"
+  },
+  {
+   "name": "Dependency order",
+   "definition": "prerequisites between tasks",
+   "asOfRule": "Plan rules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Healthcare Regulatory Change Impact Assessment\": Translate a confirmed regulatory change into the policies, controls, facilities, workflows, systems, owners, evidence and deadlines it affects, and draft a task plan with dependencies for the compliance owner to approve. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Auto-creating tasks without approval."
+}

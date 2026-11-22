@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/healthcare-contract-clause-risk-classification",
+ "title": "Healthcare Contract Clause Risk Classification",
+ "domain": "healthcare",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 34465,
+ "knobs": {
+  "n_docs": 6710
+ },
+ "blueprintSignals": [
+  {
+   "name": "Playbook deviation score",
+   "definition": "semantic and structural distance from approved clause language",
+   "asOfRule": "Playbook version"
+  },
+  {
+   "name": "Clause type and obligation direction",
+   "definition": "classified clause family and who carries the obligation",
+   "asOfRule": "Parsed text"
+  },
+  {
+   "name": "Liability and indemnity terms",
+   "definition": "caps, exclusions and indemnity scope as extracted values",
+   "asOfRule": "Extracted with provenance"
+  },
+  {
+   "name": "Data-handling terms",
+   "definition": "data location, breach notice and subprocessor rights",
+   "asOfRule": "Extracted with provenance"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Healthcare Contract Clause Risk Classification\": Identify clauses that deviate from approved playbooks or create legal, financial, privacy, security, operational or clinical-continuity risk, and rank them for counsel review with source spans and the deviation from the fallback language. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Splitting by clause not by contract."
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/healthcare-contract-price-variance-detection",
+ "engine": "tabular",
+ "seed": 84190,
+ "knobs": {
+  "n_entities": 2610,
+  "positive_entity_rate": 0.036,
+  "n_flash_sales": 3
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 12.0,
+ "results": {
+  "rows": 201847,
+  "positive_rate": 0.00444891427665509,
+  "test_rows": 66894,
+  "test_positive_rate": 0.0043800639818219874,
+  "baseline_lr": {
+   "pr_auc": 0.626621536536876,
+   "recall_at_0.5pct_fpr": 0.6621160409556314,
+   "brier": 0.0023514928447684958
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6453259460067714,
+   "recall_at_0.5pct_fpr": 0.6860068259385665,
+   "brier": 0.002303549101815354
+  }
+ }
+}

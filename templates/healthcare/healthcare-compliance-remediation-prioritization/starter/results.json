@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/healthcare-compliance-remediation-prioritization",
+ "engine": "tabular",
+ "seed": 12318,
+ "knobs": {
+  "n_entities": 1820,
+  "positive_entity_rate": 0.035,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 9.9,
+ "results": {
+  "rows": 140333,
+  "positive_rate": 0.004752980410879836,
+  "test_rows": 47397,
+  "test_positive_rate": 0.005316792202038104,
+  "baseline_lr": {
+   "pr_auc": 0.770165160161518,
+   "recall_at_0.5pct_fpr": 0.7738095238095238,
+   "brier": 0.002025811540409028
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7917795040656078,
+   "recall_at_0.5pct_fpr": 0.7777777777777778,
+   "brier": 0.001776832109972407
+  }
+ }
+}

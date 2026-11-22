@@ -1,0 +1,16 @@
+contract: vendor_access_policy_violation_detection_inputs.v1
+owner: facility-security@example.com
+system_of_record: Facility access control system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: authorisation_mismatch, type: double, nullable: false }
+    - { name: credential_state_at_event_time, type: double, nullable: false }
+    - { name: restricted_area_sensitivity, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

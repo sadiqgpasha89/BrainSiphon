@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/healthcare-compliance-policy-drift-detection",
+ "title": "Healthcare Compliance Policy Drift Detection",
+ "domain": "healthcare",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 54001,
+ "knobs": {
+  "n_docs": 6840
+ },
+ "blueprintSignals": [
+  {
+   "name": "Semantic divergence",
+   "definition": "distance between policy statements and procedure statements",
+   "asOfRule": "Version pair"
+  },
+  {
+   "name": "Configuration mismatch",
+   "definition": "observed setting against the required value",
+   "asOfRule": "Snapshot time"
+  },
+  {
+   "name": "Training coverage gap",
+   "definition": "share of in-scope staff trained on the current version",
+   "asOfRule": "Training records"
+  },
+  {
+   "name": "Process variant frequency",
+   "definition": "share of cases that follow a path outside the documented process",
+   "asOfRule": "Event logs"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Healthcare Compliance Policy Drift Detection\": Detect divergence between approved policies and the procedures, system configurations, training and operational records actually in use, and give policy owners candidate drift with evidence, affected control and severity. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating text distance as risk."
+}

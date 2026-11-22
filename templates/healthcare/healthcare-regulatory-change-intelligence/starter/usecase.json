@@ -1,0 +1,55 @@
+{
+ "slug": "healthcare/healthcare-regulatory-change-intelligence",
+ "title": "Healthcare Regulatory Change Intelligence",
+ "domain": "healthcare",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 48604,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Text diff magnitude",
+   "definition": "semantic and structural change between versions of a requirement",
+   "asOfRule": "Version pairs"
+  },
+  {
+   "name": "Applicability match",
+   "definition": "overlap between requirement scope and the organisation's metadata",
+   "asOfRule": "Metadata as at review"
+  },
+  {
+   "name": "Effective-date proximity",
+   "definition": "days to the stated effective date",
+   "asOfRule": "Stated in the source"
+  },
+  {
+   "name": "Source authority tier",
+   "definition": "official, secondary or unofficial classification of the source",
+   "asOfRule": "Source register"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Healthcare Regulatory Change Intelligence\": Monitor approved official publications and identify changes that may apply to the organisation's jurisdiction, facility type and service lines, giving compliance experts cited change summaries, effective dates and a review queue. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using unofficial sources as authority."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/physician-on-call-rotation-optimization",
+ "title": "Physician On-Call & Call-Rotation Optimization",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 2526,
+ "knobs": {
+  "n_instances": 184,
+  "noise": 0.368
+ },
+ "blueprintSignals": [
+  {
+   "name": "Availability and leave",
+   "definition": "blocked dates and leave per physician",
+   "asOfRule": "Roster snapshot"
+  },
+  {
+   "name": "Privileges and specialty",
+   "definition": "procedures and sites a physician may cover",
+   "asOfRule": "Privilege register"
+  },
+  {
+   "name": "Burden history",
+   "definition": "nights, weekends and holidays worked in recent cycles",
+   "asOfRule": "Closed cycles"
+  },
+  {
+   "name": "Rest and contract rules",
+   "definition": "minimum rest and maximum call per period",
+   "asOfRule": "Rule version"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Physician On-Call & Call-Rotation Optimization\": Build equitable, compliant on-call rotations that meet specialty coverage, availability, rest and contractual requirements, with a constraint proof and a log of every manual override. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Soft-penalising a rest rule."
+}

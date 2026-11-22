@@ -1,0 +1,59 @@
+{
+ "slug": "healthcare/healthcare-contract-price-terms-benchmarking",
+ "title": "Healthcare Contract Price & Terms Benchmarking",
+ "domain": "healthcare",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 54926,
+ "knobs": {
+  "n": 25960,
+  "outlier_share": 0.013,
+  "drift": 0.235
+ },
+ "blueprintSignals": [
+  {
+   "name": "Normalised price percentile",
+   "definition": "position of the price within the comparable cohort",
+   "asOfRule": "Cohort at the contract date"
+  },
+  {
+   "name": "Term favourability",
+   "definition": "score of payment, liability and termination terms against the cohort",
+   "asOfRule": "Extracted with provenance"
+  },
+  {
+   "name": "Cohort size and dispersion",
+   "definition": "number of comparables and spread",
+   "asOfRule": "At analysis time"
+  },
+  {
+   "name": "Volume-tier alignment",
+   "definition": "tier thresholds relative to actual volume",
+   "asOfRule": "Spend data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Healthcare Contract Price & Terms Benchmarking\": Compare contract pricing and terms across the organisation's portfolio and approved benchmark datasets, building comparable cohorts so reviewers see normalised variance and unfavourable terms with stated confidence. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Comparing unnormalised units."
+}

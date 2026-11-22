@@ -1,0 +1,22 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: directory_and_demand_intake, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: travel_time_model, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: unserved_demand_analyser, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: gap_clusterer, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: access_impact_simulator, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Unserved demand reduced"
+    - "Planning time per cycle"
+    - "Candidate actions adopted"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

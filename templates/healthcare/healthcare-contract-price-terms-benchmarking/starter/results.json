@@ -1,0 +1,49 @@
+{
+ "use_case": "healthcare/healthcare-contract-price-terms-benchmarking",
+ "engine": "regression",
+ "seed": 54926,
+ "knobs": {
+  "n": 25960,
+  "outlier_share": 0.013,
+  "drift": 0.235
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 14.6,
+ "results": {
+  "rows": 25960,
+  "train_rows": 18172,
+  "test_rows": 7788,
+  "baseline_ridge": {
+   "mae": 6.814763532321549,
+   "rmse": 11.045415325814131,
+   "wape": 0.12930697093556504,
+   "r2": 0.5031268058296342
+  },
+  "challenger_gbm": {
+   "mae": 4.226964686701426,
+   "rmse": 8.647205101352263,
+   "wape": 0.0802046904924318,
+   "r2": 0.6954679638340604
+  },
+  "mae_gain_vs_baseline": 0.3797342099027391,
+  "interval_80_coverage": 0.6802773497688752,
+  "interval_80_mean_width": 8.779221931655934,
+  "segment_mae": {
+   "0": 4.050032459776964,
+   "1": 4.3512948079395475,
+   "2": 4.3088235957395735,
+   "3": 4.839883290709612
+  },
+  "worst_segment_vs_overall": 1.1450020639955916,
+  "leaky_feature_rmse": 1.763972359966843,
+  "honest_rmse": 8.647205101352263,
+  "random_split_mae": 3.6346947924469037,
+  "chronological_mae": 4.226964686701426
+ }
+}

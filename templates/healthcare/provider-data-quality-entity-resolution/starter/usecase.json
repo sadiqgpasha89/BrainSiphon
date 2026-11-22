@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/provider-data-quality-entity-resolution",
+ "title": "Provider Data Quality & Entity Resolution",
+ "domain": "healthcare",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 35328,
+ "knobs": {
+  "n_clusters": 1380,
+  "hub_share": 0.153
+ },
+ "blueprintSignals": [
+  {
+   "name": "Identifier agreement",
+   "definition": "exact match on strong identifiers with check-digit validation",
+   "asOfRule": "Validate against the authoritative registry"
+  },
+  {
+   "name": "Name and alias similarity",
+   "definition": "phonetic and token similarity with alias tables",
+   "asOfRule": "Never used alone"
+  },
+  {
+   "name": "Affiliation and address overlap",
+   "definition": "shared facility, address and specialty",
+   "asOfRule": "Dated and weighted by recency"
+  },
+  {
+   "name": "Cluster consistency",
+   "definition": "graph transitivity and conflicting identifiers inside a cluster",
+   "asOfRule": "Computed after clustering"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Provider Data Quality & Entity Resolution\": Resolve duplicate and conflicting provider identities across credentialing, HR, EHR, scheduling, payer and directory systems and give data stewards ranked candidate merges with provenance. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating on random pairs instead of hard near-duplicates."
+}

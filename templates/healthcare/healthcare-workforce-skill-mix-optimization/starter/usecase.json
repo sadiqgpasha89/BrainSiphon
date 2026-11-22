@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/healthcare-workforce-skill-mix-optimization",
+ "title": "Healthcare Workforce Skill-Mix Optimization",
+ "domain": "healthcare",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 55920,
+ "knobs": {
+  "n_instances": 121,
+  "noise": 0.365
+ },
+ "blueprintSignals": [
+  {
+   "name": "Skill coverage per shift",
+   "definition": "required competency count present vs required",
+   "asOfRule": "Competencies valid on the shift date"
+  },
+  {
+   "name": "Experience balance",
+   "definition": "share of staff within each experience band per shift",
+   "asOfRule": "Banding from HR records as of the date"
+  },
+  {
+   "name": "Supervision capacity",
+   "definition": "preceptor slots available per shift",
+   "asOfRule": "Use rules as published"
+  },
+  {
+   "name": "Acuity-driven mix target",
+   "definition": "target competencies as a function of forecast acuity",
+   "asOfRule": "Use the forecast snapshot at solve time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Healthcare Workforce Skill-Mix Optimization\": Build shift rosters with the right competency, specialty, experience and supervision mix for forecast workload, with an auditable proof of each hard constraint. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Scoring against forecast acuity only."
+}

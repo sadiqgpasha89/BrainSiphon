@@ -1,0 +1,16 @@
+contract: clinical_communication_urgency_inputs.v1
+owner: clinical-operations@example.com
+system_of_record: Secure messaging platform
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: urgency_cue_terms_and_phrases, type: double, nullable: false }
+    - { name: sender_role_and_channel, type: double, nullable: false }
+    - { name: recipient_context, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,38 @@
+{
+ "id": "anomaly",
+ "label": "Anomaly detection on seasonal metrics",
+ "summary": "A runnable reference for detecting anomalies in operational metrics: a rolling z-score, a robust seasonal baseline and a calendar-aware version, judged by recall, detection delay and false alerts per series per week at a fixed alert budget.",
+ "problemTypes": [
+  "time-series-anomaly-detection",
+  "tabular-anomaly-detection"
+ ],
+ "traps": [
+  "Ignoring seasonality",
+  "Alerting on events you scheduled",
+  "Tuning the threshold on the data you report",
+  "A rolling window that includes the present"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ]
+}

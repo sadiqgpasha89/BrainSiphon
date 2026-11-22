@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/provider-credential-expiration-renewal-prediction",
+ "title": "Provider Credential Expiration & Renewal Prediction",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 51000,
+ "knobs": {
+  "n": 8620,
+  "dropout": 0.232
+ },
+ "blueprintSignals": [
+  {
+   "name": "Days to expiry minus expected completion time",
+   "definition": "remaining time minus the typical verification turnaround",
+   "asOfRule": "Use the verification turnaround known at scoring time"
+  },
+  {
+   "name": "Missing evidence count",
+   "definition": "required documents not yet received",
+   "asOfRule": "Snapshot as of scoring"
+  },
+  {
+   "name": "Prior reminder response",
+   "definition": "days from reminder to submission in past cycles",
+   "asOfRule": "Strictly earlier cycles"
+  },
+  {
+   "name": "Verification source latency",
+   "definition": "median turnaround of the source for the credential type",
+   "asOfRule": "Trailing window"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Provider Credential Expiration & Renewal Prediction\": Predict which credential renewals are at risk of missing their deadline and prioritise outreach before a licence, certification or coverage lapses. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating open renewals as failures."
+}

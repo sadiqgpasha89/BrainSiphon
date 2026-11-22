@@ -1,0 +1,49 @@
+{
+ "use_case": "healthcare/cms-quality-program-penalty-forecasting",
+ "engine": "regression",
+ "seed": 76391,
+ "knobs": {
+  "n": 16040,
+  "outlier_share": 0.013,
+  "drift": 0.358
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 11.0,
+ "results": {
+  "rows": 16040,
+  "train_rows": 11228,
+  "test_rows": 4812,
+  "baseline_ridge": {
+   "mae": 6.860461186146245,
+   "rmse": 10.913285584914725,
+   "wape": 0.13066246474930845,
+   "r2": 0.5289475168674409
+  },
+  "challenger_gbm": {
+   "mae": 4.676763864675868,
+   "rmse": 8.807057373824874,
+   "wape": 0.08907236365436143,
+   "r2": 0.6932250399448169
+  },
+  "mae_gain_vs_baseline": 0.3183018258131177,
+  "interval_80_coverage": 0.6203241895261845,
+  "interval_80_mean_width": 8.817713836568823,
+  "segment_mae": {
+   "0": 4.561823708259043,
+   "1": 4.594875502268621,
+   "2": 4.925371530746682,
+   "3": 5.65604298050856
+  },
+  "worst_segment_vs_overall": 1.2093924654244999,
+  "leaky_feature_rmse": 1.8867080002095233,
+  "honest_rmse": 8.807057373824874,
+  "random_split_mae": 4.052980800704238,
+  "chronological_mae": 4.676763864675868
+ }
+}

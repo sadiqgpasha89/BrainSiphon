@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/provider-availability-access-prediction",
+ "title": "Provider Availability & Access Prediction",
+ "domain": "healthcare",
+ "engine": "forecast",
+ "fit": "exact",
+ "problemType": "forecasting",
+ "seed": 28886,
+ "knobs": {
+  "n_series": 225
+ },
+ "blueprintSignals": [
+  {
+   "name": "Open slots and booking horizon",
+   "definition": "observed open appointments and how far ahead they are",
+   "asOfRule": "Schedule snapshot"
+  },
+  {
+   "name": "Demand and referral inflow",
+   "definition": "appointments requested and referrals received",
+   "asOfRule": "Event stream"
+  },
+  {
+   "name": "Cancellation and no-show rate",
+   "definition": "share of booked slots released or unused",
+   "asOfRule": "Earlier periods"
+  },
+  {
+   "name": "Provider capacity",
+   "definition": "sessions per week and panel limits",
+   "asOfRule": "Capacity records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Provider Availability & Access Prediction\": Estimate appointment wait times and access by specialty, location, provider and payer network, separating observed open slots from inferred estimates, so operations can validate availability before it is shown to members or patients. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Presenting inferred waits as facts."
+}

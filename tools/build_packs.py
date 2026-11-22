@@ -1,6 +1,6 @@
 """Generate every worked-template pack from data/blueprints.json.gz and the engines.
 
-    python3 tools/build_packs.py                 # all 500
+    python3 tools/build_packs.py                 # all 575
     python3 tools/build_packs.py fintech         # one domain
     python3 tools/build_packs.py fintech/real-time-card-upi-fraud-detection
 

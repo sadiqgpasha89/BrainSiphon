@@ -1,0 +1,58 @@
+{
+ "slug": "healthcare/healthcare-compliance-control-effectiveness-prediction",
+ "title": "Healthcare Compliance Control Effectiveness Prediction",
+ "domain": "healthcare",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 18394,
+ "knobs": {
+  "n": 8420,
+  "dropout": 0.183
+ },
+ "blueprintSignals": [
+  {
+   "name": "Days overdue for testing",
+   "definition": "days past the planned test date",
+   "asOfRule": "Test schedule"
+  },
+  {
+   "name": "Recent exception rate",
+   "definition": "exceptions and waivers per period for the control",
+   "asOfRule": "Earlier periods"
+  },
+  {
+   "name": "Evidence staleness",
+   "definition": "age of the latest accepted evidence",
+   "asOfRule": "At scoring"
+  },
+  {
+   "name": "Related incident count",
+   "definition": "incidents linked to the control's process",
+   "asOfRule": "Earlier periods"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Healthcare Compliance Control Effectiveness Prediction\": Identify controls with a rising likelihood of failure using overdue tests, exceptions, incidents and evidence quality, and give risk owners a ranked queue with the contributing signals and a recommended next test. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Predicting failures that rules already show."
+}

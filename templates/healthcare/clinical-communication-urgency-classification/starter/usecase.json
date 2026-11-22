@@ -1,0 +1,57 @@
+{
+ "slug": "healthcare/clinical-communication-urgency-classification",
+ "title": "Clinical Communication Urgency Classification",
+ "domain": "healthcare",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 51760,
+ "knobs": {
+  "n_docs": 6470
+ },
+ "blueprintSignals": [
+  {
+   "name": "Urgency cue terms and phrases",
+   "definition": "clinical and operational language that signals urgency in context",
+   "asOfRule": "Message text"
+  },
+  {
+   "name": "Sender role and channel",
+   "definition": "who sent it and through which channel",
+   "asOfRule": "Directory as at send time"
+  },
+  {
+   "name": "Recipient context",
+   "definition": "on-call status and current queue depth",
+   "asOfRule": "Roster snapshot"
+  },
+  {
+   "name": "Thread history",
+   "definition": "earlier messages in the same conversation",
+   "asOfRule": "Earlier messages"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Clinical Communication Urgency Classification\": Classify incoming clinical and operational messages by urgency and the response pathway they need, so the right queue sees them first, while deterministic emergency rules and existing escalation protocols stay in force. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on arrival-order labels."
+}

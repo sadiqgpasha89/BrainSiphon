@@ -1,0 +1,59 @@
+{
+ "slug": "healthcare/staffing-coverage-gap-prediction",
+ "title": "Staffing Coverage Gap Prediction",
+ "domain": "healthcare",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 15545,
+ "knobs": {
+  "n_entities": 2050,
+  "positive_entity_rate": 0.03,
+  "n_flash_sales": 7
+ },
+ "blueprintSignals": [
+  {
+   "name": "Open-shift age and fill hazard",
+   "definition": "hours since posting and historical fill rate for that role and shift type",
+   "asOfRule": "Use posting time and fill time as logged"
+  },
+  {
+   "name": "Absence pressure",
+   "definition": "notified absences and aggregate sick-call rate for the unit-shift",
+   "asOfRule": "Count only absences notified before scoring time"
+  },
+  {
+   "name": "Eligible float depth",
+   "definition": "number of eligible float or cross-trained staff available for the shift",
+   "asOfRule": "Eligibility must come from verified credentials at that date"
+  },
+  {
+   "name": "Demand-to-roster margin",
+   "definition": "forecast required hours minus rostered hours for the unit-shift",
+   "asOfRule": "Use the roster and forecast snapshots from scoring time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Staffing Coverage Gap Prediction\": Predict which upcoming shifts are likely to fall below minimum safe coverage or the required skill mix early enough to act, keeping a forecast risk distinct from a confirmed uncovered shift. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Counting filled shifts as false positives."
+}

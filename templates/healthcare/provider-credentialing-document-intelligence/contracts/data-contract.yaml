@@ -1,0 +1,16 @@
+contract: provider_credentialing_document_inputs.v1
+owner: medical-staff-office@example.com
+system_of_record: Credentialing and privileging system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: field_confidence, type: double, nullable: false }
+    - { name: document_type_completeness, type: double, nullable: false }
+    - { name: cross_source_agreement, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

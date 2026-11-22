@@ -1,0 +1,34 @@
+{
+ "use_case": "healthcare/healthcare-compliance-obligation-mapping",
+ "engine": "tabular",
+ "seed": 38335,
+ "knobs": {
+  "n_entities": 1860,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 11.3,
+ "results": {
+  "rows": 143605,
+  "positive_rate": 0.0031127049893805926,
+  "test_rows": 47435,
+  "test_positive_rate": 0.002867081269105091,
+  "baseline_lr": {
+   "pr_auc": 0.6705192401862751,
+   "recall_at_0.5pct_fpr": 0.7426470588235294,
+   "brier": 0.0014084692918141994
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6692874411497101,
+   "recall_at_0.5pct_fpr": 0.75,
+   "brier": 0.0014237134938274434
+  }
+ }
+}

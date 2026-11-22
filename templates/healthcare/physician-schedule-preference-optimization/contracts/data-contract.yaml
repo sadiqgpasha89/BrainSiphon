@@ -1,0 +1,16 @@
+contract: physician_schedule_preference_inputs.v1
+owner: physician-scheduling-office@example.com
+system_of_record: Preference submission system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: preference_weight_and_window, type: double, nullable: false }
+    - { name: eligibility, type: double, nullable: false }
+    - { name: continuity_needs, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

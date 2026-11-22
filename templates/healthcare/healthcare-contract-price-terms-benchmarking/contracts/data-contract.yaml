@@ -1,0 +1,16 @@
+contract: healthcare_contract_price_terms_inputs.v1
+owner: procurement@example.com
+system_of_record: Contract management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: normalised_price_percentile, type: double, nullable: false }
+    - { name: term_favourability, type: double, nullable: false }
+    - { name: cohort_size_and_dispersion, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.9%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

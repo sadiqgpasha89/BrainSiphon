@@ -1,0 +1,45 @@
+{
+ "use_case": "healthcare/healthcare-purchase-demand-consolidation-optimization",
+ "engine": "optimize",
+ "seed": 8084,
+ "knobs": {
+  "n_instances": 179,
+  "noise": 0.26
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "pandas": "3.0.5",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.6,
+ "results": {
+  "instances": 179,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 120.0630734341325,
+   "promised_cost": 100.25545369998673,
+   "optimism_gap_pct": 19.75714936508077,
+   "regret_vs_oracle_pct": 31.456915988416497
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 104.14597044360704,
+   "promised_cost": 82.43422858953153,
+   "optimism_gap_pct": 26.338260484228908,
+   "regret_vs_oracle_pct": 14.029298897201583
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 101.57955511815123,
+   "promised_cost": 83.77905511858471,
+   "optimism_gap_pct": 21.24695721904584,
+   "regret_vs_oracle_pct": 11.219333816514938
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.33264121661885,
+   "promised_cost": 94.3554748651102,
+   "optimism_gap_pct": -3.2036653440754344,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}
