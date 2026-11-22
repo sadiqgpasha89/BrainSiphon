@@ -1,6 +1,6 @@
 # Corrective Action & CAPA Effectiveness Prediction: worked example
 
-> Run on synthetic data with `survival` engine, seed 52232, knobs {"n": 9040, "dropout": 0.275}, in 1.0 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `survival` engine, seed 52232, knobs {"n": 9040, "dropout": 0.275}, in 0.8 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

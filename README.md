@@ -164,7 +164,7 @@ Screenshots of the live site, using one blueprint (Real-Time Card & UPI Fraud De
 
 ![Home page: signal in, noise out, and the three steps from a use case to a delivered system](docs/screenshots/01-home.png)
 
-**2. Start where the site tells you to.** Each domain opens with a three-step "start here" path and 7 to 8 tracks that filter its blueprints (healthcare has 18).
+**2. Start where the site tells you to.** Each domain opens with a three-step "start here" path and 7 to 8 tracks that filter its blueprints (healthcare has 18 because it has 125).
 
 ![FinTech domain page with a start-here path and tracks](docs/screenshots/02-domain-tracks.png)
 

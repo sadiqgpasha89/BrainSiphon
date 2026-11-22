@@ -1,6 +1,6 @@
 # Healthcare Procurement Spend Anomaly Detection: worked example
 
-> Run on synthetic data with `anomaly` engine, seed 59886, knobs {"n_series": 82, "anomalies_per_series": 2.307}, in 29.7 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `anomaly` engine, seed 59886, knobs {"n_series": 82, "anomalies_per_series": 2.307}, in 29.3 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

@@ -17,7 +17,8 @@ describe('tracks and paths', () => {
       const slugs = all.filter((u) => u.domain === d).map((u) => u.slug);
       const r = resolveTracks(d, file, slugs);
       expect(r.tracks.length, d).toBeGreaterThanOrEqual(6);
-      expect(r.tracks.length, d).toBeLessThanOrEqual(8);
+      // A domain of the usual 50 use cases has at most 8 tracks; healthcare (125) adds ten operations tracks.
+      expect(r.tracks.length, d).toBeLessThanOrEqual(slugs.length > 50 ? 20 : 8);
       expect(r.tracks.flatMap((t) => t.slugs).sort(), d).toEqual([...slugs].sort());
       expect(r.startHere.steps.length, d).toBe(3);
     }

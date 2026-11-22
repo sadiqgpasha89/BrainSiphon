@@ -1,6 +1,6 @@
 # Provider Network Adequacy Prediction: worked example
 
-> Run on synthetic data with `tabular` engine, seed 44183, knobs {"n_entities": 2620, "positive_entity_rate": 0.027, "n_flash_sales": 3}, in 11.5 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `tabular` engine, seed 44183, knobs {"n_entities": 2620, "positive_entity_rate": 0.027, "n_flash_sales": 3}, in 11.7 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

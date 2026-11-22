@@ -1,6 +1,6 @@
 # Facility Access Pattern Anomaly Detection: worked example
 
-> Run on synthetic data with `anomaly` engine, seed 16002, knobs {"n_series": 90, "anomalies_per_series": 1.867}, in 34.4 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `anomaly` engine, seed 16002, knobs {"n_series": 90, "anomalies_per_series": 1.867}, in 31.1 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

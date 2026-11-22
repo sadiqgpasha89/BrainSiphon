@@ -1,6 +1,6 @@
 # Provider Directory Accuracy Prediction: worked example
 
-> Run on synthetic data with `tabular` engine, seed 45838, knobs {"n_entities": 1980, "positive_entity_rate": 0.02, "n_flash_sales": 7}, in 9.3 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `tabular` engine, seed 45838, knobs {"n_entities": 1980, "positive_entity_rate": 0.02, "n_flash_sales": 7}, in 9.2 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

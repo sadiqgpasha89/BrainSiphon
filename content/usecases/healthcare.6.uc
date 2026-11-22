@@ -26,7 +26,7 @@ base: A report of invoices above a fixed price or quantity threshold.
 prod: Normalisation of units, currencies and item equivalence followed by rule checks and a robust seasonal anomaly model on price, quantity and frequency, with exposure ranking, contract-reference evidence and a review workflow.
 pipe: Purchase and invoice intake @ ERP extracts ; Unit and item normaliser @ item crosswalk rules ; Business rule checks @ procurement policy rules ; Spend anomaly detector @ robust baseline with isolation forest ; Exposure ranker and evidence builder @ variance calculator ; Procurement and finance review @ human ; Case outcome and audit @ case workflow
 edge: Unit-of-measure change | a price jumps tenfold | Unit conversion tables with change detection
-edge: New item | no baseline | Category prior and a low-confidence flag
+edge: New item | no price baseline exists so the first purchase looks unusual | Category prior and a low-confidence flag
 edge: Emergency purchase | the spike is legitimate | Emergency flag from the order reason code
 edge: Duplicate invoice | the same spend is counted twice | Duplicate rules on supplier, invoice number and amount
 off: Precision at the review capacity and recall on seeded and confirmed exceptions ; Variance-estimate error against resolved cases ; Alert acknowledgement rate
@@ -120,7 +120,7 @@ prod: An effective-dated price engine that computes the expected invoiced price 
 pipe: Invoice and contract intake @ ERP and contract extracts ; Item crosswalk matcher @ identifier-first rules ; Expected price engine @ deterministic calculator ; Variance cause classifier @ gradient boosting ; Residual anomaly ranker @ isolation forest ; Finance validation @ human ; Dispute outcome and audit @ case workflow
 edge: Contract price schedule revised | past invoices look wrong | Effective-dated versions
 edge: Supplier credit memo | variance is already corrected | Credit-memo reconciliation before flagging
-edge: Mixed units on one invoice | unit confusion | Unit conversion with checks
+edge: Mixed units on one invoice | unit confusion makes a normal price look like a variance | Unit conversion with checks
 edge: Disputed contract term | expected price is uncertain | Owner decision stored as a rule
 off: Variance-detection precision and recall on audited invoices ; Recoverable-amount error against realised recoveries ; Cause-classification accuracy
 on: Recovered amount ; Time to dispute resolution ; Share of variance explained automatically
@@ -246,7 +246,7 @@ noise: Vendor presentation length | marketing
 base: A coordinator assembles a packet from vendor dossiers and a literature search.
 prod: Hybrid retrieval over approved evidence with an evidence-grading rubric, structured internal analytics, multi-criteria comparison and an LLM that drafts the packet strictly from retrieved passages with citations, labelling vendor material and stating gaps.
 pipe: Request and evidence intake @ approved repositories ; Hybrid retriever @ vector and keyword index ; Evidence grading @ rubric rules ; Internal analytics builder @ warehouse queries ; Packet drafter with citations @ LLM ; Citation and policy guard @ citation verifier ; Committee review @ human ; Decision record and audit @ case repository
-edge: Evidence is mostly vendor-supplied | bias is high | Label it and request independent evidence
+edge: Evidence is mostly vendor-supplied | bias is high and the packet reads as independent | Label it and request independent evidence
 edge: Conflicting studies | the summary hides it | Show conflict and uncertainty
 edge: New safety notice | the packet is stale | Alert feed and a refresh
 edge: Injected instruction in a dossier | model behaviour changes | Treat as data and no tool calls
@@ -470,7 +470,7 @@ pipe: Draft and playbook intake @ contract system ; Clause segmenter and classif
 edge: No playbook clause exists | the model improvises | Abstain and escalate with a request for guidance
 edge: Cross-references between clauses | a change breaks another clause | Dependency check and a warning
 edge: Counterparty counter-redline | prior suggestions are stale | Version tracking and a new proposal
-edge: Prompt injection in the draft | tool misuse | Tool-free generation and content isolation
+edge: Prompt injection in the draft | the model follows instructions hidden in the draft text | Tool-free generation and content isolation
 off: Approved-language adherence of suggested text ; Counsel acceptance rate and edit distance after review ; Unsupported-legal-claim rate
 on: Counsel review time per contract ; Playbook adherence in signed contracts ; Cycle time to signature
 gap: Measuring fluency not approval ; Allowing invented clause text ; Skipping adversarial draft tests

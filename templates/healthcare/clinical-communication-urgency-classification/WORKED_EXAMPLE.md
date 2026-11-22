@@ -1,6 +1,6 @@
 # Clinical Communication Urgency Classification: worked example
 
-> Run on synthetic data with `nlp` engine, seed 51760, knobs {"n_docs": 6470}, in 14.4 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `nlp` engine, seed 51760, knobs {"n_docs": 6470}, in 13.9 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

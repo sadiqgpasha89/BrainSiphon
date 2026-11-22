@@ -1,6 +1,6 @@
 # Healthcare Contract Renewal & Termination Risk Prediction: worked example
 
-> Run on synthetic data with `survival` engine, seed 77468, knobs {"n": 6030, "dropout": 0.112}, in 0.5 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
+> Run on synthetic data with `survival` engine, seed 77468, knobs {"n": 6030, "dropout": 0.112}, in 0.6 s on Python 3.13.18. Every number below is read from `starter/results.json`, which `make test` regenerates and checks. Synthetic results are easier than production: they show the mechanics and the traps, not what you will measure on your data.
 
 ## 1. Frame the case
 

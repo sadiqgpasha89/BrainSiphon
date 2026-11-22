@@ -27,7 +27,7 @@ prod: Deterministic emergency rules first, then a fine-tuned transformer classif
 pipe: Message intake @ messaging platform events ; Emergency rule layer @ deterministic keyword and pattern rules ; Urgency classifier @ transformer ; Threshold and abstain gate @ calibrated thresholds ; Suggestion display with rationale @ inbox integration ; Recipient confirmation or correction @ human ; Correction feedback and audit @ lakehouse
 edge: Abbreviations and slang | the classifier misreads | Local lexicon and abstention
 edge: Negation such as no chest pain | a keyword rule over-fires | Negation-aware rule tests with clinical review
-edge: Very short message | little context | Thread context and abstention
+edge: Very short message | little context makes urgency hard to read | Thread context and abstention
 edge: Platform outage | suggestions disappear | Messages flow unchanged and the platform shows an unavailable status
 off: Recall of urgent messages at a fixed precision, reported separately for each urgency class ; Under-triage rate against clinician review ; Calibration and abstention coverage
 on: Time to first response for urgent messages ; Urgent messages escalated late ; Share of suggestions corrected by recipients
@@ -89,8 +89,8 @@ prod: A discrete-time survival model and queue analytics over streaming message 
 pipe: Message event intake @ streaming platform ; Queue and roster features @ stream processor ; Response-time survival model @ discrete-time survival ; Urgent timer override @ deterministic rules ; Alert limiter and explainer @ policy rules ; Escalation owner review @ human ; Outcome and audit log @ lakehouse
 edge: Shift change | availability drops suddenly | Roster events in the features
 edge: Platform outage | events are missing | Data freshness flag and a fallback to fixed timers
-edge: Mass-casualty event | queues surge | Disaster mode that disables model alerts and keeps fixed rules
-edge: New message category | no history | Category prior and a low-confidence flag
+edge: Mass-casualty event | queues surge far beyond normal patterns | Disaster mode that disables model alerts and keeps fixed rules
+edge: New message category | no response history for the new category | Category prior and a low-confidence flag
 off: Concordance index and time-dependent AUC at 15 and 60 minutes ; Calibration of delay probabilities ; Alerts per owner per shift and the share acted on
 on: Messages meeting their service level ; Time to acknowledgement ; Late escalations avoided
 gap: Letting the score replace urgent timers ; Scoring individual staff ; Alerting on every high score
@@ -121,7 +121,7 @@ prod: Event-log cleaning and process mining to map pathways, duration models and
 pipe: Event extraction @ warehouse queries ; Event log builder @ case and activity rules ; Process miner @ process discovery ; Stage delay analyser @ duration and anomaly models ; Driver analysis @ gradient boosting with attribution ; Process owner review @ human ; Findings and audit log @ lakehouse
 edge: Missing timestamps | stages look shorter or longer | Completeness checks and exclusion rules
 edge: Rework loops | cycle time is inflated | Loop detection and rework metrics
-edge: Process changed mid-period | trends break | Change markers and split analyses
+edge: Process changed mid-period | trends break and stage delays are not comparable | Change markers and split analyses
 edge: Small pathway | estimates are noisy | Minimum volume and interval reporting
 off: Stage-delay detection agreement with process owner review ; Event-log completeness ; Stability of bottleneck rankings across periods
 on: Cycle time for the target pathways ; Discharge or referral delays ; Improvement actions completed
@@ -216,7 +216,7 @@ prod: A geospatial adequacy engine with road-network travel times, a capacity fo
 pipe: Directory and capacity intake @ warehouse extracts ; Geospatial travel model @ road-network routing ; Capacity estimator @ time-series and rules ; Adequacy evaluator @ versioned standards rules ; Uncertainty and evidence builder @ interval estimation ; Network and compliance review @ human ; Report and audit log @ lakehouse
 edge: Stale directory | adequacy is overstated | Freshness discount and a verification list
 edge: Telehealth providers | travel rules do not apply | Service-mode rules by standard
-edge: Standard changes mid-year | results change | Effective-dated standards
+edge: Standard changes mid-year | adequacy results change against the new requirement | Effective-dated standards
 edge: Sparse rural area | estimates are noisy | Interval reporting and a manual review
 off: Agreement of adequacy results with manual network audits ; Capacity-estimate error against observed slots ; Interval coverage
 on: Adequacy gaps found before filing ; Time to prepare adequacy reports ; Underserved areas addressed
@@ -247,8 +247,8 @@ prod: Geospatial analysis with road-network travel times, spatial clustering of 
 pipe: Directory and demand intake @ warehouse extracts ; Travel-time model @ road-network routing ; Unserved demand analyser @ geospatial rules ; Gap clusterer @ spatial clustering ; Access impact simulator @ scenario model ; Network planning review @ human ; Findings and audit log @ lakehouse
 edge: Geographic barrier such as a river | travel time is longer than distance | Road-network routing
 edge: Small area | demand is noisy | Pooling and an interval
-edge: Provider closes | a gap opens | Directory event updates
-edge: Overlapping service areas | counted twice | Area deduplication rules
+edge: Provider closes | a coverage gap opens in the area | Directory event updates
+edge: Overlapping service areas | the same members are counted twice | Area deduplication rules
 off: Gap-detection agreement with planner review ; Travel-time model error against observed trips ; Stability of gap maps across periods
 on: Unserved demand reduced ; Planning time per cycle ; Candidate actions adopted
 gap: Using straight-line distance ; Ignoring demand ; Publishing individual-level lists
@@ -278,7 +278,7 @@ prod: Field-level comparison of directory values with authoritative, attested an
 pipe: Directory and source intake @ warehouse extracts ; Source reconciler @ identifier and attribute rules ; Field drift scorer @ gradient boosting with temporal features ; Provenance and confidence builder @ rules ; Correction queue ranker @ capacity-aware ranking ; Data steward or provider confirmation @ human ; Correction outcome and audit @ lakehouse
 edge: Provider with several locations | one location changes | Location-level records
 edge: Source outage | the signal vanishes | Source health flag and a degraded status
-edge: Deliberate temporary change | false drift | Effective-dated overrides
+edge: Deliberate temporary change | an approved short-term change is flagged as false drift | Effective-dated overrides
 edge: Name change | records appear to conflict | Name history table
 off: Drift precision and recall on verified samples ; Field-level confirmation rate of flagged items ; Lead time between real change and detection
 on: Directory accuracy on audited samples ; Time to correct a stale field ; Member complaints about wrong directory data
@@ -341,7 +341,7 @@ prod: A capacity-allocation and facility-location optimiser over access gain, co
 pipe: Gap and candidate intake @ warehouse extracts ; Eligibility filter @ credentialing and contracting rules ; Access gain calculator @ travel-time model ; Expansion optimizer @ MILP location model ; Scenario comparer @ simulation ; Strategy and contracting review @ human ; Decision and audit log @ lakehouse
 edge: Candidate declines | the plan changes | Re-solve with excluded candidates
 edge: Budget cut | the plan is infeasible | Re-run with the new budget and show the binding constraint
-edge: Demand forecast revised | gains change | Scenario refresh
+edge: Demand forecast revised | expected access gains change and the ranking shifts | Scenario refresh
 edge: Overlapping candidates | gains are double counted | Marginal gain calculation
 off: Access gain realised against predicted gain ; Constraint violations in proposals (must be zero) ; Solver gap and time to feasible
 on: Members brought within the access standard ; Cost per member reached ; Scenario adoption by strategy teams
@@ -373,8 +373,8 @@ prod: A probabilistic wait-time forecaster that combines queueing analytics with
 pipe: Scheduling and demand intake @ scheduling extracts ; Capacity and slot features @ point-in-time features ; Wait-time forecaster @ gradient boosting with quantiles ; Queue model @ queueing analytics ; Observed-versus-inferred labeller @ rules ; Operations validation @ human ; Forecast and outcome log @ lakehouse
 edge: Provider with no online schedule | no observed slots | Inferred estimate with a clear label
 edge: Template change | slots appear or vanish | Template version events
-edge: Holiday week | demand shifts | Calendar tables
-edge: New provider | no history | Peer prior and a low-confidence flag
+edge: Holiday week | demand shifts and waits are mis-forecast | Calendar tables
+edge: New provider | no history to estimate waits from | Peer prior and a low-confidence flag
 off: Weighted quantile loss and interval coverage ; Wait-time error against mystery-shopper calls ; Capacity-risk precision at the review capacity
 on: Share of availability statements validated ; Wait-time forecast accuracy ; Members given a wrong wait estimate
 gap: Presenting inferred waits as facts ; Using average wait only ; Ignoring cancellations
