@@ -2,6 +2,7 @@
 # Vendor-neutral. Agents work in sandboxes with short-lived scoped tokens, a human approves every merge and deployment, secrets never reach a model and developers are never ranked or scored individually.
 == build-failure-root-cause-agent | Build Failure Root Cause Agent | llm-agents,nlp | seconds | advanced | a=0.3 k=60
 obj: Read failed build and deployment logs, find the first real error and the likely cause, and suggest the fix with links to the log lines and recent changes.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every diagnosis cites log lines and commits ; The agent is read-only on pipelines ; Suggestions go to the author as comments ; Diagnosis within 60 s ; 200K failed builds per month
 sn: Evidence | The first failing step and log lines | A summary of the whole log | Cascading errors hide the cause
 sn: Label | Causes confirmed by engineers or later fixes | Error text | The same error can have many causes
@@ -25,6 +26,7 @@ gap: Whole-log summaries ; Automatic retries ; Uncited diagnoses
 
 == ci-queue-resource-optimisation | CI Queue and Resource Optimisation | reinforcement-learning,time-series | seconds | advanced | a=1 k=5
 obj: Allocate runners and order jobs so developer wait time falls and compute cost stays within budget, protecting release builds from starvation.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Release and hotfix jobs always have priority ; Budget caps on compute ; Scheduling decision within 1 s ; Fairness across teams ; 500K jobs per day
 sn: Objective | Wait time for developers and cost within budget | Runner utilisation | High utilisation creates long queues
 sn: Fairness | Equal access across teams | First-come first-served | Large jobs can starve small ones
@@ -96,6 +98,7 @@ gap: Before-and-after comparisons ; Error-only metrics ; Automatic promotion wit
 
 == release-notes-generation | Release Notes Generation | llm-agents,nlp | batch | foundational | a=0.1 k=10
 obj: Draft release notes from merged pull requests, issues and labels, grouped for customers and for operators, with links to the sources, for the product owner to approve.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every line links to a pull request or issue ; Breaking changes and migrations always listed ; Product owner approves ; No internal names or secrets ; Notes for 500 releases per year
 sn: Accuracy | Notes tied to merged changes | A summary of commit text | Commit text can be wrong or internal
 sn: Audience | Separate customer and operator notes | One list | Different readers need different detail
@@ -191,6 +194,7 @@ gap: Raw secrets in findings ; Reports without rotation ; Pattern-only detection
 
 == dependency-upgrade-agent | Dependency Upgrade Agent | llm-agents | batch | advanced | a=1 k=40
 obj: Propose dependency upgrades that fix vulnerabilities and age, run tests in a sandbox and open pull requests with the changelog risks, for owners to merge.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Each upgrade is a pull request with passing tests ; Owners approve every merge ; Major upgrades need a risk summary ; The agent never pushes to protected branches ; 100K dependency updates per year
 sn: Safety | Tests and staged rollout | Version bump alone | Updates can break behaviour
 sn: Scope | Grouped small updates | One huge update | Large updates are hard to review
@@ -262,6 +266,7 @@ gap: Known-vulnerability scanning only ; Warn-only controls ; Popularity as trus
 
 == security-fix-suggestion-agent | Security Fix Suggestion Agent | llm-agents | seconds | advanced | a=0.3 k=40
 obj: Suggest code fixes for confirmed security findings, with an explanation, a test that shows the flaw is closed and a pull request for the owner to review.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Fixes only for confirmed findings ; Each fix includes a test that fails before and passes after ; Owner and security review required ; The agent works in a sandbox ; 20K findings per quarter
 sn: Verification | A failing then passing test | A plausible patch | Plausible patches can leave the flaw open
 sn: Scope | Minimal changes | Broad refactors | Large changes hide risk
@@ -381,6 +386,7 @@ gap: Customer identity in bug trackers ; Area-only matching ; Auto-linking witho
 
 == team-flow-metrics-dashboard | Team Flow Metrics and Insights | tabular,time-series | batch | foundational | a=1 k=2
 obj: Show team-level flow metrics such as lead time, deployment frequency and change failure rate with explanations of what moved, to support team improvement and never to rank people.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Metrics at team level with a minimum group size ; No individual views ; Teams own their data ; Insights reviewed by team leads ; 2K teams
 sn: Level | Teams with at least 5 people | Individuals | Individual metrics are gamed and harm trust
 sn: Use | Team improvement conversations | Performance reviews | Metrics are not performance ratings
@@ -428,6 +434,7 @@ gap: Exact message grouping ; Event counts as rank ; Unmasked personal data
 
 == developer-portal-assistant | Internal Developer Portal Assistant | llm-agents,tabular | seconds | foundational | a=0.2 k=40
 obj: Answer questions about services, owners, dependencies and standards from the service catalogue and docs, and create tickets or scaffold templates through approved workflows.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers come from the service catalogue and docs with links ; Write actions only through approved templates and approvals ; Access follows catalogue permissions ; Answer within 5 s ; 20K questions per day
 sn: Source | The service catalogue and docs | Model memory | Ownership data changes
 sn: Actions | Approved templates with approval | Free-form commands | Free-form actions can break systems
@@ -451,6 +458,7 @@ gap: Free-form command execution ; Unsourced answers ; Ignoring permissions
 
 == governed-text-to-sql-engineers | Governed Text-to-SQL for Engineers | llm-agents,tabular | seconds | advanced | a=1 k=40
 obj: Let engineers query operational and product data in plain language through a governed semantic layer with row and column access controls, showing the query and sources.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Queries run only on the governed semantic layer ; Read-only with row limits ; Access follows data permissions ; Every answer shows the query ; Answer within 10 s
 sn: Safety | A semantic layer with access control | Raw table access | Raw access leaks data and costs money
 sn: Trust | The query and definitions shown | A number with no lineage | Teams must verify
@@ -570,6 +578,7 @@ gap: Model memory of licences ; Warnings with no SBOM ; Scanner-made legal decis
 
 == coding-agent-sandbox-permissions | Coding Agent Sandbox and Permission Policy | llm-agents,tabular | seconds | staff-principal | a=0.5 k=20
 obj: Run coding agents inside isolated sandboxes with least-privilege, short-lived credentials and egress controls so agents can build and test code but cannot reach production or exfiltrate data.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Agents have no production credentials ; Network egress limited to approved hosts ; Credentials expire within 1 hour ; Every command logged ; 20K agent sessions per day
 sn: Isolation | Disposable sandboxes per task | Developer laptops | A compromised session must not spread
 sn: Credentials | Short-lived scoped tokens | Long-lived personal tokens | Leaked tokens grant wide access
@@ -593,6 +602,7 @@ gap: Developer credentials for agents ; Open internet access ; Long-lived tokens
 
 == ai-code-provenance-review | AI-Generated Code Provenance and Review | tabular,llm-agents | seconds | advanced | a=0.1 k=10
 obj: Record which changes were written or edited by AI agents and route them to the right level of review, tests and licence checks, so accountability and quality stay clear.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Every AI-assisted change is labelled in the pull request ; Higher-risk changes need a second human reviewer ; Licence and similarity checks run on generated code ; Human author remains accountable ; 100K labelled changes per month
 sn: Accountability | A named human owner | The agent as author | Accountability cannot sit with a tool
 sn: Review | Risk-based depth | The same review for all | Generated code can be large and plausible
@@ -616,6 +626,7 @@ gap: Disclosure by habit only ; Same review for every change ; Agent as accounta
 
 == coding-agent-prompt-injection-defence | Coding Agent Prompt Injection Defence | nlp,llm-agents | seconds | staff-principal | a=0.2 k=20
 obj: Detect and neutralise hostile instructions hidden in issues, code comments, dependencies and web pages that coding agents read, so untrusted text cannot steer the agent to leak data or run harmful commands.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Untrusted text is separated from instructions ; High-risk tools need human approval ; Detection recall above 95% on test attacks ; No secrets in agent context ; Scan within 500 ms
 sn: Boundary | Policy enforced outside the model | A system prompt that asks the model to be careful | Prompts alone can be overridden
 sn: Test | Planted attacks in repositories and issues | Trust in vendor claims | Real attacks adapt
@@ -639,6 +650,7 @@ gap: Prompt-only defence ; No planted attack tests ; Trusting dependency text
 
 == coding-agent-evaluation-harness | Coding Agent Evaluation Harness | llm-agents,tabular | batch | advanced | a=1 k=40
 obj: Evaluate coding agents on a company's own repositories and tasks with hidden tests, cost and safety checks so model and prompt changes are judged on evidence before rollout.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Tasks drawn from real past changes with hidden tests ; Results by language, repository and task type ; Safety scenarios included ; Re-run on every agent change ; 2K tasks
 sn: Truth | Hidden tests and reviewer judgement | Public benchmarks | Public benchmarks may be in training data
 sn: Metrics | Pass rate, cost, time and safety incidents | Pass rate alone | A cheap pass rate hides risk
@@ -662,6 +674,7 @@ gap: Public benchmarks only ; Pass rate alone ; Single runs
 
 == devtools-agent-action-guardrails | DevTools Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.5 k=40
 obj: Control and audit every action AI agents take in repositories, pipelines and registries, enforce approval tiers and give security and audit teams a replayable record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Policy enforced in a gateway outside the model ; Agents never merge to protected branches, deploy to production or change access policies ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and repository | Organisation-wide tokens | One mistake should not reach all repositories

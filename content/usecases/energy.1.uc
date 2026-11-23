@@ -50,6 +50,7 @@ gap: Learning without a network model ; Single-point output ; Ignoring topology 
 
 == volt-var-optimisation | Volt-VAR Optimisation Advisor | reinforcement-learning,time-series | seconds | advanced | a=12 k=6
 obj: Recommend capacitor, regulator and inverter settings that keep voltage in range and reduce losses, as advice to the operator within protection limits.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Voltage limits enforced in a rules layer outside the model ; Operator approves each settings change ; Recommendation every 5 minutes ; Simulation test before live use ; 800 feeders
 sn: Limits | Hard voltage and loading limits in code | A learned limit | A learned limit can fail in a rare state
 sn: Model | A power flow model with learned corrections | A pure black box | Operators need to see why a setting is safe
@@ -121,6 +122,7 @@ gap: Replacing the certified solver ; Average error as the headline ; No out-of-
 
 == control-room-operator-copilot | Control Room Operator Copilot | llm-agents,nlp | seconds | advanced | a=0.1 k=60
 obj: Help control-room operators find procedures, similar past events and switching sheets during an incident by answering from controlled documents and giving the evidence, without issuing or preparing live commands.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers come from controlled procedures with revision numbers ; The copilot cannot reach any control system ; Switching steps shown verbatim never paraphrased ; Every answer cites its source ; Answer within 5 s
 sn: Source | The current controlled procedure | Model memory | A wrong step can cause an outage or injury
 sn: Scope | Information and recall | Operational commands | Command authority stays with the operator and the system
@@ -144,6 +146,7 @@ gap: Paraphrasing switching steps ; Any link to control systems ; Answers withou
 
 == restoration-switching-recommendation | Restoration Switching Recommendation | reinforcement-learning,graph | seconds | advanced | a=5 k=4
 obj: Propose switching sequences that restore as many customers as quickly as possible after a fault within loading and protection limits, for the operator to review and execute.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Every proposed sequence passes a power flow and protection check ; The operator reviews and executes ; Proposal within 20 s ; Safety isolation steps included ; 3K feeders
 sn: Goal | Customers restored weighted by priority and time | Number of switches | Fewer switches do not restore more customers
 sn: Safety | Isolation and protection checks as hard constraints | Learned preferences | A learned rule may skip a safety step
@@ -287,6 +290,7 @@ gap: Using data after gate closure ; Alerting with no cost threshold ; Forecast 
 
 == bidding-strategy-optimisation | Bidding Strategy Optimisation | reinforcement-learning,time-series | seconds | staff-principal | a=24 k=4
 obj: Recommend bid curves for generation and storage portfolios that maximise expected margin under price uncertainty and physical constraints, as advice for traders to approve.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Physical limits such as ramp and capacity enforced outside the model ; Traders approve every bid ; Risk limits and exposure caps in code ; Market rules compliance checks ; Recommendations in 60 s
 sn: Constraint | Physical and market rules as hard limits | Learned limits | Infeasible or non-compliant bids are costly
 sn: Evaluation | Backtests with market impact assumptions | Historical price replay only | A large bid changes the price
@@ -310,6 +314,7 @@ gap: Autonomous bidding ; Replay-only evaluation ; Learned physical limits
 
 == energy-market-briefing-agent | Energy Market Briefing Agent | llm-agents,nlp | seconds | advanced | a=0.05 k=60
 obj: Prepare daily briefings for traders and planners from market notices, outage reports, weather and price data, with every statement linked to its source and numbers computed by tools.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every claim cites a source ; Figures computed by tools not by the model ; The agent has read-only access ; Briefing ready by 06:30 daily ; Covers 30 markets
 sn: Source | Official market notices and operator data | Social posts and rumours | Rumours move positions wrongly
 sn: Numbers | Computed by deterministic tools | Model arithmetic | Models make unit and arithmetic errors
@@ -381,6 +386,7 @@ gap: Ratio methods alone ; Single-sample decisions ; Ignoring treatment events
 
 == line-inspection-drone-defects | Line Inspection Drone Defect Detection | computer-vision | batch | advanced | a=50 k=500
 obj: Detect damaged insulators, corroded hardware, cracked crossarms and missing parts in drone and helicopter imagery of lines and poles so crews target the real defects.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Defect list per structure with the image evidence ; Recall above 90% for critical defects ; Inspector confirms before a work order ; Images retained with model version ; 2M images per month
 sn: Label | Defects confirmed by qualified inspectors | Image tags from the vendor | Vendor tags vary in quality
 sn: Priority | Defect severity and structure criticality | Detection count | Counts do not rank urgency
@@ -452,6 +458,7 @@ gap: Global alarm limits ; Counting alarms ; No replay of past failures
 
 == asset-replacement-prioritisation | Asset Replacement Prioritisation | tabular,reinforcement-learning | batch | advanced | a=0.1 k=6
 obj: Rank assets for replacement or refurbishment under a capital budget by balancing failure risk, consequence and cost across the network.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Budget and outage-window limits respected ; Planners can lock or exclude assets ; Every ranking shows its drivers ; Plans for a 10-year horizon ; 2M assets
 sn: Objective | Risk reduced per unit cost | Highest risk first | Cheap fixes can reduce more risk per dollar
 sn: Constraint | Crew, outage and supply chain limits | Pure ranking | An optimal list can be impossible to execute

@@ -2,6 +2,7 @@
 # Vendor-neutral. Licensed engineers verify and sign every output, agents never issue or seal drawings, designs and bids stay inside the company boundary and site analytics never identify or score individual workers.
 == generative-design-exploration | Generative Design Exploration | tabular,reinforcement-learning | batch | advanced | a=0.5 k=10
 obj: Generate and rank design options against stated loads, materials, cost and manufacturing limits so engineers explore more alternatives, then verify and choose with their own analysis.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Options meet every stated constraint before ranking ; Engineers verify the chosen option by independent analysis ; Each option shows its assumptions ; Generation of 500 options in 1 hour ; Licensed engineer approves the design
 sn: Objective | Weight, cost and safety factor within limits | A single metric | One metric can hide failure modes
 sn: Constraint | Hard code and manufacturing limits | Soft preferences | Limits cannot be traded
@@ -73,6 +74,7 @@ gap: Learned rules without authority ; Silent auto-fixes ; Ignored warnings
 
 == materials-selection-assistant | Materials Selection Assistant | tabular,nlp | seconds | foundational | a=0.2 k=5
 obj: Recommend candidate materials from requirements such as strength, temperature, corrosion, cost and supply, with data sources, for engineers to validate before use.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Each material cites its data source ; Safety-critical selections need test data ; Engineers decide ; Supply and restricted substance checks included ; 50K materials
 sn: Data | Verified material datasheets and tests | Web snippets | Unverified data can be wrong
 sn: Constraint | Requirements and regulations together | Properties alone | Restricted substances block use
@@ -144,6 +146,7 @@ gap: Similarity as compliance ; Declared compliance ; Link counts as quality
 
 == engineering-knowledge-assistant | Engineering Knowledge Assistant | llm-agents,nlp | seconds | foundational | a=0.2 k=40
 obj: Answer engineering questions from company standards, past design reports, lessons learned and calculations with citations, respecting project and client access rights.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every answer cites document, revision and page ; Access follows project and client permissions ; Superseded documents are labelled ; Answer within 5 s ; 5M documents indexed
 sn: Source | Released documents and standards | Model memory | Standards and designs change
 sn: Access | Client-segregated indexes | One shared index | Client information must stay separate
@@ -215,6 +218,7 @@ gap: Overlap volume as severity ; Closed as resolved ; Automatic assignment
 
 == quantity-takeoff-from-drawings | Quantity Takeoff from Drawings and Models | computer-vision,tabular | batch | foundational | a=0.3 k=5
 obj: Measure quantities such as areas, lengths and counts from models and drawings and compare them with estimates, with estimators confirming the results.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Quantities link to model elements or drawing regions ; Estimators confirm before use in a bid ; Differences against the estimate flagged ; Takeoff of 5,000 sheets per project ; Units and scales checked
 sn: Source | Model elements where available | Image measurements first | Models are exact when they are complete
 sn: Check | Compare with the estimate and past projects | Trust the first result | Scale errors are common
@@ -406,6 +410,7 @@ gap: Worker tracking ; Percent complete as truth ; Identifiable image storage
 
 == rfi-triage-response-drafting | RFI Triage and Response Drafting | llm-agents,nlp | seconds | foundational | a=0.2 k=20
 obj: Classify requests for information, find the relevant drawings and specifications and draft a response for the design team to review, tracking time to answer.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Responses cite drawing and specification references ; Design team approves every response ; Contract deadlines tracked ; Triage within 1 minute ; 30K RFIs per year
 sn: Source | Current drawings, specifications and prior RFIs | Model memory | Answers must match the contract documents
 sn: Role | Draft and route | Answer on behalf of the designer | Design intent belongs to the engineer
@@ -429,6 +434,7 @@ gap: Answers without citations ; Model as designer ; Arrival-order handling
 
 == submittal-review-assistant | Submittal Review Assistant | nlp,computer-vision | batch | foundational | a=0.2 k=10
 obj: Check contractor submittals such as product data and shop drawings against specifications and drawings and prepare a review note for the reviewing engineer to approve or reject.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every note cites the specification section ; Engineer approves or rejects ; Missing items listed ; Review preparation within 1 hour for 20K submittals per year ; Stamps applied only by engineers
 sn: Output | Item-by-item comparison with citations | An approval recommendation only | Reviewers need the evidence
 sn: Scope | Specified properties and drawings | Everything in the file | Large files hide key items
@@ -452,6 +458,7 @@ gap: Approval recommendation without evidence ; Automatic stamps ; Whole-file re
 
 == crew-equipment-scheduling | Crew and Equipment Scheduling | reinforcement-learning,tabular | batch | advanced | a=1 k=5
 obj: Plan crews, cranes and equipment across work fronts to meet the schedule with fewer conflicts and idle time, subject to labour rules and safety limits, for planners to approve.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Labour rules and rest periods respected ; Safety limits on lifts and zones enforced ; Planners approve the plan ; Replan within 10 minutes ; 200 sites
 sn: Objective | On-time completion and utilisation | Utilisation alone | High utilisation delays critical work
 sn: Constraint | Safety, labour and access rules | Soft preferences | Rules cannot be traded

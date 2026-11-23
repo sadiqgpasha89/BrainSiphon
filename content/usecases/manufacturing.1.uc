@@ -2,6 +2,7 @@
 # Vendor-neutral. Models advise above the machine safety layer, no model output bypasses an interlock, workers are not identified in vision data and a named engineer approves any recipe or setpoint change.
 == visual-defect-inspection | Visual Defect Inspection | computer-vision | sub-100ms | advanced | a=20 k=300
 obj: Detect surface and assembly defects on parts moving on a line from camera images, classify the defect type and reject or flag the part before it ships.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Decision within 80 ms at line speed ; Escape rate below 0.5% at a false reject rate under 2% ; Every reject keeps its image and model version for traceability ; Operators can override and relabel ; 600 parts per minute per line
 sn: Label | Defects confirmed by quality engineers with type and location | Operator rejects at the line | Operators reject for many reasons including doubt
 sn: Data | Images from every shift, lot and lighting condition | One clean batch | Models trained on a good week fail on a bad lens
@@ -25,6 +26,7 @@ gap: Training on operator rejects as truth ; One lot for all training ; Evaluati
 
 == weld-seam-inspection | Weld Seam Inspection | computer-vision,time-series | seconds | advanced | a=2 k=500
 obj: Assess weld quality from seam images and process signals such as current and voltage, so weak welds are caught in line and rework is targeted.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Weld judged within 5 s of completion ; Escape rate under 0.2% for structural welds ; Process signals stored with each weld ; Destructive test results used to recalibrate monthly ; 40K welds per day
 sn: Label | Destructive and X-ray test results linked to the weld | Visual operator judgement | Appearance does not always match strength
 sn: Signals | Image features together with current and voltage curves | Images alone | Many weak welds look fine on the surface
@@ -48,6 +50,7 @@ gap: Using visual judgement as strength labels ; Ignoring wear ; Sampling only e
 
 == pcb-solder-joint-inspection | PCB Solder Joint Inspection | computer-vision | sub-100ms | foundational | a=5 k=200
 obj: Classify solder joints and component placement on circuit boards from 2D and 3D images so shorts, opens and tombstones are caught before test.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Decision within 80 ms per board panel region ; Escape rate under 0.1% ; Defect class reported with the reference designator ; Programme change for a new board in under 4 hours ; 900 boards per hour
 sn: Label | Test results and repair data linked to joint position | Machine reject flags | Machines over-reject for marginal joints
 sn: Variation | Components from many suppliers and reels | A single golden board | Real boards differ by reel and lot
@@ -119,6 +122,7 @@ gap: One limit for mixed populations ; Alarms with no response plan ; Ignoring g
 
 == quality-escape-root-cause-agent | Quality Escape Root-Cause Agent | llm-agents,tabular | seconds | staff-principal | a=0.05 k=60
 obj: When a defect reaches a customer or a late test, trace the affected lots through genealogy, line data and supplier records, rank likely causes and draft the containment and corrective action plan for the quality engineer.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Containment lists generated from genealogy data and verified by an engineer ; The agent has read-only access to plant systems ; Hold actions require quality approval ; Every cause is linked to its evidence ; First report within 30 minutes of a complaint
 sn: Scope | Genealogy-defined affected lots | A guessed date range | A wide guess ships good parts to scrap and a narrow one ships bad parts to customers
 sn: Cause | Evidence from process, material and tool data | A plausible story from the complaint text | Plausible causes waste investigation days
@@ -214,6 +218,7 @@ gap: One threshold for all states ; No fault replay ; Alarms without explanation
 
 == maintenance-technician-copilot | Maintenance Technician Copilot | llm-agents,nlp | seconds | advanced | a=2 k=50
 obj: Give technicians grounded answers from manuals, work-order history and asset data on a phone or tablet, with step-by-step procedures and safety notes, so repairs are faster and more consistent.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every answer cites the manual page or work order ; Safety lockout steps are always shown from the controlled source ; The copilot cannot close work orders or change settings ; Works in poor connectivity with offline manuals ; Answer within 5 s
 sn: Source | Controlled manuals and the asset's own history | General model knowledge | Wrong torque or voltage values cause injuries
 sn: Safety | Procedures retrieved from approved lockout documents | Paraphrased safety steps | Paraphrase loses critical details
@@ -285,6 +290,7 @@ gap: Classifying by spend alone ; Ignoring substitutes ; No expert review
 
 == unplanned-downtime-root-cause-agent | Unplanned Downtime Root-Cause Agent | llm-agents,time-series | seconds | advanced | a=0.5 k=40
 obj: After a line stop, assemble the alarm sequence, operator notes, maintenance history and process data into a ranked list of probable causes and a draft downtime report for the shift lead.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Evidence is cited from plant systems ; The agent has no write access to control systems ; The shift lead confirms the cause code ; Draft available within 2 minutes of restart ; Handles 5K stops per day
 sn: Sequence | The order of alarms and states around the stop | A single stop code | The first alarm often hides the real cause
 sn: Evidence | Data from the stop and similar past stops | The operator's guess | A guess repeats the same cause code
@@ -332,6 +338,7 @@ gap: Operator-logged stops only ; Local definitions ; Reporting a percentage wit
 
 == process-setpoint-optimisation-yield | Process Setpoint Optimisation for Yield | reinforcement-learning,tabular | seconds | staff-principal | a=6 k=15
 obj: Recommend setpoint adjustments on a continuous or batch process to raise yield and cut energy while staying within safe operating limits.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Recommendations bounded by validated safe limits ; Operator or engineer approves each change ; A model output cannot write directly to the controller ; Simulation test before use ; Recommendation every 5 minutes for 300 units
 sn: Safety | Hard limits enforced in code outside the model | A model that learns the limits | A learned limit can be wrong in a rare state
 sn: Causality | Effects estimated from controlled variation and physics | Correlations in historical data | Operators move setpoints for reasons the data does not show
@@ -427,6 +434,7 @@ gap: Using final measurements ; Equal cost weights ; Ignoring unrecorded rework
 
 == injection-moulding-parameter-tuning | Injection Moulding Parameter Tuning | reinforcement-learning,tabular | seconds | advanced | a=6 k=10
 obj: Suggest machine parameter changes for injection moulding to hold part quality as material and temperature drift, reducing setup time and scrap.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Suggested changes within validated ranges ; The setter approves each change ; Part quality checks after every change ; Suggestion within 10 s of a drift alert ; 800 machines
 sn: Drift | Changes in melt viscosity and tool temperature tracked per cycle | Fixed parameters all day | Material and temperature drift continuously
 sn: Search | A small, safe set of parameter moves | Free exploration | Exploration on a production run makes scrap

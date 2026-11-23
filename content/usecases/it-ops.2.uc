@@ -2,6 +2,7 @@
 # Vendor-neutral. Automation works with least-privilege short-lived access, a human approves every production change and containment, credentials and personal data never reach a model and employees are never ranked or scored individually.
 == soc-alert-triage-agent | SOC Alert Triage Agent | llm-agents,tabular | seconds | advanced | a=0.5 k=40
 obj: Enrich and triage security alerts by gathering context from identity, endpoint and network data, ranking them and drafting an investigation summary for the analyst to confirm.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every summary cites the evidence gathered ; The agent is read-only and never contains or deletes ; Analysts decide on containment ; Triage within 2 minutes ; 50K alerts per day
 sn: Label | Analyst dispositions after investigation | Alert severity from the tool | Severities are often wrong
 sn: Role | Enrich and rank | Contain automatically | Wrong containment disrupts business
@@ -289,6 +290,7 @@ gap: Lowest latency everywhere ; Constant switching ; Model-set priorities
 
 == certificate-expiry-dependency-risk | Certificate Expiry and Dependency Risk | graph,tabular | batch | foundational | a=0.2 k=3
 obj: Find certificates, keys and tokens that will expire or are weak, map the services that depend on them and open renewal tasks with owners before they cause outages.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{GraphReg}
 con: Renewal tasks at least 30 days ahead ; Every certificate has an owner ; Private keys never stored in findings ; Weekly scan of 500K certificates ; Critical expiry alerts by page
 sn: Source | Discovery from endpoints and logs | A manual register | Registers miss new certificates
 sn: Priority | Service criticality and dependants | Days left alone | A critical service with 20 days matters more
@@ -336,6 +338,7 @@ gap: Content monitoring ; Forced replacement ; Tickets as labels
 
 == software-licence-optimisation | Software Licence Optimisation | tabular | batch | foundational | a=0.5 k=3
 obj: Match software licences to actual use, reclaim unused seats and forecast renewals so the company pays for what it needs while staying compliant with vendor terms.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Reclaim only after notice to the user ; Compliance position checked before changes ; Licence managers approve ; Use data kept at product level ; 5K products and 1M seats
 sn: Evidence | Usage over a full cycle | Install count | Installed software may be unused
 sn: Risk | Audit exposure and true-up costs | Savings only | Under-licensing is costly
@@ -359,6 +362,7 @@ gap: Install count as use ; Individual monitoring ; Savings without compliance c
 
 == digital-experience-monitoring | Digital Employee Experience Monitoring | time-series,tabular | batch | foundational | a=1 k=3
 obj: Measure application responsiveness, logins and meeting quality from device and network data to find group-level problems and fix them, with data aggregated to groups and never used to rank employees.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Data aggregated to groups of at least 20 ; No individual dashboards ; Works council agreed data scope ; Insights reviewed by service owners ; 100K devices
 sn: Level | Groups by site, device and application | Individuals | Individual scores harm trust
 sn: Use | Fixing causes | Productivity measurement | Experience data does not show productivity
@@ -382,6 +386,7 @@ gap: Individual scores ; Productivity claims ; Window title capture
 
 == application-rationalisation-analysis | Application Rationalisation Analysis | tabular,nlp | batch | advanced | a=0.5 k=5
 obj: Group applications by function, use, cost and technical health and recommend retire, consolidate or invest options with the evidence, for business and IT owners to decide.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Owners decide every retirement ; Each recommendation shows use, cost and dependencies ; Data protection and retention checked ; Quarterly analysis of 5,000 applications ; No retirement without a migration plan
 sn: Evidence | Usage, cost and dependencies | Application age | Old applications can be critical
 sn: Scope | Function-based clusters | Name matching | Names hide overlaps
@@ -429,6 +434,7 @@ gap: Age-only cycles ; Unlogged disposal ; Single plan
 
 == aiops-remediation-with-approval | AIOps Remediation with Approval | llm-agents,reinforcement-learning | seconds | staff-principal | a=0.5 k=40
 obj: Propose and run approved remediation steps for known incident patterns, such as restarting a service or clearing a queue, with verification and rollback, under pre-approved runbooks and human approval for anything else.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Only pre-approved runbooks run automatically ; Production changes need an approver unless the runbook is certified ; Every step verified with rollback ; Remediation within 5 minutes for approved patterns ; 10K executions per year
 sn: Scope | Certified runbooks with limits | Free-form commands | Free-form actions can cause outages
 sn: Control | Verification after each step | Assumed success | A silent failure leaves the incident open
@@ -452,6 +458,7 @@ gap: Free-form commands ; Model confidence as approval ; Assumed success
 
 == llm-application-observability-slo | LLM Application Observability and SLOs | llm-agents,time-series | seconds | advanced | a=1 k=40
 obj: Monitor AI assistants and agents used in IT for latency, cost, grounding quality and safety events, define service level objectives and alert owners when quality or cost drifts.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Quality sampled and scored on a schedule ; Safety events alerted within 5 minutes ; Prompts and outputs stored with retention and redaction rules ; Owners set objectives ; 2M requests per day
 sn: Metric | Task success, groundedness and safety | Latency alone | Fast wrong answers are harmful
 sn: Evidence | Sampled human and automated review | User thumbs only | Thumbs are sparse and biased
@@ -475,6 +482,7 @@ gap: Latency-only monitoring ; User thumbs only ; Raw prompt retention
 
 == it-agent-evaluation-harness | IT Agent Evaluation Harness | llm-agents,tabular | batch | advanced | a=1 k=40
 obj: Evaluate IT assistants and agents on real past tickets and incidents with expected outcomes, safety scenarios and cost so changes to prompts, tools and models are judged on evidence before rollout.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Tasks built from real tickets with approved answers ; Results by category and priority ; Safety scenarios included ; Re-run on every agent change ; 3K tasks
 sn: Truth | Approved answers and expert judgement | Model-written answers | The model can grade itself wrongly
 sn: Metrics | Success, safety, cost and time | Success alone | Cheap success can hide risk
@@ -498,6 +506,7 @@ gap: Model-written answers as truth ; Success alone ; Easy-task inflation
 
 == runbook-automation-safety-testing | Runbook Automation Safety Testing | llm-agents,tabular | batch | advanced | a=0.5 k=20
 obj: Test runbooks and automation scripts in a production-like sandbox before certification, checking idempotence, blast radius and rollback so only safe automation reaches production.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Automation is certified only after sandbox tests pass ; Rollback tested for every runbook ; Blast radius limits declared ; Re-tested after each change ; 5K automations
 sn: Evidence | Sandbox runs with fixtures | Code review only | Reviews miss runtime effects
 sn: Scope | Declared target limits | Unlimited targets | One mistake could hit every host
@@ -521,6 +530,7 @@ gap: Code review only ; Self-certification ; Unlimited target scope
 
 == it-ops-agent-action-guardrails | IT Ops Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.5 k=40
 obj: Control and audit every action AI agents take on IT systems, enforce approval tiers and kill switches and give security and audit teams a replayable record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Policy enforced in a gateway outside the model ; Agents never hold standing administrator access or change identity policies ; Approvals by named roles with separation of duties ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and system | A shared administrator token | One mistake should not reach every system

@@ -242,6 +242,7 @@ gap: Verbal agreements as basis ; Single figures ; Automatic approval
 
 == delay-claims-analysis | Delay Claims Analysis | time-series,nlp | batch | staff-principal | a=0.5 k=20
 obj: Reconstruct schedule history and records to show causes of delay and the share each event contributed, giving claims teams evidence packs for experts and counsel to review.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Every finding cites schedule updates and records ; Methods named and repeatable ; Delay experts and counsel decide positions ; Records handled under legal hold ; Analysis of 200 updates per project
 sn: Method | Recognised delay analysis methods | A custom score | Courts and tribunals need accepted methods
 sn: Evidence | Contemporaneous records | Recollection | Records carry weight
@@ -265,6 +266,7 @@ gap: Custom scores ; Recollection as evidence ; Liability decided by the model
 
 == supplier-quote-comparison | Supplier Quote Comparison | nlp,tabular | seconds | foundational | a=0.3 k=10
 obj: Normalise supplier quotes on scope, exclusions, units and terms and show a like-for-like comparison with gaps highlighted for buyers to negotiate and decide.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Each normalised line cites the quote page ; Buyers decide awards ; Exclusions and assumptions listed ; Comparison within 5 minutes for 50 quotes ; Supplier data kept confidential
 sn: Basis | Normalised scope and units | Total price | Totals hide scope differences
 sn: Risk | Exclusions and conditions listed | Price only | Cheap bids can exclude key items
@@ -288,6 +290,7 @@ gap: Totals as comparison ; Price-only ranking ; Automatic award
 
 == project-health-reporting | Project Health Reporting | nlp,time-series | batch | foundational | a=0.2 k=20
 obj: Draft weekly project status reports from schedule, cost, risk and issue data with cited figures and a plain narrative for the project manager to edit and send.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every figure links to its source system ; Project manager approves before sending ; Unconfirmed items marked ; Draft within 10 minutes ; 2,000 projects
 sn: Source | Systems of record | Chat summaries | Chat can be wrong or stale
 sn: Audience | Separate client and internal versions | One report | Clients should not see internal risks
@@ -311,6 +314,7 @@ gap: Chat as source ; One report for all ; Auto-sending
 
 == project-risk-register-assistant | Project Risk Register Assistant | nlp,tabular | seconds | foundational | a=0.2 k=10
 obj: Suggest risks from project documents, past projects and lessons learned, check the register for gaps and duplicates and help owners write clear risks with causes, effects and actions.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Owners confirm every risk ; Suggestions cite their source ; Duplicates flagged ; Suggestions within 1 minute ; 100K register entries
 sn: Source | Project documents and past registers | Generic lists | Generic lists miss project risks
 sn: Role | Suggest and check quality | Set ratings | Ratings need owner judgement
@@ -334,6 +338,7 @@ gap: Generic risk lists ; Model-set ratings ; Vague risk titles
 
 == portfolio-prioritisation | Portfolio Prioritisation | tabular | batch | advanced | a=1 k=3
 obj: Rank and balance projects in a portfolio by value, risk, capacity use and strategic fit with scenarios, so leaders choose which to fund, delay or stop.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Leaders decide ; Criteria and weights set and published by governance ; Scenarios for budget and capacity limits ; Quarterly review of 300 projects ; Assumptions shown
 sn: Criteria | Published criteria and weights | Hidden model weights | Prioritisation must be explainable
 sn: Constraint | Capacity and budget | Value only | Value without capacity fails
@@ -381,6 +386,7 @@ gap: Individual utilisation ranking ; Only won projects ; Overtime as the soluti
 
 == lessons-learned-retrieval | Lessons Learned Retrieval | llm-agents,nlp | seconds | foundational | a=0.2 k=20
 obj: Capture lessons from project closeouts and incident reports and surface relevant ones at design, bid and planning stages with source links.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Lessons cite the source project and date ; Client-confidential details removed before reuse ; Owners confirm lessons ; Retrieval within 3 s ; 200K lessons
 sn: Source | Confirmed lessons with context | Raw closeout text | Raw text is noisy
 sn: Privacy | Redacted client details | Full project names across clients | Clients expect confidentiality
@@ -404,6 +410,7 @@ gap: Raw closeout text ; Cross-client names ; Archives nobody reads
 
 == meeting-minutes-action-tracking | Meeting Minutes and Action Tracking | nlp,llm-agents | seconds | foundational | a=0.1 k=10
 obj: Draft minutes and extract decisions and actions from project meeting transcripts and notes, assign owners for confirmation and track completion across projects.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Participants consent to recording ; Attendees confirm decisions and actions ; Minutes cite transcript timestamps ; Draft within 15 minutes of meeting end ; 50K meetings per year
 sn: Source | Consented transcripts and chair notes | Covert recording | Consent is required
 sn: Output | Decisions, actions and owners | A transcript summary | Teams need actions
@@ -427,6 +434,7 @@ gap: Covert recording ; Transcript summaries without actions ; Auto-assigned own
 
 == engineering-copilot-calculation-verification | Engineering Copilot with Calculation Verification | llm-agents,tabular | seconds | staff-principal | a=0.5 k=40
 obj: Help engineers draft calculations, specifications and reports while a separate verifier checks units, formulas, code clauses and numeric results against independent tools before anything reaches review.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every numeric result is recomputed by an independent calculator ; Code clauses cited with edition ; Licensed engineer signs every deliverable ; The copilot cannot issue or seal documents ; Verification within 30 s per calculation
 sn: Verification | Independent computation and unit checks | Model self-check | A model can repeat its own error
 sn: Scope | Draft and check | Sign or issue | Professional accountability stays with the engineer
@@ -450,6 +458,7 @@ gap: Model self-checking ; Signing by the copilot ; Memory of standards
 
 == ai-design-review-professional-sign-off | AI-Assisted Design Review and Professional Sign-Off | llm-agents,tabular | seconds | staff-principal | a=0.3 k=20
 obj: Check design packages for coordination errors, missing information and code issues with an AI reviewer and route a findings list to licensed engineers who review, resolve and sign.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Engineer of record signs every package ; Findings cite sheet and clause ; AI findings logged with engineer decisions ; The reviewer never edits controlled drawings ; Review of 500 sheets within 2 hours
 sn: Role | Find and cite | Pass or fail the design | Professional judgement stays with the engineer
 sn: Evidence | Sheet, clause and measurement | General comments | Engineers need to verify quickly
@@ -473,6 +482,7 @@ gap: AI pass or fail ; Silent edits ; Uncited comments
 
 == safety-critical-ai-validation | Safety-Critical AI Validation | tabular,computer-vision | batch | staff-principal | a=1 k=5
 obj: Validate AI models used near safety-critical engineering decisions with independent test sets, failure analysis and operating limits so only models with documented evidence are released for use.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Independent test data never used in training ; Validation report required before release ; Operating limits documented and enforced ; Revalidation after data or model changes ; Safety officer signs off every release within 10 working days
 sn: Evidence | Independent held-out and field data | Training performance | Training metrics overstate reality
 sn: Scope | Documented operating domain | Any use | Models fail outside their domain
@@ -496,6 +506,7 @@ gap: Training metrics as evidence ; Any-use release ; Self-release
 
 == engineering-agent-evaluation-harness | Engineering Agent Evaluation Harness | llm-agents,tabular | batch | advanced | a=1 k=40
 obj: Evaluate engineering assistants and agents on real past questions, reviews and calculations with expert answers, safety checks and cost so changes are judged on evidence before rollout.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Tasks built from real past work with expert-approved answers ; Results by discipline and task type ; Calculation correctness checked by tools ; Re-run on every agent change ; 2K tasks
 sn: Truth | Expert answers and verified calculations | Model-written answers | The model may grade itself wrongly
 sn: Metrics | Correctness, citation, safety and cost | Fluency | Fluent answers can be wrong
@@ -519,6 +530,7 @@ gap: Model-written answers as truth ; Fluency as quality ; Textbook-only tasks
 
 == engineering-agent-action-guardrails | Engineering Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.5 k=40
 obj: Control and audit every action AI agents take in engineering and project systems, enforce approval tiers and client segregation and give auditors a replayable record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Policy enforced in a gateway outside the model ; Agents never issue, seal or release drawings, approve payments or change baselines ; Client workspaces strictly segregated ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and project | One token for all projects | One mistake should not cross clients

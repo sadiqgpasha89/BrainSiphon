@@ -2,6 +2,7 @@
 # Vendor-neutral. Customer-facing and network-facing actions follow approved catalogues, spend and credit limits, and a named human decides anything above a risk threshold.
 == realtime-service-activation-agent | Real-Time Service Activation Agent | llm-agents,tabular | seconds | staff-principal | a=0.1 k=30
 obj: Take a validated order for a new feature, add-on or business service and drive it through eligibility, provisioning and verification in minutes, escalating only the exceptions to people.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: The agent works only from the product catalogue and approved order templates ; Orders above a value or risk threshold need human approval ; Every provisioning step is idempotent and reversible ; Customer consent and eligibility checked before activation ; 500K orders per day with activation inside 120 s for standard services
 sn: Scope | A catalogue of orderable services with eligibility rules | Free-form requests turned into network changes | Free-form changes bypass product and billing controls
 sn: Sequence | Ordered, idempotent steps with checkpoints | One bulk call to all systems | A half-finished activation leaves billing and network out of step
@@ -25,6 +26,7 @@ gap: Retrying without idempotency ; Skipping the verification step ; Letting the
 
 == private-5g-network-slice-provisioning | Private 5G Network & Slice Provisioning | llm-agents,reinforcement-learning | seconds | staff-principal | a=0.01 k=80
 obj: Turn an enterprise request for a private 5G network or slice into a validated design, resource allocation and activation plan so business customers are live in days, not months.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Design output restricted to approved reference architectures ; Resource commitments checked against live capacity ; Human engineer approves every customer-facing commitment ; Spectrum and licence rules enforced ; Plan generated within 5 minutes of a completed request
 sn: Requirements | Latency, coverage, device count and availability targets in numbers | A request such as fast and reliable | Vague needs produce designs that miss the SLA
 sn: Capacity | Live capacity and spectrum headroom | Static planning sheets | Old sheets over-promise
@@ -72,6 +74,7 @@ gap: Using final order state as a feature ; One label for all causes ; Evaluatin
 
 == order-fallout-resolution-agent | Order Fallout Resolution Agent | llm-agents,tabular | seconds | advanced | a=0.1 k=30
 obj: Diagnose a fallout order from system errors and order history, apply approved low-risk fixes and prepare a complete handoff for the rest, so human fallout handlers focus on hard cases.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Fixes restricted to an approved catalogue such as resubmit, correct address format or re-trigger a step ; Anything that changes price, contract or customer data needs a human ; Every fix recorded with before and after state ; Triage within 30 s of fallout
 sn: Evidence | The system error code and the order step state | The agent's own guess at the cause | Guessing wastes handler time
 sn: Fix class | Reversible fixes with known results | Open-ended edits | Edits to customer data create new problems
@@ -263,6 +266,7 @@ gap: Using population averages ; Sales framing ; No frequency cap
 
 == billing-dispute-resolution-agent | Billing Dispute Resolution Agent | llm-agents,nlp | seconds | advanced | a=0.1 k=40
 obj: Investigate a billing dispute, check the rated usage and rules, explain the charge or propose a correction and credit within policy, so disputes resolve faster and more consistently.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Credits and corrections follow a policy table with caps ; Anything above a cap or involving legal threats goes to a human ; The explanation cites the rated records ; No changes to the bill without approval ; Investigation completed within 60 s
 sn: Evidence | Rated usage records and the rate plan in force on the date | The customer's description | Memory of the plan is often wrong
 sn: Policy | A table of allowed corrections with caps | Case-by-case discretion | Inconsistent outcomes drive complaints
@@ -478,6 +482,7 @@ gap: Using opportunity creation as the label ; Skipping serviceability ; No enti
 
 == field-technician-dispatch-optimisation | Field Technician Dispatch Optimisation | reinforcement-learning,tabular | seconds | advanced | a=0.5 k=20
 obj: Assign and route field technicians to installs and repairs by skills, parts, location and customer commitments so more jobs complete on time with less travel.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Skills, parts and working-time rules as hard constraints ; Re-optimisation within 60 s after a change ; Dispatcher can override ; Fair workload spread ; 20K jobs per day
 sn: Objective | On-time completion weighted by priority and cost | Utilisation alone | High utilisation produces late jobs
 sn: Estimate | Job duration predicted from job type and history | Fixed standard times | Durations vary widely
@@ -525,6 +530,7 @@ gap: Delaying critical visits ; Learning from visit duration ; One remote attemp
 
 == tower-inspection-drone-imagery | Tower Inspection with Drone Imagery | computer-vision | batch | advanced | a=0.01 k=5000
 obj: Find corrosion, loose fittings, antenna misalignment and structural damage from drone and climber images so inspections are faster and safer.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Defects ranked by severity with the image location ; Engineer confirms before any work order ; Personnel safety rules maintained ; Images processed within 1 hour per site ; No imagery of people stored
 sn: Label | Engineer-confirmed defects with severity | Any visible mark | Surface marks are mostly benign
 sn: Coverage | Complete image coverage by tower section | Whatever the pilot captured | Gaps hide defects
@@ -644,6 +650,7 @@ gap: Using one SLA formula ; Scoring at period end only ; Automatic credits
 
 == mec-edge-workload-placement | MEC Edge Workload Placement | reinforcement-learning | seconds | staff-principal | a=0.2 k=20
 obj: Decide where to place and move edge workloads such as video analytics or industrial control across network edge sites, balancing latency, cost and capacity.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Placement honours latency and data-residency constraints ; Moves cause no service interruption ; Human approval for new tenants ; Decisions within 20 s ; 5K workloads across 500 edge sites
 sn: Constraint | Hard latency and residency rules | A cost-only placement | A cheap site that misses latency is useless
 sn: Demand | Forecast load per site | Static capacity | Edge load shifts by hour and event
@@ -667,6 +674,7 @@ gap: Cost-only placement ; Ignoring migration cost ; No simulation
 
 == network-data-privacy-retention-compliance-copilot | Network Data Privacy & Retention Compliance Copilot | llm-agents,nlp | seconds | advanced | a=0.02 k=40
 obj: Answer privacy and retention questions about network and subscriber data, map datasets to rules and flag gaps, so engineers and legal teams make consistent decisions.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers cite the policy clause and the data catalogue entry ; The copilot advises and never changes retention settings ; Legal reviews all interpretations of new rules ; Response within 10 s
 sn: Source | The current policy and the data catalogue with owners | Model memory of privacy law | Rules differ by country and change
 sn: Scope | Datasets mapped to purposes and retention classes | General privacy advice | Teams need decisions about their data
@@ -690,6 +698,7 @@ gap: Treating the answer as legal advice ; No catalogue link ; Stale policies
 
 == telecom-agent-action-audit-guardrails | Telecom Agent Action Audit & Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.2 k=40
 obj: Monitor every action taken by autonomous agents in network and customer systems, enforce guardrails and give auditors a replayable record, so governed autonomy can scale with confidence.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Policy enforcement happens outside the model in code ; Every tool call logged with inputs, outputs and approver ; High-risk actions require named human approval ; Kill switch per agent and per tool ; Audit queries answered within 5 s over 90 days of actions
 sn: Enforcement | Policy checks in the tool gateway | Prompt instructions telling the model to be careful | A prompt can be overridden by input
 sn: Evidence | Immutable action log with context | Summary reports | Auditors need to replay the decision

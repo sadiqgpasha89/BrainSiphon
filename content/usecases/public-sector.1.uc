@@ -2,6 +2,7 @@
 # Vendor-neutral. Models support caseworkers and never issue a denial, sanction or penalty on their own, protected characteristics and their proxies are not used, every decision about a person keeps a named human and an appeal route.
 == grounded-citizen-service-assistant | Grounded Citizen Service Assistant | llm-agents,nlp | seconds | foundational | a=0.05 k=40
 obj: Answer residents' questions about services, eligibility rules, fees and deadlines from official pages and forms, cite the source and hand over to a person for any case-specific decision.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers come only from published official sources with a date ; The assistant never decides eligibility or accepts evidence ; Handoff to a person on request or low confidence ; Works in the top 10 local languages ; Answer within 4 s
 sn: Source | Official pages and forms with a last-updated date | Model memory | Out-of-date rules mislead residents
 sn: Scope | General guidance and next steps | Personal decisions | Decisions need a caseworker and an appeal route
@@ -25,6 +26,7 @@ gap: Answering eligibility questions ; Undated sources ; English-only service
 
 == government-form-completeness-check | Government Form Completeness Check | nlp,computer-vision | seconds | foundational | a=0.5 k=10
 obj: Check submitted forms and attachments for missing fields, wrong documents and unreadable scans at the time of submission so applicants fix problems before a caseworker sees them.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: The check explains each problem in plain language ; No decision on the application ; Works on scans and photos ; Applicant can submit anyway with a note ; 2M submissions per year
 sn: Role | A helper at the front door | A gatekeeper | Rejecting people for form errors excludes the most vulnerable
 sn: Label | Cases that were returned for missing items | Staff opinions | Returns are a clear outcome
@@ -48,6 +50,7 @@ gap: Blocking submissions ; One format only ; No group monitoring
 
 == notice-translation-review | Official Notice Translation Review | nlp | seconds | foundational | a=0.2 k=20
 obj: Translate official notices and letters into residents' languages and flag meaning drift for a reviewer so the text stays accurate and readable.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Reviewer approves legal or rights-related notices ; Key terms follow an approved glossary ; Original and translation stored together ; Back-translation check on high-risk text ; 15 languages
 sn: Quality | Meaning preserved for rights and deadlines | Fluency | A fluent error about a deadline harms people
 sn: Glossary | Approved terms for legal concepts | Free translation | Terms must be consistent
@@ -143,6 +146,7 @@ gap: Penalising predicted no-shows ; Cancellations as no-shows ; Neighbourhood t
 
 == plain-language-rewriter | Plain Language and Accessibility Rewriter | llm-agents,nlp | seconds | foundational | a=0.1 k=10
 obj: Rewrite letters, guidance and forms in plain language and accessible formats for review, so residents understand what to do and by when.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Legal meaning preserved and checked by a reviewer ; Reading level targets met ; Deadlines and amounts unchanged ; Screen reader and easy-read versions ; 5K documents per year
 sn: Meaning | Preserved legal content and deadlines | Shorter text | Shortening can drop a condition
 sn: Review | Policy owner approval | Automatic publishing | A rewrite can change a right
@@ -166,6 +170,7 @@ gap: Readability scores alone ; Automatic publishing ; Shortening without checks
 
 == benefits-eligibility-screening-assistant | Benefits Eligibility Screening Assistant | tabular,llm-agents | seconds | advanced | a=0.3 k=20
 obj: Help residents and caseworkers see which benefits they may qualify for from a short set of answers, with the rules shown, so eligible people apply and no automated denial occurs.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Rules-based eligibility logic with the rule text shown ; The assistant never denies a claim ; Result says may qualify not does qualify ; Caseworker handles the formal decision ; 5M screenings per year
 sn: Logic | Deterministic rules from the legal text | A learned predictor | Eligibility is defined by law not by pattern
 sn: Language | The assistant explains the result and next steps | The assistant deciding | Decisions need accountability and appeal rights
@@ -189,6 +194,7 @@ gap: Learned eligibility ; Denials by the assistant ; Retaining profiles
 
 == benefit-application-document-extraction | Benefit Application Document Extraction | computer-vision,nlp | batch | foundational | a=0.5 k=10
 obj: Extract fields from payslips, bank statements, leases and IDs submitted with benefit applications so caseworkers review structured data rather than retyping.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Every extracted value links to its place in the image ; Caseworker confirms values before use ; Low-confidence fields flagged ; Documents deleted per retention rules ; 5M documents per year
 sn: Truth | Values confirmed by caseworkers | OCR text only | OCR can misread digits
 sn: Safety | Human confirmation | Auto-fill with no check | Wrong values change entitlements
@@ -260,6 +266,7 @@ gap: Past audit labels ; Automatic assessments ; Targeting low-income returns on
 
 == tax-compliance-outreach-prioritisation | Tax Compliance Outreach Prioritisation | tabular | batch | foundational | a=0.2 k=5
 obj: Choose who receives reminders, letters or help with late filing and payment so outreach improves compliance at the lowest cost, with support first and enforcement only through officers.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Outreach is a nudge or an offer of help ; Enforcement decisions by officers ; Experiments to confirm what works ; Message language matches the taxpayer ; 10M taxpayers
 sn: Goal | Compliance that results from outreach | Predicted non-compliance | A prediction does not show who responds
 sn: Method | Randomised tests of letters and timing | Targeting by risk alone | Some people comply anyway
@@ -331,6 +338,7 @@ gap: History-only forecasts ; National-only planning ; Ignoring deadlines
 
 == traffic-signal-timing-optimisation | Traffic Signal Timing Optimisation | reinforcement-learning | seconds | advanced | a=1 k=4
 obj: Adapt traffic signal timings to current flow so delays and emissions fall, within safety rules and with priority for buses, cyclists and pedestrians where policy requires it.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Minimum green, clearance and pedestrian times enforced in the controller ; Plans tested in simulation before use ; Operators can revert at once ; Aggregated detector data only ; 800 junctions
 sn: Objective | Weighted person delay with priority rules | Vehicle throughput | Throughput can harm pedestrians and transit
 sn: Safety | Hard timing limits in the controller | Learned limits | A learned limit can shorten a pedestrian crossing
@@ -402,6 +410,7 @@ gap: Observed boardings as demand ; Individual journey data ; Ignoring events
 
 == bus-bunching-prevention | Bus Bunching Prevention | reinforcement-learning,time-series | seconds | advanced | a=20 k=4
 obj: Recommend holding, speed and dispatch adjustments that keep buses evenly spaced on frequent routes, as advice to controllers and drivers within safety and labour rules.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Recommendations respect driver hours and safety rules ; Controllers approve any intervention ; Messages within 10 s ; Simulation test before live use ; 300 vehicles
 sn: Goal | Even headways and short waits | On-time at timepoints only | Frequent routes depend on spacing
 sn: Safety | Rules enforced in code | Learned preferences | Drivers cannot be asked to break rules
@@ -449,6 +458,7 @@ gap: Plate-level tracking ; Automatic fines from forecasts ; Daily totals only
 
 == road-pavement-condition-assessment | Road Pavement Condition Assessment | computer-vision | batch | advanced | a=20 k=400
 obj: Measure cracks, potholes and rutting from vehicle-mounted and drone imagery so maintenance budgets target the roads that need repair.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Condition index per road segment with the image evidence ; Safety hazards flagged to a person immediately ; Engineer confirms before treatment ; Faces and plates blurred ; 5K km of road per year
 sn: Truth | Engineer-rated condition scores | Image tags | Tags vary in quality
 sn: Priority | Condition, traffic and treatment cost | Damage count | A small defect on a main road can matter more

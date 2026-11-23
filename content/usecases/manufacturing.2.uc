@@ -2,6 +2,7 @@
 # Vendor-neutral. Advice sits above the machine safety layer, workers are never scored individually, and a named engineer or planner approves any change to a schedule, recipe or setpoint.
 == production-scheduling-optimisation | Production Scheduling Optimisation | reinforcement-learning,tabular | seconds | advanced | a=1 k=30
 obj: Build and repair finite-capacity production schedules that respect machines, tooling, materials and due dates, so delivery performance rises and changeovers and idle time fall.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Hard constraints on capacity, tooling and shift calendars ; Planner can freeze and edit any order ; Re-plan within 60 s after a disruption ; Schedule explained by the binding constraint ; 50K operations per plan
 sn: Constraint | Real machine, tool and labour availability | A nominal capacity table | Plans on paper fail on the floor
 sn: Objective | Weighted lateness, changeover and inventory cost | Utilisation | High utilisation creates long queues and late orders
@@ -73,6 +74,7 @@ gap: Using stop time as changeover time ; One average per machine ; Skipping int
 
 == supplier-disruption-sensing-agent | Supplier Disruption Sensing Agent | llm-agents,nlp | seconds | advanced | a=0.05 k=60
 obj: Watch news, weather, port and supplier signals for events that threaten critical inputs, link them to affected parts and orders, and brief the buyers with options.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every alert cites its sources ; Impact tied to the bill of materials and open orders ; The agent proposes and never places orders ; High-impact alerts reviewed by a person within 1 hour ; Scans 2M items per day
 sn: Source | Trusted and dated sources with named locations | Unverified social posts | Rumours trigger unnecessary actions
 sn: Linkage | Events mapped to supplier sites, lanes and parts | Headlines only | A headline matters only if it touches your supply
@@ -96,6 +98,7 @@ gap: Alerting on headlines ; Letting the agent place orders ; Unverified sources
 
 == raw-material-inventory-optimisation | Raw Material Inventory Optimisation | reinforcement-learning,time-series | batch | advanced | a=0.5 k=8
 obj: Set reorder points and order quantities for raw materials under demand and lead-time uncertainty so stock-outs fall without excess inventory.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Service level targets by criticality ; Supplier minimum order quantities respected ; Planner approves order proposals ; Weekly run for 60K materials
 sn: Uncertainty | Lead time and demand distributions | Average values | Averages hide the tail that causes stock-outs
 sn: Policy | Service level tied to the cost of shortage | One level for all | Critical materials need more cover
@@ -143,6 +146,7 @@ gap: Individual monitoring ; Headcount-only plans ; Ignoring labour rules
 
 == capable-to-promise-order-promising | Capable-to-Promise Order Promising | reinforcement-learning,tabular | sub-100ms | advanced | a=0.5 k=8
 obj: Give customers a reliable delivery date at order entry by checking material, capacity and logistics in real time so promised dates are met.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Promise computed within 80 ms ; Dates reflect live capacity and stock ; Sales can reserve capacity within limits ; 40K quotes per hour at peak
 sn: Basis | Available-to-promise from live stock and planned capacity | Standard lead time | A fixed lead time ignores the current load
 sn: Risk | A date with a confidence level | A single date | Late promises damage trust more than later honest dates
@@ -166,6 +170,7 @@ gap: Standard lead times ; Single-point promise dates ; No reservation locks
 
 == vision-guided-bin-picking | Vision-Guided Bin Picking | computer-vision | sub-100ms | advanced | a=10 k=400
 obj: Locate and grasp randomly placed parts in bins using 3D vision so robot cells can feed machines without precise fixturing.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Pose estimate within 80 ms ; Grasp success above 98% ; Collision checks before each motion ; Fallback to operator assistance on repeated fails ; 15 picks per minute per cell
 sn: Label | Successful grasps and measured poses | Annotated images only | Image annotation does not equal a good grasp
 sn: Safety | Motion planning with collision and speed limits in the controller | Model-driven motion | A model cannot guarantee clearance
@@ -189,6 +194,7 @@ gap: Training on annotation only ; Model-driven motion without a planner ; Demo 
 
 == worker-safety-zone-monitoring | Worker Safety Zone Monitoring | computer-vision | sub-100ms | advanced | a=30 k=200
 obj: Detect people entering hazardous zones near machines and vehicles and trigger warnings or a safe slow-down through the certified safety system, without identifying individuals.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: The certified safety controller remains the safety function and the model is an additional layer ; Detection within 60 ms ; No face recognition and no individual tracking over time ; Works-council approved ; Warnings reach the worker and the supervisor
 sn: Role | An extra warning layer above certified interlocks | The primary safety function | An unvalidated model cannot be the guard
 sn: Privacy | Anonymised person detection by zone | Identified workers | Surveillance of individuals harms trust
@@ -212,6 +218,7 @@ gap: Replacing certified interlocks ; Identifying individuals ; Accuracy as the 
 
 == agv-fleet-traffic-orchestration | AGV Fleet Traffic Orchestration | reinforcement-learning | seconds | advanced | a=20 k=2
 obj: Assign missions and route AGVs and mobile robots through shared aisles without deadlocks, minimising wait and travel time.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Collision avoidance remains with vehicle safety systems ; Re-plan within 1 s after a blockage ; Priority rules for urgent missions ; 300 vehicles per site
 sn: Deadlock | Reservation of aisle segments and intersections | Independent shortest paths | Independent paths collide at intersections
 sn: Objective | Mission completion time and throughput | Vehicle utilisation | Busy vehicles in jams do not move goods
@@ -259,6 +266,7 @@ gap: Global torque limits ; Cell-level alarms ; No seeded fault tests
 
 == ppe-compliance-zone-statistics | PPE Compliance Zone Statistics | computer-vision | seconds | foundational | a=10 k=100
 obj: Estimate protective equipment compliance by zone and shift from cameras in aggregate, so EHS targets training and signage without monitoring individuals.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Outputs are zone-level counts and never individual alerts ; Faces blurred at the camera ; Works-council and legal approval before use ; Data retained for 30 days ; 500 cameras
 sn: Purpose | Aggregate compliance rates to guide training | Individual enforcement | Individual enforcement harms trust and breaks agreements
 sn: Method | Anonymised detections with counts | Stored video | Stored video is a privacy and security liability
@@ -354,6 +362,7 @@ gap: Total flow monitoring only ; Counting leaks not cost ; Ignoring sensor drif
 
 == utility-plant-setpoint-optimisation | Utility Plant Setpoint Optimisation | reinforcement-learning,time-series | seconds | advanced | a=12 k=6
 obj: Recommend chiller, boiler and cooling tower setpoints and staging to meet plant demand at the lowest energy cost within comfort and process limits.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Limits on temperatures and pressures enforced in code ; Operator approves any setpoint change ; Simulation test before live use ; Recommendation every 10 minutes for 80 plants
 sn: Model | A physics-informed performance model per equipment | A generic regression | Plant equipment has known curves
 sn: Limits | Hard limits outside the model | Learned limits | A learned limit may fail in a rare state
@@ -425,6 +434,7 @@ gap: Absolute baselines ; Alerting at the limit only ; Site totals only
 
 == sustainability-reporting-copilot | Sustainability Reporting Copilot | llm-agents,nlp | seconds | advanced | a=0.02 k=60
 obj: Help sustainability teams collect, check and draft disclosure content from plant, supplier and finance data, with every figure linked to its source and calculation.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every number links to a source record and a calculation ; Figures computed by tools not by the model ; Human approval before any disclosure ; Version control of drafts ; Report draft for 200 sites within a day
 sn: Numbers | Computed by deterministic tools from controlled data | Model arithmetic | Models make arithmetic and unit errors
 sn: Evidence | A source link per statement | Narrative without references | Auditors need to trace every claim
@@ -448,6 +458,7 @@ gap: Model-computed figures ; Statements with no sources ; Unclear reporting bou
 
 == operator-work-instruction-assistant | Operator Work-Instruction Assistant | llm-agents,nlp | seconds | foundational | a=3 k=30
 obj: Answer operator questions about work instructions, quality checks and changeover steps at the station, in the operator's language, from controlled documents only.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers come from the controlled document set with revision numbers ; Safety and quality-critical steps shown verbatim ; The assistant cannot change any setting ; Works offline at the station ; Answer within 3 s
 sn: Source | The current controlled instruction | Model memory | Wrong instructions cause scrap and injuries
 sn: Language | Translations checked by quality | Free translation by the model | Translation errors in safety steps are dangerous
@@ -471,6 +482,7 @@ gap: Free translation of safety steps ; Missing revision control ; Open-domain c
 
 == engineering-change-impact-agent | Engineering Change Impact Agent | llm-agents,graph | seconds | advanced | a=0.1 k=60
 obj: For an engineering change request, find the affected parts, assemblies, routings, suppliers and open orders, and draft an impact assessment so change boards decide faster.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Impacted items come from the PLM and ERP structure not from text guesses ; The agent has read-only access ; The board approves the change ; Impact assessment within 10 minutes ; 3K change requests per month
 sn: Structure | Where-used queries on the real product structure | Keyword search on part names | Names miss indirect impacts
 sn: Scope | Direct and indirect impacts with the reason | A flat list | The board needs to see why each item is affected
@@ -566,6 +578,7 @@ gap: Classifying by outcome only ; Named analytics ; No rule layer for mandatory
 
 == shopfloor-analytics-query-agent | Shop-Floor Analytics Query Agent | llm-agents,nlp | seconds | advanced | a=2 k=40
 obj: Let supervisors and engineers ask questions in plain language about output, quality, downtime and energy and get correct charts and numbers with the definitions and sources shown.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Queries run only against a governed semantic layer ; Metrics use the plant definitions ; The agent is read-only ; Every answer shows its query and data freshness ; Answer within 8 s
 sn: Definitions | A semantic layer with governed metrics | The model inventing SQL on raw tables | Different definitions give different numbers
 sn: Trust | The query and sources shown with every answer | A number with no lineage | Plants will not trust unexplained numbers
@@ -661,6 +674,7 @@ gap: Fixed intervals only ; Ignoring parts ; No consent record
 
 == shopfloor-agent-action-guardrails | Shop-Floor Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.3 k=40
 obj: Control and audit every action that AI agents take in plant systems such as MES, CMMS and ERP, enforce approval tiers and give quality and EHS teams a replayable record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Policy enforced in a gateway outside the model ; Writes to production recipes and safety systems are never allowed to agents ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by input
 sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach the whole plant

@@ -26,6 +26,7 @@ gap: Flagging seasonal rises ; Penalising flagged customers ; Scores with no rea
 
 == billing-inquiry-copilot | Billing Inquiry Copilot | llm-agents,nlp | seconds | advanced | a=0.02 k=60
 obj: Help contact centre agents explain bills, tariffs and adjustments by retrieving the customer's own billing facts and the controlled policy, with every figure computed by tools.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers use the customer's verified account and controlled policy text ; Figures computed by tools ; The copilot cannot change an account ; Agent confirms before any promise to the customer ; Response within 4 s
 sn: Facts | Billing data retrieved by tools after identity verification | Model memory | Wrong amounts cause complaints and compensation
 sn: Policy | Controlled policy and regulator rules | General knowledge | Rules differ by region and change
@@ -49,6 +50,7 @@ gap: Model-computed amounts ; Account changes by the copilot ; Answers with no p
 
 == demand-response-targeting | Demand Response Targeting | tabular | batch | advanced | a=0.5 k=6
 obj: Choose which participating customers and sites to call during a peak event by estimated reduction per customer, so events deliver the needed load drop with the least inconvenience.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Only customers who opted in ; Fatigue limits on events per customer ; Reduction measured against a baseline ; Event plan within 10 minutes ; 1M enrolled customers
 sn: Effect | Estimated load reduction compared with a counterfactual baseline | Total consumption | High users do not always shift load
 sn: Consent | Opt-in customers and their stated limits | Any customer | Unwanted events harm trust
@@ -96,6 +98,7 @@ gap: Targeting loyal customers with worse prices ; Leakage from post-switch data
 
 == tariff-recommendation | Tariff Recommendation | tabular | batch | foundational | a=0.2 k=4
 obj: Recommend the tariff that would have cost each customer the least on their own usage, and tell them how confident the saving is, so plans fit how people actually use energy.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Recommendation based on the customer's own usage and consent ; Savings shown with a range ; The cheapest plan is shown even when it is not the utility's most profitable ; Regulator rules followed ; 3M accounts
 sn: Basis | The customer's actual usage replayed under each tariff | An average household | Usage shapes differ widely
 sn: Honesty | The cheapest plan with the range of savings | The highest margin plan | Misleading advice breaks regulation and trust
@@ -143,6 +146,7 @@ gap: Using scores for disconnection ; Overdue-only reminders ; Postcode proxies
 
 == outage-communication-agent | Outage Communication Agent | llm-agents,nlp | seconds | advanced | a=0.1 k=40
 obj: Answer customer questions about outages and estimated restoration times from the outage system and keep status pages and messages current, without promising times the operator has not confirmed.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Estimates come from the outage management system and are labelled as estimates ; The agent cannot create or alter outage records ; Vulnerable customer flags trigger a human callback ; Replies within 3 s ; Handles 500K contacts during a storm
 sn: Source | The outage management system | Model guesses | A wrong time breaks trust and affects safety
 sn: Honesty | Estimates labelled with a confidence range | A single promise | Restoration times change
@@ -262,6 +266,7 @@ gap: Total flow monitoring ; Fixed thresholds ; No corroboration
 
 == gas-network-leak-detection | Gas Network Leak Detection | time-series,computer-vision | batch | advanced | a=20 k=10
 obj: Detect gas leaks along pipelines and in the distribution network from sensors, mobile survey data and pressure behaviour so repair crews are sent to the highest-risk leaks first.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Leak reports ranked by risk and proximity to people and buildings ; Safety-critical reports escalate to a person immediately ; Crew confirms on site ; Works with survey vehicle data ; 100K km of main
 sn: Risk | Leak size, location and nearby receptors | Leak count | A small leak near buildings can matter more than a large one in a field
 sn: Evidence | Sensor readings with wind and survey position | A single reading | Wind and position change the reading
@@ -309,6 +314,7 @@ gap: Code-only labels ; First-in first-out queues ; Auto-corrections without app
 
 == battery-dispatch-optimisation | Battery Dispatch Optimisation | reinforcement-learning,time-series | seconds | advanced | a=96 k=4
 obj: Schedule battery charging and discharging across energy, ancillary and capacity markets to maximise margin while protecting battery life and respecting grid limits.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: State of charge and power limits enforced in the controller ; Degradation cost in the objective ; Warranty and grid connection limits respected ; Dispatch plan every 5 minutes ; 500 sites
 sn: Objective | Margin after degradation cost | Revenue | Aggressive cycling wears out the battery
 sn: Uncertainty | Price scenarios and forecast errors | A single price path | Prices change after the plan is made
@@ -380,6 +386,7 @@ gap: Individual trip tracking ; Average-based capacity planning ; Ignoring price
 
 == smart-charging-schedule-optimisation | Smart Charging Schedule Optimisation | reinforcement-learning,tabular | seconds | advanced | a=1 k=4
 obj: Schedule EV charging across a site or fleet to meet departure needs at the lowest cost within feeder and connection limits.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Every vehicle meets its stated departure target unless the driver agrees otherwise ; Site and feeder limits enforced in the controller ; Drivers can override ; Re-plan every 5 minutes ; 20K sessions per day per region
 sn: Promise | The stated departure target | The cheapest schedule | Drivers must trust that cars are ready
 sn: Limit | Hard connection and feeder limits | Learned limits | A violation trips breakers
@@ -403,6 +410,7 @@ gap: Cost without a promise ; Learned limits ; Opaque priority
 
 == virtual-power-plant-orchestration | Virtual Power Plant Orchestration | reinforcement-learning,time-series | seconds | staff-principal | a=12 k=6
 obj: Coordinate distributed batteries, solar, flexible loads and chargers as one resource that bids into markets and follows grid signals, within each owner's limits and consent.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Each asset's owner limits and consent respected ; Safety limits in local controllers ; Delivery verified against metered data ; Dispatch signals every 5 minutes ; 200K assets
 sn: Consent | Owner-set limits per asset | Maximum extraction | Trust and consent are required for a fleet
 sn: Delivery | Verified delivery against metered response | Planned dispatch | Markets pay for delivered energy
@@ -450,6 +458,7 @@ gap: Nameplate baselines ; Plant average comparisons only ; Counting faults not 
 
 == vegetation-encroachment-detection | Vegetation Encroachment Detection | computer-vision | batch | advanced | a=30 k=400
 obj: Measure vegetation clearance to power lines from aerial and satellite imagery and lidar and rank spans by risk of contact so trimming crews work where it matters.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Clearance estimates with an uncertainty ; Priority by growth rate and local wind and fire risk ; Arborist confirms before trimming ; Annual coverage of 100K km of line
 sn: Truth | Field-measured clearances | Image labels only | Images can mislead in depth
 sn: Priority | Time to contact given growth | Current distance only | A fast-growing tree matters more
@@ -497,6 +506,7 @@ gap: Automated shutoff decisions ; Single-point risk scores ; Fire counts as the
 
 == field-crew-dispatch-optimisation | Field Crew Dispatch Optimisation | reinforcement-learning,tabular | seconds | advanced | a=30 k=4
 obj: Assign crews to jobs and routes by skills, parts, travel time and priority so emergency work is fast and planned work is efficient.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Skills and safety certifications are hard constraints ; Dispatcher can override ; Re-plan within 60 s after a new emergency ; Working-time rules respected ; 4K crews
 sn: Constraint | Certified skills and time rules | A preference | A person without the certification cannot do the work
 sn: Objective | Priority-weighted completion time and travel | Distance | Emergency response matters more
@@ -520,6 +530,7 @@ gap: Nearest-crew assignment only ; Ignoring certification ; Full automation of 
 
 == field-technician-copilot | Field Technician Copilot | llm-agents,nlp | seconds | foundational | a=0.5 k=40
 obj: Answer technician questions on site about equipment, procedures and safety steps from controlled manuals and past work orders, in the technician's language, without altering any record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Safety steps shown verbatim from controlled documents ; The assistant cannot issue a switching or isolation instruction ; Works with intermittent connectivity ; Citations with revision numbers ; Answer within 4 s
 sn: Source | Controlled manuals and procedures | Model memory | A wrong step can injure someone
 sn: Safety | Verbatim safety steps | Paraphrase | Paraphrase can drop key conditions
@@ -543,6 +554,7 @@ gap: Paraphrased safety steps ; Missing revision control ; Open-domain chat
 
 == storm-damage-assessment-imagery | Storm Damage Assessment from Imagery | computer-vision | batch | advanced | a=10 k=500
 obj: Assess damage to poles, lines and substations after storms from aerial, drone and satellite images so crews and materials are sent to the right places quickly.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Damage counts by area within 12 hours of imagery ; Safety hazards such as downed lines flagged for immediate human review ; Crew verifies before work ; Images retained with model version ; 1M images per event
 sn: Truth | Crew-confirmed damage | Image tags | Tags can miss hidden damage
 sn: Priority | Hazard first then customers affected | Damage count | A downed line over a road matters most
@@ -566,6 +578,7 @@ gap: Using damage counts as priority ; Image tags as truth ; No hazard escalatio
 
 == regulatory-filing-copilot | Regulatory Filing Copilot | llm-agents,nlp | seconds | advanced | a=0.05 k=60
 obj: Help regulatory teams assemble rate case and reliability filings by retrieving prior filings, regulator rules and source data, with every number computed by tools and linked to its source.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every number links to a source record and a calculation ; Figures computed by tools not by the model ; Human approval before any submission ; Version control of drafts ; Drafts for 200 data requests within a week
 sn: Numbers | Deterministic tools on controlled data | Model arithmetic | Models make unit and arithmetic errors
 sn: Evidence | A source link per statement | Narrative without references | Regulators need to trace every claim
@@ -661,6 +674,7 @@ gap: Mixing average and marginal intensity ; Using history alone ; Undocumented 
 
 == grid-agent-action-guardrails | Grid Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.2 k=40
 obj: Control and audit every action AI agents take in utility systems such as ADMS, work management, billing and market platforms, enforce approval tiers and give regulators a replayable record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Policy enforced in a gateway outside the model ; Agents never write to switching, protection settings or market bids ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach critical systems

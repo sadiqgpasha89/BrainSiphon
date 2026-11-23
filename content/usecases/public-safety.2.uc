@@ -2,6 +2,7 @@
 # Vendor-neutral. No model scores a named individual or identifies a person by face or biometrics, outputs are leads or drafts for a human decision, evidence originals are never altered and every tool use is logged against the case.
 == enforcement-image-quality-triage | Traffic Enforcement Image Quality Triage | computer-vision | batch | foundational | a=1 k=100
 obj: Check the quality of images from speed and red-light cameras so unusable images are removed early and reviewers see clear evidence, with every violation decided by a trained reviewer.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: The model never decides a violation ; Unusable images are logged with the reason ; Plates of non-violations are discarded on schedule ; Reviewer sees the original image ; 2M images per month
 sn: Role | Quality triage before human review | A violation classifier | Penalties need a person and proof
 sn: Privacy | Short retention and masking for non-violations | Keeping all images | Images of lawful drivers are personal data
@@ -25,6 +26,7 @@ gap: Automatic violation decisions ; Long image retention ; Single-site tuning
 
 == near-miss-video-detection | Near-Miss Detection from Anonymised Video | computer-vision | batch | advanced | a=10 k=200
 obj: Detect conflicts between road users at junctions from anonymised video trajectories so engineers see danger before crashes occur.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Video reduced to anonymous tracks at the edge ; No plate or face storage ; Conflict severity measured by time-to-collision ; Weekly site reports ; 300 junctions
 sn: Metric | Time-to-collision and post-encroachment time | Raw video clips | Clips need people to watch
 sn: Privacy | Anonymous trajectories only | Stored video | Video identifies people
@@ -264,6 +266,7 @@ gap: Outcome-only severity ; Named analytics ; No rule layer for serious cases
 
 == court-scheduling-optimisation | Court Hearing Scheduling Optimisation | tabular,reinforcement-learning | batch | advanced | a=0.5 k=4
 obj: Schedule hearings and courtrooms to cut waiting time and adjournments while respecting statutory timelines, judge availability and accessibility needs.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Statutory timelines are hard constraints ; Judges and registrars can override ; Accessibility and interpreter needs honoured ; Weekly schedule for 500 courtrooms
 sn: Goal | Hearings that proceed without adjournment | Fully booked rooms | Overbooking causes wasted attendance
 sn: Rules | Legal timelines and rights | Learned priorities | The law sets timelines
@@ -287,6 +290,7 @@ gap: Overbooking for utilisation ; Learned legal timelines ; Unequal priority
 
 == court-document-classification-redaction | Court Document Classification and Redaction | nlp,computer-vision | batch | foundational | a=1 k=20
 obj: Classify filings by type and suggest redactions of personal data required by court rules so clerks process documents faster and releases comply.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Clerks review all redactions before release ; Sealed material is never released ; Recall of required personal data above 99% on test sets ; Original retained ; 3M filings per year
 sn: Risk | Missed redactions | Over-redaction | Missed redactions harm people and over-redaction hurts open justice
 sn: Authority | The clerk and the rules | The model | Court rules decide what is redacted
@@ -310,6 +314,7 @@ gap: Redaction with no rule cited ; Releasing without a gate ; Automatic release
 
 == legal-aid-eligibility-screening | Legal Aid Eligibility Screening | tabular,llm-agents | seconds | foundational | a=0.2 k=20
 obj: Help people check whether they may qualify for legal aid and prepare their documents, with the formal decision made by an officer.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Rules from the legal text with the rule shown ; The assistant never decides ; Result says may qualify ; Officer decides and the applicant can appeal ; 1M screenings per year
 sn: Logic | Deterministic rules | A learned predictor | Eligibility is set by law
 sn: Role | Explaining and preparing | Deciding | A decision needs an officer and appeal rights
@@ -381,6 +386,7 @@ gap: Backlog counts only ; Single-scenario plans ; Case-level data in planning
 
 == hearing-record-transcription-summary | Hearing Record Transcription and Summary Assistant | nlp,llm-agents | batch | advanced | a=2 k=100
 obj: Produce draft transcripts and summaries of recorded hearings for court staff to check, with every summary line linked to the time in the recording.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: The official record remains the certified transcript ; Drafts labelled as machine-generated ; Every summary line links to a timestamp ; Staff verify before use in decisions ; 100K hours per year
 sn: Status | A draft aid | The official record | Certified records have legal weight
 sn: Evidence | Timestamp links | A free summary | Errors in a summary can mislead
@@ -476,6 +482,7 @@ gap: Automatic sanctions ; Volume as urgency ; Unlimited reviewer exposure
 
 == missing-person-report-routing | Missing Person Report Completeness and Routing | tabular,nlp | seconds | advanced | a=0.2 k=6
 obj: Check missing person reports for missing details, link them to related reports and route them to the right team, with every case treated as urgent by a human who decides the response.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Every report goes to a person immediately ; The tool never lowers priority ; Completeness prompts in plain language ; Linking results reviewed by officers ; 100K reports per year
 sn: Safety | Human review of every report | Auto-prioritising by predicted risk | Risk scores can wrongly delay a search
 sn: Role | Completeness and routing | Risk assessment of the person | Risk assessment is a human judgement
@@ -523,6 +530,7 @@ gap: Case-level modelling ; Using forecasts to target people ; History-only fore
 
 == community-safety-feedback-analysis | Community Safety Feedback Analysis | nlp,llm-agents | batch | foundational | a=0.2 k=20
 obj: Group and summarise residents' safety concerns from surveys, meetings and reports by theme and area with quotes linked to the source, so priorities reflect community voices.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every theme links to example comments ; Minority views shown ; Names removed ; Officials and community partners review ; 100K comments
 sn: Method | Transparent themes with counts and examples | A single summary | A summary can hide minority views
 sn: Fairness | Equal weight to each respondent | Weighting by volume | Organised groups can flood channels
@@ -546,6 +554,7 @@ gap: Single summaries ; Counting campaign copies as views ; Named analysis
 
 == ai-tool-impact-assessment-register | AI Tool Impact Assessment and Public Register | llm-agents,tabular | seconds | advanced | a=0.1 k=40
 obj: Guide teams through a structured impact assessment for each AI tool before use, check it for gaps, and publish a register entry that states purpose, limits, data and oversight.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: No tool goes live without an approved assessment ; Assessments check the purpose, data, bias tests and human oversight ; Register entries are public in plain language ; Reassessment on every material change ; 200 tools
 sn: Gate | An approval step tied to deployment | Optional guidance | Optional steps are skipped
 sn: Content | Purpose, data, group impacts and oversight | A generic checklist | Risks differ by tool
@@ -593,6 +602,7 @@ gap: Overall accuracy only ; Self-checking outputs ; Reports with no consequence
 
 == biometric-use-control-gateway | Biometric Use Control Gateway | tabular,llm-agents | sub-100ms | staff-principal | a=0.1 k=10
 obj: Enforce the agency policy on biometric tools by blocking face recognition and similar identification in all analytics and agents, logging any attempted use and routing approved exceptions to named legal approvers.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Policy enforced at the gateway outside any model ; Face identification is blocked by default ; Exceptions need a legal approval recorded ; Every attempt logged ; Decision within 50 ms
 sn: Enforcement | A gateway with policy as code | Developer guidelines | Guidelines can be ignored
 sn: Scope | All analytics, agents and vendor tools | Only internal systems | Vendors can embed identification
@@ -616,6 +626,7 @@ gap: Guidelines only ; Internal-only scope ; No logs of attempts
 
 == bodycam-footage-redaction-assistant | Body-Worn Camera Footage Redaction Assistant | computer-vision,nlp | batch | advanced | a=2 k=100
 obj: Suggest blurs for faces, plates, screens and bystander audio in footage prepared for release so staff review redactions faster and releases protect privacy.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Originals never modified ; Staff review all suggested redactions ; Every redaction is logged with its legal reason ; Release gate blocks unreviewed files ; 200K hours per year
 sn: Integrity | Original footage preserved with hashes | Edited copies as the source | Courts need originals
 sn: Role | Suggest and speed up review | Fully automatic release | Wrongful release can endanger people
@@ -663,6 +674,7 @@ gap: Action from scores ; Volume-only rules ; Unequal scrutiny
 
 == public-safety-agent-action-guardrails | Public Safety Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.3 k=40
 obj: Control and audit every action AI agents take in public safety systems such as CAD, records and evidence, enforce approval tiers and give oversight bodies a replayable record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Policy enforced in a gateway outside the model ; Agents never dispatch units, change priorities, identify people or alter evidence ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach critical systems

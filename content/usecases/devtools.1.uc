@@ -2,6 +2,7 @@
 # Vendor-neutral. Agents work in sandboxes with short-lived scoped tokens, a human approves every merge and deployment, secrets never reach a model and developers are never ranked or scored individually.
 == repo-aware-code-completion | Repository-Aware Code Completion | llm-agents,nlp | sub-100ms | foundational | a=500 k=20
 obj: Suggest the next lines and functions while a developer types, using the open files and the repository's own conventions, so common code is written faster and consistent with the codebase.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Suggestion latency under 200 ms ; Context limited to repositories the developer can access ; Suggestions never include secrets ; Licence and similarity checks on output ; 50K developers
 sn: Context | Retrieved snippets from the same repository | Generic public code only | Local APIs and styles matter
 sn: Metric | Accepted and retained suggestions | Suggestions shown | Shown suggestions can be ignored
@@ -25,6 +26,7 @@ gap: Shown-suggestion metrics ; Unfiltered output ; Ignoring repository access r
 
 == code-explanation-onboarding-assistant | Code Explanation and Onboarding Assistant | llm-agents,nlp | seconds | foundational | a=0.2 k=60
 obj: Explain what a module, function or service does, who owns it and how it is deployed, with links to the code and docs, so new engineers get productive faster.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every explanation links to the code and docs it used ; Access follows repository permissions ; The assistant is read-only ; Answers within 8 s ; 10K questions per day
 sn: Source | The code, docs and ownership data | Model memory | Wrong explanations mislead
 sn: Evidence | Links to files and lines | A free explanation | Engineers verify quickly with links
@@ -48,6 +50,7 @@ gap: Answers with no links ; Ignoring access rights ; Relying on stale docs
 
 == pr-description-commit-message-drafting | Pull Request Description and Commit Message Drafting | llm-agents,nlp | seconds | foundational | a=0.1 k=10
 obj: Draft pull request descriptions and commit messages from the diff, linked issues and conventions so reviewers understand a change quickly, with the author editing before submission.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: The author reviews every draft ; Descriptions list files and risks from the diff ; Linked issues are real references ; Draft within 5 s ; 200K pull requests per month
 sn: Accuracy | A description that matches the diff | A plausible summary | A wrong summary misleads review
 sn: Role | A draft for the author | An automatic submission | The author owns the change
@@ -71,6 +74,7 @@ gap: Auto-posting ; Summaries with no diff check ; Free text only
 
 == code-migration-assistant | Code Migration and Upgrade Assistant | llm-agents | batch | advanced | a=2 k=60
 obj: Plan and carry out framework, language and library upgrades across many repositories by proposing small verified changes that pass the tests, for owners to review and merge.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Each change is a pull request with passing tests ; Owners approve every merge ; The agent works in a sandbox with a short-lived token ; Rollback instructions in every change ; 2K repositories
 sn: Verification | Tests and builds pass before review | Generated diff alone | Plausible code can break behaviour
 sn: Scope | Small incremental changes | One huge rewrite | Large rewrites are hard to review
@@ -94,6 +98,7 @@ gap: Automatic merge ; One large rewrite ; Skipping tests
 
 == api-documentation-generation | API Documentation Generation | llm-agents,nlp | batch | foundational | a=0.5 k=10
 obj: Generate and update API reference docs and examples from code, schemas and tests so documentation stays accurate, with examples executed in CI.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every example runs in CI ; Documentation matches the OpenAPI or schema ; Owners review changes ; Daily refresh for 5K services
 sn: Truth | The schema and the tested examples | Model-written prose alone | Docs must match behaviour
 sn: Check | Executable examples | Reading by eye | Examples drift
@@ -117,6 +122,7 @@ gap: Prose with no tests ; Publishing without owners ; Examples with real secret
 
 == legacy-modernisation-planner | Legacy Code Modernisation Planner | llm-agents,graph | batch | advanced | a=1 k=100
 obj: Analyse old codebases such as COBOL, PL/SQL and large Java monoliths to map business rules, dependencies and test gaps and propose a staged modernisation plan for architects to approve.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every extracted rule links to source lines ; Behaviour proved by characterisation tests before changes ; Architects approve each stage ; Analysis of 10M lines within a week ; 200 applications
 sn: Truth | Behaviour captured in tests | Code reading alone | Old code has hidden behaviour
 sn: Plan | Small slices with rollback | Big-bang rewrite | Big-bang rewrites fail
@@ -140,6 +146,7 @@ gap: Big-bang rewrites ; Rules with no source links ; Changes without characteri
 
 == developer-docs-qa | Developer Documentation Question Answering | llm-agents,nlp | seconds | foundational | a=0.1 k=60
 obj: Answer engineers' questions about internal platforms, standards and runbooks from the official docs with citations and escalate gaps to doc owners.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers cite the current doc version ; The assistant is read-only ; Access follows document permissions ; Unanswered questions create doc requests ; 30K questions per day
 sn: Source | Current internal docs and runbooks | Model memory | Platform details change
 sn: Gaps | A logged gap for each unanswered question | A guess | Guesses create outages
@@ -163,6 +170,7 @@ gap: Uncited answers ; Guessing on missing docs ; Ignoring doc permissions
 
 == pull-request-review-assistant | Pull Request Review Assistant | llm-agents,nlp | seconds | advanced | a=0.5 k=40
 obj: Comment on pull requests with likely bugs, missing tests and style problems, each backed by evidence from the diff and repository, while human reviewers keep the approval decision.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every comment cites the lines and the reason ; The assistant cannot approve or merge ; Comment precision above 70% on audited samples ; Review within 3 minutes ; 300K pull requests per month
 sn: Role | A first pass with evidence | The approver | Approval carries accountability
 sn: Quality | Precision of comments that developers act on | Number of comments | Noisy comments train people to ignore the tool
@@ -234,6 +242,7 @@ gap: Always choosing the top expert ; Ignoring load ; Seniority-only choices
 
 == technical-debt-prioritisation | Technical Debt Prioritisation | tabular,llm-agents | batch | advanced | a=0.2 k=6
 obj: Combine code metrics, incident history and change frequency to rank debt items by expected cost of delay so teams fix what hurts most, with the engineers deciding the plan.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Each item shows its evidence ; Cost estimates with ranges ; Teams decide the roadmap ; Quarterly run for 5K services
 sn: Value | Cost of delay measured in incidents and change effort | Code smell counts | Counts do not show business cost
 sn: Evidence | Linked incidents and change data | A debt score | Teams need reasons
@@ -329,6 +338,7 @@ gap: Static analysis alone ; Immediate deletion ; Lines deleted as the goal
 
 == unit-test-generation-agent | Unit Test Generation Agent | llm-agents | batch | advanced | a=1 k=40
 obj: Generate unit tests for untested code that compile, pass, increase coverage and catch real changes in behaviour, then offer them in a pull request for engineers.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Tests must compile, pass and fail when behaviour is broken ; Engineers review each pull request ; Agent runs in a sandbox ; No tests that only assert the current output blindly ; 3K repositories
 sn: Quality | Tests that fail when the code is mutated | Coverage numbers | Coverage can be gamed by empty assertions
 sn: Review | Human review of intent | Auto-merge | Tests encode behaviour
@@ -400,6 +410,7 @@ gap: Selection with no full run ; Learning from flaky failures ; Skipped-test co
 
 == test-gap-analysis | Test Gap Analysis from Changes and Coverage | tabular | batch | foundational | a=0.5 k=5
 obj: Find recently changed or high-risk code that has little test coverage so teams add tests where they matter most.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Gaps ranked by change risk and coverage ; Links to the exact functions ; Teams decide what to test ; Weekly run for 5K repositories
 sn: Value | Untested code that changes often | Low coverage everywhere | Cold code does not need first attention
 sn: Evidence | Coverage and change history | Coverage alone | Coverage needs context
@@ -423,6 +434,7 @@ gap: Coverage percentage targets ; Ignoring change history ; Whole-repository re
 
 == ui-test-self-healing | UI Test Self-Healing | computer-vision,llm-agents | seconds | advanced | a=1 k=20
 obj: Repair broken UI test locators after interface changes by finding the matching element and proposing an update, while engineers approve each change and real bugs still fail.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Proposed fixes are reviewed ; Tests that fail because behaviour changed are never auto-healed ; Healing events logged ; Locator repair within 30 s ; 50K UI tests
 sn: Distinction | A moved element versus a broken feature | Any failure repaired | Healing a real bug hides it
 sn: Control | Engineer approval for each fix | Silent updates | Silent updates mask regressions
@@ -446,6 +458,7 @@ gap: Silent healing ; Healing assertion failures ; No screenshots as evidence
 
 == test-failure-triage-root-cause | Test Failure Triage and Root Cause Agent | llm-agents,nlp | seconds | advanced | a=0.3 k=60
 obj: Classify test failures as product bug, test bug, environment or flake and point to the likely cause with log evidence so engineers fix the right thing quickly.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every classification cites log lines and diffs ; The agent cannot change code or retry production jobs ; Engineers confirm before closing ; Triage within 2 minutes ; 100K failures per day
 sn: Label | The cause confirmed by engineers | Failure message text | Messages repeat across causes
 sn: Evidence | Log lines and the suspect commit | A summary | Engineers need to check

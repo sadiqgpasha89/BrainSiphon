@@ -26,6 +26,7 @@ gap: Name-based deduplication ; Silent suppression ; Noise reduction as the only
 
 == incident-root-cause-assistant | Incident Root Cause Assistant | llm-agents,graph | seconds | advanced | a=0.3 k=60
 obj: Assemble evidence from metrics, logs, traces and recent changes and propose ranked root cause hypotheses with the supporting data for the incident commander to test.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every hypothesis cites metrics, logs or changes ; The assistant is read-only on production ; Hypotheses within 3 minutes of an incident ; The commander decides every action ; 20K incidents per year
 sn: Evidence | Linked telemetry and change events | A model narrative | Stories can be plausible and wrong
 sn: Role | Ranked hypotheses to test | An automatic fix | Fixes without diagnosis can worsen outages
@@ -97,6 +98,7 @@ gap: Keyword alerts only ; Raw personal data in analysis ; Novelty as the only s
 
 == incident-summary-stakeholder-comms | Incident Summary and Stakeholder Communication | llm-agents,nlp | seconds | foundational | a=0.1 k=10
 obj: Draft status updates and executive summaries from the incident timeline in plain language for the communications lead to review and send on a fixed cadence.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: The communications lead approves every external update ; Updates cite the timeline entries ; Update drafted within 2 minutes of a request ; No unconfirmed causes stated as fact ; 5K incident updates per year
 sn: Source | The incident timeline and confirmed facts | Chat speculation | Early theories are often wrong
 sn: Audience | Separate technical, executive and customer versions | One message | Readers need different detail
@@ -120,6 +122,7 @@ gap: Posting without approval ; Speculation as fact ; One message for all reader
 
 == on-call-runbook-assistant | On-Call Runbook Assistant | llm-agents,nlp | seconds | foundational | a=0.2 k=40
 obj: Find the right runbook for an alert, summarise the steps in context and answer questions during an incident, with links to the source and no actions taken without approval.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers cite the runbook version and section ; Runbook steps shown, not executed ; Retrieval within 3 s ; Stale runbooks flagged ; 100K runbook pages
 sn: Source | Current runbooks and service docs | Model memory | Procedures change
 sn: Role | Guide the responder | Execute steps | Execution needs approval and context
@@ -143,6 +146,7 @@ gap: Model memory of procedures ; Execution without approval ; Unversioned runbo
 
 == postmortem-drafting-assistant | Postmortem Drafting Assistant | llm-agents,nlp | batch | foundational | a=0.1 k=10
 obj: Draft blameless postmortems from the incident timeline, changes and metrics, with contributing factors and action items for the incident owner to edit and approve.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Blameless wording with no individual blame ; Each statement links to evidence ; Owner approves before publication ; Action items assigned to teams ; Draft within 1 hour of closing 500 incidents per year
 sn: Tone | System and process causes | Names of people at fault | Blame discourages honest reporting
 sn: Evidence | Timeline and metrics links | Recollection | Memory is incomplete
@@ -166,6 +170,7 @@ gap: Individual blame ; Narrative without actions ; Recollection as evidence
 
 == it-helpdesk-chat-agent | IT Helpdesk Chat Agent | llm-agents,nlp | seconds | foundational | a=0.3 k=40
 obj: Answer common employee IT questions and guide troubleshooting from approved knowledge articles, creating a ticket with context and handing over to a human when the issue is not resolved.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers cite knowledge articles ; Identity verified before account actions ; Handover to a human within 2 turns when unsure ; Personal data minimised in transcripts ; 200K chats per month
 sn: Source | Approved knowledge articles | Model memory | Procedures and policies change
 sn: Role | Resolve common issues and escalate | Resolve everything | Complex issues need people
@@ -213,6 +218,7 @@ gap: Requester category as truth ; Model-only urgency ; Accuracy without reassig
 
 == access-request-fulfilment-agent | Access Request Fulfilment Agent | llm-agents,tabular | seconds | advanced | a=0.5 k=40
 obj: Handle routine access requests by checking policy and role, routing approvals and provisioning low-risk access through workflow, with a full audit record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Provisioning only after required approvals ; Privileged access never granted by the agent ; Every request logged with the policy checked ; Low-risk fulfilment within 10 minutes ; 100K requests per year
 sn: Policy | Role-based access rules | Free-form approval | Manual exceptions weaken control
 sn: Scope | Low-risk standard access | Privileged or sensitive access | These need human decisions
@@ -236,6 +242,7 @@ gap: Agent-granted privileged access ; Approval by chat ; Missing audit records
 
 == knowledge-article-generation | Knowledge Article Generation from Tickets | llm-agents,nlp | batch | foundational | a=0.1 k=10
 obj: Draft knowledge articles from solved tickets and chat transcripts, remove personal data and route them to subject matter experts for review before publication.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Personal data removed from drafts ; Expert approves every article ; Articles link to the source tickets ; Duplicate articles flagged ; 20K drafts per year
 sn: Source | Verified resolutions | Every closed ticket | Many closes are workarounds
 sn: Privacy | Redacted drafts | Raw transcripts | Tickets contain personal data
@@ -283,6 +290,7 @@ gap: Agent rankings ; Elapsed time as the target ; Estimates as commitments
 
 == joiner-mover-leaver-orchestration | Joiner Mover Leaver Orchestration | llm-agents,tabular | batch | advanced | a=0.5 k=20
 obj: Coordinate account, device and access changes when people join, move or leave, from HR events and policy, with approvals and verification so access matches the role at all times.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Leaver access removed within 1 hour of the HR event ; Privileged access removed by human-approved steps ; HR data used only for role and dates ; Every step verified and logged ; 30K events per year
 sn: Trigger | Authoritative HR events | Manager emails | Emails are late and incomplete
 sn: Control | Verification after each step | Assumed completion | Silent failures leave access open
@@ -378,6 +386,7 @@ gap: Total-spend budgets only ; Monthly review only ; Spikes treated as errors
 
 == rightsizing-recommendations | Rightsizing Recommendations | tabular,time-series | batch | foundational | a=0.5 k=3
 obj: Recommend smaller or different instance types and storage settings from observed utilisation, with the savings and the performance risk, for service owners to approve.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Recommendations use peak and percentile usage ; Owners approve every change ; Savings shown with risk ; Changes applied through infrastructure code ; 200K resources
 sn: Evidence | Percentile peaks over a full business cycle | Average usage | Averages miss peaks
 sn: Risk | Latency headroom and failure domains | Savings only | Savings can cause incidents
@@ -401,6 +410,7 @@ gap: Average utilisation ; Console changes ; Savings without risk
 
 == autoscaling-policy-optimisation | Autoscaling Policy Optimisation | reinforcement-learning,time-series | seconds | advanced | a=1 k=5
 obj: Tune autoscaling thresholds and schedules to meet latency targets at lower cost, evaluated in simulation on replayed traffic and rolled out with guardrails.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Latency objectives never traded for cost ; Minimum capacity floors enforced ; Policy tested in simulation before rollout ; Decision within 30 s ; 5K services
 sn: Objective | Latency target within a cost budget | Utilisation alone | High utilisation hurts latency
 sn: Safety | Floors, ceilings and rollback | Unbounded scaling | Runaway scaling costs money
@@ -592,6 +602,7 @@ gap: CVSS-only priority ; All-at-once rollouts ; Automatic installs without appr
 
 == iac-plan-review-agent | Infrastructure Code Plan Review | llm-agents,tabular | seconds | advanced | a=0.5 k=40
 obj: Review infrastructure code and planned changes for cost, security and resilience problems and comment on the pull request with evidence, leaving apply decisions to humans.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Comments cite the plan lines and policy ; The agent never applies changes ; Policy checks run as code ; Review within 3 minutes ; 50K plans per year
 sn: Evidence | The plan diff and policy results | A summary of the code | Summaries miss destructive changes
 sn: Role | Comments and blocking policy checks | Applying changes | Apply needs approval and an owner
@@ -615,6 +626,7 @@ gap: Summaries as review ; Prompt-only policy ; Agent-applied changes
 
 == maintenance-window-scheduling | Maintenance Window Scheduling | tabular,time-series | batch | foundational | a=1 k=3
 obj: Choose maintenance windows that minimise user impact by combining traffic forecasts, change calendars and dependencies, and propose them to service owners for approval.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Windows avoid freeze periods and peak traffic ; Owners approve each window ; Dependencies scheduled in order ; Proposal within 1 hour of a request ; 20K maintenance events per year
 sn: Objective | Low user impact and no conflicts | Earliest slot | The earliest slot may be at peak
 sn: Constraint | Dependency order and freezes | Independent scheduling | Dependent changes can collide

@@ -50,6 +50,7 @@ gap: Using raw low-cost readings ; Map-only outputs ; Sensors in selected areas 
 
 == waste-collection-route-optimisation | Waste Collection Route Optimisation | reinforcement-learning,tabular | batch | foundational | a=1 k=4
 obj: Plan collection routes from bin fill levels, schedules and vehicle capacity so trucks collect where needed and fuel and overtime fall.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Collection frequency rules and service promises respected ; Driver hours and vehicle capacity as hard limits ; Supervisors approve routes ; Daily plans for 300 trucks
 sn: Constraint | Legal service frequency | Fill level alone | Residents are promised pickups
 sn: Objective | Distance and time with equal service | Distance only | Distance-only routes can neglect poorer areas
@@ -145,6 +146,7 @@ gap: Absolute use comparisons ; Blind reductions ; Heat maps with no actions
 
 == building-permit-plan-review-assistant | Building Permit Plan Review Assistant | computer-vision,llm-agents | seconds | advanced | a=1 k=60
 obj: Pre-check building plans against code and zoning rules and highlight possible issues with references so plan reviewers focus on judgement and applicants fix problems earlier.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Every flag cites the rule and the drawing location ; The assistant never approves or rejects ; Reviewer decides ; Applicants see the same issues list ; Precheck within 15 minutes ; 100K applications per year
 sn: Rules | Code text as structured rules with versions | Model recall of code | Codes differ and change
 sn: Authority | The reviewer decides and signs | An automatic approval | Approval carries legal responsibility
@@ -192,6 +194,7 @@ gap: Staff scoring ; Reordering queues ; Single-point promises
 
 == zoning-code-question-agent | Zoning and Building Code Question Agent | llm-agents,nlp | seconds | advanced | a=0.05 k=40
 obj: Answer questions about what can be built on a parcel by retrieving the zoning rules, overlays and code with citations, and refer binding determinations to planners.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Answers cite the rule text and the effective date ; The agent gives guidance and not a determination ; Parcel data from the GIS system ; Handoff to planners for formal letters ; Response within 5 s
 sn: Source | The current adopted ordinance and overlays | Model recall | Rules vary by parcel and change
 sn: Status | Guidance with a disclaimer and an invitation to request a determination | A legal answer | Only planners can issue determinations
@@ -215,6 +218,7 @@ gap: Giving determinations ; Uncited answers ; Unversioned ordinances
 
 == unauthorised-construction-detection | Unauthorised Construction Detection from Imagery | computer-vision | batch | advanced | a=10 k=500
 obj: Compare aerial and satellite images over time to find new structures and changes that have no permit, and send the list to inspectors for verification.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Detections are leads for inspectors ; No enforcement from a detection alone ; Private homes handled under policy and law ; Parcel-level results with the images ; Annual coverage of 2,000 square km
 sn: Truth | Inspector-verified findings | Change detection alone | Seasonal change and demolition cause false alarms
 sn: Action | An inspection list with evidence | An automatic notice | Notices need verification and due process
@@ -238,6 +242,7 @@ gap: Automatic notices ; Complaint-only triggers ; Uneven coverage
 
 == land-use-change-detection | Land Use Change Detection from Satellite Imagery | computer-vision | batch | advanced | a=5 k=500
 obj: Map land cover and change over time from satellite data so planners track green space loss, sprawl and flood risk areas.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Land cover classes follow the city's legend ; Accuracy reported per class ; Change maps with confidence ; Annual and seasonal updates ; 5K square km
 sn: Truth | Field-verified samples | Model-labelled data | Self-labelled data hides class confusion
 sn: Class | A legend tied to policy | Generic classes | Policy needs consistent definitions
@@ -261,6 +266,7 @@ gap: Model-labelled test data ; Generic classes ; Maps without uncertainty
 
 == public-consultation-comment-analysis | Public Consultation Comment Analysis | nlp,llm-agents | batch | foundational | a=0.2 k=20
 obj: Group and summarise thousands of consultation comments by theme and position with quotes linked to the source, so officials read the range of views and decisions are documented.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every theme links to example comments ; Minority views shown not hidden ; Officials review the themes ; Names removed from analysis ; 200K comments
 sn: Method | Transparent themes with counts and examples | A single summary | A summary can hide minority views
 sn: Fairness | Equal weight for each submission | More weight for organised campaigns | Campaigns copy text and distort the view
@@ -308,6 +314,7 @@ gap: Individual risk scoring ; Point forecasts only ; Case-level data in plannin
 
 == caseworker-case-summarisation-assistant | Caseworker Case Summarisation Assistant | llm-agents,nlp | seconds | advanced | a=0.1 k=40
 obj: Summarise long case histories for caseworkers with links to the source notes so they prepare faster for visits, with no recommendation about outcomes for the person.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every statement links to a source note ; No risk scores or recommendations about the person ; Caseworker verifies before relying on it ; Access follows case permissions ; Summary within 20 s
 sn: Role | A summary that saves reading time | A decision aid about people | Predictions about individuals in care carry serious risks
 sn: Evidence | A link to the note for each statement | A free summary | Errors in a case file can harm
@@ -427,6 +434,7 @@ gap: Individual profiling ; Average uptake as the metric ; Assumed effects
 
 == policy-microsimulation-assistant | Policy Microsimulation Assistant | tabular,llm-agents | batch | advanced | a=0.1 k=40
 obj: Run microsimulation of tax and benefit changes on synthetic or aggregated populations and explain who gains and loses, with the assumptions and uncertainty shown.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Models run on synthetic or aggregated populations ; Assumptions listed with every result ; Results reproducible from a versioned model ; Analysts review before publication ; Simulation within 10 minutes
 sn: Output | Distributional effects with ranges | A single average | Averages hide who gains and loses
 sn: Trust | Reproducible runs with versioned assumptions | A black box | Policy debates need checkable numbers
@@ -450,6 +458,7 @@ gap: Typical-household averages ; Unversioned assumptions ; Behavioural certaint
 
 == open-data-catalogue-search | Open Data Catalogue Search and Quality | nlp,tabular | seconds | foundational | a=0.1 k=10
 obj: Help people find public datasets by meaning and check their quality and freshness so open data gets used and problems are fixed at the source.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Search by meaning and by field ; Quality and freshness shown with each dataset ; No personal data in published sets ; Publisher notified of problems ; 20K datasets
 sn: Search | Meaning-based retrieval with metadata | Keyword match | Users and datasets use different words
 sn: Quality | Checks on schema, freshness and completeness | A download count | Popularity does not show quality
@@ -473,6 +482,7 @@ gap: Keyword-only search ; Popularity as quality ; Self-certified privacy
 
 == foia-redaction-assistant | Records Request Redaction Assistant | nlp,computer-vision | batch | advanced | a=0.5 k=20
 obj: Suggest redactions in documents released under public records laws by finding personal data and exempt material, so staff review faster and releases are consistent.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Suggested redactions are reviewed by a person ; Each redaction cites its legal exemption ; Recall of personal data above 99% on test sets ; Original retained securely ; 200K pages per year
 sn: Risk | Missed personal data | Over-redaction | Missed redactions harm people and over-redaction breaches transparency law
 sn: Authority | The records officer decides | The model deciding | Exemptions are legal judgments
@@ -520,6 +530,7 @@ gap: Accusations from scores ; Press-based labels ; Scrutiny by supplier size
 
 == legislative-document-analysis-agent | Legislative Document Analysis Agent | llm-agents,nlp | seconds | advanced | a=0.1 k=60
 obj: Help policy analysts compare bill texts, amendments and existing law with citations so they find conflicts, cross-references and definitions quickly.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every statement cites section and version ; The agent is read-only ; Analysts verify before advice goes to officials ; Version history preserved ; Answer within 10 s
 sn: Source | The authoritative legal text and versions | Model memory | Wrong citations mislead advice
 sn: Role | A search and comparison aid | Legal advice | Legal interpretation needs lawyers
@@ -567,6 +578,7 @@ gap: Straight-line projections ; Point forecasts ; Ignoring commitments
 
 == decision-explanation-assistant | Decision Explanation and Appeal Assistant | llm-agents,nlp | seconds | advanced | a=0.1 k=20
 obj: Help caseworkers write clear decision letters from the recorded reasons and legal basis and tell people how to appeal, without changing the decision or adding reasons.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Letters use only the recorded reasons and the legal basis ; The assistant cannot change a decision ; Appeal route and deadlines included from templates ; Caseworker signs every letter ; Plain language and 12 translation options
 sn: Source | The decision record and statute | Model reasoning | Invented reasons make decisions unlawful
 sn: Right | A clear reason and appeal route | A short outcome | People have a right to understand and challenge decisions
@@ -638,6 +650,7 @@ gap: Automatic deletion ; Skipping hold checks ; Folder-based labels
 
 == data-sharing-purpose-gateway | Cross-Agency Data Sharing Purpose Gateway | tabular,llm-agents | sub-100ms | staff-principal | a=0.2 k=20
 obj: Check each cross-agency data request against its legal basis, purpose and consent before data is released, and log every share so people can see who used their data and why.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Policy enforced outside the model in a gateway ; Requests without a legal basis are denied ; Fields minimised to the stated purpose ; Immutable log available to the data subject on request ; Decision within 100 ms
 sn: Enforcement | A policy engine with legal basis as data | Prompt instructions | Prompts can be bypassed
 sn: Minimisation | Only fields needed for the purpose | Whole records | Excess data raises risk and breaches law
@@ -661,6 +674,7 @@ gap: Prompt-based enforcement ; Whole-record releases ; Internal-only logs
 
 == public-sector-agent-action-guardrails | Public Sector Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.3 k=40
 obj: Control and audit every action AI agents take in government systems such as case management, payments and records, enforce approval tiers and give oversight bodies a replayable record.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Policy enforced in a gateway outside the model ; Agents never issue decisions, payments or sanctions ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach all programmes

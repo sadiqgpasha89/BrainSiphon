@@ -2,6 +2,7 @@
 # Vendor-neutral. No model scores a named individual or identifies a person by face or biometrics, outputs are leads or drafts for a human decision, evidence originals are never altered and every tool use is logged against the case.
 == emergency-call-taker-assist | Emergency Call Taker Assist | nlp,llm-agents | sub-100ms | advanced | a=20 k=40
 obj: Listen to emergency calls in real time and show call takers a structured list of what has been said and which questions remain, so critical details are captured faster while the call taker decides every action.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Prompts appear within 2 s of speech ; The call taker confirms every field ; No automatic dispatch or priority change ; Handles the top 12 languages ; 5K concurrent calls
 sn: Role | A prompt list for the call taker | An automatic classifier that sets priority | Emergencies need human judgement and accountability
 sn: Label | Fields confirmed by call takers | Transcripts alone | Transcripts contain errors and no outcome
@@ -73,6 +74,7 @@ gap: Individual-level prediction ; Past demand as the coverage target ; Single-v
 
 == ambulance-posting-optimisation | Ambulance Posting Optimisation | reinforcement-learning,tabular | seconds | advanced | a=30 k=4
 obj: Recommend where idle ambulances should wait so expected response times are short across all areas, as advice for the dispatch supervisor.
+loss: \mathcal{L}=\sum_t \mathrm{Huber}\!\left(y_t-\hat y_t\right)
 con: Coverage targets in every zone ; Supervisor approves moves ; Crew rest and shift rules respected ; Re-plan on every status change ; 400 vehicles
 sn: Objective | Expected response time with a coverage floor | Average response time | Averages leave some areas poorly covered
 sn: Constraint | Crew rules and legal coverage | Pure optimisation | Practical limits matter
@@ -96,6 +98,7 @@ gap: Average-time objectives ; Ignoring crew rules ; Raw before-and-after compar
 
 == dispatch-unit-recommendation | Dispatch Unit Recommendation | tabular | sub-100ms | advanced | a=50 k=6
 obj: Suggest which available units to send to an incident by estimated arrival time, capability and coverage left behind, for the dispatcher to accept or change.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Recommendation within 100 ms ; Dispatcher decides every assignment ; Capability and jurisdiction rules enforced ; Reasons shown for each suggestion ; 1K incidents per hour
 sn: Goal | Fast arrival with coverage kept | Closest unit always | The closest unit may leave an area uncovered
 sn: Rules | Jurisdiction and capability as hard rules | Learned preferences | Wrong crews waste minutes
@@ -119,6 +122,7 @@ gap: Automatic assignment ; Closest-unit-only logic ; No reasons shown
 
 == multilingual-call-interpretation-assist | Multilingual Call Interpretation Assist | nlp | sub-100ms | advanced | a=20 k=20
 obj: Provide live transcription and translation hints for calls in other languages while a human interpreter is connected, so key facts reach the call taker sooner.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: A qualified interpreter is joined for every call in another language ; Machine translation is shown only as a hint ; Addresses and numbers displayed in the original script ; Latency under 2 s ; 30 languages
 sn: Role | A hint for the call taker | A replacement for interpreters | Mistranslation can cost lives
 sn: Test | Real emergency speech in each language | Studio audio | Stress and dialect change the error profile
@@ -214,6 +218,7 @@ gap: Automatic dispatch ; Weather confusion ignored ; No privacy masks
 
 == evacuation-route-planning | Evacuation Route Planning | graph,reinforcement-learning | seconds | advanced | a=5 k=4
 obj: Compute evacuation routes and staging that account for road capacity, hazards and vulnerable populations, so planners and commanders test and choose plans.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{GraphReg}
 con: Plans consider residents with mobility needs from consented registers ; Commanders approve every instruction ; Simulations compare plans in minutes ; Road closures update the model live ; 500K residents
 sn: Constraint | Road capacity and contraflow limits | Free-flow speed | Evacuation traffic exceeds normal capacity
 sn: Equity | Plans covering people without cars | Car-owner assumptions | Some residents cannot self-evacuate
@@ -237,6 +242,7 @@ gap: Free-flow assumptions ; Car-owner assumptions ; Automatic public instructio
 
 == disaster-damage-satellite-assessment | Disaster Damage Assessment from Satellite Imagery | computer-vision | batch | advanced | a=10 k=500
 obj: Map damaged buildings, roads and flooding from satellite and aerial images after disasters so responders prioritise rescue and supplies.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Damage maps within 12 hours of imagery ; Hazards flagged for immediate human review ; Field teams verify ; Building-level results with uncertainty ; 1M buildings per event
 sn: Truth | Field-verified damage | Image tags | Roofs can look fine when buildings are unsafe
 sn: Priority | Hazard and people at risk first | Damage counts | Counts do not rank urgency
@@ -260,6 +266,7 @@ gap: Counts as priority ; Image tags as truth ; Hidden coverage gaps
 
 == emergency-alert-geo-targeting | Emergency Alert Geo-Targeting | tabular,graph | seconds | foundational | a=0.5 k=4
 obj: Help alert authors draw alert areas that cover the hazard and people at risk without over-alerting, using hazard forecasts and population data.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: The authorised officer approves every alert ; Areas shown with the share of people covered and over-alerted ; Alert text from approved templates ; Languages and accessible formats supported ; 100 alerts per year
 sn: Goal | Cover people at risk with minimal over-alerting | The largest area | Over-alerting causes alert fatigue
 sn: Control | An authorised officer sends | An automatic alert | Alerts carry legal and safety weight
@@ -283,6 +290,7 @@ gap: Largest-area alerts ; Automatic sending ; Text-only alerts
 
 == incident-situation-report-agent | Incident Situation Report Agent | llm-agents,nlp | seconds | advanced | a=0.1 k=60
 obj: Compile situation reports for incident commanders from radio logs, dispatch events, field reports and maps, with every statement linked to its source and the time.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every statement cites a source and time ; The agent cannot send orders or alerts ; Commanders approve before sharing outside ; Report refresh every 10 minutes ; 50 concurrent incidents
 sn: Source | Time-stamped logs and reports | Model inference | Commanders need facts not guesses
 sn: Role | Compilation and summary | Decision making | Commanders decide
@@ -306,6 +314,7 @@ gap: Uncited statements ; Agent-issued orders ; Single snapshots
 
 == investigator-case-file-assistant | Investigator Case File Search and Summary Assistant | llm-agents,nlp | seconds | advanced | a=0.1 k=60
 obj: Let investigators search and summarise large case files, reports and statements with links to the original text, without ranking suspects or suggesting guilt.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Every summary line links to the source passage ; No suspect ranking or guilt language ; Access follows case permissions and is logged ; Investigator verifies before use ; Search over 5M pages within 5 s
 sn: Role | Search and summary | Judgement of suspects | Prejudging people harms justice
 sn: Evidence | Links to the exact passage | A free summary | Errors in a case file can mislead a case
@@ -329,6 +338,7 @@ gap: Suspect ranking ; Summaries without links ; Wide access to case files
 
 == evidence-document-ocr-deduplication | Evidence Document OCR and Deduplication | computer-vision,nlp | batch | foundational | a=1 k=20
 obj: Convert scanned evidence into searchable text, remove exact and near duplicates and keep the chain of custody, so reviewers see each item once.
+loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Originals are never modified ; Every derived file links to its original with a hash ; Duplicates grouped not deleted ; Reviewer can see every duplicate ; 10M pages per year
 sn: Integrity | Hashes and logs of every transformation | A cleaned copy only | Courts need the chain of custody
 sn: Dedup | Group near duplicates with the evidence link | Delete duplicates | Deleting evidence is not permitted
@@ -352,6 +362,7 @@ gap: Deleting duplicates ; Modifying originals ; OCR without confidence
 
 == audio-video-evidence-transcription-search | Audio and Video Evidence Transcription and Search | nlp,computer-vision | batch | advanced | a=2 k=100
 obj: Transcribe recorded interviews and bodycam audio and make them searchable by time and phrase, with speaker turns marked, so reviewers find relevant moments without watching everything.
+loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
 con: Originals unchanged with hashes ; Transcripts labelled as machine-generated ; Reviewer verifies any passage used in a case ; No voice identification of individuals ; 50K hours per year
 sn: Integrity | Original recordings and hashes preserved | Edited clips as the source | Courts need originals
 sn: Labels | Speaker turns without identity | Voice identification | Biometric identification is out of scope
@@ -447,6 +458,7 @@ gap: Scoring named people ; Identifiable logs ; Topic-only routing
 
 == forensic-lab-backlog-prioritisation | Forensic Lab Backlog Prioritisation | tabular,reinforcement-learning | batch | advanced | a=0.3 k=4
 obj: Plan the order of forensic analysis requests by statutory deadlines, case seriousness and lab capacity to cut turnaround for urgent cases, with analysts and prosecutors able to override.
+loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{Calibration}
 con: Statutory and court deadlines as rules ; No ranking by suspect characteristics ; Analysts and prosecutors can reprioritise ; Capacity by discipline ; 60K requests per year
 sn: Goal | Deadlines met and the most serious cases prioritised | Fastest throughput | Throughput can leave urgent cases waiting
 sn: Rules | Legal deadlines are fixed | Model predictions of urgency | The law sets deadlines
