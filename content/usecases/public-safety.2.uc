@@ -592,7 +592,7 @@ noise: Author name | irrelevant
 noise: Report format | an artefact
 base: Annual internal reviews of selected tools, because they are the current oversight.
 prod: An audit service that draws samples, collects independent reviews, computes agreed metrics and sends threshold breaches to the oversight board with a pause procedure.
-pipe: Decision and outcome logs @ tool logs ; Sample draw @ audit sampling ; Independent review @ review panel ; Metric computation @ audit service ; Threshold evaluation @ rules ; Board decision and pause @ governance workflow ; Public summary @ register
+pipe: Tool decision and outcome extract @ audit warehouse ; Sample draw @ audit sampling ; Independent review @ review panel ; Metric computation @ audit service ; Disparity threshold check @ audit rules ; Board decision and pause @ governance workflow ; Public summary @ register
 edge: Small groups | metrics are noisy | Confidence intervals and pooled periods
 edge: Missing group data | groups are not recorded | Approved proxy methods for audit only
 edge: Vendor opacity | the supplier will not share logs | Contract clauses and a block on use
