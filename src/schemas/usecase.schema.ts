@@ -137,6 +137,13 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     blurb:
       'Outage and fault prediction, load and renewable forecasting, asset health, smart metering, storage dispatch and field-crew agents for electricity, gas and water utilities.',
   },
+  'public-sector': {
+    name: 'Public Sector & Smart Cities',
+    short: 'Public Sector',
+    topics: 'Citizen services, benefits, mobility, infrastructure, planning',
+    blurb:
+      'Citizen service agents, benefits and tax decision support, traffic and transit, city infrastructure, permits and policy analytics, built around explainable decisions, human caseworkers and public accountability.',
+  },
   'real-estate': {
     name: 'Real Estate & PropTech',
     short: 'Real Estate',

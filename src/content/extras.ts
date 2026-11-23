@@ -115,6 +115,7 @@ export const PROTOCOLS: Record<Domain, string> = {
   telecom: 'NETCONF/YANG and gNMI streaming telemetry, SNMP traps, 3GPP and TM Forum Open APIs, Diameter and RADIUS records',
   manufacturing: 'OPC UA and MQTT Sparkplug, Modbus and PROFINET gateways, MES and ERP interfaces (ISA-95), CMMS work-order APIs',
   energy: 'IEC 61850, DNP3 and ICCP gateways, CIM and OPC UA, AMI head-end and MDM interfaces, market APIs and work-order APIs',
+  'public-sector': 'REST and SOAP agency APIs, case management and CRM integrations, GIS services, traffic and sensor feeds (NGSI-LD, MQTT) and open data standards',
   'real-estate': 'RESO Web API, MLS feeds, BIM/IFC and BACnet/Modbus building protocols',
 };
 
@@ -134,6 +135,7 @@ export const LABEL_DELAY: Record<Domain, string> = {
   telecom: 'fault root causes confirmed after repair, churn and billing disputes that resolve over weeks',
   manufacturing: 'field failures and warranty claims that appear months after shipment, and quality escapes found at the customer',
   energy: 'outage root causes confirmed after repair, theft and meter faults confirmed by site visits and asset failures that appear years after installation',
+  'public-sector': 'appeal outcomes and audit findings that arrive months after a decision, and service outcomes that appear after a policy runs for years',
   'real-estate': 'sale, lease and valuation outcomes that take months',
 };
 
@@ -150,6 +152,7 @@ export const TAIL_COHORTS: Record<Domain, string> = {
   telecom: 'new cells and sites with no history, rare vendor equipment, small enterprise accounts and roaming visitors',
   manufacturing: 'new product variants, rare machines, first runs after a changeover and low-volume lots',
   energy: 'rare fault types, new feeder configurations, extreme weather events and newly connected distributed generation',
+  'public-sector': 'people with complex or unusual circumstances, small language communities, rural areas and new programme rules',
   'real-estate': 'thin-comp micro-markets, unusual property types and new developments',
 };
 

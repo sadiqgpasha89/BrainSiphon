@@ -181,6 +181,7 @@ export const DOMAIN_DIMENSIONS: Record<Domain, string> = {
   telecom: 'Subscribers, cells and network elements, alarms per second and CDRs per day',
   manufacturing: 'Machines and sensors, tags per second, parts per minute and images per shift',
   energy: 'Feeders and assets, SCADA points per second, meter reads per day and forecast horizons',
+  'public-sector': 'Cases and applications, service requests per day, sensor feeds and published datasets',
   'real-estate': 'Listings, properties, images and property updates',
 };
 
@@ -197,6 +198,7 @@ const DOMAIN_PROFILE: Record<Domain, ProfileId> = {
   telecom: 'asset',
   manufacturing: 'asset',
   energy: 'asset',
+  'public-sector': 'asset',
   'real-estate': 'asset',
 };
 

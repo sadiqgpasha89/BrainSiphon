@@ -26,6 +26,7 @@ const LABEL_DELAY: Partial<Record<Domain, string>> = {
   telecom: 'Root causes are confirmed after repair and customer-reported impact trails the fault; churn and disputes resolve over weeks.',
   manufacturing: 'Field failures and warranty claims arrive months after the lot ships; scrap labels depend on inspection coverage.',
   energy: 'Outage causes and asset failures are confirmed only after repair or years of service; theft labels come from limited inspections.',
+  'public-sector': 'Appeal outcomes and audits arrive months after the decision; policy effects take years to observe.',
   'real-estate': 'Sale prices and outcomes lag the valuation; listings that do not transact leave no price.',
 };
 
@@ -37,6 +38,7 @@ const SLICES: Partial<Record<Domain, string[]>> = {
   telecom: ['Region, vendor and technology generation (4G or 5G)', 'Subscriber segment, plan type and tenure', 'Urban, suburban and rural cells and enterprise versus consumer traffic'],
   manufacturing: ['Line, shift and plant', 'Product variant and material lot', 'Machine age, tooling and supplier batch'],
   energy: ['Feeder, region and voltage level', 'Weather regime and season', 'Asset age, vendor and customer segment'],
+  'public-sector': ['Region and service channel', 'Language and accessibility needs', 'Case type and programme rule version'],
   'real-estate': ['Neighbourhood and price band', 'Property type and listing age', 'Fair-housing protected-class proxies such as area-level demographics'],
 };
 
