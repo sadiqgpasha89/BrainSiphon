@@ -1,0 +1,608 @@
+{
+  "overview": "Telecommunications is a network business: millions of subscribers share radio, transport and core elements that fail together, so a single fault can show up as thousands of alarms and complaints. Models must separate cause from symptom, act within carrier-grade availability targets and respect strict privacy rules on subscriber location and usage data.",
+  "concepts": [
+    {
+      "name": "Faults propagate through the network topology",
+      "explanation": "A fault in one cell site, link or core node raises alarms on every element that depends on it. Operators correlate alarms along the topology (radio, backhaul, transport, core) to find the root cause instead of treating each alarm as a separate ticket.",
+      "whyItMatters": "Without topology awareness a model learns which alarms co-occur, not which element is broken, and field crews are dispatched to symptoms.",
+      "tags": [
+        "network",
+        "topology",
+        "alarm",
+        "fault",
+        "outage",
+        "root",
+        "cause",
+        "correlation",
+        "site",
+        "cell",
+        "tower",
+        "ran",
+        "core",
+        "transport",
+        "backhaul",
+        "self-healing",
+        "incident"
+      ]
+    },
+    {
+      "name": "Radio access KPIs describe cell health",
+      "explanation": "Cells are judged on accessibility, retention (drop rate), throughput, handover success, resource block use and interference. These vary strongly by hour, cell type and terrain.",
+      "whyItMatters": "A KPI that is normal for a rural macro cell is a failure for a dense urban cell, so baselines must be per cell and per hour.",
+      "tags": [
+        "cell",
+        "ran",
+        "kpi",
+        "throughput",
+        "handover",
+        "drop",
+        "rate",
+        "interference",
+        "utilisation",
+        "coverage",
+        "sector",
+        "radio",
+        "anomaly",
+        "traffic"
+      ]
+    },
+    {
+      "name": "Network quality is not customer experience",
+      "explanation": "Customers feel video stalls, call quality, slow pages and failed activations, which depend on the end-to-end path and the device and not just on cell KPIs. Care contacts and surveys lag the experience by days.",
+      "whyItMatters": "Optimising network KPIs alone can leave the customers who complain unchanged.",
+      "tags": [
+        "experience",
+        "qoe",
+        "quality",
+        "complaint",
+        "care",
+        "call",
+        "ticket",
+        "customer",
+        "nps",
+        "satisfaction",
+        "churn",
+        "support"
+      ]
+    },
+    {
+      "name": "Churn has drivers and a cost to prevent",
+      "explanation": "Subscribers leave because of price, network quality, service failures, competitor offers and contract end dates. Retention offers cost margin, so they should go to customers who are both at risk and persuadable.",
+      "whyItMatters": "Predicting only who will leave wastes offers on customers who would have stayed or who cannot be saved.",
+      "tags": [
+        "churn",
+        "retention",
+        "subscriber",
+        "contract",
+        "offer",
+        "arpu",
+        "loyalty",
+        "save",
+        "value",
+        "uplift",
+        "prepaid",
+        "postpaid"
+      ]
+    },
+    {
+      "name": "Provisioning turns an order into a working service",
+      "explanation": "Activation spans order capture, inventory, number and SIM assignment, network configuration and billing set-up across OSS and BSS systems. Failures often come from data mismatches between those systems.",
+      "whyItMatters": "Fall-out in the middle of a multi-system flow leaves a paying customer without service, so orders need compensating steps and clear status.",
+      "tags": [
+        "provisioning",
+        "activation",
+        "order",
+        "fulfilment",
+        "oss",
+        "bss",
+        "inventory",
+        "catalogue",
+        "sim",
+        "number",
+        "configuration",
+        "workflow",
+        "fallout"
+      ]
+    },
+    {
+      "name": "Revenue assurance finds money the operator should have billed",
+      "explanation": "Usage records move through mediation, rating and billing, and errors in tariffs, mappings or partner settlements cause under-billing and leakage. Reconciling the stages finds the gaps.",
+      "whyItMatters": "Small percentage errors across millions of records become large sums, and some errors are invisible to the customer.",
+      "tags": [
+        "revenue",
+        "billing",
+        "cdr",
+        "usage",
+        "rating",
+        "leakage",
+        "reconciliation",
+        "tariff",
+        "roaming",
+        "settlement",
+        "mediation",
+        "assurance",
+        "interconnect"
+      ]
+    },
+    {
+      "name": "Capacity is planned for the busy hour",
+      "explanation": "Traffic is forecast per cell and per link for the busiest period, with growth from new devices, video and events. Spectrum and backhaul upgrades take months, so forecasts must be early and carry uncertainty.",
+      "whyItMatters": "Planning on average load causes congestion at peak, while over-building wastes capital.",
+      "tags": [
+        "capacity",
+        "forecast",
+        "traffic",
+        "busy",
+        "hour",
+        "backhaul",
+        "spectrum",
+        "growth",
+        "upgrade",
+        "congestion",
+        "planning",
+        "load"
+      ]
+    },
+    {
+      "name": "Subscriber data is regulated",
+      "explanation": "Location, call and browsing records are personal data with retention limits, consent requirements and lawful-access rules. Analytics normally run on pseudonymised, aggregated data with strict access controls.",
+      "whyItMatters": "A use case that needs identified location data needs a legal basis and tight controls before any model is built.",
+      "tags": [
+        "privacy",
+        "consent",
+        "location",
+        "subscriber",
+        "gdpr",
+        "pseudonymised",
+        "retention",
+        "lawful",
+        "data",
+        "protection",
+        "regulatory"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "RAN",
+      "definition": "Radio access network: the cell sites and radio equipment that connect devices to the network.",
+      "tags": [
+        "ran",
+        "radio",
+        "cell",
+        "site",
+        "tower",
+        "coverage"
+      ]
+    },
+    {
+      "term": "Core network",
+      "definition": "The central part of the network that handles authentication, session control and routing.",
+      "tags": [
+        "core",
+        "network",
+        "routing",
+        "session"
+      ]
+    },
+    {
+      "term": "OSS",
+      "definition": "Operations support systems: the tools used to run the network, such as inventory, fault and performance management.",
+      "tags": [
+        "oss",
+        "network",
+        "fault",
+        "inventory",
+        "operations"
+      ]
+    },
+    {
+      "term": "BSS",
+      "definition": "Business support systems: customer-facing systems such as ordering, billing and customer management.",
+      "tags": [
+        "bss",
+        "billing",
+        "order",
+        "customer"
+      ]
+    },
+    {
+      "term": "CDR",
+      "definition": "Call detail record: a record of a call or data session used for billing and analytics.",
+      "tags": [
+        "cdr",
+        "usage",
+        "billing",
+        "record",
+        "call"
+      ]
+    },
+    {
+      "term": "ARPU",
+      "definition": "Average revenue per user: revenue divided by the number of subscribers in a period.",
+      "tags": [
+        "arpu",
+        "revenue",
+        "subscriber",
+        "value"
+      ]
+    },
+    {
+      "term": "Churn",
+      "definition": "The share of subscribers who leave in a period.",
+      "tags": [
+        "churn",
+        "retention",
+        "subscriber",
+        "leave"
+      ]
+    },
+    {
+      "term": "QoS",
+      "definition": "Quality of service: measurable network performance such as latency, loss and throughput.",
+      "tags": [
+        "qos",
+        "quality",
+        "latency",
+        "throughput",
+        "service"
+      ]
+    },
+    {
+      "term": "QoE",
+      "definition": "Quality of experience: how good a service feels to the user, such as video smoothness.",
+      "tags": [
+        "qoe",
+        "experience",
+        "quality",
+        "video"
+      ]
+    },
+    {
+      "term": "KPI",
+      "definition": "Key performance indicator: a measured value used to track cell or service health.",
+      "tags": [
+        "kpi",
+        "cell",
+        "performance",
+        "measure"
+      ]
+    },
+    {
+      "term": "PRB",
+      "definition": "Physical resource block: the unit of radio capacity allocated to users in a cell.",
+      "tags": [
+        "prb",
+        "radio",
+        "capacity",
+        "utilisation",
+        "cell"
+      ]
+    },
+    {
+      "term": "Handover",
+      "definition": "Moving an active session from one cell to another without dropping it.",
+      "tags": [
+        "handover",
+        "cell",
+        "mobility",
+        "drop"
+      ]
+    },
+    {
+      "term": "SLA",
+      "definition": "Service level agreement: the availability or performance a provider commits to.",
+      "tags": [
+        "sla",
+        "availability",
+        "commitment",
+        "service"
+      ]
+    },
+    {
+      "term": "MTTR",
+      "definition": "Mean time to repair: the average time from fault to restored service.",
+      "tags": [
+        "mttr",
+        "repair",
+        "restore",
+        "fault",
+        "incident"
+      ]
+    },
+    {
+      "term": "NFV",
+      "definition": "Network function virtualisation: running network functions as software on standard servers.",
+      "tags": [
+        "nfv",
+        "virtual",
+        "network",
+        "function",
+        "cloud"
+      ]
+    },
+    {
+      "term": "SDN",
+      "definition": "Software-defined networking: separating control from forwarding so the network is programmable.",
+      "tags": [
+        "sdn",
+        "network",
+        "control",
+        "programmable"
+      ]
+    },
+    {
+      "term": "Network slicing",
+      "definition": "Dividing a 5G network into virtual networks with different performance guarantees.",
+      "tags": [
+        "slicing",
+        "5g",
+        "network",
+        "slice"
+      ]
+    },
+    {
+      "term": "MEC",
+      "definition": "Multi-access edge computing: running applications close to the user at the network edge.",
+      "tags": [
+        "mec",
+        "edge",
+        "latency",
+        "compute"
+      ]
+    },
+    {
+      "term": "Backhaul",
+      "definition": "The link that carries traffic from a cell site to the core network.",
+      "tags": [
+        "backhaul",
+        "transport",
+        "link",
+        "fibre",
+        "site"
+      ]
+    },
+    {
+      "term": "Spectrum",
+      "definition": "The radio frequencies licensed to an operator.",
+      "tags": [
+        "spectrum",
+        "radio",
+        "frequency",
+        "licence",
+        "capacity"
+      ]
+    },
+    {
+      "term": "Roaming",
+      "definition": "Using a network other than the home operator while travelling.",
+      "tags": [
+        "roaming",
+        "partner",
+        "settlement",
+        "visitor"
+      ]
+    },
+    {
+      "term": "SIM swap",
+      "definition": "Moving a number to a new SIM, a step abused in account takeover.",
+      "tags": [
+        "sim",
+        "swap",
+        "number",
+        "takeover",
+        "identity"
+      ]
+    },
+    {
+      "term": "Provisioning",
+      "definition": "Configuring the network and systems so a purchased service works.",
+      "tags": [
+        "provisioning",
+        "activation",
+        "configuration",
+        "service",
+        "order"
+      ]
+    },
+    {
+      "term": "Order fall-out",
+      "definition": "An order that fails part way through a multi-system flow.",
+      "tags": [
+        "fallout",
+        "order",
+        "failure",
+        "workflow",
+        "activation"
+      ]
+    },
+    {
+      "term": "TM Forum",
+      "definition": "The industry body that publishes telecom process and API standards.",
+      "tags": [
+        "tm",
+        "forum",
+        "standard",
+        "api",
+        "process"
+      ]
+    },
+    {
+      "term": "Trouble ticket",
+      "definition": "A record of a fault or complaint that tracks diagnosis and repair.",
+      "tags": [
+        "ticket",
+        "trouble",
+        "fault",
+        "complaint",
+        "care"
+      ]
+    },
+    {
+      "term": "Alarm correlation",
+      "definition": "Grouping related alarms to find a common cause.",
+      "tags": [
+        "alarm",
+        "correlation",
+        "fault",
+        "root",
+        "cause",
+        "grouping"
+      ]
+    },
+    {
+      "term": "Root cause analysis",
+      "definition": "Finding the underlying fault behind a set of symptoms.",
+      "tags": [
+        "root",
+        "cause",
+        "analysis",
+        "fault",
+        "diagnosis"
+      ]
+    },
+    {
+      "term": "Self-organising network",
+      "definition": "Network automation that tunes and heals radio parameters with little manual work.",
+      "tags": [
+        "son",
+        "self-healing",
+        "optimisation",
+        "radio",
+        "automation"
+      ]
+    },
+    {
+      "term": "Latency",
+      "definition": "The delay between sending and receiving data.",
+      "tags": [
+        "latency",
+        "delay",
+        "response"
+      ]
+    },
+    {
+      "term": "Jitter",
+      "definition": "Variation in packet delay that hurts voice and video.",
+      "tags": [
+        "jitter",
+        "delay",
+        "voice",
+        "video"
+      ]
+    },
+    {
+      "term": "Packet loss",
+      "definition": "The share of data packets that do not arrive.",
+      "tags": [
+        "packet",
+        "loss",
+        "quality"
+      ]
+    },
+    {
+      "term": "FTTH",
+      "definition": "Fibre to the home: a fixed broadband access type using optical fibre.",
+      "tags": [
+        "ftth",
+        "fibre",
+        "broadband",
+        "access",
+        "home"
+      ]
+    },
+    {
+      "term": "Cell site",
+      "definition": "A location with antennas and radio equipment serving a coverage area.",
+      "tags": [
+        "cell",
+        "site",
+        "tower",
+        "antenna",
+        "coverage"
+      ]
+    },
+    {
+      "term": "VoLTE",
+      "definition": "Voice over LTE: voice calls carried over the 4G data network.",
+      "tags": [
+        "volte",
+        "voice",
+        "call",
+        "lte"
+      ]
+    },
+    {
+      "term": "IMS",
+      "definition": "IP multimedia subsystem: the core that supports voice and messaging over IP.",
+      "tags": [
+        "ims",
+        "voice",
+        "messaging",
+        "core"
+      ]
+    },
+    {
+      "term": "Number portability",
+      "definition": "The right to keep a phone number when changing operator.",
+      "tags": [
+        "portability",
+        "number",
+        "churn",
+        "switch"
+      ]
+    },
+    {
+      "term": "Mediation",
+      "definition": "The system that collects and normalises usage records before billing.",
+      "tags": [
+        "mediation",
+        "usage",
+        "records",
+        "billing"
+      ]
+    },
+    {
+      "term": "Rating",
+      "definition": "Applying tariffs to usage records to calculate charges.",
+      "tags": [
+        "rating",
+        "tariff",
+        "charge",
+        "billing",
+        "usage"
+      ]
+    },
+    {
+      "term": "Interconnect",
+      "definition": "Paying and settling traffic between operators.",
+      "tags": [
+        "interconnect",
+        "settlement",
+        "partner",
+        "traffic"
+      ]
+    },
+    {
+      "term": "Truck roll",
+      "definition": "Sending a field technician to a site.",
+      "tags": [
+        "truck",
+        "field",
+        "technician",
+        "dispatch",
+        "site"
+      ]
+    },
+    {
+      "term": "Site outage",
+      "definition": "Loss of service at a cell site or link.",
+      "tags": [
+        "outage",
+        "site",
+        "fault",
+        "restore"
+      ]
+    }
+  ]
+}

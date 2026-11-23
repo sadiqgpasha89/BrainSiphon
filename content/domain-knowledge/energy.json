@@ -1,0 +1,592 @@
+{
+  "overview": "Energy and utilities balance supply and demand second by second on physical networks that fail in the field. Weather, asset age and customer behaviour drive the data, outages carry safety and regulatory consequences, and control actions stay with licensed operators and protection systems.",
+  "concepts": [
+    {
+      "name": "Supply and demand must balance continuously",
+      "explanation": "Electricity cannot be stored cheaply at scale, so generation, storage and demand response must match load in near real time. Forecast errors are paid for in reserves, imbalance charges or curtailment.",
+      "whyItMatters": "A forecast is judged by what its error costs the operator, not only by its average error.",
+      "tags": [
+        "load",
+        "demand",
+        "supply",
+        "balance",
+        "forecast",
+        "reserve",
+        "imbalance",
+        "generation",
+        "frequency",
+        "grid",
+        "dispatch"
+      ]
+    },
+    {
+      "name": "Renewable output depends on weather",
+      "explanation": "Solar and wind generation follow irradiance, cloud cover and wind speed, with ramps that are hard to predict. Forecast quality varies by site, season and horizon.",
+      "whyItMatters": "Probabilistic forecasts let operators size reserves, whereas point forecasts hide the risk.",
+      "tags": [
+        "renewable",
+        "solar",
+        "wind",
+        "weather",
+        "forecast",
+        "irradiance",
+        "ramp",
+        "curtailment",
+        "output",
+        "probabilistic",
+        "site"
+      ]
+    },
+    {
+      "name": "Assets age and fail in the field",
+      "explanation": "Transformers, cables, poles, pipes and pumps degrade with load, weather and time, and inspection data is sparse. Failures cause outages, safety incidents and environmental harm.",
+      "whyItMatters": "Asset health models must support the decision to inspect, repair or replace, within a safety-first culture.",
+      "tags": [
+        "asset",
+        "transformer",
+        "cable",
+        "pipe",
+        "pump",
+        "failure",
+        "health",
+        "inspection",
+        "maintenance",
+        "condition",
+        "ageing",
+        "outage"
+      ]
+    },
+    {
+      "name": "Outage management is a fault location problem",
+      "explanation": "When a fault trips protection, operators locate it from smart meter, SCADA and customer calls, then restore supply in stages. Faster location shortens outage minutes.",
+      "whyItMatters": "Customer minutes lost are the regulated measure, so restoration order matters as much as detection.",
+      "tags": [
+        "outage",
+        "fault",
+        "restoration",
+        "saidi",
+        "saifi",
+        "scada",
+        "protection",
+        "feeder",
+        "crew",
+        "location",
+        "call"
+      ]
+    },
+    {
+      "name": "Smart meters produce large volumes of interval data",
+      "explanation": "Meters report consumption at short intervals, which supports billing, loss detection and demand analytics but raises privacy concerns because the pattern reveals household behaviour.",
+      "whyItMatters": "Analytics should use aggregation and access controls and avoid inferring sensitive household behaviour.",
+      "tags": [
+        "meter",
+        "smart",
+        "interval",
+        "consumption",
+        "billing",
+        "privacy",
+        "usage",
+        "theft",
+        "loss",
+        "amr",
+        "ami",
+        "customer"
+      ]
+    },
+    {
+      "name": "Losses and theft hide in the balance",
+      "explanation": "Technical losses come from physics and non-technical losses from theft, metering and billing faults. Comparing energy in with energy billed by feeder points to where losses occur.",
+      "whyItMatters": "Accusing customers on weak evidence harms trust, so cases need field verification.",
+      "tags": [
+        "loss",
+        "theft",
+        "balance",
+        "feeder",
+        "nontechnical",
+        "meter",
+        "tamper",
+        "leak",
+        "water",
+        "gas",
+        "revenue"
+      ]
+    },
+    {
+      "name": "Operators and protection systems hold control",
+      "explanation": "Grid, gas and water operations are safety-critical and regulated. AI recommends and forecasts, while switching, dispatch and protection stay with licensed operators and certified systems.",
+      "whyItMatters": "A recommendation that cannot be explained or overridden will not be used in a control room.",
+      "tags": [
+        "operator",
+        "control",
+        "room",
+        "safety",
+        "scada",
+        "dispatch",
+        "protection",
+        "regulation",
+        "licence",
+        "override",
+        "authority"
+      ]
+    },
+    {
+      "name": "Field crews need practical work orders",
+      "explanation": "Crew scheduling depends on location, skills, parts, access and permits. Plans that ignore these constraints fail on the day.",
+      "whyItMatters": "A model that ranks jobs without capacity and travel produces schedules nobody can run.",
+      "tags": [
+        "crew",
+        "field",
+        "work",
+        "order",
+        "scheduling",
+        "dispatch",
+        "route",
+        "parts",
+        "permit",
+        "maintenance",
+        "technician"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "SCADA",
+      "definition": "Supervisory control and data acquisition: systems that monitor and control the network.",
+      "tags": [
+        "scada",
+        "control",
+        "monitoring",
+        "network",
+        "grid"
+      ]
+    },
+    {
+      "term": "DERMS",
+      "definition": "Distributed energy resource management system for rooftop solar, batteries and similar assets.",
+      "tags": [
+        "derms",
+        "distributed",
+        "resource",
+        "solar",
+        "battery"
+      ]
+    },
+    {
+      "term": "DER",
+      "definition": "Distributed energy resources such as rooftop solar, batteries and electric vehicles.",
+      "tags": [
+        "der",
+        "distributed",
+        "solar",
+        "battery",
+        "vehicle"
+      ]
+    },
+    {
+      "term": "AMI",
+      "definition": "Advanced metering infrastructure: smart meters and the network that reads them.",
+      "tags": [
+        "ami",
+        "smart",
+        "meter",
+        "interval",
+        "infrastructure"
+      ]
+    },
+    {
+      "term": "AMR",
+      "definition": "Automatic meter reading.",
+      "tags": [
+        "amr",
+        "meter",
+        "reading",
+        "automatic"
+      ]
+    },
+    {
+      "term": "SAIDI",
+      "definition": "System average interruption duration index: average outage minutes per customer.",
+      "tags": [
+        "saidi",
+        "outage",
+        "duration",
+        "customer",
+        "reliability"
+      ]
+    },
+    {
+      "term": "SAIFI",
+      "definition": "System average interruption frequency index: average number of outages per customer.",
+      "tags": [
+        "saifi",
+        "outage",
+        "frequency",
+        "customer",
+        "reliability"
+      ]
+    },
+    {
+      "term": "CAIDI",
+      "definition": "Customer average interruption duration index: average time to restore.",
+      "tags": [
+        "caidi",
+        "restore",
+        "outage",
+        "duration"
+      ]
+    },
+    {
+      "term": "Feeder",
+      "definition": "A distribution line that carries power from a substation to customers.",
+      "tags": [
+        "feeder",
+        "distribution",
+        "line",
+        "substation"
+      ]
+    },
+    {
+      "term": "Substation",
+      "definition": "A facility that transforms voltage and switches circuits.",
+      "tags": [
+        "substation",
+        "transformer",
+        "voltage",
+        "switch"
+      ]
+    },
+    {
+      "term": "Transformer",
+      "definition": "Equipment that changes voltage levels.",
+      "tags": [
+        "transformer",
+        "voltage",
+        "asset",
+        "failure"
+      ]
+    },
+    {
+      "term": "Load forecast",
+      "definition": "A prediction of electricity demand.",
+      "tags": [
+        "load",
+        "forecast",
+        "demand",
+        "prediction"
+      ]
+    },
+    {
+      "term": "Peak demand",
+      "definition": "The highest demand in a period.",
+      "tags": [
+        "peak",
+        "demand",
+        "load",
+        "capacity"
+      ]
+    },
+    {
+      "term": "Demand response",
+      "definition": "Paying or asking customers to shift or cut use at peak times.",
+      "tags": [
+        "demand",
+        "response",
+        "peak",
+        "shift",
+        "customer"
+      ]
+    },
+    {
+      "term": "Frequency regulation",
+      "definition": "Keeping grid frequency near its target.",
+      "tags": [
+        "frequency",
+        "regulation",
+        "grid",
+        "balance"
+      ]
+    },
+    {
+      "term": "Spinning reserve",
+      "definition": "Generation capacity ready to respond quickly.",
+      "tags": [
+        "reserve",
+        "generation",
+        "capacity",
+        "response"
+      ]
+    },
+    {
+      "term": "Dispatch",
+      "definition": "Deciding which generators or batteries produce and when.",
+      "tags": [
+        "dispatch",
+        "generation",
+        "battery",
+        "schedule"
+      ]
+    },
+    {
+      "term": "Unit commitment",
+      "definition": "Choosing which generators to run over a day or week.",
+      "tags": [
+        "commitment",
+        "generator",
+        "schedule",
+        "cost"
+      ]
+    },
+    {
+      "term": "Curtailment",
+      "definition": "Reducing renewable output because the grid cannot take it.",
+      "tags": [
+        "curtailment",
+        "renewable",
+        "output",
+        "grid"
+      ]
+    },
+    {
+      "term": "Capacity factor",
+      "definition": "Actual output divided by maximum possible output.",
+      "tags": [
+        "capacity",
+        "factor",
+        "output",
+        "wind",
+        "solar"
+      ]
+    },
+    {
+      "term": "Battery storage",
+      "definition": "Batteries that store energy for later use.",
+      "tags": [
+        "battery",
+        "storage",
+        "charge",
+        "discharge"
+      ]
+    },
+    {
+      "term": "State of charge",
+      "definition": "How full a battery is.",
+      "tags": [
+        "charge",
+        "battery",
+        "storage",
+        "state"
+      ]
+    },
+    {
+      "term": "Power factor",
+      "definition": "A measure of how effectively current is converted to useful power.",
+      "tags": [
+        "power",
+        "factor",
+        "load",
+        "reactive"
+      ]
+    },
+    {
+      "term": "Non-technical loss",
+      "definition": "Energy lost to theft, metering errors or billing faults.",
+      "tags": [
+        "nontechnical",
+        "loss",
+        "theft",
+        "meter",
+        "billing"
+      ]
+    },
+    {
+      "term": "Technical loss",
+      "definition": "Energy lost as heat in lines and equipment.",
+      "tags": [
+        "technical",
+        "loss",
+        "line",
+        "heat",
+        "network"
+      ]
+    },
+    {
+      "term": "Dissolved gas analysis",
+      "definition": "Testing gas in transformer oil to detect faults.",
+      "tags": [
+        "dissolved",
+        "gas",
+        "transformer",
+        "oil",
+        "fault"
+      ]
+    },
+    {
+      "term": "Partial discharge",
+      "definition": "Small electrical discharges that signal insulation damage.",
+      "tags": [
+        "discharge",
+        "insulation",
+        "cable",
+        "fault"
+      ]
+    },
+    {
+      "term": "Condition-based maintenance",
+      "definition": "Maintaining assets when their condition requires it.",
+      "tags": [
+        "condition",
+        "maintenance",
+        "asset",
+        "health"
+      ]
+    },
+    {
+      "term": "Vegetation management",
+      "definition": "Trimming trees near lines to prevent faults.",
+      "tags": [
+        "vegetation",
+        "trees",
+        "line",
+        "fault",
+        "outage"
+      ]
+    },
+    {
+      "term": "Pipe burst",
+      "definition": "A sudden failure of a water or gas pipe.",
+      "tags": [
+        "pipe",
+        "burst",
+        "leak",
+        "water",
+        "gas",
+        "failure"
+      ]
+    },
+    {
+      "term": "Leak detection",
+      "definition": "Finding losses in water or gas networks.",
+      "tags": [
+        "leak",
+        "detection",
+        "water",
+        "gas",
+        "pipe",
+        "loss"
+      ]
+    },
+    {
+      "term": "District metered area",
+      "definition": "A section of a water network with flow measured at its edges.",
+      "tags": [
+        "district",
+        "meter",
+        "water",
+        "flow",
+        "leak"
+      ]
+    },
+    {
+      "term": "Pressure management",
+      "definition": "Controlling water pressure to cut leaks and bursts.",
+      "tags": [
+        "pressure",
+        "water",
+        "leak",
+        "management"
+      ]
+    },
+    {
+      "term": "Meter data management",
+      "definition": "The system that stores and validates meter readings.",
+      "tags": [
+        "meter",
+        "data",
+        "management",
+        "validation"
+      ]
+    },
+    {
+      "term": "Time-of-use tariff",
+      "definition": "A price that depends on the time of day.",
+      "tags": [
+        "tariff",
+        "time",
+        "price",
+        "demand"
+      ]
+    },
+    {
+      "term": "Net metering",
+      "definition": "Crediting customers for energy they send to the grid.",
+      "tags": [
+        "net",
+        "metering",
+        "solar",
+        "export",
+        "credit"
+      ]
+    },
+    {
+      "term": "Imbalance settlement",
+      "definition": "Charges for the difference between scheduled and actual energy.",
+      "tags": [
+        "imbalance",
+        "settlement",
+        "forecast",
+        "charge"
+      ]
+    },
+    {
+      "term": "Outage management system",
+      "definition": "Software that tracks outages and crews.",
+      "tags": [
+        "outage",
+        "management",
+        "crew",
+        "restore"
+      ]
+    },
+    {
+      "term": "Work management",
+      "definition": "Systems for planning and tracking field jobs.",
+      "tags": [
+        "work",
+        "management",
+        "crew",
+        "job",
+        "field"
+      ]
+    },
+    {
+      "term": "Protection relay",
+      "definition": "A device that trips a circuit during a fault.",
+      "tags": [
+        "protection",
+        "relay",
+        "fault",
+        "trip"
+      ]
+    },
+    {
+      "term": "Reliability standard",
+      "definition": "Rules set by a regulator for network reliability.",
+      "tags": [
+        "reliability",
+        "standard",
+        "regulator",
+        "network"
+      ]
+    },
+    {
+      "term": "Smart inverter",
+      "definition": "A solar inverter that can support the grid.",
+      "tags": [
+        "inverter",
+        "solar",
+        "grid",
+        "support"
+      ]
+    }
+  ]
+}

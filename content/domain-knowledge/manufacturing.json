@@ -1,0 +1,573 @@
+{
+  "overview": "Manufacturing is judged on yield, uptime, throughput and safety, and the data comes from machines, sensors, inspection stations and planning systems that were never designed to agree. Models must work with rare failures, strict real-time limits on the line and operators who stay accountable for stopping production.",
+  "concepts": [
+    {
+      "name": "Overall equipment effectiveness shows where capacity is lost",
+      "explanation": "OEE multiplies availability, performance and quality. Losses come from breakdowns, changeovers, slow cycles, minor stops and scrap, each with different causes and different fixes.",
+      "whyItMatters": "A model that improves one loss can worsen another, so the loss it targets must be named.",
+      "tags": [
+        "oee",
+        "availability",
+        "performance",
+        "quality",
+        "downtime",
+        "changeover",
+        "scrap",
+        "throughput",
+        "line",
+        "capacity",
+        "loss"
+      ]
+    },
+    {
+      "name": "Failures are rare and degrade before they happen",
+      "explanation": "Machines usually show vibration, temperature, current or pressure drift before they fail, but failures are rare and maintenance often replaces parts early, which hides the failure labels.",
+      "whyItMatters": "Training on few failures without care produces models that alarm constantly or never.",
+      "tags": [
+        "failure",
+        "predictive",
+        "maintenance",
+        "vibration",
+        "temperature",
+        "sensor",
+        "remaining",
+        "useful",
+        "life",
+        "bearing",
+        "degradation",
+        "anomaly",
+        "machine",
+        "health"
+      ]
+    },
+    {
+      "name": "Visual inspection trades escapes against false rejects",
+      "explanation": "Cameras classify defects such as scratches, voids and misalignment. Missing a defect lets a bad part ship, while rejecting a good part wastes cost, and the right balance depends on the defect class and the customer.",
+      "whyItMatters": "Overall accuracy hides this, so recall by defect class and the cost of each error must drive the threshold.",
+      "tags": [
+        "inspection",
+        "vision",
+        "defect",
+        "quality",
+        "scratch",
+        "reject",
+        "escape",
+        "camera",
+        "yield",
+        "classification",
+        "surface"
+      ]
+    },
+    {
+      "name": "Process parameters interact",
+      "explanation": "Temperature, pressure, speed and material properties interact to determine quality, and the best set-point changes with batch and equipment condition. Experiments on a live line are expensive.",
+      "whyItMatters": "Models should recommend set-points inside validated operating windows and let engineers approve changes.",
+      "tags": [
+        "process",
+        "parameter",
+        "setpoint",
+        "recipe",
+        "optimisation",
+        "control",
+        "yield",
+        "window",
+        "batch",
+        "sensor",
+        "furnace"
+      ]
+    },
+    {
+      "name": "Planning and scheduling are constraint problems",
+      "explanation": "Production plans must respect machine capabilities, changeover times, material availability, labour and due dates. Small disruptions force a re-plan.",
+      "whyItMatters": "A forecast alone is not a plan, so models need to feed an optimiser that respects the constraints.",
+      "tags": [
+        "scheduling",
+        "planning",
+        "constraint",
+        "changeover",
+        "capacity",
+        "demand",
+        "material",
+        "order",
+        "optimisation",
+        "sequence"
+      ]
+    },
+    {
+      "name": "Traceability links parts to materials and settings",
+      "explanation": "Lot and serial numbers connect each finished item to its materials, machine, settings and test results, which makes recalls and root cause analysis possible.",
+      "whyItMatters": "Poor traceability turns a small quality problem into a large recall.",
+      "tags": [
+        "traceability",
+        "lot",
+        "serial",
+        "batch",
+        "recall",
+        "genealogy",
+        "material",
+        "supplier",
+        "root",
+        "cause",
+        "quality"
+      ]
+    },
+    {
+      "name": "Operational technology has its own safety and network rules",
+      "explanation": "Control systems use PLCs, SCADA and industrial protocols on segmented networks. Changing them can stop production or hurt people, so analytics read data and recommend, while closed-loop control stays with validated systems.",
+      "whyItMatters": "An AI system that writes to a controller needs the same change control as any safety-related modification.",
+      "tags": [
+        "ot",
+        "plc",
+        "scada",
+        "safety",
+        "control",
+        "network",
+        "opc",
+        "protocol",
+        "interlock",
+        "segmentation",
+        "change"
+      ]
+    },
+    {
+      "name": "Workers are not the unit of analysis",
+      "explanation": "Cameras and wearables on the floor raise privacy and labour-law concerns. Safety analytics should detect hazards and conditions, not rank individual workers.",
+      "whyItMatters": "Monitoring individuals harms trust and can breach works council agreements.",
+      "tags": [
+        "safety",
+        "worker",
+        "ppe",
+        "hazard",
+        "camera",
+        "privacy",
+        "union",
+        "monitoring",
+        "incident",
+        "compliance"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "OEE",
+      "definition": "Overall equipment effectiveness: availability times performance times quality.",
+      "tags": [
+        "oee",
+        "availability",
+        "performance",
+        "quality",
+        "line"
+      ]
+    },
+    {
+      "term": "MES",
+      "definition": "Manufacturing execution system: software that tracks production on the shop floor.",
+      "tags": [
+        "mes",
+        "execution",
+        "production",
+        "tracking"
+      ]
+    },
+    {
+      "term": "SCADA",
+      "definition": "Supervisory control and data acquisition: systems that monitor and control industrial processes.",
+      "tags": [
+        "scada",
+        "control",
+        "monitoring",
+        "process"
+      ]
+    },
+    {
+      "term": "PLC",
+      "definition": "Programmable logic controller: a rugged computer that controls machines.",
+      "tags": [
+        "plc",
+        "controller",
+        "machine",
+        "control"
+      ]
+    },
+    {
+      "term": "OPC UA",
+      "definition": "A standard protocol for exchanging industrial data.",
+      "tags": [
+        "opc",
+        "protocol",
+        "data",
+        "industrial"
+      ]
+    },
+    {
+      "term": "Historian",
+      "definition": "A database for time-stamped sensor data from plants.",
+      "tags": [
+        "historian",
+        "sensor",
+        "time",
+        "series",
+        "data"
+      ]
+    },
+    {
+      "term": "Takt time",
+      "definition": "The pace of production needed to meet demand.",
+      "tags": [
+        "takt",
+        "pace",
+        "demand",
+        "cycle"
+      ]
+    },
+    {
+      "term": "Cycle time",
+      "definition": "The time to complete one unit of work at a station.",
+      "tags": [
+        "cycle",
+        "time",
+        "station",
+        "throughput"
+      ]
+    },
+    {
+      "term": "Changeover",
+      "definition": "The time to switch a machine from one product to another.",
+      "tags": [
+        "changeover",
+        "setup",
+        "downtime",
+        "product"
+      ]
+    },
+    {
+      "term": "Scrap",
+      "definition": "Material or parts that cannot be sold.",
+      "tags": [
+        "scrap",
+        "waste",
+        "defect",
+        "yield"
+      ]
+    },
+    {
+      "term": "Rework",
+      "definition": "Fixing a defective part so it can be sold.",
+      "tags": [
+        "rework",
+        "defect",
+        "repair",
+        "quality"
+      ]
+    },
+    {
+      "term": "First pass yield",
+      "definition": "The share of units that pass without rework.",
+      "tags": [
+        "yield",
+        "quality",
+        "pass",
+        "defect"
+      ]
+    },
+    {
+      "term": "SPC",
+      "definition": "Statistical process control: using control charts to detect process drift.",
+      "tags": [
+        "spc",
+        "control",
+        "chart",
+        "drift",
+        "process"
+      ]
+    },
+    {
+      "term": "Control chart",
+      "definition": "A chart of a process measure with limits that show when it is out of control.",
+      "tags": [
+        "control",
+        "chart",
+        "limit",
+        "process",
+        "drift"
+      ]
+    },
+    {
+      "term": "Cp and Cpk",
+      "definition": "Measures of how well a process fits within specification limits.",
+      "tags": [
+        "capability",
+        "specification",
+        "limit",
+        "process"
+      ]
+    },
+    {
+      "term": "Predictive maintenance",
+      "definition": "Servicing equipment based on predicted condition instead of a fixed schedule.",
+      "tags": [
+        "predictive",
+        "maintenance",
+        "failure",
+        "condition",
+        "service"
+      ]
+    },
+    {
+      "term": "RUL",
+      "definition": "Remaining useful life: the time before a component should be replaced.",
+      "tags": [
+        "rul",
+        "life",
+        "failure",
+        "component",
+        "degradation"
+      ]
+    },
+    {
+      "term": "Vibration analysis",
+      "definition": "Using vibration signals to detect machine faults.",
+      "tags": [
+        "vibration",
+        "bearing",
+        "fault",
+        "machine",
+        "signal"
+      ]
+    },
+    {
+      "term": "MTBF",
+      "definition": "Mean time between failures.",
+      "tags": [
+        "mtbf",
+        "failure",
+        "reliability",
+        "downtime"
+      ]
+    },
+    {
+      "term": "CMMS",
+      "definition": "Computerised maintenance management system for work orders and assets.",
+      "tags": [
+        "cmms",
+        "maintenance",
+        "work",
+        "order",
+        "asset"
+      ]
+    },
+    {
+      "term": "Digital twin",
+      "definition": "A model of a machine or plant kept in step with real data.",
+      "tags": [
+        "twin",
+        "simulation",
+        "model",
+        "plant",
+        "asset"
+      ]
+    },
+    {
+      "term": "AOI",
+      "definition": "Automated optical inspection of parts or boards.",
+      "tags": [
+        "aoi",
+        "optical",
+        "inspection",
+        "defect",
+        "camera"
+      ]
+    },
+    {
+      "term": "Golden sample",
+      "definition": "A reference part known to be good.",
+      "tags": [
+        "golden",
+        "reference",
+        "sample",
+        "inspection"
+      ]
+    },
+    {
+      "term": "Recipe",
+      "definition": "The set of parameters used to make a product.",
+      "tags": [
+        "recipe",
+        "parameter",
+        "setpoint",
+        "process"
+      ]
+    },
+    {
+      "term": "Setpoint",
+      "definition": "The target value of a process variable.",
+      "tags": [
+        "setpoint",
+        "parameter",
+        "control",
+        "process"
+      ]
+    },
+    {
+      "term": "Batch",
+      "definition": "A quantity of product made together under the same conditions.",
+      "tags": [
+        "batch",
+        "lot",
+        "production"
+      ]
+    },
+    {
+      "term": "Lot traceability",
+      "definition": "Tracking which materials and settings went into each lot.",
+      "tags": [
+        "lot",
+        "traceability",
+        "genealogy",
+        "batch"
+      ]
+    },
+    {
+      "term": "Bill of materials",
+      "definition": "The list of parts and materials needed to make a product.",
+      "tags": [
+        "bom",
+        "materials",
+        "parts",
+        "product"
+      ]
+    },
+    {
+      "term": "Work order",
+      "definition": "An instruction to produce or repair something.",
+      "tags": [
+        "work",
+        "order",
+        "production",
+        "maintenance"
+      ]
+    },
+    {
+      "term": "APS",
+      "definition": "Advanced planning and scheduling software.",
+      "tags": [
+        "aps",
+        "planning",
+        "scheduling",
+        "capacity"
+      ]
+    },
+    {
+      "term": "Kanban",
+      "definition": "A pull system that signals when to make or move more material.",
+      "tags": [
+        "kanban",
+        "pull",
+        "inventory",
+        "material"
+      ]
+    },
+    {
+      "term": "Lean",
+      "definition": "A way of working that removes waste from processes.",
+      "tags": [
+        "lean",
+        "waste",
+        "process",
+        "improvement"
+      ]
+    },
+    {
+      "term": "Six Sigma",
+      "definition": "A method for reducing defects through data.",
+      "tags": [
+        "sigma",
+        "defect",
+        "quality",
+        "improvement"
+      ]
+    },
+    {
+      "term": "FMEA",
+      "definition": "Failure mode and effects analysis: a structured review of how a design or process can fail.",
+      "tags": [
+        "fmea",
+        "failure",
+        "mode",
+        "risk",
+        "analysis"
+      ]
+    },
+    {
+      "term": "Poka-yoke",
+      "definition": "Mistake-proofing built into a process.",
+      "tags": [
+        "poka",
+        "error",
+        "prevention",
+        "process"
+      ]
+    },
+    {
+      "term": "Safety interlock",
+      "definition": "A device that stops a machine when a guard is open.",
+      "tags": [
+        "interlock",
+        "safety",
+        "guard",
+        "machine"
+      ]
+    },
+    {
+      "term": "Lockout tagout",
+      "definition": "A procedure to isolate energy before maintenance.",
+      "tags": [
+        "lockout",
+        "tagout",
+        "safety",
+        "maintenance",
+        "energy"
+      ]
+    },
+    {
+      "term": "Edge gateway",
+      "definition": "A device that collects and pre-processes plant data near the machines.",
+      "tags": [
+        "edge",
+        "gateway",
+        "plant",
+        "data"
+      ]
+    },
+    {
+      "term": "Downtime",
+      "definition": "Time when a machine is not producing.",
+      "tags": [
+        "downtime",
+        "availability",
+        "breakdown",
+        "stop"
+      ]
+    },
+    {
+      "term": "Micro-stop",
+      "definition": "A short stop that is often unrecorded.",
+      "tags": [
+        "stop",
+        "downtime",
+        "performance",
+        "loss"
+      ]
+    },
+    {
+      "term": "Supplier quality",
+      "definition": "The quality of incoming materials from suppliers.",
+      "tags": [
+        "supplier",
+        "incoming",
+        "material",
+        "quality"
+      ]
+    }
+  ]
+}

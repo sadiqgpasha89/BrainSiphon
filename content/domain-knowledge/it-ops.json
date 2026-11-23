@@ -1,0 +1,612 @@
+{
+  "overview": "IT operations keeps services running and people productive across data centres, clouds, networks and devices. Data arrives as huge volumes of metrics, logs, alerts and tickets, most of it noise, and changes made to production by automation must be controlled as carefully as changes made by people.",
+  "concepts": [
+    {
+      "name": "Alerts are mostly noise",
+      "explanation": "Monitoring tools raise thousands of alerts, many duplicate or symptoms of one fault. Grouping alerts by topology and time into incidents reduces pages and speeds diagnosis.",
+      "whyItMatters": "Suppressing alerts without visibility can hide a real outage, so grouped alerts must stay inspectable.",
+      "tags": [
+        "alert",
+        "noise",
+        "incident",
+        "correlation",
+        "page",
+        "monitoring",
+        "on-call",
+        "duplicate",
+        "suppression",
+        "topology",
+        "event",
+        "grouping"
+      ]
+    },
+    {
+      "name": "Incidents are solved from evidence",
+      "explanation": "Responders compare metrics, logs, traces and recent changes to find the cause. Many incidents follow a change, so change records are strong evidence.",
+      "whyItMatters": "A diagnosis that does not cite its evidence cannot be tested by the commander.",
+      "tags": [
+        "incident",
+        "root",
+        "cause",
+        "diagnosis",
+        "trace",
+        "log",
+        "metric",
+        "change",
+        "outage",
+        "responder",
+        "postmortem",
+        "restore",
+        "mttr"
+      ]
+    },
+    {
+      "name": "Service desks resolve repeat requests",
+      "explanation": "Most tickets are password resets, access requests, device problems and how-to questions with known answers. Good knowledge and automation deflect them while keeping humans for complex cases.",
+      "whyItMatters": "Closing a chat without solving the problem looks like success in the numbers and fails the employee.",
+      "tags": [
+        "service",
+        "desk",
+        "ticket",
+        "request",
+        "helpdesk",
+        "knowledge",
+        "article",
+        "resolution",
+        "employee",
+        "access",
+        "password",
+        "routing",
+        "sla"
+      ]
+    },
+    {
+      "name": "Access changes are controlled",
+      "explanation": "Joiners, movers and leavers need accounts, devices and access that match their role at all times. Over-privileged and orphaned accounts are common audit findings.",
+      "whyItMatters": "Automating access without approvals and separation of duties creates risk.",
+      "tags": [
+        "access",
+        "identity",
+        "role",
+        "joiner",
+        "leaver",
+        "entitlement",
+        "privilege",
+        "account",
+        "recertification",
+        "approval",
+        "provisioning"
+      ]
+    },
+    {
+      "name": "Cloud cost follows usage and tagging",
+      "explanation": "Cost depends on instance types, storage, data transfer and commitments, and is attributed to teams by tags. Anomalies and idle resources are common sources of waste.",
+      "whyItMatters": "Cuts that ignore peak usage cause incidents, so recommendations carry risk and an owner.",
+      "tags": [
+        "cost",
+        "cloud",
+        "finops",
+        "rightsizing",
+        "idle",
+        "commitment",
+        "saving",
+        "billing",
+        "tag",
+        "instance",
+        "storage",
+        "budget",
+        "anomaly"
+      ]
+    },
+    {
+      "name": "Capacity is planned against peaks",
+      "explanation": "Compute, storage and network capacity must cover peak demand with headroom, while lead times for hardware and commitments are long. Forecasts need ranges and business drivers.",
+      "whyItMatters": "Planning on averages leads to outages at peak.",
+      "tags": [
+        "capacity",
+        "forecast",
+        "headroom",
+        "peak",
+        "utilisation",
+        "growth",
+        "demand",
+        "autoscaling",
+        "storage",
+        "network",
+        "planning"
+      ]
+    },
+    {
+      "name": "Changes cause most incidents",
+      "explanation": "Releases, configuration changes and patches are the main cause of outages. Risk-based change management, configuration baselines and staged rollouts reduce harm.",
+      "whyItMatters": "Drift between declared and actual configuration hides risk until something fails.",
+      "tags": [
+        "change",
+        "configuration",
+        "drift",
+        "patch",
+        "release",
+        "cmdb",
+        "baseline",
+        "maintenance",
+        "window",
+        "rollback",
+        "risk",
+        "approval"
+      ]
+    },
+    {
+      "name": "Security operations is a triage problem",
+      "explanation": "Security tools raise far more alerts than analysts can read. Context from identity, endpoint and network data decides which alerts matter, and containment is a human decision.",
+      "whyItMatters": "Automatic containment on a wrong alert can stop the business.",
+      "tags": [
+        "security",
+        "alert",
+        "soc",
+        "triage",
+        "phishing",
+        "endpoint",
+        "threat",
+        "identity",
+        "siem",
+        "containment",
+        "analyst",
+        "incident"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "ITSM",
+      "definition": "IT service management: the practice and tools for managing IT services.",
+      "tags": [
+        "itsm",
+        "service",
+        "management",
+        "ticket"
+      ]
+    },
+    {
+      "term": "ITIL",
+      "definition": "A framework of IT service management practices.",
+      "tags": [
+        "itil",
+        "framework",
+        "service",
+        "process"
+      ]
+    },
+    {
+      "term": "CMDB",
+      "definition": "Configuration management database: records of IT assets and their relationships.",
+      "tags": [
+        "cmdb",
+        "configuration",
+        "asset",
+        "dependency"
+      ]
+    },
+    {
+      "term": "Configuration item",
+      "definition": "A component such as a server or application tracked in the CMDB.",
+      "tags": [
+        "configuration",
+        "item",
+        "asset",
+        "cmdb"
+      ]
+    },
+    {
+      "term": "Incident",
+      "definition": "An unplanned interruption or reduction in service quality.",
+      "tags": [
+        "incident",
+        "outage",
+        "disruption",
+        "service"
+      ]
+    },
+    {
+      "term": "Problem record",
+      "definition": "A record of the underlying cause of one or more incidents.",
+      "tags": [
+        "problem",
+        "root",
+        "cause",
+        "incident",
+        "record"
+      ]
+    },
+    {
+      "term": "Change request",
+      "definition": "A proposal to change a production system.",
+      "tags": [
+        "change",
+        "request",
+        "approval",
+        "production"
+      ]
+    },
+    {
+      "term": "CAB",
+      "definition": "Change advisory board: a group that reviews significant changes.",
+      "tags": [
+        "cab",
+        "change",
+        "approval",
+        "board"
+      ]
+    },
+    {
+      "term": "SLA",
+      "definition": "Service level agreement: a commitment on service performance.",
+      "tags": [
+        "sla",
+        "service",
+        "level",
+        "commitment"
+      ]
+    },
+    {
+      "term": "SLO",
+      "definition": "Service level objective: a target for a service measure.",
+      "tags": [
+        "slo",
+        "objective",
+        "service",
+        "target"
+      ]
+    },
+    {
+      "term": "MTTR",
+      "definition": "Mean time to restore service.",
+      "tags": [
+        "mttr",
+        "restore",
+        "repair",
+        "incident"
+      ]
+    },
+    {
+      "term": "MTTD",
+      "definition": "Mean time to detect a problem.",
+      "tags": [
+        "mttd",
+        "detect",
+        "incident",
+        "monitoring"
+      ]
+    },
+    {
+      "term": "On-call",
+      "definition": "A rota of people responsible for responding to alerts.",
+      "tags": [
+        "oncall",
+        "rota",
+        "alert",
+        "responder"
+      ]
+    },
+    {
+      "term": "Runbook",
+      "definition": "A documented procedure for handling a known situation.",
+      "tags": [
+        "runbook",
+        "procedure",
+        "steps",
+        "incident"
+      ]
+    },
+    {
+      "term": "Postmortem",
+      "definition": "A blameless review after an incident.",
+      "tags": [
+        "postmortem",
+        "review",
+        "incident",
+        "learning"
+      ]
+    },
+    {
+      "term": "AIOps",
+      "definition": "Using AI to help operate IT systems.",
+      "tags": [
+        "aiops",
+        "operations",
+        "automation",
+        "incident"
+      ]
+    },
+    {
+      "term": "Observability",
+      "definition": "Understanding a system from logs, metrics and traces.",
+      "tags": [
+        "observability",
+        "log",
+        "metric",
+        "trace"
+      ]
+    },
+    {
+      "term": "Telemetry",
+      "definition": "Data sent from systems about their state.",
+      "tags": [
+        "telemetry",
+        "metric",
+        "log",
+        "data"
+      ]
+    },
+    {
+      "term": "Alert storm",
+      "definition": "A burst of many related alerts.",
+      "tags": [
+        "alert",
+        "storm",
+        "burst",
+        "noise"
+      ]
+    },
+    {
+      "term": "Topology",
+      "definition": "The map of how systems depend on each other.",
+      "tags": [
+        "topology",
+        "dependency",
+        "map",
+        "service"
+      ]
+    },
+    {
+      "term": "FinOps",
+      "definition": "Managing cloud cost with shared accountability.",
+      "tags": [
+        "finops",
+        "cloud",
+        "cost",
+        "accountability"
+      ]
+    },
+    {
+      "term": "Rightsizing",
+      "definition": "Matching resource size to actual use.",
+      "tags": [
+        "rightsizing",
+        "instance",
+        "resource",
+        "size"
+      ]
+    },
+    {
+      "term": "Reserved instance",
+      "definition": "A cloud commitment for a discount.",
+      "tags": [
+        "reserved",
+        "commitment",
+        "discount",
+        "cloud"
+      ]
+    },
+    {
+      "term": "Savings plan",
+      "definition": "A flexible commitment to spend for a discount.",
+      "tags": [
+        "savings",
+        "plan",
+        "commitment",
+        "discount"
+      ]
+    },
+    {
+      "term": "Autoscaling",
+      "definition": "Adding or removing capacity automatically with load.",
+      "tags": [
+        "autoscaling",
+        "scale",
+        "capacity",
+        "load"
+      ]
+    },
+    {
+      "term": "Tagging",
+      "definition": "Labels on resources used to assign cost and owners.",
+      "tags": [
+        "tag",
+        "label",
+        "owner",
+        "cost"
+      ]
+    },
+    {
+      "term": "Drift",
+      "definition": "Differences between declared and actual configuration.",
+      "tags": [
+        "drift",
+        "configuration",
+        "declared",
+        "actual"
+      ]
+    },
+    {
+      "term": "Infrastructure as code",
+      "definition": "Defining infrastructure in version-controlled files.",
+      "tags": [
+        "infrastructure",
+        "code",
+        "terraform",
+        "declarative"
+      ]
+    },
+    {
+      "term": "Patch",
+      "definition": "A software update that fixes a flaw.",
+      "tags": [
+        "patch",
+        "update",
+        "vulnerability",
+        "fix"
+      ]
+    },
+    {
+      "term": "Maintenance window",
+      "definition": "An agreed time for planned work.",
+      "tags": [
+        "maintenance",
+        "window",
+        "change",
+        "schedule"
+      ]
+    },
+    {
+      "term": "Break-glass",
+      "definition": "Emergency access that is logged and reviewed.",
+      "tags": [
+        "breakglass",
+        "emergency",
+        "access",
+        "privileged"
+      ]
+    },
+    {
+      "term": "Privileged access",
+      "definition": "Powerful accounts that can change systems.",
+      "tags": [
+        "privileged",
+        "access",
+        "admin",
+        "account"
+      ]
+    },
+    {
+      "term": "Separation of duties",
+      "definition": "Splitting a task so no one person can complete it alone.",
+      "tags": [
+        "separation",
+        "duties",
+        "approval",
+        "control"
+      ]
+    },
+    {
+      "term": "JML",
+      "definition": "Joiner, mover, leaver: the lifecycle of a person's access.",
+      "tags": [
+        "joiner",
+        "mover",
+        "leaver",
+        "access",
+        "lifecycle"
+      ]
+    },
+    {
+      "term": "Recertification",
+      "definition": "Periodic review of who should keep access.",
+      "tags": [
+        "recertification",
+        "review",
+        "access",
+        "entitlement"
+      ]
+    },
+    {
+      "term": "SIEM",
+      "definition": "Security information and event management: a system that collects security events.",
+      "tags": [
+        "siem",
+        "security",
+        "event",
+        "log"
+      ]
+    },
+    {
+      "term": "SOC",
+      "definition": "Security operations centre: the team that monitors security events.",
+      "tags": [
+        "soc",
+        "security",
+        "operations",
+        "analyst"
+      ]
+    },
+    {
+      "term": "EDR",
+      "definition": "Endpoint detection and response software.",
+      "tags": [
+        "edr",
+        "endpoint",
+        "detection",
+        "response"
+      ]
+    },
+    {
+      "term": "Phishing",
+      "definition": "Fraudulent messages that trick people into giving access.",
+      "tags": [
+        "phishing",
+        "email",
+        "fraud",
+        "credential"
+      ]
+    },
+    {
+      "term": "DLP",
+      "definition": "Data loss prevention: controls that stop sensitive data leaving.",
+      "tags": [
+        "dlp",
+        "data",
+        "loss",
+        "sensitive"
+      ]
+    },
+    {
+      "term": "SD-WAN",
+      "definition": "Software-defined wide area network.",
+      "tags": [
+        "sdwan",
+        "wan",
+        "network",
+        "path"
+      ]
+    },
+    {
+      "term": "Digital employee experience",
+      "definition": "How well technology works for employees.",
+      "tags": [
+        "employee",
+        "experience",
+        "device",
+        "digital"
+      ]
+    },
+    {
+      "term": "Licence optimisation",
+      "definition": "Matching software licences to real use.",
+      "tags": [
+        "licence",
+        "software",
+        "seats",
+        "optimisation"
+      ]
+    },
+    {
+      "term": "Asset lifecycle",
+      "definition": "The stages from buying a device to disposing of it.",
+      "tags": [
+        "asset",
+        "lifecycle",
+        "device",
+        "refresh"
+      ]
+    },
+    {
+      "term": "Certificate expiry",
+      "definition": "The date a security certificate stops being valid.",
+      "tags": [
+        "certificate",
+        "expiry",
+        "outage",
+        "tls"
+      ]
+    }
+  ]
+}
