@@ -113,6 +113,7 @@ export const PROTOCOLS: Record<Domain, string> = {
   edtech: 'LTI 1.3, xAPI/Caliper, QTI and OneRoster',
   saas: 'OAuth2/OIDC, REST and GraphQL product APIs, webhooks and SCIM',
   telecom: 'NETCONF/YANG and gNMI streaming telemetry, SNMP traps, 3GPP and TM Forum Open APIs, Diameter and RADIUS records',
+  manufacturing: 'OPC UA and MQTT Sparkplug, Modbus and PROFINET gateways, MES and ERP interfaces (ISA-95), CMMS work-order APIs',
   'real-estate': 'RESO Web API, MLS feeds, BIM/IFC and BACnet/Modbus building protocols',
 };
 
@@ -130,6 +131,7 @@ export const LABEL_DELAY: Record<Domain, string> = {
   edtech: 'learning outcomes that show up over weeks or terms',
   saas: 'churn and expansion that show up 30 to 90 days later',
   telecom: 'fault root causes confirmed after repair, churn and billing disputes that resolve over weeks',
+  manufacturing: 'field failures and warranty claims that appear months after shipment, and quality escapes found at the customer',
   'real-estate': 'sale, lease and valuation outcomes that take months',
 };
 
@@ -144,6 +146,7 @@ export const TAIL_COHORTS: Record<Domain, string> = {
   edtech: 'new learners, low-connectivity users and minority-language cohorts',
   saas: 'new and small tenants, rarely used features and non-English users',
   telecom: 'new cells and sites with no history, rare vendor equipment, small enterprise accounts and roaming visitors',
+  manufacturing: 'new product variants, rare machines, first runs after a changeover and low-volume lots',
   'real-estate': 'thin-comp micro-markets, unusual property types and new developments',
 };
 

@@ -179,6 +179,7 @@ export const DOMAIN_DIMENSIONS: Record<Domain, string> = {
   edtech: 'Learners, concurrent sessions, assessments and content items',
   saas: 'Tenants, seats, API calls and concurrent sessions',
   telecom: 'Subscribers, cells and network elements, alarms per second and CDRs per day',
+  manufacturing: 'Machines and sensors, tags per second, parts per minute and images per shift',
   'real-estate': 'Listings, properties, images and property updates',
 };
 
@@ -193,6 +194,7 @@ const DOMAIN_PROFILE: Record<Domain, ProfileId> = {
   'supply-chain': 'asset',
   cybersecurity: 'asset',
   telecom: 'asset',
+  manufacturing: 'asset',
   'real-estate': 'asset',
 };
 

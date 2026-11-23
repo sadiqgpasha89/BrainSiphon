@@ -123,6 +123,13 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     blurb:
       'Network self-healing, predictive customer care, real-time service activation, revenue assurance and edge services for operators running carrier-grade networks.',
   },
+  manufacturing: {
+    name: 'Manufacturing & Industrial',
+    short: 'Manufacturing',
+    topics: 'Quality, maintenance, process, planning, safety',
+    blurb:
+      'Visual quality, predictive maintenance, process optimisation, planning and shop-floor agents for plants where downtime, scrap and safety dominate the economics.',
+  },
   'real-estate': {
     name: 'Real Estate & PropTech',
     short: 'Real Estate',

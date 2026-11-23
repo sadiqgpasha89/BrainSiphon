@@ -38,6 +38,7 @@ const DOMAIN_DATA: Record<Domain, string> = {
   saas: 'Isolate tenants end to end, never train across customers without contract permission and keep customer content out of shared logs',
   bfsi: 'Mask customer and policy identifiers, keep model inputs inside the institution and retain evidence for model-risk and audit review',
   telecom: 'Pseudonymise subscriber identifiers, aggregate location, keep communication content out of every model path and log each automated network or customer action',
+  manufacturing: 'Keep recipes and process data inside the plant boundary, never identify workers in vision data and log every model decision against the lot',
   'real-estate': 'Mask tenant, buyer and owner personal data, keep protected attributes and their proxies out of features, and log the evidence behind each value or score',
 };
 
@@ -52,6 +53,7 @@ const DOMAIN_OWNER: Record<Domain, string> = {
   saas: 'the product and platform team',
   bfsi: 'the business line with model risk as independent challenger',
   telecom: 'the network operations or customer care owner with the OSS/BSS platform team',
+  manufacturing: 'the plant, quality or maintenance owner with the controls engineer',
   'real-estate': 'the valuation, leasing or asset-management owner',
 };
 
