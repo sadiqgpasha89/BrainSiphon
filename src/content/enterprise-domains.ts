@@ -409,7 +409,7 @@ export const DOMAIN_ENTERPRISE: Record<Domain, DomainEnterprise> = {
     identity: 'Strong multi-factor identity for staff, role-based access by need to know, session logging and named approval roles for any action affecting a person',
     classification: 'Restricted: calls, victim, witness and case data; Confidential: operational plans and evidence; Public: statistics and published reports',
     privacy: 'No model produces a risk score for a named individual, no biometric identification is performed, retention is limited and every access to case data is logged for oversight',
-    baseRisk: 3,
+    baseRisk: 2,
     legacy: 'decades-old CAD and records systems, radio networks with limited data capacity and agency silos with different retention rules',
     regulatory: [
       { obligation: 'Constitutional and civil rights protections, due process and discovery duties', architecturalControl: 'Models never score individuals or identify people by face, outputs are leads for human review and every tool use that touches a case is disclosed and logged', evidence: 'Tool disclosure register and case-level audit log', owner: 'General counsel and records', cadence: 'Per case and annual' },
@@ -490,7 +490,7 @@ export const DOMAIN_ENTERPRISE: Record<Domain, DomainEnterprise> = {
     identity: 'SSO with project-level access, named engineers of record for every approval, client-segregated workspaces and no agent permission to issue, sign or release drawings',
     classification: 'Confidential: designs, bids and client contract terms; Restricted: critical infrastructure details and security-sensitive layouts; Internal: schedules, aggregated cost and progress data',
     privacy: 'Site imagery and sensor data are used to assess work and hazards, not to identify, rank or discipline individual workers, and works-council and union agreements govern any measurement',
-    baseRisk: 3,
+    baseRisk: 2,
     legacy: 'paper and PDF drawings, disconnected scheduling and cost tools, subcontractor data in spreadsheets and inconsistent model quality across projects',
     regulatory: [
       { obligation: 'Professional engineering accountability and building and design codes', architecturalControl: 'Every AI-assisted design output is reviewed and signed by a licensed engineer of record, calculations are independently verified and the agent cannot issue or seal drawings', evidence: 'Signed review records and calculation verification logs', owner: 'Engineering management', cadence: 'Per deliverable' },
