@@ -529,25 +529,25 @@ on: Incidents from automation ; Certified share of automation ; Time to certify
 gap: Code review only ; Self-certification ; Unlimited target scope
 
 == it-ops-agent-action-guardrails | IT Ops Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.5 k=40
-obj: Control and audit every action AI agents take on IT systems, enforce approval tiers and kill switches and give security and audit teams a replayable record.
+obj: Gate and record every change AI operations agents make to servers, cloud accounts and ticket workflows so on-call engineers can trust automation without losing sight of what it did.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Policy enforced in a gateway outside the model ; Agents never hold standing administrator access or change identity policies ; Approvals by named roles with separation of duties ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
-sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
-sn: Scope | Least privilege per agent and system | A shared administrator token | One mistake should not reach every system
-sn: Evidence | An append-only log with context | A summary report | Auditors need replay
-sig: Platform action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Platform action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Platform approval and override statistics | approvals, rejections and overrides | Governance health | From the log
-sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Platform agent name | an identifier
-noise: Prompt length | not risk
-noise: Model version alone | needs outcome data
-base: Manual review of agent logs by team leads, because it is the minimum audit trail.
-prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, anomaly detection on agent behaviour and monthly governance reports.
-pipe: Platform tool gateway @ policy proxy ; Platform risk tier decision @ policy as code ; Platform approval workflow @ maker-checker ; Platform action log @ append-only store ; Platform behaviour monitor @ time-series model ; Platform replay console @ analytics ; Governance report @ monthly
-edge: Agent loop | repeated restarts of one service | Rate limits and loop detection
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across platform operations
-edge: New tool added | no tier has been defined for it | Default deny until classified across platform operations
-off: Platform policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Platform actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Prompt-only guardrails ; Shared administrator tokens ; Default allow for new tools
+con: Change policy enforced by an automation broker rather than by agent instructions ; Agents never delete data stores, rotate root credentials or open firewall rules on their own ; Change approvals by the service owner within 15 minutes for high tier changes ; Every command logged with the ticket it came from ; Per-agent stop button that halts running playbooks within 20 s ; On-call engineers can retrieve the last 30 days of agent commands within 5 s
+sn: Enforcement | An automation broker with change tiers | Instructions in the agent prompt | Prompt text is not a change control
+sn: Scope | Temporary roles tied to one ticket | Permanent administrator accounts | A wrong command should affect one service only
+sn: Evidence | Command level log linked to tickets | Ticket comments written by the agent | Reviewers need what actually ran
+sig: Change tier of requested command | the blast radius of the target system | Approval routing | Configuration database
+sig: Commands per ticket | volume of commands against the ticket norm | Runaway detection | Broker log
+sig: Rollback frequency after agent changes | how often a change had to be undone | Quality of automation | Change records
+sig: Service health after change | error rate and latency after the command | Outcome check | Monitoring stack
+noise: Host nickname | a label only
+noise: Ticket priority label alone | not impact
+noise: Agent version string | needs outcome data
+base: A senior engineer reads the agent command history each Friday, because tickets alone do not show what ran.
+prod: An automation broker with change tiers, command rate limits and a stop button, a command log tied to tickets with replay, drift detection on agent behaviour and a weekly change review for service owners.
+pipe: Automation broker @ command proxy ; Change tier decision @ policy engine ; Owner approval @ change workflow ; Command log @ indexed event store ; Behaviour monitor @ anomaly model ; Command replay console @ search tool ; Weekly change report @ scheduled
+edge: Playbook loop | an agent reruns a failing restart playbook against the same host | Retry caps and automatic stop after three failures
+edge: Approval fatigue | service owners accept high tier changes without checking | Sampled second reviews and rotating owners
+edge: New cloud account | a fresh account has no change tier | Deny changes until the tier is assigned
+off: Tier coverage across services ; Block rate on seeded risky commands ; Command log completeness
+on: Risky commands stopped before execution ; Outages traced to agent changes ; Minutes to find what ran on a host
+gap: Permanent administrator accounts ; Prompt-only change rules ; Changes allowed in untiered accounts

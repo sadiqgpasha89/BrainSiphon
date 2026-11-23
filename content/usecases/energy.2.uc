@@ -673,25 +673,25 @@ on: Emissions avoided by shifting ; Reporting corrections ; Forecast error at pe
 gap: Mixing average and marginal intensity ; Using history alone ; Undocumented methods
 
 == grid-agent-action-guardrails | Grid Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.2 k=40
-obj: Control and audit every action AI agents take in utility systems such as ADMS, work management, billing and market platforms, enforce approval tiers and give regulators a replayable record.
+obj: Constrain and record every action AI agents take around switching orders, outage tickets and SCADA setpoints so that operators stay in control of the grid and regulators can see what happened.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Policy enforced in a gateway outside the model ; Agents never write to switching, protection settings or market bids ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
-sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
-sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach critical systems
-sn: Evidence | An append-only log with context | A summary report | Regulators need replay
-sig: Grid action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Grid action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Grid approval and override statistics | approvals, rejections and overrides | Governance health | From the log
-sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Grid agent name | an identifier
-noise: Prompt length | not risk
-noise: Model version alone | needs outcome data
-base: Manual review of agent logs by team leads, because it is the minimum audit trail.
-prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and weekly governance reports.
-pipe: Grid tool gateway @ policy proxy ; Grid risk tier decision @ policy as code ; Grid approval workflow @ maker-checker ; Grid action log @ append-only store ; Grid behaviour monitor @ time-series model ; Grid replay console @ analytics ; Grid governance report @ weekly
-edge: Agent loop | repeated writes to one record | Rate limits and loop detection
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across grid operations
-edge: New tool added | no tier has been defined | Default deny until classified
-off: Grid policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Grid actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Prompt-only guardrails ; Shared service accounts ; Default allow for new tools
+con: Switching and setpoint limits enforced in a gate that sits in front of the control network ; Agents never issue breaker operations, change protection settings or alter setpoints on their own ; Operator countersign by a licensed grid operator for every field-facing action ; Action records stored write-once for 7 years ; Agent isolation switch that cuts its network paths within 10 s ; Compliance queries over 12 months answered within 30 s
+sn: Enforcement | A control-network gate that checks every order against switching rules | Instructions given to the agent | Instructions cannot protect a live substation
+sn: Scope | Read-only by default with named write windows | Standing write rights to the energy management system | A wrong order can trip customers
+sn: Evidence | Write-once order and response records | Operator shift notes | Regulators ask for the exact sequence of events
+sig: Switching order risk class | the equipment and voltage level the order touches | Countersign routing | Order metadata
+sig: Setpoint change magnitude | size of the requested move against safe limits | Out-of-range blocking | Telemetry feed
+sig: Operator rejection rate | agent proposals declined by operators | Trust and drift signal | Order log
+sig: Post-switching telemetry | whether load and voltage settled as expected | Quality of actions | SCADA historian
+noise: Substation nickname | a label only
+noise: Ticket text length | not risk
+noise: Agent build number alone | needs outcome data
+base: Control room supervisors read the agent order list at shift change, which is the only record of what it proposed.
+prod: A control-network gate with switching rules, rate limits and an isolation switch, a write-once order record with replay for regulators, drift detection on setpoint requests and a monthly reliability summary.
+pipe: Control network gate @ protocol proxy ; Switching rule decision @ rule set ; Operator countersign @ dual control ; Order record @ write-once store ; Setpoint drift monitor @ statistical model ; Order replay console @ operator display ; Monthly reliability report @ scheduled
+edge: Order storm | an agent floods the queue with repeated switching proposals during a storm | Queue caps and storm mode that pauses proposals
+edge: Countersign haste | operators confirm proposals quickly during outages | Mandatory read time and sampled second checks
+edge: Unmapped feeder | a newly built feeder has no switching rule | Block orders until engineers add the rule
+off: Rule coverage across feeders ; Block rate on seeded unsafe orders ; Order record completeness
+on: Unsafe orders blocked before reaching the field ; Customer minutes lost from agent orders ; Minutes to produce a regulator evidence pack
+gap: Agents with standing write rights ; Instruction-only restrictions ; Orders allowed on unmapped feeders

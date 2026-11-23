@@ -697,25 +697,25 @@ on: Time to answer privacy questions ; Datasets with overdue retention ; Escalat
 gap: Treating the answer as legal advice ; No catalogue link ; Stale policies
 
 == telecom-agent-action-audit-guardrails | Telecom Agent Action Audit & Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.2 k=40
-obj: Monitor every action taken by autonomous agents in network and customer systems, enforce guardrails and give auditors a replayable record, so governed autonomy can scale with confidence.
+obj: Gate and record the actions AI agents take on network configuration, service provisioning and billing adjustments so that operations, regulators and customers can rely on a complete trail.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Policy enforcement happens outside the model in code ; Every tool call logged with inputs, outputs and approver ; High-risk actions require named human approval ; Kill switch per agent and per tool ; Audit queries answered within 5 s over 90 days of actions
-sn: Enforcement | Policy checks in the tool gateway | Prompt instructions telling the model to be careful | A prompt can be overridden by input
-sn: Evidence | Immutable action log with context | Summary reports | Auditors need to replay the decision
-sn: Scope | Least-privilege tool access per agent | Shared credentials | One compromised agent should not reach everything
-sig: Action risk tier | tier of the tool and target from the policy | Approval routing | Policy as code
-sig: Action rate per agent | actions per minute against the baseline | Runaway detection | Per agent baseline
-sig: Approval latency and override rate | time to approve and share rejected | Governance health | From the approval log
-sig: Outcome verification result | whether post-action KPIs improved | Quality of the action | Needs verification step
-noise: Agent name | an identifier
-noise: Prompt text length | not risk
-noise: Model version label alone | needs outcome data
-base: A log of tool calls reviewed manually by team leads, because it is the minimum audit trail.
-prod: A policy gateway between agents and tools with risk tiers, rate limits and a kill switch, an immutable action log with replay and anomaly detection on action behaviour for weekly governance reviews.
-pipe: Network tool gateway @ policy proxy ; Network risk tier decision @ policy as code ; Network approval workflow @ maker-checker ; Network action log @ append-only store ; Behaviour anomaly detection @ time-series model ; Replay and audit console @ analytics ; Network governance report @ weekly
-edge: Agent loops | repeated actions on one target | Rate limits and a loop detector
-edge: Approval fatigue | approvers accept everything | Track override rates and rotate approvers
-edge: Policy gaps | a new tool has no tier | Default deny until classified
-off: Network policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Network actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Prompt-only guardrails ; Shared credentials ; Default allow for new tools
+con: Network and billing rules enforced by an orchestration gate outside the agent ; Agents never change core routing, bulk provisioning or customer credits above limits on their own ; Network duty manager approval within 10 minutes for high impact changes ; Change records kept for the regulator retention period ; Per-agent halt that stops its sessions within 10 s ; Compliance staff can answer trail queries over 12 months within 20 s
+sn: Enforcement | An orchestration gate with change tiers | Instructions given to the agent | Core network changes need controls the agent cannot edit
+sn: Scope | Per-domain roles for radio, core and billing | One shared automation account | A wrong action should stay inside one domain
+sn: Evidence | A change trail linked to tickets and customers | Agent activity summaries | Regulators and customers need the exact action
+sig: Change tier of request | the network layer and customer count affected | Approval routing | Inventory system
+sig: Provisioning actions per hour | volume against the domain baseline | Runaway detection | Orchestration log
+sig: Duty manager override rate | proposals changed or declined by managers | Trust signal | Approval records
+sig: Service quality after change | alarms and complaints after the action | Outcome check | Assurance system
+noise: Cell site name alone | an identifier
+noise: Ticket note length | not risk
+noise: Agent release label | needs outcome data
+base: Network managers review the agent action export each week, which does not show the effect on service.
+prod: An orchestration gate with change tiers and a halt switch, a change trail tied to tickets and customers, behaviour monitoring on agent actions and a monthly governance pack for operations and compliance.
+pipe: Orchestration gate @ API proxy ; Change tier decision @ rules engine ; Duty manager approval @ change board ; Change trail @ append-only store ; Action behaviour monitor @ time-series model ; Trail replay console @ search tool ; Monthly governance report @ scheduled
+edge: Provisioning burst | an agent pushes a large batch of provisioning changes after a failed run | Batch caps and staged rollout
+edge: Board fatigue | duty managers approve routine proposals without checking impact | Impact summaries and sampled second reviews
+edge: New vendor domain | equipment from a new vendor has no change tier | Block actions until the tier is defined
+off: Tier coverage across network domains ; Block rate on seeded risky changes ; Change trail completeness
+on: Risky changes stopped before execution ; Service incidents traced to agent actions ; Minutes to answer a regulator trail request
+gap: One shared automation account ; Instruction-only limits ; Actions allowed on new vendor domains

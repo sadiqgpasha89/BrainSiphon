@@ -673,25 +673,25 @@ on: Requests denied for no basis ; Time to approve valid requests ; Subject log 
 gap: Prompt-based enforcement ; Whole-record releases ; Internal-only logs
 
 == public-sector-agent-action-guardrails | Public Sector Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.3 k=40
-obj: Control and audit every action AI agents take in government systems such as case management, payments and records, enforce approval tiers and give oversight bodies a replayable record.
+obj: Limit and record what AI agents do inside benefit systems, citizen records and payment runs so that every decision affecting a resident has a named human owner and a record an ombudsman can review.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Policy enforced in a gateway outside the model ; Agents never issue decisions, payments or sanctions ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
-sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
-sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach all programmes
-sn: Evidence | An append-only log with context | A summary report | Oversight bodies need replay
-sig: Citizen action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Citizen action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Citizen approval and override statistics | approvals, rejections and overrides | Governance health | From the log
-sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Citizen agent name | an identifier
-noise: Prompt length | not risk
-noise: Model version alone | needs outcome data
-base: Manual review of agent logs by team leads, because it is the minimum audit trail.
-prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and quarterly reports to the oversight board.
-pipe: Citizen tool gateway @ policy proxy ; Citizen risk tier decision @ policy as code ; Citizen approval workflow @ maker-checker ; Citizen action log @ append-only store ; Citizen behaviour monitor @ time-series model ; Citizen replay console @ analytics ; Citizen oversight report @ quarterly
-edge: Agent loop | repeated writes to one case record | Rate limits and loop detection across case handling
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across case handling
-edge: New tool added | no tier has been defined for it | Default deny until classified across case handling
-off: Citizen policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Citizen actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Citizen prompt-only guardrails ; Shared service accounts ; Default allow for new tools
+con: Eligibility and payment rules enforced by a gateway outside the agent ; Agents never approve benefits, change a resident record or release a payment on their own ; Caseworker sign-off within 2 working days for any decision that affects a resident ; Decision records kept for the statutory retention period ; Per-agent suspension that stops its actions within 15 s ; Oversight staff can retrieve any record trail within 20 s
+sn: Enforcement | A rules gateway with decision tiers | Instructions given to the agent | Residents are owed decisions that rules and law bind
+sn: Scope | Draft-only rights with named fields | Direct edit rights across case systems | One error should touch one record
+sn: Evidence | A decision trail with the signing caseworker | Agent summaries | Appeals need the facts and the owner of the decision
+sig: Decision tier of the draft | whether it changes entitlement or payment | Sign-off routing | Case system
+sig: Drafts per caseworker per day | volume against the team norm | Runaway detection | Workflow log
+sig: Caseworker change rate | drafts edited or rejected before release | Trust signal | Decision trail
+sig: Appeal rate after release | decisions later challenged by residents | Outcome check | Appeals system
+noise: Resident reference alone | an identifier
+noise: Letter length | not risk
+noise: Agent version string | needs outcome data
+base: Team managers read a random sample of agent drafts each month, which misses most decisions.
+prod: A rules gateway with decision tiers and a suspension switch, a decision trail with the signing caseworker, drift detection on drafts and a quarterly ombudsman pack for oversight leads.
+pipe: Rules gateway @ service proxy ; Decision tier rules @ policy engine ; Caseworker sign-off @ workflow ; Decision trail @ immutable store ; Draft drift monitor @ statistical model ; Trail replay console @ review viewer ; Quarterly oversight report @ scheduled
+edge: Mass draft run | an agent drafts hundreds of decisions after a rule change without a pause | Batch caps and a hold for sampling
+edge: Sign-off by routine | caseworkers sign drafts without reading the evidence | Time on screen checks and random peer review
+edge: New benefit scheme | a scheme launches with no decision tier | Draft-only until policy staff set the tier
+off: Tier coverage across schemes ; Block rate on seeded wrong decisions ; Decision trail completeness
+on: Wrong drafts stopped before release ; Appeals traced to agent drafts ; Days to answer an ombudsman request
+gap: Direct edit rights across case systems ; Instruction-only limits ; Release allowed on new schemes

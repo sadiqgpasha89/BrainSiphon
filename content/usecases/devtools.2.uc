@@ -673,25 +673,25 @@ on: Regressions caught before rollout ; Cost per solved task ; Agent changes shi
 gap: Public benchmarks only ; Pass rate alone ; Single runs
 
 == devtools-agent-action-guardrails | DevTools Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.5 k=40
-obj: Control and audit every action AI agents take in repositories, pipelines and registries, enforce approval tiers and give security and audit teams a replayable record.
+obj: Control every action AI coding agents take in source repositories, build pipelines and package registries, enforce approval tiers and give security reviewers a replayable record of each change.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Policy enforced in a gateway outside the model ; Agents never merge to protected branches, deploy to production or change access policies ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
-sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
-sn: Scope | Least privilege per agent and repository | Organisation-wide tokens | One mistake should not reach all repositories
-sn: Evidence | An append-only log with context | A summary report | Auditors need replay
-sig: Action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Approval and override statistics | approvals, rejections and overrides | Governance health | From the log
-sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Agent name | an identifier
-noise: Prompt length | not risk
-noise: Model version alone | needs outcome data
-base: Manual review of agent logs by team leads, because it is the minimum audit trail.
-prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and weekly governance reports.
-pipe: Tool gateway @ policy proxy ; Risk tier decision @ policy as code ; Approval workflow @ maker-checker ; Action log @ append-only store ; Behaviour monitor @ time-series model ; Replay console @ analytics ; Governance report @ weekly
-edge: Agent loop | repeated pushes to one branch | Rate limits and loop detection
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers
-edge: New tool added | no tier has been defined for it | Default deny until classified
-off: Policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Prompt-only guardrails ; Organisation-wide tokens ; Default allow for new tools
+con: Branch protection and registry write rules enforced by a gateway the agent cannot edit ; Agents never merge to protected branches, publish packages or change repository access settings ; Release approvals by named code owners within 4 working hours ; Commit and pipeline actions recorded in a tamper-evident ledger ; Per-agent revoke switch that stops its tokens within 30 s ; Reviewers can replay any agent session from the last 90 days within 5 s
+sn: Enforcement | Branch rules and token scopes held in the source host | Instructions in the agent prompt | A crafted issue comment can override prompt text
+sn: Scope | One short-lived token per agent and repository | A shared organisation access token | A bad push should not reach every repository
+sn: Evidence | Signed commit and pipeline event ledger | Chat transcripts of the agent | Reviewers need the exact diff and the exact pipeline run
+sig: Protected-branch touch attempts | writes aimed at main, release and tag refs | Tier routing | Source host events
+sig: Pushes per agent per hour | push volume against the agent baseline | Runaway loop detection | Per agent token
+sig: Reviewer overrides on agent pull requests | forced merges and skipped checks | Governance health | Pull request metadata
+sig: Pipeline result after agent change | whether build and tests passed afterwards | Quality of agent changes | CI results
+noise: Branch name prefix | a label only
+noise: Commit message length | not risk
+noise: Agent framework version alone | needs outcome data
+base: Team leads skim agent pull requests once a week, because there is no other check on what the agents changed.
+prod: A repository gateway with branch tiers, push rate limits and a token revoke switch, a signed change ledger with session replay, loop detection on pushes and a weekly review pack for security leads.
+pipe: Repository gateway @ git proxy ; Branch tier decision @ rules engine ; Codeowner approval @ pull request gate ; Change ledger @ signed event store ; Push monitor @ rate model ; Session replay console @ web viewer ; Weekly review report @ scheduled
+edge: Push loop | an agent retries a failing fix and floods one branch with commits | Per branch push caps and loop detection
+edge: Rubber-stamp reviews | code owners approve agent pull requests without reading them | Review time metrics and rotating owners
+edge: New registry added | no write tier exists for the new package registry | Deny writes until a tier is set
+off: Rule coverage on branch tiers ; Catch rate on seeded unsafe pushes ; Replay completeness of sessions
+on: Unsafe pushes stopped at the gateway ; Production incidents traced to agent changes ; Minutes to answer a reviewer replay request
+gap: Prompt-only restrictions ; Organisation-wide access tokens ; Writes allowed on new registries

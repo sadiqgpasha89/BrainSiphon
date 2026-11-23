@@ -673,25 +673,25 @@ on: Misuse found ; Time to detect ; Leads closed as normal
 gap: Action from scores ; Volume-only rules ; Unequal scrutiny
 
 == public-safety-agent-action-guardrails | Public Safety Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.3 k=40
-obj: Control and audit every action AI agents take in public safety systems such as CAD, records and evidence, enforce approval tiers and give oversight bodies a replayable record.
+obj: Bound what AI agents may do in dispatch, records and alerting systems for emergency services, keep a human decision on every consequential step and preserve a record that can stand up to review.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Policy enforced in a gateway outside the model ; Agents never dispatch units, change priorities, identify people or alter evidence ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
-sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
-sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach critical systems
-sn: Evidence | An append-only log with context | A summary report | Oversight bodies and courts need replay
-sig: Incident action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Incident action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Incident approval and override statistics | approvals, rejections and overrides | Governance health | From the log
-sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Incident agent name | an identifier
-noise: Prompt length | not risk
-noise: Model version alone | needs outcome data
-base: Manual review of agent logs by team leads, because it is the minimum audit trail.
-prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and quarterly reports to the oversight board.
-pipe: Incident tool gateway @ policy proxy ; Incident risk tier decision @ policy as code ; Incident approval workflow @ maker-checker ; Incident action log @ append-only store ; Incident behaviour monitor @ time-series model ; Incident replay console @ analytics ; Oversight report @ quarterly
-edge: Agent loop | repeated writes to one case record | Rate limits and loop detection
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across incident response
-edge: New tool added | no tier has been defined for it | Default deny until classified across incident response
-off: Incident policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Incident actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Incident prompt-only guardrails ; Shared service accounts ; Default allow for new tools
+con: Dispatch and alerting rules enforced by a gateway the agent cannot change ; Agents never dispatch units, send public alerts or alter incident records without a human decision ; Supervisor approval within 60 s for any action that moves a unit ; Records kept for the statutory retention period ; Per-agent suspension that stops its actions within 5 s ; Oversight staff can retrieve any action history within 10 s
+sn: Enforcement | A dispatch gateway with action tiers | Instructions given to the agent | Lives may depend on a rule that cannot be talked around
+sn: Scope | Suggest-only access to dispatch and read access to records | Direct dispatch rights | A wrong dispatch costs response time elsewhere
+sn: Evidence | A time-stamped decision record with the human who approved | Call-taker notes | Oversight bodies ask who decided and why
+sig: Action tier of the proposal | whether it moves a unit or sends a public message | Approval routing | Dispatch system
+sig: Proposals per incident | suggestion volume against the incident norm | Runaway detection | Dispatch log
+sig: Dispatcher override rate | proposals changed or declined by dispatchers | Trust and drift signal | Decision records
+sig: Response time after proposal | clock time from proposal to unit en route | Outcome check | Dispatch timeline
+noise: Unit callsign alone | an identifier
+noise: Call note length | not risk
+noise: Agent release number alone | needs outcome data
+base: Duty supervisors review a sample of agent suggestions after major incidents, which leaves routine days unchecked.
+prod: A dispatch gateway with action tiers and a suspension switch, a time-stamped decision record with replay, drift detection on proposals and a monthly oversight pack for command staff.
+pipe: Dispatch gateway @ interface proxy ; Action tier decision @ rule set ; Supervisor approval @ dual confirmation ; Decision record @ time-stamped store ; Proposal drift monitor @ statistical model ; Incident replay console @ review viewer ; Monthly oversight report @ scheduled
+edge: Alert flood | an agent proposes many public alerts during a fast-moving incident | Alert caps and mandatory supervisor release
+edge: Automation bias | dispatchers accept suggestions without checking the map | Override statistics and periodic blind drills
+edge: New station added | a new station has no unit rules | Suggest-only until the rules are configured
+off: Tier coverage across incident types ; Block rate on seeded unsafe proposals ; Decision record completeness
+on: Unsafe proposals blocked before dispatch ; Response time change after agent suggestions ; Minutes to answer an oversight request
+gap: Direct dispatch rights ; Instruction-only limits ; Full access at new stations

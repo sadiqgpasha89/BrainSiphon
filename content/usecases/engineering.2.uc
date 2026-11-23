@@ -529,25 +529,25 @@ on: Project regressions caught before rollout ; Cost per solved task ; Agent cha
 gap: Model-written answers as truth ; Fluency as quality ; Textbook-only tasks
 
 == engineering-agent-action-guardrails | Engineering Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.5 k=40
-obj: Control and audit every action AI agents take in engineering and project systems, enforce approval tiers and client segregation and give auditors a replayable record.
+obj: Control how AI agents change CAD models, bills of materials and simulation setups, keep release authority with named engineers and retain a design history that regulators and customers can inspect.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Policy enforced in a gateway outside the model ; Agents never issue, seal or release drawings, approve payments or change baselines ; Client workspaces strictly segregated ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
-sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
-sn: Scope | Least privilege per agent and project | One token for all projects | One mistake should not cross clients
-sn: Evidence | An append-only log with context | A summary report | Auditors need replay
-sig: Project action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Cross-project access attempts | requests outside the assigned project | Leak signal | From the gateway
-sig: Project approval and override statistics | approvals, rejections and overrides | Governance health | From the log
-sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Project agent name | an identifier
-noise: Prompt length | not risk
-noise: Model version alone | needs outcome data
-base: Manual review of agent logs by project controls, because it is the minimum audit trail.
-prod: A policy gateway with risk tiers and project segregation, a kill switch, an immutable action log with replay and anomaly detection on agent actions with quarterly governance reports.
-pipe: Project tool gateway @ policy proxy ; Project risk tier decision @ policy as code ; Project approval workflow @ maker-checker ; Project action log @ append-only store ; Project behaviour monitor @ time-series model ; Project replay console @ analytics ; Governance report @ quarterly
-edge: Cross-client request | an agent asks for another client data | Block and alert
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across project delivery
-edge: New tool added | no tier has been defined for it | Default deny until classified across project delivery
-off: Project policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Actions blocked by policy ; Cross-project access incidents ; Time to answer audit queries
-gap: Prompt-only guardrails ; One token for all projects ; Default allow for new tools
+con: Release rules enforced by the product data system rather than by agent instructions ; Agents never release a drawing, change a safety critical dimension or alter a bill of materials on their own ; Engineer approval by the responsible design owner within 1 working day ; Revision history kept for the product life plus 10 years ; Per-agent lock that blocks its writes within 15 s ; Reviewers can retrieve any revision trail within 10 s
+sn: Enforcement | Release states and permissions in the product data system | Instructions given to the agent | Drawings must follow controlled release
+sn: Scope | Edit rights on working copies of named parts | Write access to released data | A wrong edit should never reach a released design
+sn: Evidence | A revision trail with before and after geometry | Chat history with the agent | Customers and regulators ask what changed and who approved
+sig: Release state of the target | working copy or released revision | Approval routing | Product data system
+sig: Edits per part per day | change volume against design norms | Runaway detection | Revision log
+sig: Engineer rejection rate | agent edits declined by design owners | Trust signal | Approval records
+sig: Simulation result after edit | stress and fit checks after the change | Outcome check | Simulation system
+noise: Part nickname | a label only
+noise: Change note length | not risk
+noise: Agent build alone | needs outcome data
+base: Design owners compare the agent edit list with the revision history before each release review.
+prod: A product data gateway with release states and a write lock, a revision trail with geometry comparison, drift detection on agent edits and a monthly design governance pack for engineering leads.
+pipe: Product data gateway @ API proxy ; Release state decision @ lifecycle rules ; Design owner approval @ review workflow ; Revision trail @ versioned vault ; Edit drift monitor @ statistical model ; Revision replay console @ model viewer ; Monthly design report @ scheduled
+edge: Edit cascade | an agent change to one part ripples across a large assembly | Impact limits on assemblies per change
+edge: Review by trust | design owners approve agent edits after a quick glance | Geometry diff view and random second reviews
+edge: New product line | a new line has no release rules | Working copy only until rules are defined
+off: Release rule coverage across lines ; Block rate on seeded unsafe edits ; Revision trail completeness
+on: Unsafe edits stopped before release ; Engineering changes traced to agent edits ; Minutes to answer a design history request
+gap: Write access to released data ; Instruction-only limits ; Edits allowed on new lines

@@ -673,25 +673,25 @@ on: Unplanned breakdowns ; Visits per product-year ; First-time fix rate
 gap: Fixed intervals only ; Ignoring parts ; No consent record
 
 == shopfloor-agent-action-guardrails | Shop-Floor Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.3 k=40
-obj: Control and audit every action that AI agents take in plant systems such as MES, CMMS and ERP, enforce approval tiers and give quality and EHS teams a replayable record.
+obj: Keep AI agents inside safe limits when they touch recipes, work orders and machine parameters on the shop floor, and give quality and safety teams a trustworthy record of every change.
 loss: \mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)
-con: Policy enforced in a gateway outside the model ; Writes to production recipes and safety systems are never allowed to agents ; Approvals by named roles ; Immutable action log ; Kill switch per agent ; Audit queries over 90 days answered within 5 s
-sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by input
-sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach the whole plant
-sn: Evidence | An append-only log of calls with context | A summary report | Auditors need replay
-sig: Plant action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Plant action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Plant approval and override statistics | approvals, rejections and overrides | Governance health | From the log
-sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Plant agent name | an identifier
-noise: Prompt length | not risk
-noise: Model version alone | needs outcome data
-base: Manual review of agent logs by team leads, because it is the minimum audit trail.
-prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and weekly governance reports.
-pipe: Plant tool gateway @ policy proxy ; Plant risk tier decision @ policy as code ; Plant approval workflow @ maker-checker ; Plant action log @ append-only store ; Plant behaviour monitor @ time-series model ; Plant replay console @ analytics ; Plant governance report @ weekly
-edge: Agent loop | repeated writes to one record | Rate limits and loop detection across plant operations
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across plant operations
-edge: New tool added | no tier defined | Default deny until classified
-off: Plant policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Plant actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Plant prompt-only guardrails ; Shared service accounts ; Default allow for new tools
+con: Parameter limits enforced by a cell gateway between the agent and the machine controllers ; Agents never change safety interlocks, recipe master data or line speed beyond validated bands ; Shift supervisor approval before any recipe or setpoint change reaches a line ; Change records held for the full product life ; Per-line agent lock that blocks its writes within 5 s ; Quality engineers can pull any change history within 10 s
+sn: Enforcement | A cell gateway with validated parameter bands | Instructions given to the agent | A tampered prompt must never reach a press or oven
+sn: Scope | Write access to named parameters on named lines | Plant-wide write rights in the execution system | A wrong value should stop at one line
+sn: Evidence | A change history with before and after values | Operator logbook entries | Quality audits need the exact value that ran
+sig: Parameter change distance from validated band | how far the request is from approved limits | Blocking and approval routing | Machine controller data
+sig: Recipe edits per shift | change volume against the line norm | Runaway detection | Execution system
+sig: Supervisor rejection rate | agent proposals declined on the floor | Trust signal | Approval records
+sig: Scrap rate after change | yield in the hour after an agent change | Outcome check | Quality system
+noise: Machine nickname | a label only
+noise: Work order note length | not risk
+noise: Agent build number alone | needs outcome data
+base: Shift supervisors compare the agent change list with the paper logbook at the end of each shift.
+prod: A cell gateway with validated parameter bands and a line lock, a change history with before and after values, drift detection on agent edits and a weekly quality review for line managers.
+pipe: Cell gateway @ controller proxy ; Parameter band decision @ validated limits ; Supervisor approval @ shift workflow ; Change history @ versioned store ; Edit drift monitor @ control chart ; Change replay console @ quality viewer ; Weekly quality report @ scheduled
+edge: Setpoint creep | repeated small edits move a parameter outside the validated band over a shift | Cumulative drift limits per parameter
+edge: Approval by habit | supervisors tap approve to keep the line moving | Required reason codes and random second checks
+edge: New product variant | a variant launches with no validated bands | Block edits until engineers publish bands
+off: Band coverage across lines ; Block rate on seeded out-of-band edits ; Change history completeness
+on: Out-of-band edits stopped before the line ; Scrap tied to agent changes ; Minutes to pull a change history for quality
+gap: Plant-wide write rights ; Instruction-only limits ; Edits allowed on unvalidated variants
