@@ -30,11 +30,11 @@ make test       # reproduces results.json and checks every gate
 
 | Result | Value |
 |---|---|
-| Test-period positive rate | 0.17% |
-| Baseline PR-AUC | 0.590 |
-| Baseline recall at 0.5% false positives | 69.2% |
-| Challenger PR-AUC | 0.446 |
-| Challenger recall at 0.5% false positives | 57.1% |
+| Test-period positive rate | 0.45% |
+| Baseline PR-AUC | 0.656 |
+| Baseline recall at 0.5% false positives | 86.0% |
+| Challenger PR-AUC | 0.814 |
+| Challenger recall at 0.5% false positives | 82.0% |
 
 ## Fit
 
