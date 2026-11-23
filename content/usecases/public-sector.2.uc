@@ -616,7 +616,7 @@ noise: Team name | irrelevant
 noise: Report format | an artefact
 base: Annual audits of selected tools by an internal team, because they are the current oversight.
 prod: A monitoring service that computes agreed fairness and drift metrics per tool, sends threshold breaches to named owners and publishes a register and summary reports.
-pipe: Decision and outcome logs @ tool logs ; Audit data join @ approved group data ; Metric computation @ monitoring service ; Threshold evaluation @ rules ; Owner review and pause option @ governance workflow ; Register update @ public register ; Case board report @ quarterly
+pipe: Decision and outcome logs @ tool logs ; Audit data join @ approved group data ; Metric computation @ monitoring service ; Threshold evaluation @ rules ; Owner review and pause option @ governance workflow ; Register update @ public register ; Citizen board report @ quarterly
 edge: Small groups | metrics are noisy | Confidence intervals and pooled periods across case handling
 edge: Missing group data | groups are not recorded | Approved proxy methods for audit and a flag
 edge: Gaming risk | teams tune to the metric | Held-out audit samples
@@ -679,19 +679,19 @@ con: Policy enforced in a gateway outside the model ; Agents never issue decisio
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach all programmes
 sn: Evidence | An append-only log with context | A summary report | Oversight bodies need replay
-sig: Case action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Case action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Case approval and override statistics | approvals, rejections and overrides | Governance health | From the log
+sig: Citizen action risk tier | the tier of the target system and action | Approval routing | Policy as code
+sig: Citizen action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
+sig: Citizen approval and override statistics | approvals, rejections and overrides | Governance health | From the log
 sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Case agent name | an identifier
+noise: Citizen agent name | an identifier
 noise: Prompt length | not risk
 noise: Model version alone | needs outcome data
 base: Manual review of agent logs by team leads, because it is the minimum audit trail.
 prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and quarterly reports to the oversight board.
-pipe: Case tool gateway @ policy proxy ; Case risk tier decision @ policy as code ; Case approval workflow @ maker-checker ; Case action log @ append-only store ; Case behaviour monitor @ time-series model ; Case replay console @ analytics ; Case oversight report @ quarterly
+pipe: Citizen tool gateway @ policy proxy ; Citizen risk tier decision @ policy as code ; Citizen approval workflow @ maker-checker ; Citizen action log @ append-only store ; Citizen behaviour monitor @ time-series model ; Citizen replay console @ analytics ; Citizen oversight report @ quarterly
 edge: Agent loop | repeated writes to one case record | Rate limits and loop detection across case handling
 edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across case handling
 edge: New tool added | no tier has been defined for it | Default deny until classified across case handling
-off: Case policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Case actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Case prompt-only guardrails ; Shared service accounts ; Default allow for new tools
+off: Citizen policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
+on: Citizen actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
+gap: Citizen prompt-only guardrails ; Shared service accounts ; Default allow for new tools
