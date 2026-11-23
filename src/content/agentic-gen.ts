@@ -165,6 +165,7 @@ const DATA_RULE: Record<string, string> = {
   'public-sector': 'Citizen identifiers and case details are masked in tool results, protected characteristics and their proxies are never passed to a model, and any decision about a person keeps a named caseworker in the loop',
   'public-safety': 'Caller, victim, witness and suspect identifiers are masked in tool results, no tool returns face or biometric identification or an individual risk score, and every tool use is logged against the case',
   devtools: 'Secrets, credentials and customer data are scanned and removed before any tool result reaches a model, and agents work in sandboxes with short-lived scoped tokens and no production write access',
+  'it-ops': 'Credentials, personal data and configuration secrets are removed before any log, ticket or configuration reaches a model, and automation runs with least-privilege short-lived access under an approved change record',
   'real-estate': 'Personal data of tenants, buyers and owners is masked in tool results, and fair-housing protected attributes are never passed to a model',
 };
 

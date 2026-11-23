@@ -118,6 +118,7 @@ export const PROTOCOLS: Record<Domain, string> = {
   'public-sector': 'REST and SOAP agency APIs, case management and CRM integrations, GIS services, traffic and sensor feeds (NGSI-LD, MQTT) and open data standards',
   'public-safety': 'CAD and records APIs, NG911 and text-to-911 interfaces, CAP alerting, video management system APIs, evidence management and court case management APIs',
   devtools: 'Git and code host webhooks and APIs, CI/CD events, package registry APIs, SARIF and SBOM formats (SPDX, CycloneDX), issue tracker APIs and OpenTelemetry',
+  'it-ops': 'OpenTelemetry, syslog and SNMP, ITSM REST APIs, cloud billing and resource APIs, SCIM and OIDC for identity, STIX and TAXII for threat data, and SIEM event formats',
   'real-estate': 'RESO Web API, MLS feeds, BIM/IFC and BACnet/Modbus building protocols',
 };
 
@@ -140,6 +141,7 @@ export const LABEL_DELAY: Record<Domain, string> = {
   'public-sector': 'appeal outcomes and audit findings that arrive months after a decision, and service outcomes that appear after a policy runs for years',
   'public-safety': 'case outcomes, appeals and audits that arrive months or years after the incident',
   devtools: 'production defects and security incidents that appear weeks or months after a change ships',
+  'it-ops': 'problem records and root causes confirmed days after an incident, and change failures that appear after a window closes',
   'real-estate': 'sale, lease and valuation outcomes that take months',
 };
 
@@ -159,6 +161,7 @@ export const TAIL_COHORTS: Record<Domain, string> = {
   'public-sector': 'people with complex or unusual circumstances, small language communities, rural areas and new programme rules',
   'public-safety': 'rare incident types, small language communities, rural areas and major events',
   devtools: 'new repositories, rarely used languages, large refactors and first-time contributors',
+  'it-ops': 'new services, rarely used systems, major incidents and remote or legacy sites',
   'real-estate': 'thin-comp micro-markets, unusual property types and new developments',
 };
 

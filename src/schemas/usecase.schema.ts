@@ -158,6 +158,13 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     blurb:
       'Coding assistants and agents, code review, test automation, CI/CD reliability, application security and platform tooling, with sandboxed agents, human merge approval and no individual developer scoring.',
   },
+  'it-ops': {
+    name: 'IT Operations & Infrastructure',
+    short: 'IT Ops',
+    topics: 'AIOps, service desk, FinOps, change, security operations, network, end-user computing',
+    blurb:
+      'Incident and alert intelligence, service desk agents, capacity and cloud cost, change and configuration, security operations and network health, with human-approved remediation and no individual employee scoring.',
+  },
   'real-estate': {
     name: 'Real Estate & PropTech',
     short: 'Real Estate',
