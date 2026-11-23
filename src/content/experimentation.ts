@@ -25,6 +25,7 @@ const LABEL_DELAY: Partial<Record<Domain, string>> = {
   saas: 'Retention and expansion outcomes arrive over billing cycles; usage is a proxy for value.',
   telecom: 'Root causes are confirmed after repair and customer-reported impact trails the fault; churn and disputes resolve over weeks.',
   manufacturing: 'Field failures and warranty claims arrive months after the lot ships; scrap labels depend on inspection coverage.',
+  energy: 'Outage causes and asset failures are confirmed only after repair or years of service; theft labels come from limited inspections.',
   'real-estate': 'Sale prices and outcomes lag the valuation; listings that do not transact leave no price.',
 };
 
@@ -35,6 +36,7 @@ const SLICES: Partial<Record<Domain, string[]>> = {
   edtech: ['Age band, with minors analysed separately', 'First-generation, language and accessibility groups', 'Course, cohort and device'],
   telecom: ['Region, vendor and technology generation (4G or 5G)', 'Subscriber segment, plan type and tenure', 'Urban, suburban and rural cells and enterprise versus consumer traffic'],
   manufacturing: ['Line, shift and plant', 'Product variant and material lot', 'Machine age, tooling and supplier batch'],
+  energy: ['Feeder, region and voltage level', 'Weather regime and season', 'Asset age, vendor and customer segment'],
   'real-estate': ['Neighbourhood and price band', 'Property type and listing age', 'Fair-housing protected-class proxies such as area-level demographics'],
 };
 

@@ -130,6 +130,13 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     blurb:
       'Visual quality, predictive maintenance, process optimisation, planning and shop-floor agents for plants where downtime, scrap and safety dominate the economics.',
   },
+  energy: {
+    name: 'Energy & Utilities',
+    short: 'Energy',
+    topics: 'Grid operations, forecasting, assets, metering, renewables',
+    blurb:
+      'Outage and fault prediction, load and renewable forecasting, asset health, smart metering, storage dispatch and field-crew agents for electricity, gas and water utilities.',
+  },
   'real-estate': {
     name: 'Real Estate & PropTech',
     short: 'Real Estate',
