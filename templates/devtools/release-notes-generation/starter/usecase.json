@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/release-notes-generation",
+ "title": "Release Notes Generation",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 21457,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Merged change list",
+   "definition": "pull requests in the release",
+   "asOfRule": "From the code host"
+  },
+  {
+   "name": "Labels and change types",
+   "definition": "feature, fix or breaking",
+   "asOfRule": "From labels"
+  },
+  {
+   "name": "Linked issues",
+   "definition": "the problem each change solves",
+   "asOfRule": "From the tracker"
+  },
+  {
+   "name": "Security flags",
+   "definition": "changes under embargo",
+   "asOfRule": "From the security tracker"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Release Notes Generation\": Draft release notes from merged pull requests, issues and labels, grouped for customers and for operators, with links to the sources, for the product owner to approve. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Notes from commit text only."
+}

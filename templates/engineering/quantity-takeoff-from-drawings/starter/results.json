@@ -1,0 +1,49 @@
+{
+ "use_case": "engineering/quantity-takeoff-from-drawings",
+ "engine": "regression",
+ "seed": 84110,
+ "knobs": {
+  "n": 20470,
+  "outlier_share": 0.015,
+  "drift": 0.287
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.2,
+ "results": {
+  "rows": 20470,
+  "train_rows": 14329,
+  "test_rows": 6141,
+  "baseline_ridge": {
+   "mae": 6.896609053677484,
+   "rmse": 11.458180465562116,
+   "wape": 0.13013380759623272,
+   "r2": 0.4951355668910299
+  },
+  "challenger_gbm": {
+   "mae": 4.578498407506049,
+   "rmse": 9.25862293478095,
+   "wape": 0.08639280930740043,
+   "r2": 0.6703627706544715
+  },
+  "mae_gain_vs_baseline": 0.33612324957514395,
+  "interval_80_coverage": 0.6497313141182218,
+  "interval_80_mean_width": 8.815034842439424,
+  "segment_mae": {
+   "0": 4.3237840467475595,
+   "1": 4.72958711405899,
+   "2": 4.385167342236108,
+   "3": 6.577030281647405
+  },
+  "worst_segment_vs_overall": 1.4365037827391043,
+  "leaky_feature_rmse": 1.7683933258975186,
+  "honest_rmse": 9.25862293478095,
+  "random_split_mae": 4.040966127680614,
+  "chronological_mae": 4.578498407506049
+ }
+}

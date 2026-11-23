@@ -1,0 +1,16 @@
+contract: developer_docs_qa_inputs.v1
+owner: developer-experience@example.com
+system_of_record: Source control and code review platform
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: retrieval_relevance, type: double, nullable: false }
+    - { name: doc_freshness, type: double, nullable: false }
+    - { name: owner_and_channel, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

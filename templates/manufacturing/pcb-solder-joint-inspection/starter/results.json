@@ -1,0 +1,50 @@
+{
+ "use_case": "manufacturing/pcb-solder-joint-inspection",
+ "engine": "cv",
+ "seed": 8005,
+ "knobs": {
+  "n": 4720,
+  "prevalence": 0.155
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "images": 4720,
+  "train": 1641,
+  "prevalence": 0.14046610169491525,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9543579558475288,
+    "sens_at_95_spec": 0.7631578947368421
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9702323173493821,
+    "sens_at_95_spec": 0.8333333333333334
+   },
+   "site_B": {
+    "auc": 0.7971777684414229,
+    "sens_at_95_spec": 0.3618421052631579
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.33223684210526316,
+    "false_positive_rate": 0.042573778422835024
+   }
+  }
+ }
+}

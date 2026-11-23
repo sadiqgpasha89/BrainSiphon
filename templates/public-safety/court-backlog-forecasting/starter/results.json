@@ -1,0 +1,46 @@
+{
+ "use_case": "public-safety/court-backlog-forecasting",
+ "engine": "forecast",
+ "seed": 72062,
+ "knobs": {
+  "n_series": 296
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 27.1,
+ "results": {
+  "rows": 26854,
+  "h1": {
+   "wmape_model": 0.11940515400144647,
+   "wmape_baseline": 0.21906535850488407,
+   "fva": 0.4549336562549924
+  },
+  "h3": {
+   "wmape_model": 0.12439951042838988,
+   "wmape_baseline": 0.24686396145637005,
+   "fva": 0.4960807171103594
+  },
+  "h7": {
+   "wmape_model": 0.12221417425016391,
+   "wmape_baseline": 0.2316881416096945,
+   "fva": 0.4725056992513331
+  },
+  "h14": {
+   "wmape_model": 0.14962699750768213,
+   "wmape_baseline": 0.2530767101647888,
+   "fva": 0.4087682054573344
+  },
+  "p90_coverage": 0.8965144857376927,
+  "wmape_sku_level": 0.12865134377186627,
+  "wmape_aggregate": 0.030067164576338522,
+  "late_feed": {
+   "missing_as_zero": 0.1862781579855691,
+   "missing_as_nan": 0.14747728461396623
+  }
+ }
+}

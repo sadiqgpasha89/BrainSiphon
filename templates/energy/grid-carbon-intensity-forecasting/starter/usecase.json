@@ -1,0 +1,53 @@
+{
+ "slug": "energy/grid-carbon-intensity-forecasting",
+ "title": "Grid Carbon Intensity Forecasting",
+ "domain": "energy",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 56484,
+ "knobs": {
+  "n": 297
+ },
+ "blueprintSignals": [
+  {
+   "name": "Renewable forecast",
+   "definition": "wind and solar generation forecasts",
+   "asOfRule": "From forecasts"
+  },
+  {
+   "name": "Demand forecast",
+   "definition": "forecast load",
+   "asOfRule": "From load models"
+  },
+  {
+   "name": "Interconnector flows",
+   "definition": "imports and exports",
+   "asOfRule": "From operators"
+  },
+  {
+   "name": "Plant outages",
+   "definition": "planned and unplanned outages",
+   "asOfRule": "From market data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Grid Carbon Intensity Forecasting\": Forecast the carbon intensity of grid electricity by region and hour so flexible loads, charging and reporting use cleaner times and numbers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Mixing average and marginal intensity."
+}

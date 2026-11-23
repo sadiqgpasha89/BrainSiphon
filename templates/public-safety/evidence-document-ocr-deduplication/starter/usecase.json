@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/evidence-document-ocr-deduplication",
+ "title": "Evidence Document OCR and Deduplication",
+ "domain": "public-safety",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 83511,
+ "knobs": {
+  "n_clusters": 2040,
+  "hub_share": 0.139
+ },
+ "blueprintSignals": [
+  {
+   "name": "Content hash and similarity",
+   "definition": "hashes and text similarity",
+   "asOfRule": "From pipelines"
+  },
+  {
+   "name": "OCR confidence",
+   "definition": "confidence per page and region",
+   "asOfRule": "From OCR"
+  },
+  {
+   "name": "Document metadata",
+   "definition": "source and date",
+   "asOfRule": "From intake"
+  },
+  {
+   "name": "Handwriting detection",
+   "definition": "whether text is handwritten",
+   "asOfRule": "From the model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Evidence Document OCR and Deduplication\": Convert scanned evidence into searchable text, remove exact and near duplicates and keep the chain of custody, so reviewers see each item once. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Deleting duplicates."
+}

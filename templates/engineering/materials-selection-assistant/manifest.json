@@ -1,0 +1,188 @@
+{
+ "slug": "engineering/materials-selection-assistant",
+ "title": "Materials Selection Assistant",
+ "domain": "engineering",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "authoredStarter": false,
+ "fdePack": false,
+ "seed": 8935,
+ "knobs": {
+  "n": 14560,
+  "label_noise": 0.071,
+  "dup_share": 0.444
+ },
+ "blueprintVerified": "2026-11-07",
+ "generator": "1.0.0",
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "runSeconds": 2.9,
+ "files": [
+  {
+   "path": "FIT.md",
+   "bytes": 1414,
+   "sha256": "847d4660e4cd3939f29db9853d1262235563daf44f71172d79e2d98b9762f502"
+  },
+  {
+   "path": "README.md",
+   "bytes": 3358,
+   "sha256": "eaffa7c4526a47c99f4090f1836377261e6310bd1ee6e52444d8ea6725307812"
+  },
+  {
+   "path": "WORKED_EXAMPLE.md",
+   "bytes": 3904,
+   "sha256": "679af052544e7018a3230049435624bd9a953c034fba925a6272029904a0650b"
+  },
+  {
+   "path": "contracts/data-contract.yaml",
+   "bytes": 710,
+   "sha256": "3bf5327d622aae2ef2048939ea7d9e6b364a0a5837d331715f4879d3ead0e51c"
+  },
+  {
+   "path": "contracts/events.asyncapi.yaml",
+   "bytes": 1125,
+   "sha256": "f108ab19fd6651feb6a6b655f33cd291ef341912318ad126d37727bff94fc700"
+  },
+  {
+   "path": "contracts/openapi.yaml",
+   "bytes": 3619,
+   "sha256": "cd0f6b7c1c6f3a122b4f8f27a71c03656067705a678079c55db948f2f974a408"
+  },
+  {
+   "path": "contracts/schema.sql",
+   "bytes": 1006,
+   "sha256": "2372c913eaefb545abf00ede83f83f1adbf34168bd23c47dca85c13637dad9e3"
+  },
+  {
+   "path": "deployment/README.md",
+   "bytes": 2246,
+   "sha256": "a1969c4fefdcaa7eb1256dfe424c03bcc4918e1d5fc01e76b54d5aabcc3a093b"
+  },
+  {
+   "path": "deployment/config.yaml",
+   "bytes": 936,
+   "sha256": "422ada48abab4b33d179c502b5e5725cf98b448f15df049cd91ac6bde83beb41"
+  },
+  {
+   "path": "deployment/docker-compose.yml",
+   "bytes": 511,
+   "sha256": "8152d2eff22687c4c776200d6f5c1f5817983203ee48a2123546e4a802968e10"
+  },
+  {
+   "path": "deployment/values.sized.yaml",
+   "bytes": 615,
+   "sha256": "f73f6cd99ed556206763be9bfbc2460d369cb47bbc493b89c41149ae6a9c0587"
+  },
+  {
+   "path": "docs/00-use-case-brief.md",
+   "bytes": 8771,
+   "sha256": "6a1c0a084a9c4e82ff8918e7f6be366ae225784fc11a8416857faca553d5d631"
+  },
+  {
+   "path": "docs/01-discovery-workbook.md",
+   "bytes": 16708,
+   "sha256": "29bb9c493787ba1ee642c531656e501e336f3e428be9da7e9418feac97fcbac9"
+  },
+  {
+   "path": "docs/02-delivery-plan.md",
+   "bytes": 31971,
+   "sha256": "2d984c3791e8b00ca3602fd82382dcb69c20f891e785a2b20c2f4f5d49eabe74"
+  },
+  {
+   "path": "docs/03-data-and-features.md",
+   "bytes": 13806,
+   "sha256": "1becad4d23dfa6fe4cf691e50ba08d783f0839bc5d37bd3663ea754415efe8a1"
+  },
+  {
+   "path": "docs/04-evaluation-plan.md",
+   "bytes": 46749,
+   "sha256": "d701f6a1b111fda58e687bdd2ae338a84a090df1d689fdf9a7cdb323886c5c6b"
+  },
+  {
+   "path": "docs/05-risk-and-governance.md",
+   "bytes": 8223,
+   "sha256": "9ac8f3d516f492fa8c4a16b528b0fd448d1f5502fc2409611bfd7470a5f121d1"
+  },
+  {
+   "path": "docs/06-operations-runbook.md",
+   "bytes": 18079,
+   "sha256": "0f805c4767bfb59de4f3fb6088992d383e4845bd6c5c33dea746d34bbd2ea5bf"
+  },
+  {
+   "path": "docs/07-model-and-data-cards.md",
+   "bytes": 5803,
+   "sha256": "9815ab6bbc6116a4ad15213e4e1e953e8cf56750f4e83690c6eaebc3b8c1cc63"
+  },
+  {
+   "path": "docs/08-capacity-and-cost.md",
+   "bytes": 5294,
+   "sha256": "592e9f1d57d9d618bdfd1b0c7fd3e48df29883b32ec66e3b481ffff87e0eaf8c"
+  },
+  {
+   "path": "starter/Dockerfile",
+   "bytes": 212,
+   "sha256": "28554f5a1d423d2dd57bf591a24a61e9319f67d551accab0d455131f4146aef0"
+  },
+  {
+   "path": "starter/Makefile",
+   "bytes": 352,
+   "sha256": "f3de79b0b567afbc0354300d404e02cec1003696a1de7f4046706fed30f48d63"
+  },
+  {
+   "path": "starter/baseline.py",
+   "bytes": 3338,
+   "sha256": "6ff9cc5e9c50c1b27e7c520140f5b68f5b9d197f384e460774b41e53927bce56"
+  },
+  {
+   "path": "starter/engine.json",
+   "bytes": 1115,
+   "sha256": "f82defaba8e971d22aef4d2c1c3feb10ddb7f0bfdcfa093bbfcb616f46952107"
+  },
+  {
+   "path": "starter/gates.py",
+   "bytes": 450,
+   "sha256": "e942caf5718c68612414bd5e5e12e2f5c654b1f51a8296a8eb8c54ccf5547ddc"
+  },
+  {
+   "path": "starter/make_data.py",
+   "bytes": 2033,
+   "sha256": "a587bbf166cfe0a5f1980c020834dc0c980f8bcf15351500ebf22d7559566e64"
+  },
+  {
+   "path": "starter/requirements.txt",
+   "bytes": 75,
+   "sha256": "ad943509e5ebcd060eb2b38ae247759f5c9d30197907bedc7858c77d99de374c"
+  },
+  {
+   "path": "starter/results.json",
+   "bytes": 1493,
+   "sha256": "4f5fdbfa838f94377a008d9bd9d0cee9d80732b295996f3f81f3d1b06c4ad35d"
+  },
+  {
+   "path": "starter/run_usecase.py",
+   "bytes": 1429,
+   "sha256": "33521c23406b0dcd3f1c22785f5a991dc74544b37d9010d98e146905f64ee6f4"
+  },
+  {
+   "path": "starter/test_starter.py",
+   "bytes": 1030,
+   "sha256": "9af70a5baad0f894cfed5201a37f4d913aedf371ae9ce603ba1d735aad615a5b"
+  },
+  {
+   "path": "starter/test_usecase.py",
+   "bytes": 1698,
+   "sha256": "da7769d17b703359fc682dd28eb1e14977630a6c2b97d3c4ab1ecdda5ccd8883"
+  },
+  {
+   "path": "starter/usecase.json",
+   "bytes": 1802,
+   "sha256": "c034619770a4ecf79d4d3be7c27783e3d71582a57e7225f537a66b4ef1d5493d"
+  }
+ ]
+}

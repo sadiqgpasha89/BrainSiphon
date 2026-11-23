@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/joiner-mover-leaver-orchestration",
+ "title": "Joiner Mover Leaver Orchestration",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 64438,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "HR event type and date",
+   "definition": "join, move or leave event",
+   "asOfRule": "From HR system"
+  },
+  {
+   "name": "Role and department",
+   "definition": "target role",
+   "asOfRule": "From HR and identity"
+  },
+  {
+   "name": "Current entitlements",
+   "definition": "access held now",
+   "asOfRule": "From identity systems"
+  },
+  {
+   "name": "Device and licence assignments",
+   "definition": "assets assigned",
+   "asOfRule": "From asset records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Joiner Mover Leaver Orchestration\": Coordinate account, device and access changes when people join, move or leave, from HR events and policy, with approvals and verification so access matches the role at all times. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Manager emails as triggers."
+}

@@ -1,0 +1,600 @@
+{
+  "overview": "Software engineering produces its own data: commits, reviews, builds, tests, incidents and tickets. Quality shows up late and noisily, developers are sensitive to being measured and code, secrets and customer data are among a company's most confidential assets, so tools assist engineers inside sandboxes and leave merges and releases to people.",
+  "concepts": [
+    {
+      "name": "Code review is a quality gate and a learning channel",
+      "explanation": "Reviewers catch defects, share knowledge and keep designs consistent. Their time is limited, so tools that point to risky changes or likely issues help most when they cite evidence and leave the decision to the reviewer.",
+      "whyItMatters": "Tools that comment on everything teach reviewers to ignore them.",
+      "tags": [
+        "review",
+        "pull",
+        "request",
+        "reviewer",
+        "comment",
+        "defect",
+        "merge",
+        "quality",
+        "change",
+        "diff",
+        "approval",
+        "code"
+      ]
+    },
+    {
+      "name": "Tests are slow, flaky and unevenly useful",
+      "explanation": "Large suites take hours and some tests fail without a code cause. Selecting and ordering tests by their chance of catching a regression saves time, but only if flaky tests are separated from real failures.",
+      "whyItMatters": "Skipping tests to save time moves risk to production.",
+      "tags": [
+        "test",
+        "flaky",
+        "regression",
+        "coverage",
+        "suite",
+        "selection",
+        "ci",
+        "failure",
+        "unit",
+        "integration",
+        "pass",
+        "quarantine"
+      ]
+    },
+    {
+      "name": "Pipelines fail for many reasons",
+      "explanation": "A broken build can come from code, dependencies, infrastructure or configuration. Finding the first real error in a long log, and linking it to recent changes, cuts the time to fix.",
+      "whyItMatters": "A diagnosis that does not show its evidence is hard to trust.",
+      "tags": [
+        "build",
+        "pipeline",
+        "ci",
+        "cd",
+        "log",
+        "failure",
+        "deploy",
+        "release",
+        "cache",
+        "runner",
+        "artifact",
+        "error",
+        "root",
+        "cause"
+      ]
+    },
+    {
+      "name": "Deployments carry risk that can be staged",
+      "explanation": "Canaries, progressive rollouts and feature flags limit the damage of a bad release. The risk depends on change size, service criticality and timing.",
+      "whyItMatters": "Gating decisions should be policy with model input and not a model alone.",
+      "tags": [
+        "deployment",
+        "canary",
+        "rollout",
+        "rollback",
+        "release",
+        "flag",
+        "risk",
+        "incident",
+        "change",
+        "service",
+        "progressive"
+      ]
+    },
+    {
+      "name": "Application security depends on reachability",
+      "explanation": "Scanners report many findings, but only some are reachable and exploitable in a given application. Prioritising by reachability, exposure and data sensitivity focuses scarce fixing time.",
+      "whyItMatters": "A raw severity score floods teams with findings that cannot be exploited.",
+      "tags": [
+        "vulnerability",
+        "security",
+        "cve",
+        "scanner",
+        "dependency",
+        "exploit",
+        "reachability",
+        "finding",
+        "fix",
+        "sast",
+        "secret",
+        "supply",
+        "chain"
+      ]
+    },
+    {
+      "name": "The software supply chain is an attack surface",
+      "explanation": "Packages, build tools and CI systems are used to deliver malicious code. Controls include provenance, signed builds, dependency pinning and registry proxies.",
+      "whyItMatters": "One compromised package can reach every build that installs it.",
+      "tags": [
+        "supply",
+        "chain",
+        "package",
+        "dependency",
+        "registry",
+        "malicious",
+        "typosquat",
+        "provenance",
+        "sbom",
+        "licence",
+        "signing",
+        "build"
+      ]
+    },
+    {
+      "name": "Developer productivity is a team-level concept",
+      "explanation": "Flow metrics such as lead time and deployment frequency describe a system. Used on individuals, they are gamed and harm trust.",
+      "whyItMatters": "Any measurement should be aggregated to teams and agreed with employee representatives where required.",
+      "tags": [
+        "productivity",
+        "metric",
+        "flow",
+        "lead",
+        "time",
+        "team",
+        "velocity",
+        "developer",
+        "experience",
+        "measurement",
+        "dora",
+        "burnout"
+      ]
+    },
+    {
+      "name": "Coding agents act with the permissions you give them",
+      "explanation": "Agents that read repositories and run commands can be steered by hostile text in files, issues and web pages. They need sandboxes, short-lived scoped credentials, egress limits and human approval for risky actions.",
+      "whyItMatters": "Controls belong in the platform, not in prompt instructions that an attacker can override.",
+      "tags": [
+        "agent",
+        "sandbox",
+        "permission",
+        "credential",
+        "injection",
+        "egress",
+        "approval",
+        "guardrail",
+        "provenance",
+        "tool",
+        "command"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "CI",
+      "definition": "Continuous integration: building and testing every change automatically.",
+      "tags": [
+        "ci",
+        "build",
+        "test",
+        "integration",
+        "pipeline"
+      ]
+    },
+    {
+      "term": "CD",
+      "definition": "Continuous delivery or deployment: releasing changes automatically.",
+      "tags": [
+        "cd",
+        "delivery",
+        "deployment",
+        "release",
+        "pipeline"
+      ]
+    },
+    {
+      "term": "Pull request",
+      "definition": "A proposed code change submitted for review.",
+      "tags": [
+        "pull",
+        "request",
+        "review",
+        "change",
+        "merge"
+      ]
+    },
+    {
+      "term": "Code review",
+      "definition": "Examination of a change by another engineer.",
+      "tags": [
+        "review",
+        "code",
+        "change",
+        "quality"
+      ]
+    },
+    {
+      "term": "Commit",
+      "definition": "A saved change to the code base.",
+      "tags": [
+        "commit",
+        "change",
+        "version",
+        "code"
+      ]
+    },
+    {
+      "term": "Monorepo",
+      "definition": "One repository holding many projects.",
+      "tags": [
+        "monorepo",
+        "repository",
+        "code",
+        "build"
+      ]
+    },
+    {
+      "term": "Flaky test",
+      "definition": "A test that sometimes fails without a code change.",
+      "tags": [
+        "flaky",
+        "test",
+        "failure",
+        "intermittent"
+      ]
+    },
+    {
+      "term": "Regression",
+      "definition": "A defect introduced by a change to previously working behaviour.",
+      "tags": [
+        "regression",
+        "defect",
+        "change",
+        "test"
+      ]
+    },
+    {
+      "term": "Test coverage",
+      "definition": "The share of code run by tests.",
+      "tags": [
+        "coverage",
+        "test",
+        "code"
+      ]
+    },
+    {
+      "term": "Mutation testing",
+      "definition": "Testing the tests by injecting small faults.",
+      "tags": [
+        "mutation",
+        "test",
+        "quality",
+        "fault"
+      ]
+    },
+    {
+      "term": "Test selection",
+      "definition": "Choosing which tests to run for a change.",
+      "tags": [
+        "selection",
+        "test",
+        "change",
+        "impact"
+      ]
+    },
+    {
+      "term": "Canary release",
+      "definition": "Releasing a change to a small share of users first.",
+      "tags": [
+        "canary",
+        "release",
+        "rollout",
+        "traffic"
+      ]
+    },
+    {
+      "term": "Feature flag",
+      "definition": "A switch that turns a feature on or off without redeploying.",
+      "tags": [
+        "feature",
+        "flag",
+        "switch",
+        "rollout"
+      ]
+    },
+    {
+      "term": "Rollback",
+      "definition": "Returning to a previous version.",
+      "tags": [
+        "rollback",
+        "release",
+        "revert",
+        "deployment"
+      ]
+    },
+    {
+      "term": "Change failure rate",
+      "definition": "The share of deployments that cause a failure.",
+      "tags": [
+        "change",
+        "failure",
+        "rate",
+        "deployment",
+        "incident"
+      ]
+    },
+    {
+      "term": "Lead time",
+      "definition": "The time from commit to production.",
+      "tags": [
+        "lead",
+        "time",
+        "commit",
+        "production",
+        "flow"
+      ]
+    },
+    {
+      "term": "DORA metrics",
+      "definition": "Four measures of delivery performance: lead time, deployment frequency, change failure rate and time to restore.",
+      "tags": [
+        "dora",
+        "metric",
+        "delivery",
+        "performance"
+      ]
+    },
+    {
+      "term": "Technical debt",
+      "definition": "The cost of shortcuts that make later changes harder.",
+      "tags": [
+        "debt",
+        "technical",
+        "refactor",
+        "code",
+        "maintenance"
+      ]
+    },
+    {
+      "term": "Static analysis",
+      "definition": "Checking code for problems without running it.",
+      "tags": [
+        "static",
+        "analysis",
+        "sast",
+        "code",
+        "defect"
+      ]
+    },
+    {
+      "term": "SAST",
+      "definition": "Static application security testing.",
+      "tags": [
+        "sast",
+        "static",
+        "security",
+        "scan"
+      ]
+    },
+    {
+      "term": "DAST",
+      "definition": "Dynamic application security testing of a running application.",
+      "tags": [
+        "dast",
+        "dynamic",
+        "security",
+        "test"
+      ]
+    },
+    {
+      "term": "SBOM",
+      "definition": "Software bill of materials: a list of components in software.",
+      "tags": [
+        "sbom",
+        "components",
+        "dependency",
+        "licence"
+      ]
+    },
+    {
+      "term": "SLSA",
+      "definition": "A framework for supply chain integrity levels.",
+      "tags": [
+        "slsa",
+        "supply",
+        "chain",
+        "integrity",
+        "build"
+      ]
+    },
+    {
+      "term": "CVE",
+      "definition": "A public identifier for a known vulnerability.",
+      "tags": [
+        "cve",
+        "vulnerability",
+        "identifier",
+        "advisory"
+      ]
+    },
+    {
+      "term": "CVSS",
+      "definition": "A severity score for vulnerabilities.",
+      "tags": [
+        "cvss",
+        "severity",
+        "score",
+        "vulnerability"
+      ]
+    },
+    {
+      "term": "Reachability",
+      "definition": "Whether vulnerable code can actually be called.",
+      "tags": [
+        "reachability",
+        "vulnerable",
+        "code",
+        "call"
+      ]
+    },
+    {
+      "term": "Secret scanning",
+      "definition": "Searching code and logs for exposed credentials.",
+      "tags": [
+        "secret",
+        "scanning",
+        "credential",
+        "key",
+        "token"
+      ]
+    },
+    {
+      "term": "Typosquatting",
+      "definition": "Publishing a package with a name close to a popular one.",
+      "tags": [
+        "typosquat",
+        "package",
+        "name",
+        "malicious"
+      ]
+    },
+    {
+      "term": "Dependency pinning",
+      "definition": "Fixing exact versions of dependencies.",
+      "tags": [
+        "pinning",
+        "dependency",
+        "version",
+        "lock"
+      ]
+    },
+    {
+      "term": "Licence compliance",
+      "definition": "Following the terms of open source licences.",
+      "tags": [
+        "licence",
+        "compliance",
+        "open",
+        "source",
+        "copyleft"
+      ]
+    },
+    {
+      "term": "Code owner",
+      "definition": "The team responsible for part of the code.",
+      "tags": [
+        "owner",
+        "code",
+        "team",
+        "responsibility"
+      ]
+    },
+    {
+      "term": "Developer portal",
+      "definition": "A site that gives engineers access to services, docs and templates.",
+      "tags": [
+        "portal",
+        "developer",
+        "service",
+        "catalogue"
+      ]
+    },
+    {
+      "term": "Service catalogue",
+      "definition": "A list of services with owners and dependencies.",
+      "tags": [
+        "service",
+        "catalogue",
+        "owner",
+        "dependency"
+      ]
+    },
+    {
+      "term": "Observability",
+      "definition": "The ability to understand a system from its logs, metrics and traces.",
+      "tags": [
+        "observability",
+        "log",
+        "metric",
+        "trace"
+      ]
+    },
+    {
+      "term": "Sandbox",
+      "definition": "An isolated environment for running untrusted code.",
+      "tags": [
+        "sandbox",
+        "isolated",
+        "environment",
+        "agent"
+      ]
+    },
+    {
+      "term": "Prompt injection",
+      "definition": "Hostile instructions hidden in data that an AI system reads.",
+      "tags": [
+        "prompt",
+        "injection",
+        "hostile",
+        "agent",
+        "instruction"
+      ]
+    },
+    {
+      "term": "Least privilege",
+      "definition": "Giving only the access needed for a task.",
+      "tags": [
+        "privilege",
+        "access",
+        "permission",
+        "scope"
+      ]
+    },
+    {
+      "term": "Provenance",
+      "definition": "A record of how an artefact was made.",
+      "tags": [
+        "provenance",
+        "record",
+        "origin",
+        "artefact"
+      ]
+    },
+    {
+      "term": "Code generation",
+      "definition": "Producing code with an AI model.",
+      "tags": [
+        "generation",
+        "code",
+        "model",
+        "assistant"
+      ]
+    },
+    {
+      "term": "Hallucinated package",
+      "definition": "A package name an AI invents that an attacker can later register.",
+      "tags": [
+        "hallucinated",
+        "package",
+        "name",
+        "attack"
+      ]
+    },
+    {
+      "term": "Story points",
+      "definition": "A relative estimate of work size, not comparable across teams.",
+      "tags": [
+        "story",
+        "points",
+        "estimate",
+        "velocity"
+      ]
+    },
+    {
+      "term": "Cycle time",
+      "definition": "The time from starting work to finishing.",
+      "tags": [
+        "cycle",
+        "time",
+        "work",
+        "flow"
+      ]
+    },
+    {
+      "term": "Postmortem",
+      "definition": "A review of an incident to learn from it.",
+      "tags": [
+        "postmortem",
+        "incident",
+        "review",
+        "learning"
+      ]
+    }
+  ]
+}

@@ -54,7 +54,7 @@ export default async function AboutPage() {
 
         <p className="max-w-3xl text-lg leading-relaxed text-mute">
           BrainSiphon is an open, verified engineering reference platform containing{' '}
-          <strong className="text-ink">575 complete AI/ML system blueprints</strong> across 10 industry
+          <strong className="text-ink">975 complete AI/ML system blueprints</strong> across 18 industry
           domains, evaluated against a transparent{' '}
           <strong className="text-ink">5-level implementation maturity framework</strong>, and coupled with a
           universal <strong className="text-ink">7-phase, {ALL_STEPS.length}-step delivery guide</strong>.
@@ -97,11 +97,11 @@ export default async function AboutPage() {
       {/* ── Key Metrics Strip ── */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6" data-testid="about-stats">
         <div className="card p-4 text-center">
-          <p className="font-mono text-2xl font-bold text-signal sm:text-3xl">575</p>
+          <p className="font-mono text-2xl font-bold text-signal sm:text-3xl">975</p>
           <p className="mt-1 text-xs text-mute">Enterprise Blueprints</p>
         </div>
         <div className="card p-4 text-center">
-          <p className="font-mono text-2xl font-bold text-signal sm:text-3xl">10</p>
+          <p className="font-mono text-2xl font-bold text-signal sm:text-3xl">{DOMAINS.length}</p>
           <p className="mt-1 text-xs text-mute">Industry Domains</p>
         </div>
         <div className="card p-4 text-center">
@@ -228,7 +228,7 @@ export default async function AboutPage() {
             What Every Single Blueprint Contains
           </h2>
           <p className="mt-2 max-w-3xl text-sm text-mute">
-            Across all 575 use cases, each blueprint follows a strict, comprehensive structure consisting of 6
+            Across all 975 use cases, each blueprint follows a strict, comprehensive structure consisting of 6
             core engineering pillars divided into 22 dedicated sections:
           </p>
         </div>
@@ -334,7 +334,7 @@ export default async function AboutPage() {
               Delivery Guide
             </Link>{' '}
             dictates <em>how and when</em> to do the work. It provides a standardized order of operations
-            applicable to all 575 use cases, ensuring nothing is missed from discovery to Day-2 operations.
+            applicable to all 975 use cases, ensuring nothing is missed from discovery to Day-2 operations.
           </p>
         </div>
 
@@ -566,7 +566,7 @@ export default async function AboutPage() {
               <a href={withBase('/llms.txt')} className="text-signal underline">
                 /llms.txt
               </a>{' '}
-              into your agent for an instant machine-readable index of all 575 blueprints and canonical
+              into your agent for an instant machine-readable index of all 975 blueprints and canonical
               architectural primitives:
             </p>
             <code className="block overflow-x-auto rounded bg-bg p-2 font-mono text-ink">
@@ -576,12 +576,12 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* ── Section: The 10 Industry Domains ── */}
+      {/* ── Section: The 18 Industry Domains ── */}
       <section className="space-y-4">
         <div>
           <p className="font-mono text-xs uppercase tracking-wider text-signal">Domain Coverage</p>
           <h2 className="text-2xl font-semibold tracking-tight text-ink">
-            575 Use Cases Across 10 Industries
+            975 Use Cases Across 18 Industries
           </h2>
           <p className="mt-1 text-sm text-mute">
             Each domain has 50 reference blueprints, except healthcare, which has 125 (50 clinical and

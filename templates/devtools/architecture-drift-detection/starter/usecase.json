@@ -1,0 +1,59 @@
+{
+ "slug": "devtools/architecture-drift-detection",
+ "title": "Architecture Drift Detection",
+ "domain": "devtools",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 54990,
+ "knobs": {
+  "n_entities": 2050,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Static dependency graph",
+   "definition": "imports and calls",
+   "asOfRule": "From code analysis"
+  },
+  {
+   "name": "Runtime call graph",
+   "definition": "calls seen in traces",
+   "asOfRule": "From tracing"
+  },
+  {
+   "name": "Rule violations",
+   "definition": "edges that break rules",
+   "asOfRule": "From the checker"
+  },
+  {
+   "name": "Violation age",
+   "definition": "how long it has existed",
+   "asOfRule": "From history"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Architecture Drift Detection\": Compare the real dependencies in code and runtime traces with the intended architecture rules and report violations so architects can fix drift before it hardens. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Diagram-only governance."
+}

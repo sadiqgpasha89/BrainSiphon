@@ -14,6 +14,14 @@ export const DOMAINS = [
   'saas',
   'bfsi',
   'real-estate',
+  'telecom',
+  'manufacturing',
+  'energy',
+  'public-sector',
+  'public-safety',
+  'devtools',
+  'it-ops',
+  'engineering',
 ] as const;
 export const ML_PARADIGMS = [
   'tabular',
@@ -114,6 +122,62 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     topics: 'Lending, treasury, settlement, claims',
     blurb:
       'How incumbent banks, insurers, asset managers and custodians run: lending, treasury, settlement, wealth, claims and compliance, where a regulator reads the model.',
+  },
+  telecom: {
+    name: 'Telecommunications & Networks',
+    short: 'Telecom',
+    topics: 'Self-healing networks, care, provisioning, revenue',
+    blurb:
+      'Network self-healing, predictive customer care, real-time service activation, revenue assurance and edge services for operators running carrier-grade networks.',
+  },
+  manufacturing: {
+    name: 'Manufacturing & Industrial',
+    short: 'Manufacturing',
+    topics: 'Quality, maintenance, process, planning, safety',
+    blurb:
+      'Visual quality, predictive maintenance, process optimisation, planning and shop-floor agents for plants where downtime, scrap and safety dominate the economics.',
+  },
+  energy: {
+    name: 'Energy & Utilities',
+    short: 'Energy',
+    topics: 'Grid operations, forecasting, assets, metering, renewables',
+    blurb:
+      'Outage and fault prediction, load and renewable forecasting, asset health, smart metering, storage dispatch and field-crew agents for electricity, gas and water utilities.',
+  },
+  'public-sector': {
+    name: 'Public Sector & Smart Cities',
+    short: 'Public Sector',
+    topics: 'Citizen services, benefits, mobility, infrastructure, planning',
+    blurb:
+      'Citizen service agents, benefits and tax decision support, traffic and transit, city infrastructure, permits and policy analytics, built around explainable decisions, human caseworkers and public accountability.',
+  },
+  'public-safety': {
+    name: 'Public Safety & Security',
+    short: 'Public Safety',
+    topics: 'Emergency response, disaster, road safety, security operations, courts',
+    blurb:
+      'Emergency call and dispatch support, fire and disaster response, road safety, physical security analytics, courts administration and oversight controls, designed with no individual risk scoring and no face identification.',
+  },
+  devtools: {
+    name: 'Software Engineering & DevTools',
+    short: 'DevTools',
+    topics: 'Coding agents, review, testing, CI/CD, appsec, developer productivity',
+    blurb:
+      'Coding assistants and agents, code review, test automation, CI/CD reliability, application security and platform tooling, with sandboxed agents, human merge approval and no individual developer scoring.',
+  },
+  'it-ops': {
+    name: 'IT Operations & Infrastructure',
+    short: 'IT Ops',
+    topics: 'AIOps, service desk, FinOps, change, security operations, network, end-user computing',
+    blurb:
+      'Incident and alert intelligence, service desk agents, capacity and cloud cost, change and configuration, security operations and network health, with human-approved remediation and no individual employee scoring.',
+  },
+  engineering: {
+    name: 'Engineering, Design & Projects',
+    short: 'Engineering',
+    topics: 'Engineering design, BIM and drawings, construction projects, inspection, estimating, PMO',
+    blurb:
+      'Design exploration and simulation, drawing and BIM intelligence, construction scheduling and cost, site safety and inspection, estimating and contracts and project portfolio management, with licensed engineers signing off and no individual worker scoring.',
   },
   'real-estate': {
     name: 'Real Estate & PropTech',

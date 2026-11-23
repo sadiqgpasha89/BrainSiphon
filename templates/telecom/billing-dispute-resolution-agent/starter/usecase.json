@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/billing-dispute-resolution-agent",
+ "title": "Billing Dispute Resolution Agent",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 50531,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Rated record match",
+   "definition": "whether the disputed charge maps to a rated record and rule",
+   "asOfRule": "Needs a rule trace from rating"
+  },
+  {
+   "name": "Rate plan history",
+   "definition": "plan and promotion in force on the date",
+   "asOfRule": "Full history needed"
+  },
+  {
+   "name": "Similar case outcomes",
+   "definition": "outcomes for matching dispute types",
+   "asOfRule": "Approved outcomes only"
+  },
+  {
+   "name": "Customer value and history",
+   "definition": "tenure and dispute count by band",
+   "asOfRule": "Use for routing not for fairness"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Billing Dispute Resolution Agent\": Investigate a billing dispute, check the rated usage and rules, explain the charge or propose a correction and credit within policy, so disputes resolve faster and more consistently. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the agent edit bills freely."
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/wildfire-ignition-risk-forecasting",
+ "engine": "tabular",
+ "seed": 49912,
+ "knobs": {
+  "n_entities": 2980,
+  "positive_entity_rate": 0.04,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.5,
+ "results": {
+  "rows": 228087,
+  "positive_rate": 0.005340067605782004,
+  "test_rows": 76359,
+  "test_positive_rate": 0.005906310978404641,
+  "baseline_lr": {
+   "pr_auc": 0.40795489434740595,
+   "recall_at_0.5pct_fpr": 0.6377837363997318,
+   "brier": 0.010154208022622985
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7703751349365338,
+   "recall_at_0.5pct_fpr": 0.7804878048780488,
+   "brier": 0.0022610521796345216
+  }
+ }
+}

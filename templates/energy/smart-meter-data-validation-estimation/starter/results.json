@@ -1,0 +1,42 @@
+{
+ "use_case": "energy/smart-meter-data-validation-estimation",
+ "engine": "generative",
+ "seed": 41109,
+ "knobs": {
+  "n": 206
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "golden_items": 206,
+  "v1_pass_rate_strict_judge": 0.18446601941747573,
+  "v1_pass_rate_fuzzy_judge": 0.49514563106796117,
+  "v2_pass_rate_fuzzy_judge": 0.6116504854368932,
+  "v1_pass_rate_ci95": [
+   0.4270631067961165,
+   0.5631067961165048
+  ],
+  "v2_minus_v1": 0.11650485436893204,
+  "v2_minus_v1_ci95": [
+   0.024271844660194174,
+   0.20885922330097076
+  ],
+  "judge_agreement_kappa_v1": 0.3748103186646435,
+  "judge_disagreement_share_v1": 0.3106796116504854,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4563106796116505,
+   "date_correct": 0.16019417475728157,
+   "within_length": 0.02912621359223301,
+   "no_forbidden_claims": 0.06310679611650485
+  },
+  "ci_width_at_60_items": 0.2337499999999999,
+  "ci_width_at_full_set": 0.13604368932038835
+ }
+}

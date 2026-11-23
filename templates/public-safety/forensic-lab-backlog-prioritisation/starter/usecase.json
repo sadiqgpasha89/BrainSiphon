@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/forensic-lab-backlog-prioritisation",
+ "title": "Forensic Lab Backlog Prioritisation",
+ "domain": "public-safety",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 36465,
+ "knobs": {
+  "n_instances": 100,
+  "noise": 0.275
+ },
+ "blueprintSignals": [
+  {
+   "name": "Days to court or statutory deadline",
+   "definition": "time remaining",
+   "asOfRule": "From case systems"
+  },
+  {
+   "name": "Case seriousness class",
+   "definition": "offence class",
+   "asOfRule": "From case systems"
+  },
+  {
+   "name": "Analysis effort estimate",
+   "definition": "estimated hours by test",
+   "asOfRule": "From history"
+  },
+  {
+   "name": "Capacity by discipline",
+   "definition": "analyst hours available",
+   "asOfRule": "From the lab system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Forensic Lab Backlog Prioritisation\": Plan the order of forensic analysis requests by statutory deadlines, case seriousness and lab capacity to cut turnaround for urgent cases, with analysts and prosecutors able to override. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fastest-throughput objectives."
+}

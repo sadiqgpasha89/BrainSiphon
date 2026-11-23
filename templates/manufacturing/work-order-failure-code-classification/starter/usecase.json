@@ -1,0 +1,57 @@
+{
+ "slug": "manufacturing/work-order-failure-code-classification",
+ "title": "Work Order Failure Code Classification",
+ "domain": "manufacturing",
+ "engine": "nlp",
+ "fit": "exact",
+ "problemType": "text-classification",
+ "seed": 3773,
+ "knobs": {
+  "n_docs": 5570
+ },
+ "blueprintSignals": [
+  {
+   "name": "Component and symptom terms",
+   "definition": "named parts and symptoms in the text",
+   "asOfRule": "Maintain a synonym list"
+  },
+  {
+   "name": "Asset class",
+   "definition": "the type of asset",
+   "asOfRule": "From the CMMS"
+  },
+  {
+   "name": "Action verbs",
+   "definition": "replaced, adjusted, cleaned",
+   "asOfRule": "Parse the action text"
+  },
+  {
+   "name": "Previous codes on the asset",
+   "definition": "recent failure codes",
+   "asOfRule": "Use as a weak hint"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Work Order Failure Code Classification\": Assign standard failure codes and causes to maintenance work orders from technician text so reliability analysis rests on consistent data. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on hurried default picks."
+}

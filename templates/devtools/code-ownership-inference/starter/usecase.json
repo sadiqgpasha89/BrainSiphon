@@ -1,0 +1,53 @@
+{
+ "slug": "devtools/code-ownership-inference",
+ "title": "Code Ownership Inference",
+ "domain": "devtools",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 16103,
+ "knobs": {
+  "n": 238
+ },
+ "blueprintSignals": [
+  {
+   "name": "Recent commit share by team",
+   "definition": "recent change contributions",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Review and incident participation",
+   "definition": "who reviews and responds",
+   "asOfRule": "From tools"
+  },
+  {
+   "name": "On-call mapping",
+   "definition": "services on call rotations",
+   "asOfRule": "From the pager"
+  },
+  {
+   "name": "Team membership",
+   "definition": "current teams",
+   "asOfRule": "From HR directory"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Code Ownership Inference\": Infer likely owners for unowned code and services from contribution history, on-call data and reviews so ownership files are complete, for team leads to confirm. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual owners."
+}

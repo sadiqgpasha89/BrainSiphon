@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/corrosion-remaining-life-prediction",
+ "title": "Corrosion and Remaining Life Prediction",
+ "domain": "engineering",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 77930,
+ "knobs": {
+  "n": 21290,
+  "outlier_share": 0.024,
+  "drift": 0.324
+ },
+ "blueprintSignals": [
+  {
+   "name": "Thickness readings over time",
+   "definition": "wall thickness history",
+   "asOfRule": "From inspections"
+  },
+  {
+   "name": "Process conditions",
+   "definition": "temperature, chemistry and flow",
+   "asOfRule": "From plant data"
+  },
+  {
+   "name": "Material and coating",
+   "definition": "corrosion resistance",
+   "asOfRule": "From asset data"
+  },
+  {
+   "name": "Inspection method uncertainty",
+   "definition": "measurement error",
+   "asOfRule": "From the method"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Corrosion and Remaining Life Prediction\": Estimate wall thickness loss rates and remaining life of pipes, tanks and steel structures from inspection data, so inspection intervals and repairs are planned within safety margins. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: One reading rates."
+}

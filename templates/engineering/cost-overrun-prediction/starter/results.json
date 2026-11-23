@@ -1,0 +1,34 @@
+{
+ "use_case": "engineering/cost-overrun-prediction",
+ "engine": "tabular",
+ "seed": 3624,
+ "knobs": {
+  "n_entities": 2160,
+  "positive_entity_rate": 0.04,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.4,
+ "results": {
+  "rows": 168820,
+  "positive_rate": 0.0056924535007700505,
+  "test_rows": 56185,
+  "test_positive_rate": 0.005766663700275875,
+  "baseline_lr": {
+   "pr_auc": 0.7362058601173778,
+   "recall_at_0.5pct_fpr": 0.8240740740740741,
+   "brier": 0.0029983355780657385
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8350360885923378,
+   "recall_at_0.5pct_fpr": 0.8425925925925926,
+   "brier": 0.0017920258410384698
+  }
+ }
+}

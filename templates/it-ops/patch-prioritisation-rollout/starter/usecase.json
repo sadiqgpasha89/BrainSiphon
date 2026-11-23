@@ -1,0 +1,59 @@
+{
+ "slug": "it-ops/patch-prioritisation-rollout",
+ "title": "Patch Prioritisation and Rollout Planning",
+ "domain": "it-ops",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 22790,
+ "knobs": {
+  "n": 15530,
+  "label_noise": 0.043,
+  "dup_share": 0.428
+ },
+ "blueprintSignals": [
+  {
+   "name": "Exploit status",
+   "definition": "known exploitation",
+   "asOfRule": "From threat feeds"
+  },
+  {
+   "name": "Exposure",
+   "definition": "internet-facing or internal",
+   "asOfRule": "From the CMDB"
+  },
+  {
+   "name": "System criticality",
+   "definition": "service tier",
+   "asOfRule": "From the catalogue"
+  },
+  {
+   "name": "Ring health",
+   "definition": "results from earlier rings",
+   "asOfRule": "From monitoring"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Patch Prioritisation and Rollout Planning\": Prioritise patches by exploit risk, exposure and business criticality and plan staged rollouts with test rings, for change approvers to confirm. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: CVSS-only priority."
+}

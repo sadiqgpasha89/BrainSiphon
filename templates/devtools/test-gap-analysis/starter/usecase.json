@@ -1,0 +1,59 @@
+{
+ "slug": "devtools/test-gap-analysis",
+ "title": "Test Gap Analysis from Changes and Coverage",
+ "domain": "devtools",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 87074,
+ "knobs": {
+  "n_entities": 1830,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Coverage by function",
+   "definition": "tested share",
+   "asOfRule": "From coverage tools"
+  },
+  {
+   "name": "Churn",
+   "definition": "changes per period",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Defect history",
+   "definition": "bugs in the function",
+   "asOfRule": "From the tracker"
+  },
+  {
+   "name": "Criticality",
+   "definition": "service tier",
+   "asOfRule": "From the catalogue"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Test Gap Analysis from Changes and Coverage\": Find recently changed or high-risk code that has little test coverage so teams add tests where they matter most. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Coverage percentage targets."
+}

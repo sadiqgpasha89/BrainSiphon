@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/security-fix-suggestion-agent",
+ "title": "Security Fix Suggestion Agent",
+ "domain": "devtools",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 64774,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Finding type and location",
+   "definition": "rule and code location",
+   "asOfRule": "From the scanner"
+  },
+  {
+   "name": "Code context",
+   "definition": "surrounding code and framework",
+   "asOfRule": "From the repository"
+  },
+  {
+   "name": "Test outcome",
+   "definition": "test before and after",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Fix pattern library",
+   "definition": "approved fix patterns",
+   "asOfRule": "From security guidance"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Security Fix Suggestion Agent\": Suggest code fixes for confirmed security findings, with an explanation, a test that shows the flaw is closed and a pull request for the owner to review. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fixing unconfirmed findings."
+}

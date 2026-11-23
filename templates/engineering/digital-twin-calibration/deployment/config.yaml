@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: sensor_and_model_data, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: quality_filter, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: parameter_calibration, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: validity_flag, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: engineer_recalibration_approval, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: change_log, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Decisions on out-of-range models"
+    - "Model error"
+    - "Calibration effort"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

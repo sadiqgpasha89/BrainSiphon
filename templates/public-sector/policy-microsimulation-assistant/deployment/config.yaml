@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: scenario_definition, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: population_data_load, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: rules_engine, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: uncertainty_ranges, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: explanation_draft, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: publication, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Analysis turnaround"
+    - "Policy surprises after launch"
+    - "Corrections to published figures"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

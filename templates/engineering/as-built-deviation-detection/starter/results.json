@@ -1,0 +1,50 @@
+{
+ "use_case": "engineering/as-built-deviation-detection",
+ "engine": "cv",
+ "seed": 88301,
+ "knobs": {
+  "n": 5330,
+  "prevalence": 0.08
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "images": 5330,
+  "train": 1839,
+  "prevalence": 0.08536585365853659,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9523740868896579,
+    "sens_at_95_spec": 0.7478991596638656
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9746166049709147,
+    "sens_at_95_spec": 0.8852459016393442
+   },
+   "site_B": {
+    "auc": 0.7606089004229143,
+    "sens_at_95_spec": 0.3025210084033613
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3235294117647059,
+    "false_positive_rate": 0.053513071895424834
+   }
+  }
+ }
+}

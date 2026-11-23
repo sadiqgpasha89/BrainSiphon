@@ -1,0 +1,22 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: vibration_capture, timeout_ms: 202, on_timeout: fallback_level_1 }
+    - { name: spectral_feature_extraction, timeout_ms: 405, on_timeout: fallback_level_1 }
+    - { name: state_assignment, timeout_ms: 405, on_timeout: fallback_level_1 }
+    - { name: anomaly_scoring, timeout_ms: 809, on_timeout: fallback_level_1 }
+    - { name: band_explanation, timeout_ms: 404, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Faults found before failure"
+    - "Engineer time per alarm"
+    - "Unplanned stops"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

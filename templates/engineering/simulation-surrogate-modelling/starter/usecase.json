@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/simulation-surrogate-modelling",
+ "title": "Simulation Surrogate Modelling",
+ "domain": "engineering",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 34656,
+ "knobs": {
+  "n": 25220,
+  "outlier_share": 0.027,
+  "drift": 0.291
+ },
+ "blueprintSignals": [
+  {
+   "name": "Input parameter vector",
+   "definition": "geometry and load parameters",
+   "asOfRule": "From the design space"
+  },
+  {
+   "name": "Solver output fields",
+   "definition": "stress, temperature or flow results",
+   "asOfRule": "From simulations"
+  },
+  {
+   "name": "Mesh and solver settings",
+   "definition": "numerical settings",
+   "asOfRule": "From run metadata"
+  },
+  {
+   "name": "Distance to training data",
+   "definition": "how far the query is from known runs",
+   "asOfRule": "From the model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Simulation Surrogate Modelling\": Train fast surrogate models on validated simulations so engineers can explore parameters in seconds, with uncertainty estimates and automatic fallback to the full solver outside the trained range. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Extrapolation without checks."
+}

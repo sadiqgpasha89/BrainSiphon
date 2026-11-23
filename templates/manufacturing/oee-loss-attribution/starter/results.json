@@ -1,0 +1,36 @@
+{
+ "use_case": "manufacturing/oee-loss-attribution",
+ "engine": "uplift",
+ "seed": 33534,
+ "knobs": {
+  "n": 44590,
+  "confound": 1.233,
+  "holdout": 0.161
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.5,
+ "results": {
+  "rows": 44590,
+  "observational_rows": 37358,
+  "holdout_rows": 7232,
+  "true_ate": 0.06888069073783361,
+  "naive_ate": 0.2074454775512525,
+  "naive_bias": 0.13856478681341888,
+  "ipw_ate": 0.07541393802343904,
+  "ipw_bias": 0.006533247285605434,
+  "holdout_ate": 0.05756982841054323,
+  "holdout_balance_smd_x0": -0.024465253146803048,
+  "observational_balance_smd_x0": 1.090240252824185,
+  "t_learner_qini_auc": 0.01034502726664181,
+  "random_ranking_qini_auc": -0.0009425171268029369,
+  "top_decile_realised_uplift": 0.12909578000137384,
+  "bottom_decile_realised_uplift": -0.026616928733593753,
+  "share_predicted_negative": 0.17643805309734514
+ }
+}

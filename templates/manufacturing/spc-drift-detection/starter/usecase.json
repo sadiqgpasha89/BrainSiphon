@@ -1,0 +1,53 @@
+{
+ "slug": "manufacturing/spc-drift-detection",
+ "title": "Statistical Process Control Drift Detection",
+ "domain": "manufacturing",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 3596,
+ "knobs": {
+  "n": 236
+ },
+ "blueprintSignals": [
+  {
+   "name": "CUSUM statistic",
+   "definition": "cumulative sum of deviations from the target",
+   "asOfRule": "Reset after corrective action"
+  },
+  {
+   "name": "EWMA residual",
+   "definition": "exponentially weighted moving residual",
+   "asOfRule": "Tune the weight per process"
+  },
+  {
+   "name": "Run-rule violations",
+   "definition": "counts of Western Electric rule hits",
+   "asOfRule": "Combine with the model score"
+  },
+  {
+   "name": "Tool and chamber identifier",
+   "definition": "measurements split by tool",
+   "asOfRule": "Segment before charting"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Statistical Process Control Drift Detection\": Detect slow drifts and shifts in process measurements earlier than classic control charts while keeping the false alarm rate low enough for operators to act. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: One limit for mixed populations."
+}

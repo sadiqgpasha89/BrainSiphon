@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/access-request-fulfilment-agent",
+ "title": "Access Request Fulfilment Agent",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 84619,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Role and entitlement match",
+   "definition": "whether the role allows the access",
+   "asOfRule": "From the directory"
+  },
+  {
+   "name": "Risk tier of the target",
+   "definition": "sensitivity of the system",
+   "asOfRule": "From the catalogue"
+  },
+  {
+   "name": "Existing access",
+   "definition": "what the user already holds",
+   "asOfRule": "From identity systems"
+  },
+  {
+   "name": "Approval state",
+   "definition": "whether approvers agreed",
+   "asOfRule": "From workflow"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Access Request Fulfilment Agent\": Handle routine access requests by checking policy and role, routing approvals and provisioning low-risk access through workflow, with a full audit record. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Agent-granted privileged access."
+}

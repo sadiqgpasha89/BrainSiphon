@@ -1,0 +1,34 @@
+{
+ "use_case": "engineering/bid-no-bid-decision-support",
+ "engine": "tabular",
+ "seed": 62087,
+ "knobs": {
+  "n_entities": 2770,
+  "positive_entity_rate": 0.032,
+  "n_flash_sales": 3
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.1,
+ "results": {
+  "rows": 212269,
+  "positive_rate": 0.0042775911696950565,
+  "test_rows": 70475,
+  "test_positive_rate": 0.005420361830436325,
+  "baseline_lr": {
+   "pr_auc": 0.8193836723717521,
+   "recall_at_0.5pct_fpr": 0.8455497382198953,
+   "brier": 0.0017121100855488022
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8405333240889618,
+   "recall_at_0.5pct_fpr": 0.8455497382198953,
+   "brier": 0.001544717301843238
+  }
+ }
+}

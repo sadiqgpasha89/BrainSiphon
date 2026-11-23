@@ -1,0 +1,59 @@
+{
+ "slug": "energy/intraday-imbalance-prediction",
+ "title": "Intraday Imbalance Risk Prediction",
+ "domain": "energy",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 10940,
+ "knobs": {
+  "n": 14870,
+  "label_noise": 0.077,
+  "dup_share": 0.388
+ },
+ "blueprintSignals": [
+  {
+   "name": "System frequency and area control error",
+   "definition": "measured frequency deviation and error",
+   "asOfRule": "Live"
+  },
+  {
+   "name": "Renewable forecast revisions",
+   "definition": "change in wind and solar forecasts",
+   "asOfRule": "From forecasts"
+  },
+  {
+   "name": "Recent imbalance prices",
+   "definition": "prices in the last periods",
+   "asOfRule": "From settlement"
+  },
+  {
+   "name": "Outage and ramp events",
+   "definition": "generator trips and scheduled ramps",
+   "asOfRule": "From the market feed"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Intraday Imbalance Risk Prediction\": Predict the system imbalance direction and price risk for coming settlement periods so balancing responsible parties adjust positions before penalties hit. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using data after gate closure."
+}

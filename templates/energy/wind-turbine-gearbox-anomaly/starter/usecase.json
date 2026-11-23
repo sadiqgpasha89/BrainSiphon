@@ -1,0 +1,58 @@
+{
+ "slug": "energy/wind-turbine-gearbox-anomaly",
+ "title": "Wind Turbine Gearbox Anomaly Detection",
+ "domain": "energy",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 47199,
+ "knobs": {
+  "n_series": 87,
+  "anomalies_per_series": 3.113
+ },
+ "blueprintSignals": [
+  {
+   "name": "Gearbox temperature residual",
+   "definition": "difference between measured and expected temperature",
+   "asOfRule": "State-conditioned"
+  },
+  {
+   "name": "Vibration spectral features",
+   "definition": "energy at gear and bearing frequencies",
+   "asOfRule": "From condition monitoring"
+  },
+  {
+   "name": "Oil particle and filter data",
+   "definition": "particle counts and filter pressure",
+   "asOfRule": "From sensors"
+  },
+  {
+   "name": "Operating state",
+   "definition": "power, speed and ambient temperature",
+   "asOfRule": "From SCADA"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Wind Turbine Gearbox Anomaly Detection\": Detect early gearbox and bearing deterioration in wind turbines from SCADA and vibration data so repairs are planned before major component failures. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Global alarm limits."
+}

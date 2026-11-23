@@ -1,0 +1,90 @@
+openapi: 3.1.0
+info:
+  title: Engineering Agent Action Guardrails API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/engineering-agent-action-guardrails/tasks:
+    post:
+      summary: 'Engineering Agent Action Guardrails: request a decision'
+      operationId: engineering_agent_action_guardrails
+      description: 'Illustrative contract taken from the blueprint''s low-level design. End-to-end deadline: 2500
+        ms. Replace the placeholder values with your own fields and keep the error behaviour.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task_id:
+                  type: string
+                principal:
+                  type: object
+                  properties:
+                    user_id:
+                      type: string
+                    scopes:
+                      type: array
+                      items:
+                        type: string
+                goal:
+                  type: string
+                inputs:
+                  type: object
+                  properties:
+                    case_id:
+                      type: string
+                constraints:
+                  type: object
+                  properties:
+                    max_steps:
+                      type: integer
+                    max_cost_usd:
+                      type: number
+                    autonomy:
+                      type: string
+                stream:
+                  type: boolean
+            example:
+              task_id: tsk_77
+              principal:
+                user_id: u_123
+                scopes:
+                - read
+                - propose
+              goal: …
+              inputs:
+                case_id: c_901
+              constraints:
+                max_steps: 3
+                max_cost_usd: 0.05
+                autonomy: L1
+              stream: true
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            text/event-stream:
+              schema:
+                type: string
+              example: 'event: step       data: {"n":1,"tool":"get_case","status":"ok"}
+
+                event: proposal   data: {"action":"…","evidence":[{"record_id":"r_12"}],"needs_approval":true}
+
+                event: final      data: {"state":"AWAITING_APPROVAL | DONE | ESCALATED","usage":{"steps":4,"tokens":9200,"cost_usd":0.03},"trace_id":"tr_55"}'
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

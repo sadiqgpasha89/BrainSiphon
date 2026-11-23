@@ -1,0 +1,55 @@
+{
+ "slug": "engineering/engineering-knowledge-assistant",
+ "title": "Engineering Knowledge Assistant",
+ "domain": "engineering",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 66269,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Document relevance",
+   "definition": "semantic and keyword match",
+   "asOfRule": "From hybrid search"
+  },
+  {
+   "name": "Document status and revision",
+   "definition": "released, draft or superseded",
+   "asOfRule": "From the document system"
+  },
+  {
+   "name": "Access rights",
+   "definition": "project and client permissions",
+   "asOfRule": "From identity"
+  },
+  {
+   "name": "Discipline and project type",
+   "definition": "context of the question",
+   "asOfRule": "From metadata"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Engineering Knowledge Assistant\": Answer engineering questions from company standards, past design reports, lessons learned and calculations with citations, respecting project and client access rights. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model memory of standards."
+}

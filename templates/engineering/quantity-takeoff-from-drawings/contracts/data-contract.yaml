@@ -1,0 +1,16 @@
+contract: quantity_takeoff_from_drawings_inputs.v1
+owner: engineering-management@example.com
+system_of_record: CAD, BIM and document management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: element_quantities, type: double, nullable: false }
+    - { name: drawing_scale_and_units, type: double, nullable: false }
+    - { name: assembly_definitions, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

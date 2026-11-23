@@ -1,0 +1,55 @@
+{
+ "slug": "engineering/engineering-agent-evaluation-harness",
+ "title": "Engineering Agent Evaluation Harness",
+ "domain": "engineering",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 19767,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Answer correctness",
+   "definition": "match to expert answer",
+   "asOfRule": "From the harness"
+  },
+  {
+   "name": "Calculation verification",
+   "definition": "tool recomputation result",
+   "asOfRule": "From calculators"
+  },
+  {
+   "name": "Citation accuracy",
+   "definition": "clause and edition correctness",
+   "asOfRule": "From the standards library"
+  },
+  {
+   "name": "Safety violations",
+   "definition": "policy breaches in runs",
+   "asOfRule": "From gateway logs"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Engineering Agent Evaluation Harness\": Evaluate engineering assistants and agents on real past questions, reviews and calculations with expert answers, safety checks and cost so changes are judged on evidence before rollout. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model-written answers as truth."
+}

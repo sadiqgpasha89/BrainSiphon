@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: document_intake, timeout_ms: 171, on_timeout: fallback_level_1 }
+    - { name: rewrite_draft, timeout_ms: 685, on_timeout: fallback_level_1 }
+    - { name: number_and_term_checks, timeout_ms: 171, on_timeout: fallback_level_1 }
+    - { name: readability_scoring, timeout_ms: 684, on_timeout: fallback_level_1 }
+    - { name: accessible_export, timeout_ms: 257, on_timeout: fallback_level_1 }
+    - { name: comprehension_test, timeout_ms: 257, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Contacts caused by unclear letters"
+    - "Time to publish"
+    - "Accessibility complaints"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

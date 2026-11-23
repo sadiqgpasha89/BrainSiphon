@@ -1,0 +1,34 @@
+{
+ "use_case": "it-ops/idle-resource-detection",
+ "engine": "tabular",
+ "seed": 48367,
+ "knobs": {
+  "n_entities": 2580,
+  "positive_entity_rate": 0.032,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.8,
+ "results": {
+  "rows": 200606,
+  "positive_rate": 0.0043268895247400374,
+  "test_rows": 66848,
+  "test_positive_rate": 0.003620153183341312,
+  "baseline_lr": {
+   "pr_auc": 0.8145691143763599,
+   "recall_at_0.5pct_fpr": 0.8677685950413223,
+   "brier": 0.0013378813358871408
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8299505787648558,
+   "recall_at_0.5pct_fpr": 0.8801652892561983,
+   "brier": 0.001182657572126314
+  }
+ }
+}

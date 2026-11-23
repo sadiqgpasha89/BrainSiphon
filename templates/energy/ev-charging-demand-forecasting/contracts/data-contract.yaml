@@ -1,0 +1,16 @@
+contract: ev_charging_demand_forecasting_inputs.v1
+owner: network-operations@example.com
+system_of_record: SCADA and ADMS (advanced distribution management)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: site_type_and_location, type: double, nullable: false }
+    - { name: day_type_and_events, type: double, nullable: false }
+    - { name: tariff_and_price_signals, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

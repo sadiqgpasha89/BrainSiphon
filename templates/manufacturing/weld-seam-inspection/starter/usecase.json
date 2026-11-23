@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/weld-seam-inspection",
+ "title": "Weld Seam Inspection",
+ "domain": "manufacturing",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 24617,
+ "knobs": {
+  "n": 5050,
+  "prevalence": 0.132
+ },
+ "blueprintSignals": [
+  {
+   "name": "Bead geometry score",
+   "definition": "width, height and continuity from the image",
+   "asOfRule": "Camera calibration needed"
+  },
+  {
+   "name": "Current and voltage curve shape",
+   "definition": "distance of the curve from a golden curve",
+   "asOfRule": "Align by weld phase"
+  },
+  {
+   "name": "Electrode wear count",
+   "definition": "welds since last tip dress",
+   "asOfRule": "From the controller"
+  },
+  {
+   "name": "Material stack and coating",
+   "definition": "sheet thickness and coating class",
+   "asOfRule": "From the order"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Weld Seam Inspection\": Assess weld quality from seam images and process signals such as current and voltage, so weak welds are caught in line and rework is targeted. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using visual judgement as strength labels."
+}

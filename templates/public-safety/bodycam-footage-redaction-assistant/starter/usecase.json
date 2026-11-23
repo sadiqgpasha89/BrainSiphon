@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/bodycam-footage-redaction-assistant",
+ "title": "Body-Worn Camera Footage Redaction Assistant",
+ "domain": "public-safety",
+ "engine": "cv",
+ "fit": "exact",
+ "problemType": "vision-classification",
+ "seed": 50555,
+ "knobs": {
+  "n": 5190,
+  "prevalence": 0.157
+ },
+ "blueprintSignals": [
+  {
+   "name": "Face and plate detections",
+   "definition": "detected regions",
+   "asOfRule": "From vision"
+  },
+  {
+   "name": "Screen and document detection",
+   "definition": "phones and screens in view",
+   "asOfRule": "From vision"
+  },
+  {
+   "name": "Audio speaker segments",
+   "definition": "bystander speech",
+   "asOfRule": "From audio models"
+  },
+  {
+   "name": "Exemption category",
+   "definition": "legal basis",
+   "asOfRule": "From the rule base"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Body-Worn Camera Footage Redaction Assistant\": Suggest blurs for faces, plates, screens and bystander audio in footage prepared for release so staff review redactions faster and releases protect privacy. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Modifying originals."
+}

@@ -1,0 +1,37 @@
+{
+ "use_case": "it-ops/sd-wan-path-selection",
+ "engine": "bandit",
+ "seed": 73920,
+ "knobs": {
+  "n": 20550,
+  "logging_temperature": 1.088
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.5,
+ "results": {
+  "logged_rows": 20550,
+  "logging_reward_rate": 0.41479318734793186,
+  "always_best_average_action": {
+   "true_value": 0.2678440502542867,
+   "naive_matched": 0.4743,
+   "ips": 0.2659,
+   "snips": 0.2669,
+   "doubly_robust": 0.2681,
+   "match_rate": 0.2705
+  },
+  "learned_greedy": {
+   "true_value": 0.7903550604071714,
+   "naive_matched": 0.7722,
+   "ips": 0.7679,
+   "snips": 0.7916,
+   "doubly_robust": 0.7998,
+   "match_rate": 0.2367
+  }
+ }
+}

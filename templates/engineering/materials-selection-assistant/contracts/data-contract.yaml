@@ -1,0 +1,16 @@
+contract: materials_selection_assistant_inputs.v1
+owner: engineering-management@example.com
+system_of_record: CAD, BIM and document management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: required_property_ranges, type: double, nullable: false }
+    - { name: material_property_data, type: double, nullable: false }
+    - { name: regulatory_flags, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

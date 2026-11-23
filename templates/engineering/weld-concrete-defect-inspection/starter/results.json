@@ -1,0 +1,50 @@
+{
+ "use_case": "engineering/weld-concrete-defect-inspection",
+ "engine": "cv",
+ "seed": 11973,
+ "knobs": {
+  "n": 3880,
+  "prevalence": 0.1
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 3880,
+  "train": 1366,
+  "prevalence": 0.10876288659793815,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9355864963015712,
+    "sens_at_95_spec": 0.6919431279620853
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9786578341013825,
+    "sens_at_95_spec": 0.9142857142857143
+   },
+   "site_B": {
+    "auc": 0.7591533040296639,
+    "sens_at_95_spec": 0.35545023696682465
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3981042654028436,
+    "false_positive_rate": 0.06505469199769717
+   }
+  }
+ }
+}

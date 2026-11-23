@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/records-retention-classification",
+ "title": "Records Retention Classification",
+ "domain": "public-sector",
+ "engine": "nlp",
+ "fit": "exact",
+ "problemType": "text-classification",
+ "seed": 79108,
+ "knobs": {
+  "n_docs": 4980
+ },
+ "blueprintSignals": [
+  {
+   "name": "Document type and content",
+   "definition": "text and attachments",
+   "asOfRule": "From the classifier"
+  },
+  {
+   "name": "Creator unit and function",
+   "definition": "office and business function",
+   "asOfRule": "From the directory"
+  },
+  {
+   "name": "Date and trigger event",
+   "definition": "creation date and closure event",
+   "asOfRule": "From metadata"
+  },
+  {
+   "name": "Legal hold flags",
+   "definition": "holds by case",
+   "asOfRule": "From legal"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Records Retention Classification\": Classify documents and emails into records categories with retention rules so records are kept as long as the law requires and deleted when the period ends. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic deletion."
+}

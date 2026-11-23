@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/shift-staffing-skill-matching",
+ "title": "Shift Staffing & Skill Matching",
+ "domain": "manufacturing",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 74466,
+ "knobs": {
+  "n_clusters": 1340,
+  "hub_share": 0.152
+ },
+ "blueprintSignals": [
+  {
+   "name": "Planned production hours by line",
+   "definition": "hours from the schedule",
+   "asOfRule": "From planning"
+  },
+  {
+   "name": "Skill coverage per station",
+   "definition": "certified staff per station and shift",
+   "asOfRule": "From training records"
+  },
+  {
+   "name": "Absence rate by group",
+   "definition": "aggregated absence rate by team and season",
+   "asOfRule": "Aggregated only"
+  },
+  {
+   "name": "Overtime budget remaining",
+   "definition": "hours left in the budget",
+   "asOfRule": "From HR"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Shift Staffing & Skill Matching\": Forecast labour demand by line and skill and propose shift rosters that meet the plan within contract and labour rules, using aggregated data and no individual performance scoring. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual monitoring."
+}

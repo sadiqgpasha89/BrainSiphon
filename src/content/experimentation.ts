@@ -23,6 +23,14 @@ const LABEL_DELAY: Partial<Record<Domain, string>> = {
   cybersecurity: 'Confirmed incidents are found late or never; unreported attacks look like clean traffic.',
   edtech: 'Learning outcomes arrive at the end of a course or term, long after the recommendation.',
   saas: 'Retention and expansion outcomes arrive over billing cycles; usage is a proxy for value.',
+  telecom: 'Root causes are confirmed after repair and customer-reported impact trails the fault; churn and disputes resolve over weeks.',
+  manufacturing: 'Field failures and warranty claims arrive months after the lot ships; scrap labels depend on inspection coverage.',
+  energy: 'Outage causes and asset failures are confirmed only after repair or years of service; theft labels come from limited inspections.',
+  'public-sector': 'Appeal outcomes and audits arrive months after the decision; policy effects take years to observe.',
+  'public-safety': 'Case outcomes and appeals arrive months or years later; many incidents are never confirmed.',
+  devtools: 'Production defects and security incidents show up weeks after a change ships; review quality labels are subjective.',
+  'it-ops': 'Root causes and problem records are confirmed days later; ticket outcomes depend on how agents close them.',
+  engineering: 'Rework, claims and structural performance appear long after delivery, so quality labels arrive late and are incomplete.',
   'real-estate': 'Sale prices and outcomes lag the valuation; listings that do not transact leave no price.',
 };
 
@@ -31,6 +39,14 @@ const SLICES: Partial<Record<Domain, string[]>> = {
   bfsi: ['Income band, age band and thin-file applicants', 'Product, channel and region', 'Protected classes under the applicable fair-lending or conduct rules'],
   healthcare: ['Age, sex, ethnicity and language', 'Site and device (case mix, equipment differences)', 'Comorbidity and acuity bands, including the sickest decile'],
   edtech: ['Age band, with minors analysed separately', 'First-generation, language and accessibility groups', 'Course, cohort and device'],
+  telecom: ['Region, vendor and technology generation (4G or 5G)', 'Subscriber segment, plan type and tenure', 'Urban, suburban and rural cells and enterprise versus consumer traffic'],
+  manufacturing: ['Line, shift and plant', 'Product variant and material lot', 'Machine age, tooling and supplier batch'],
+  energy: ['Feeder, region and voltage level', 'Weather regime and season', 'Asset age, vendor and customer segment'],
+  'public-sector': ['Region and service channel', 'Language and accessibility needs', 'Case type and programme rule version'],
+  'public-safety': ['Area and call type', 'Language and accessibility need', 'Incident severity and time of day'],
+  devtools: ['Repository, language and team', 'Change size and risk tier', 'Contributor tenure and service criticality'],
+  'it-ops': ['Service tier, region and technology stack', 'Ticket category and priority', 'Site, device type and business unit'],
+  engineering: ['Project type, client and region', 'Discipline and contract type', 'Site, season and supplier'],
   'real-estate': ['Neighbourhood and price band', 'Property type and listing age', 'Fair-housing protected-class proxies such as area-level demographics'],
 };
 

@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/grid-state-estimation-surrogate",
+ "engine": "tabular",
+ "seed": 77568,
+ "knobs": {
+  "n_entities": 2690,
+  "positive_entity_rate": 0.032,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.1,
+ "results": {
+  "rows": 205097,
+  "positive_rate": 0.004514936834765989,
+  "test_rows": 67016,
+  "test_positive_rate": 0.005670287692491345,
+  "baseline_lr": {
+   "pr_auc": 0.7592080133843492,
+   "recall_at_0.5pct_fpr": 0.7736842105263158,
+   "brier": 0.003022255455362302
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7914162301429596,
+   "recall_at_0.5pct_fpr": 0.7947368421052632,
+   "brier": 0.0020685075841349694
+  }
+ }
+}

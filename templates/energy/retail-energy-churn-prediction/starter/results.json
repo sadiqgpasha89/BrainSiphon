@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/retail-energy-churn-prediction",
+ "engine": "tabular",
+ "seed": 18375,
+ "knobs": {
+  "n_entities": 2150,
+  "positive_entity_rate": 0.027,
+  "n_flash_sales": 3
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "rows": 164418,
+  "positive_rate": 0.003935092264837183,
+  "test_rows": 55322,
+  "test_positive_rate": 0.004482845884096743,
+  "baseline_lr": {
+   "pr_auc": 0.7523826218010882,
+   "recall_at_0.5pct_fpr": 0.7940372983870967,
+   "brier": 0.001854593595571829
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7790152145996978,
+   "recall_at_0.5pct_fpr": 0.8024193548387096,
+   "brier": 0.0017159390643143267
+  }
+ }
+}

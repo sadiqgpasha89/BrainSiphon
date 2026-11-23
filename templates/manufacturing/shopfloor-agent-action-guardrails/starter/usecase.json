@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/shopfloor-agent-action-guardrails",
+ "title": "Shop-Floor Agent Action Guardrails",
+ "domain": "manufacturing",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 75504,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Parameter change distance from validated band",
+   "definition": "how far the request is from approved limits",
+   "asOfRule": "Machine controller data"
+  },
+  {
+   "name": "Recipe edits per shift",
+   "definition": "change volume against the line norm",
+   "asOfRule": "Execution system"
+  },
+  {
+   "name": "Supervisor rejection rate",
+   "definition": "agent proposals declined on the floor",
+   "asOfRule": "Approval records"
+  },
+  {
+   "name": "Scrap rate after change",
+   "definition": "yield in the hour after an agent change",
+   "asOfRule": "Quality system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Shop-Floor Agent Action Guardrails\": Keep AI agents inside safe limits when they touch recipes, work orders and machine parameters on the shop floor, and give quality and safety teams a trustworthy record of every change. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Plant-wide write rights."
+}

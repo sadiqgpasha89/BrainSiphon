@@ -1,0 +1,49 @@
+{
+ "use_case": "energy/bidding-strategy-optimisation",
+ "engine": "control",
+ "seed": 46249,
+ "knobs": {
+  "days": 59
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "days": 59,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.211014779654313,
+   "end_of_day_underdelivery_pct": 4.1669677841715,
+   "overshoot_max_pct": 7.4545847202645374,
+   "oscillation": 0.0,
+   "hit_cap": 0.6440677966101694
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.80170158732509,
+   "end_of_day_underdelivery_pct": 0.9600966379597196,
+   "overshoot_max_pct": 6.128158895873973,
+   "oscillation": 0.01255024321105149,
+   "hit_cap": 0.423728813559322
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.1709538590196023,
+   "end_of_day_underdelivery_pct": 0.049128179754463645,
+   "overshoot_max_pct": 2.116124644303238,
+   "oscillation": 0.0917915434423559,
+   "hit_cap": 0.5254237288135594
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.553783560786699,
+   "end_of_day_underdelivery_pct": 1.773243859876709,
+   "overshoot_max_pct": 14.4043111593368,
+   "oscillation": 0.018906028030490584,
+   "hit_cap": 0.6271186440677966
+  },
+  "rmse_reduction_vs_open_loop": 0.5489140363177458
+ }
+}

@@ -12,7 +12,7 @@ const bySlug = (s: string) => all.find((u) => u.slug === s)!;
 const pbOf = (s: string) => bySlug(s).playbook!;
 
 describe('starter-kit compatibility gate', () => {
-  it('passes for all 575 blueprints and keeps the known cases decided the same way', () => {
+  it('passes for all 975 blueprints and keeps the known cases decided the same way', () => {
     expect(checkKitCompatibility(all)).toEqual([]);
     for (const slug of Object.keys(KNOWN_CASES))
       expect(pbOf(slug).compatibility.verdict, slug).toBe(KNOWN_CASES[slug]!.verdict);

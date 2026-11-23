@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/sim-box-bypass-fraud-detection",
+ "engine": "tabular",
+ "seed": 60242,
+ "knobs": {
+  "n_entities": 2140,
+  "positive_entity_rate": 0.022,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.4,
+ "results": {
+  "rows": 167465,
+  "positive_rate": 0.002764756814856836,
+  "test_rows": 56341,
+  "test_positive_rate": 0.0031770824089029305,
+  "baseline_lr": {
+   "pr_auc": 0.4692155364677118,
+   "recall_at_0.5pct_fpr": 0.6312849162011173,
+   "brier": 0.003167907182586296
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6228620930511155,
+   "recall_at_0.5pct_fpr": 0.6536312849162011,
+   "brier": 0.0016508167257071893
+  }
+ }
+}

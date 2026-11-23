@@ -1,0 +1,59 @@
+{
+ "slug": "energy/wildfire-ignition-risk-forecasting",
+ "title": "Wildfire Ignition Risk Forecasting",
+ "domain": "energy",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 49912,
+ "knobs": {
+  "n_entities": 2980,
+  "positive_entity_rate": 0.04,
+  "n_flash_sales": 5
+ },
+ "blueprintSignals": [
+  {
+   "name": "Wind gust and direction forecast",
+   "definition": "forecast wind speed and direction",
+   "asOfRule": "From weather models"
+  },
+  {
+   "name": "Fuel moisture and vegetation dryness",
+   "definition": "fuel state",
+   "asOfRule": "From satellite and sensors"
+  },
+  {
+   "name": "Equipment type and condition",
+   "definition": "conductor, hardware and protection type",
+   "asOfRule": "From the register"
+  },
+  {
+   "name": "Recent faults and operations",
+   "definition": "faults and reclose events",
+   "asOfRule": "From SCADA"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Wildfire Ignition Risk Forecasting\": Forecast the chance that conditions and equipment could start a fire for each network segment so operators and planners can decide on inspections, covered conductor work and temporary protection settings. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automated shutoff decisions."
+}

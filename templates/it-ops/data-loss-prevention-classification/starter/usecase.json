@@ -1,0 +1,57 @@
+{
+ "slug": "it-ops/data-loss-prevention-classification",
+ "title": "Data Loss Prevention Classification",
+ "domain": "it-ops",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 80233,
+ "knobs": {
+  "n_docs": 5190
+ },
+ "blueprintSignals": [
+  {
+   "name": "Content classifier output",
+   "definition": "predicted sensitivity class",
+   "asOfRule": "From the classifier"
+  },
+  {
+   "name": "Destination type",
+   "definition": "internal, partner or personal",
+   "asOfRule": "From the event"
+  },
+  {
+   "name": "Sender role and data access",
+   "definition": "role-based access level",
+   "asOfRule": "From identity"
+  },
+  {
+   "name": "Volume and pattern",
+   "definition": "size of the transfer",
+   "asOfRule": "From events"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Data Loss Prevention Classification\": Classify documents and messages by sensitivity to improve data loss prevention rules, blocking or warning on risky sharing with the content analysed in the control and not in analyst tools. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Pattern-only rules."
+}

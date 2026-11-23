@@ -1,0 +1,43 @@
+{
+ "use_case": "telecom/core-signalling-storm-detection",
+ "engine": "anomaly",
+ "seed": 67425,
+ "knobs": {
+  "n_series": 95,
+  "anomalies_per_series": 2.787
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 21.2,
+ "results": {
+  "series": 95,
+  "hours": 2016,
+  "events": 287,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.2870671101545686,
+   "recall": 0.4899328859060403,
+   "median_delay_h": 0.0,
+   "events": 149
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6902758755625122,
+   "recall": 0.8456375838926175,
+   "median_delay_h": 0.0,
+   "events": 149
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5828996282527881,
+   "recall": 0.9664429530201343,
+   "median_delay_h": 0.0,
+   "events": 149
+  }
+ }
+}

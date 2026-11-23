@@ -32,7 +32,7 @@ At 7 days the model's weighted absolute percentage error is 12.1% against 21.3% 
 
 ## 5. An edge case from the blueprint
 
-**New clinic or service line.** no history. Planned response: Peer prior and a low-confidence flag. Write the test that replays this case through your pipeline before you tune anything.
+**New clinic or service line.** no demand history to forecast coverage from. Planned response: Peer prior and a low-confidence flag. Write the test that replays this case through your pipeline before you tune anything.
 
 ## 6. What to expect on your own data
 

@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: schema_extraction, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: diff_classification, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: consumer_lookup, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: contract_tests, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: impact_comment, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: exception_workflow, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: release_tracking, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Breaking changes reaching production"
+    - "Consumer incidents"
+    - "Review time on API changes"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

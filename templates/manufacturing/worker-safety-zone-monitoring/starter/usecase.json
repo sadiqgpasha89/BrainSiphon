@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/worker-safety-zone-monitoring",
+ "title": "Worker Safety Zone Monitoring",
+ "domain": "manufacturing",
+ "engine": "cv",
+ "fit": "exact",
+ "problemType": "vision-classification",
+ "seed": 58246,
+ "knobs": {
+  "n": 3810,
+  "prevalence": 0.159
+ },
+ "blueprintSignals": [
+  {
+   "name": "Person detection in zone",
+   "definition": "whether a person-shaped object is inside the zone",
+   "asOfRule": "Confidence calibrated"
+  },
+  {
+   "name": "Object speed and direction",
+   "definition": "movement of vehicles and machine parts",
+   "asOfRule": "From tracking"
+  },
+  {
+   "name": "Zone state",
+   "definition": "the machine state and the allowed zone",
+   "asOfRule": "From the controller"
+  },
+  {
+   "name": "Visibility conditions",
+   "definition": "lighting and occlusion indicators",
+   "asOfRule": "From the camera"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Worker Safety Zone Monitoring\": Detect people entering hazardous zones near machines and vehicles and trigger warnings or a safe slow-down through the certified safety system, without identifying individuals. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Replacing certified interlocks."
+}

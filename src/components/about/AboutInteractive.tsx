@@ -323,10 +323,10 @@ interface FaqItem {
 const FAQS: FaqItem[] = [
   {
     q: 'What is BrainSiphon and why was it created?',
-    a: 'BrainSiphon is a zero-noise engineering reference for AI/ML systems. Its blueprints are reference designs: checked for completeness and internal consistency, and meant to be adapted and tested in your own environment. It was built to solve a critical industry failure: most AI content is either simplistic 5-minute toy tutorials or abstract academic papers that completely ignore enterprise realities like 10M-user concurrency, P99 latency budgets, cloud compute costs, data quality contracts, compliance frameworks (EU AI Act), and operational failure runbooks. BrainSiphon provides 575 complete, end-to-end blueprints that bridge the gap from business problem to reliable production deployment.',
+    a: 'BrainSiphon is a zero-noise engineering reference for AI/ML systems. Its blueprints are reference designs: checked for completeness and internal consistency, and meant to be adapted and tested in your own environment. It was built to solve a critical industry failure: most AI content is either simplistic 5-minute toy tutorials or abstract academic papers that completely ignore enterprise realities like 10M-user concurrency, P99 latency budgets, cloud compute costs, data quality contracts, compliance frameworks (EU AI Act), and operational failure runbooks. BrainSiphon provides 975 complete, end-to-end blueprints that bridge the gap from business problem to reliable production deployment.',
   },
   {
-    q: 'How are the 575 blueprints generated and validated?',
+    q: 'How are the 975 blueprints generated and validated?',
     a: 'Every blueprint is defined against a strict, typed TypeScript specification (Zod schema) and validated against automated consistency gates: mathematical loss formulation checks, Mermaid sequence diagram syntax validation, KaTeX equation validation, and scale/capacity arithmetic verification. Starters and contracts are tested for consistency, guaranteeing zero broken cross-references. Blueprints provide a comprehensive, modeled engineering starting point and framework for cross-functional teams.',
   },
   {
@@ -335,7 +335,7 @@ const FAQS: FaqItem[] = [
   },
   {
     q: 'How do I use BrainSiphon with AI coding assistants (Cursor, Claude Code, Antigravity)?',
-    a: 'BrainSiphon is built agent-first. You can append `.md` to any blueprint URL (for example: `/fintech/real-time-card-upi-fraud-detection.md`) or the delivery guide (`/delivery.md`) to get a clean, zero-bloat Markdown document formatted specifically for LLM context windows. Additionally, `/llms.txt` provides a complete manifest of all 575 blueprints and architectural primitives, enabling agents to autonomously discover and reference the exact design patterns you need.',
+    a: 'BrainSiphon is built agent-first. You can append `.md` to any blueprint URL (for example: `/fintech/real-time-card-upi-fraud-detection.md`) or the delivery guide (`/delivery.md`) to get a clean, zero-bloat Markdown document formatted specifically for LLM context windows. Additionally, `/llms.txt` provides a complete manifest of all 975 blueprints and architectural primitives, enabling agents to autonomously discover and reference the exact design patterns you need.',
   },
   {
     q: 'Can our engineering team use these blueprints and templates for commercial projects?',
@@ -577,7 +577,7 @@ export function AboutInteractive() {
             <div>
               <p className="text-sm font-medium text-ink">Instant Universal Search</p>
               <p className="mt-0.5 text-xs text-mute">
-                Searches across all 575 blueprints, 10 domains, and 11 architectural patterns instantly.
+                Searches across all 975 blueprints, 18 domains, and 11 architectural patterns instantly.
               </p>
             </div>
           </div>

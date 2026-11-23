@@ -207,7 +207,7 @@ make demo       # seed, CDC, train, serve, verify, monitor, retrain: ends with D
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-ink">Coverage of the 575 blueprints</h2>
+        <h2 className="text-xl font-semibold text-ink">Coverage of the 975 blueprints</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-mute">
           Every blueprint has one of nine solution archetypes. 214 blueprints have an implementation of their
           own family (all of them are in the repository), 119 have one to adapt with named changes, and 167

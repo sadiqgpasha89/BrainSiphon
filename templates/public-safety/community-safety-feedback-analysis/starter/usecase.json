@@ -1,0 +1,55 @@
+{
+ "slug": "public-safety/community-safety-feedback-analysis",
+ "title": "Community Safety Feedback Analysis",
+ "domain": "public-safety",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 40237,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Theme assignment",
+   "definition": "which theme a comment belongs to",
+   "asOfRule": "From clustering"
+  },
+  {
+   "name": "Area aggregate",
+   "definition": "counts by area",
+   "asOfRule": "Aggregated"
+  },
+  {
+   "name": "Duplicate and campaign detection",
+   "definition": "near-identical comments",
+   "asOfRule": "From similarity"
+  },
+  {
+   "name": "Sentiment and stance",
+   "definition": "support, concern or neutral",
+   "asOfRule": "From the classifier"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Community Safety Feedback Analysis\": Group and summarise residents' safety concerns from surveys, meetings and reports by theme and area with quotes linked to the source, so priorities reflect community voices. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Single summaries."
+}

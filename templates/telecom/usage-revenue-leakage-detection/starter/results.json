@@ -1,0 +1,43 @@
+{
+ "use_case": "telecom/usage-revenue-leakage-detection",
+ "engine": "anomaly",
+ "seed": 56197,
+ "knobs": {
+  "n_series": 63,
+  "anomalies_per_series": 3.48
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 10.0,
+ "results": {
+  "series": 63,
+  "hours": 2016,
+  "events": 232,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.18504750103263112,
+   "recall": 0.4661016949152542,
+   "median_delay_h": 0.0,
+   "events": 118
+  },
+  "seasonal_z": {
+   "threshold": 5.0,
+   "false_alerts_per_series_week": 0.41305245766212306,
+   "recall": 0.7542372881355932,
+   "median_delay_h": 0.0,
+   "events": 118
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5254027261462205,
+   "recall": 0.9576271186440678,
+   "median_delay_h": 0.0,
+   "events": 118
+  }
+ }
+}

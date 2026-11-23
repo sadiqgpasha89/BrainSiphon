@@ -1,0 +1,55 @@
+{
+ "slug": "engineering/lessons-learned-retrieval",
+ "title": "Lessons Learned Retrieval",
+ "domain": "engineering",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 19029,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Lesson text and tags",
+   "definition": "issue, cause and action",
+   "asOfRule": "From closeouts"
+  },
+  {
+   "name": "Project type and phase",
+   "definition": "context match",
+   "asOfRule": "From project data"
+  },
+  {
+   "name": "Outcome evidence",
+   "definition": "cost or time effect",
+   "asOfRule": "From records"
+  },
+  {
+   "name": "Recency and validity",
+   "definition": "whether the lesson still applies",
+   "asOfRule": "From owners"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Lessons Learned Retrieval\": Capture lessons from project closeouts and incident reports and surface relevant ones at design, bid and planning stages with source links. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Raw closeout text."
+}

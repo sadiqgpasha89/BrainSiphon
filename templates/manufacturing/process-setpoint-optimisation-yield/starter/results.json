@@ -1,0 +1,34 @@
+{
+ "use_case": "manufacturing/process-setpoint-optimisation-yield",
+ "engine": "tabular",
+ "seed": 37145,
+ "knobs": {
+  "n_entities": 2560,
+  "positive_entity_rate": 0.03,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.0,
+ "results": {
+  "rows": 189976,
+  "positive_rate": 0.004237377352928791,
+  "test_rows": 63912,
+  "test_positive_rate": 0.004036800600826136,
+  "baseline_lr": {
+   "pr_auc": 0.7713460317252616,
+   "recall_at_0.5pct_fpr": 0.7906976744186046,
+   "brier": 0.001886335157110556
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8297983505185879,
+   "recall_at_0.5pct_fpr": 0.8682170542635659,
+   "brier": 0.0012736366228805933
+  }
+ }
+}

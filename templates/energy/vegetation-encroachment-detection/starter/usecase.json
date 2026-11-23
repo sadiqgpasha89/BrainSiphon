@@ -1,0 +1,59 @@
+{
+ "slug": "energy/vegetation-encroachment-detection",
+ "title": "Vegetation Encroachment Detection",
+ "domain": "energy",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 33108,
+ "knobs": {
+  "n": 25220,
+  "outlier_share": 0.035,
+  "drift": 0.174
+ },
+ "blueprintSignals": [
+  {
+   "name": "Clearance distance",
+   "definition": "distance from canopy to conductor",
+   "asOfRule": "From lidar or imagery"
+  },
+  {
+   "name": "Species and growth rate",
+   "definition": "tree type and growth",
+   "asOfRule": "From classification"
+  },
+  {
+   "name": "Line sag and wind swing",
+   "definition": "conductor movement under load and wind",
+   "asOfRule": "From models"
+  },
+  {
+   "name": "Local fire and storm risk",
+   "definition": "risk class of the area",
+   "asOfRule": "From risk maps"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Vegetation Encroachment Detection\": Measure vegetation clearance to power lines from aerial and satellite imagery and lidar and rank spans by risk of contact so trimming crews work where it matters. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fixed cycles only."
+}

@@ -1,0 +1,9 @@
+# Overrides for deployment/helm/ai-solution in the free BrainSiphon deployment kit, for Robot Cell Anomaly Detection.
+# Modelled sizing at 10M registered users. Replace with your measured peak, and set autoscaling bounds from a load test.
+# Blueprint compute statement: 8 8-vCPU pods for 18,750 req/s (≈2,500 scores/s per pod (GBDT / small NN, features already in memory)); 3 online feature-store shards and 12 event-bus partitions.
+replicaCount: 8   # modelled pods at peak, including failover headroom
+resources:
+  requests:
+    cpu: '8000m'
+  limits:
+    cpu: '8000m'

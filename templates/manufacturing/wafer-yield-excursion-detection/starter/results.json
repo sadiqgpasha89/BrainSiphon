@@ -1,0 +1,36 @@
+{
+ "use_case": "manufacturing/wafer-yield-excursion-detection",
+ "engine": "uplift",
+ "seed": 74691,
+ "knobs": {
+  "n": 41940,
+  "confound": 1.186,
+  "holdout": 0.185
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.5,
+ "results": {
+  "rows": 41940,
+  "observational_rows": 34270,
+  "holdout_rows": 7670,
+  "true_ate": 0.06889628040057225,
+  "naive_ate": 0.19663421753457322,
+  "naive_bias": 0.12773793713400097,
+  "ipw_ate": 0.07353351462187246,
+  "ipw_bias": 0.004637234221300218,
+  "holdout_ate": 0.0789996698005693,
+  "holdout_balance_smd_x0": 0.003775629113440492,
+  "observational_balance_smd_x0": 1.0244720860724932,
+  "t_learner_qini_auc": 0.00640278262521025,
+  "random_ranking_qini_auc": -9.336012395990591e-05,
+  "top_decile_realised_uplift": 0.1244407272925081,
+  "bottom_decile_realised_uplift": 0.00015660960629709786,
+  "share_predicted_negative": 0.17666232073011734
+ }
+}

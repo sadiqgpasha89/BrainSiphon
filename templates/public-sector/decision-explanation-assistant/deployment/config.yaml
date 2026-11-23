@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: decision_record_retrieval, timeout_ms: 495, on_timeout: fallback_level_1 }
+    - { name: template_selection, timeout_ms: 165, on_timeout: fallback_level_1 }
+    - { name: letter_draft, timeout_ms: 659, on_timeout: fallback_level_1 }
+    - { name: reason_and_citation_check, timeout_ms: 165, on_timeout: fallback_level_1 }
+    - { name: plain_language_check, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: caseworker_approval_and_signature, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: outcome_and_appeal_tracking, timeout_ms: 247, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Letter drafting time"
+    - "Appeals caused by unclear letters"
+    - "Complaints"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

@@ -1,0 +1,16 @@
+contract: legal_aid_eligibility_screening_inputs.v1
+owner: emergency-communications@example.com
+system_of_record: Computer-aided dispatch (CAD)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: income_and_asset_rule_match, type: double, nullable: false }
+    - { name: case_type_match, type: double, nullable: false }
+    - { name: missing_documents, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

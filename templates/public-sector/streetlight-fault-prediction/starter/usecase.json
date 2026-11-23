@@ -1,0 +1,59 @@
+{
+ "slug": "public-sector/streetlight-fault-prediction",
+ "title": "Streetlight Fault Prediction",
+ "domain": "public-sector",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 75343,
+ "knobs": {
+  "n_entities": 2350,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 5
+ },
+ "blueprintSignals": [
+  {
+   "name": "Power draw drift",
+   "definition": "change in power consumption",
+   "asOfRule": "From controllers"
+  },
+  {
+   "name": "Dimming and switching faults",
+   "definition": "fault codes",
+   "asOfRule": "From controllers"
+  },
+  {
+   "name": "Luminaire age and type",
+   "definition": "years and model",
+   "asOfRule": "From the register"
+  },
+  {
+   "name": "Location safety class",
+   "definition": "crossings, junctions and crime-prevention areas",
+   "asOfRule": "From policy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Streetlight Fault Prediction\": Predict luminaire and driver failures from power, dimming and fault data so repairs are scheduled in routes before streets go dark. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Complaint-led repairs."
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "energy/short-term-load-forecasting",
+ "title": "Short-Term Load Forecasting",
+ "domain": "energy",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 71841,
+ "knobs": {
+  "n_series": 282
+ },
+ "blueprintSignals": [
+  {
+   "name": "Temperature forecast",
+   "definition": "forecast temperature and humidity",
+   "asOfRule": "Forecast not actual"
+  },
+  {
+   "name": "Calendar and holiday effects",
+   "definition": "day type, school terms and holidays",
+   "asOfRule": "From the calendar"
+  },
+  {
+   "name": "Same time last week",
+   "definition": "load at the same time in prior weeks",
+   "asOfRule": "Aligned on local time"
+  },
+  {
+   "name": "Behind-the-meter solar estimate",
+   "definition": "estimated solar generation reducing net load",
+   "asOfRule": "From the solar forecast"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Short-Term Load Forecasting\": Forecast electricity demand by substation and system for the next days at 15-minute resolution so dispatch, reserves and purchases are planned against realistic loads. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Mean-only forecasts."
+}

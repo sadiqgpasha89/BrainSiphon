@@ -1,0 +1,46 @@
+{
+ "use_case": "energy/day-ahead-price-forecasting",
+ "engine": "forecast",
+ "seed": 88734,
+ "knobs": {
+  "n_series": 192
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 18.8,
+ "results": {
+  "rows": 17383,
+  "h1": {
+   "wmape_model": 0.11961275082185827,
+   "wmape_baseline": 0.21404018490023863,
+   "fva": 0.4411668496847533
+  },
+  "h3": {
+   "wmape_model": 0.11603172538816516,
+   "wmape_baseline": 0.21179251019797718,
+   "fva": 0.4521443403276998
+  },
+  "h7": {
+   "wmape_model": 0.11970652427394023,
+   "wmape_baseline": 0.22827935202060826,
+   "fva": 0.47561387740782823
+  },
+  "h14": {
+   "wmape_model": 0.14714187877018167,
+   "wmape_baseline": 0.2448543709953352,
+   "fva": 0.39906370398025315
+  },
+  "p90_coverage": 0.8961053903238797,
+  "wmape_sku_level": 0.12522771669711988,
+  "wmape_aggregate": 0.024372027992485536,
+  "late_feed": {
+   "missing_as_zero": 0.19038404955756597,
+   "missing_as_nan": 0.14033847582552747
+  }
+ }
+}

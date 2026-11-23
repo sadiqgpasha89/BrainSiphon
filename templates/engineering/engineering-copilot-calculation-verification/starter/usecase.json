@@ -1,0 +1,55 @@
+{
+ "slug": "engineering/engineering-copilot-calculation-verification",
+ "title": "Engineering Copilot with Calculation Verification",
+ "domain": "engineering",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 68193,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Unit consistency",
+   "definition": "dimensions of every quantity",
+   "asOfRule": "From a units engine"
+  },
+  {
+   "name": "Independent recomputation",
+   "definition": "tool result versus draft",
+   "asOfRule": "From calculators"
+  },
+  {
+   "name": "Clause citation match",
+   "definition": "cited clause and edition",
+   "asOfRule": "From the standards library"
+  },
+  {
+   "name": "Assumption register",
+   "definition": "stated assumptions and limits",
+   "asOfRule": "From the draft"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Engineering Copilot with Calculation Verification\": Help engineers draft calculations, specifications and reports while a separate verifier checks units, formulas, code clauses and numeric results against independent tools before anything reaches review. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model self-checking."
+}

@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/on-call-runbook-assistant",
+ "title": "On-Call Runbook Assistant",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-write-actions",
+ "seed": 76173,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Alert and service match",
+   "definition": "runbooks linked to the alert",
+   "asOfRule": "From the catalogue"
+  },
+  {
+   "name": "Runbook freshness",
+   "definition": "last review date",
+   "asOfRule": "From the doc system"
+  },
+  {
+   "name": "Step applicability",
+   "definition": "environment and version conditions",
+   "asOfRule": "From runbook metadata"
+  },
+  {
+   "name": "Past usage outcomes",
+   "definition": "whether a runbook helped before",
+   "asOfRule": "From incident records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"On-Call Runbook Assistant\": Find the right runbook for an alert, summarise the steps in context and answer questions during an incident, with links to the source and no actions taken without approval. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model memory of procedures."
+}

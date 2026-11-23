@@ -1,0 +1,38 @@
+{
+ "id": "llm-agent",
+ "label": "Tool-using agent with guardrails and a verifier",
+ "summary": "A runnable reference for an agent that gathers evidence with typed, read-only tools, cannot be steered by instructions planted in data, needs approval for write actions, verifies its claims against the cited evidence and escalates when evidence is missing.",
+ "problemTypes": [
+  "agentic-read-only",
+  "agentic-write-actions"
+ ],
+ "traps": [
+  "Treating tool output as instructions",
+  "Judging by accuracy alone",
+  "Guessing when evidence is missing",
+  "Tuning on the replay set you report"
+ ],
+ "origin": "pattern-kit",
+ "slots": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ]
+}

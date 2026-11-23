@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/postmortem-drafting-assistant",
+ "title": "Postmortem Drafting Assistant",
+ "domain": "it-ops",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 24564,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Timeline of events",
+   "definition": "detection, response and recovery steps",
+   "asOfRule": "From the incident record"
+  },
+  {
+   "name": "Contributing changes",
+   "definition": "changes before the incident",
+   "asOfRule": "From change records"
+  },
+  {
+   "name": "Impact metrics",
+   "definition": "duration and affected users",
+   "asOfRule": "From monitoring"
+  },
+  {
+   "name": "Related past actions",
+   "definition": "open items from similar incidents",
+   "asOfRule": "From the action tracker"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Postmortem Drafting Assistant\": Draft blameless postmortems from the incident timeline, changes and metrics, with contributing factors and action items for the incident owner to edit and approve. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual blame."
+}

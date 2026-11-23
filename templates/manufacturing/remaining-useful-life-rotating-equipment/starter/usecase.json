@@ -1,0 +1,53 @@
+{
+ "slug": "manufacturing/remaining-useful-life-rotating-equipment",
+ "title": "Remaining Useful Life Prediction for Rotating Equipment",
+ "domain": "manufacturing",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 14375,
+ "knobs": {
+  "n": 317
+ },
+ "blueprintSignals": [
+  {
+   "name": "Vibration band energy trend",
+   "definition": "trend in bearing and gear frequency band energy",
+   "asOfRule": "Per asset class and speed"
+  },
+  {
+   "name": "Temperature rise over load",
+   "definition": "temperature minus the load-expected value",
+   "asOfRule": "Condition on load"
+  },
+  {
+   "name": "Operating hours at high load",
+   "definition": "hours above the rated load fraction",
+   "asOfRule": "From the historian"
+  },
+  {
+   "name": "Maintenance history",
+   "definition": "lubrication, alignment and rebuilds",
+   "asOfRule": "From the CMMS"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Remaining Useful Life Prediction for Rotating Equipment\": Estimate the remaining useful life of pumps, motors, gearboxes and fans from vibration, temperature and operating history so replacements are planned before failure. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Dropping censored assets."
+}

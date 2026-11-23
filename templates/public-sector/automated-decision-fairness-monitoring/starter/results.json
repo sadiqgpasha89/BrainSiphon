@@ -1,0 +1,34 @@
+{
+ "use_case": "public-sector/automated-decision-fairness-monitoring",
+ "engine": "tabular",
+ "seed": 20178,
+ "knobs": {
+  "n_entities": 1900,
+  "positive_entity_rate": 0.042,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.0,
+ "results": {
+  "rows": 145999,
+  "positive_rate": 0.005719217254912705,
+  "test_rows": 49309,
+  "test_positive_rate": 0.005313431625058306,
+  "baseline_lr": {
+   "pr_auc": 0.781494284746838,
+   "recall_at_0.5pct_fpr": 0.816793893129771,
+   "brier": 0.0024658524084951484
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7897333974001597,
+   "recall_at_0.5pct_fpr": 0.7786259541984732,
+   "brier": 0.0018897072561947672
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/dependency-upgrade-agent",
+ "title": "Dependency Upgrade Agent",
+ "domain": "devtools",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 1063,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Vulnerability fixed",
+   "definition": "advisories resolved by the update",
+   "asOfRule": "From advisories"
+  },
+  {
+   "name": "Semantic version change",
+   "definition": "patch, minor or major",
+   "asOfRule": "From metadata"
+  },
+  {
+   "name": "Test pass result",
+   "definition": "test outcomes after the change",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Usage of changed APIs",
+   "definition": "calls to changed functions",
+   "asOfRule": "From code analysis"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Dependency Upgrade Agent\": Propose dependency upgrades that fix vulnerabilities and age, run tests in a sandbox and open pull requests with the changelog risks, for owners to merge. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Version bump bots with no tests."
+}

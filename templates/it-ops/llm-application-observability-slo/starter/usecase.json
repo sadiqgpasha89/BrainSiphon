@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/llm-application-observability-slo",
+ "title": "LLM Application Observability and SLOs",
+ "domain": "it-ops",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 23279,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Groundedness score",
+   "definition": "share of claims supported by sources",
+   "asOfRule": "From evaluators"
+  },
+  {
+   "name": "Tool error and retry rate",
+   "definition": "failed tool calls",
+   "asOfRule": "From traces"
+  },
+  {
+   "name": "Cost per task",
+   "definition": "tokens and calls",
+   "asOfRule": "From the gateway"
+  },
+  {
+   "name": "Safety events",
+   "definition": "blocked inputs and policy hits",
+   "asOfRule": "From the gateway"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"LLM Application Observability and SLOs\": Monitor AI assistants and agents used in IT for latency, cost, grounding quality and safety events, define service level objectives and alert owners when quality or cost drifts. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Latency-only monitoring."
+}

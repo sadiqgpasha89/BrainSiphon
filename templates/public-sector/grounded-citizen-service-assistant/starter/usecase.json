@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/grounded-citizen-service-assistant",
+ "title": "Grounded Citizen Service Assistant",
+ "domain": "public-sector",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 62862,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Source freshness",
+   "definition": "age of the page behind the answer",
+   "asOfRule": "From the CMS"
+  },
+  {
+   "name": "Question intent",
+   "definition": "information, status, form help or complaint",
+   "asOfRule": "Classified"
+  },
+  {
+   "name": "Language and accessibility need",
+   "definition": "language and format requested",
+   "asOfRule": "From the session"
+  },
+  {
+   "name": "Confidence and coverage",
+   "definition": "whether sources cover the question",
+   "asOfRule": "From retrieval"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Grounded Citizen Service Assistant\": Answer residents' questions about services, eligibility rules, fees and deadlines from official pages and forms, cite the source and hand over to a person for any case-specific decision. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Answering eligibility questions."
+}

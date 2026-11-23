@@ -1,0 +1,59 @@
+{
+ "slug": "energy/distribution-outage-prediction",
+ "title": "Distribution Outage Prediction",
+ "domain": "energy",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 6788,
+ "knobs": {
+  "n": 11040,
+  "label_noise": 0.068,
+  "dup_share": 0.422
+ },
+ "blueprintSignals": [
+  {
+   "name": "Forecast wind gust and lightning",
+   "definition": "forecast gust speed and strike density at the section",
+   "asOfRule": "Interpolated to sections"
+  },
+  {
+   "name": "Vegetation density near the line",
+   "definition": "canopy cover within the corridor",
+   "asOfRule": "From imagery or survey"
+  },
+  {
+   "name": "Asset age and condition",
+   "definition": "age of conductors, poles and switches",
+   "asOfRule": "From the asset register"
+  },
+  {
+   "name": "Past outage count",
+   "definition": "outages on the section in the last three years",
+   "asOfRule": "Excludes planned work"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Distribution Outage Prediction\": Predict the chance of outages on each feeder section over the next days from weather, vegetation, asset age and history, so crews and spares are pre-positioned before storms. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using customer calls as labels."
+}

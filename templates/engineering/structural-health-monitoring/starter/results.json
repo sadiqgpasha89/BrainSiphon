@@ -1,0 +1,43 @@
+{
+ "use_case": "engineering/structural-health-monitoring",
+ "engine": "anomaly",
+ "seed": 59756,
+ "knobs": {
+  "n_series": 76,
+  "anomalies_per_series": 2.467
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 16.3,
+ "results": {
+  "series": 76,
+  "hours": 2016,
+  "events": 197,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.25748385834474663,
+   "recall": 0.5882352941176471,
+   "median_delay_h": 1.0,
+   "events": 102
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.695754255527294,
+   "recall": 0.8431372549019608,
+   "median_delay_h": 0.0,
+   "events": 102
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5834474662492662,
+   "recall": 0.9705882352941176,
+   "median_delay_h": 0.0,
+   "events": 102
+  }
+ }
+}

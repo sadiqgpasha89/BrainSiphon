@@ -1,0 +1,50 @@
+{
+ "use_case": "engineering/site-progress-monitoring",
+ "engine": "cv",
+ "seed": 90457,
+ "knobs": {
+  "n": 4790,
+  "prevalence": 0.101
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "images": 4790,
+  "train": 1651,
+  "prevalence": 0.10187891440501044,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9454683393394206,
+    "sens_at_95_spec": 0.7450980392156863
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9450122195067763,
+    "sens_at_95_spec": 0.8
+   },
+   "site_B": {
+    "auc": 0.7581759557807461,
+    "sens_at_95_spec": 0.3254901960784314
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.29411764705882354,
+    "false_positive_rate": 0.03823122984799632
+   }
+  }
+ }
+}

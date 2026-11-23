@@ -1,0 +1,120 @@
+# Engineering Copilot with Calculation Verification: use-case brief
+
+> Generated from the blueprint `engineering/engineering-copilot-calculation-verification` (content last verified 2026-11-07). Numbers marked *modelled* are starting points from a capacity and cost model, not measurements. Fill the blanks, strike what does not apply, and keep the decisions you change.
+
+**Use case:** Engineering Copilot with Calculation Verification · **Domain:** engineering · **Latency tier:** seconds · **Difficulty:** staff-principal
+
+One page to align the sponsor, the product owner and the delivery team before anything is designed. Edit it until everyone would sign it.
+
+## The problem
+
+**Situation.** Help engineers draft calculations, specifications and reports while a separate verifier checks units, formulas, code clauses and numeric results against independent tools before anything reaches review. The system has to run interactively, within a few seconds, inside these limits: Every numeric result is recomputed by an independent calculator, Code clauses cited with edition and Licensed engineer signs every deliverable.
+
+**Why it is hard.** The obvious approach is model self-check, and it fails because a model can repeat its own error. The second trap is in "Scope": the real signal is draft and check, while teams usually reach for sign or issue.
+
+**Scale and stakes.** At 10 million users this is about 1.5M model-touching events a day, 17 requests per second on average and 104 at peak, at an estimated $210.5K a month. A mistake is expensive in the way time to draft calculations measures it.
+
+**What success looks like.** Offline: Detection of seeded calculation errors, Citation accuracy and Verification coverage. Online: Calculation errors found in review, Time to draft calculations and Late design changes. The launch is judged on "Calculation errors found in review" while "Time to draft calculations" must not get worse.
+
+## Objective, loss and constraints
+
+**Business objective.** Help engineers draft calculations, specifications and reports while a separate verifier checks units, formulas, code clauses and numeric results against independent tools before anything reaches review.
+
+**Training objective.** `\mathcal{L}=-\sum_t\log p_\theta(y_t\mid y_{<t},x)+\lambda\,\mathrm{BCE}(\hat{p},y)`
+
+**Loss variables**
+
+| Symbol | Meaning |
+|---|---|
+| \mathcal{L} | The loss: the single number training tries to make as small as possible. Lower means the model fits the data and respects the extra terms better. |
+| \sum_t | Sum: add up the term for every value of the index written under it (all examples, time steps, classes and so on). |
+| \log | Natural logarithm. It turns probabilities into log-likelihood terms that add up and punish confident mistakes heavily. |
+| p_\theta | The language model's probability of the next token y_t, given the earlier tokens and the context written after the bar. (one value per time step or token t and forecast step h) |
+| y_t | The true outcome the model is trained to predict: a label such as 1 for positive and 0 for negative, or a measured value. (one value per time step or token t) |
+| \mid | 'Given': what follows is the information the probability or prediction is conditioned on. |
+| y_{<t} | All tokens before position t: the text the model has already read or generated. (one value per time step or token t) |
+| x | The input features describing one example (what the model sees). |
+| \lambda | Penalty weight: how strongly the added term counts against the main objective. A larger value enforces that term harder, at some cost in fit. |
+| \mathrm{BCE} | Binary cross-entropy: the standard loss for yes/no predictions. It is large when the model gives a low probability to what actually happened. |
+| \hat{p} | The model's estimated probability, after calibration where one is applied. |
+
+**Hard constraints**
+
+- Every numeric result is recomputed by an independent calculator
+- Code clauses cited with edition
+- Licensed engineer signs every deliverable
+- The copilot cannot issue or seal documents
+- Verification within 30 s per calculation
+
+## The approach in one paragraph
+
+Start with engineers writing calculations in spreadsheets and documents with peer checking, because it is the standard practice. Then earn the move to a drafting copilot that structures calculations as code and formulas, runs an independent verifier for units and numbers, cites clauses from licensed standards and lists assumptions for the engineer, and only if it beats the baseline on Detection of seeded calculation errors and Citation accuracy after variance.
+
+**Moves**
+
+| Move | Detail |
+|---|---|
+| Build the model around Unit consistency | Dimensions of every quantity. Core. Guard against: from a units engine. |
+| Add Independent recomputation | Tool result versus draft. Core. Guard against: from calculators. |
+| Add Clause citation match | Cited clause and edition. Check. Guard against: from the standards library. |
+| Run it as one pipeline | Calculation brief (engineer), Draft structure (LLM), Formula and unit execution (calculation engine), Independent verifier (separate tool), Clause citation check (standards library) and Record (document system), with Engineer review and sign-off off the critical path. |
+| Optimise the right thing | The objective weighs sum: add up the term for every value of the index written under it (all examples, time steps, classes and so on), so the model is trained on the cost of the decision and not on a generic score. |
+| Handle unit slip | Unit engine and reject. |
+
+**Deliberately not doing**
+
+- Engineer name: personal data.
+- Draft length: weak link.
+- Template name: an artefact.
+
+**How the approach is proven**
+
+Prove it offline on Detection of seeded calculation errors, Citation accuracy and Verification coverage using time-ordered splits, then online on "Calculation errors found in review" with "Time to draft calculations" as the guardrail. Watch for: Model self-checking, Signing by the copilot and Memory of standards.
+
+## Baseline and production design
+
+- **Baseline (build this first):** Engineers writing calculations in spreadsheets and documents with peer checking, because it is the standard practice.
+- **Production design:** A drafting copilot that structures calculations as code and formulas, runs an independent verifier for units and numbers, cites clauses from licensed standards and lists assumptions for the engineer.
+
+## Why AI, and why this kind
+
+**Why AI.** Help engineers draft calculations, specifications and reports while a separate verifier checks units, formulas, code clauses and numeric results against independent tools before anything reaches review. The evidence that separates good from bad outcomes (Unit consistency, Independent recomputation, Clause citation match) is high-dimensional and shifts over time, which a fixed threshold cannot track.
+
+**Why not rules.** Rules of the form "model self-check" are what teams reach for first, and they fail because A model can repeat its own error. Rules stay as the policy layer around the model (limits, compliance, safe defaults) but cannot rank the cases inside them.
+
+**Why this paradigm.** The task is multi-step with variable paths and tool use that a fixed workflow cannot express, provided tools are typed, permissioned and verified. Here the production design is: A drafting copilot that structures calculations as code and formulas, runs an independent verifier for units and numbers, cites clauses from licensed standards and lists assumptions for the engineer.
+
+**Options weighed**
+
+| Option | Verdict | Reason |
+|---|---|---|
+| Rules and thresholds only (status quo) | rejected | Cannot capture the interactions among Unit consistency, Independent recomputation, Clause citation match and decays as behaviour changes; kept as the policy layer and the last rung of the degradation ladder. |
+| Baseline: Engineers writing calculations in spreadsheets and documents with peer checking, because it is the standard practice | fallback | Sets the cost floor, gives the benchmark every challenger must beat and stays deployed as the in-process fallback. |
+| A drafting copilot that structures calculations as code and formulas, runs an independent verifier for units and numbers, cites clauses from licensed standards and lists assumptions for the engineer | chosen | Meets the 2500 ms envelope at $4.68 per 1,000 decisions and exposes the signals the baseline cannot use. |
+| Fully autonomous agent with broad tools | later | Unsafe without earned autonomy; start at read-only and promote by evidence |
+| LLM or agent as the decision maker | rejected | This is already an LLM system; the question is how much autonomy to grant, which the autonomy ladder answers |
+| Buy a vendor model end to end | later | Reasonable for a first release without labels; integrate the vendor score as a feature and keep the policy and ledger in-house. |
+
+**Revisit the decision when**
+
+- Label volume or signal changes enough that a fully autonomous agent with broad tools beats the champion by a pre-agreed margin on the frozen holdout and every protected slice
+- The latency or cost envelope moves (a looser p99 or cheaper serving makes a heavier tier affordable; a tighter one forces a lighter cascade)
+- The guardrail metric (Calculation errors found in review) breaches for two consecutive matured-label windows despite retraining
+- A new regulatory or contractual requirement changes what must be explained, localised or approved (Professional engineering accountability and building and design codes)
+- The decision starts to change the data it learns from (selection bias grows), which calls for exploration or counterfactual evaluation
+
+## Risks to name now
+
+- Evaluation trap: Model self-checking.
+- Evaluation trap: Signing by the copilot.
+- Unit slip: a value uses the wrong unit.
+- Edition mismatch: an old code edition is cited.
+
+## Sign-off
+
+| Role | Name | Date | Signature |
+|---|---|---|---|
+| Sponsor | | | |
+| Product owner | | | |
+| Delivery lead | | | |
+| Risk and compliance | | | |

@@ -1,0 +1,53 @@
+{
+ "slug": "engineering/specification-compliance-checking",
+ "title": "Specification Compliance Checking",
+ "domain": "engineering",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 85860,
+ "knobs": {
+  "n_train": 1040
+ },
+ "blueprintSignals": [
+  {
+   "name": "Clause requirement",
+   "definition": "the numeric or textual requirement",
+   "asOfRule": "From the specification"
+  },
+  {
+   "name": "Evidence extraction",
+   "definition": "values in the submission",
+   "asOfRule": "From documents"
+  },
+  {
+   "name": "Edition and jurisdiction",
+   "definition": "code version in force",
+   "asOfRule": "From project data"
+  },
+  {
+   "name": "Match confidence",
+   "definition": "confidence of the extraction",
+   "asOfRule": "From the model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Specification Compliance Checking\": Check submitted designs and product data against specification clauses and codes and list clauses that are met, unmet or unclear, with citations for reviewers to decide. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Silent compliance passes."
+}

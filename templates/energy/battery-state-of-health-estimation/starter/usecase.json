@@ -1,0 +1,59 @@
+{
+ "slug": "energy/battery-state-of-health-estimation",
+ "title": "Battery State of Health Estimation",
+ "domain": "energy",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 78156,
+ "knobs": {
+  "n": 23220,
+  "outlier_share": 0.012,
+  "drift": 0.198
+ },
+ "blueprintSignals": [
+  {
+   "name": "Capacity from partial charge",
+   "definition": "capacity inferred from partial cycles",
+   "asOfRule": "Normalised"
+  },
+  {
+   "name": "Internal resistance trend",
+   "definition": "rise in resistance",
+   "asOfRule": "From current and voltage"
+  },
+  {
+   "name": "Temperature exposure",
+   "definition": "time at high temperature",
+   "asOfRule": "From sensors"
+  },
+  {
+   "name": "Cycle depth and rate",
+   "definition": "depth of discharge and C-rate",
+   "asOfRule": "From telemetry"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Battery State of Health Estimation\": Estimate battery capacity and resistance from operating data without full test cycles so ageing is tracked and the end of life is planned. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Vendor estimate only."
+}

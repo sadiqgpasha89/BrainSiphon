@@ -1,0 +1,55 @@
+{
+ "slug": "energy/outage-communication-agent",
+ "title": "Outage Communication Agent",
+ "domain": "energy",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 38899,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Outage record status",
+   "definition": "cause, crew status and estimate",
+   "asOfRule": "From the OMS"
+  },
+  {
+   "name": "Customer location match",
+   "definition": "whether the address is in the affected area",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Estimate confidence",
+   "definition": "how reliable the estimate is",
+   "asOfRule": "From the OMS"
+  },
+  {
+   "name": "Priority flag",
+   "definition": "registered priority customers",
+   "asOfRule": "From the register"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Outage Communication Agent\": Answer customer questions about outages and estimated restoration times from the outage system and keep status pages and messages current, without promising times the operator has not confirmed. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model-made restoration times."
+}

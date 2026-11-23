@@ -1,0 +1,54 @@
+{
+ "slug": "devtools/error-grouping-log-clustering",
+ "title": "Error Grouping and Log Clustering",
+ "domain": "devtools",
+ "engine": "cluster",
+ "fit": "exact",
+ "problemType": "clustering-segmentation",
+ "seed": 19659,
+ "knobs": {
+  "n": 5180,
+  "outlier_share": 0.006
+ },
+ "blueprintSignals": [
+  {
+   "name": "Normalised stack trace",
+   "definition": "frames without variable parts",
+   "asOfRule": "From parsing"
+  },
+  {
+   "name": "Message template",
+   "definition": "message with variables masked",
+   "asOfRule": "From parsing"
+  },
+  {
+   "name": "Release and deployment markers",
+   "definition": "version and time",
+   "asOfRule": "From CD"
+  },
+  {
+   "name": "Users and sessions affected",
+   "definition": "distinct affected users",
+   "asOfRule": "Aggregated"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "value feature (f0)",
+   "meaning": "in currency units, thousands of times larger than the others"
+  },
+  {
+   "feature": "behaviour features (f1-f3)",
+   "meaning": "separate the segments"
+  },
+  {
+   "feature": "engagement features (f4-f6)",
+   "meaning": "separate some segments"
+  },
+  {
+   "feature": "noise feature (f7)",
+   "meaning": "carries little structure"
+  }
+ ],
+ "label": "For \"Error Grouping and Log Clustering\": Group production errors and log lines into issues by cause so engineers see a few ranked problems instead of millions of events. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Exact message grouping."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "public-safety/audio-video-evidence-transcription-search",
+ "title": "Audio and Video Evidence Transcription and Search",
+ "domain": "public-safety",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 7087,
+ "knobs": {
+  "n_train": 1010
+ },
+ "blueprintSignals": [
+  {
+   "name": "ASR confidence",
+   "definition": "confidence per segment",
+   "asOfRule": "From ASR"
+  },
+  {
+   "name": "Speaker turn boundaries",
+   "definition": "change of speaker",
+   "asOfRule": "From diarisation"
+  },
+  {
+   "name": "Keyword and phrase match",
+   "definition": "query hits with time",
+   "asOfRule": "From the index"
+  },
+  {
+   "name": "Audio quality",
+   "definition": "noise and clipping",
+   "asOfRule": "From signal analysis"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Audio and Video Evidence Transcription and Search\": Transcribe recorded interviews and bodycam audio and make them searchable by time and phrase, with speaker turns marked, so reviewers find relevant moments without watching everything. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Voice identification."
+}

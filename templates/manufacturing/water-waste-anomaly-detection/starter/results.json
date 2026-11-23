@@ -1,0 +1,43 @@
+{
+ "use_case": "manufacturing/water-waste-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 64138,
+ "knobs": {
+  "n_series": 101,
+  "anomalies_per_series": 3.107
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 17.7,
+ "results": {
+  "series": 101,
+  "hours": 2016,
+  "events": 317,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.2617689278221502,
+   "recall": 0.5723270440251572,
+   "median_delay_h": 4.0,
+   "events": 159
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.6018624167249438,
+   "recall": 0.8679245283018868,
+   "median_delay_h": 0.0,
+   "events": 159
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5462107549044867,
+   "recall": 0.949685534591195,
+   "median_delay_h": 0.0,
+   "events": 159
+  }
+ }
+}

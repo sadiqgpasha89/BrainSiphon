@@ -1,0 +1,41 @@
+{
+ "use_case": "engineering/ai-design-review-professional-sign-off",
+ "engine": "llm-rag",
+ "seed": 37599,
+ "knobs": {},
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "chunks": 132,
+  "golden": 132,
+  "test_questions": 66,
+  "naive": {
+   "answerable": 48,
+   "unanswerable": 18,
+   "accuracy": 0.4791666666666667,
+   "answered_precision": 0.4791666666666667,
+   "abstained_on_answerable": 0.0,
+   "hallucination_rate": 1.0,
+   "stale_or_changelog_errors": 4,
+   "recall@5": 1.0,
+   "citation_support": 1.0
+  },
+  "guarded": {
+   "answerable": 48,
+   "unanswerable": 18,
+   "accuracy": 0.5833333333333334,
+   "answered_precision": 1.0,
+   "abstained_on_answerable": 0.4166666666666667,
+   "hallucination_rate": 0.0,
+   "stale_or_changelog_errors": 0,
+   "recall@5": 1.0,
+   "citation_support": 1.0
+  }
+ }
+}

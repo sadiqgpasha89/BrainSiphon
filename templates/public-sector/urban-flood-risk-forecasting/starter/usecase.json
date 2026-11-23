@@ -1,0 +1,59 @@
+{
+ "slug": "public-sector/urban-flood-risk-forecasting",
+ "title": "Urban Flood Risk Forecasting",
+ "domain": "public-sector",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 83691,
+ "knobs": {
+  "n_entities": 2020,
+  "positive_entity_rate": 0.037,
+  "n_flash_sales": 4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Rainfall nowcast and forecast",
+   "definition": "radar and model rainfall",
+   "asOfRule": "From weather services"
+  },
+  {
+   "name": "Drain and pump status",
+   "definition": "blocked drains and pump availability",
+   "asOfRule": "From telemetry and work orders"
+  },
+  {
+   "name": "River and tide levels",
+   "definition": "gauge levels",
+   "asOfRule": "From gauges"
+  },
+  {
+   "name": "Ground saturation",
+   "definition": "recent rainfall and soil moisture",
+   "asOfRule": "From satellites and models"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Urban Flood Risk Forecasting\": Forecast street-level flood risk from rainfall forecasts, drainage state and river levels so the city can pre-position pumps, close roads and warn residents in time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Rainfall thresholds only."
+}

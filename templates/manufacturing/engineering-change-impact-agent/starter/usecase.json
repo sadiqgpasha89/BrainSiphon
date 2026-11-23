@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/engineering-change-impact-agent",
+ "title": "Engineering Change Impact Agent",
+ "domain": "manufacturing",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 1054,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Where-used depth",
+   "definition": "number of assemblies and products using the part",
+   "asOfRule": "From the BOM"
+  },
+  {
+   "name": "Open order and stock exposure",
+   "definition": "stock and open orders of old versions",
+   "asOfRule": "From ERP"
+  },
+  {
+   "name": "Supplier and tooling dependency",
+   "definition": "tooling and supplier changes needed",
+   "asOfRule": "From purchasing"
+  },
+  {
+   "name": "Regulatory and qualification flags",
+   "definition": "parts under certification",
+   "asOfRule": "From PLM"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Engineering Change Impact Agent\": For an engineering change request, find the affected parts, assemblies, routings, suppliers and open orders, and draft an impact assessment so change boards decide faster. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Keyword search for impact."
+}

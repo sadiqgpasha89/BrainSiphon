@@ -1,0 +1,36 @@
+{
+ "use_case": "it-ops/data-loss-prevention-classification",
+ "engine": "nlp",
+ "seed": 80233,
+ "knobs": {
+  "n_docs": 5190
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.8,
+ "results": {
+  "docs": 5190,
+  "duplicate_share": 0.2581888246628131,
+  "random_split_with_leak": {
+   "macro_f1": 0.9128544384450701,
+   "ece": 0.143952738932242
+  },
+  "time_split_clean": {
+   "macro_f1": 0.5065771938491288,
+   "ece": 0.07760867152343501
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8060201638041,
+   "ece": 0.12419892685889149
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.5065771938491288,
+   "ece": 0.07760867152343501
+  }
+ }
+}

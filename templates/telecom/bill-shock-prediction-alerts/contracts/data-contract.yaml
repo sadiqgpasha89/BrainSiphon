@@ -1,0 +1,17 @@
+# the blueprint's contract example did not parse as YAML; kept verbatim below
+# contract: bill_shock_prediction_alerts_inputs.v1
+# owner: network-engineering@example.com
+# system_of_record: OSS: inventory, fault and performance management
+# schema:
+#   registry_compatibility: BACKWARD_TRANSITIVE
+#   fields:
+#     - { name: event_id, type: string, unique: true }
+#     - { name: event_time, type: timestamp, required: true, tz: UTC }
+#     - { name: usage_to_date_versus_history, type: double, nullable: false }
+#     - { name: roaming_and_premium_usage, type: double, nullable: false }
+#     - { name: plan_allowance_remaining, type: double, nullable: false }
+# sla:
+#   freshness_p95: available_before_run
+#   completeness: ">=99.5%"
+#   duplicates: "<0.01%"
+# on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

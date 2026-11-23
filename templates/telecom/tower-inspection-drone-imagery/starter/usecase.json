@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/tower-inspection-drone-imagery",
+ "title": "Tower Inspection with Drone Imagery",
+ "domain": "telecom",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 80602,
+ "knobs": {
+  "n": 3610,
+  "prevalence": 0.126
+ },
+ "blueprintSignals": [
+  {
+   "name": "Defect detection score",
+   "definition": "model confidence for a defect class at the location",
+   "asOfRule": "Calibrated per class"
+  },
+  {
+   "name": "Defect growth between visits",
+   "definition": "change in the same area over time",
+   "asOfRule": "Needs image registration"
+  },
+  {
+   "name": "Component type",
+   "definition": "antenna, mount, cable or structure",
+   "asOfRule": "From a component detector"
+  },
+  {
+   "name": "Environmental exposure",
+   "definition": "coastal and wind exposure class",
+   "asOfRule": "From site data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Tower Inspection with Drone Imagery\": Find corrosion, loose fittings, antenna misalignment and structural damage from drone and climber images so inspections are faster and safer. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating all marks as defects."
+}

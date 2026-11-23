@@ -1,0 +1,16 @@
+# Reproduces the worked example and its tests in a container. It does not start a production service.
+services:
+  starter:
+    build: ../starter
+    image: brainsiphon/private-5g-network-slice-provisioning:starter
+    command: ["python", "run_usecase.py"]
+    environment:
+      OMP_NUM_THREADS: "2"
+    volumes:
+      - ../starter:/app
+  tests:
+    build: ../starter
+    image: brainsiphon/private-5g-network-slice-provisioning:starter
+    command: ["python", "-m", "pytest", "-q"]
+    environment:
+      OMP_NUM_THREADS: "2"

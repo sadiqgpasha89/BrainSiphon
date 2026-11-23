@@ -1,0 +1,46 @@
+{
+ "use_case": "public-safety/ems-demand-forecasting",
+ "engine": "forecast",
+ "seed": 1067,
+ "knobs": {
+  "n_series": 224
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 22.3,
+ "results": {
+  "rows": 20298,
+  "h1": {
+   "wmape_model": 0.1176179561511203,
+   "wmape_baseline": 0.22790366535592707,
+   "fva": 0.48391371429927976
+  },
+  "h3": {
+   "wmape_model": 0.1159306881198825,
+   "wmape_baseline": 0.22144612958582624,
+   "fva": 0.47648356583739226
+  },
+  "h7": {
+   "wmape_model": 0.12101999329433291,
+   "wmape_baseline": 0.21553969538665294,
+   "fva": 0.438525729206227
+  },
+  "h14": {
+   "wmape_model": 0.14806887933021315,
+   "wmape_baseline": 0.23200429793929161,
+   "fva": 0.36178389518905285
+  },
+  "p90_coverage": 0.8943738299339836,
+  "wmape_sku_level": 0.12521297628737682,
+  "wmape_aggregate": 0.02578087691474542,
+  "late_feed": {
+   "missing_as_zero": 0.185217209961404,
+   "missing_as_nan": 0.1372445933027402
+  }
+ }
+}

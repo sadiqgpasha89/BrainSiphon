@@ -1,0 +1,16 @@
+contract: injection_moulding_parameter_tuning_inputs.v1
+owner: plant-operations@example.com
+system_of_record: MES (manufacturing execution system)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: cavity_pressure_curve_features, type: double, nullable: false }
+    - { name: cycle_time_and_cushion, type: double, nullable: false }
+    - { name: melt_and_mould_temperatures, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

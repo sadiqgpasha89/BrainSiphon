@@ -1,0 +1,16 @@
+contract: capable_to_promise_order_promising_inputs.v1
+owner: plant-operations@example.com
+system_of_record: MES (manufacturing execution system)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: available_stock_and_planned_receipts, type: double, nullable: false }
+    - { name: capacity_load_by_week, type: double, nullable: false }
+    - { name: historical_on_time_rate_by_lane, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

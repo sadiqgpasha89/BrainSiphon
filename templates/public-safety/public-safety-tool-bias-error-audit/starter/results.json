@@ -1,0 +1,34 @@
+{
+ "use_case": "public-safety/public-safety-tool-bias-error-audit",
+ "engine": "tabular",
+ "seed": 76542,
+ "knobs": {
+  "n_entities": 1890,
+  "positive_entity_rate": 0.042,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "rows": 145681,
+  "positive_rate": 0.005779751649151228,
+  "test_rows": 48041,
+  "test_positive_rate": 0.004308819549967736,
+  "baseline_lr": {
+   "pr_auc": 0.7421826232610829,
+   "recall_at_0.5pct_fpr": 0.7536231884057971,
+   "brier": 0.002068837399249382
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7385762318377777,
+   "recall_at_0.5pct_fpr": 0.748792270531401,
+   "brier": 0.001896859637726668
+  }
+ }
+}

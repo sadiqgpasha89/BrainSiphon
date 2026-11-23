@@ -1,0 +1,49 @@
+{
+ "use_case": "energy/battery-state-of-health-estimation",
+ "engine": "regression",
+ "seed": 78156,
+ "knobs": {
+  "n": 23220,
+  "outlier_share": 0.012,
+  "drift": 0.198
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.7,
+ "results": {
+  "rows": 23220,
+  "train_rows": 16253,
+  "test_rows": 6967,
+  "baseline_ridge": {
+   "mae": 6.397793080411836,
+   "rmse": 9.83800120606541,
+   "wape": 0.1215520544095672,
+   "r2": 0.534615375653437
+  },
+  "challenger_gbm": {
+   "mae": 3.776893168561884,
+   "rmse": 7.307502756121563,
+   "wape": 0.07175741980930156,
+   "r2": 0.7432347402743542
+  },
+  "mae_gain_vs_baseline": 0.4096568736920202,
+  "interval_80_coverage": 0.7160901392277882,
+  "interval_80_mean_width": 8.804587075319928,
+  "segment_mae": {
+   "0": 3.7467096064931056,
+   "1": 3.450939963833049,
+   "2": 4.099128624056462,
+   "3": 5.054735474811213
+  },
+  "worst_segment_vs_overall": 1.3383315993382703,
+  "leaky_feature_rmse": 1.614917927435921,
+  "honest_rmse": 7.307502756121563,
+  "random_split_mae": 3.557857152297808,
+  "chronological_mae": 3.776893168561884
+ }
+}

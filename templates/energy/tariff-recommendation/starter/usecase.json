@@ -1,0 +1,59 @@
+{
+ "slug": "energy/tariff-recommendation",
+ "title": "Tariff Recommendation",
+ "domain": "energy",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 34988,
+ "knobs": {
+  "n": 16430,
+  "outlier_share": 0.031,
+  "drift": 0.303
+ },
+ "blueprintSignals": [
+  {
+   "name": "Replayed annual cost",
+   "definition": "cost of past usage under each tariff",
+   "asOfRule": "From interval data"
+  },
+  {
+   "name": "Usage shape stability",
+   "definition": "how much the pattern varies by year",
+   "asOfRule": "From history"
+  },
+  {
+   "name": "Planned changes",
+   "definition": "solar, EV or heat pump plans",
+   "asOfRule": "From the customer"
+  },
+  {
+   "name": "Tariff eligibility",
+   "definition": "which plans the customer can take",
+   "asOfRule": "From rules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Tariff Recommendation\": Recommend the tariff that would have cost each customer the least on their own usage, and tell them how confident the saving is, so plans fit how people actually use energy. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Typical household assumptions."
+}

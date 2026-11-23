@@ -1,0 +1,16 @@
+contract: grid_ot_anomaly_detection_inputs.v1
+owner: network-operations@example.com
+system_of_record: SCADA and ADMS (advanced distribution management)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: new_or_changed_device, type: double, nullable: false }
+    - { name: command_and_function_code_mix, type: double, nullable: false }
+    - { name: flow_graph_change, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,55 @@
+{
+ "slug": "public-safety/investigator-case-file-assistant",
+ "title": "Investigator Case File Search and Summary Assistant",
+ "domain": "public-safety",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 77528,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Document type and date",
+   "definition": "statement, report or lab result",
+   "asOfRule": "From the records system"
+  },
+  {
+   "name": "Entity mentions",
+   "definition": "people, places and objects named",
+   "asOfRule": "From NER"
+  },
+  {
+   "name": "Timeline events",
+   "definition": "events with dates",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Contradiction flags",
+   "definition": "passages that disagree",
+   "asOfRule": "From checks"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Investigator Case File Search and Summary Assistant\": Let investigators search and summarise large case files, reports and statements with links to the original text, without ranking suspects or suggesting guilt. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Suspect ranking."
+}

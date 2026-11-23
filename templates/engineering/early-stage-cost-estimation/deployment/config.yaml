@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: brief_intake, timeout_ms: 194, on_timeout: fallback_level_1 }
+    - { name: feature_extraction, timeout_ms: 387, on_timeout: fallback_level_1 }
+    - { name: cost_model, timeout_ms: 774, on_timeout: fallback_level_1 }
+    - { name: range_calibration, timeout_ms: 290, on_timeout: fallback_level_1 }
+    - { name: estimate_record, timeout_ms: 290, on_timeout: fallback_level_1 }
+    - { name: outturn_comparison, timeout_ms: 290, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Estimate to outturn variance"
+    - "Time to estimate"
+    - "Early budget revisions"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

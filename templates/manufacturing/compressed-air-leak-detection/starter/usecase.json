@@ -1,0 +1,53 @@
+{
+ "slug": "manufacturing/compressed-air-leak-detection",
+ "title": "Compressed Air Leak Detection",
+ "domain": "manufacturing",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 72664,
+ "knobs": {
+  "n": 239
+ },
+ "blueprintSignals": [
+  {
+   "name": "Idle-period flow",
+   "definition": "flow during shutdown windows",
+   "asOfRule": "From the production calendar"
+  },
+  {
+   "name": "Compressor load factor",
+   "definition": "loaded versus unloaded time",
+   "asOfRule": "From the compressor"
+  },
+  {
+   "name": "Pressure decay rate",
+   "definition": "pressure drop in isolated zones",
+   "asOfRule": "From valves"
+  },
+  {
+   "name": "Zone flow trends",
+   "definition": "trend of flow per zone",
+   "asOfRule": "From submeters"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Compressed Air Leak Detection\": Detect compressed air leaks from flow, pressure and compressor data and prioritise repairs by energy cost so waste falls. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Total flow monitoring only."
+}

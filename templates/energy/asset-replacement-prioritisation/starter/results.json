@@ -1,0 +1,49 @@
+{
+ "use_case": "energy/asset-replacement-prioritisation",
+ "engine": "control",
+ "seed": 80058,
+ "knobs": {
+  "days": 68
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "days": 68,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.424355984885717,
+   "end_of_day_underdelivery_pct": 3.544039066170931,
+   "overshoot_max_pct": 7.011288138492307,
+   "oscillation": 0.0,
+   "hit_cap": 0.5294117647058824
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.76010612572986,
+   "end_of_day_underdelivery_pct": 1.0501061593722654,
+   "overshoot_max_pct": 6.095202961149751,
+   "oscillation": 0.012527006077343977,
+   "hit_cap": 0.3382352941176471
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.1657114206752501,
+   "end_of_day_underdelivery_pct": 0.03605738390485607,
+   "overshoot_max_pct": 2.103056071397763,
+   "oscillation": 0.0915564431987108,
+   "hit_cap": 0.5735294117647058
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.656379939432107,
+   "end_of_day_underdelivery_pct": 2.1493917939754454,
+   "overshoot_max_pct": 13.711389537700642,
+   "oscillation": 0.019740992258923142,
+   "hit_cap": 0.5588235294117647
+  },
+  "rmse_reduction_vs_open_loop": 0.5703684334704626
+ }
+}

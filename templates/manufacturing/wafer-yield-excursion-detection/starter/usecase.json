@@ -1,0 +1,59 @@
+{
+ "slug": "manufacturing/wafer-yield-excursion-detection",
+ "title": "Wafer Yield Excursion Detection",
+ "domain": "manufacturing",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 74691,
+ "knobs": {
+  "n": 41940,
+  "confound": 1.186,
+  "holdout": 0.185
+ },
+ "blueprintSignals": [
+  {
+   "name": "Tool commonality score",
+   "definition": "share of bad wafers sharing a tool or chamber against the base rate",
+   "asOfRule": "Needs the wafer path"
+  },
+  {
+   "name": "Metrology deviation",
+   "definition": "deviation of inline measurements from target",
+   "asOfRule": "Per step"
+  },
+  {
+   "name": "Fault detection summary",
+   "definition": "FDC alarm counts on the path",
+   "asOfRule": "Per tool"
+  },
+  {
+   "name": "Time since maintenance",
+   "definition": "hours since preventive maintenance",
+   "asOfRule": "From the CMMS"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Wafer Yield Excursion Detection\": Detect and attribute yield excursions in semiconductor or electronics fabs to a tool, step or lot from inline metrology and fault data, so engineers contain them within hours. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Lot-level averages."
+}

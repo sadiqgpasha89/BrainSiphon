@@ -1,0 +1,36 @@
+{
+ "use_case": "devtools/typosquat-malicious-package-blocking",
+ "engine": "nlp",
+ "seed": 18635,
+ "knobs": {
+  "n_docs": 5450
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.4,
+ "results": {
+  "docs": 5450,
+  "duplicate_share": 0.24862385321100922,
+  "random_split_with_leak": {
+   "macro_f1": 0.8876711717001085,
+   "ece": 0.12198892048903552
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4320420636558693,
+   "ece": 0.03018458780689459
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7877496448448311,
+   "ece": 0.12161764547143136
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4320420636558693,
+   "ece": 0.03018458780689459
+  }
+ }
+}

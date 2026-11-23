@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/intent-to-configuration-translation",
+ "title": "Intent-to-Configuration Translation",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 30822,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Schema conformance",
+   "definition": "whether the intent fits the typed schema without free-form fields",
+   "asOfRule": "Schema versions with the platform"
+  },
+  {
+   "name": "Policy check result",
+   "definition": "pass or fail of the guardrail rules for the target",
+   "asOfRule": "Rules owned by network security"
+  },
+  {
+   "name": "Diff size",
+   "definition": "lines of configuration changed against running config",
+   "asOfRule": "Compute against live state"
+  },
+  {
+   "name": "Simulation outcome",
+   "definition": "reachability and policy test results in the digital twin",
+   "asOfRule": "Twin must be current"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Intent-to-Configuration Translation\": Translate an engineer's plain-language network intent into validated vendor configuration through a typed intermediate model, so routine changes are faster and never skip validation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the model write commands."
+}

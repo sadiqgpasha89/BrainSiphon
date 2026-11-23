@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/coverage-hole-detection",
+ "engine": "tabular",
+ "seed": 32162,
+ "knobs": {
+  "n_entities": 2340,
+  "positive_entity_rate": 0.025,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.7,
+ "results": {
+  "rows": 182768,
+  "positive_rate": 0.0036275496804692286,
+  "test_rows": 60511,
+  "test_positive_rate": 0.003933169175852324,
+  "baseline_lr": {
+   "pr_auc": 0.7520281123272275,
+   "recall_at_0.5pct_fpr": 0.7899159663865546,
+   "brier": 0.0015401200050897137
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7544625773008727,
+   "recall_at_0.5pct_fpr": 0.7899159663865546,
+   "brier": 0.0017208873415308055
+  }
+ }
+}

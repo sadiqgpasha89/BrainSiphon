@@ -178,6 +178,14 @@ export const DOMAIN_DIMENSIONS: Record<Domain, string> = {
   cybersecurity: 'Endpoints, logs per second, events and alerts',
   edtech: 'Learners, concurrent sessions, assessments and content items',
   saas: 'Tenants, seats, API calls and concurrent sessions',
+  telecom: 'Subscribers, cells and network elements, alarms per second and CDRs per day',
+  manufacturing: 'Machines and sensors, tags per second, parts per minute and images per shift',
+  energy: 'Feeders and assets, SCADA points per second, meter reads per day and forecast horizons',
+  'public-sector': 'Cases and applications, service requests per day, sensor feeds and published datasets',
+  'public-safety': 'Calls and incidents per day, video feeds, documents per case and dispatch events',
+  devtools: 'Repositories, commits per day, pipeline runs, test executions and agent sessions',
+  'it-ops': 'Services, configuration items, alerts per day, tickets and cloud resources',
+  engineering: 'Projects, drawings and model elements, schedule activities, inspection records and sensor streams',
   'real-estate': 'Listings, properties, images and property updates',
 };
 
@@ -191,6 +199,14 @@ const DOMAIN_PROFILE: Record<Domain, ProfileId> = {
   healthcare: 'asset',
   'supply-chain': 'asset',
   cybersecurity: 'asset',
+  telecom: 'asset',
+  manufacturing: 'asset',
+  energy: 'asset',
+  'public-sector': 'asset',
+  'public-safety': 'asset',
+  devtools: 'asset',
+  'it-ops': 'asset',
+  engineering: 'asset',
   'real-estate': 'asset',
 };
 

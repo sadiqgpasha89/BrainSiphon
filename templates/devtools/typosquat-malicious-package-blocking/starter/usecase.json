@@ -1,0 +1,57 @@
+{
+ "slug": "devtools/typosquat-malicious-package-blocking",
+ "title": "Malicious Package Detection",
+ "domain": "devtools",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 18635,
+ "knobs": {
+  "n_docs": 5450
+ },
+ "blueprintSignals": [
+  {
+   "name": "Name similarity to popular packages",
+   "definition": "typosquat distance",
+   "asOfRule": "From the registry"
+  },
+  {
+   "name": "Install script behaviour",
+   "definition": "network calls and obfuscation",
+   "asOfRule": "From sandbox analysis"
+  },
+  {
+   "name": "Publisher change and maintainer history",
+   "definition": "new maintainers or sudden releases",
+   "asOfRule": "From registry data"
+  },
+  {
+   "name": "Dependency graph position",
+   "definition": "who depends on it",
+   "asOfRule": "From the graph"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Malicious Package Detection\": Detect suspicious new package versions in registries and in build dependencies, such as typosquats and install-time scripts that fetch payloads, and block them before they enter builds. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Known-vulnerability scanning only."
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "devtools/secret-detection-in-code",
+ "title": "Secret Detection in Code and Logs",
+ "domain": "devtools",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 62790,
+ "knobs": {
+  "n_docs": 5090
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pattern and entropy match",
+   "definition": "format and randomness of the string",
+   "asOfRule": "From scanners"
+  },
+  {
+   "name": "Provider validation",
+   "definition": "whether the provider says the key is live",
+   "asOfRule": "From provider checks"
+  },
+  {
+   "name": "File context",
+   "definition": "test file, config or code",
+   "asOfRule": "From the path"
+  },
+  {
+   "name": "Commit history",
+   "definition": "where the secret first appeared",
+   "asOfRule": "From version control"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Secret Detection in Code and Logs\": Detect API keys, tokens and credentials in commits, logs and chat before they spread, block pushes and start rotation with the owner. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Raw secrets in findings."
+}

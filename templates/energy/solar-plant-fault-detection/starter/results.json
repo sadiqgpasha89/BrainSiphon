@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/solar-plant-fault-detection",
+ "engine": "tabular",
+ "seed": 20710,
+ "knobs": {
+  "n_entities": 1800,
+  "positive_entity_rate": 0.045,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.9,
+ "results": {
+  "rows": 140395,
+  "positive_rate": 0.0055771216923679616,
+  "test_rows": 47214,
+  "test_positive_rate": 0.006226966577710001,
+  "baseline_lr": {
+   "pr_auc": 0.7370410213550436,
+   "recall_at_0.5pct_fpr": 0.7380952380952381,
+   "brier": 0.002897862845623373
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7758228126934402,
+   "recall_at_0.5pct_fpr": 0.8163265306122449,
+   "brier": 0.0024975936930391063
+  }
+ }
+}

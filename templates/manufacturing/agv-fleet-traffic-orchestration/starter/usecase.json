@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/agv-fleet-traffic-orchestration",
+ "title": "AGV Fleet Traffic Orchestration",
+ "domain": "manufacturing",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 61517,
+ "knobs": {
+  "n_instances": 196,
+  "noise": 0.436
+ },
+ "blueprintSignals": [
+  {
+   "name": "Segment occupancy and reservation",
+   "definition": "which segments are held and when",
+   "asOfRule": "Live map"
+  },
+  {
+   "name": "Mission urgency",
+   "definition": "due time of the mission",
+   "asOfRule": "From MES"
+  },
+  {
+   "name": "Battery state and charging slots",
+   "definition": "charge level and slot availability",
+   "asOfRule": "From the fleet system"
+  },
+  {
+   "name": "Predicted blockage",
+   "definition": "likelihood of blockage by area",
+   "asOfRule": "From past events"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"AGV Fleet Traffic Orchestration\": Assign missions and route AGVs and mobile robots through shared aisles without deadlocks, minimising wait and travel time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Independent shortest paths."
+}

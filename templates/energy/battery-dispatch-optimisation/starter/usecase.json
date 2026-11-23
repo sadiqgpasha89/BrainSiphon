@@ -1,0 +1,58 @@
+{
+ "slug": "energy/battery-dispatch-optimisation",
+ "title": "Battery Dispatch Optimisation",
+ "domain": "energy",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 56670,
+ "knobs": {
+  "n_instances": 139,
+  "noise": 0.318
+ },
+ "blueprintSignals": [
+  {
+   "name": "Price and ancillary scenarios",
+   "definition": "scenario set from the price models",
+   "asOfRule": "From forecasts"
+  },
+  {
+   "name": "State of charge and temperature",
+   "definition": "charge level and cell temperature",
+   "asOfRule": "From the battery system"
+  },
+  {
+   "name": "Degradation cost per cycle",
+   "definition": "cost from the ageing model",
+   "asOfRule": "From the health model"
+  },
+  {
+   "name": "Grid and contract limits",
+   "definition": "export limits and market obligations",
+   "asOfRule": "From contracts"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Battery Dispatch Optimisation\": Schedule battery charging and discharging across energy, ancillary and capacity markets to maximise margin while protecting battery life and respecting grid limits. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Revenue-only objectives."
+}

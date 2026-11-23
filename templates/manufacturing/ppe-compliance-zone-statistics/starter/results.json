@@ -1,0 +1,50 @@
+{
+ "use_case": "manufacturing/ppe-compliance-zone-statistics",
+ "engine": "cv",
+ "seed": 59235,
+ "knobs": {
+  "n": 5320,
+  "prevalence": 0.095
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.1,
+ "results": {
+  "images": 5320,
+  "train": 1912,
+  "prevalence": 0.1031954887218045,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9512018190544379,
+    "sens_at_95_spec": 0.7232472324723247
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9849627775215759,
+    "sens_at_95_spec": 0.9069767441860465
+   },
+   "site_B": {
+    "auc": 0.7573781068301089,
+    "sens_at_95_spec": 0.33579335793357934
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.34317343173431736,
+    "false_positive_rate": 0.05287846481876333
+   }
+  }
+ }
+}

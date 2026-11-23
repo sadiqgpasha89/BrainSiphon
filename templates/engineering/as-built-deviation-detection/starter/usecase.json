@@ -1,0 +1,58 @@
+{
+ "slug": "engineering/as-built-deviation-detection",
+ "title": "As-Built Deviation Detection",
+ "domain": "engineering",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 88301,
+ "knobs": {
+  "n": 5330,
+  "prevalence": 0.08
+ },
+ "blueprintSignals": [
+  {
+   "name": "Point-to-model distance",
+   "definition": "scan deviation from the model",
+   "asOfRule": "From registration"
+  },
+  {
+   "name": "Element type and tolerance class",
+   "definition": "what is being checked",
+   "asOfRule": "From the model"
+  },
+  {
+   "name": "Registration quality",
+   "definition": "residual error",
+   "asOfRule": "From the survey"
+  },
+  {
+   "name": "Visibility and occlusion",
+   "definition": "whether the element was seen",
+   "asOfRule": "From scan coverage"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"As-Built Deviation Detection\": Compare laser scans and photos of completed work with the design model and flag deviations beyond tolerance for the site engineer to inspect. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Visual alignment as truth."
+}

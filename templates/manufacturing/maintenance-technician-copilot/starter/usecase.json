@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/maintenance-technician-copilot",
+ "title": "Maintenance Technician Copilot",
+ "domain": "manufacturing",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 45893,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Asset model match",
+   "definition": "the exact asset model and revision",
+   "asOfRule": "From the CMMS"
+  },
+  {
+   "name": "Symptom similarity",
+   "definition": "match to past work orders with the fix",
+   "asOfRule": "Confirmed fixes only"
+  },
+  {
+   "name": "Manual revision date",
+   "definition": "currency of the retrieved document",
+   "asOfRule": "From document control"
+  },
+  {
+   "name": "Technician certification",
+   "definition": "qualifications held",
+   "asOfRule": "From training records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Maintenance Technician Copilot\": Give technicians grounded answers from manuals, work-order history and asset data on a phone or tablet, with step-by-step procedures and safety notes, so repairs are faster and more consistent. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Paraphrasing safety steps."
+}

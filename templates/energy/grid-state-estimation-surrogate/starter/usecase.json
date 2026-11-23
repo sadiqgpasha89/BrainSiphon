@@ -1,0 +1,59 @@
+{
+ "slug": "energy/grid-state-estimation-surrogate",
+ "title": "Fast Power Flow Surrogate for Contingency Screening",
+ "domain": "energy",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 77568,
+ "knobs": {
+  "n_entities": 2690,
+  "positive_entity_rate": 0.032,
+  "n_flash_sales": 6
+ },
+ "blueprintSignals": [
+  {
+   "name": "Bus injections and topology",
+   "definition": "load, generation and switch states",
+   "asOfRule": "From the state estimator"
+  },
+  {
+   "name": "Line loading margin",
+   "definition": "distance of each element to its limit",
+   "asOfRule": "From the solver"
+  },
+  {
+   "name": "Voltage margin",
+   "definition": "distance of bus voltages to limits",
+   "asOfRule": "From the solver"
+  },
+  {
+   "name": "Contingency type",
+   "definition": "line, transformer or generator loss",
+   "asOfRule": "From the contingency list"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Fast Power Flow Surrogate for Contingency Screening\": Screen thousands of network contingencies quickly with a learned power flow surrogate and send the dangerous ones to the full solver so operators see risks sooner. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Replacing the certified solver."
+}

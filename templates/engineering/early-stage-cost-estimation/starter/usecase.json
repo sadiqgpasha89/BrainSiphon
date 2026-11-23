@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/early-stage-cost-estimation",
+ "title": "Early-Stage Cost Estimation",
+ "domain": "engineering",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 8563,
+ "knobs": {
+  "n_entities": 1940,
+  "positive_entity_rate": 0.034,
+  "n_flash_sales": 8
+ },
+ "blueprintSignals": [
+  {
+   "name": "Scope drivers",
+   "definition": "size, type and complexity",
+   "asOfRule": "From the brief"
+  },
+  {
+   "name": "Location and market index",
+   "definition": "cost level by region",
+   "asOfRule": "From indices"
+  },
+  {
+   "name": "Similar past projects",
+   "definition": "cost per unit of similar work",
+   "asOfRule": "From the database"
+  },
+  {
+   "name": "Design maturity",
+   "definition": "stage of design",
+   "asOfRule": "From project data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Early-Stage Cost Estimation\": Estimate project cost ranges from early scope and design parameters using past projects, so owners and planners understand likely cost before detailed design. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Early budget as label."
+}

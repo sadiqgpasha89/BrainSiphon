@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/enterprise-connectivity-lead-scoring",
+ "engine": "tabular",
+ "seed": 37562,
+ "knobs": {
+  "n_entities": 2020,
+  "positive_entity_rate": 0.029,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.2,
+ "results": {
+  "rows": 154276,
+  "positive_rate": 0.00354559361144961,
+  "test_rows": 52117,
+  "test_positive_rate": 0.003453767484697891,
+  "baseline_lr": {
+   "pr_auc": 0.6952846878725263,
+   "recall_at_0.5pct_fpr": 0.8222222222222222,
+   "brier": 0.0021349680426221646
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8020947519683943,
+   "recall_at_0.5pct_fpr": 0.8555555555555555,
+   "brier": 0.0012659920497204418
+  }
+ }
+}

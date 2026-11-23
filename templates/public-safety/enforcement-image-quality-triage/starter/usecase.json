@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/enforcement-image-quality-triage",
+ "title": "Traffic Enforcement Image Quality Triage",
+ "domain": "public-safety",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 44647,
+ "knobs": {
+  "n": 3550,
+  "prevalence": 0.111
+ },
+ "blueprintSignals": [
+  {
+   "name": "Image sharpness and exposure",
+   "definition": "blur, glare and exposure",
+   "asOfRule": "From the image"
+  },
+  {
+   "name": "Plate legibility",
+   "definition": "readable plate region",
+   "asOfRule": "From the vision model"
+  },
+  {
+   "name": "Frame completeness",
+   "definition": "vehicle, signal and marking visible",
+   "asOfRule": "From the vision model"
+  },
+  {
+   "name": "Camera health history",
+   "definition": "past quality issues at the site",
+   "asOfRule": "From maintenance"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Traffic Enforcement Image Quality Triage\": Check the quality of images from speed and red-light cameras so unusable images are removed early and reviewers see clear evidence, with every violation decided by a trained reviewer. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic violation decisions."
+}

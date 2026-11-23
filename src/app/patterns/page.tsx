@@ -9,7 +9,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: 'Patterns',
   description:
-    'Eleven reference patterns cover all 575 blueprints. Each has a runnable kit, which is a starter only for the blueprints that implement the same problem.',
+    'Eleven reference patterns cover all 975 blueprints. Each has a runnable kit, which is a starter only for the blueprints that implement the same problem.',
 };
 
 export default async function PatternsPage() {

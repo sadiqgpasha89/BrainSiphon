@@ -1,0 +1,53 @@
+{
+ "slug": "public-sector/traffic-signal-timing-optimisation",
+ "title": "Traffic Signal Timing Optimisation",
+ "domain": "public-sector",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 46939,
+ "knobs": {
+  "days": 55
+ },
+ "blueprintSignals": [
+  {
+   "name": "Detector counts and occupancy",
+   "definition": "flow and occupancy by approach",
+   "asOfRule": "From detectors"
+  },
+  {
+   "name": "Queue length estimate",
+   "definition": "estimated queue per approach",
+   "asOfRule": "From detector models"
+  },
+  {
+   "name": "Transit and pedestrian demand",
+   "definition": "buses and crossing requests",
+   "asOfRule": "From AVL and buttons"
+  },
+  {
+   "name": "Time of day and events",
+   "definition": "calendar and event flags",
+   "asOfRule": "From calendars"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"Traffic Signal Timing Optimisation\": Adapt traffic signal timings to current flow so delays and emissions fall, within safety rules and with priority for buses, cyclists and pedestrians where policy requires it. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Learned safety limits."
+}

@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/network-data-privacy-retention-compliance-copilot",
+ "title": "Network Data Privacy & Retention Compliance Copilot",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 64319,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Dataset classification",
+   "definition": "sensitivity and retention class from the catalogue",
+   "asOfRule": "Needs catalogue coverage"
+  },
+  {
+   "name": "Purpose match",
+   "definition": "whether a use case matches an approved purpose",
+   "asOfRule": "Purpose register"
+  },
+  {
+   "name": "Retention timer status",
+   "definition": "age of data against the retention class",
+   "asOfRule": "From storage metadata"
+  },
+  {
+   "name": "Cross-border flow",
+   "definition": "whether data leaves its jurisdiction",
+   "asOfRule": "From data lineage"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Network Data Privacy & Retention Compliance Copilot\": Answer privacy and retention questions about network and subscriber data, map datasets to rules and flag gaps, so engineers and legal teams make consistent decisions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating the answer as legal advice."
+}

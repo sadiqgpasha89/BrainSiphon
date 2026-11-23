@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/ai-code-provenance-review",
+ "title": "AI-Generated Code Provenance and Review",
+ "domain": "devtools",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 41480,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Agent involvement marker",
+   "definition": "signed record of agent edits",
+   "asOfRule": "From the agent platform"
+  },
+  {
+   "name": "Change risk tier",
+   "definition": "size and criticality",
+   "asOfRule": "From the risk model"
+  },
+  {
+   "name": "Similarity to public code",
+   "definition": "match to licensed code",
+   "asOfRule": "From similarity scans"
+  },
+  {
+   "name": "Test evidence",
+   "definition": "tests added and passing",
+   "asOfRule": "From CI"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"AI-Generated Code Provenance and Review\": Record which changes were written or edited by AI agents and route them to the right level of review, tests and licence checks, so accountability and quality stay clear. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Disclosure by habit only."
+}

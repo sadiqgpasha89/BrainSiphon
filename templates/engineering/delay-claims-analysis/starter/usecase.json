@@ -1,0 +1,53 @@
+{
+ "slug": "engineering/delay-claims-analysis",
+ "title": "Delay Claims Analysis",
+ "domain": "engineering",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 46269,
+ "knobs": {
+  "n": 317
+ },
+ "blueprintSignals": [
+  {
+   "name": "Schedule update history",
+   "definition": "planned versus actual by update",
+   "asOfRule": "From schedule archives"
+  },
+  {
+   "name": "Delay events",
+   "definition": "notices, changes and weather days",
+   "asOfRule": "From records"
+  },
+  {
+   "name": "Critical path changes",
+   "definition": "path shifts",
+   "asOfRule": "From schedule analysis"
+  },
+  {
+   "name": "Records and correspondence",
+   "definition": "letters, RFIs and daily logs",
+   "asOfRule": "From document systems"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Delay Claims Analysis\": Reconstruct schedule history and records to show causes of delay and the share each event contributed, giving claims teams evidence packs for experts and counsel to review. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Custom scores."
+}

@@ -1,0 +1,66 @@
+{
+ "use_case": "engineering/bim-clash-prioritisation",
+ "engine": "multiclass",
+ "seed": 36253,
+ "knobs": {
+  "n": 12800,
+  "label_noise": 0.088,
+  "dup_share": 0.438
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.0,
+ "results": {
+  "rows": 12800,
+  "train_rows": 6625,
+  "test_rows": 3200,
+  "majority_class_accuracy": 0.271875,
+  "baseline_lr": {
+   "macro_f1": 0.8143518671898704,
+   "accuracy": 0.82,
+   "ece": 0.011017826978073809,
+   "recall_by_class": [
+    0.9586206896551724,
+    0.9218523878437048,
+    0.6864,
+    0.5468227424749164,
+    0.9543269230769231
+   ],
+   "confusable_pair_error": 0.3385118560915781
+  },
+  "challenger_hgb": {
+   "macro_f1": 0.8033696533850779,
+   "accuracy": 0.8084375,
+   "ece": 0.04381396244902019,
+   "recall_by_class": [
+    0.9436781609195403,
+    0.9247467438494935,
+    0.6656,
+    0.5384615384615384,
+    0.9350961538461539
+   ],
+   "confusable_pair_error": 0.35404742436631237
+  },
+  "random_split_challenger_macro_f1": 0.8372897069366896,
+  "leaky_split_inflation": 0.03392005355161165,
+  "test_class_shares": [
+   0.271875,
+   0.2159375,
+   0.1953125,
+   0.186875,
+   0.13
+  ],
+  "train_class_shares": [
+   0.3350943396226415,
+   0.2514716981132075,
+   0.19275471698113208,
+   0.16256603773584904,
+   0.05811320754716981
+  ]
+ }
+}

@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: request_intake, timeout_ms: 186, on_timeout: fallback_level_1 }
+    - { name: classification, timeout_ms: 742, on_timeout: fallback_level_1 }
+    - { name: hazard_rules, timeout_ms: 185, on_timeout: fallback_level_1 }
+    - { name: duplicate_linking, timeout_ms: 278, on_timeout: fallback_level_1 }
+    - { name: work_order, timeout_ms: 278, on_timeout: fallback_level_1 }
+    - { name: status_update_to_resident, timeout_ms: 278, on_timeout: fallback_level_1 }
+    - { name: equity_monitoring, timeout_ms: 278, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Time to resolve"
+    - "Misrouted requests"
+    - "Response-time equity gap"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

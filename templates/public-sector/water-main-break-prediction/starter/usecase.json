@@ -1,0 +1,59 @@
+{
+ "slug": "public-sector/water-main-break-prediction",
+ "title": "Water Main Break Prediction",
+ "domain": "public-sector",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 21386,
+ "knobs": {
+  "n_entities": 2430,
+  "positive_entity_rate": 0.029,
+  "n_flash_sales": 6
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pipe material and age",
+   "definition": "material, diameter and install year",
+   "asOfRule": "From the register"
+  },
+  {
+   "name": "Break history",
+   "definition": "past breaks on the pipe and neighbours",
+   "asOfRule": "From records"
+  },
+  {
+   "name": "Soil and traffic load",
+   "definition": "corrosive soil and road loading",
+   "asOfRule": "From geospatial data"
+  },
+  {
+   "name": "Pressure and transients",
+   "definition": "pressure range and surges",
+   "asOfRule": "From sensors"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Water Main Break Prediction\": Predict which pipes are likely to break so renewal and pressure management target the pipes with the highest risk and consequence. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Age-only replacement."
+}

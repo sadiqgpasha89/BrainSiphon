@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: image_statistics_and_network_data, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: health_model, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: reason_coding, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: priority_by_site, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: work_order, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: technician_confirmation, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: retraining, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Camera uptime"
+    - "Time to repair"
+    - "Footage gaps found in incidents"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

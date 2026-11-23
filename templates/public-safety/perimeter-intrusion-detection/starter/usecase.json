@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/perimeter-intrusion-detection",
+ "title": "Perimeter Intrusion Detection",
+ "domain": "public-safety",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 30876,
+ "knobs": {
+  "n": 5170,
+  "prevalence": 0.095
+ },
+ "blueprintSignals": [
+  {
+   "name": "Object class and crossing",
+   "definition": "person or vehicle crossing a line",
+   "asOfRule": "From the vision model"
+  },
+  {
+   "name": "Fence and sensor events",
+   "definition": "vibration or fibre sensor alarms",
+   "asOfRule": "From sensors"
+  },
+  {
+   "name": "Weather and lighting",
+   "definition": "rain, wind and darkness",
+   "asOfRule": "From sensors"
+  },
+  {
+   "name": "Time and schedule context",
+   "definition": "authorised work windows",
+   "asOfRule": "From access plans"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Perimeter Intrusion Detection\": Detect people or vehicles crossing fences and restricted lines at facilities from cameras and sensors and alert the security desk with a short clip, without identifying people. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Facial recognition."
+}

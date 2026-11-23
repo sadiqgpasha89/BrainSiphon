@@ -1,0 +1,50 @@
+{
+ "use_case": "engineering/engineering-drawing-digitisation",
+ "engine": "cv",
+ "seed": 7167,
+ "knobs": {
+  "n": 4020,
+  "prevalence": 0.134
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 4020,
+  "train": 1364,
+  "prevalence": 0.13208955223880597,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9494596725971246,
+    "sens_at_95_spec": 0.7354085603112841
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9649161518093557,
+    "sens_at_95_spec": 0.8522727272727273
+   },
+   "site_B": {
+    "auc": 0.7814945447297496,
+    "sens_at_95_spec": 0.35019455252918286
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.311284046692607,
+    "false_positive_rate": 0.03897550111358575
+   }
+  }
+ }
+}

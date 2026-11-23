@@ -1,0 +1,50 @@
+{
+ "use_case": "public-safety/perimeter-intrusion-detection",
+ "engine": "cv",
+ "seed": 30876,
+ "knobs": {
+  "n": 5170,
+  "prevalence": 0.095
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.1,
+ "results": {
+  "images": 5170,
+  "train": 1862,
+  "prevalence": 0.09709864603481624,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9578022842009435,
+    "sens_at_95_spec": 0.810077519379845
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9921155347384856,
+    "sens_at_95_spec": 0.9714285714285714
+   },
+   "site_B": {
+    "auc": 0.7741179067008745,
+    "sens_at_95_spec": 0.3062015503875969
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.36046511627906974,
+    "false_positive_rate": 0.06316725978647687
+   }
+  }
+ }
+}

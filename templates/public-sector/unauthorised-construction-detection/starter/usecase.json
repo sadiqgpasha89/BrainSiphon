@@ -1,0 +1,58 @@
+{
+ "slug": "public-sector/unauthorised-construction-detection",
+ "title": "Unauthorised Construction Detection from Imagery",
+ "domain": "public-sector",
+ "engine": "cv",
+ "fit": "exact",
+ "problemType": "vision-classification",
+ "seed": 51695,
+ "knobs": {
+  "n": 4650,
+  "prevalence": 0.08
+ },
+ "blueprintSignals": [
+  {
+   "name": "Building footprint change",
+   "definition": "new or enlarged footprints between dates",
+   "asOfRule": "From imagery"
+  },
+  {
+   "name": "Permit match",
+   "definition": "whether a permit exists for the parcel",
+   "asOfRule": "From the permit system"
+  },
+  {
+   "name": "Image quality and date gap",
+   "definition": "resolution and time between images",
+   "asOfRule": "From metadata"
+  },
+  {
+   "name": "Parcel type and zone",
+   "definition": "use class",
+   "asOfRule": "From GIS"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Unauthorised Construction Detection from Imagery\": Compare aerial and satellite images over time to find new structures and changes that have no permit, and send the list to inspectors for verification. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic notices."
+}

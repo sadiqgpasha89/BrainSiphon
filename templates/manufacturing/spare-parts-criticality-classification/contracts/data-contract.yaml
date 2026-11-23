@@ -1,0 +1,16 @@
+contract: spare_parts_criticality_classification_inputs.v1
+owner: plant-operations@example.com
+system_of_record: MES (manufacturing execution system)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: equipment_downtime_cost, type: double, nullable: false }
+    - { name: failure_rate_of_the_part, type: double, nullable: false }
+    - { name: lead_time_and_single_source, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

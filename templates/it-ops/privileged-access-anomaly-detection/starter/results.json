@@ -1,0 +1,34 @@
+{
+ "use_case": "it-ops/privileged-access-anomaly-detection",
+ "engine": "tabular",
+ "seed": 1075,
+ "knobs": {
+  "n_entities": 2940,
+  "positive_entity_rate": 0.04,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.9,
+ "results": {
+  "rows": 222989,
+  "positive_rate": 0.004977824018225115,
+  "test_rows": 73963,
+  "test_positive_rate": 0.004650974135716507,
+  "baseline_lr": {
+   "pr_auc": 0.6305103994006209,
+   "recall_at_0.5pct_fpr": 0.6773255813953488,
+   "brier": 0.0031946967500975083
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7036612142812151,
+   "recall_at_0.5pct_fpr": 0.7034883720930233,
+   "brier": 0.0020783336069463737
+  }
+ }
+}

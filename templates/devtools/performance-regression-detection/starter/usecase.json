@@ -1,0 +1,58 @@
+{
+ "slug": "devtools/performance-regression-detection",
+ "title": "Performance Regression Detection",
+ "domain": "devtools",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 57555,
+ "knobs": {
+  "n_series": 61,
+  "anomalies_per_series": 2.78
+ },
+ "blueprintSignals": [
+  {
+   "name": "Benchmark time series",
+   "definition": "measurements per commit",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Machine and environment tags",
+   "definition": "hardware and load",
+   "asOfRule": "From the lab"
+  },
+  {
+   "name": "Change point statistics",
+   "definition": "detected shifts",
+   "asOfRule": "From the detector"
+  },
+  {
+   "name": "Commit range",
+   "definition": "commits since the last stable result",
+   "asOfRule": "From version control"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Performance Regression Detection\": Detect performance regressions in benchmarks and canaries per commit despite noisy measurements, and point to the change that caused them. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fixed thresholds."
+}

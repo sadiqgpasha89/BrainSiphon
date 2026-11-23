@@ -1,0 +1,42 @@
+{
+ "use_case": "engineering/fatigue-life-estimation",
+ "engine": "generative",
+ "seed": 28376,
+ "knobs": {
+  "n": 217
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "golden_items": 217,
+  "v1_pass_rate_strict_judge": 0.2119815668202765,
+  "v1_pass_rate_fuzzy_judge": 0.4792626728110599,
+  "v2_pass_rate_fuzzy_judge": 0.6036866359447005,
+  "v1_pass_rate_ci95": [
+   0.41013824884792627,
+   0.5529953917050692
+  ],
+  "v2_minus_v1": 0.12442396313364056,
+  "v2_minus_v1_ci95": [
+   0.041474654377880185,
+   0.22119815668202766
+  ],
+  "judge_agreement_kappa_v1": 0.45235401618658094,
+  "judge_disagreement_share_v1": 0.2672811059907834,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.5023041474654378,
+   "date_correct": 0.15668202764976957,
+   "within_length": 0.0,
+   "no_forbidden_claims": 0.04608294930875576
+  },
+  "ci_width_at_60_items": 0.21666666666666667,
+  "ci_width_at_full_set": 0.1428571428571429
+ }
+}

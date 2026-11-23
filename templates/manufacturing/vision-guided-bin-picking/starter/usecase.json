@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/vision-guided-bin-picking",
+ "title": "Vision-Guided Bin Picking",
+ "domain": "manufacturing",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 65383,
+ "knobs": {
+  "n": 4390,
+  "prevalence": 0.104
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pose estimate confidence",
+   "definition": "confidence of the part pose",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Grasp reachability",
+   "definition": "whether the gripper can reach without collision",
+   "asOfRule": "From the cell model"
+  },
+  {
+   "name": "Part overlap and occlusion",
+   "definition": "share of the part visible",
+   "asOfRule": "From the point cloud"
+  },
+  {
+   "name": "Bin fill level",
+   "definition": "parts remaining",
+   "asOfRule": "From the cloud"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Vision-Guided Bin Picking\": Locate and grasp randomly placed parts in bins using 3D vision so robot cells can feed machines without precise fixturing. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on annotation only."
+}

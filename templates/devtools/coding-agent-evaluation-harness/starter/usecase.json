@@ -1,0 +1,53 @@
+{
+ "slug": "devtools/coding-agent-evaluation-harness",
+ "title": "Coding Agent Evaluation Harness",
+ "domain": "devtools",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 17029,
+ "knobs": {
+  "n_train": 1060
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hidden test pass rate",
+   "definition": "tests not visible to the agent",
+   "asOfRule": "From the harness"
+  },
+  {
+   "name": "Patch quality review",
+   "definition": "reviewer ratings",
+   "asOfRule": "From reviews"
+  },
+  {
+   "name": "Cost and steps",
+   "definition": "tokens, steps and time",
+   "asOfRule": "From traces"
+  },
+  {
+   "name": "Safety violations",
+   "definition": "policy breaches during runs",
+   "asOfRule": "From the gateway"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Coding Agent Evaluation Harness\": Evaluate coding agents on a company's own repositories and tasks with hidden tests, cost and safety checks so model and prompt changes are judged on evidence before rollout. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Public benchmarks only."
+}

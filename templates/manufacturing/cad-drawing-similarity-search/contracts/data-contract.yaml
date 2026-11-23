@@ -1,0 +1,16 @@
+contract: cad_drawing_similarity_search_inputs.v1
+owner: plant-operations@example.com
+system_of_record: MES (manufacturing execution system)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: shape_embedding_similarity, type: double, nullable: false }
+    - { name: material_and_process_match, type: double, nullable: false }
+    - { name: tolerance_and_standard_compatibility, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

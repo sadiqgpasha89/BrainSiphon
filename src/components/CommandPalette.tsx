@@ -126,7 +126,7 @@ export function CommandPalette() {
               <Command.Input
                 value={query}
                 onValueChange={setQuery}
-                placeholder="Search 575 blueprints — fraud, ranking, RAG, forecasting…"
+                placeholder="Search 975 blueprints — fraud, ranking, RAG, forecasting…"
                 className="h-12 w-full bg-transparent text-sm text-ink outline-none placeholder:text-dim"
                 aria-label="Search blueprints"
               />

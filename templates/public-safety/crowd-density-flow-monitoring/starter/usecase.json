@@ -1,0 +1,59 @@
+{
+ "slug": "public-safety/crowd-density-flow-monitoring",
+ "title": "Crowd Density and Flow Monitoring",
+ "domain": "public-safety",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 31727,
+ "knobs": {
+  "n": 17730,
+  "outlier_share": 0.04,
+  "drift": 0.256
+ },
+ "blueprintSignals": [
+  {
+   "name": "Density per zone",
+   "definition": "estimated people per square metre",
+   "asOfRule": "From vision"
+  },
+  {
+   "name": "Flow direction and speed",
+   "definition": "movement patterns",
+   "asOfRule": "From optical flow"
+  },
+  {
+   "name": "Capacity of exits and corridors",
+   "definition": "exit width and capacity",
+   "asOfRule": "From plans"
+  },
+  {
+   "name": "Event schedule",
+   "definition": "start and end times",
+   "asOfRule": "From operators"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Crowd Density and Flow Monitoring\": Estimate crowd density and flow in public spaces and venues from anonymised counts so operators open exits, add staff or slow entry before crowding becomes dangerous. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Identification of people."
+}

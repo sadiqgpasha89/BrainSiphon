@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/unit-test-generation-agent",
+ "title": "Unit Test Generation Agent",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 10679,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Coverage gap",
+   "definition": "uncovered branches",
+   "asOfRule": "From coverage tools"
+  },
+  {
+   "name": "Mutation score",
+   "definition": "share of injected faults caught",
+   "asOfRule": "From mutation testing"
+  },
+  {
+   "name": "Compile and run result",
+   "definition": "pass or fail",
+   "asOfRule": "From the sandbox"
+  },
+  {
+   "name": "Function purity and dependencies",
+   "definition": "testability",
+   "asOfRule": "From analysis"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Unit Test Generation Agent\": Generate unit tests for untested code that compile, pass, increase coverage and catch real changes in behaviour, then offer them in a pull request for engineers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Coverage as the goal."
+}

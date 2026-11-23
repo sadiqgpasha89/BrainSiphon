@@ -1,0 +1,57 @@
+{
+ "slug": "energy/ev-charging-demand-forecasting",
+ "title": "EV Charging Demand Forecasting",
+ "domain": "energy",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 89143,
+ "knobs": {
+  "n_series": 188
+ },
+ "blueprintSignals": [
+  {
+   "name": "Site type and location",
+   "definition": "workplace, public or home area",
+   "asOfRule": "From the register"
+  },
+  {
+   "name": "Day type and events",
+   "definition": "weekday, holiday and local events",
+   "asOfRule": "From calendars"
+  },
+  {
+   "name": "Tariff and price signals",
+   "definition": "time-of-use prices",
+   "asOfRule": "From tariffs"
+  },
+  {
+   "name": "Recent session volume",
+   "definition": "sessions in recent weeks",
+   "asOfRule": "From operator data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"EV Charging Demand Forecasting\": Forecast charging demand by site and feeder so grid upgrades, tariffs and charger operations match when and where vehicles charge. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual trip tracking."
+}

@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: part_and_usage_data, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: impact_and_likelihood_features, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: criticality_model, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: stocking_rule, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: stock_policy_update, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: outcome_tracking, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Critical stock-outs"
+    - "Inventory value"
+    - "Emergency purchase cost"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/capable-to-promise-order-promising",
+ "title": "Capable-to-Promise Order Promising",
+ "domain": "manufacturing",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 55561,
+ "knobs": {
+  "n_instances": 112,
+  "noise": 0.283
+ },
+ "blueprintSignals": [
+  {
+   "name": "Available stock and planned receipts",
+   "definition": "stock position by date",
+   "asOfRule": "Live"
+  },
+  {
+   "name": "Capacity load by week",
+   "definition": "committed hours against capacity",
+   "asOfRule": "From the schedule"
+  },
+  {
+   "name": "Historical on-time rate by lane",
+   "definition": "delivery performance",
+   "asOfRule": "By route"
+  },
+  {
+   "name": "Order priority class",
+   "definition": "customer and order class",
+   "asOfRule": "From sales policy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Capable-to-Promise Order Promising\": Give customers a reliable delivery date at order entry by checking material, capacity and logistics in real time so promised dates are met. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Standard lead times."
+}

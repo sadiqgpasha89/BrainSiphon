@@ -1,0 +1,34 @@
+{
+ "use_case": "devtools/test-selection-prioritisation",
+ "engine": "tabular",
+ "seed": 45972,
+ "knobs": {
+  "n_entities": 2730,
+  "positive_entity_rate": 0.044,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.8,
+ "results": {
+  "rows": 209176,
+  "positive_rate": 0.005889777029869584,
+  "test_rows": 69567,
+  "test_positive_rate": 0.0062960886627280175,
+  "baseline_lr": {
+   "pr_auc": 0.6733073968287786,
+   "recall_at_0.5pct_fpr": 0.7808219178082192,
+   "brier": 0.005694172347434849
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8155291534434852,
+   "recall_at_0.5pct_fpr": 0.8356164383561644,
+   "brier": 0.0021964703565250264
+  }
+ }
+}

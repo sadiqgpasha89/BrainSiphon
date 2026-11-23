@@ -1,0 +1,59 @@
+{
+ "slug": "energy/wind-power-forecasting",
+ "title": "Wind Power Forecasting",
+ "domain": "energy",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 1246,
+ "knobs": {
+  "n": 25220,
+  "outlier_share": 0.04,
+  "drift": 0.284
+ },
+ "blueprintSignals": [
+  {
+   "name": "Wind forecast at hub height",
+   "definition": "forecast speed and direction",
+   "asOfRule": "From weather models"
+  },
+  {
+   "name": "Turbine availability",
+   "definition": "number of turbines operating",
+   "asOfRule": "From SCADA"
+  },
+  {
+   "name": "Wake and direction effects",
+   "definition": "direction-dependent losses",
+   "asOfRule": "Learned"
+  },
+  {
+   "name": "Curtailment signals",
+   "definition": "grid or market curtailment orders",
+   "asOfRule": "From the operator"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Wind Power Forecasting\": Forecast wind farm output from weather forecasts, turbine status and local measurements so schedules, reserves and bids reflect real power. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Manufacturer curve only."
+}

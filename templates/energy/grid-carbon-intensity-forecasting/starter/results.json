@@ -1,0 +1,42 @@
+{
+ "use_case": "energy/grid-carbon-intensity-forecasting",
+ "engine": "generative",
+ "seed": 56484,
+ "knobs": {
+  "n": 297
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "golden_items": 297,
+  "v1_pass_rate_strict_judge": 0.1717171717171717,
+  "v1_pass_rate_fuzzy_judge": 0.49158249158249157,
+  "v2_pass_rate_fuzzy_judge": 0.6161616161616161,
+  "v1_pass_rate_ci95": [
+   0.440993265993266,
+   0.5488215488215489
+  ],
+  "v2_minus_v1": 0.12457912457912458,
+  "v2_minus_v1_ci95": [
+   0.030303030303030304,
+   0.20202020202020202
+  ],
+  "judge_agreement_kappa_v1": 0.3531191966435105,
+  "judge_disagreement_share_v1": 0.31986531986531985,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4713804713804714,
+   "date_correct": 0.12457912457912458,
+   "within_length": 0.03367003367003367,
+   "no_forbidden_claims": 0.06734006734006734
+  },
+  "ci_width_at_60_items": 0.23333333333333334,
+  "ci_width_at_full_set": 0.10782828282828288
+ }
+}

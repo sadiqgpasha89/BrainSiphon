@@ -1,0 +1,42 @@
+{
+ "use_case": "public-safety/missing-person-report-routing",
+ "engine": "generative",
+ "seed": 62816,
+ "knobs": {
+  "n": 272
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "golden_items": 272,
+  "v1_pass_rate_strict_judge": 0.1948529411764706,
+  "v1_pass_rate_fuzzy_judge": 0.5294117647058824,
+  "v2_pass_rate_fuzzy_judge": 0.5882352941176471,
+  "v1_pass_rate_ci95": [
+   0.4742647058823529,
+   0.5882352941176471
+  ],
+  "v2_minus_v1": 0.058823529411764705,
+  "v2_minus_v1_ci95": [
+   -0.025735294117647058,
+   0.13602941176470587
+  ],
+  "judge_agreement_kappa_v1": 0.35407098121085584,
+  "judge_disagreement_share_v1": 0.33455882352941174,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4485294117647059,
+   "date_correct": 0.15441176470588236,
+   "within_length": 0.011029411764705883,
+   "no_forbidden_claims": 0.029411764705882353
+  },
+  "ci_width_at_60_items": 0.23333333333333328,
+  "ci_width_at_full_set": 0.11397058823529416
+ }
+}

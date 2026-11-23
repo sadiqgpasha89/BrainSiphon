@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/access-system-fault-anomaly",
+ "title": "Door and Access System Fault Detection",
+ "domain": "public-safety",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 83245,
+ "knobs": {
+  "n_series": 108,
+  "anomalies_per_series": 3.087
+ },
+ "blueprintSignals": [
+  {
+   "name": "Door open duration",
+   "definition": "time doors stay open",
+   "asOfRule": "From controllers"
+  },
+  {
+   "name": "Reader error rate",
+   "definition": "failed reads and retries",
+   "asOfRule": "From readers"
+  },
+  {
+   "name": "Forced or held alarms",
+   "definition": "door alarms",
+   "asOfRule": "From controllers"
+  },
+  {
+   "name": "Peak flow pattern",
+   "definition": "counts at entry times",
+   "asOfRule": "Aggregated"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Door and Access System Fault Detection\": Detect failing readers, doors forced or held open, and tailgating patterns at the door level so facilities fix faults and reduce security gaps, without profiling individual people. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Employee scoring."
+}

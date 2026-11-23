@@ -1,0 +1,53 @@
+{
+ "slug": "public-sector/benefit-application-document-extraction",
+ "title": "Benefit Application Document Extraction",
+ "domain": "public-sector",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 53917,
+ "knobs": {
+  "n_train": 800
+ },
+ "blueprintSignals": [
+  {
+   "name": "Field confidence",
+   "definition": "confidence per extracted value",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Document type",
+   "definition": "the classified document type",
+   "asOfRule": "From the classifier"
+  },
+  {
+   "name": "Cross-field consistency",
+   "definition": "totals and dates agreeing",
+   "asOfRule": "Rules"
+  },
+  {
+   "name": "Image quality",
+   "definition": "resolution and skew",
+   "asOfRule": "From the image"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Benefit Application Document Extraction\": Extract fields from payslips, bank statements, leases and IDs submitted with benefit applications so caseworkers review structured data rather than retyping. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Auto-fill with no confirmation."
+}

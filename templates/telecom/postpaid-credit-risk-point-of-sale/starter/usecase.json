@@ -1,0 +1,59 @@
+{
+ "slug": "telecom/postpaid-credit-risk-point-of-sale",
+ "title": "Postpaid Credit Risk at Point of Sale",
+ "domain": "telecom",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 24740,
+ "knobs": {
+  "n_entities": 2080,
+  "positive_entity_rate": 0.038,
+  "n_flash_sales": 7
+ },
+ "blueprintSignals": [
+  {
+   "name": "Bureau score and trade lines",
+   "definition": "score and delinquency history",
+   "asOfRule": "Official sources"
+  },
+  {
+   "name": "Existing relationship",
+   "definition": "tenure and payment record with the operator",
+   "asOfRule": "Own data"
+  },
+  {
+   "name": "Application consistency",
+   "definition": "declared versus bureau data",
+   "asOfRule": "Use match quality"
+  },
+  {
+   "name": "Device financing exposure",
+   "definition": "total outstanding device credit",
+   "asOfRule": "Per customer"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Postpaid Credit Risk at Point of Sale\": Decide on credit limits and deposits for postpaid and device-financing applicants at the point of sale with explainable, fair credit risk scores. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training only on accepted applicants."
+}

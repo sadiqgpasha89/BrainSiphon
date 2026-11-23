@@ -1,0 +1,59 @@
+{
+ "slug": "it-ops/cmdb-reconciliation",
+ "title": "CMDB Reconciliation and Dependency Mapping",
+ "domain": "it-ops",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 38257,
+ "knobs": {
+  "n": 11810,
+  "label_noise": 0.069,
+  "dup_share": 0.43
+ },
+ "blueprintSignals": [
+  {
+   "name": "Identifier match",
+   "definition": "serial, hostname and address match",
+   "asOfRule": "From discovery"
+  },
+  {
+   "name": "Observed network flows",
+   "definition": "who talks to whom",
+   "asOfRule": "From flow logs"
+  },
+  {
+   "name": "Cloud tags and ownership",
+   "definition": "owner and service tags",
+   "asOfRule": "From cloud APIs"
+  },
+  {
+   "name": "Record age and last seen",
+   "definition": "freshness",
+   "asOfRule": "From the CMDB"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"CMDB Reconciliation and Dependency Mapping\": Keep the configuration database accurate by matching discovered assets, cloud resources and traffic flows to records, proposing merges, owners and dependencies for data stewards to approve. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic overwrite."
+}

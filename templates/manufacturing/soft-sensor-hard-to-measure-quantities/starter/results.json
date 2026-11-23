@@ -1,0 +1,49 @@
+{
+ "use_case": "manufacturing/soft-sensor-hard-to-measure-quantities",
+ "engine": "regression",
+ "seed": 77618,
+ "knobs": {
+  "n": 18510,
+  "outlier_share": 0.035,
+  "drift": 0.158
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.7,
+ "results": {
+  "rows": 18510,
+  "train_rows": 12957,
+  "test_rows": 5553,
+  "baseline_ridge": {
+   "mae": 7.836405221853709,
+   "rmse": 14.116609991084257,
+   "wape": 0.1475379792514027,
+   "r2": 0.3553482198110932
+  },
+  "challenger_gbm": {
+   "mae": 5.240287580439217,
+   "rmse": 12.429960764137316,
+   "wape": 0.09866021707990966,
+   "r2": 0.5001912336150172
+  },
+  "mae_gain_vs_baseline": 0.33128935626945255,
+  "interval_80_coverage": 0.7286151629749685,
+  "interval_80_mean_width": 9.771787471667878,
+  "segment_mae": {
+   "0": 4.9335297623689875,
+   "1": 5.13577774033448,
+   "2": 5.867730663099555,
+   "3": 6.9801918170707085
+  },
+  "worst_segment_vs_overall": 1.3320245711563907,
+  "leaky_feature_rmse": 1.566827043312033,
+  "honest_rmse": 12.429960764137316,
+  "random_split_mae": 5.095703106775383,
+  "chronological_mae": 5.240287580439217
+ }
+}

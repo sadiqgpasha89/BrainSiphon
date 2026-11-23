@@ -1,0 +1,35 @@
+{
+ "use_case": "manufacturing/part-master-deduplication",
+ "engine": "graph",
+ "seed": 83316,
+ "knobs": {
+  "n_clusters": 2100,
+  "hub_share": 0.123
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.3,
+ "results": {
+  "entities": 3790,
+  "test_entities": 1508,
+  "candidate_pairs_test": 2399,
+  "hub_pairs_share": 0.5081283868278449,
+  "any_shared_value": {
+   "pair_precision": 0.019470655254009525,
+   "pair_recall": 0.8555840821566111,
+   "purity": 0.7506631299734748,
+   "largest_cluster": 368
+  },
+  "weighted_pair_model": {
+   "pair_precision": 1.0,
+   "pair_recall": 0.8543003851091142,
+   "purity": 1.0,
+   "largest_cluster": 9
+  }
+ }
+}

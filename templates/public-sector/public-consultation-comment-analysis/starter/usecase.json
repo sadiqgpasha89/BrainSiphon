@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/public-consultation-comment-analysis",
+ "title": "Public Consultation Comment Analysis",
+ "domain": "public-sector",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 55583,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Theme membership",
+   "definition": "assignment of comments to themes",
+   "asOfRule": "From clustering and labels"
+  },
+  {
+   "name": "Duplicate and campaign detection",
+   "definition": "near-identical submissions",
+   "asOfRule": "From text similarity"
+  },
+  {
+   "name": "Stance label",
+   "definition": "support, oppose or conditional",
+   "asOfRule": "From the classifier"
+  },
+  {
+   "name": "Location and group aggregate",
+   "definition": "area-level counts",
+   "asOfRule": "Aggregated"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Public Consultation Comment Analysis\": Group and summarise thousands of consultation comments by theme and position with quotes linked to the source, so officials read the range of views and decisions are documented. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Single summary only."
+}

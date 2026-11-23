@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: rfi_intake, timeout_ms: 148, on_timeout: fallback_level_1 }
+    - { name: classification_and_priority, timeout_ms: 593, on_timeout: fallback_level_1 }
+    - { name: document_retrieval, timeout_ms: 445, on_timeout: fallback_level_1 }
+    - { name: draft_response_with_citations, timeout_ms: 593, on_timeout: fallback_level_1 }
+    - { name: response_issue, timeout_ms: 223, on_timeout: fallback_level_1 }
+    - { name: cycle_time_tracking, timeout_ms: 223, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "RFI response time"
+    - "RFIs past contract deadline"
+    - "Schedule delay from RFIs"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

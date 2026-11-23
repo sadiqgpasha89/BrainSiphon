@@ -1,0 +1,50 @@
+{
+ "use_case": "public-safety/near-miss-video-detection",
+ "engine": "cv",
+ "seed": 77474,
+ "knobs": {
+  "n": 4830,
+  "prevalence": 0.141
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "images": 4830,
+  "train": 1675,
+  "prevalence": 0.14244306418219463,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9458960892983432,
+    "sens_at_95_spec": 0.7457627118644068
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9759492425732835,
+    "sens_at_95_spec": 0.8627450980392157
+   },
+   "site_B": {
+    "auc": 0.7610836378695106,
+    "sens_at_95_spec": 0.3220338983050847
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3220338983050847,
+    "false_positive_rate": 0.046644455021418375
+   }
+  }
+ }
+}

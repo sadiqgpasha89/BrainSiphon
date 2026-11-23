@@ -1,0 +1,58 @@
+{
+ "slug": "energy/grid-ot-anomaly-detection",
+ "title": "Grid OT Network Anomaly Detection",
+ "domain": "energy",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 17830,
+ "knobs": {
+  "n_series": 90,
+  "anomalies_per_series": 2.9
+ },
+ "blueprintSignals": [
+  {
+   "name": "New or changed device",
+   "definition": "devices not in the inventory",
+   "asOfRule": "From passive discovery"
+  },
+  {
+   "name": "Command and function code mix",
+   "definition": "control commands seen",
+   "asOfRule": "From protocol parsing"
+  },
+  {
+   "name": "Flow graph change",
+   "definition": "new communication pairs",
+   "asOfRule": "From flow data"
+  },
+  {
+   "name": "Maintenance window",
+   "definition": "scheduled work",
+   "asOfRule": "From the change calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Grid OT Network Anomaly Detection\": Detect abnormal behaviour in substation and control-network traffic such as unusual commands, new devices and protocol misuse so the security team investigates before it affects operations. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Inline blocking."
+}

@@ -1,0 +1,36 @@
+{
+ "use_case": "it-ops/phishing-email-detection",
+ "engine": "nlp",
+ "seed": 67994,
+ "knobs": {
+  "n_docs": 6300
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 8.0,
+ "results": {
+  "docs": 6300,
+  "duplicate_share": 0.24761904761904763,
+  "random_split_with_leak": {
+   "macro_f1": 0.8775394658081592,
+   "ece": 0.10630384448731293
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4639744240238279,
+   "ece": 0.04229634907904709
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7902386622008164,
+   "ece": 0.09370038136215747
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4639744240238279,
+   "ece": 0.04229634907904709
+  }
+ }
+}

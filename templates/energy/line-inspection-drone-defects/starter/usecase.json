@@ -1,0 +1,58 @@
+{
+ "slug": "energy/line-inspection-drone-defects",
+ "title": "Line Inspection Drone Defect Detection",
+ "domain": "energy",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 75311,
+ "knobs": {
+  "n": 4160,
+  "prevalence": 0.091
+ },
+ "blueprintSignals": [
+  {
+   "name": "Defect class scores",
+   "definition": "model score per defect type",
+   "asOfRule": "Calibrated per class"
+  },
+  {
+   "name": "Image quality",
+   "definition": "focus, lighting and distance",
+   "asOfRule": "From the image"
+  },
+  {
+   "name": "Structure criticality",
+   "definition": "voltage level and customers served",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Defect history",
+   "definition": "previous findings on the structure",
+   "asOfRule": "From work orders"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Line Inspection Drone Defect Detection\": Detect damaged insulators, corroded hardware, cracked crossarms and missing parts in drone and helicopter imagery of lines and poles so crews target the real defects. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using detection count as priority."
+}

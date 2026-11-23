@@ -1,0 +1,16 @@
+contract: records_system_misuse_detection_inputs.v1
+owner: emergency-communications@example.com
+system_of_record: Computer-aided dispatch (CAD)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: case_link_present, type: double, nullable: false }
+    - { name: lookup_pattern, type: double, nullable: false }
+    - { name: volume_against_role_peers, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/core-signalling-storm-detection",
+ "title": "Core Signalling Storm Detection",
+ "domain": "telecom",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 67425,
+ "knobs": {
+  "n_series": 95,
+  "anomalies_per_series": 2.787
+ },
+ "blueprintSignals": [
+  {
+   "name": "Rate versus expected",
+   "definition": "ratio of signalling per minute to the time-adjusted baseline",
+   "asOfRule": "Baseline per function"
+  },
+  {
+   "name": "Source concentration",
+   "definition": "share of events from the top 1% of sources",
+   "asOfRule": "Needs pseudonymous grouping"
+  },
+  {
+   "name": "Failure and retry ratio",
+   "definition": "ratio of rejects and retries to requests",
+   "asOfRule": "Tune per message type"
+  },
+  {
+   "name": "Message mix shift",
+   "definition": "change in the mix of attach, auth and session requests",
+   "asOfRule": "Normalise by day type"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Core Signalling Storm Detection\": Detect abnormal signalling surges in the mobile core early enough to throttle or isolate the source before it overloads authentication and session functions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Global thresholds."
+}

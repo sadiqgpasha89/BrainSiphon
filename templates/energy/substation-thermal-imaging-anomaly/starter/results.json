@@ -1,0 +1,50 @@
+{
+ "use_case": "energy/substation-thermal-imaging-anomaly",
+ "engine": "cv",
+ "seed": 7557,
+ "knobs": {
+  "n": 4840,
+  "prevalence": 0.158
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "images": 4840,
+  "train": 1647,
+  "prevalence": 0.1615702479338843,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9448306351345426,
+    "sens_at_95_spec": 0.7469287469287469
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9821502870932846,
+    "sens_at_95_spec": 0.9262295081967213
+   },
+   "site_B": {
+    "auc": 0.7624660576903701,
+    "sens_at_95_spec": 0.33906633906633904
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.36855036855036855,
+    "false_positive_rate": 0.054027978774722624
+   }
+  }
+ }
+}

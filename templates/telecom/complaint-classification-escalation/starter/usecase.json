@@ -1,0 +1,57 @@
+{
+ "slug": "telecom/complaint-classification-escalation",
+ "title": "Complaint Classification & Escalation",
+ "domain": "telecom",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 66078,
+ "knobs": {
+  "n_docs": 6390
+ },
+ "blueprintSignals": [
+  {
+   "name": "Complaint text cues",
+   "definition": "phrases signalling service loss, billing error, mis-selling or threat",
+   "asOfRule": "Needs multilingual coverage"
+  },
+  {
+   "name": "Customer history",
+   "definition": "prior complaints and open cases",
+   "asOfRule": "As at receipt time"
+  },
+  {
+   "name": "Declared vulnerability",
+   "definition": "consented vulnerability flags",
+   "asOfRule": "Use only declared flags"
+  },
+  {
+   "name": "Channel and regulator mention",
+   "definition": "whether the regulator or ombudsman is named",
+   "asOfRule": "Rule layer first"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Complaint Classification & Escalation\": Classify complaints by type and severity and route those with regulatory or vulnerability risk to specialist teams within the required time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising accuracy not recall."
+}

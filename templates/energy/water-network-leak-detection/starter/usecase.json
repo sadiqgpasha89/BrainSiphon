@@ -1,0 +1,58 @@
+{
+ "slug": "energy/water-network-leak-detection",
+ "title": "Water Network Leak Detection",
+ "domain": "energy",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 9086,
+ "knobs": {
+  "n_series": 66,
+  "anomalies_per_series": 2.52
+ },
+ "blueprintSignals": [
+  {
+   "name": "Minimum night flow",
+   "definition": "flow in the lowest-use hours",
+   "asOfRule": "From district meters"
+  },
+  {
+   "name": "Pressure transient pattern",
+   "definition": "pressure drops and surges",
+   "asOfRule": "From loggers"
+  },
+  {
+   "name": "Acoustic noise level",
+   "definition": "leak noise on hydrophones",
+   "asOfRule": "From sensors"
+  },
+  {
+   "name": "Consumption in the district",
+   "definition": "billed use by district",
+   "asOfRule": "From billing"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Water Network Leak Detection\": Detect and localise leaks in water distribution from district meter flows, pressure loggers and acoustic sensors so crews find them before they burst. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Total flow monitoring."
+}

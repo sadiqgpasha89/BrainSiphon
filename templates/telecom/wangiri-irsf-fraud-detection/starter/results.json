@@ -1,0 +1,43 @@
+{
+ "use_case": "telecom/wangiri-irsf-fraud-detection",
+ "engine": "anomaly",
+ "seed": 7598,
+ "knobs": {
+  "n_series": 75,
+  "anomalies_per_series": 2.087
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 10.0,
+ "results": {
+  "series": 75,
+  "hours": 2016,
+  "events": 167,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.36916976456009915,
+   "recall": 0.6153846153846154,
+   "median_delay_h": 0.5,
+   "events": 78
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.7355638166047087,
+   "recall": 0.9743589743589743,
+   "median_delay_h": 0.0,
+   "events": 78
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.6134324659231722,
+   "recall": 1.0,
+   "median_delay_h": 0.0,
+   "events": 78
+  }
+ }
+}

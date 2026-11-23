@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/it-ops-agent-action-guardrails",
+ "title": "IT Ops Agent Action Guardrails",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 51320,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Change tier of requested command",
+   "definition": "the blast radius of the target system",
+   "asOfRule": "Configuration database"
+  },
+  {
+   "name": "Commands per ticket",
+   "definition": "volume of commands against the ticket norm",
+   "asOfRule": "Broker log"
+  },
+  {
+   "name": "Rollback frequency after agent changes",
+   "definition": "how often a change had to be undone",
+   "asOfRule": "Change records"
+  },
+  {
+   "name": "Service health after change",
+   "definition": "error rate and latency after the command",
+   "asOfRule": "Monitoring stack"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"IT Ops Agent Action Guardrails\": Gate and record every change AI operations agents make to servers, cloud accounts and ticket workflows so on-call engineers can trust automation without losing sight of what it did. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Permanent administrator accounts."
+}

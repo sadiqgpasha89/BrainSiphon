@@ -1,0 +1,42 @@
+{
+ "use_case": "devtools/code-ownership-inference",
+ "engine": "generative",
+ "seed": 16103,
+ "knobs": {
+  "n": 238
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.7,
+ "results": {
+  "golden_items": 238,
+  "v1_pass_rate_strict_judge": 0.1638655462184874,
+  "v1_pass_rate_fuzzy_judge": 0.4411764705882353,
+  "v2_pass_rate_fuzzy_judge": 0.6302521008403361,
+  "v1_pass_rate_ci95": [
+   0.3739495798319328,
+   0.5043067226890755
+  ],
+  "v2_minus_v1": 0.18907563025210083,
+  "v2_minus_v1_ci95": [
+   0.09663865546218488,
+   0.2774159663865545
+  ],
+  "judge_agreement_kappa_v1": 0.3977455716586151,
+  "judge_disagreement_share_v1": 0.2773109243697479,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4957983193277311,
+   "date_correct": 0.12605042016806722,
+   "within_length": 0.029411764705882353,
+   "no_forbidden_claims": 0.07142857142857142
+  },
+  "ci_width_at_60_items": 0.25000000000000006,
+  "ci_width_at_full_set": 0.13035714285714273
+ }
+}

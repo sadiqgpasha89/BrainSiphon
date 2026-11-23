@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/api-documentation-generation",
+ "title": "API Documentation Generation",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 12975,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Schema and type information",
+   "definition": "endpoints, fields and types",
+   "asOfRule": "From code"
+  },
+  {
+   "name": "Test and example results",
+   "definition": "examples that pass",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Change diff",
+   "definition": "what changed since the last release",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Usage logs",
+   "definition": "commonly used endpoints",
+   "asOfRule": "Aggregated"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"API Documentation Generation\": Generate and update API reference docs and examples from code, schemas and tests so documentation stays accurate, with examples executed in CI. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Prose with no tests."
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "devtools/sast-false-positive-reduction",
+ "engine": "tabular",
+ "seed": 65957,
+ "knobs": {
+  "n_entities": 2620,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 3
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.9,
+ "results": {
+  "rows": 203588,
+  "positive_rate": 0.0029618641570230073,
+  "test_rows": 67814,
+  "test_positive_rate": 0.003126198130179609,
+  "baseline_lr": {
+   "pr_auc": 0.5139329685698908,
+   "recall_at_0.5pct_fpr": 0.6462264150943396,
+   "brier": 0.0035661382052080033
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.6978294537928247,
+   "recall_at_0.5pct_fpr": 0.7547169811320755,
+   "brier": 0.0014471762610565933
+  }
+ }
+}

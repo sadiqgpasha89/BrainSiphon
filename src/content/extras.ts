@@ -112,6 +112,14 @@ export const PROTOCOLS: Record<Domain, string> = {
   cybersecurity: 'syslog/CEF, OCSF and STIX/TAXII, EDR and SIEM connectors',
   edtech: 'LTI 1.3, xAPI/Caliper, QTI and OneRoster',
   saas: 'OAuth2/OIDC, REST and GraphQL product APIs, webhooks and SCIM',
+  telecom: 'NETCONF/YANG and gNMI streaming telemetry, SNMP traps, 3GPP and TM Forum Open APIs, Diameter and RADIUS records',
+  manufacturing: 'OPC UA and MQTT Sparkplug, Modbus and PROFINET gateways, MES and ERP interfaces (ISA-95), CMMS work-order APIs',
+  energy: 'IEC 61850, DNP3 and ICCP gateways, CIM and OPC UA, AMI head-end and MDM interfaces, market APIs and work-order APIs',
+  'public-sector': 'REST and SOAP agency APIs, case management and CRM integrations, GIS services, traffic and sensor feeds (NGSI-LD, MQTT) and open data standards',
+  'public-safety': 'CAD and records APIs, NG911 and text-to-911 interfaces, CAP alerting, video management system APIs, evidence management and court case management APIs',
+  devtools: 'Git and code host webhooks and APIs, CI/CD events, package registry APIs, SARIF and SBOM formats (SPDX, CycloneDX), issue tracker APIs and OpenTelemetry',
+  'it-ops': 'OpenTelemetry, syslog and SNMP, ITSM REST APIs, cloud billing and resource APIs, SCIM and OIDC for identity, STIX and TAXII for threat data, and SIEM event formats',
+  engineering: 'IFC and BIM Collaboration Format, CAD and PDF drawing exchange, schedule exchange (P6 and MS Project formats), OPC UA and MQTT for sensors, document management APIs, and ERP and cost system APIs',
   'real-estate': 'RESO Web API, MLS feeds, BIM/IFC and BACnet/Modbus building protocols',
 };
 
@@ -128,6 +136,14 @@ export const LABEL_DELAY: Record<Domain, string> = {
   cybersecurity: 'incident confirmation that takes days to weeks',
   edtech: 'learning outcomes that show up over weeks or terms',
   saas: 'churn and expansion that show up 30 to 90 days later',
+  telecom: 'fault root causes confirmed after repair, churn and billing disputes that resolve over weeks',
+  manufacturing: 'field failures and warranty claims that appear months after shipment, and quality escapes found at the customer',
+  energy: 'outage root causes confirmed after repair, theft and meter faults confirmed by site visits and asset failures that appear years after installation',
+  'public-sector': 'appeal outcomes and audit findings that arrive months after a decision, and service outcomes that appear after a policy runs for years',
+  'public-safety': 'case outcomes, appeals and audits that arrive months or years after the incident',
+  devtools: 'production defects and security incidents that appear weeks or months after a change ships',
+  'it-ops': 'problem records and root causes confirmed days after an incident, and change failures that appear after a window closes',
+  engineering: 'defects, rework and cost overruns that appear months after the work is done, and structural performance that shows over years',
   'real-estate': 'sale, lease and valuation outcomes that take months',
 };
 
@@ -141,6 +157,14 @@ export const TAIL_COHORTS: Record<Domain, string> = {
   cybersecurity: 'new tenants, rare log sources and low-volume languages',
   edtech: 'new learners, low-connectivity users and minority-language cohorts',
   saas: 'new and small tenants, rarely used features and non-English users',
+  telecom: 'new cells and sites with no history, rare vendor equipment, small enterprise accounts and roaming visitors',
+  manufacturing: 'new product variants, rare machines, first runs after a changeover and low-volume lots',
+  energy: 'rare fault types, new feeder configurations, extreme weather events and newly connected distributed generation',
+  'public-sector': 'people with complex or unusual circumstances, small language communities, rural areas and new programme rules',
+  'public-safety': 'rare incident types, small language communities, rural areas and major events',
+  devtools: 'new repositories, rarely used languages, large refactors and first-time contributors',
+  'it-ops': 'new services, rarely used systems, major incidents and remote or legacy sites',
+  engineering: 'first-of-a-kind designs, new clients, remote sites and unusual ground conditions',
   'real-estate': 'thin-comp micro-markets, unusual property types and new developments',
 };
 

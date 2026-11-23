@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/technical-debt-prioritisation",
+ "title": "Technical Debt Prioritisation",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 82215,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Churn and change failure",
+   "definition": "changes per month and failure rate",
+   "asOfRule": "From version control and CI"
+  },
+  {
+   "name": "Incident links",
+   "definition": "incidents tied to the code",
+   "asOfRule": "From the incident tracker"
+  },
+  {
+   "name": "Complexity and test coverage",
+   "definition": "complexity and coverage",
+   "asOfRule": "From analysis"
+  },
+  {
+   "name": "Dependency age",
+   "definition": "outdated dependencies",
+   "asOfRule": "From scanners"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Technical Debt Prioritisation\": Combine code metrics, incident history and change frequency to rank debt items by expected cost of delay so teams fix what hurts most, with the engineers deciding the plan. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Smell counts as value."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "it-ops/digital-experience-monitoring",
+ "title": "Digital Employee Experience Monitoring",
+ "domain": "it-ops",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 58565,
+ "knobs": {
+  "n": 294
+ },
+ "blueprintSignals": [
+  {
+   "name": "Application response times",
+   "definition": "latency by application and site",
+   "asOfRule": "From agents"
+  },
+  {
+   "name": "Login and sign-in failures",
+   "definition": "failure rates",
+   "asOfRule": "From identity logs"
+  },
+  {
+   "name": "Meeting quality",
+   "definition": "call drops and jitter",
+   "asOfRule": "From collaboration tools"
+  },
+  {
+   "name": "Device and network health",
+   "definition": "CPU, memory and signal",
+   "asOfRule": "From agents"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Digital Employee Experience Monitoring\": Measure application responsiveness, logins and meeting quality from device and network data to find group-level problems and fix them, with data aggregated to groups and never used to rank employees. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual scores."
+}

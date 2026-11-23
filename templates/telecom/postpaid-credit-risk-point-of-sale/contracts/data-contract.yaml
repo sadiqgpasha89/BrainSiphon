@@ -1,0 +1,17 @@
+# the blueprint's contract example did not parse as YAML; kept verbatim below
+# contract: postpaid_credit_risk_point_of_sale_inputs.v1
+# owner: network-engineering@example.com
+# system_of_record: OSS: inventory, fault and performance management
+# schema:
+#   registry_compatibility: BACKWARD_TRANSITIVE
+#   fields:
+#     - { name: event_id, type: string, unique: true }
+#     - { name: event_time, type: timestamp, required: true, tz: UTC }
+#     - { name: bureau_score_and_trade_lines, type: double, nullable: false }
+#     - { name: existing_relationship, type: double, nullable: false }
+#     - { name: application_consistency, type: double, nullable: false }
+# sla:
+#   freshness_p95: 30 seconds
+#   completeness: ">=99.5%"
+#   duplicates: "<0.01%"
+# on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

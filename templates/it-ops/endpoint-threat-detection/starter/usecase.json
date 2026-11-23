@@ -1,0 +1,58 @@
+{
+ "slug": "it-ops/endpoint-threat-detection",
+ "title": "Endpoint Threat Detection",
+ "domain": "it-ops",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 2269,
+ "knobs": {
+  "n_series": 90,
+  "anomalies_per_series": 2.727
+ },
+ "blueprintSignals": [
+  {
+   "name": "Process lineage anomaly",
+   "definition": "unusual parent and child processes",
+   "asOfRule": "From endpoint events"
+  },
+  {
+   "name": "Persistence and credential access behaviour",
+   "definition": "registry and credential store access",
+   "asOfRule": "From endpoint events"
+  },
+  {
+   "name": "Network destination reputation",
+   "definition": "rarity and reputation of destinations",
+   "asOfRule": "From threat feeds"
+  },
+  {
+   "name": "Device role and software baseline",
+   "definition": "normal tools on this type of device",
+   "asOfRule": "From the CMDB"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Endpoint Threat Detection\": Detect malicious behaviour on devices from process, file and network events and alert analysts with the process tree, using device and process signals and not employee activity profiles. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Content monitoring."
+}

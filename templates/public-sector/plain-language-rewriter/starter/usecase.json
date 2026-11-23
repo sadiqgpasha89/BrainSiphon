@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/plain-language-rewriter",
+ "title": "Plain Language and Accessibility Rewriter",
+ "domain": "public-sector",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 45084,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Reading level",
+   "definition": "grade and sentence length",
+   "asOfRule": "From metrics"
+  },
+  {
+   "name": "Number and date preservation",
+   "definition": "whether dates and amounts match the original",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Terms against glossary",
+   "definition": "consistent legal terms",
+   "asOfRule": "From the glossary"
+  },
+  {
+   "name": "Structure and headings",
+   "definition": "clear order of actions",
+   "asOfRule": "From the layout"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Plain Language and Accessibility Rewriter\": Rewrite letters, guidance and forms in plain language and accessible formats for review, so residents understand what to do and by when. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Readability scores alone."
+}

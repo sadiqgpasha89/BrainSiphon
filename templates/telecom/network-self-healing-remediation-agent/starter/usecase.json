@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/network-self-healing-remediation-agent",
+ "title": "Network Self-Healing Remediation Agent",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 55154,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Correlated incident severity",
+   "definition": "number of impacted subscribers and services behind the alarm group",
+   "asOfRule": "Computed from topology at alarm time"
+  },
+  {
+   "name": "Runbook match score",
+   "definition": "similarity of incident symptoms to the symptoms recorded in each approved runbook",
+   "asOfRule": "Runbooks must be versioned with the topology they were written for"
+  },
+  {
+   "name": "Blast radius estimate",
+   "definition": "count of cells and customers reachable from the target element",
+   "asOfRule": "Use the live inventory not a stale snapshot"
+  },
+  {
+   "name": "Recent change proximity",
+   "definition": "changes applied to the element or neighbours in the last 24 hours",
+   "asOfRule": "Change records must be timestamped when applied not when approved"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Network Self-Healing Remediation Agent\": Detect a customer-impacting network fault, match it to an approved runbook, propose or apply a fix through the orchestrator and verify recovery, so time to restore falls without unsafe changes reaching the live network. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the model compose raw commands."
+}

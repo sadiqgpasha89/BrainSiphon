@@ -1,0 +1,59 @@
+{
+ "slug": "it-ops/change-risk-assessment",
+ "title": "Change Risk Assessment",
+ "domain": "it-ops",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 28099,
+ "knobs": {
+  "n_entities": 2520,
+  "positive_entity_rate": 0.038,
+  "n_flash_sales": 6
+ },
+ "blueprintSignals": [
+  {
+   "name": "Target criticality",
+   "definition": "tier of the affected services",
+   "asOfRule": "From the CMDB"
+  },
+  {
+   "name": "Change type and size",
+   "definition": "standard, normal or emergency and scope",
+   "asOfRule": "From the record"
+  },
+  {
+   "name": "Past failure rate for the service",
+   "definition": "failures in recent changes",
+   "asOfRule": "From history"
+  },
+  {
+   "name": "Concurrent changes",
+   "definition": "overlapping changes",
+   "asOfRule": "From the calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Change Risk Assessment\": Estimate the risk of a proposed change from its content, target and history so the approval route and test requirements match the risk, without blocking low-risk changes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Requester scoring."
+}

@@ -1,0 +1,45 @@
+{
+ "use_case": "manufacturing/agv-fleet-traffic-orchestration",
+ "engine": "optimize",
+ "seed": 61517,
+ "knobs": {
+  "n_instances": 196,
+  "noise": 0.436
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.2,
+ "results": {
+  "instances": 196,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 135.55968202412353,
+   "promised_cost": 89.21045643902612,
+   "optimism_gap_pct": 51.954924831907284,
+   "regret_vs_oracle_pct": 48.45923361911181
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 121.57563384841453,
+   "promised_cost": 69.79763008156363,
+   "optimism_gap_pct": 74.18303989167615,
+   "regret_vs_oracle_pct": 33.14449516546854
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 115.27031056964448,
+   "promised_cost": 72.9710515444738,
+   "optimism_gap_pct": 57.96717757231507,
+   "regret_vs_oracle_pct": 26.23917163778156
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.31104796884277,
+   "promised_cost": 98.27108478759759,
+   "optimism_gap_pct": -7.082487014159037,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

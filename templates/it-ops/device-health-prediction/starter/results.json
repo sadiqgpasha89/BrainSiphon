@@ -1,0 +1,34 @@
+{
+ "use_case": "it-ops/device-health-prediction",
+ "engine": "tabular",
+ "seed": 13478,
+ "knobs": {
+  "n_entities": 2540,
+  "positive_entity_rate": 0.03,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.9,
+ "results": {
+  "rows": 195253,
+  "positive_rate": 0.003877021095706596,
+  "test_rows": 65397,
+  "test_positive_rate": 0.0036698931143630442,
+  "baseline_lr": {
+   "pr_auc": 0.6078916151609892,
+   "recall_at_0.5pct_fpr": 0.75074375,
+   "brier": 0.0028497916660689838
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7515563602440155,
+   "recall_at_0.5pct_fpr": 0.7875,
+   "brier": 0.001478683575725669
+  }
+ }
+}

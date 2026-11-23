@@ -1,0 +1,16 @@
+contract: perimeter_intrusion_detection_inputs.v1
+owner: emergency-communications@example.com
+system_of_record: Computer-aided dispatch (CAD)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: object_class_and_crossing, type: double, nullable: false }
+    - { name: fence_and_sensor_events, type: double, nullable: false }
+    - { name: weather_and_lighting, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

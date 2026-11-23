@@ -20,8 +20,8 @@ const all = loadAllUseCases(root);
 const playbooks = all.map((u) => buildImplementationPlaybook(u));
 
 describe('Customer Implementation Playbook: every blueprint', () => {
-  it('has one valid playbook for each of the 575 use cases', () => {
-    expect(all).toHaveLength(575);
+  it('has one valid playbook for each of the 975 use cases', () => {
+    expect(all).toHaveLength(975);
     for (const pb of playbooks) {
       const r = ImplementationPlaybookSchema.safeParse(pb);
       expect(r.success, `${pb.slug}: ${r.success ? '' : r.error.message.slice(0, 300)}`).toBe(true);

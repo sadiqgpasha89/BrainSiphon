@@ -1,0 +1,59 @@
+{
+ "slug": "it-ops/wifi-experience-optimisation",
+ "title": "Wi-Fi Experience Optimisation",
+ "domain": "it-ops",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 39562,
+ "knobs": {
+  "n": 12640,
+  "label_noise": 0.043,
+  "dup_share": 0.374
+ },
+ "blueprintSignals": [
+  {
+   "name": "Client connection failures",
+   "definition": "failed associations and roams",
+   "asOfRule": "From controllers"
+  },
+  {
+   "name": "Channel utilisation and interference",
+   "definition": "airtime use",
+   "asOfRule": "From access points"
+  },
+  {
+   "name": "Client density",
+   "definition": "clients per access point",
+   "asOfRule": "From controllers"
+  },
+  {
+   "name": "Floor plan and placement",
+   "definition": "location of access points",
+   "asOfRule": "From site plans"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Wi-Fi Experience Optimisation\": Tune channel, power and access point placement recommendations from client experience data so wireless issues fall, using access point and client-class aggregates and not named users. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Signal strength as the target."
+}

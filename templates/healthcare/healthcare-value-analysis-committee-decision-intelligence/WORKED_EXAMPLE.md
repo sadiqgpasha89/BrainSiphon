@@ -32,7 +32,7 @@ The guarded pipeline checks that every claim cites a supporting passage and abst
 
 ## 5. An edge case from the blueprint
 
-**Evidence is mostly vendor-supplied.** bias is high. Planned response: Label it and request independent evidence. Write the test that replays this case through your pipeline before you tune anything.
+**Evidence is mostly vendor-supplied.** bias is high and the packet reads as independent. Planned response: Label it and request independent evidence. Write the test that replays this case through your pipeline before you tune anything.
 
 ## 6. What to expect on your own data
 

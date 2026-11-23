@@ -1,0 +1,59 @@
+{
+ "slug": "it-ops/cloud-misconfiguration-detection",
+ "title": "Cloud Misconfiguration Detection",
+ "domain": "it-ops",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 24538,
+ "knobs": {
+  "n": 10490,
+  "label_noise": 0.078,
+  "dup_share": 0.39
+ },
+ "blueprintSignals": [
+  {
+   "name": "Internet exposure",
+   "definition": "whether the resource is reachable",
+   "asOfRule": "From network analysis"
+  },
+  {
+   "name": "Data sensitivity",
+   "definition": "classification of stored data",
+   "asOfRule": "From the data catalogue"
+  },
+  {
+   "name": "Identity permissions",
+   "definition": "wildcard and cross-account access",
+   "asOfRule": "From identity analysis"
+  },
+  {
+   "name": "Compliance mapping",
+   "definition": "control the finding breaks",
+   "asOfRule": "From policy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Cloud Misconfiguration Detection\": Find risky cloud settings such as public storage, open ports and weak identity rules and rank them by exposure and data sensitivity, opening fixes through infrastructure code. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Severity-only ranking."
+}

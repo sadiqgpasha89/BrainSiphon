@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/subscription-identity-fraud-onboarding",
+ "engine": "tabular",
+ "seed": 68449,
+ "knobs": {
+  "n_entities": 2810,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.0,
+ "results": {
+  "rows": 212746,
+  "positive_rate": 0.003064687467684469,
+  "test_rows": 69746,
+  "test_positive_rate": 0.003885527485447194,
+  "baseline_lr": {
+   "pr_auc": 0.7373181719005946,
+   "recall_at_0.5pct_fpr": 0.8139990774907748,
+   "brier": 0.001713255274896958
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7290461920484917,
+   "recall_at_0.5pct_fpr": 0.7601476014760148,
+   "brier": 0.0017683418159962184
+  }
+ }
+}

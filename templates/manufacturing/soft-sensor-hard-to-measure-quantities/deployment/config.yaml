@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: process_and_lab_data_join, timeout_ms: 330, on_timeout: fallback_level_1 }
+    - { name: time_alignment, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: soft_sensor_model, timeout_ms: 660, on_timeout: fallback_level_1 }
+    - { name: uncertainty_and_bias_correction, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: output_to_control_and_hmi, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: drift_monitor, timeout_ms: 247, on_timeout: fallback_level_1 }
+    - { name: retrain, timeout_ms: 247, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Off-spec batches"
+    - "Lab samples per week"
+    - "Control loop variability"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

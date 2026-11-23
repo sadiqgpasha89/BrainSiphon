@@ -1,0 +1,50 @@
+{
+ "use_case": "public-safety/bodycam-footage-redaction-assistant",
+ "engine": "cv",
+ "seed": 50555,
+ "knobs": {
+  "n": 5190,
+  "prevalence": 0.157
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "images": 5190,
+  "train": 1868,
+  "prevalence": 0.15163776493256262,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9517310509676922,
+    "sens_at_95_spec": 0.7837150127226463
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9715478190054461,
+    "sens_at_95_spec": 0.8983050847457628
+   },
+   "site_B": {
+    "auc": 0.7604904001850566,
+    "sens_at_95_spec": 0.3282442748091603
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3638676844783715,
+    "false_positive_rate": 0.06433566433566433
+   }
+  }
+ }
+}

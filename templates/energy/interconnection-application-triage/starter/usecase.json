@@ -1,0 +1,59 @@
+{
+ "slug": "energy/interconnection-application-triage",
+ "title": "Interconnection Application Triage",
+ "domain": "energy",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 13033,
+ "knobs": {
+  "n": 13530,
+  "label_noise": 0.073,
+  "dup_share": 0.361
+ },
+ "blueprintSignals": [
+  {
+   "name": "Document completeness",
+   "definition": "required forms and data present",
+   "asOfRule": "From the application"
+  },
+  {
+   "name": "Technology and size",
+   "definition": "generation type and capacity",
+   "asOfRule": "From the application"
+  },
+  {
+   "name": "Location headroom",
+   "definition": "hosting capacity at the point",
+   "asOfRule": "From the hosting map"
+  },
+  {
+   "name": "Past similar cases",
+   "definition": "outcomes of similar applications",
+   "asOfRule": "From history"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Interconnection Application Triage\": Check, classify and route requests to connect solar, storage and generation so incomplete applications are fixed early and simple ones move quickly. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Priority for large applicants."
+}

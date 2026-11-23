@@ -1,0 +1,53 @@
+{
+ "slug": "energy/solar-generation-forecasting",
+ "title": "Solar Generation Forecasting",
+ "domain": "energy",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 27670,
+ "knobs": {
+  "n": 286
+ },
+ "blueprintSignals": [
+  {
+   "name": "Forecast irradiance",
+   "definition": "numerical weather model irradiance",
+   "asOfRule": "From the weather feed"
+  },
+  {
+   "name": "Satellite cloud motion",
+   "definition": "cloud displacement from images",
+   "asOfRule": "Computed from imagery"
+  },
+  {
+   "name": "Plant availability",
+   "definition": "inverter and string outages",
+   "asOfRule": "From plant telemetry"
+  },
+  {
+   "name": "Panel soiling and age",
+   "definition": "derating by soiling and age",
+   "asOfRule": "From plant history"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Solar Generation Forecasting\": Forecast solar generation per plant and for distributed rooftop fleets from irradiance forecasts, satellite cloud motion and plant telemetry so balancing and curtailment decisions improve. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Nameplate capacity as truth."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/predictive-network-fault-detection",
+ "title": "Predictive Network Fault Detection",
+ "domain": "telecom",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 54060,
+ "knobs": {
+  "n_series": 111,
+  "anomalies_per_series": 2.467
+ },
+ "blueprintSignals": [
+  {
+   "name": "Counter drift against peers",
+   "definition": "z-score of error and retransmit counters versus similar elements",
+   "asOfRule": "Peer groups must exclude the failing element"
+  },
+  {
+   "name": "Temperature and power trend",
+   "definition": "slope of temperature and supply voltage over 7 days",
+   "asOfRule": "Needs sensor calibration per model"
+  },
+  {
+   "name": "Software version and recent restart count",
+   "definition": "version and number of resets in 30 days",
+   "asOfRule": "Version must be as at prediction time"
+  },
+  {
+   "name": "Traffic load percentile",
+   "definition": "busy-hour load relative to capacity",
+   "asOfRule": "Seasonality adjustment is required"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Predictive Network Fault Detection\": Predict element failures and severe degradations hours to days ahead from performance counters and logs so engineers can intervene before customers are affected. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Random split across time."
+}

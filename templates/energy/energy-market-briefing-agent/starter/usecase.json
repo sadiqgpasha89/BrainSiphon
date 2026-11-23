@@ -1,0 +1,55 @@
+{
+ "slug": "energy/energy-market-briefing-agent",
+ "title": "Energy Market Briefing Agent",
+ "domain": "energy",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 49596,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Notice relevance",
+   "definition": "whether the notice touches a position or asset",
+   "asOfRule": "From the portfolio"
+  },
+  {
+   "name": "Source reliability",
+   "definition": "past accuracy of the source",
+   "asOfRule": "Maintained list"
+  },
+  {
+   "name": "Change since yesterday",
+   "definition": "change in key figures from the previous day",
+   "asOfRule": "From data"
+  },
+  {
+   "name": "Outage and weather impact",
+   "definition": "outage and storm flags that affect supply",
+   "asOfRule": "From operators and weather"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Energy Market Briefing Agent\": Prepare daily briefings for traders and planners from market notices, outage reports, weather and price data, with every statement linked to its source and numbers computed by tools. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model-computed figures."
+}

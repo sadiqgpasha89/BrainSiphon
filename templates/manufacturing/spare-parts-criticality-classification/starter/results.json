@@ -1,0 +1,42 @@
+{
+ "use_case": "manufacturing/spare-parts-criticality-classification",
+ "engine": "generative",
+ "seed": 57457,
+ "knobs": {
+  "n": 247
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "golden_items": 247,
+  "v1_pass_rate_strict_judge": 0.1700404858299595,
+  "v1_pass_rate_fuzzy_judge": 0.44129554655870445,
+  "v2_pass_rate_fuzzy_judge": 0.5587044534412956,
+  "v1_pass_rate_ci95": [
+   0.3805668016194332,
+   0.5021255060728743
+  ],
+  "v2_minus_v1": 0.11740890688259109,
+  "v2_minus_v1_ci95": [
+   0.032388663967611336,
+   0.20253036437246955
+  ],
+  "judge_agreement_kappa_v1": 0.41192566006893844,
+  "judge_disagreement_share_v1": 0.27125506072874495,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4939271255060729,
+   "date_correct": 0.145748987854251,
+   "within_length": 0.04048582995951417,
+   "no_forbidden_claims": 0.06477732793522267
+  },
+  "ci_width_at_60_items": 0.26666666666666666,
+  "ci_width_at_full_set": 0.12155870445344114
+ }
+}

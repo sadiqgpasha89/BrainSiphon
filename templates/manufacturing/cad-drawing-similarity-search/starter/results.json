@@ -1,0 +1,50 @@
+{
+ "use_case": "manufacturing/cad-drawing-similarity-search",
+ "engine": "cv",
+ "seed": 31579,
+ "knobs": {
+  "n": 5390,
+  "prevalence": 0.094
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "images": 5390,
+  "train": 1938,
+  "prevalence": 0.09814471243042672,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9389849559484957,
+    "sens_at_95_spec": 0.7330677290836654
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.963422131147541,
+    "sens_at_95_spec": 0.8125
+   },
+   "site_B": {
+    "auc": 0.7571038574875883,
+    "sens_at_95_spec": 0.3187250996015936
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3386454183266932,
+    "false_positive_rate": 0.0602762662201758
+   }
+  }
+ }
+}

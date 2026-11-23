@@ -1,0 +1,50 @@
+{
+ "use_case": "manufacturing/vision-guided-bin-picking",
+ "engine": "cv",
+ "seed": 65383,
+ "knobs": {
+  "n": 4390,
+  "prevalence": 0.104
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "images": 4390,
+  "train": 1509,
+  "prevalence": 0.10091116173120729,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.942771613560692,
+    "sens_at_95_spec": 0.7368421052631579
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.965477195945946,
+    "sens_at_95_spec": 0.875
+   },
+   "site_B": {
+    "auc": 0.7385178645160724,
+    "sens_at_95_spec": 0.33771929824561403
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.37719298245614036,
+    "false_positive_rate": 0.07260891337005508
+   }
+  }
+ }
+}

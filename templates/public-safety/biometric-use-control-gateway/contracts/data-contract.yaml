@@ -1,0 +1,16 @@
+contract: biometric_use_control_gateway_inputs.v1
+owner: emergency-communications@example.com
+system_of_record: Computer-aided dispatch (CAD)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: request_type, type: double, nullable: false }
+    - { name: data_type, type: double, nullable: false }
+    - { name: approval_record, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

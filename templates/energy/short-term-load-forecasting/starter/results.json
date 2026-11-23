@@ -1,0 +1,46 @@
+{
+ "use_case": "energy/short-term-load-forecasting",
+ "engine": "forecast",
+ "seed": 71841,
+ "knobs": {
+  "n_series": 282
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 25.8,
+ "results": {
+  "rows": 25588,
+  "h1": {
+   "wmape_model": 0.1185253241955427,
+   "wmape_baseline": 0.20520857241221024,
+   "fva": 0.4224153367362432
+  },
+  "h3": {
+   "wmape_model": 0.11671084130245236,
+   "wmape_baseline": 0.1953191539559519,
+   "fva": 0.40246084964727613
+  },
+  "h7": {
+   "wmape_model": 0.11741533320618447,
+   "wmape_baseline": 0.2035683700341408,
+   "fva": 0.4232142587451452
+  },
+  "h14": {
+   "wmape_model": 0.14441970414332556,
+   "wmape_baseline": 0.22064589463385156,
+   "fva": 0.3454684285742943
+  },
+  "p90_coverage": 0.8908081913396905,
+  "wmape_sku_level": 0.12415795492342126,
+  "wmape_aggregate": 0.028750922128509257,
+  "late_feed": {
+   "missing_as_zero": 0.19911866054598543,
+   "missing_as_nan": 0.14253210978702377
+  }
+ }
+}

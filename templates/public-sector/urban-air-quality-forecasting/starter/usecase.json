@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/urban-air-quality-forecasting",
+ "title": "Urban Air Quality Forecasting",
+ "domain": "public-sector",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 79146,
+ "knobs": {
+  "n_series": 184
+ },
+ "blueprintSignals": [
+  {
+   "name": "Weather forecast",
+   "definition": "wind, temperature and stability",
+   "asOfRule": "From weather models"
+  },
+  {
+   "name": "Traffic and emission activity",
+   "definition": "traffic flow and industrial activity",
+   "asOfRule": "From traffic and permits"
+  },
+  {
+   "name": "Recent concentrations",
+   "definition": "readings at nearby sensors",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Regional background",
+   "definition": "regional pollution levels",
+   "asOfRule": "From networks"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Urban Air Quality Forecasting\": Forecast air pollutants by neighbourhood for the next days from sensors, traffic and weather so health alerts and traffic measures are timely. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using raw low-cost readings."
+}

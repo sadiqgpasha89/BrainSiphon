@@ -1,0 +1,59 @@
+{
+ "slug": "manufacturing/oee-loss-attribution",
+ "title": "OEE Loss Attribution",
+ "domain": "manufacturing",
+ "engine": "uplift",
+ "fit": "adaptable",
+ "problemType": "causal-measurement",
+ "seed": 33534,
+ "knobs": {
+  "n": 44590,
+  "confound": 1.233,
+  "holdout": 0.161
+ },
+ "blueprintSignals": [
+  {
+   "name": "Stop duration and frequency",
+   "definition": "number and length of stops by cause",
+   "asOfRule": "From machine states"
+  },
+  {
+   "name": "Speed versus ideal",
+   "definition": "achieved rate against the ideal rate",
+   "asOfRule": "Ideal rate from engineering"
+  },
+  {
+   "name": "Reject count by cause",
+   "definition": "rejects by quality class",
+   "asOfRule": "From inspection"
+  },
+  {
+   "name": "Changeover duration",
+   "definition": "minutes between product runs",
+   "asOfRule": "From schedules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"OEE Loss Attribution\": Attribute lost production time and output to causes such as stops, speed loss and quality so improvement effort targets the largest loss buckets. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Operator-logged stops only."
+}

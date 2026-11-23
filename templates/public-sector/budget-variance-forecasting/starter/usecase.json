@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/budget-variance-forecasting",
+ "title": "Public Budget Variance Forecasting",
+ "domain": "public-sector",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 33305,
+ "knobs": {
+  "n_series": 165
+ },
+ "blueprintSignals": [
+  {
+   "name": "Spend to date against profile",
+   "definition": "year-to-date spend against seasonal profile",
+   "asOfRule": "From finance"
+  },
+  {
+   "name": "Committed spend",
+   "definition": "open orders and contracts",
+   "asOfRule": "From procurement"
+  },
+  {
+   "name": "Revenue drivers",
+   "definition": "tax receipts and fees",
+   "asOfRule": "From revenue systems"
+  },
+  {
+   "name": "One-off flags",
+   "definition": "grants and emergencies",
+   "asOfRule": "From finance"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Public Budget Variance Forecasting\": Forecast year-end spending and revenue by department from monthly actuals so finance teams act early on overspends and shortfalls. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Straight-line projections."
+}

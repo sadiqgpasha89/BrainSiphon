@@ -1,0 +1,22 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: network_and_hazard_data, timeout_ms: 509, on_timeout: fallback_level_1 }
+    - { name: population_and_need_model, timeout_ms: 509, on_timeout: fallback_level_1 }
+    - { name: evacuation_simulation, timeout_ms: 508, on_timeout: fallback_level_1 }
+    - { name: plan_optimiser, timeout_ms: 508, on_timeout: fallback_level_1 }
+    - { name: alert_wording, timeout_ms: 191, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Evacuation clearance time"
+    - "Residents without transport assisted"
+    - "Exercise findings"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

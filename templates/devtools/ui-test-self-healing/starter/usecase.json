@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/ui-test-self-healing",
+ "title": "UI Test Self-Healing",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 89956,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Candidate element similarity",
+   "definition": "similarity of the old and new element",
+   "asOfRule": "From the DOM and vision"
+  },
+  {
+   "name": "Layout and text context",
+   "definition": "nearby labels and structure",
+   "asOfRule": "From the page"
+  },
+  {
+   "name": "Behaviour assertion result",
+   "definition": "whether the outcome is still correct",
+   "asOfRule": "From the test"
+  },
+  {
+   "name": "Healing history",
+   "definition": "past healing events for the test",
+   "asOfRule": "From logs"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"UI Test Self-Healing\": Repair broken UI test locators after interface changes by finding the matching element and proposing an update, while engineers approve each change and real bugs still fail. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Silent healing."
+}

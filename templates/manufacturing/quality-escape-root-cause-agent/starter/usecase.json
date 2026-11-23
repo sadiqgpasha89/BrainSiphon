@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/quality-escape-root-cause-agent",
+ "title": "Quality Escape Root-Cause Agent",
+ "domain": "manufacturing",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 67901,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Genealogy coverage",
+   "definition": "lots linked to the suspect part, material or tool",
+   "asOfRule": "Needs complete traceability"
+  },
+  {
+   "name": "Process excursion overlap",
+   "definition": "alarms and excursions on the affected lots",
+   "asOfRule": "Align by lot and station"
+  },
+  {
+   "name": "Supplier lot association",
+   "definition": "incoming material lots shared by affected parts",
+   "asOfRule": "Join by lot"
+  },
+  {
+   "name": "Past similar escapes",
+   "definition": "earlier cases with confirmed causes",
+   "asOfRule": "Only confirmed causes"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Quality Escape Root-Cause Agent\": When a defect reaches a customer or a late test, trace the affected lots through genealogy, line data and supplier records, rank likely causes and draft the containment and corrective action plan for the quality engineer. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Guessing the affected lots."
+}

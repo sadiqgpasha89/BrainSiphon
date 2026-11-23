@@ -1,0 +1,58 @@
+{
+ "slug": "public-sector/land-use-change-detection",
+ "title": "Land Use Change Detection from Satellite Imagery",
+ "domain": "public-sector",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 42015,
+ "knobs": {
+  "n": 4410,
+  "prevalence": 0.108
+ },
+ "blueprintSignals": [
+  {
+   "name": "Spectral and texture features",
+   "definition": "multispectral and radar bands",
+   "asOfRule": "From satellites"
+  },
+  {
+   "name": "Seasonal profile",
+   "definition": "change through the year",
+   "asOfRule": "From time series"
+  },
+  {
+   "name": "Elevation and slope",
+   "definition": "terrain",
+   "asOfRule": "From elevation data"
+  },
+  {
+   "name": "Parcel data",
+   "definition": "boundaries and use",
+   "asOfRule": "From GIS"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Land Use Change Detection from Satellite Imagery\": Map land cover and change over time from satellite data so planners track green space loss, sprawl and flood risk areas. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model-labelled test data."
+}

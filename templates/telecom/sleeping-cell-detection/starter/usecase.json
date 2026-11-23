@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/sleeping-cell-detection",
+ "title": "Sleeping Cell Detection",
+ "domain": "telecom",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 30905,
+ "knobs": {
+  "n_series": 69,
+  "anomalies_per_series": 3.307
+ },
+ "blueprintSignals": [
+  {
+   "name": "Traffic deviation from peers",
+   "definition": "ratio of actual to predicted traffic from similar cells",
+   "asOfRule": "Peers from the same area and class"
+  },
+  {
+   "name": "Attach and handover success",
+   "definition": "success rate of connection attempts and handovers",
+   "asOfRule": "Needs sufficient attempts"
+  },
+  {
+   "name": "Neighbour load increase",
+   "definition": "extra load on neighbours when a cell goes quiet",
+   "asOfRule": "Verify neighbours are healthy"
+  },
+  {
+   "name": "Time since last user connection",
+   "definition": "minutes without any attach",
+   "asOfRule": "Zero in low-traffic cells at night"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Sleeping Cell Detection\": Detect cells that appear healthy to the alarm system but carry no traffic or serve users badly, so silent outages are found in minutes not days. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training only on alarmed cells."
+}

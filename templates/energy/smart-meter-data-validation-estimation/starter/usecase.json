@@ -1,0 +1,53 @@
+{
+ "slug": "energy/smart-meter-data-validation-estimation",
+ "title": "Smart Meter Data Validation and Estimation",
+ "domain": "energy",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 41109,
+ "knobs": {
+  "n": 206
+ },
+ "blueprintSignals": [
+  {
+   "name": "Gap length and pattern",
+   "definition": "missing intervals and their length",
+   "asOfRule": "From the reads"
+  },
+  {
+   "name": "Neighbour and cohort load shape",
+   "definition": "load of similar meters",
+   "asOfRule": "Aggregated"
+  },
+  {
+   "name": "Spike and zero checks",
+   "definition": "extreme values and long zeros",
+   "asOfRule": "Rules and model"
+  },
+  {
+   "name": "Meter and head-end status",
+   "definition": "device events and communication state",
+   "asOfRule": "From the head-end"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Smart Meter Data Validation and Estimation\": Validate interval meter reads, detect gaps and spikes, and estimate missing values with flags so billing and analytics use trustworthy data. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Overwriting raw reads."
+}

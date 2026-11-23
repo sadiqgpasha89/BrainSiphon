@@ -32,7 +32,7 @@ The honest evaluation is 0.407 macro-F1 lower than the optimistic one. A frozen 
 
 ## 5. An edge case from the blueprint
 
-**Policy updated but procedures lag.** expected drift. Planned response: Effective-date grace period. Write the test that replays this case through your pipeline before you tune anything.
+**Policy updated but procedures lag.** expected drift is flagged as a finding. Planned response: Effective-date grace period. Write the test that replays this case through your pipeline before you tune anything.
 
 ## 6. What to expect on your own data
 

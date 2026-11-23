@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/soc-alert-triage-agent",
+ "title": "SOC Alert Triage Agent",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 81736,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Alert rule fidelity",
+   "definition": "past true positive rate of the rule",
+   "asOfRule": "From SIEM history"
+  },
+  {
+   "name": "Asset criticality",
+   "definition": "value of the affected asset",
+   "asOfRule": "From the CMDB"
+  },
+  {
+   "name": "Entity history",
+   "definition": "whether similar behaviour is normal",
+   "asOfRule": "From logs"
+  },
+  {
+   "name": "Threat intelligence match",
+   "definition": "indicators seen elsewhere",
+   "asOfRule": "From threat feeds"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"SOC Alert Triage Agent\": Enrich and triage security alerts by gathering context from identity, endpoint and network data, ranking them and drafting an investigation summary for the analyst to confirm. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Tool severity as truth."
+}

@@ -1,0 +1,50 @@
+{
+ "use_case": "public-safety/wildfire-camera-detection",
+ "engine": "cv",
+ "seed": 6913,
+ "knobs": {
+  "n": 4600,
+  "prevalence": 0.138
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 4600,
+  "train": 1652,
+  "prevalence": 0.14521739130434783,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9561729317069124,
+    "sens_at_95_spec": 0.7799352750809061
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.967556175606281,
+    "sens_at_95_spec": 0.8728813559322034
+   },
+   "site_B": {
+    "auc": 0.7385810306198655,
+    "sens_at_95_spec": 0.2977346278317152
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.28802588996763756,
+    "false_positive_rate": 0.04871794871794872
+   }
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "engineering/nonconformance-report-classification",
+ "title": "Nonconformance Report Classification",
+ "domain": "engineering",
+ "engine": "nlp",
+ "fit": "exact",
+ "problemType": "text-classification",
+ "seed": 49627,
+ "knobs": {
+  "n_docs": 6920
+ },
+ "blueprintSignals": [
+  {
+   "name": "Report text and photos",
+   "definition": "description of the issue",
+   "asOfRule": "From the quality system"
+  },
+  {
+   "name": "Work package and supplier",
+   "definition": "where the issue arose",
+   "asOfRule": "From project data"
+  },
+  {
+   "name": "Inspection stage",
+   "definition": "when it was found",
+   "asOfRule": "From records"
+  },
+  {
+   "name": "Closure outcome",
+   "definition": "cause and corrective action",
+   "asOfRule": "From closure records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Nonconformance Report Classification\": Classify nonconformance reports by cause, discipline and severity and find repeating patterns across projects and suppliers so quality managers can fix systemic causes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Initial category as label."
+}

@@ -1,0 +1,43 @@
+{
+ "use_case": "it-ops/cloud-cost-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 42914,
+ "knobs": {
+  "n_series": 82,
+  "anomalies_per_series": 2.32
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 18.7,
+ "results": {
+  "series": 82,
+  "hours": 2016,
+  "events": 187,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.2665699519448726,
+   "recall": 0.5841584158415841,
+   "median_delay_h": 0.0,
+   "events": 101
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.5559887569135914,
+   "recall": 0.8613861386138614,
+   "median_delay_h": 0.0,
+   "events": 101
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.46205458337111255,
+   "recall": 0.9405940594059405,
+   "median_delay_h": 0.0,
+   "events": 101
+  }
+ }
+}

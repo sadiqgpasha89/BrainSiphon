@@ -1,0 +1,50 @@
+{
+ "use_case": "telecom/tower-inspection-drone-imagery",
+ "engine": "cv",
+ "seed": 80602,
+ "knobs": {
+  "n": 3610,
+  "prevalence": 0.126
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 3610,
+  "train": 1274,
+  "prevalence": 0.12853185595567868,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9503196439866269,
+    "sens_at_95_spec": 0.7901785714285714
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9674383587427066,
+    "sens_at_95_spec": 0.8840579710144928
+   },
+   "site_B": {
+    "auc": 0.7688341465618506,
+    "sens_at_95_spec": 0.3392857142857143
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.35714285714285715,
+    "false_positive_rate": 0.058191018342821
+   }
+  }
+ }
+}

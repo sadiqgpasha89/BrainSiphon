@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/truck-roll-avoidance-prediction",
+ "engine": "tabular",
+ "seed": 52903,
+ "knobs": {
+  "n_entities": 2680,
+  "positive_entity_rate": 0.043,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.1,
+ "results": {
+  "rows": 206471,
+  "positive_rate": 0.005807110925989606,
+  "test_rows": 68683,
+  "test_positive_rate": 0.004717324519895753,
+  "baseline_lr": {
+   "pr_auc": 0.7544547470014055,
+   "recall_at_0.5pct_fpr": 0.808641975308642,
+   "brier": 0.00216993722251012
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8197661583337373,
+   "recall_at_0.5pct_fpr": 0.8364197530864198,
+   "brier": 0.001544802360541376
+  }
+ }
+}

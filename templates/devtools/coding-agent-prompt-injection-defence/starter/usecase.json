@@ -1,0 +1,53 @@
+{
+ "slug": "devtools/coding-agent-prompt-injection-defence",
+ "title": "Coding Agent Prompt Injection Defence",
+ "domain": "devtools",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 3736,
+ "knobs": {
+  "n_train": 1030
+ },
+ "blueprintSignals": [
+  {
+   "name": "Instruction-like text in data",
+   "definition": "commands inside files and web pages",
+   "asOfRule": "From the classifier"
+  },
+  {
+   "name": "Tool risk tier",
+   "definition": "the tier of the tool being called",
+   "asOfRule": "From policy"
+  },
+  {
+   "name": "Data flow from untrusted source",
+   "definition": "whether untrusted text influences a call",
+   "asOfRule": "From tracing"
+  },
+  {
+   "name": "Egress and file write targets",
+   "definition": "where data is sent or written",
+   "asOfRule": "From the gateway"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Coding Agent Prompt Injection Defence\": Detect and neutralise hostile instructions hidden in issues, code comments, dependencies and web pages that coding agents read, so untrusted text cannot steer the agent to leak data or run harmful commands. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Prompt-only defence."
+}

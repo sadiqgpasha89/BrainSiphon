@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/legal-aid-eligibility-screening",
+ "title": "Legal Aid Eligibility Screening",
+ "domain": "public-safety",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 21581,
+ "knobs": {
+  "n_docs": 5590
+ },
+ "blueprintSignals": [
+  {
+   "name": "Income and asset rule match",
+   "definition": "tests against thresholds",
+   "asOfRule": "From rules"
+  },
+  {
+   "name": "Case type match",
+   "definition": "matter types covered",
+   "asOfRule": "From rules"
+  },
+  {
+   "name": "Missing documents",
+   "definition": "documents still needed",
+   "asOfRule": "From the checklist"
+  },
+  {
+   "name": "Urgency flags",
+   "definition": "deadlines and risk of harm",
+   "asOfRule": "From the user"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Legal Aid Eligibility Screening\": Help people check whether they may qualify for legal aid and prepare their documents, with the formal decision made by an officer. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Learned eligibility."
+}

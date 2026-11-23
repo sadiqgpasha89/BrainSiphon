@@ -1,0 +1,58 @@
+{
+ "slug": "it-ops/alert-correlation-noise-reduction",
+ "title": "Alert Correlation and Noise Reduction",
+ "domain": "it-ops",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 81183,
+ "knobs": {
+  "n_clusters": 1610,
+  "hub_share": 0.153
+ },
+ "blueprintSignals": [
+  {
+   "name": "Service topology distance",
+   "definition": "dependency path between alerting services",
+   "asOfRule": "From the CMDB and traces"
+  },
+  {
+   "name": "Time proximity",
+   "definition": "alerts firing within a short window",
+   "asOfRule": "From the alert stream"
+  },
+  {
+   "name": "Alert text similarity",
+   "definition": "embedding of the alert message",
+   "asOfRule": "From a text model"
+  },
+  {
+   "name": "Recent change events",
+   "definition": "deployments and changes on affected services",
+   "asOfRule": "From change records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Alert Correlation and Noise Reduction\": Group duplicate and related alerts into a single incident using topology and timing so on-call engineers receive fewer, clearer pages without missing a real outage. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Name-based deduplication."
+}

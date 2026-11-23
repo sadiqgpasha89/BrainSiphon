@@ -1,0 +1,58 @@
+{
+ "slug": "it-ops/network-anomaly-detection",
+ "title": "Network Anomaly Detection",
+ "domain": "it-ops",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 5635,
+ "knobs": {
+  "n_series": 87,
+  "anomalies_per_series": 3.113
+ },
+ "blueprintSignals": [
+  {
+   "name": "Link utilisation and error rates",
+   "definition": "bandwidth, loss and errors",
+   "asOfRule": "From device telemetry"
+  },
+  {
+   "name": "Flow volume and destination rarity",
+   "definition": "traffic by pair",
+   "asOfRule": "From flow logs"
+  },
+  {
+   "name": "DNS query patterns",
+   "definition": "domain rarity and failure rates",
+   "asOfRule": "From DNS logs"
+  },
+  {
+   "name": "Topology and change events",
+   "definition": "recent network changes",
+   "asOfRule": "From the CMDB"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Network Anomaly Detection\": Detect abnormal traffic patterns, failing links and unusual flows from flow, device and DNS data, separating performance faults from security events and routing both to the right team. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fixed thresholds."
+}

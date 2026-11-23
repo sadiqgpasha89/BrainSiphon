@@ -32,7 +32,7 @@ The naive score finds 52.3% of events at 0.32 false alerts per series-week. The 
 
 ## 5. An edge case from the blueprint
 
-**New vendor.** no baseline. Planned response: Peer-group baseline with low confidence. Write the test that replays this case through your pipeline before you tune anything.
+**New vendor.** no baseline exists and normal activity looks unusual. Planned response: Peer-group baseline with low confidence. Write the test that replays this case through your pipeline before you tune anything.
 
 ## 6. What to expect on your own data
 

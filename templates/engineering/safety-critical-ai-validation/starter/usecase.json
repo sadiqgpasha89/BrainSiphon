@@ -1,0 +1,53 @@
+{
+ "slug": "engineering/safety-critical-ai-validation",
+ "title": "Safety-Critical AI Validation",
+ "domain": "engineering",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 73890,
+ "knobs": {
+  "n": 241
+ },
+ "blueprintSignals": [
+  {
+   "name": "Held-out performance by condition",
+   "definition": "accuracy across conditions",
+   "asOfRule": "From validation"
+  },
+  {
+   "name": "Failure case catalogue",
+   "definition": "known failure modes",
+   "asOfRule": "From analysis"
+  },
+  {
+   "name": "Operating domain coverage",
+   "definition": "conditions tested",
+   "asOfRule": "From test design"
+  },
+  {
+   "name": "Monitoring drift",
+   "definition": "live data versus validation data",
+   "asOfRule": "From monitoring"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Safety-Critical AI Validation\": Validate AI models used near safety-critical engineering decisions with independent test sets, failure analysis and operating limits so only models with documented evidence are released for use. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training metrics as evidence."
+}

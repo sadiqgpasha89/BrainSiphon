@@ -1,0 +1,34 @@
+{
+ "use_case": "public-safety/phishing-takedown-prioritisation",
+ "engine": "tabular",
+ "seed": 57540,
+ "knobs": {
+  "n_entities": 2640,
+  "positive_entity_rate": 0.044,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.0,
+ "results": {
+  "rows": 203902,
+  "positive_rate": 0.006086257123520122,
+  "test_rows": 68470,
+  "test_positive_rate": 0.006732875711990653,
+  "baseline_lr": {
+   "pr_auc": 0.7175007367517634,
+   "recall_at_0.5pct_fpr": 0.8503253796095445,
+   "brier": 0.006792834814042383
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8966401905114096,
+   "recall_at_0.5pct_fpr": 0.89587852494577,
+   "brier": 0.0014482009347521105
+  }
+ }
+}

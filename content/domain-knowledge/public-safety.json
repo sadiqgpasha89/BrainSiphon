@@ -1,0 +1,598 @@
+{
+  "overview": "Public safety covers emergency calls, dispatch, disaster response, road safety, physical security and the courts. Seconds matter, errors cost lives or liberty, and the data describes people at their worst moments, so systems support trained professionals and are built with strict limits on identification, profiling and secondary use.",
+  "concepts": [
+    {
+      "name": "Emergency calls are time-critical and noisy",
+      "explanation": "Callers are distressed, speak different languages and describe locations poorly. Call-takers must capture the nature, location and risk fast, and every second before dispatch counts.",
+      "whyItMatters": "Tools should assist capture and triage, with the call-taker retaining authority to dispatch.",
+      "tags": [
+        "emergency",
+        "call",
+        "dispatch",
+        "caller",
+        "location",
+        "triage",
+        "911",
+        "112",
+        "response",
+        "time",
+        "call-taker",
+        "incident",
+        "urgency",
+        "priority"
+      ]
+    },
+    {
+      "name": "Dispatch is a resource allocation problem",
+      "explanation": "Units differ in capability, position and availability, and demand is uneven across place and time. Good dispatch balances fast response with coverage for the next call.",
+      "whyItMatters": "Sending the nearest unit each time can leave an area uncovered, so coverage must be modelled.",
+      "tags": [
+        "dispatch",
+        "unit",
+        "resource",
+        "coverage",
+        "ambulance",
+        "fire",
+        "police",
+        "station",
+        "response",
+        "allocation",
+        "deployment",
+        "fleet"
+      ]
+    },
+    {
+      "name": "Disasters evolve and information is incomplete",
+      "explanation": "Floods, fires and storms change by the hour while reports are partial and sometimes wrong. Responders need situational awareness that shows uncertainty and source reliability.",
+      "whyItMatters": "A confident map built on unverified reports can send crews to the wrong place.",
+      "tags": [
+        "disaster",
+        "flood",
+        "fire",
+        "storm",
+        "wildfire",
+        "situational",
+        "awareness",
+        "evacuation",
+        "damage",
+        "assessment",
+        "hazard",
+        "warning"
+      ]
+    },
+    {
+      "name": "Road safety depends on exposure and context",
+      "explanation": "Crash risk depends on road design, speed, traffic, weather and user mix, and crashes are rare events. Analysis works at the location and segment level and avoids singling out drivers.",
+      "whyItMatters": "Targeting individuals from location history raises privacy and fairness concerns.",
+      "tags": [
+        "road",
+        "safety",
+        "crash",
+        "collision",
+        "speed",
+        "junction",
+        "hotspot",
+        "traffic",
+        "accident",
+        "vision",
+        "zero",
+        "segment",
+        "weather"
+      ]
+    },
+    {
+      "name": "No individual risk scoring and no face identification",
+      "explanation": "Predicting which person will offend or identifying people by face in public spaces raises severe rights and accuracy concerns, and in some places is restricted by law. Analytics here work on places, events, objects and conditions.",
+      "whyItMatters": "Systems that profile or identify people need explicit legal authority and independent oversight, and are outside these blueprints.",
+      "tags": [
+        "bias",
+        "rights",
+        "profiling",
+        "facial",
+        "identification",
+        "privacy",
+        "oversight",
+        "civil",
+        "liberties",
+        "scoring",
+        "surveillance",
+        "fairness"
+      ]
+    },
+    {
+      "name": "Physical security uses sensors that create alerts",
+      "explanation": "Cameras, access control and alarms generate many alerts, most of them benign. The task is to cut noise and surface events that need a human, such as an unattended item or a blocked exit.",
+      "whyItMatters": "Alert fatigue turns a good system into one that is switched off.",
+      "tags": [
+        "security",
+        "alarm",
+        "camera",
+        "access",
+        "alert",
+        "perimeter",
+        "intrusion",
+        "guard",
+        "monitoring",
+        "event",
+        "noise"
+      ]
+    },
+    {
+      "name": "Courts and justice need transparency",
+      "explanation": "Case scheduling, document handling and records support the courts, but decisions about guilt, sentence and bail belong to judges. Tools must be transparent and open to challenge.",
+      "whyItMatters": "A tool that influences a liberty decision needs a legal basis, validation and disclosure to the parties.",
+      "tags": [
+        "court",
+        "case",
+        "judge",
+        "scheduling",
+        "justice",
+        "document",
+        "hearing",
+        "legal",
+        "bail",
+        "evidence",
+        "transparency",
+        "records"
+      ]
+    },
+    {
+      "name": "Records are sensitive and need strict retention",
+      "explanation": "Incident, victim and witness records are among the most sensitive data a state holds. Access is logged, retention limits are enforced and data is shared only as the law allows.",
+      "whyItMatters": "Aggregated and de-identified data should be used for analytics wherever possible.",
+      "tags": [
+        "records",
+        "privacy",
+        "retention",
+        "victim",
+        "witness",
+        "access",
+        "log",
+        "redaction",
+        "sensitive",
+        "confidentiality",
+        "audit"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "CAD",
+      "definition": "Computer-aided dispatch: the system used to record calls and assign units.",
+      "tags": [
+        "cad",
+        "dispatch",
+        "call",
+        "unit",
+        "system"
+      ]
+    },
+    {
+      "term": "PSAP",
+      "definition": "Public safety answering point: the centre that answers emergency calls.",
+      "tags": [
+        "psap",
+        "call",
+        "centre",
+        "emergency"
+      ]
+    },
+    {
+      "term": "Call-taker",
+      "definition": "The person who answers an emergency call.",
+      "tags": [
+        "calltaker",
+        "call",
+        "emergency",
+        "answer"
+      ]
+    },
+    {
+      "term": "Triage",
+      "definition": "Sorting incidents by urgency.",
+      "tags": [
+        "triage",
+        "urgency",
+        "priority",
+        "incident"
+      ]
+    },
+    {
+      "term": "Response time",
+      "definition": "The time from call to arrival of help.",
+      "tags": [
+        "response",
+        "time",
+        "arrival",
+        "call"
+      ]
+    },
+    {
+      "term": "Dispatch protocol",
+      "definition": "A scripted set of questions that decides the response level.",
+      "tags": [
+        "protocol",
+        "dispatch",
+        "question",
+        "response"
+      ]
+    },
+    {
+      "term": "ANI and ALI",
+      "definition": "Caller number and location information delivered with a call.",
+      "tags": [
+        "ani",
+        "ali",
+        "caller",
+        "location",
+        "number"
+      ]
+    },
+    {
+      "term": "NG911",
+      "definition": "Next-generation emergency calling over IP networks.",
+      "tags": [
+        "ng911",
+        "emergency",
+        "ip",
+        "call"
+      ]
+    },
+    {
+      "term": "Unit",
+      "definition": "A vehicle or team available for dispatch.",
+      "tags": [
+        "unit",
+        "vehicle",
+        "team",
+        "dispatch"
+      ]
+    },
+    {
+      "term": "Station coverage",
+      "definition": "How well stations can reach an area in the target time.",
+      "tags": [
+        "coverage",
+        "station",
+        "reach",
+        "area"
+      ]
+    },
+    {
+      "term": "Incident command",
+      "definition": "A system for managing response at the scene.",
+      "tags": [
+        "command",
+        "incident",
+        "scene",
+        "response"
+      ]
+    },
+    {
+      "term": "Situational awareness",
+      "definition": "Understanding what is happening and where.",
+      "tags": [
+        "situational",
+        "awareness",
+        "map",
+        "status"
+      ]
+    },
+    {
+      "term": "Evacuation",
+      "definition": "Moving people out of a danger zone.",
+      "tags": [
+        "evacuation",
+        "zone",
+        "danger",
+        "route"
+      ]
+    },
+    {
+      "term": "Hazard",
+      "definition": "A source of potential harm.",
+      "tags": [
+        "hazard",
+        "danger",
+        "risk",
+        "harm"
+      ]
+    },
+    {
+      "term": "Wildfire",
+      "definition": "An uncontrolled fire in vegetation.",
+      "tags": [
+        "wildfire",
+        "fire",
+        "vegetation",
+        "spread"
+      ]
+    },
+    {
+      "term": "Flood extent",
+      "definition": "The area covered by floodwater.",
+      "tags": [
+        "flood",
+        "extent",
+        "water",
+        "area"
+      ]
+    },
+    {
+      "term": "Damage assessment",
+      "definition": "Estimating the harm after a disaster.",
+      "tags": [
+        "damage",
+        "assessment",
+        "disaster",
+        "harm"
+      ]
+    },
+    {
+      "term": "Early warning",
+      "definition": "An alert sent before a hazard arrives.",
+      "tags": [
+        "warning",
+        "alert",
+        "hazard",
+        "early"
+      ]
+    },
+    {
+      "term": "Cell broadcast",
+      "definition": "A message sent to all phones in an area.",
+      "tags": [
+        "cell",
+        "broadcast",
+        "alert",
+        "message"
+      ]
+    },
+    {
+      "term": "Crash hotspot",
+      "definition": "A location with many crashes.",
+      "tags": [
+        "crash",
+        "hotspot",
+        "location",
+        "road"
+      ]
+    },
+    {
+      "term": "Black spot",
+      "definition": "A road location with a high crash record.",
+      "tags": [
+        "blackspot",
+        "crash",
+        "road",
+        "location"
+      ]
+    },
+    {
+      "term": "Vision Zero",
+      "definition": "A strategy to eliminate road deaths and serious injuries.",
+      "tags": [
+        "vision",
+        "zero",
+        "road",
+        "safety",
+        "deaths"
+      ]
+    },
+    {
+      "term": "Near miss",
+      "definition": "An event that almost caused a crash.",
+      "tags": [
+        "near",
+        "miss",
+        "crash",
+        "road",
+        "event"
+      ]
+    },
+    {
+      "term": "Speed management",
+      "definition": "Setting and enforcing speeds to cut harm.",
+      "tags": [
+        "speed",
+        "management",
+        "road",
+        "enforcement"
+      ]
+    },
+    {
+      "term": "Video analytics",
+      "definition": "Software that finds events in camera video.",
+      "tags": [
+        "video",
+        "analytics",
+        "camera",
+        "event"
+      ]
+    },
+    {
+      "term": "Alert fatigue",
+      "definition": "When too many alerts cause people to ignore them.",
+      "tags": [
+        "alert",
+        "fatigue",
+        "noise",
+        "alarm"
+      ]
+    },
+    {
+      "term": "Perimeter",
+      "definition": "The boundary of a protected site.",
+      "tags": [
+        "perimeter",
+        "boundary",
+        "site",
+        "security"
+      ]
+    },
+    {
+      "term": "Access control",
+      "definition": "Systems that decide who can enter a place.",
+      "tags": [
+        "access",
+        "control",
+        "entry",
+        "door",
+        "badge"
+      ]
+    },
+    {
+      "term": "False alarm",
+      "definition": "An alert with no real incident.",
+      "tags": [
+        "false",
+        "alarm",
+        "alert",
+        "incident"
+      ]
+    },
+    {
+      "term": "Chain of custody",
+      "definition": "The record of who handled evidence.",
+      "tags": [
+        "custody",
+        "evidence",
+        "chain",
+        "record"
+      ]
+    },
+    {
+      "term": "Case backlog",
+      "definition": "Cases waiting to be heard or resolved.",
+      "tags": [
+        "backlog",
+        "case",
+        "court",
+        "wait"
+      ]
+    },
+    {
+      "term": "Docket",
+      "definition": "A list of cases scheduled for court.",
+      "tags": [
+        "docket",
+        "schedule",
+        "court",
+        "case"
+      ]
+    },
+    {
+      "term": "E-discovery",
+      "definition": "Finding and reviewing electronic documents for a case.",
+      "tags": [
+        "discovery",
+        "document",
+        "review",
+        "case",
+        "legal"
+      ]
+    },
+    {
+      "term": "Redaction",
+      "definition": "Removing sensitive text from a document.",
+      "tags": [
+        "redaction",
+        "privacy",
+        "document",
+        "sensitive"
+      ]
+    },
+    {
+      "term": "Bail",
+      "definition": "Release of an accused person before trial.",
+      "tags": [
+        "bail",
+        "release",
+        "court",
+        "decision"
+      ]
+    },
+    {
+      "term": "Duty of candour",
+      "definition": "A duty to be open about errors and use of tools.",
+      "tags": [
+        "candour",
+        "transparency",
+        "duty",
+        "disclosure"
+      ]
+    },
+    {
+      "term": "Algorithmic impact assessment",
+      "definition": "A review of the effects of an automated system.",
+      "tags": [
+        "impact",
+        "assessment",
+        "algorithm",
+        "review",
+        "rights"
+      ]
+    },
+    {
+      "term": "Human in the loop",
+      "definition": "A person reviews or approves the system's output.",
+      "tags": [
+        "human",
+        "loop",
+        "review",
+        "approval"
+      ]
+    },
+    {
+      "term": "Retention schedule",
+      "definition": "Rules for how long records are kept.",
+      "tags": [
+        "retention",
+        "schedule",
+        "records",
+        "delete"
+      ]
+    },
+    {
+      "term": "Victim support",
+      "definition": "Services that help people harmed by crime.",
+      "tags": [
+        "victim",
+        "support",
+        "service",
+        "person"
+      ]
+    },
+    {
+      "term": "Mutual aid",
+      "definition": "Help between agencies or regions during large events.",
+      "tags": [
+        "mutual",
+        "aid",
+        "agency",
+        "support",
+        "event"
+      ]
+    },
+    {
+      "term": "Radio interoperability",
+      "definition": "Ability of different agencies' radios to work together.",
+      "tags": [
+        "radio",
+        "interoperability",
+        "agency",
+        "communication"
+      ]
+    },
+    {
+      "term": "Emergency operations centre",
+      "definition": "A centre that coordinates the response to major events.",
+      "tags": [
+        "emergency",
+        "operations",
+        "centre",
+        "coordination"
+      ]
+    }
+  ]
+}

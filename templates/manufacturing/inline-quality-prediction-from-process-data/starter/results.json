@@ -1,0 +1,34 @@
+{
+ "use_case": "manufacturing/inline-quality-prediction-from-process-data",
+ "engine": "tabular",
+ "seed": 48517,
+ "knobs": {
+  "n_entities": 1810,
+  "positive_entity_rate": 0.02,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "rows": 141571,
+  "positive_rate": 0.002811310225964357,
+  "test_rows": 46595,
+  "test_positive_rate": 0.0029616911685803196,
+  "baseline_lr": {
+   "pr_auc": 0.872324218828306,
+   "recall_at_0.5pct_fpr": 0.9202898550724637,
+   "brier": 0.0008362279995590806
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8269650121099267,
+   "recall_at_0.5pct_fpr": 0.8840579710144928,
+   "brier": 0.0009888746049244261
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "energy/day-ahead-price-forecasting",
+ "title": "Day-Ahead Price Forecasting",
+ "domain": "energy",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 88734,
+ "knobs": {
+  "n_series": 192
+ },
+ "blueprintSignals": [
+  {
+   "name": "Residual load forecast",
+   "definition": "demand minus wind and solar",
+   "asOfRule": "From the forecasts"
+  },
+  {
+   "name": "Gas and carbon prices",
+   "definition": "fuel and allowance prices",
+   "asOfRule": "From market data"
+  },
+  {
+   "name": "Interconnector flows",
+   "definition": "cross-border flow forecasts",
+   "asOfRule": "From transmission operators"
+  },
+  {
+   "name": "Same hour last week price",
+   "definition": "prices at the same hour in prior weeks",
+   "asOfRule": "Local time aligned"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Day-Ahead Price Forecasting\": Forecast hourly day-ahead power prices with intervals from fuel prices, load and renewable forecasts so bids and hedges are planned with uncertainty. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Mean-only forecasts."
+}

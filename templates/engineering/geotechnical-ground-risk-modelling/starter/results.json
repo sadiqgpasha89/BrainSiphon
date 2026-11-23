@@ -1,0 +1,49 @@
+{
+ "use_case": "engineering/geotechnical-ground-risk-modelling",
+ "engine": "regression",
+ "seed": 65728,
+ "knobs": {
+  "n": 21180,
+  "outlier_share": 0.035,
+  "drift": 0.397
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.6,
+ "results": {
+  "rows": 21180,
+  "train_rows": 14825,
+  "test_rows": 6355,
+  "baseline_ridge": {
+   "mae": 8.098848819365195,
+   "rmse": 14.028148260435431,
+   "wape": 0.15116059790003084,
+   "r2": 0.4218992785125393
+  },
+  "challenger_gbm": {
+   "mae": 6.081663268495766,
+   "rmse": 12.471201407125767,
+   "wape": 0.11351092931804262,
+   "r2": 0.5431018463234079
+  },
+  "mae_gain_vs_baseline": 0.24907065138024642,
+  "interval_80_coverage": 0.6151062155782848,
+  "interval_80_mean_width": 10.050373626017521,
+  "segment_mae": {
+   "0": 6.186276631983478,
+   "1": 5.554046043554809,
+   "2": 6.03377381421044,
+   "3": 8.341982140834524
+  },
+  "worst_segment_vs_overall": 1.3716612993106119,
+  "leaky_feature_rmse": 1.402736712333006,
+  "honest_rmse": 12.471201407125767,
+  "random_split_mae": 5.195082635075766,
+  "chronological_mae": 6.081663268495766
+ }
+}

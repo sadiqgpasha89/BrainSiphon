@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/code-migration-assistant",
+ "title": "Code Migration and Upgrade Assistant",
+ "domain": "devtools",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 85319,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Deprecated API usage",
+   "definition": "calls to removed or deprecated APIs",
+   "asOfRule": "From static analysis"
+  },
+  {
+   "name": "Test coverage of affected code",
+   "definition": "coverage around the change",
+   "asOfRule": "From coverage reports"
+  },
+  {
+   "name": "Build and test result",
+   "definition": "pass or fail after the change",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Dependency graph",
+   "definition": "which services depend on this code",
+   "asOfRule": "From the repo graph"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Code Migration and Upgrade Assistant\": Plan and carry out framework, language and library upgrades across many repositories by proposing small verified changes that pass the tests, for owners to review and merge. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic merge."
+}

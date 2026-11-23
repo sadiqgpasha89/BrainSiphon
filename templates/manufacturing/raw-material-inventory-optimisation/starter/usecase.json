@@ -1,0 +1,53 @@
+{
+ "slug": "manufacturing/raw-material-inventory-optimisation",
+ "title": "Raw Material Inventory Optimisation",
+ "domain": "manufacturing",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 82215,
+ "knobs": {
+  "days": 65
+ },
+ "blueprintSignals": [
+  {
+   "name": "Demand forecast with intervals",
+   "definition": "quantile forecast from the production plan",
+   "asOfRule": "From planning"
+  },
+  {
+   "name": "Lead time distribution",
+   "definition": "supplier median and p90 lead time",
+   "asOfRule": "From receipts"
+  },
+  {
+   "name": "Shelf life and storage limits",
+   "definition": "days of life left and capacity",
+   "asOfRule": "From the material master"
+  },
+  {
+   "name": "Shortage cost",
+   "definition": "line downtime cost per day",
+   "asOfRule": "From finance"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"Raw Material Inventory Optimisation\": Set reorder points and order quantities for raw materials under demand and lead-time uncertainty so stock-outs fall without excess inventory. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Average-based safety stock."
+}

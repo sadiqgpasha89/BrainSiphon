@@ -1,0 +1,59 @@
+{
+ "slug": "devtools/reviewer-recommendation",
+ "title": "Reviewer Recommendation",
+ "domain": "devtools",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 2621,
+ "knobs": {
+  "n": 15110,
+  "label_noise": 0.083,
+  "dup_share": 0.344
+ },
+ "blueprintSignals": [
+  {
+   "name": "File ownership and expertise",
+   "definition": "prior work on the files",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Open review load",
+   "definition": "pending reviews",
+   "asOfRule": "From the code host"
+  },
+  {
+   "name": "Availability",
+   "definition": "time zone and leave",
+   "asOfRule": "From calendars"
+  },
+  {
+   "name": "Review history",
+   "definition": "past reviews of similar changes",
+   "asOfRule": "From the code host"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Reviewer Recommendation\": Suggest reviewers for a pull request by code ownership, expertise and current review load so reviews are fast, knowledge spreads and nobody is overloaded. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Always choosing the top expert."
+}

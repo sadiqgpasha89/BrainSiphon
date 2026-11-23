@@ -1,0 +1,579 @@
+{
+  "overview": "Engineering and construction deliver one-off projects with long lead times, many parties and high consequences of error. Data lives in drawings, models, schedules and site records of uneven quality, and licensed engineers carry professional liability, so tools assist and verify and people sign.",
+  "concepts": [
+    {
+      "name": "Professional engineers are accountable for the design",
+      "explanation": "Codes and law require a licensed engineer to design, check and seal critical work. Software supports calculations and checks, and responsibility cannot be handed to a tool.",
+      "whyItMatters": "Any AI output used in design needs independent verification and a named signer.",
+      "tags": [
+        "engineer",
+        "design",
+        "calculation",
+        "code",
+        "standard",
+        "sign",
+        "seal",
+        "verify",
+        "professional",
+        "licence",
+        "review",
+        "accountability",
+        "liability"
+      ]
+    },
+    {
+      "name": "Drawings and models carry the design information",
+      "explanation": "Information sits in CAD drawings, PDFs and BIM models, often in different revisions and disciplines. Reading it reliably is a prerequisite for most automation.",
+      "whyItMatters": "Using the wrong revision is a common and costly error.",
+      "tags": [
+        "drawing",
+        "bim",
+        "model",
+        "cad",
+        "revision",
+        "discipline",
+        "ifc",
+        "clash",
+        "document",
+        "specification",
+        "sheet",
+        "title",
+        "block"
+      ]
+    },
+    {
+      "name": "Clashes between disciplines are common",
+      "explanation": "Structure, services and architecture are modelled by different teams, and their elements collide. Not every clash needs action, and the important ones sit among thousands of minor ones.",
+      "whyItMatters": "Prioritising by impact and construction timing makes coordination meetings useful.",
+      "tags": [
+        "clash",
+        "coordination",
+        "bim",
+        "discipline",
+        "conflict",
+        "mep",
+        "structure",
+        "architecture",
+        "model",
+        "overlap",
+        "tolerance"
+      ]
+    },
+    {
+      "name": "Schedules slip for reasons that can be seen early",
+      "explanation": "Delay comes from late design, supply, weather, access and productivity. Progress reports are often optimistic, so forecasts should use durations, float and risk drivers.",
+      "whyItMatters": "A single completion date presented as certain misleads decisions.",
+      "tags": [
+        "schedule",
+        "delay",
+        "critical",
+        "path",
+        "float",
+        "progress",
+        "forecast",
+        "programme",
+        "activity",
+        "baseline",
+        "risk",
+        "milestone"
+      ]
+    },
+    {
+      "name": "Cost grows through change",
+      "explanation": "Cost overruns come from scope change, design maturity, market prices and productivity. Early estimates carry wide uncertainty that narrows as design matures.",
+      "whyItMatters": "Reporting a single number at an early stage hides the range.",
+      "tags": [
+        "cost",
+        "estimate",
+        "budget",
+        "overrun",
+        "change",
+        "order",
+        "contingency",
+        "quantity",
+        "rate",
+        "earned",
+        "value",
+        "price",
+        "inflation"
+      ]
+    },
+    {
+      "name": "Site safety is about conditions",
+      "explanation": "Hazards such as open edges, exclusion zones and plant movement can be detected at scene level. Monitoring individual workers raises legal and trust issues.",
+      "whyItMatters": "Safety tools support inspections and do not replace them.",
+      "tags": [
+        "safety",
+        "hazard",
+        "site",
+        "ppe",
+        "exclusion",
+        "zone",
+        "inspection",
+        "incident",
+        "near",
+        "miss",
+        "camera",
+        "worker",
+        "health"
+      ]
+    },
+    {
+      "name": "Inspection finds defects before they are built in",
+      "explanation": "Welds, concrete and structures are checked by qualified inspectors with measurements and images. Models can prioritise and highlight, but acceptance remains a human, certified decision.",
+      "whyItMatters": "A missed severe defect costs far more than a recheck, so recall matters.",
+      "tags": [
+        "inspection",
+        "defect",
+        "weld",
+        "concrete",
+        "crack",
+        "ndt",
+        "corrosion",
+        "structure",
+        "drone",
+        "sensor",
+        "monitoring",
+        "condition"
+      ]
+    },
+    {
+      "name": "Contracts allocate risk",
+      "explanation": "Contract terms decide who pays for delay, change and defects, and disputes depend on records kept at the time. Contemporaneous, linked records are the evidence.",
+      "whyItMatters": "Missing records weaken a claim long after the work is done.",
+      "tags": [
+        "contract",
+        "clause",
+        "claim",
+        "liability",
+        "delay",
+        "dispute",
+        "change",
+        "order",
+        "notice",
+        "record",
+        "payment",
+        "entitlement"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "BIM",
+      "definition": "Building information modelling: a digital model of a building or asset with data.",
+      "tags": [
+        "bim",
+        "model",
+        "building",
+        "information"
+      ]
+    },
+    {
+      "term": "IFC",
+      "definition": "An open file format for exchanging BIM data.",
+      "tags": [
+        "ifc",
+        "model",
+        "exchange",
+        "bim"
+      ]
+    },
+    {
+      "term": "CAD",
+      "definition": "Computer-aided design software for drawings and models.",
+      "tags": [
+        "cad",
+        "drawing",
+        "design",
+        "software"
+      ]
+    },
+    {
+      "term": "Drawing revision",
+      "definition": "A numbered version of a drawing.",
+      "tags": [
+        "revision",
+        "drawing",
+        "version",
+        "document"
+      ]
+    },
+    {
+      "term": "P&ID",
+      "definition": "Piping and instrumentation diagram of a process plant.",
+      "tags": [
+        "pid",
+        "piping",
+        "instrument",
+        "diagram",
+        "plant"
+      ]
+    },
+    {
+      "term": "Specification",
+      "definition": "A written description of required materials and workmanship.",
+      "tags": [
+        "specification",
+        "requirement",
+        "material",
+        "clause"
+      ]
+    },
+    {
+      "term": "Submittal",
+      "definition": "Product or shop drawing data submitted by a contractor for approval.",
+      "tags": [
+        "submittal",
+        "product",
+        "approval",
+        "contractor"
+      ]
+    },
+    {
+      "term": "RFI",
+      "definition": "Request for information: a question sent to the design team during construction.",
+      "tags": [
+        "rfi",
+        "request",
+        "information",
+        "design"
+      ]
+    },
+    {
+      "term": "Change order",
+      "definition": "A formal change to scope, cost or time.",
+      "tags": [
+        "change",
+        "order",
+        "scope",
+        "cost",
+        "contract"
+      ]
+    },
+    {
+      "term": "Variation",
+      "definition": "A change to the work required by the client.",
+      "tags": [
+        "variation",
+        "change",
+        "scope"
+      ]
+    },
+    {
+      "term": "Critical path",
+      "definition": "The chain of activities that sets the project end date.",
+      "tags": [
+        "critical",
+        "path",
+        "schedule",
+        "activity"
+      ]
+    },
+    {
+      "term": "Float",
+      "definition": "The time an activity can slip without delaying the project.",
+      "tags": [
+        "float",
+        "slack",
+        "schedule",
+        "activity"
+      ]
+    },
+    {
+      "term": "Baseline schedule",
+      "definition": "The approved plan against which progress is measured.",
+      "tags": [
+        "baseline",
+        "schedule",
+        "plan",
+        "progress"
+      ]
+    },
+    {
+      "term": "Earned value",
+      "definition": "A method that compares work done with plan and cost.",
+      "tags": [
+        "earned",
+        "value",
+        "cost",
+        "schedule",
+        "performance"
+      ]
+    },
+    {
+      "term": "Contingency",
+      "definition": "An allowance for uncertain costs.",
+      "tags": [
+        "contingency",
+        "allowance",
+        "cost",
+        "risk"
+      ]
+    },
+    {
+      "term": "Bill of quantities",
+      "definition": "A list of items and quantities for pricing.",
+      "tags": [
+        "bill",
+        "quantities",
+        "items",
+        "price"
+      ]
+    },
+    {
+      "term": "Takeoff",
+      "definition": "Measuring quantities from drawings or models.",
+      "tags": [
+        "takeoff",
+        "quantity",
+        "measure",
+        "drawing"
+      ]
+    },
+    {
+      "term": "Estimate",
+      "definition": "A prediction of project cost.",
+      "tags": [
+        "estimate",
+        "cost",
+        "prediction",
+        "budget"
+      ]
+    },
+    {
+      "term": "Tender",
+      "definition": "A formal offer to carry out work.",
+      "tags": [
+        "tender",
+        "bid",
+        "offer",
+        "contract"
+      ]
+    },
+    {
+      "term": "Subcontractor",
+      "definition": "A firm hired by the main contractor for part of the work.",
+      "tags": [
+        "subcontractor",
+        "contractor",
+        "work",
+        "package"
+      ]
+    },
+    {
+      "term": "Work package",
+      "definition": "A defined portion of the project work.",
+      "tags": [
+        "work",
+        "package",
+        "scope",
+        "activity"
+      ]
+    },
+    {
+      "term": "As-built",
+      "definition": "The record of what was actually built.",
+      "tags": [
+        "asbuilt",
+        "record",
+        "construction",
+        "survey"
+      ]
+    },
+    {
+      "term": "Point cloud",
+      "definition": "A set of 3D points from a laser scan.",
+      "tags": [
+        "point",
+        "cloud",
+        "scan",
+        "survey",
+        "laser"
+      ]
+    },
+    {
+      "term": "Tolerance",
+      "definition": "The allowed variation in a dimension.",
+      "tags": [
+        "tolerance",
+        "dimension",
+        "variation",
+        "fit"
+      ]
+    },
+    {
+      "term": "Finite element analysis",
+      "definition": "A numerical method for stress and heat analysis.",
+      "tags": [
+        "finite",
+        "element",
+        "analysis",
+        "stress",
+        "simulation"
+      ]
+    },
+    {
+      "term": "Surrogate model",
+      "definition": "A fast model trained to approximate a simulation.",
+      "tags": [
+        "surrogate",
+        "model",
+        "simulation",
+        "approximation"
+      ]
+    },
+    {
+      "term": "Generative design",
+      "definition": "Using algorithms to propose design options.",
+      "tags": [
+        "generative",
+        "design",
+        "option",
+        "optimisation"
+      ]
+    },
+    {
+      "term": "Fatigue",
+      "definition": "Damage from repeated loading.",
+      "tags": [
+        "fatigue",
+        "load",
+        "cycle",
+        "damage",
+        "life"
+      ]
+    },
+    {
+      "term": "Corrosion",
+      "definition": "Material loss from chemical reaction.",
+      "tags": [
+        "corrosion",
+        "material",
+        "loss",
+        "wall",
+        "thickness"
+      ]
+    },
+    {
+      "term": "NDT",
+      "definition": "Non-destructive testing of materials and welds.",
+      "tags": [
+        "ndt",
+        "weld",
+        "inspection",
+        "testing"
+      ]
+    },
+    {
+      "term": "Non-conformance",
+      "definition": "Work that does not meet requirements.",
+      "tags": [
+        "nonconformance",
+        "defect",
+        "requirement",
+        "quality"
+      ]
+    },
+    {
+      "term": "Structural health monitoring",
+      "definition": "Using sensors to track the condition of structures.",
+      "tags": [
+        "structural",
+        "health",
+        "monitoring",
+        "sensor"
+      ]
+    },
+    {
+      "term": "Digital twin",
+      "definition": "A model kept current with real data from an asset.",
+      "tags": [
+        "twin",
+        "digital",
+        "asset",
+        "sensor"
+      ]
+    },
+    {
+      "term": "Geotechnical",
+      "definition": "Concerning soil and rock behaviour.",
+      "tags": [
+        "geotechnical",
+        "ground",
+        "soil",
+        "rock",
+        "borehole"
+      ]
+    },
+    {
+      "term": "Borehole",
+      "definition": "A hole drilled to sample the ground.",
+      "tags": [
+        "borehole",
+        "ground",
+        "sample",
+        "investigation"
+      ]
+    },
+    {
+      "term": "Delay analysis",
+      "definition": "Methods to find the causes and effects of delay.",
+      "tags": [
+        "delay",
+        "analysis",
+        "programme",
+        "claim"
+      ]
+    },
+    {
+      "term": "Claim",
+      "definition": "A request for extra time or money under a contract.",
+      "tags": [
+        "claim",
+        "contract",
+        "time",
+        "cost"
+      ]
+    },
+    {
+      "term": "Health and safety plan",
+      "definition": "A plan for managing risk on a project.",
+      "tags": [
+        "safety",
+        "plan",
+        "risk",
+        "project"
+      ]
+    },
+    {
+      "term": "Portfolio",
+      "definition": "A set of projects managed together.",
+      "tags": [
+        "portfolio",
+        "projects",
+        "prioritisation"
+      ]
+    },
+    {
+      "term": "Lessons learned",
+      "definition": "Knowledge captured from past projects.",
+      "tags": [
+        "lessons",
+        "learned",
+        "knowledge",
+        "project"
+      ]
+    },
+    {
+      "term": "Engineer of record",
+      "definition": "The licensed engineer responsible for a design.",
+      "tags": [
+        "engineer",
+        "record",
+        "licence",
+        "design",
+        "sign"
+      ]
+    }
+  ]
+}

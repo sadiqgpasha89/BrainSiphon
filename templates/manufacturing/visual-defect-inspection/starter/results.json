@@ -1,0 +1,50 @@
+{
+ "use_case": "manufacturing/visual-defect-inspection",
+ "engine": "cv",
+ "seed": 84259,
+ "knobs": {
+  "n": 3520,
+  "prevalence": 0.096
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 3520,
+  "train": 1243,
+  "prevalence": 0.096875,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9454163063133894,
+    "sens_at_95_spec": 0.7278481012658228
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9593582466099022,
+    "sens_at_95_spec": 0.8571428571428571
+   },
+   "site_B": {
+    "auc": 0.7577403883953141,
+    "sens_at_95_spec": 0.31645569620253167
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.2974683544303797,
+    "false_positive_rate": 0.0422360248447205
+   }
+  }
+ }
+}

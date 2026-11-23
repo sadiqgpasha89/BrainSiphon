@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/postpaid-credit-risk-point-of-sale",
+ "engine": "tabular",
+ "seed": 24740,
+ "knobs": {
+  "n_entities": 2080,
+  "positive_entity_rate": 0.038,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.1,
+ "results": {
+  "rows": 163608,
+  "positive_rate": 0.005085325900933939,
+  "test_rows": 54597,
+  "test_positive_rate": 0.004927010641610345,
+  "baseline_lr": {
+   "pr_auc": 0.7935874200204744,
+   "recall_at_0.5pct_fpr": 0.8104089219330854,
+   "brier": 0.0017774920470597917
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8240351981653548,
+   "recall_at_0.5pct_fpr": 0.8364312267657993,
+   "brier": 0.0015543648714111146
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "manufacturing/ehs-incident-report-classification",
+ "title": "EHS Incident Report Classification",
+ "domain": "manufacturing",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 45299,
+ "knobs": {
+  "n_docs": 6720
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hazard and energy source terms",
+   "definition": "named hazards such as pressure, height or moving parts",
+   "asOfRule": "Maintain a lexicon"
+  },
+  {
+   "name": "Potential severity cues",
+   "definition": "phrases indicating what could have happened",
+   "asOfRule": "Reviewed labels"
+  },
+  {
+   "name": "Work activity",
+   "definition": "task and equipment",
+   "asOfRule": "From the report form"
+  },
+  {
+   "name": "Location and shift pattern",
+   "definition": "aggregated location and time",
+   "asOfRule": "Aggregated"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"EHS Incident Report Classification\": Classify safety incident and near-miss reports by type, severity and cause category so EHS teams find systemic hazards faster. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Classifying by outcome only."
+}

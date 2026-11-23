@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/ems-demand-forecasting",
+ "title": "Emergency Medical Demand Forecasting",
+ "domain": "public-safety",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 1067,
+ "knobs": {
+  "n_series": 224
+ },
+ "blueprintSignals": [
+  {
+   "name": "Same time last week calls",
+   "definition": "calls in the same hour in past weeks",
+   "asOfRule": "Aligned"
+  },
+  {
+   "name": "Weather and heat alerts",
+   "definition": "temperature and storm alerts",
+   "asOfRule": "From weather"
+  },
+  {
+   "name": "Events and holidays",
+   "definition": "event calendar",
+   "asOfRule": "From calendars"
+  },
+  {
+   "name": "Population and age mix of the zone",
+   "definition": "zone-level demographics",
+   "asOfRule": "Aggregated"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Emergency Medical Demand Forecasting\": Forecast ambulance demand by area and hour from aggregated call volumes, weather and events so staffing and posting plans match likely demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual-level prediction."
+}

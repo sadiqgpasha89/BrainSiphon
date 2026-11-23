@@ -1,0 +1,74 @@
+openapi: 3.1.0
+info:
+  title: Flaky Test Detection and Quarantine API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/ci-flaky-test-quarantine/runs:
+    post:
+      summary: 'Flaky Test Detection and Quarantine: request a decision'
+      operationId: ci_flaky_test_quarantine
+      description: Illustrative contract taken from the blueprint's low-level design.  Replace the placeholder values
+        with your own fields and keep the error behaviour.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                run_date:
+                  type: string
+                partition:
+                  type: string
+                dry_run:
+                  type: boolean
+                model_version:
+                  type: string
+            example:
+              run_date: '2026-11-07'
+              partition: all
+              dry_run: false
+              model_version: champion
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  run_id:
+                    type: string
+                  status:
+                    type: string
+                  rows_in:
+                    type: integer
+                  rows_out:
+                    type: integer
+                  rows_quarantined:
+                    type: integer
+                  manifest_uri:
+                    type: string
+              example:
+                run_id: run_20261107_01
+                status: RUNNING | SUCCEEDED | FAILED_DQ
+                rows_in: 0
+                rows_out: 0
+                rows_quarantined: 0
+                manifest_uri: s3://…/manifest.json
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

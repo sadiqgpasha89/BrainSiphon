@@ -1,0 +1,55 @@
+{
+ "slug": "energy/regulatory-filing-copilot",
+ "title": "Regulatory Filing Copilot",
+ "domain": "energy",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 45917,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Data request match",
+   "definition": "which request a passage answers",
+   "asOfRule": "From the request list"
+  },
+  {
+   "name": "Calculation lineage",
+   "definition": "whether a figure traces to inputs",
+   "asOfRule": "From the lineage store"
+  },
+  {
+   "name": "Prior filing consistency",
+   "definition": "agreement with earlier answers",
+   "asOfRule": "From prior filings"
+  },
+  {
+   "name": "Rule citation",
+   "definition": "whether the rule is cited",
+   "asOfRule": "From the rule library"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Regulatory Filing Copilot\": Help regulatory teams assemble rate case and reliability filings by retrieving prior filings, regulator rules and source data, with every number computed by tools and linked to its source. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model-computed figures."
+}

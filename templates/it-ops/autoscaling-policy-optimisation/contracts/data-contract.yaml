@@ -1,0 +1,16 @@
+contract: autoscaling_policy_optimisation_inputs.v1
+owner: infrastructure-and-operations@example.com
+system_of_record: IT service management platform
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: request_rate_and_trend, type: double, nullable: false }
+    - { name: latency_percentile, type: double, nullable: false }
+    - { name: startup_time_of_instances, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

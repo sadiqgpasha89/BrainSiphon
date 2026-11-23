@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/cad-drawing-similarity-search",
+ "title": "CAD and Drawing Similarity Search",
+ "domain": "manufacturing",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 31579,
+ "knobs": {
+  "n": 5390,
+  "prevalence": 0.094
+ },
+ "blueprintSignals": [
+  {
+   "name": "Shape embedding similarity",
+   "definition": "embedding of the 3D shape or drawing",
+   "asOfRule": "Normalise scale"
+  },
+  {
+   "name": "Material and process match",
+   "definition": "same material and manufacturing process",
+   "asOfRule": "From attributes"
+  },
+  {
+   "name": "Tolerance and standard compatibility",
+   "definition": "tolerance class and standard",
+   "asOfRule": "From drawings"
+  },
+  {
+   "name": "Usage history",
+   "definition": "where the part is already used",
+   "asOfRule": "From PLM"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"CAD and Drawing Similarity Search\": Find similar existing parts and drawings from a new sketch, model or description so engineers reuse designs and avoid creating duplicates. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Shape-only matching."
+}

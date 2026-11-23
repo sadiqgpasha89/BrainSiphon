@@ -1,0 +1,34 @@
+{
+ "use_case": "public-sector/permit-processing-time-prediction",
+ "engine": "tabular",
+ "seed": 88710,
+ "knobs": {
+  "n_entities": 2460,
+  "positive_entity_rate": 0.029,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.7,
+ "results": {
+  "rows": 192937,
+  "positive_rate": 0.003933926618533511,
+  "test_rows": 65217,
+  "test_positive_rate": 0.004063357713479614,
+  "baseline_lr": {
+   "pr_auc": 0.7609281864795481,
+   "recall_at_0.5pct_fpr": 0.7773584905660378,
+   "brier": 0.002089777838863035
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.804615806015687,
+   "recall_at_0.5pct_fpr": 0.8339622641509434,
+   "brier": 0.0013976933787182959
+  }
+ }
+}

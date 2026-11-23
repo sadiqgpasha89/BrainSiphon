@@ -1,0 +1,53 @@
+{
+ "slug": "engineering/supplier-quote-comparison",
+ "title": "Supplier Quote Comparison",
+ "domain": "engineering",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 44117,
+ "knobs": {
+  "n_train": 1030
+ },
+ "blueprintSignals": [
+  {
+   "name": "Line items and units",
+   "definition": "quoted scope and quantities",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Exclusions and assumptions",
+   "definition": "what is not included",
+   "asOfRule": "From text"
+  },
+  {
+   "name": "Commercial terms",
+   "definition": "payment, warranty and validity",
+   "asOfRule": "From text"
+  },
+  {
+   "name": "Supplier history",
+   "definition": "performance on past work",
+   "asOfRule": "From procurement"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Supplier Quote Comparison\": Normalise supplier quotes on scope, exclusions, units and terms and show a like-for-like comparison with gaps highlighted for buyers to negotiate and decide. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Totals as comparison."
+}

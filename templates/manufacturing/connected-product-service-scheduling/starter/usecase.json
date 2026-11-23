@@ -1,0 +1,53 @@
+{
+ "slug": "manufacturing/connected-product-service-scheduling",
+ "title": "Connected Product Service Scheduling",
+ "domain": "manufacturing",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 41302,
+ "knobs": {
+  "n": 252
+ },
+ "blueprintSignals": [
+  {
+   "name": "Usage hours and load",
+   "definition": "running hours and load profile",
+   "asOfRule": "From telemetry"
+  },
+  {
+   "name": "Condition indicators",
+   "definition": "trends in key health measures",
+   "asOfRule": "Per product"
+  },
+  {
+   "name": "Service history",
+   "definition": "last service and parts replaced",
+   "asOfRule": "From service records"
+  },
+  {
+   "name": "Parts availability by region",
+   "definition": "depot stock",
+   "asOfRule": "From the supply system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Connected Product Service Scheduling\": Schedule service visits and parts for connected industrial products from usage and condition data so customers have fewer breakdowns and fewer unnecessary visits. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fixed intervals only."
+}

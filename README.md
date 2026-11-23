@@ -4,7 +4,7 @@ URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
 **What this is, in five lines**
 
-1. BrainSiphon is a static website of **575 enterprise AI/ML system blueprints** across 10 industries (50 each, except healthcare with 125), written for engineers who have to design, build and run them.
+1. BrainSiphon is a static website of **975 enterprise AI/ML system blueprints** across 18 industries (50 each, except healthcare with 125), written for engineers who have to design, build and run them.
 2. Every blueprint separates the **signal** that moves the metric from the **noise** that wastes your quarter, then goes from the business problem through the high-level design, sequence diagram, low-level design, MLOps, governance and operations.
 3. Every design is sized for **10 million users** with a transparent capacity and cost model, and a live calculator you can re-run with your own traffic.
 4. Each page also has a **metrics catalogue** (business, model, data, system, cost, safety, plus RAG, LLM and agent metrics where they apply), the edge cases that break the system, and a **build playbook** with milestones and exit gates.
@@ -14,11 +14,11 @@ URL: https://sadiqgpasha89.github.io/BrainSiphon/
 
 ## Free and open: the blueprints and the worked templates
 
-Everything in this repository is free and MIT licensed (see `LICENSE.md`). Read the 575 blueprints on the site, then take the worked template for your use case from `templates/<domain>/<use-case>/`: a runnable starter on synthetic data with its tests and saved results, the project documents filled in from the blueprint, the contracts, and the deployment sizing.
+Everything in this repository is free and MIT licensed (see `LICENSE.md`). Read the 975 blueprints on the site, then take the worked template for your use case from `templates/<domain>/<use-case>/`: a runnable starter on synthetic data with its tests and saved results, the project documents filled in from the blueprint, the contracts, and the deployment sizing.
 
 | Path | What it is |
 |---|---|
-| `templates/<domain>/<use-case>/` | **575 worked templates**, one per use case (see `INDEX.md` and `catalog.json`) |
+| `templates/<domain>/<use-case>/` | **975 worked templates**, one per use case (see `INDEX.md` and `catalog.json`) |
 | `engines/` | The 20 starter engines, one for each kind of problem, each with its own tests |
 | `tools/` | The generator, the runner, the validator and the release builder |
 | `data/` | The blueprint snapshot the generator reads |
@@ -39,7 +39,7 @@ Each template's `README.md`, `WORKED_EXAMPLE.md` and `FIT.md` say what it does, 
 ## Delivery guide: from project scoping to deployment and monitoring
 
 A blueprint is the worked answer for one use case. The **delivery guide** is the order to do the work in, and it is the same for
-all 575: **7 phases, 69 steps**. Every step names its owner, who takes part, when, how, the output and the blueprint section to
+all 975: **7 phases, 69 steps**. Every step names its owner, who takes part, when, how, the output and the blueprint section to
 read; every phase ends in a gate with named signers.
 
 - On the site: [`/delivery`](https://sadiqgpasha89.github.io/BrainSiphon/delivery/). Choose a use case and each step links into
@@ -119,7 +119,7 @@ BrainSiphon bridges the gap from conceptual AI architecture to turnkey engineeri
 
 ## Forward deployed engineers: the customer implementation playbook, hub and toolkit
 
-Every one of the 575 blueprints has a **Customer implementation playbook** (the `implementation` section, plus `/implementation/<domain>/<slug>.md` and
+Every one of the 975 blueprints has a **Customer implementation playbook** (the `implementation` section, plus `/implementation/<domain>/<slug>.md` and
 `.json`): who does what (FDE RACI, independent versus approval-required work, escalation), what is missing for production (tasks from the
 maturity gap), discovery questions, customer systems and alternatives, **every integration in four layers** (external protocol, connector and
 transformation, internal contract, acknowledgement) with mappings, sequence diagrams and tests, identity, permissions, network and firewall
@@ -184,7 +184,7 @@ Screenshots of the live site, using one blueprint (Real-Time Card & UPI Fraud De
 
 ![Role lens bar and the metrics catalogue with its metric tree](docs/screenshots/06-role-lens-and-metrics.png)
 
-Zero-noise **enterprise AI architecture and engineering playbook** — **575 use cases, 10 domains (healthcare 125, the other nine 50 each)**. Every blueprint
+Zero-noise **enterprise AI architecture and engineering playbook** — **975 use cases, 18 domains (healthcare 125, the other seventeen 50 each)**. Every blueprint
 teaches the _signal_ that moves the metric, names the _noise_ that wastes your quarter, and takes the solution from the
 enterprise context (business, applications, data, security, operating model) through HLD, sequence diagram, LLD, MLOps,
 governance and production operations to a capacity/cost model for **10 million users**, with evaluation and edge cases.
@@ -264,7 +264,7 @@ and summarised in the header of each blueprint's `.md` twin):
 | `contentVersion` / `contentDigest`        | `<package version>+<12 hex>` and the sha256 over every content input (`content/`, `src/content/`, `src/schemas/`) |
 | `validatedAt`                             | When `validate:content` last passed for exactly this content (null if no matching report)         |
 | `deployedAt`                              | When the deployment artefact was built (null for a build that is not a deployment)                |
-| `checks.schema` / `checks.feasibility`    | Status of the schema and architecture-feasibility checks across all 575 blueprints; feasibility counts passed, not applicable, warnings and failures separately and lists every warning with its remediation |
+| `checks.schema` / `checks.feasibility`    | Status of the schema and architecture-feasibility checks across all 975 blueprints; feasibility counts passed, not applicable, warnings and failures separately and lists every warning with its remediation |
 | `checks.executable`                       | Starter-kit results (one entry per kit: status, test counts, line coverage, seconds) and when they ran |
 | `maturity`                                | For each of the five maturity levels, how many blueprints meet it and how many are classified at it |
 
