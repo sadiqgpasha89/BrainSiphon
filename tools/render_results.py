@@ -27,6 +27,8 @@ DOMAIN_NAMES = {
     "fintech": "FinTech & Payments", "retail": "Retail & E-Commerce", "healthcare": "Healthcare & Life Sciences", "supply-chain": "Supply Chain & Logistics",
     "adtech": "AdTech & Marketing", "cybersecurity": "Cybersecurity", "edtech": "EdTech & Learning", "saas": "SaaS & Product", "bfsi": "Banking, Financial Services & Insurance",
     "real-estate": "Real Estate & PropTech",
+    "telecom": "Telecom & Network Operations", "manufacturing": "Manufacturing & Industry 4.0", "energy": "Energy & Utilities", "public-sector": "Public Sector & Government",
+    "public-safety": "Public Safety & Emergency Services", "devtools": "Developer Tools & Software Delivery", "it-ops": "IT Operations & Service Management", "engineering": "Engineering & Product Design",
 }
 
 

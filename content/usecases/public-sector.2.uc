@@ -664,7 +664,7 @@ noise: Request wording | not policy
 noise: Agency size | irrelevant
 base: Bilateral agreements and manual approval of each request, because it is the current process.
 prod: A policy gateway evaluating requests against purpose-tagged agreements and consent with field-level minimisation, anomaly detection and a subject-facing access log.
-pipe: Request intake @ API gateway ; Policy evaluation @ policy engine ; Field minimisation @ data catalogue ; Release or denial @ gateway ; Immutable log @ append-only store ; Anomaly detection @ time-series model ; Subject access portal @ self-service
+pipe: Purpose code intake @ API front end ; Legal basis evaluation @ policy engine ; Field minimisation @ sensitivity catalogue ; Release or denial @ gateway ; Immutable log @ append-only store ; Anomaly detection @ time-series model ; Subject access portal @ self-service
 edge: Purpose creep | a new use is proposed for old data | Deny until the purpose is approved
 edge: Consent withdrawal | a person withdraws consent | Propagation and re-check rules
 edge: Emergency request | the request is urgent | Break-glass with review and logging
