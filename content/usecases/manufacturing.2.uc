@@ -328,7 +328,7 @@ noise: Billing period label | an artefact
 noise: Operator name | irrelevant
 base: Seasonal naive on the last week's load, because it is the simple benchmark.
 prod: A gradient boosting or neural forecaster with production-plan and weather covariates, quantile outputs, hierarchical reconciliation and a peak alert.
-pipe: Meter data ingestion @ energy system ; Cleaning @ batch ; Feature build @ plan and weather joins ; Quantile forecast @ model ; Reconciliation @ hierarchical step ; Peak alert @ rules ; Accuracy tracking @ weekly
+pipe: Meter data ingestion @ energy system ; Plant cleaning @ batch ; Feature build @ plan and weather joins ; Plant quantile forecast @ model ; Plant reconciliation @ hierarchical step ; Plant peak alert @ rules ; Plant accuracy tracking @ weekly
 edge: Plan change | production shifts at short notice | Update the forecast on plan changes
 edge: Meter outage | meter readings are missing | Imputation limits and a flag
 edge: Extreme weather | load moves beyond history | Wider intervals under extreme forecasts
@@ -679,19 +679,19 @@ con: Policy enforced in a gateway outside the model ; Writes to production recip
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by input
 sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach the whole plant
 sn: Evidence | An append-only log of calls with context | A summary report | Auditors need replay
-sig: Action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Approval and override statistics | approvals, rejections and overrides | Governance health | From the log
+sig: Plant action risk tier | the tier of the target system and action | Approval routing | Policy as code
+sig: Plant action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
+sig: Plant approval and override statistics | approvals, rejections and overrides | Governance health | From the log
 sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Agent name | an identifier
+noise: Plant agent name | an identifier
 noise: Prompt length | not risk
 noise: Model version alone | needs outcome data
 base: Manual review of agent logs by team leads, because it is the minimum audit trail.
 prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and weekly governance reports.
-pipe: Tool gateway @ policy proxy ; Risk tier decision @ policy as code ; Approval workflow @ maker-checker ; Action log @ append-only store ; Behaviour monitor @ time-series model ; Replay console @ analytics ; Governance report @ weekly
-edge: Agent loop | repeated writes to one record | Rate limits and loop detection
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers
+pipe: Plant tool gateway @ policy proxy ; Plant risk tier decision @ policy as code ; Plant approval workflow @ maker-checker ; Plant action log @ append-only store ; Plant behaviour monitor @ time-series model ; Plant replay console @ analytics ; Plant governance report @ weekly
+edge: Agent loop | repeated writes to one record | Rate limits and loop detection across plant operations
+edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across plant operations
 edge: New tool added | no tier defined | Default deny until classified
-off: Policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Prompt-only guardrails ; Shared service accounts ; Default allow for new tools
+off: Plant policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
+on: Plant actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
+gap: Plant prompt-only guardrails ; Shared service accounts ; Default allow for new tools

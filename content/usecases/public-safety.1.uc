@@ -64,7 +64,7 @@ noise: Unit name | an identifier
 noise: Call text | not needed for volume
 base: Same hour last week demand by zone, because planners use it today.
 prod: A hierarchical forecaster with weather and event covariates, intervals and a staffing translator that converts demand to unit-hours with coverage targets.
-pipe: Call count extraction @ CAD ; Aggregation @ batch ; Feature build @ weather and calendar joins ; Forecast model @ gradient boosting ; Interval estimate @ quantile heads ; Staffing view @ planning tool ; Accuracy tracking @ weekly
+pipe: Call count extraction @ CAD ; Incident aggregation @ batch ; Incident feature build @ weather and calendar joins ; Incident forecast model @ gradient boosting ; Incident interval estimate @ quantile heads ; Staffing view @ planning tool ; Incident accuracy tracking @ weekly
 edge: Heatwave | demand moves outside history | Heat features and wider intervals
 edge: Mass event | a concert causes spikes | Event features
 edge: CAD change | call coding changes | Versioned mappings
@@ -184,11 +184,11 @@ noise: Neighbourhood name | a proxy
 noise: Inspector name | irrelevant
 base: Inspection frequency set by occupancy class, because it is the regulatory baseline.
 prod: A calibrated risk model with consequence weighting, a reserved random sample and route planning for inspectors, with parity checks by area.
-pipe: Building and inspection data @ fire records ; Feature build @ aggregated history ; Fire risk model @ gradient boosting ; Consequence weighting @ rules ; Inspection route plan @ optimiser ; Inspector visit @ field app ; Parity audit @ annual
+pipe: Building and inspection data @ fire records ; Incident feature build @ aggregated history ; Fire risk model @ gradient boosting ; Incident consequence weighting @ rules ; Inspection route plan @ optimiser ; Incident inspector visit @ field app ; Parity audit @ annual
 edge: New building | the building has no inspection history | Occupancy-based priors and a first-visit rule
 edge: Data gaps | the register lacks the construction type | Missing flags and wider bands
 edge: Feedback loop | visits shape future data | Random inspections
-off: Violations found per inspection ; Calibration ; Detection parity across areas
+off: Incident violations found per inspection ; Calibration ; Detection parity across areas
 on: Serious violations found ; Fires in inspected buildings ; Time since last inspection of high-risk sites
 gap: Scoring occupants ; Ranked-only sampling ; Complaint-based labels
 
@@ -256,7 +256,7 @@ noise: Tile name | an identifier
 noise: Analyst name | irrelevant
 base: Ground surveys and aerial reconnaissance reports, because they are the current methods.
 prod: A damage classification pipeline for buildings and roads with calibrated scores, a priority map weighted by exposure and a verification process with field teams.
-pipe: Imagery intake @ satellite and aircraft providers ; Co-registration @ imagery processing ; Damage detection @ vision model ; Priority weighting @ rules ; Field verification @ rapid assessment teams ; Map publication @ incident command ; Accuracy review @ after action
+pipe: Imagery intake @ satellite and aircraft providers ; Co-registration @ imagery processing ; Incident damage detection @ vision model ; Priority weighting @ rules ; Field verification @ rapid assessment teams ; Map publication @ incident command ; Accuracy review @ after action
 edge: Cloud cover | the area cannot be seen | Radar and aircraft fallbacks
 edge: Debris confusion | rubble looks like intact buildings | Multi-angle images and field samples
 edge: Coverage gaps | some areas have no imagery | Explicit coverage maps

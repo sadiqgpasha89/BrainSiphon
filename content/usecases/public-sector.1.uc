@@ -328,7 +328,7 @@ noise: Office code | an identifier
 noise: Report format | an artefact
 base: Same week last year scaled by recent trend, because it is a common planning rule.
 prod: A hierarchical forecaster with policy and economic covariates, scenario ranges and a staffing translator that converts demand to hours.
-pipe: Counts extraction @ case systems ; Feature build @ calendar and statistics joins ; Forecast model @ gradient boosting ; Hierarchical reconciliation @ rules ; Scenario ranges @ simulation ; Staffing plan @ planning tool ; Accuracy review @ monthly
+pipe: Counts extraction @ case systems ; Feature build @ calendar and statistics joins ; Case forecast model @ gradient boosting ; Case hierarchical reconciliation @ rules ; Case scenario ranges @ simulation ; Staffing plan @ planning tool ; Case accuracy review @ monthly
 edge: Policy surge | new rules create sudden demand | Scenario inputs from policy teams
 edge: Economic shock | new claims jump for several weeks | Wider intervals and fast refresh
 edge: System outage | counts drop for technical reasons | Outage flags

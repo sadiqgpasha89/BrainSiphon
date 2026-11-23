@@ -491,17 +491,17 @@ sig: Task success rate | tasks completed correctly | Core | From the harness
 sig: Safety violations | policy breaches during runs | Safety | From gateway logs
 sig: Tool call accuracy | right tool and arguments | Quality | From traces
 sig: Cost and steps | tokens and steps | Efficiency | From traces
-noise: Task author | irrelevant
+noise: Platform task author | irrelevant
 noise: Run id | an identifier
 noise: Model name alone | needs outcome data
 base: Spot checks by service desk leads, because they are the common evidence.
 prod: A harness that replays curated tasks in a sandbox, grades with expert answers and rules, tracks safety and cost and gates rollouts on regression thresholds.
-pipe: Task curation @ ticket history ; Sandbox run @ agent platform ; Automated grading @ rules and evaluators ; Expert sampling @ review tool ; Safety check @ gateway logs ; Report and gate @ release process ; Task refresh @ quarterly
+pipe: Task curation @ ticket history ; Platform sandbox run @ agent platform ; Automated grading @ rules and evaluators ; Platform expert sampling @ review tool ; Platform safety check @ gateway logs ; Platform report and gate @ release process ; Platform task refresh @ quarterly
 edge: Stale tasks | procedures changed since the task was written | Quarterly refresh
-edge: Non-determinism | results vary by run | Multiple runs and intervals
+edge: Non-determinism | results vary by run | Multiple runs and intervals across platform operations
 edge: Sandbox gap | the sandbox differs from production | Production-like fixtures
-off: Agreement of harness scores with later outcomes ; Variance across runs ; Safety scenario coverage
-on: Regressions caught before rollout ; Cost per solved task ; Agent changes shipped with evidence
+off: Platform agreement of harness scores with later outcomes ; Variance across runs ; Safety scenario coverage
+on: Platform regressions caught before rollout ; Cost per solved task ; Agent changes shipped with evidence
 gap: Model-written answers as truth ; Success alone ; Easy-task inflation
 
 == runbook-automation-safety-testing | Runbook Automation Safety Testing | llm-agents,tabular | batch | advanced | a=0.5 k=20
@@ -535,19 +535,19 @@ con: Policy enforced in a gateway outside the model ; Agents never hold standing
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and system | A shared administrator token | One mistake should not reach every system
 sn: Evidence | An append-only log with context | A summary report | Auditors need replay
-sig: Action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Approval and override statistics | approvals, rejections and overrides | Governance health | From the log
+sig: Platform action risk tier | the tier of the target system and action | Approval routing | Policy as code
+sig: Platform action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
+sig: Platform approval and override statistics | approvals, rejections and overrides | Governance health | From the log
 sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Agent name | an identifier
+noise: Platform agent name | an identifier
 noise: Prompt length | not risk
 noise: Model version alone | needs outcome data
 base: Manual review of agent logs by team leads, because it is the minimum audit trail.
 prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, anomaly detection on agent behaviour and monthly governance reports.
-pipe: Tool gateway @ policy proxy ; Risk tier decision @ policy as code ; Approval workflow @ maker-checker ; Action log @ append-only store ; Behaviour monitor @ time-series model ; Replay console @ analytics ; Governance report @ monthly
+pipe: Platform tool gateway @ policy proxy ; Platform risk tier decision @ policy as code ; Platform approval workflow @ maker-checker ; Platform action log @ append-only store ; Platform behaviour monitor @ time-series model ; Platform replay console @ analytics ; Governance report @ monthly
 edge: Agent loop | repeated restarts of one service | Rate limits and loop detection
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers
-edge: New tool added | no tier has been defined for it | Default deny until classified
-off: Policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
+edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across platform operations
+edge: New tool added | no tier has been defined for it | Default deny until classified across platform operations
+off: Platform policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
+on: Platform actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
 gap: Prompt-only guardrails ; Shared administrator tokens ; Default allow for new tools

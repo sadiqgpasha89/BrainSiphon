@@ -679,19 +679,19 @@ con: Policy enforced in a gateway outside the model ; Agents never dispatch unit
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach critical systems
 sn: Evidence | An append-only log with context | A summary report | Oversight bodies and courts need replay
-sig: Action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Approval and override statistics | approvals, rejections and overrides | Governance health | From the log
+sig: Incident action risk tier | the tier of the target system and action | Approval routing | Policy as code
+sig: Incident action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
+sig: Incident approval and override statistics | approvals, rejections and overrides | Governance health | From the log
 sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Agent name | an identifier
+noise: Incident agent name | an identifier
 noise: Prompt length | not risk
 noise: Model version alone | needs outcome data
 base: Manual review of agent logs by team leads, because it is the minimum audit trail.
 prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and quarterly reports to the oversight board.
-pipe: Tool gateway @ policy proxy ; Risk tier decision @ policy as code ; Approval workflow @ maker-checker ; Action log @ append-only store ; Behaviour monitor @ time-series model ; Replay console @ analytics ; Oversight report @ quarterly
+pipe: Incident tool gateway @ policy proxy ; Incident risk tier decision @ policy as code ; Incident approval workflow @ maker-checker ; Incident action log @ append-only store ; Incident behaviour monitor @ time-series model ; Incident replay console @ analytics ; Oversight report @ quarterly
 edge: Agent loop | repeated writes to one case record | Rate limits and loop detection
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers
-edge: New tool added | no tier has been defined for it | Default deny until classified
-off: Policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
-gap: Prompt-only guardrails ; Shared service accounts ; Default allow for new tools
+edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across incident response
+edge: New tool added | no tier has been defined for it | Default deny until classified across incident response
+off: Incident policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
+on: Incident actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
+gap: Incident prompt-only guardrails ; Shared service accounts ; Default allow for new tools

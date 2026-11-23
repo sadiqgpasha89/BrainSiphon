@@ -48,7 +48,7 @@ off: Wait time in replay ; Cost in replay ; Starvation incidents
 on: Median wait time ; Compute cost ; Release build delays
 gap: Utilisation as the goal ; One queue for everything ; No simulation before use
 
-== release-deployment-risk-scoring | Deployment Risk Prediction | tabular | seconds | advanced | a=0.5 k=5
+== release-deployment-risk-scoring | Release Deployment Risk Scoring | tabular | seconds | advanced | a=0.5 k=5
 obj: Estimate the risk of a deployment from the change, the service and the timing so teams add canaries, approvals or delay when risk is high, without blocking safe changes.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Risk shown with the drivers ; Policy decides gates not the model alone ; Calibrated probabilities ; Score within 2 s ; 100K deployments per month
@@ -64,7 +64,7 @@ noise: Team name | weak link
 noise: Branch name | an artefact
 base: Fixed change windows and approval rules by service tier, because they are the standard controls.
 prod: A calibrated risk model with explanations that maps risk to rollout strategy, such as slower canary steps or an extra approver, within policy.
-pipe: Deployment request @ CD system ; Feature build @ change and service data ; Risk model @ gradient boosting ; Calibration @ isotonic fit ; Policy mapping @ rules ; Rollout strategy @ CD system ; Outcome tracking @ monthly
+pipe: Deployment request @ CD system ; Feature build @ change and service data ; Repository risk model @ gradient boosting ; Repository calibration @ isotonic fit ; Repository policy mapping @ rules ; Rollout strategy @ CD system ; Repository outcome tracking @ monthly
 edge: New service | the service has no incident history | Tier-based priors
 edge: Emergency fix | urgent deployments are risky | Expedited path with review
 edge: Label delay | failures appear late | Delay-aware training

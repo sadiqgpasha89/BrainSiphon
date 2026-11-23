@@ -520,12 +520,12 @@ noise: Run id | an identifier
 noise: Model name alone | needs outcome data
 base: Spot checks by senior engineers, because they are the common evidence.
 prod: A harness that replays curated tasks in a sandbox, grades with expert answers and tool checks, tracks safety and cost and gates rollout on regression thresholds.
-pipe: Task curation @ past project work ; Sandbox run @ agent platform ; Automated grading @ rules and calculators ; Expert sampling @ review tool ; Safety check @ gateway logs ; Report and gate @ release process ; Task refresh @ quarterly
+pipe: Task curation @ past project work ; Project sandbox run @ agent platform ; Automated grading @ rules and calculators ; Expert sampling @ review tool ; Safety check @ gateway logs ; Report and gate @ release process ; Project task refresh @ quarterly
 edge: Stale standards | tasks use old code editions | Edition tagging
 edge: Non-determinism | results vary across runs | Multiple runs and intervals
 edge: Confidential tasks | tasks contain client data | Redaction and segregated storage
 off: Agreement of harness scores with later outcomes ; Variance across runs ; Task coverage
-on: Regressions caught before rollout ; Cost per solved task ; Agent changes shipped with evidence
+on: Project regressions caught before rollout ; Cost per solved task ; Agent changes shipped with evidence
 gap: Model-written answers as truth ; Fluency as quality ; Textbook-only tasks
 
 == engineering-agent-action-guardrails | Engineering Agent Action Guardrails | llm-agents,tabular | seconds | staff-principal | a=0.5 k=40
@@ -535,19 +535,19 @@ con: Policy enforced in a gateway outside the model ; Agents never issue, seal o
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and project | One token for all projects | One mistake should not cross clients
 sn: Evidence | An append-only log with context | A summary report | Auditors need replay
-sig: Action risk tier | the tier of the target system and action | Approval routing | Policy as code
+sig: Project action risk tier | the tier of the target system and action | Approval routing | Policy as code
 sig: Cross-project access attempts | requests outside the assigned project | Leak signal | From the gateway
-sig: Approval and override statistics | approvals, rejections and overrides | Governance health | From the log
+sig: Project approval and override statistics | approvals, rejections and overrides | Governance health | From the log
 sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Agent name | an identifier
+noise: Project agent name | an identifier
 noise: Prompt length | not risk
 noise: Model version alone | needs outcome data
 base: Manual review of agent logs by project controls, because it is the minimum audit trail.
 prod: A policy gateway with risk tiers and project segregation, a kill switch, an immutable action log with replay and anomaly detection on agent actions with quarterly governance reports.
-pipe: Tool gateway @ policy proxy ; Risk tier decision @ policy as code ; Approval workflow @ maker-checker ; Action log @ append-only store ; Behaviour monitor @ time-series model ; Replay console @ analytics ; Governance report @ quarterly
+pipe: Project tool gateway @ policy proxy ; Project risk tier decision @ policy as code ; Project approval workflow @ maker-checker ; Project action log @ append-only store ; Project behaviour monitor @ time-series model ; Project replay console @ analytics ; Governance report @ quarterly
 edge: Cross-client request | an agent asks for another client data | Block and alert
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers
-edge: New tool added | no tier has been defined for it | Default deny until classified
-off: Policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
+edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across project delivery
+edge: New tool added | no tier has been defined for it | Default deny until classified across project delivery
+off: Project policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
 on: Actions blocked by policy ; Cross-project access incidents ; Time to answer audit queries
 gap: Prompt-only guardrails ; One token for all projects ; Default allow for new tools

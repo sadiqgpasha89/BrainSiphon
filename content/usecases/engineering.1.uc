@@ -68,7 +68,7 @@ pipe: Model export @ CAD tool ; Feature extraction @ geometry kernel ; Rule eval
 edge: Complex freeform surface | features are hard to extract | Manual review flag
 edge: Conflicting rules | two standards disagree | Rule owner decision
 edge: New process | the new manufacturing process has no written design rules | Block release until rules are defined
-off: Rule detection accuracy ; False violation rate ; Rule coverage
+off: Rule matching accuracy ; False violation rate ; Rule coverage
 on: Violations found in review ; Late design changes ; Review time
 gap: Learned rules without authority ; Silent auto-fixes ; Ignored warnings
 
@@ -192,7 +192,7 @@ off: Symbol recall and precision ; Connectivity accuracy ; Tag accuracy
 on: Time to digitise ; Review corrections ; Errors found in later use
 gap: Raw OCR as truth ; Images without data ; Spot checks only
 
-== bim-clash-detection-prioritisation | BIM Clash Detection and Prioritisation | graph,tabular | batch | advanced | a=0.5 k=5
+== bim-clash-prioritisation | BIM Clash Prioritisation | graph,tabular | batch | advanced | a=0.5 k=5
 obj: Rank model clashes between disciplines by real impact and likely fix owner so coordination meetings resolve the important ones first and ignore harmless overlaps.
 loss: \mathcal{L}=\mathrm{BCE}(y,p)+\lambda\,\mathrm{RankLoss}
 con: Every clash stays in the register ; Critical clashes flagged within 1 day of the model update ; Coordinators decide ; Owner suggestion shown with evidence ; 100K clashes per project
@@ -208,7 +208,7 @@ noise: Clash id | an identifier
 noise: Model file name | an artefact
 base: Batches of clashes grouped by location and reviewed in weekly meetings, because it is the usual process.
 prod: A ranking model on clash features that groups related clashes, estimates impact and the owner and feeds the coordination meeting with a short prioritised list.
-pipe: Model federation @ BIM platform ; Clash detection @ geometry engine ; Grouping @ clustering ; Impact ranking @ learned ranker ; Owner suggestion @ rules ; Coordination meeting @ BIM coordinators ; Resolution tracking @ issue tracker
+pipe: Model federation @ BIM platform ; Clash finding @ geometry engine ; Grouping @ clustering ; Impact ranking @ learned ranker ; Owner suggestion @ rules ; Coordination meeting @ BIM coordinators ; Resolution tracking @ issue tracker
 edge: Model lag | one discipline model is outdated | Model freshness flags
 edge: Soft clash | clearance zones overlap | Clearance rule sets
 edge: Late design change | new clashes appear near construction | Sequence-aware alerts
@@ -544,7 +544,7 @@ noise: Scanner brand | weak link
 noise: File name | an artefact
 base: Inspectors reading every image by eye, because it is the standard method.
 prod: A detection model that marks candidate defects with measurements, orders the review queue by risk and records inspector decisions for retraining.
-pipe: Image acquisition @ NDT equipment ; Quality check @ rules ; Defect detection @ vision model ; Severity ranking @ model and rules ; Inspector review @ review tool ; Decision record @ quality system ; Retraining @ quarterly
+pipe: Image acquisition @ NDT equipment ; Project quality check @ rules ; Project defect detection @ vision model ; Severity ranking @ model and rules ; Inspector review @ review tool ; Decision record @ quality system ; Project retraining @ quarterly
 edge: Rare defect type | the type has few examples | Inspector flag and active learning
 edge: Complex geometry | access limits the scan | Coverage reporting
 edge: Equipment drift | scanner settings change | Calibration checks

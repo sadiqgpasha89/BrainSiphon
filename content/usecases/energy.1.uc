@@ -184,7 +184,7 @@ noise: Meter reading format | an artefact
 noise: Report author | irrelevant
 base: Seasonal naive on the last week's load with a temperature adjustment, because operators use a similar rule.
 prod: A gradient boosting or neural forecaster with weather and calendar covariates, quantile outputs, hierarchical reconciliation and a peak alert for control rooms.
-pipe: SCADA load ingestion @ historian ; Cleaning and gap fill @ batch ; Feature build @ weather and calendar joins ; Quantile forecast @ model ; Reconciliation @ hierarchical step ; Peak alert @ rules ; Accuracy tracking @ weekly
+pipe: SCADA load ingestion @ historian ; Grid cleaning and gap fill @ batch ; Feature build @ weather and calendar joins ; Grid quantile forecast @ model ; Grid reconciliation @ hierarchical step ; Peak alert @ rules ; Grid accuracy tracking @ weekly
 edge: Heatwave | demand moves beyond history | Wider intervals and an extreme weather model
 edge: Load transfer | a switching change moves load | Topology-aware adjustment
 edge: Telemetry outage | load data is missing for hours | Imputation limits and a flag

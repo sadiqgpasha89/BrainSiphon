@@ -72,7 +72,7 @@ off: Detection of seeded anomalies ; False alert rate ; Time to detect
 on: Incidents detected by anomaly ; Alert precision ; Customer-reported outages
 gap: Fixed thresholds only ; Alert count as success ; Ignoring release events
 
-== log-template-anomaly-detection | Log Anomaly Detection | nlp,time-series | seconds | advanced | a=10 k=3
+== log-template-anomaly-detection | Log Template Anomaly Detection | nlp,time-series | seconds | advanced | a=10 k=3
 obj: Learn normal log patterns per service, flag new or rare message templates and unusual rates after releases, and surface them with sample lines to engineers.
 loss: \mathcal{L}=\|x-\mathrm{Dec}(\mathrm{Enc}(x))\|^2
 con: Personal data masked in logs before analysis ; Detection within 2 minutes of onset ; Anomalies show sample lines ; False flags under 5 per service per day ; 10B log lines per day

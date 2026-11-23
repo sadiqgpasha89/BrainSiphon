@@ -568,7 +568,7 @@ noise: Image file name | an artefact
 noise: Flight id | an identifier
 base: Damage assessment by crews driving the lines, because it is the standard approach.
 prod: A damage detector on aerial and satellite images with hazard flags, a materials estimate and a crew verification step feeding restoration planning.
-pipe: Imagery intake @ aircraft, drones and satellites ; Damage detection @ vision model ; Hazard flag @ rules ; Materials estimate @ planning rules ; Crew verification @ field app ; Restoration planning @ ADMS and work management ; Review after the event @ debrief
+pipe: Imagery intake @ aircraft, drones and satellites ; Damage detection @ vision model ; Hazard flag @ rules ; Materials estimate @ planning rules ; Grid crew verification @ field app ; Restoration planning @ ADMS and work management ; Review after the event @ debrief
 edge: Cloud cover | satellite images are blocked | Drone and aircraft fallbacks
 edge: Debris confusion | debris looks like damaged equipment | Verification and class training
 edge: Overload | too many images arrive | Priority queues by hazard
@@ -679,19 +679,19 @@ con: Policy enforced in a gateway outside the model ; Agents never write to swit
 sn: Enforcement | A tool gateway with policy as code | Prompt instructions | Prompts can be bypassed by crafted input
 sn: Scope | Least privilege per agent and tool | Shared service accounts | One mistake should not reach critical systems
 sn: Evidence | An append-only log with context | A summary report | Regulators need replay
-sig: Action risk tier | the tier of the target system and action | Approval routing | Policy as code
-sig: Action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
-sig: Approval and override statistics | approvals, rejections and overrides | Governance health | From the log
+sig: Grid action risk tier | the tier of the target system and action | Approval routing | Policy as code
+sig: Grid action rate per agent | actions per minute against a baseline | Runaway detection | Per agent
+sig: Grid approval and override statistics | approvals, rejections and overrides | Governance health | From the log
 sig: Post-action verification result | whether the intended state was reached | Quality of actions | Verification steps
-noise: Agent name | an identifier
+noise: Grid agent name | an identifier
 noise: Prompt length | not risk
 noise: Model version alone | needs outcome data
 base: Manual review of agent logs by team leads, because it is the minimum audit trail.
 prod: A policy gateway with risk tiers, rate limits and a kill switch, an immutable action log with replay, behavioural anomaly detection on agent actions and weekly governance reports.
-pipe: Tool gateway @ policy proxy ; Risk tier decision @ policy as code ; Approval workflow @ maker-checker ; Action log @ append-only store ; Behaviour monitor @ time-series model ; Replay console @ analytics ; Governance report @ weekly
+pipe: Grid tool gateway @ policy proxy ; Grid risk tier decision @ policy as code ; Grid approval workflow @ maker-checker ; Grid action log @ append-only store ; Grid behaviour monitor @ time-series model ; Grid replay console @ analytics ; Grid governance report @ weekly
 edge: Agent loop | repeated writes to one record | Rate limits and loop detection
-edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers
+edge: Approver fatigue | approvals become automatic | Override statistics and rotating approvers across grid operations
 edge: New tool added | no tier has been defined | Default deny until classified
-off: Policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
+off: Grid policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
+on: Grid actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
 gap: Prompt-only guardrails ; Shared service accounts ; Default allow for new tools

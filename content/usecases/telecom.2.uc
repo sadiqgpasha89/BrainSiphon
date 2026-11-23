@@ -712,10 +712,10 @@ noise: Prompt text length | not risk
 noise: Model version label alone | needs outcome data
 base: A log of tool calls reviewed manually by team leads, because it is the minimum audit trail.
 prod: A policy gateway between agents and tools with risk tiers, rate limits and a kill switch, an immutable action log with replay and anomaly detection on action behaviour for weekly governance reviews.
-pipe: Tool gateway @ policy proxy ; Risk tier decision @ policy as code ; Approval workflow @ maker-checker ; Action log @ append-only store ; Behaviour anomaly detection @ time-series model ; Replay and audit console @ analytics ; Governance report @ weekly
+pipe: Network tool gateway @ policy proxy ; Network risk tier decision @ policy as code ; Network approval workflow @ maker-checker ; Network action log @ append-only store ; Behaviour anomaly detection @ time-series model ; Replay and audit console @ analytics ; Network governance report @ weekly
 edge: Agent loops | repeated actions on one target | Rate limits and a loop detector
 edge: Approval fatigue | approvers accept everything | Track override rates and rotate approvers
 edge: Policy gaps | a new tool has no tier | Default deny until classified
-off: Policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
-on: Actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
+off: Network policy test coverage ; Detection of seeded anomalous actions ; Replay completeness
+on: Network actions blocked by policy ; Incidents caused by agent actions ; Time to answer audit queries
 gap: Prompt-only guardrails ; Shared credentials ; Default allow for new tools
