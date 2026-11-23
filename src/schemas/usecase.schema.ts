@@ -15,6 +15,13 @@ export const DOMAINS = [
   'bfsi',
   'real-estate',
   'telecom',
+  'manufacturing',
+  'energy',
+  'public-sector',
+  'public-safety',
+  'devtools',
+  'it-ops',
+  'engineering',
 ] as const;
 export const ML_PARADIGMS = [
   'tabular',
