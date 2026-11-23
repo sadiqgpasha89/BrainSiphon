@@ -163,6 +163,7 @@ const DATA_RULE: Record<string, string> = {
   bfsi: 'Customer identifiers, account numbers and policy data are tokenised or masked before any tool result reaches a model',
   edtech: 'Learner identifiers are pseudonymised and minors\' data is excluded from prompts and logs by default',
   'public-sector': 'Citizen identifiers and case details are masked in tool results, protected characteristics and their proxies are never passed to a model, and any decision about a person keeps a named caseworker in the loop',
+  'public-safety': 'Caller, victim, witness and suspect identifiers are masked in tool results, no tool returns face or biometric identification or an individual risk score, and every tool use is logged against the case',
   'real-estate': 'Personal data of tenants, buyers and owners is masked in tool results, and fair-housing protected attributes are never passed to a model',
 };
 

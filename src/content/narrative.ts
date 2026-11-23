@@ -41,6 +41,7 @@ const DOMAIN_DATA: Record<Domain, string> = {
   manufacturing: 'Keep recipes and process data inside the plant boundary, never identify workers in vision data and log every model decision against the lot',
   energy: 'Keep grid topology and operational data inside the control zone, minimise customer consumption data and log every recommendation with the operator decision',
   'public-sector': 'Keep citizen data inside the agency boundary, minimise features, never use protected characteristics and log every recommendation against the caseworker decision',
+  'public-safety': 'Keep call, case and evidence data inside the agency boundary, never score or identify individuals and log every tool use against the case',
   'real-estate': 'Mask tenant, buyer and owner personal data, keep protected attributes and their proxies out of features, and log the evidence behind each value or score',
 };
 
@@ -58,6 +59,7 @@ const DOMAIN_OWNER: Record<Domain, string> = {
   manufacturing: 'the plant, quality or maintenance owner with the controls engineer',
   energy: 'the network, asset or customer operations owner with OT security',
   'public-sector': 'the programme owner with the data protection officer and equality office',
+  'public-safety': 'the operations owner with general counsel and the ethics officer',
   'real-estate': 'the valuation, leasing or asset-management owner',
 };
 

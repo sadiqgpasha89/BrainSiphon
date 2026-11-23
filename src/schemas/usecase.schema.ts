@@ -144,6 +144,13 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     blurb:
       'Citizen service agents, benefits and tax decision support, traffic and transit, city infrastructure, permits and policy analytics, built around explainable decisions, human caseworkers and public accountability.',
   },
+  'public-safety': {
+    name: 'Public Safety & Security',
+    short: 'Public Safety',
+    topics: 'Emergency response, disaster, road safety, security operations, courts',
+    blurb:
+      'Emergency call and dispatch support, fire and disaster response, road safety, physical security analytics, courts administration and oversight controls, designed with no individual risk scoring and no face identification.',
+  },
   'real-estate': {
     name: 'Real Estate & PropTech',
     short: 'Real Estate',

@@ -116,6 +116,7 @@ export const PROTOCOLS: Record<Domain, string> = {
   manufacturing: 'OPC UA and MQTT Sparkplug, Modbus and PROFINET gateways, MES and ERP interfaces (ISA-95), CMMS work-order APIs',
   energy: 'IEC 61850, DNP3 and ICCP gateways, CIM and OPC UA, AMI head-end and MDM interfaces, market APIs and work-order APIs',
   'public-sector': 'REST and SOAP agency APIs, case management and CRM integrations, GIS services, traffic and sensor feeds (NGSI-LD, MQTT) and open data standards',
+  'public-safety': 'CAD and records APIs, NG911 and text-to-911 interfaces, CAP alerting, video management system APIs, evidence management and court case management APIs',
   'real-estate': 'RESO Web API, MLS feeds, BIM/IFC and BACnet/Modbus building protocols',
 };
 
@@ -136,6 +137,7 @@ export const LABEL_DELAY: Record<Domain, string> = {
   manufacturing: 'field failures and warranty claims that appear months after shipment, and quality escapes found at the customer',
   energy: 'outage root causes confirmed after repair, theft and meter faults confirmed by site visits and asset failures that appear years after installation',
   'public-sector': 'appeal outcomes and audit findings that arrive months after a decision, and service outcomes that appear after a policy runs for years',
+  'public-safety': 'case outcomes, appeals and audits that arrive months or years after the incident',
   'real-estate': 'sale, lease and valuation outcomes that take months',
 };
 
@@ -153,6 +155,7 @@ export const TAIL_COHORTS: Record<Domain, string> = {
   manufacturing: 'new product variants, rare machines, first runs after a changeover and low-volume lots',
   energy: 'rare fault types, new feeder configurations, extreme weather events and newly connected distributed generation',
   'public-sector': 'people with complex or unusual circumstances, small language communities, rural areas and new programme rules',
+  'public-safety': 'rare incident types, small language communities, rural areas and major events',
   'real-estate': 'thin-comp micro-markets, unusual property types and new developments',
 };
 
