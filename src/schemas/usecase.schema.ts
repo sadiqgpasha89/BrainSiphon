@@ -151,6 +151,13 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     blurb:
       'Emergency call and dispatch support, fire and disaster response, road safety, physical security analytics, courts administration and oversight controls, designed with no individual risk scoring and no face identification.',
   },
+  devtools: {
+    name: 'Software Engineering & DevTools',
+    short: 'DevTools',
+    topics: 'Coding agents, review, testing, CI/CD, appsec, developer productivity',
+    blurb:
+      'Coding assistants and agents, code review, test automation, CI/CD reliability, application security and platform tooling, with sandboxed agents, human merge approval and no individual developer scoring.',
+  },
   'real-estate': {
     name: 'Real Estate & PropTech',
     short: 'Real Estate',

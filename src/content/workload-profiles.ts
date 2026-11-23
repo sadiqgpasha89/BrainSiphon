@@ -183,6 +183,7 @@ export const DOMAIN_DIMENSIONS: Record<Domain, string> = {
   energy: 'Feeders and assets, SCADA points per second, meter reads per day and forecast horizons',
   'public-sector': 'Cases and applications, service requests per day, sensor feeds and published datasets',
   'public-safety': 'Calls and incidents per day, video feeds, documents per case and dispatch events',
+  devtools: 'Repositories, commits per day, pipeline runs, test executions and agent sessions',
   'real-estate': 'Listings, properties, images and property updates',
 };
 
@@ -201,6 +202,7 @@ const DOMAIN_PROFILE: Record<Domain, ProfileId> = {
   energy: 'asset',
   'public-sector': 'asset',
   'public-safety': 'asset',
+  devtools: 'asset',
   'real-estate': 'asset',
 };
 

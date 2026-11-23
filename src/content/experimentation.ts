@@ -28,6 +28,7 @@ const LABEL_DELAY: Partial<Record<Domain, string>> = {
   energy: 'Outage causes and asset failures are confirmed only after repair or years of service; theft labels come from limited inspections.',
   'public-sector': 'Appeal outcomes and audits arrive months after the decision; policy effects take years to observe.',
   'public-safety': 'Case outcomes and appeals arrive months or years later; many incidents are never confirmed.',
+  devtools: 'Production defects and security incidents show up weeks after a change ships; review quality labels are subjective.',
   'real-estate': 'Sale prices and outcomes lag the valuation; listings that do not transact leave no price.',
 };
 
@@ -41,6 +42,7 @@ const SLICES: Partial<Record<Domain, string[]>> = {
   energy: ['Feeder, region and voltage level', 'Weather regime and season', 'Asset age, vendor and customer segment'],
   'public-sector': ['Region and service channel', 'Language and accessibility needs', 'Case type and programme rule version'],
   'public-safety': ['Area and call type', 'Language and accessibility need', 'Incident severity and time of day'],
+  devtools: ['Repository, language and team', 'Change size and risk tier', 'Contributor tenure and service criticality'],
   'real-estate': ['Neighbourhood and price band', 'Property type and listing age', 'Fair-housing protected-class proxies such as area-level demographics'],
 };
 
