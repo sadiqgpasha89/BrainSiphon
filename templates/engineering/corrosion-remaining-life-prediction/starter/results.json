@@ -1,0 +1,49 @@
+{
+ "use_case": "engineering/corrosion-remaining-life-prediction",
+ "engine": "regression",
+ "seed": 77930,
+ "knobs": {
+  "n": 21290,
+  "outlier_share": 0.024,
+  "drift": 0.324
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.4,
+ "results": {
+  "rows": 21290,
+  "train_rows": 14902,
+  "test_rows": 6388,
+  "baseline_ridge": {
+   "mae": 7.601285979373103,
+   "rmse": 12.981899786098275,
+   "wape": 0.1442793410550767,
+   "r2": 0.4383481321124283
+  },
+  "challenger_gbm": {
+   "mae": 5.222930561134396,
+   "rmse": 11.058225415639244,
+   "wape": 0.09913598590840553,
+   "r2": 0.5924681273786278
+  },
+  "mae_gain_vs_baseline": 0.3128885592112476,
+  "interval_80_coverage": 0.6482467125860989,
+  "interval_80_mean_width": 9.395935234732296,
+  "segment_mae": {
+   "0": 5.180260048286649,
+   "1": 5.124855922685301,
+   "2": 5.247657963480663,
+   "3": 6.215484704081267
+  },
+  "worst_segment_vs_overall": 1.190037782683309,
+  "leaky_feature_rmse": 1.4567156810587216,
+  "honest_rmse": 11.058225415639244,
+  "random_split_mae": 4.572337583257352,
+  "chronological_mae": 5.222930561134396
+ }
+}

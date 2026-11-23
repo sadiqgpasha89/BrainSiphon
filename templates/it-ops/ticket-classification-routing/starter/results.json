@@ -1,0 +1,36 @@
+{
+ "use_case": "it-ops/ticket-classification-routing",
+ "engine": "nlp",
+ "seed": 53226,
+ "knobs": {
+  "n_docs": 5760
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.6,
+ "results": {
+  "docs": 5760,
+  "duplicate_share": 0.24930555555555556,
+  "random_split_with_leak": {
+   "macro_f1": 0.8862796714080332,
+   "ece": 0.12342492155723131
+  },
+  "time_split_clean": {
+   "macro_f1": 0.445427255749683,
+   "ece": 0.040181428355128286
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.76539531551278,
+   "ece": 0.0855350026615383
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.445427255749683,
+   "ece": 0.040181428355128286
+  }
+ }
+}

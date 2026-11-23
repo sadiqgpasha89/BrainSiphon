@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/court-backlog-forecasting",
+ "title": "Court Backlog Forecasting",
+ "domain": "public-safety",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 72062,
+ "knobs": {
+  "n_series": 296
+ },
+ "blueprintSignals": [
+  {
+   "name": "Filing counts by type",
+   "definition": "monthly new cases",
+   "asOfRule": "From the case system"
+  },
+  {
+   "name": "Disposal rate by type",
+   "definition": "monthly closures",
+   "asOfRule": "From the case system"
+  },
+  {
+   "name": "Judicial capacity",
+   "definition": "judge and registrar days",
+   "asOfRule": "From planning"
+  },
+  {
+   "name": "Law and procedure changes",
+   "definition": "new rules and thresholds",
+   "asOfRule": "From policy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Court Backlog Forecasting\": Forecast filings, disposals and backlog by court and case type so judicial resources and funding plans reflect expected demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Backlog counts only."
+}

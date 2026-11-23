@@ -1,0 +1,36 @@
+{
+ "use_case": "public-safety/crash-report-narrative-classification",
+ "engine": "nlp",
+ "seed": 4920,
+ "knobs": {
+  "n_docs": 6060
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 7.1,
+ "results": {
+  "docs": 6060,
+  "duplicate_share": 0.24257425742574257,
+  "random_split_with_leak": {
+   "macro_f1": 0.9136655953379502,
+   "ece": 0.11842360286270641
+  },
+  "time_split_clean": {
+   "macro_f1": 0.46415757222490517,
+   "ece": 0.06486864996239285
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8236949523507907,
+   "ece": 0.10493138267934912
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.46415757222490517,
+   "ece": 0.06486864996239285
+  }
+ }
+}

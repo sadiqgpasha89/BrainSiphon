@@ -1,0 +1,49 @@
+{
+ "use_case": "manufacturing/warranty-claim-prediction",
+ "engine": "regression",
+ "seed": 8750,
+ "knobs": {
+  "n": 17530,
+  "outlier_share": 0.033,
+  "drift": 0.348
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.3,
+ "results": {
+  "rows": 17530,
+  "train_rows": 12271,
+  "test_rows": 5259,
+  "baseline_ridge": {
+   "mae": 7.690195307808047,
+   "rmse": 13.399261801536612,
+   "wape": 0.14444029242612347,
+   "r2": 0.4096149524356303
+  },
+  "challenger_gbm": {
+   "mae": 5.4958361176187935,
+   "rmse": 11.786779429937345,
+   "wape": 0.10322496948145442,
+   "r2": 0.5431602160904399
+  },
+  "mae_gain_vs_baseline": 0.2853450533254033,
+  "interval_80_coverage": 0.6583000570450656,
+  "interval_80_mean_width": 9.887162200595524,
+  "segment_mae": {
+   "0": 5.279342394459422,
+   "1": 5.254765799654031,
+   "2": 5.78780630644943,
+   "3": 8.090447511318505
+  },
+  "worst_segment_vs_overall": 1.4721049423911663,
+  "leaky_feature_rmse": 1.505627309044694,
+  "honest_rmse": 11.786779429937345,
+  "random_split_mae": 5.028418490411278,
+  "chronological_mae": 5.4958361176187935
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "it-ops/hardware-failure-prediction",
+ "engine": "tabular",
+ "seed": 6403,
+ "knobs": {
+  "n_entities": 2280,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.3,
+ "results": {
+  "rows": 175120,
+  "positive_rate": 0.003923024211968935,
+  "test_rows": 57576,
+  "test_positive_rate": 0.0038210365430040296,
+  "baseline_lr": {
+   "pr_auc": 0.7608300052181979,
+   "recall_at_0.5pct_fpr": 0.8227272727272728,
+   "brier": 0.0018088763649008886
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8336073558539862,
+   "recall_at_0.5pct_fpr": 0.8772727272727273,
+   "brier": 0.0011841905654560983
+  }
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/meter-communication-failure-prediction",
+ "engine": "tabular",
+ "seed": 1968,
+ "knobs": {
+  "n_entities": 2410,
+  "positive_entity_rate": 0.021,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.5,
+ "results": {
+  "rows": 182221,
+  "positive_rate": 0.0029744101942147175,
+  "test_rows": 61029,
+  "test_positive_rate": 0.002687247046486097,
+  "baseline_lr": {
+   "pr_auc": 0.4498034654185583,
+   "recall_at_0.5pct_fpr": 0.6829268292682927,
+   "brier": 0.0079334205714509
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7013612455535141,
+   "recall_at_0.5pct_fpr": 0.7317073170731707,
+   "brier": 0.0012002280616909462
+  }
+ }
+}

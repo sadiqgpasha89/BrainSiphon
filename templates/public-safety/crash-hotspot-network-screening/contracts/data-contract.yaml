@@ -1,0 +1,16 @@
+contract: crash_hotspot_network_screening_inputs.v1
+owner: emergency-communications@example.com
+system_of_record: Computer-aided dispatch (CAD)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: crash_history_by_severity, type: double, nullable: false }
+    - { name: traffic_exposure, type: double, nullable: false }
+    - { name: road_geometry_and_speed, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

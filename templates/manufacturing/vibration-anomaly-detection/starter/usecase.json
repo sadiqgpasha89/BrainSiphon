@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/vibration-anomaly-detection",
+ "title": "Vibration Anomaly Detection",
+ "domain": "manufacturing",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 31604,
+ "knobs": {
+  "n_series": 99,
+  "anomalies_per_series": 3.48
+ },
+ "blueprintSignals": [
+  {
+   "name": "Band energy ratio",
+   "definition": "energy in the bearing and gear bands against the baseline",
+   "asOfRule": "Per machine type"
+  },
+  {
+   "name": "Kurtosis and crest factor",
+   "definition": "impulsiveness of the signal",
+   "asOfRule": "Window size matters"
+  },
+  {
+   "name": "Operating state",
+   "definition": "speed and load clusters",
+   "asOfRule": "From controller tags"
+  },
+  {
+   "name": "Cross-machine peer deviation",
+   "definition": "difference from similar machines in the same state",
+   "asOfRule": "Peers must be healthy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Vibration Anomaly Detection\": Detect unusual vibration patterns on machines against their own healthy baseline so engineers investigate before a fault becomes a failure. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: One threshold for all states."
+}

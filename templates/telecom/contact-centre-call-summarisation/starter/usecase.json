@@ -1,0 +1,57 @@
+{
+ "slug": "telecom/contact-centre-call-summarisation",
+ "title": "Contact-Centre Call Summarisation & Wrap-up",
+ "domain": "telecom",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 43198,
+ "knobs": {
+  "n_docs": 6130
+ },
+ "blueprintSignals": [
+  {
+   "name": "Transcript coverage",
+   "definition": "share of audio transcribed with confidence",
+   "asOfRule": "Low confidence needs review"
+  },
+  {
+   "name": "Reason code agreement",
+   "definition": "agreement between predicted and agent-coded reasons",
+   "asOfRule": "Use corrected codes"
+  },
+  {
+   "name": "Commitment detection",
+   "definition": "promises such as callbacks made in the call",
+   "asOfRule": "Verify with the agent"
+  },
+  {
+   "name": "Sentiment shift",
+   "definition": "change in tone across the call",
+   "asOfRule": "Not for agent scoring"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Contact-Centre Call Summarisation & Wrap-up\": Produce an accurate summary, reason code and next action for each care contact so agents spend less time on wrap-up and records are consistent. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Scoring on fluency."
+}

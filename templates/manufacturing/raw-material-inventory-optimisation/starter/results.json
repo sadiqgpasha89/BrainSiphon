@@ -1,0 +1,49 @@
+{
+ "use_case": "manufacturing/raw-material-inventory-optimisation",
+ "engine": "control",
+ "seed": 82215,
+ "knobs": {
+  "days": 65
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.9,
+ "results": {
+  "days": 65,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.777281864315613,
+   "end_of_day_underdelivery_pct": 5.459142413444179,
+   "overshoot_max_pct": 6.9456012798535225,
+   "oscillation": 0.0,
+   "hit_cap": 0.47692307692307695
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.4786413302078065,
+   "end_of_day_underdelivery_pct": 0.9634507142950071,
+   "overshoot_max_pct": 4.82326693496939,
+   "oscillation": 0.010475620556007063,
+   "hit_cap": 0.4307692307692308
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.0239041769570556,
+   "end_of_day_underdelivery_pct": 0.0481625749425192,
+   "overshoot_max_pct": 1.554190632634146,
+   "oscillation": 0.0837406101679187,
+   "hit_cap": 0.5538461538461539
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.258769857212979,
+   "end_of_day_underdelivery_pct": 2.4541390144139235,
+   "overshoot_max_pct": 12.160140219399839,
+   "oscillation": 0.017470944031587797,
+   "hit_cap": 0.5384615384615384
+  },
+  "rmse_reduction_vs_open_loop": 0.634272060712336
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "use_case": "public-sector/transit-demand-forecasting",
+ "engine": "forecast",
+ "seed": 34350,
+ "knobs": {
+  "n_series": 179
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 18.5,
+ "results": {
+  "rows": 16265,
+  "h1": {
+   "wmape_model": 0.1168965842442147,
+   "wmape_baseline": 0.2029450093696196,
+   "fva": 0.4239987245445719
+  },
+  "h3": {
+   "wmape_model": 0.11545753941990299,
+   "wmape_baseline": 0.21776804209325573,
+   "fva": 0.4698141274078218
+  },
+  "h7": {
+   "wmape_model": 0.11561079651548532,
+   "wmape_baseline": 0.19978634694766537,
+   "fva": 0.42132784205834684
+  },
+  "h14": {
+   "wmape_model": 0.14351405683903756,
+   "wmape_baseline": 0.21549303409768525,
+   "fva": 0.33401997220020974
+  },
+  "p90_coverage": 0.8827543805717799,
+  "wmape_sku_level": 0.12233964047786706,
+  "wmape_aggregate": 0.02675419634082153,
+  "late_feed": {
+   "missing_as_zero": 0.1784155508896304,
+   "missing_as_nan": 0.13838181377053732
+  }
+ }
+}

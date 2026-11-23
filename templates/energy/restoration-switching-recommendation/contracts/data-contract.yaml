@@ -1,0 +1,16 @@
+contract: restoration_switching_recommendation_inputs.v1
+owner: network-operations@example.com
+system_of_record: SCADA and ADMS (advanced distribution management)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: faulted_section_and_isolation_points, type: double, nullable: false }
+    - { name: alternate_supply_capacity, type: double, nullable: false }
+    - { name: customer_priority, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

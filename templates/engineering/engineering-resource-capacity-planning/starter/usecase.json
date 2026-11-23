@@ -1,0 +1,57 @@
+{
+ "slug": "engineering/engineering-resource-capacity-planning",
+ "title": "Engineering Resource Capacity Planning",
+ "domain": "engineering",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 84919,
+ "knobs": {
+  "n_series": 250
+ },
+ "blueprintSignals": [
+  {
+   "name": "Project pipeline and stage",
+   "definition": "likely work and timing",
+   "asOfRule": "From the pipeline"
+  },
+  {
+   "name": "Effort by phase and discipline",
+   "definition": "hours per phase",
+   "asOfRule": "From past projects"
+  },
+  {
+   "name": "Staff capacity by skill",
+   "definition": "available hours",
+   "asOfRule": "From HR planning"
+  },
+  {
+   "name": "Leave and training plans",
+   "definition": "absences",
+   "asOfRule": "From planning"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Engineering Resource Capacity Planning\": Forecast demand for engineering skills against available capacity across projects and recommend hiring, subcontracting or re-sequencing, at team and skill level and not individual level. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual utilisation ranking."
+}

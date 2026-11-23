@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/sustainability-reporting-copilot",
+ "title": "Sustainability Reporting Copilot",
+ "domain": "manufacturing",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 75704,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Data completeness by site",
+   "definition": "share of required metrics present",
+   "asOfRule": "From the data catalogue"
+  },
+  {
+   "name": "Calculation lineage",
+   "definition": "whether each figure traces to inputs",
+   "asOfRule": "From the lineage store"
+  },
+  {
+   "name": "Period and boundary match",
+   "definition": "whether data fits the reporting scope",
+   "asOfRule": "From the config"
+  },
+  {
+   "name": "Prior year change",
+   "definition": "change from the previous year",
+   "asOfRule": "Flag large moves"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Sustainability Reporting Copilot\": Help sustainability teams collect, check and draft disclosure content from plant, supplier and finance data, with every figure linked to its source and calculation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model-computed figures."
+}

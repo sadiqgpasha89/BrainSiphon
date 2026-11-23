@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/crash-report-narrative-classification",
+ "title": "Crash Report Narrative Classification",
+ "domain": "public-safety",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 4920,
+ "knobs": {
+  "n_docs": 6060
+ },
+ "blueprintSignals": [
+  {
+   "name": "Narrative text",
+   "definition": "description of the crash",
+   "asOfRule": "From the report"
+  },
+  {
+   "name": "Coded fields",
+   "definition": "road, weather and vehicle types",
+   "asOfRule": "From the form"
+  },
+  {
+   "name": "Location context",
+   "definition": "junction type and speed limit",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Severity",
+   "definition": "injury level",
+   "asOfRule": "From the report"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Crash Report Narrative Classification\": Classify crash report narratives into contributing factors and scenarios so engineers and policy teams study causes beyond the coded fields. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Checkbox-only labels."
+}

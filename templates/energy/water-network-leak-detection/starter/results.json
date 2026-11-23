@@ -1,0 +1,43 @@
+{
+ "use_case": "energy/water-network-leak-detection",
+ "engine": "anomaly",
+ "seed": 9086,
+ "knobs": {
+  "n_series": 66,
+  "anomalies_per_series": 2.52
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 14.0,
+ "results": {
+  "series": 66,
+  "hours": 2016,
+  "events": 162,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.30911343922496337,
+   "recall": 0.5679012345679012,
+   "median_delay_h": 0.5,
+   "events": 81
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.7096992227103751,
+   "recall": 0.9135802469135802,
+   "median_delay_h": 0.0,
+   "events": 81
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5740678157035034,
+   "recall": 0.9506172839506173,
+   "median_delay_h": 0.0,
+   "events": 81
+  }
+ }
+}

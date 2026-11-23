@@ -1,0 +1,16 @@
+contract: pcb_solder_joint_inspection_inputs.v1
+owner: plant-operations@example.com
+system_of_record: MES (manufacturing execution system)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: joint_shape_and_volume, type: double, nullable: false }
+    - { name: component_offset_and_rotation, type: double, nullable: false }
+    - { name: stencil_and_paste_measurement, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

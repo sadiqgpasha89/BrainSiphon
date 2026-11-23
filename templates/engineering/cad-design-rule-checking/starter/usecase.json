@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/cad-design-rule-checking",
+ "title": "CAD Design Rule Checking",
+ "domain": "engineering",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 78858,
+ "knobs": {
+  "n": 13930,
+  "label_noise": 0.059,
+  "dup_share": 0.269
+ },
+ "blueprintSignals": [
+  {
+   "name": "Feature geometry",
+   "definition": "walls, holes and radii",
+   "asOfRule": "From the CAD model"
+  },
+  {
+   "name": "Rule thresholds",
+   "definition": "limits by process and material",
+   "asOfRule": "From the rule library"
+  },
+  {
+   "name": "Process selected",
+   "definition": "casting, machining or printing",
+   "asOfRule": "From the design"
+  },
+  {
+   "name": "Past exceptions",
+   "definition": "approved deviations",
+   "asOfRule": "From records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"CAD Design Rule Checking\": Check CAD models against company rules and manufacturability limits, such as minimum wall thickness and hole spacing, and explain violations in the design tool. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Learned rules without authority."
+}

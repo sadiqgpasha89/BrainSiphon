@@ -1,0 +1,34 @@
+{
+ "use_case": "public-sector/urban-flood-risk-forecasting",
+ "engine": "tabular",
+ "seed": 83691,
+ "knobs": {
+  "n_entities": 2020,
+  "positive_entity_rate": 0.037,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.6,
+ "results": {
+  "rows": 152555,
+  "positive_rate": 0.005152240175674347,
+  "test_rows": 51513,
+  "test_positive_rate": 0.006891464290567429,
+  "baseline_lr": {
+   "pr_auc": 0.7827570030432046,
+   "recall_at_0.5pct_fpr": 0.822387323943662,
+   "brier": 0.00260937680207658
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8215782609905075,
+   "recall_at_0.5pct_fpr": 0.8394366197183099,
+   "brier": 0.002513360549147572
+  }
+ }
+}

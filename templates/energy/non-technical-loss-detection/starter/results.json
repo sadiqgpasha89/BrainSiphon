@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/non-technical-loss-detection",
+ "engine": "tabular",
+ "seed": 16648,
+ "knobs": {
+  "n_entities": 2360,
+  "positive_entity_rate": 0.032,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.3,
+ "results": {
+  "rows": 179217,
+  "positive_rate": 0.0042908875832091825,
+  "test_rows": 60339,
+  "test_positive_rate": 0.003762077594922024,
+  "baseline_lr": {
+   "pr_auc": 0.6965454666664737,
+   "recall_at_0.5pct_fpr": 0.7004405286343612,
+   "brier": 0.002813575112497222
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.762945044804868,
+   "recall_at_0.5pct_fpr": 0.7929515418502202,
+   "brier": 0.0014511802993517017
+  }
+ }
+}

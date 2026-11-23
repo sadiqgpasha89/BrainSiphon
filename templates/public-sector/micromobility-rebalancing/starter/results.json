@@ -1,0 +1,45 @@
+{
+ "use_case": "public-sector/micromobility-rebalancing",
+ "engine": "optimize",
+ "seed": 33687,
+ "knobs": {
+  "n_instances": 144,
+  "noise": 0.444
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.2,
+ "results": {
+  "instances": 144,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 137.50126757783778,
+   "promised_cost": 89.93660139014212,
+   "optimism_gap_pct": 52.88688415227262,
+   "regret_vs_oracle_pct": 49.796361624752386
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 122.84954656664337,
+   "promised_cost": 69.90830059544724,
+   "optimism_gap_pct": 75.72955646220343,
+   "regret_vs_oracle_pct": 33.834512416522905
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 115.92606280985349,
+   "promised_cost": 72.7625631669106,
+   "optimism_gap_pct": 59.321026863676884,
+   "regret_vs_oracle_pct": 26.29194430202826
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.79212771688377,
+   "promised_cost": 101.45501637314982,
+   "optimism_gap_pct": -9.524308409478845,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

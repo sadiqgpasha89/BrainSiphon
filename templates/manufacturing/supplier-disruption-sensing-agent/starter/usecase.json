@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/supplier-disruption-sensing-agent",
+ "title": "Supplier Disruption Sensing Agent",
+ "domain": "manufacturing",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 12306,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Event location match",
+   "definition": "whether the event area contains a supplier site or lane",
+   "asOfRule": "Needs supplier geocodes"
+  },
+  {
+   "name": "Part criticality",
+   "definition": "single-source and downtime cost of affected parts",
+   "asOfRule": "From the bill of materials"
+  },
+  {
+   "name": "Inventory cover",
+   "definition": "days of stock for the affected parts",
+   "asOfRule": "From ERP"
+  },
+  {
+   "name": "Source reliability",
+   "definition": "past accuracy of the source",
+   "asOfRule": "Maintained list"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Supplier Disruption Sensing Agent\": Watch news, weather, port and supplier signals for events that threaten critical inputs, link them to affected parts and orders, and brief the buyers with options. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Alerting on headlines."
+}

@@ -1,0 +1,45 @@
+{
+ "use_case": "public-sector/bus-bunching-prevention",
+ "engine": "optimize",
+ "seed": 77749,
+ "knobs": {
+  "n_instances": 148,
+  "noise": 0.449
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.2,
+ "results": {
+  "instances": 148,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 137.62019558283765,
+   "promised_cost": 89.83995777873129,
+   "optimism_gap_pct": 53.18372691334663,
+   "regret_vs_oracle_pct": 50.29867884117581
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 123.27159855206496,
+   "promised_cost": 69.57093110058891,
+   "optimism_gap_pct": 77.1883696278739,
+   "regret_vs_oracle_pct": 34.62819408553216
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 117.3914086956049,
+   "promised_cost": 72.51242227258926,
+   "optimism_gap_pct": 61.89144565369254,
+   "regret_vs_oracle_pct": 28.20628222137372
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.56447458082063,
+   "promised_cost": 102.50433961106661,
+   "optimism_gap_pct": -10.672587201434824,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

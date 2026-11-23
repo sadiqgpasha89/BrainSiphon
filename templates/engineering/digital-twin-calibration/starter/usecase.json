@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/digital-twin-calibration",
+ "title": "Digital Twin Calibration",
+ "domain": "engineering",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 29739,
+ "knobs": {
+  "n": 16120,
+  "outlier_share": 0.021,
+  "drift": 0.182
+ },
+ "blueprintSignals": [
+  {
+   "name": "Model versus measurement error",
+   "definition": "residuals",
+   "asOfRule": "From sensors and model"
+  },
+  {
+   "name": "Parameter estimates",
+   "definition": "calibrated values",
+   "asOfRule": "From calibration"
+  },
+  {
+   "name": "Sensor quality",
+   "definition": "drift and gaps",
+   "asOfRule": "From diagnostics"
+  },
+  {
+   "name": "Operating regime",
+   "definition": "conditions covered by calibration",
+   "asOfRule": "From data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Digital Twin Calibration\": Calibrate simulation models of assets and buildings with sensor data, track model error over time and show when the twin can no longer be trusted for decisions. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Realism as validity."
+}

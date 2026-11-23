@@ -1,0 +1,58 @@
+{
+ "slug": "public-sector/municipal-building-energy-anomaly",
+ "title": "Municipal Building Energy Anomaly Detection",
+ "domain": "public-sector",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 34570,
+ "knobs": {
+  "n_series": 62,
+  "anomalies_per_series": 2.907
+ },
+ "blueprintSignals": [
+  {
+   "name": "Weather-adjusted consumption",
+   "definition": "use against expected for the weather",
+   "asOfRule": "From meters"
+  },
+  {
+   "name": "Schedule deviation",
+   "definition": "operation outside opening hours",
+   "asOfRule": "From schedules"
+  },
+  {
+   "name": "Equipment alarms",
+   "definition": "heating and ventilation faults",
+   "asOfRule": "From building systems"
+  },
+  {
+   "name": "Occupancy proxy",
+   "definition": "aggregated occupancy or CO2 trends",
+   "asOfRule": "From sensors"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Municipal Building Energy Anomaly Detection\": Find buildings with abnormal energy use among schools, libraries and offices so faults and wasted heating or cooling are fixed. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Absolute use comparisons."
+}

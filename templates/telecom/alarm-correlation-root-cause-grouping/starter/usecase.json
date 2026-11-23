@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/alarm-correlation-root-cause-grouping",
+ "title": "Alarm Correlation & Root-Cause Grouping",
+ "domain": "telecom",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "graph-analytics",
+ "seed": 2378,
+ "knobs": {
+  "n_clusters": 1630,
+  "hub_share": 0.146
+ },
+ "blueprintSignals": [
+  {
+   "name": "Topological distance to the alarm cluster",
+   "definition": "hop count on the dependency graph",
+   "asOfRule": "Topology must be current"
+  },
+  {
+   "name": "Alarm onset order",
+   "definition": "which alarm in the group fired first within clock tolerance",
+   "asOfRule": "Element clocks drift and need normalising"
+  },
+  {
+   "name": "Historical co-occurrence",
+   "definition": "how often two alarm types appeared together in confirmed incidents",
+   "asOfRule": "Use only confirmed incident labels"
+  },
+  {
+   "name": "Service impact breadth",
+   "definition": "subscribers or services behind the candidate element",
+   "asOfRule": "Join to the live service model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Alarm Correlation & Root-Cause Grouping\": Group the alarms raised by one underlying fault across a multi-vendor network and rank the likely root element, so the NOC works one incident instead of thousands of alarms. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Time-window correlation without topology."
+}

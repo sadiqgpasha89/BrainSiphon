@@ -1,0 +1,45 @@
+{
+ "use_case": "public-safety/forensic-lab-backlog-prioritisation",
+ "engine": "optimize",
+ "seed": 36465,
+ "knobs": {
+  "n_instances": 100,
+  "noise": 0.275
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "instances": 100,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 123.32163707275977,
+   "promised_cost": 101.00079135882666,
+   "optimism_gap_pct": 22.09967408535799,
+   "regret_vs_oracle_pct": 34.33174236581882
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 106.68684832044526,
+   "promised_cost": 82.27447351911488,
+   "optimism_gap_pct": 29.6718699702875,
+   "regret_vs_oracle_pct": 16.211806480866766
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 103.41749715970575,
+   "promised_cost": 83.95428544272085,
+   "optimism_gap_pct": 23.18310687101731,
+   "regret_vs_oracle_pct": 12.650568986356886
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.80379477020719,
+   "promised_cost": 95.72874632444713,
+   "optimism_gap_pct": -4.100076210062712,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "devtools/team-flow-metrics-dashboard",
+ "title": "Team Flow Metrics and Insights",
+ "domain": "devtools",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 15720,
+ "knobs": {
+  "n": 14960,
+  "label_noise": 0.062,
+  "dup_share": 0.412
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lead time for changes",
+   "definition": "time from commit to production",
+   "asOfRule": "From CI and CD"
+  },
+  {
+   "name": "Deployment frequency",
+   "definition": "deployments per period",
+   "asOfRule": "From CD"
+  },
+  {
+   "name": "Change failure rate",
+   "definition": "share of deployments with failures",
+   "asOfRule": "From incidents"
+  },
+  {
+   "name": "Time to restore",
+   "definition": "time to fix a failure",
+   "asOfRule": "From incidents"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Team Flow Metrics and Insights\": Show team-level flow metrics such as lead time, deployment frequency and change failure rate with explanations of what moved, to support team improvement and never to rank people. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual metrics."
+}

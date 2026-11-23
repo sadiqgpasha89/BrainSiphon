@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/recovered-property-matching",
+ "title": "Recovered Property Matching",
+ "domain": "public-safety",
+ "engine": "graph",
+ "fit": "adaptable",
+ "problemType": "entity-resolution",
+ "seed": 15228,
+ "knobs": {
+  "n_clusters": 1730,
+  "hub_share": 0.128
+ },
+ "blueprintSignals": [
+  {
+   "name": "Serial number match",
+   "definition": "exact or near match",
+   "asOfRule": "From records"
+  },
+  {
+   "name": "Image similarity",
+   "definition": "similarity of item photos",
+   "asOfRule": "From the vision model"
+  },
+  {
+   "name": "Description similarity",
+   "definition": "text similarity",
+   "asOfRule": "From NLP"
+  },
+  {
+   "name": "Time and place proximity",
+   "definition": "where and when reported and found",
+   "asOfRule": "From records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "shared-value rarity",
+   "meaning": "how many entities share each linking value, so a value shared by three says more than one shared by three hundred"
+  },
+  {
+   "feature": "number of shared attributes",
+   "meaning": "how many different kinds of value two records share"
+  },
+  {
+   "feature": "name similarity",
+   "meaning": "character-level overlap of the two names, tolerant of typos"
+  },
+  {
+   "feature": "group size of the rarest shared value",
+   "meaning": "log of the size of the smallest group the pair shares"
+  },
+  {
+   "feature": "hub flag",
+   "meaning": "whether a shared value is a known hub"
+  }
+ ],
+ "label": "For \"Recovered Property Matching\": Match found and recovered items with stolen property reports using descriptions, serial numbers and photos so owners get their property back sooner. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic release."
+}

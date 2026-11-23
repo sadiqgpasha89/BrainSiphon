@@ -1,0 +1,46 @@
+{
+ "use_case": "telecom/spare-parts-swap-inventory-forecasting",
+ "engine": "forecast",
+ "seed": 52947,
+ "knobs": {
+  "n_series": 168
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 16.3,
+ "results": {
+  "rows": 15269,
+  "h1": {
+   "wmape_model": 0.12042411202837619,
+   "wmape_baseline": 0.23014000855014044,
+   "fva": 0.47673543254370965
+  },
+  "h3": {
+   "wmape_model": 0.1111558897754859,
+   "wmape_baseline": 0.21224405287303716,
+   "fva": 0.4762826648340599
+  },
+  "h7": {
+   "wmape_model": 0.11902857380026273,
+   "wmape_baseline": 0.21182486195722117,
+   "fva": 0.43808024846346416
+  },
+  "h14": {
+   "wmape_model": 0.14578820479632817,
+   "wmape_baseline": 0.2241206757261886,
+   "fva": 0.3495102389641209
+  },
+  "p90_coverage": 0.8946230925404414,
+  "wmape_sku_level": 0.12367279445207588,
+  "wmape_aggregate": 0.022605772714792388,
+  "late_feed": {
+   "missing_as_zero": 0.20463692080844437,
+   "missing_as_nan": 0.13961839849920318
+  }
+ }
+}

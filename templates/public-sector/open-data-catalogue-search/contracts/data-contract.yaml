@@ -1,0 +1,16 @@
+contract: open_data_catalogue_search_inputs.v1
+owner: digital-service-delivery@example.com
+system_of_record: Case management and CRM
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: query_to_dataset_similarity, type: double, nullable: false }
+    - { name: freshness_and_update_cadence, type: double, nullable: false }
+    - { name: schema_and_completeness_checks, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

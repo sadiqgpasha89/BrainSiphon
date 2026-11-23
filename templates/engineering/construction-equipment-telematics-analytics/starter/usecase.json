@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/construction-equipment-telematics-analytics",
+ "title": "Construction Equipment Telematics Analytics",
+ "domain": "engineering",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 44116,
+ "knobs": {
+  "n": 15530,
+  "label_noise": 0.083,
+  "dup_share": 0.313
+ },
+ "blueprintSignals": [
+  {
+   "name": "Engine and hydraulic telemetry",
+   "definition": "temperatures, pressures and hours",
+   "asOfRule": "From telematics"
+  },
+  {
+   "name": "Idle and productive time",
+   "definition": "state of operation",
+   "asOfRule": "From telematics"
+  },
+  {
+   "name": "Duty cycle by task",
+   "definition": "machine use pattern",
+   "asOfRule": "From site data"
+  },
+  {
+   "name": "Service history",
+   "definition": "past repairs",
+   "asOfRule": "From maintenance records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Construction Equipment Telematics Analytics\": Use equipment telemetry to estimate utilisation, idle time, fuel use and maintenance needs by machine type and site so fleets are planned and serviced better, without scoring operators. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Operator ranking."
+}

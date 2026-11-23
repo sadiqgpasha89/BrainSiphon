@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/scam-report-triage",
+ "title": "Scam Report Triage",
+ "domain": "public-safety",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 67309,
+ "knobs": {
+  "n_docs": 6380
+ },
+ "blueprintSignals": [
+  {
+   "name": "Scam type cues",
+   "definition": "romance, investment or impersonation",
+   "asOfRule": "From text"
+  },
+  {
+   "name": "Loss amount and recency",
+   "definition": "amount and timing",
+   "asOfRule": "From the report"
+  },
+  {
+   "name": "Shared indicators",
+   "definition": "phone numbers, wallets and domains",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Payment channel",
+   "definition": "bank, card or crypto",
+   "asOfRule": "From the report"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Scam Report Triage\": Cluster and prioritise scam reports from the public by type, amount and links between reports so investigators find campaigns and victims get the right support. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Reports in isolation."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/near-miss-video-detection",
+ "title": "Near-Miss Detection from Anonymised Video",
+ "domain": "public-safety",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 77474,
+ "knobs": {
+  "n": 4830,
+  "prevalence": 0.141
+ },
+ "blueprintSignals": [
+  {
+   "name": "Road user trajectories",
+   "definition": "positions and speeds of users",
+   "asOfRule": "From tracking"
+  },
+  {
+   "name": "Time-to-collision",
+   "definition": "predicted time to collision",
+   "asOfRule": "Computed"
+  },
+  {
+   "name": "User type",
+   "definition": "pedestrian, cyclist or vehicle",
+   "asOfRule": "From classification"
+  },
+  {
+   "name": "Signal phase",
+   "definition": "state of signals",
+   "asOfRule": "From controllers"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Near-Miss Detection from Anonymised Video\": Detect conflicts between road users at junctions from anonymised video trajectories so engineers see danger before crashes occur. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Stored video."
+}

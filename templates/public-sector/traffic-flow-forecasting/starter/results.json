@@ -1,0 +1,46 @@
+{
+ "use_case": "public-sector/traffic-flow-forecasting",
+ "engine": "forecast",
+ "seed": 24113,
+ "knobs": {
+  "n_series": 204
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 20.5,
+ "results": {
+  "rows": 18567,
+  "h1": {
+   "wmape_model": 0.11508614214109746,
+   "wmape_baseline": 0.20097520470245958,
+   "fva": 0.42736148814237773
+  },
+  "h3": {
+   "wmape_model": 0.12001219564593163,
+   "wmape_baseline": 0.21956621105557278,
+   "fva": 0.45341227564583586
+  },
+  "h7": {
+   "wmape_model": 0.11911535700912822,
+   "wmape_baseline": 0.20779363009129737,
+   "fva": 0.4267612681062791
+  },
+  "h14": {
+   "wmape_model": 0.14538327885930105,
+   "wmape_baseline": 0.22046166494947286,
+   "fva": 0.3405507533809965
+  },
+  "p90_coverage": 0.8920665697204718,
+  "wmape_sku_level": 0.12438776724995176,
+  "wmape_aggregate": 0.02611779450087482,
+  "late_feed": {
+   "missing_as_zero": 0.18262792183354518,
+   "missing_as_nan": 0.13928910904272698
+  }
+ }
+}

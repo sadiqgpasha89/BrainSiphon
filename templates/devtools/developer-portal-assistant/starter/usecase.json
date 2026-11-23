@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/developer-portal-assistant",
+ "title": "Internal Developer Portal Assistant",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 10012,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Catalogue match",
+   "definition": "the service the question is about",
+   "asOfRule": "From the catalogue"
+  },
+  {
+   "name": "Ownership and on-call",
+   "definition": "owner and rotation",
+   "asOfRule": "From the portal"
+  },
+  {
+   "name": "Template eligibility",
+   "definition": "whether a template applies",
+   "asOfRule": "From rules"
+  },
+  {
+   "name": "Doc freshness",
+   "definition": "last update",
+   "asOfRule": "From the doc system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Internal Developer Portal Assistant\": Answer questions about services, owners, dependencies and standards from the service catalogue and docs, and create tickets or scaffold templates through approved workflows. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Free-form command execution."
+}

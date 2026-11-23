@@ -1,0 +1,16 @@
+contract: public_sector_agent_action_guardrails_inputs.v1
+owner: digital-service-delivery@example.com
+system_of_record: Case management and CRM
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: decision_tier_of_the_draft, type: double, nullable: false }
+    - { name: drafts_per_caseworker_per_day, type: double, nullable: false }
+    - { name: caseworker_change_rate, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,58 @@
+{
+ "slug": "devtools/ci-queue-resource-optimisation",
+ "title": "CI Queue and Resource Optimisation",
+ "domain": "devtools",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 27969,
+ "knobs": {
+  "n_instances": 177,
+  "noise": 0.32
+ },
+ "blueprintSignals": [
+  {
+   "name": "Queue depth and wait time",
+   "definition": "pending jobs and waiting time",
+   "asOfRule": "From the scheduler"
+  },
+  {
+   "name": "Job duration forecast",
+   "definition": "predicted runtime",
+   "asOfRule": "From history"
+  },
+  {
+   "name": "Runner pool capacity",
+   "definition": "available runners by type",
+   "asOfRule": "From infrastructure"
+  },
+  {
+   "name": "Priority class",
+   "definition": "release, hotfix or regular",
+   "asOfRule": "From policy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"CI Queue and Resource Optimisation\": Allocate runners and order jobs so developer wait time falls and compute cost stays within budget, protecting release builds from starvation. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Utilisation as the goal."
+}

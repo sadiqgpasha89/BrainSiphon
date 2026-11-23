@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: plant_telemetry, timeout_ms: 131, on_timeout: fallback_level_1 }
+    - { name: equipment_models, timeout_ms: 524, on_timeout: fallback_level_1 }
+    - { name: load_and_weather_forecast, timeout_ms: 524, on_timeout: fallback_level_1 }
+    - { name: optimiser, timeout_ms: 523, on_timeout: fallback_level_1 }
+    - { name: safety_clip, timeout_ms: 131, on_timeout: fallback_level_1 }
+    - { name: operator_advice_display, timeout_ms: 196, on_timeout: fallback_level_1 }
+    - { name: savings_evaluation, timeout_ms: 196, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Utility energy cost"
+    - "Energy per unit of cooling"
+    - "Comfort or process limit breaches"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

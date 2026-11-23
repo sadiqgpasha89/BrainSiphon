@@ -1,0 +1,59 @@
+{
+ "slug": "energy/transformer-dga-fault-classification",
+ "title": "Transformer DGA Fault Classification",
+ "domain": "energy",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 79475,
+ "knobs": {
+  "n": 15150,
+  "label_noise": 0.05,
+  "dup_share": 0.387
+ },
+ "blueprintSignals": [
+  {
+   "name": "Gas concentrations",
+   "definition": "levels of key gases",
+   "asOfRule": "From lab or monitor"
+  },
+  {
+   "name": "Gas generation rate",
+   "definition": "change per month in key gases",
+   "asOfRule": "Time series"
+  },
+  {
+   "name": "Load and temperature context",
+   "definition": "loading and oil temperature",
+   "asOfRule": "From SCADA"
+  },
+  {
+   "name": "Past DGA classification",
+   "definition": "previous results and actions",
+   "asOfRule": "From the asset system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Transformer DGA Fault Classification\": Classify the likely fault type in a transformer from dissolved gas trends and online monitors so the right inspection or outage is planned. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Ratio methods alone."
+}

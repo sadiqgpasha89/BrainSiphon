@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/noc-incident-triage-copilot",
+ "title": "NOC Incident Triage Copilot",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 2560,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Incident similarity",
+   "definition": "embedding and attribute match to past confirmed incidents",
+   "asOfRule": "Index only confirmed causes"
+  },
+  {
+   "name": "Change adjacency",
+   "definition": "changes near the same elements and time",
+   "asOfRule": "Needs applied timestamps"
+  },
+  {
+   "name": "Runbook coverage",
+   "definition": "whether an approved runbook matches the symptoms",
+   "asOfRule": "Version runbooks with topology"
+  },
+  {
+   "name": "Customer impact count",
+   "definition": "subscribers and enterprise accounts affected",
+   "asOfRule": "Computed from live services"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"NOC Incident Triage Copilot\": Summarise an incident for NOC engineers, pull the relevant topology, change history, similar past incidents and runbook steps, and draft the next actions so triage time falls. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Evaluating fluency not faithfulness."
+}

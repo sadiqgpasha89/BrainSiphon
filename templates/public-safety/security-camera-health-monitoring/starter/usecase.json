@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/security-camera-health-monitoring",
+ "title": "Security Camera Health Monitoring",
+ "domain": "public-safety",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 53124,
+ "knobs": {
+  "n": 4440,
+  "prevalence": 0.14
+ },
+ "blueprintSignals": [
+  {
+   "name": "Sharpness trend",
+   "definition": "focus measure over time",
+   "asOfRule": "From image statistics"
+  },
+  {
+   "name": "View change",
+   "definition": "difference from a reference view",
+   "asOfRule": "From images"
+  },
+  {
+   "name": "Brightness and contrast",
+   "definition": "exposure statistics",
+   "asOfRule": "From images"
+  },
+  {
+   "name": "Network state",
+   "definition": "bitrate and packet loss",
+   "asOfRule": "From network data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Security Camera Health Monitoring\": Detect blurred, blocked, misaligned or offline cameras from image statistics and network data so coverage is kept and failures are fixed before incidents need the footage. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Offline pings only."
+}

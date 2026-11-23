@@ -1,0 +1,16 @@
+contract: smart_meter_data_validation_estimation_inputs.v1
+owner: network-operations@example.com
+system_of_record: SCADA and ADMS (advanced distribution management)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: gap_length_and_pattern, type: double, nullable: false }
+    - { name: neighbour_and_cohort_load_shape, type: double, nullable: false }
+    - { name: spike_and_zero_checks, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

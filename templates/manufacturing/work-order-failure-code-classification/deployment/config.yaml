@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: work_order_intake, timeout_ms: 223, on_timeout: fallback_level_1 }
+    - { name: text_normalisation, timeout_ms: 222, on_timeout: fallback_level_1 }
+    - { name: code_classifier, timeout_ms: 890, on_timeout: fallback_level_1 }
+    - { name: asset_class_constraint, timeout_ms: 222, on_timeout: fallback_level_1 }
+    - { name: suggestion_in_form, timeout_ms: 334, on_timeout: fallback_level_1 }
+    - { name: technician_confirmation, timeout_ms: 334, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Share of work orders with a valid code"
+    - "Time spent coding"
+    - "Reliability analysis rework"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

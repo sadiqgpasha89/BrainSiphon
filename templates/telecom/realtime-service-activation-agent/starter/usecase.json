@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/realtime-service-activation-agent",
+ "title": "Real-Time Service Activation Agent",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "exact",
+ "problemType": "agentic-read-only",
+ "seed": 51461,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Eligibility check result",
+   "definition": "pass or fail of coverage, credit and contract rules",
+   "asOfRule": "Rules owned by product teams"
+  },
+  {
+   "name": "Dependency state",
+   "definition": "status of upstream orders and resources the service needs",
+   "asOfRule": "Needs live order state"
+  },
+  {
+   "name": "Step latency history",
+   "definition": "median and p95 time of each provisioning step",
+   "asOfRule": "Per system and per hour"
+  },
+  {
+   "name": "Customer consent record",
+   "definition": "consent and contract acceptance flags",
+   "asOfRule": "From the consent store at action time"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Real-Time Service Activation Agent\": Take a validated order for a new feature, add-on or business service and drive it through eligibility, provisioning and verification in minutes, escalating only the exceptions to people. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Retrying without idempotency."
+}

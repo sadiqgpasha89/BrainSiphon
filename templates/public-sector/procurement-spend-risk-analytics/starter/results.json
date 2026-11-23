@@ -1,0 +1,34 @@
+{
+ "use_case": "public-sector/procurement-spend-risk-analytics",
+ "engine": "tabular",
+ "seed": 14218,
+ "knobs": {
+  "n_entities": 2520,
+  "positive_entity_rate": 0.031,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.8,
+ "results": {
+  "rows": 194197,
+  "positive_rate": 0.003892954062112185,
+  "test_rows": 65495,
+  "test_positive_rate": 0.003969768684632414,
+  "baseline_lr": {
+   "pr_auc": 0.701067398950916,
+   "recall_at_0.5pct_fpr": 0.7423076923076923,
+   "brier": 0.0032894896929892277
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7414974776276431,
+   "recall_at_0.5pct_fpr": 0.7769230769230769,
+   "brier": 0.0016328310083788089
+  }
+ }
+}

@@ -1,0 +1,16 @@
+contract: repo_aware_code_completion_inputs.v1
+owner: developer-experience@example.com
+system_of_record: Source control and code review platform
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: cursor_and_file_context, type: double, nullable: false }
+    - { name: related_file_retrieval, type: double, nullable: false }
+    - { name: language_and_framework, type: double, nullable: false }
+sla:
+  freshness_p95: 30 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

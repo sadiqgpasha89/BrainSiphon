@@ -1,0 +1,36 @@
+{
+ "use_case": "devtools/secret-detection-in-code",
+ "engine": "nlp",
+ "seed": 62790,
+ "knobs": {
+  "n_docs": 5090
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.3,
+ "results": {
+  "docs": 5090,
+  "duplicate_share": 0.26365422396856586,
+  "random_split_with_leak": {
+   "macro_f1": 0.8875275099463109,
+   "ece": 0.130982177008327
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4388318424163811,
+   "ece": 0.04433954430188163
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.7459422619855987,
+   "ece": 0.07245519199733891
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4388318424163811,
+   "ece": 0.04433954430188163
+  }
+ }
+}

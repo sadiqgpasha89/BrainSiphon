@@ -1,0 +1,50 @@
+{
+ "use_case": "public-sector/land-use-change-detection",
+ "engine": "cv",
+ "seed": 42015,
+ "knobs": {
+  "n": 4410,
+  "prevalence": 0.108
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "images": 4410,
+  "train": 1579,
+  "prevalence": 0.10702947845804989,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9490699925963894,
+    "sens_at_95_spec": 0.72
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9868549673303494,
+    "sens_at_95_spec": 0.9545454545454546
+   },
+   "site_B": {
+    "auc": 0.7611116806196254,
+    "sens_at_95_spec": 0.3111111111111111
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3333333333333333,
+    "false_positive_rate": 0.06201947719118401
+   }
+  }
+ }
+}

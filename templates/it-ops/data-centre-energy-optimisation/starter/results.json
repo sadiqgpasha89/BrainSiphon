@@ -1,0 +1,49 @@
+{
+ "use_case": "it-ops/data-centre-energy-optimisation",
+ "engine": "control",
+ "seed": 75223,
+ "knobs": {
+  "days": 62
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "days": 62,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 5.687000986235907,
+   "end_of_day_underdelivery_pct": 3.9505533637415815,
+   "overshoot_max_pct": 6.931402589335212,
+   "oscillation": 0.0,
+   "hit_cap": 0.5645161290322581
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.551500018803813,
+   "end_of_day_underdelivery_pct": 0.9276745325879131,
+   "overshoot_max_pct": 5.899304770915592,
+   "oscillation": 0.012069070939893399,
+   "hit_cap": 0.3870967741935484
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.0636515478522819,
+   "end_of_day_underdelivery_pct": 0.033524559509210475,
+   "overshoot_max_pct": 1.9317728005969514,
+   "oscillation": 0.0904193912036095,
+   "hit_cap": 0.5161290322580645
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.1173162022747745,
+   "end_of_day_underdelivery_pct": 1.102212358702222,
+   "overshoot_max_pct": 13.401719374120065,
+   "oscillation": 0.018357059133452872,
+   "hit_cap": 0.5967741935483871
+  },
+  "rmse_reduction_vs_open_loop": 0.5513452477010047
+ }
+}

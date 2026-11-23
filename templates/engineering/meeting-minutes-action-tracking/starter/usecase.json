@@ -1,0 +1,55 @@
+{
+ "slug": "engineering/meeting-minutes-action-tracking",
+ "title": "Meeting Minutes and Action Tracking",
+ "domain": "engineering",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 9496,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Decision statements",
+   "definition": "agreements in the text",
+   "asOfRule": "From the transcript"
+  },
+  {
+   "name": "Action items and owners",
+   "definition": "tasks with named people",
+   "asOfRule": "From the transcript"
+  },
+  {
+   "name": "Due dates",
+   "definition": "stated or implied dates",
+   "asOfRule": "From the transcript"
+  },
+  {
+   "name": "Open actions from earlier meetings",
+   "definition": "carried-over items",
+   "asOfRule": "From the tracker"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Meeting Minutes and Action Tracking\": Draft minutes and extract decisions and actions from project meeting transcripts and notes, assign owners for confirmation and track completion across projects. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Covert recording."
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "devtools/duplicate-code-detection",
+ "engine": "tabular",
+ "seed": 33935,
+ "knobs": {
+  "n_entities": 2150,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.2,
+ "results": {
+  "rows": 167834,
+  "positive_rate": 0.0035034617538758535,
+  "test_rows": 57483,
+  "test_positive_rate": 0.002505088460936277,
+  "baseline_lr": {
+   "pr_auc": 0.5551990750572042,
+   "recall_at_0.5pct_fpr": 0.7916666666666666,
+   "brier": 0.0024054736892497055
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.763416830909841,
+   "recall_at_0.5pct_fpr": 0.7986111111111112,
+   "brier": 0.0009730652716217921
+  }
+ }
+}

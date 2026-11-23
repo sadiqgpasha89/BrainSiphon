@@ -1,0 +1,36 @@
+{
+ "id": "multiclass",
+ "label": "Multi-class classification with group leakage and a drifting prior",
+ "summary": "Calibrated multinomial baseline against a boosted challenger, scored with macro-F1, per-class recall and calibration, on data with repeat entities, a confusable class pair and a prior that drifts.",
+ "problemTypes": [
+  "multiclass-classification"
+ ],
+ "traps": [
+  "Repeat entities on both sides of a random split",
+  "A confusable class pair with label noise",
+  "A rare class that becomes common"
+ ],
+ "origin": "brainsiphon-pro",
+ "slots": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ]
+}

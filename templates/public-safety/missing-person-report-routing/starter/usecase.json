@@ -1,0 +1,53 @@
+{
+ "slug": "public-safety/missing-person-report-routing",
+ "title": "Missing Person Report Completeness and Routing",
+ "domain": "public-safety",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 62816,
+ "knobs": {
+  "n": 272
+ },
+ "blueprintSignals": [
+  {
+   "name": "Missing fields",
+   "definition": "key details not yet collected",
+   "asOfRule": "From the form"
+  },
+  {
+   "name": "Duplicate and linked reports",
+   "definition": "the same person reported twice",
+   "asOfRule": "From matching"
+  },
+  {
+   "name": "Jurisdiction and location",
+   "definition": "where the person was last seen",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Contact attempts logged",
+   "definition": "attempts made so far",
+   "asOfRule": "From the case system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Missing Person Report Completeness and Routing\": Check missing person reports for missing details, link them to related reports and route them to the right team, with every case treated as urgent by a human who decides the response. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Predicted risk scores."
+}

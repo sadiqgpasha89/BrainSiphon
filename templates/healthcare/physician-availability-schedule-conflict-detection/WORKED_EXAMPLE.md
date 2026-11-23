@@ -32,7 +32,7 @@ The naive score finds 51.5% of events at 0.27 false alerts per series-week. The 
 
 ## 5. An edge case from the blueprint
 
-**Time zone difference between systems.** false overlaps. Planned response: Single time standard on ingest. Write the test that replays this case through your pipeline before you tune anything.
+**Time zone difference between systems.** false overlaps appear between systems. Planned response: Single time standard on ingest. Write the test that replays this case through your pipeline before you tune anything.
 
 ## 6. What to expect on your own data
 

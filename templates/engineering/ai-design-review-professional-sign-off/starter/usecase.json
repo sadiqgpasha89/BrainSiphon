@@ -1,0 +1,55 @@
+{
+ "slug": "engineering/ai-design-review-professional-sign-off",
+ "title": "AI-Assisted Design Review and Professional Sign-Off",
+ "domain": "engineering",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 37599,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Cross-sheet inconsistencies",
+   "definition": "values that differ between sheets",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Missing information",
+   "definition": "required items absent from the package",
+   "asOfRule": "From checklists"
+  },
+  {
+   "name": "Code requirement checks",
+   "definition": "clause versus design value",
+   "asOfRule": "From the standards library"
+  },
+  {
+   "name": "Past review findings",
+   "definition": "common errors by discipline",
+   "asOfRule": "From review history"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"AI-Assisted Design Review and Professional Sign-Off\": Check design packages for coordination errors, missing information and code issues with an AI reviewer and route a findings list to licensed engineers who review, resolve and sign. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: AI pass or fail."
+}

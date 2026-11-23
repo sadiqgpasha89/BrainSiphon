@@ -1,0 +1,59 @@
+{
+ "slug": "manufacturing/warranty-claim-prediction",
+ "title": "Warranty Claim Prediction",
+ "domain": "manufacturing",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 8750,
+ "knobs": {
+  "n": 17530,
+  "outlier_share": 0.033,
+  "drift": 0.348
+ },
+ "blueprintSignals": [
+  {
+   "name": "Units in service by age",
+   "definition": "installed base by months in service",
+   "asOfRule": "From sales and registration"
+  },
+  {
+   "name": "Early field failure rate",
+   "definition": "claims per thousand units in the first months",
+   "asOfRule": "By build period"
+  },
+  {
+   "name": "Build and supplier lot attributes",
+   "definition": "plant, line and component lots",
+   "asOfRule": "From genealogy"
+  },
+  {
+   "name": "Usage intensity",
+   "definition": "duty cycle or mileage",
+   "asOfRule": "From telematics where available"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Warranty Claim Prediction\": Forecast warranty claims by product, build period and failure mode so reserves, supplier recovery and corrective actions are sized correctly. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using claims to date as final."
+}

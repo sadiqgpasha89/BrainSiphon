@@ -1,0 +1,49 @@
+{
+ "use_case": "energy/wind-power-forecasting",
+ "engine": "regression",
+ "seed": 1246,
+ "knobs": {
+  "n": 25220,
+  "outlier_share": 0.04,
+  "drift": 0.284
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.6,
+ "results": {
+  "rows": 25220,
+  "train_rows": 17654,
+  "test_rows": 7566,
+  "baseline_ridge": {
+   "mae": 8.309399597686228,
+   "rmse": 14.751408944884519,
+   "wape": 0.15657511251561368,
+   "r2": 0.3674855455328171
+  },
+  "challenger_gbm": {
+   "mae": 5.842046700673622,
+   "rmse": 13.106284564569895,
+   "wape": 0.11008245646702892,
+   "r2": 0.5006987708363032
+  },
+  "mae_gain_vs_baseline": 0.29693515975566354,
+  "interval_80_coverage": 0.6769759450171822,
+  "interval_80_mean_width": 9.889783858295424,
+  "segment_mae": {
+   "0": 5.983560205455118,
+   "1": 5.494186117362127,
+   "2": 5.886326437797337,
+   "3": 6.348970377228524
+  },
+  "worst_segment_vs_overall": 1.086771589226846,
+  "leaky_feature_rmse": 1.4904379989331682,
+  "honest_rmse": 13.106284564569895,
+  "random_split_mae": 5.182393826200095,
+  "chronological_mae": 5.842046700673622
+ }
+}

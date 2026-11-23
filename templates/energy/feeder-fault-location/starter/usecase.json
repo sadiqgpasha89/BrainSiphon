@@ -1,0 +1,57 @@
+{
+ "slug": "energy/feeder-fault-location",
+ "title": "Feeder Fault Location from Waveforms",
+ "domain": "energy",
+ "engine": "forecast",
+ "fit": "exact",
+ "problemType": "forecasting",
+ "seed": 41017,
+ "knobs": {
+  "n_series": 203
+ },
+ "blueprintSignals": [
+  {
+   "name": "Apparent impedance to the fault",
+   "definition": "impedance computed from relay phasors",
+   "asOfRule": "Needs the feeder model"
+  },
+  {
+   "name": "Fault type and phases",
+   "definition": "type of fault from relay data",
+   "asOfRule": "From relay events"
+  },
+  {
+   "name": "Downstream meter voltage sags",
+   "definition": "sag depth at smart meters",
+   "asOfRule": "Time aligned"
+  },
+  {
+   "name": "Switching state",
+   "definition": "open and closed devices at the fault time",
+   "asOfRule": "From ADMS"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Feeder Fault Location from Waveforms\": Estimate the location of a fault on a distribution feeder from relay and meter waveforms so crews drive to the right span first and restoration is faster. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Learning without a network model."
+}

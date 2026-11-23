@@ -1,0 +1,57 @@
+{
+ "slug": "devtools/support-ticket-to-bug-linking",
+ "title": "Support Ticket to Bug Linking",
+ "domain": "devtools",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 88180,
+ "knobs": {
+  "n_docs": 4870
+ },
+ "blueprintSignals": [
+  {
+   "name": "Error message and version match",
+   "definition": "reported error and version",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Text similarity to bug reports",
+   "definition": "embedding similarity",
+   "asOfRule": "From the model"
+  },
+  {
+   "name": "Product area and feature",
+   "definition": "classified area",
+   "asOfRule": "From classification"
+  },
+  {
+   "name": "Customer tier",
+   "definition": "contract tier",
+   "asOfRule": "From the CRM"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Support Ticket to Bug Linking\": Link customer support tickets to the engineering bugs behind them so engineering sees real customer impact and support sees fix status. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Customer identity in bug trackers."
+}

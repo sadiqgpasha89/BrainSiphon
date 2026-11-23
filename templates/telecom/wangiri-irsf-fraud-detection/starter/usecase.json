@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/wangiri-irsf-fraud-detection",
+ "title": "Wangiri & Premium-Rate Fraud Detection",
+ "domain": "telecom",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 7598,
+ "knobs": {
+  "n_series": 75,
+  "anomalies_per_series": 2.087
+ },
+ "blueprintSignals": [
+  {
+   "name": "Destination risk score",
+   "definition": "fraud rate of the destination range from recent weeks",
+   "asOfRule": "Update daily"
+  },
+  {
+   "name": "Calls per minute spike",
+   "definition": "calls per minute against the account's baseline",
+   "asOfRule": "Account baseline"
+  },
+  {
+   "name": "Missed call to call-back ratio",
+   "definition": "inbound missed calls followed by outbound calls",
+   "asOfRule": "Per account"
+  },
+  {
+   "name": "Revenue share exposure",
+   "definition": "minutes and cost to the suspected number range",
+   "asOfRule": "From rating"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Wangiri & Premium-Rate Fraud Detection\": Detect call-back, premium-rate and international revenue share fraud in near real time so fraudulent traffic is stopped before large bills and settlement losses accrue. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Account blocks for call-back fraud."
+}

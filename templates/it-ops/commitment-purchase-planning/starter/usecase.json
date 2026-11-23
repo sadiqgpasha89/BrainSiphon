@@ -1,0 +1,59 @@
+{
+ "slug": "it-ops/commitment-purchase-planning",
+ "title": "Commitment Purchase Planning",
+ "domain": "it-ops",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 82606,
+ "knobs": {
+  "n": 11810,
+  "label_noise": 0.054,
+  "dup_share": 0.281
+ },
+ "blueprintSignals": [
+  {
+   "name": "Stable usage floor",
+   "definition": "lowest sustained usage",
+   "asOfRule": "From billing"
+  },
+  {
+   "name": "Growth and migration plans",
+   "definition": "planned changes",
+   "asOfRule": "From planning"
+  },
+  {
+   "name": "Price and term options",
+   "definition": "rates by term",
+   "asOfRule": "From the provider"
+  },
+  {
+   "name": "Existing commitments",
+   "definition": "current coverage and expiry",
+   "asOfRule": "From billing"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Commitment Purchase Planning\": Plan reserved capacity and savings plan purchases from stable baseline usage forecasts, comparing terms and risk so finance approves commitments that will be used. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Average usage as baseline."
+}

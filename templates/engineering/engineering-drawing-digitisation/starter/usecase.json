@@ -1,0 +1,58 @@
+{
+ "slug": "engineering/engineering-drawing-digitisation",
+ "title": "Engineering Drawing Digitisation",
+ "domain": "engineering",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 7167,
+ "knobs": {
+  "n": 4020,
+  "prevalence": 0.134
+ },
+ "blueprintSignals": [
+  {
+   "name": "Symbol detections",
+   "definition": "symbol classes and positions",
+   "asOfRule": "From a vision model"
+  },
+  {
+   "name": "Line connectivity",
+   "definition": "pipes and signal lines connecting symbols",
+   "asOfRule": "From line tracing"
+  },
+  {
+   "name": "Tag text",
+   "definition": "equipment tags and notes",
+   "asOfRule": "From OCR"
+  },
+  {
+   "name": "Title block fields",
+   "definition": "revision and approval state",
+   "asOfRule": "From extraction"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Engineering Drawing Digitisation\": Convert scanned drawings and pipe and instrument diagrams into structured data on symbols, lines, tags and title block fields, with quality checks for engineers to confirm. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Raw OCR as truth."
+}

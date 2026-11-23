@@ -1,0 +1,34 @@
+{
+ "use_case": "manufacturing/recipe-change-impact-assessment",
+ "engine": "tabular",
+ "seed": 12119,
+ "knobs": {
+  "n_entities": 2720,
+  "positive_entity_rate": 0.034,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.1,
+ "results": {
+  "rows": 206681,
+  "positive_rate": 0.004635162400027095,
+  "test_rows": 68330,
+  "test_positive_rate": 0.004492902092785014,
+  "baseline_lr": {
+   "pr_auc": 0.566158264348463,
+   "recall_at_0.5pct_fpr": 0.6840390879478827,
+   "brier": 0.010022867800950578
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7736795642823784,
+   "recall_at_0.5pct_fpr": 0.8013029315960912,
+   "brier": 0.0017331287055323953
+  }
+ }
+}

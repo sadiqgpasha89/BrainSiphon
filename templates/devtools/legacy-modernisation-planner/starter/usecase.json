@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/legacy-modernisation-planner",
+ "title": "Legacy Code Modernisation Planner",
+ "domain": "devtools",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 46058,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Call and data dependency graph",
+   "definition": "which modules call and share data",
+   "asOfRule": "From static analysis"
+  },
+  {
+   "name": "Change frequency and defect history",
+   "definition": "how often code changes and fails",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Test coverage and characterisation",
+   "definition": "tests of existing behaviour",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Business rule extraction confidence",
+   "definition": "confidence of extracted rules",
+   "asOfRule": "From the model"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Legacy Code Modernisation Planner\": Analyse old codebases such as COBOL, PL/SQL and large Java monoliths to map business rules, dependencies and test gaps and propose a staged modernisation plan for architects to approve. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Big-bang rewrites."
+}

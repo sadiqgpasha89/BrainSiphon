@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/devtools-agent-action-guardrails",
+ "title": "DevTools Agent Action Guardrails",
+ "domain": "devtools",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 63267,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Protected-branch touch attempts",
+   "definition": "writes aimed at main, release and tag refs",
+   "asOfRule": "Source host events"
+  },
+  {
+   "name": "Pushes per agent per hour",
+   "definition": "push volume against the agent baseline",
+   "asOfRule": "Per agent token"
+  },
+  {
+   "name": "Reviewer overrides on agent pull requests",
+   "definition": "forced merges and skipped checks",
+   "asOfRule": "Pull request metadata"
+  },
+  {
+   "name": "Pipeline result after agent change",
+   "definition": "whether build and tests passed afterwards",
+   "asOfRule": "CI results"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"DevTools Agent Action Guardrails\": Control every action AI coding agents take in source repositories, build pipelines and package registries, enforce approval tiers and give security reviewers a replayable record of each change. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Prompt-only restrictions."
+}

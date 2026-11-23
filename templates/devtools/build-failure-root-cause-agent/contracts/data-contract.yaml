@@ -1,0 +1,16 @@
+contract: build_failure_root_cause_agent_inputs.v1
+owner: developer-experience@example.com
+system_of_record: Source control and code review platform
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: first_error_signature, type: double, nullable: false }
+    - { name: recent_dependency_and_config_changes, type: double, nullable: false }
+    - { name: infrastructure_health, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,50 @@
+{
+ "use_case": "manufacturing/weld-seam-inspection",
+ "engine": "cv",
+ "seed": 24617,
+ "knobs": {
+  "n": 5050,
+  "prevalence": 0.132
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.0,
+ "results": {
+  "images": 5050,
+  "train": 1775,
+  "prevalence": 0.13287128712871288,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9480303249500632,
+    "sens_at_95_spec": 0.7459016393442623
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9785037878787879,
+    "sens_at_95_spec": 0.9270833333333334
+   },
+   "site_B": {
+    "auc": 0.7532151096830195,
+    "sens_at_95_spec": 0.38524590163934425
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3633879781420765,
+    "false_positive_rate": 0.04598235020901068
+   }
+  }
+ }
+}

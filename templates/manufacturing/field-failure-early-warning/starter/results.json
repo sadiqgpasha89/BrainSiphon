@@ -1,0 +1,43 @@
+{
+ "use_case": "manufacturing/field-failure-early-warning",
+ "engine": "anomaly",
+ "seed": 83778,
+ "knobs": {
+  "n_series": 74,
+  "anomalies_per_series": 2.32
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 17.5,
+ "results": {
+  "series": 74,
+  "hours": 2016,
+  "events": 169,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.32070732442479655,
+   "recall": 0.40963855421686746,
+   "median_delay_h": 2.0,
+   "events": 83
+  },
+  "seasonal_z": {
+   "threshold": 5.5,
+   "false_alerts_per_series_week": 0.5204460966542751,
+   "recall": 0.7228915662650602,
+   "median_delay_h": 0.0,
+   "events": 83
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5260725409424294,
+   "recall": 0.963855421686747,
+   "median_delay_h": 0.0,
+   "events": 83
+  }
+ }
+}

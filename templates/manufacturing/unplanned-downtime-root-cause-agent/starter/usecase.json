@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/unplanned-downtime-root-cause-agent",
+ "title": "Unplanned Downtime Root-Cause Agent",
+ "domain": "manufacturing",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 6385,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "First-out alarm",
+   "definition": "the earliest alarm in the stop sequence",
+   "asOfRule": "Needs accurate clocks"
+  },
+  {
+   "name": "Similar stop precedent",
+   "definition": "match to past stops with confirmed cause",
+   "asOfRule": "Confirmed causes only"
+  },
+  {
+   "name": "Recent maintenance and changeover",
+   "definition": "work performed on the machine in 48 hours",
+   "asOfRule": "From the CMMS"
+  },
+  {
+   "name": "Operator note content",
+   "definition": "free text left at the stop",
+   "asOfRule": "Treat as data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Unplanned Downtime Root-Cause Agent\": After a line stop, assemble the alarm sequence, operator notes, maintenance history and process data into a ranked list of probable causes and a draft downtime report for the shift lead. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using the stop reason as truth."
+}

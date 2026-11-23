@@ -1,0 +1,43 @@
+{
+ "use_case": "it-ops/network-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 5635,
+ "knobs": {
+  "n_series": 87,
+  "anomalies_per_series": 3.113
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 20.7,
+ "results": {
+  "series": 87,
+  "hours": 2016,
+  "events": 276,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.23449985044652394,
+   "recall": 0.4863013698630137,
+   "median_delay_h": 1.0,
+   "events": 146
+  },
+  "seasonal_z": {
+   "threshold": 5.0,
+   "false_alerts_per_series_week": 0.5288210913130795,
+   "recall": 0.7397260273972602,
+   "median_delay_h": 0.0,
+   "events": 146
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.533606802546682,
+   "recall": 0.958904109589041,
+   "median_delay_h": 0.0,
+   "events": 146
+  }
+ }
+}

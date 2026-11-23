@@ -1,0 +1,58 @@
+{
+ "slug": "engineering/weld-concrete-defect-inspection",
+ "title": "Weld and Concrete Defect Inspection",
+ "domain": "engineering",
+ "engine": "cv",
+ "fit": "exact",
+ "problemType": "vision-classification",
+ "seed": 11973,
+ "knobs": {
+  "n": 3880,
+  "prevalence": 0.1
+ },
+ "blueprintSignals": [
+  {
+   "name": "Defect candidate regions",
+   "definition": "cracks, porosity and voids",
+   "asOfRule": "From a vision model"
+  },
+  {
+   "name": "Defect size and location",
+   "definition": "measurements",
+   "asOfRule": "From geometry"
+  },
+  {
+   "name": "Weld or pour metadata",
+   "definition": "process and material",
+   "asOfRule": "From inspection records"
+  },
+  {
+   "name": "Image quality",
+   "definition": "contrast and coverage",
+   "asOfRule": "From the image"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Weld and Concrete Defect Inspection\": Detect defects in weld radiographs, ultrasonic scans and concrete surfaces and rank findings by severity for qualified inspectors to review and decide. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic acceptance."
+}

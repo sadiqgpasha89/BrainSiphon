@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/incident-root-cause-assistant",
+ "title": "Incident Root Cause Assistant",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 46428,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Change proximity",
+   "definition": "changes shortly before the first symptom",
+   "asOfRule": "From change records"
+  },
+  {
+   "name": "Dependency health",
+   "definition": "state of upstream and downstream services",
+   "asOfRule": "From telemetry and the CMDB"
+  },
+  {
+   "name": "Anomaly onset order",
+   "definition": "which signal changed first",
+   "asOfRule": "From time-series"
+  },
+  {
+   "name": "Past similar incidents",
+   "definition": "earlier incidents with similar symptoms",
+   "asOfRule": "From problem records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Incident Root Cause Assistant\": Assemble evidence from metrics, logs, traces and recent changes and propose ranked root cause hypotheses with the supporting data for the incident commander to test. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Narrative without evidence."
+}

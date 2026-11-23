@@ -1,0 +1,59 @@
+{
+ "slug": "telecom/fibre-fault-localisation",
+ "title": "Fibre Fault Localisation from OTDR & Telemetry",
+ "domain": "telecom",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 13650,
+ "knobs": {
+  "n": 21140,
+  "outlier_share": 0.016,
+  "drift": 0.163
+ },
+ "blueprintSignals": [
+  {
+   "name": "OTDR event distance",
+   "definition": "optical distance to the first major loss event",
+   "asOfRule": "Needs refractive index calibration"
+  },
+  {
+   "name": "Route length slack",
+   "definition": "route length versus cable length factors",
+   "asOfRule": "From the route records"
+  },
+  {
+   "name": "Power drop pattern",
+   "definition": "change in received power at the endpoints",
+   "asOfRule": "From telemetry"
+  },
+  {
+   "name": "Past faults on the segment",
+   "definition": "earlier faults on the same segment",
+   "asOfRule": "From repair records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Fibre Fault Localisation from OTDR & Telemetry\": Locate the position of a fibre cut or degradation from OTDR traces and optical telemetry so repair crews go to the right place the first time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using estimated locations as labels."
+}

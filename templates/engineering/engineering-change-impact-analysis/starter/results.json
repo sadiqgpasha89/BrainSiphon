@@ -1,0 +1,34 @@
+{
+ "use_case": "engineering/engineering-change-impact-analysis",
+ "engine": "tabular",
+ "seed": 40227,
+ "knobs": {
+  "n_entities": 2800,
+  "positive_entity_rate": 0.031,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.1,
+ "results": {
+  "rows": 213925,
+  "positive_rate": 0.004034124108916676,
+  "test_rows": 70947,
+  "test_positive_rate": 0.003425091970062159,
+  "baseline_lr": {
+   "pr_auc": 0.6478435419368467,
+   "recall_at_0.5pct_fpr": 0.7325102880658436,
+   "brier": 0.0019469802183196363
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7027463808717451,
+   "recall_at_0.5pct_fpr": 0.757201646090535,
+   "brier": 0.0015080496578707006
+  }
+ }
+}

@@ -1,0 +1,43 @@
+{
+ "use_case": "it-ops/metric-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 69420,
+ "knobs": {
+  "n_series": 88,
+  "anomalies_per_series": 3.093
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 21.4,
+ "results": {
+  "series": 88,
+  "hours": 2016,
+  "events": 290,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.23893207164582628,
+   "recall": 0.5777777777777777,
+   "median_delay_h": 2.0,
+   "events": 135
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.5417370733355863,
+   "recall": 0.8296296296296296,
+   "median_delay_h": 0.0,
+   "events": 135
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5133491044271713,
+   "recall": 0.9777777777777777,
+   "median_delay_h": 0.0,
+   "events": 135
+  }
+ }
+}

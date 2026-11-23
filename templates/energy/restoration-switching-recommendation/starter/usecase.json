@@ -1,0 +1,53 @@
+{
+ "slug": "energy/restoration-switching-recommendation",
+ "title": "Restoration Switching Recommendation",
+ "domain": "energy",
+ "engine": "control",
+ "fit": "exact",
+ "problemType": "sequential-control-simulation",
+ "seed": 45362,
+ "knobs": {
+  "days": 75
+ },
+ "blueprintSignals": [
+  {
+   "name": "Faulted section and isolation points",
+   "definition": "location of the fault and the nearest switches",
+   "asOfRule": "From fault location"
+  },
+  {
+   "name": "Alternate supply capacity",
+   "definition": "spare capacity on neighbouring feeders",
+   "asOfRule": "From the power flow"
+  },
+  {
+   "name": "Customer priority",
+   "definition": "critical customers on each section",
+   "asOfRule": "From the register"
+  },
+  {
+   "name": "Switch availability",
+   "definition": "remote or manual operation and crew position",
+   "asOfRule": "From ADMS"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "cumulative delivery",
+   "meaning": "what has been delivered so far, seen after a delay"
+  },
+  {
+   "feature": "plan",
+   "meaning": "the target cumulative curve"
+  },
+  {
+   "feature": "opportunity",
+   "meaning": "the demand available each step, which the controller does not control"
+  },
+  {
+   "feature": "multiplier",
+   "meaning": "the controller's output each step"
+  }
+ ],
+ "label": "For \"Restoration Switching Recommendation\": Propose switching sequences that restore as many customers as quickly as possible after a fault within loading and protection limits, for the operator to review and execute. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Learned safety checks."
+}

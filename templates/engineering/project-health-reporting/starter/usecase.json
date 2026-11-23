@@ -1,0 +1,57 @@
+{
+ "slug": "engineering/project-health-reporting",
+ "title": "Project Health Reporting",
+ "domain": "engineering",
+ "engine": "nlp",
+ "fit": "exact",
+ "problemType": "text-classification",
+ "seed": 9814,
+ "knobs": {
+  "n_docs": 5640
+ },
+ "blueprintSignals": [
+  {
+   "name": "Schedule and cost status",
+   "definition": "variance and forecasts",
+   "asOfRule": "From project controls"
+  },
+  {
+   "name": "Open risks and issues",
+   "definition": "top items",
+   "asOfRule": "From the risk register"
+  },
+  {
+   "name": "Milestones",
+   "definition": "upcoming and missed",
+   "asOfRule": "From the schedule"
+  },
+  {
+   "name": "Previous report",
+   "definition": "last week statements",
+   "asOfRule": "From the archive"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Project Health Reporting\": Draft weekly project status reports from schedule, cost, risk and issue data with cited figures and a plain narrative for the project manager to edit and send. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Chat as source."
+}

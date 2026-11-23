@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/building-permit-plan-review-assistant",
+ "title": "Building Permit Plan Review Assistant",
+ "domain": "public-sector",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 17979,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Dimension and area extraction",
+   "definition": "measurements read from plans",
+   "asOfRule": "From drawing analysis"
+  },
+  {
+   "name": "Rule match",
+   "definition": "which code section applies",
+   "asOfRule": "From the rule base"
+  },
+  {
+   "name": "Zoning and overlay data",
+   "definition": "zone and overlays at the site",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Drawing completeness",
+   "definition": "required sheets and details",
+   "asOfRule": "From the checklist"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Building Permit Plan Review Assistant\": Pre-check building plans against code and zoning rules and highlight possible issues with references so plan reviewers focus on judgement and applicants fix problems earlier. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic approval."
+}

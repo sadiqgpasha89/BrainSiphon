@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/evacuation-route-planning",
+ "title": "Evacuation Route Planning",
+ "domain": "public-safety",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 18110,
+ "knobs": {
+  "n_instances": 194,
+  "noise": 0.263
+ },
+ "blueprintSignals": [
+  {
+   "name": "Road capacity and closures",
+   "definition": "live capacity of roads",
+   "asOfRule": "From traffic data"
+  },
+  {
+   "name": "Hazard spread forecast",
+   "definition": "predicted fire or flood extent",
+   "asOfRule": "From hazard models"
+  },
+  {
+   "name": "Population by area and mode",
+   "definition": "residents and transport availability",
+   "asOfRule": "From census and registers"
+  },
+  {
+   "name": "Shelter and staging capacity",
+   "definition": "places available",
+   "asOfRule": "From operations"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Evacuation Route Planning\": Compute evacuation routes and staging that account for road capacity, hazards and vulnerable populations, so planners and commanders test and choose plans. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Free-flow assumptions."
+}

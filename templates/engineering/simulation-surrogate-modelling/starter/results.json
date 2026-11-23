@@ -1,0 +1,49 @@
+{
+ "use_case": "engineering/simulation-surrogate-modelling",
+ "engine": "regression",
+ "seed": 34656,
+ "knobs": {
+  "n": 25220,
+  "outlier_share": 0.027,
+  "drift": 0.291
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.7,
+ "results": {
+  "rows": 25220,
+  "train_rows": 17654,
+  "test_rows": 7566,
+  "baseline_ridge": {
+   "mae": 7.898159724248579,
+   "rmse": 13.841357386587704,
+   "wape": 0.14890511845546217,
+   "r2": 0.40182424275082973
+  },
+  "challenger_gbm": {
+   "mae": 5.502052991083551,
+   "rmse": 12.0745852022399,
+   "wape": 0.10373098050552171,
+   "r2": 0.544785712940504
+  },
+  "mae_gain_vs_baseline": 0.30337531992529954,
+  "interval_80_coverage": 0.6593973037272006,
+  "interval_80_mean_width": 9.5332302828556,
+  "segment_mae": {
+   "0": 5.539366728380911,
+   "1": 5.432358095243473,
+   "2": 5.086775663001976,
+   "3": 6.821225840667571
+  },
+  "worst_segment_vs_overall": 1.2397601134925142,
+  "leaky_feature_rmse": 1.7726579141287921,
+  "honest_rmse": 12.0745852022399,
+  "random_split_mae": 4.760143399391767,
+  "chronological_mae": 5.502052991083551
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "it-ops/access-recertification-recommendations",
+ "engine": "tabular",
+ "seed": 25002,
+ "knobs": {
+  "n_entities": 2940,
+  "positive_entity_rate": 0.041,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.5,
+ "results": {
+  "rows": 227765,
+  "positive_rate": 0.005040282747568766,
+  "test_rows": 76144,
+  "test_positive_rate": 0.005883588989283463,
+  "baseline_lr": {
+   "pr_auc": 0.7167082851178307,
+   "recall_at_0.5pct_fpr": 0.7440097402597402,
+   "brier": 0.0025803412429881646
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7326862606735294,
+   "recall_at_0.5pct_fpr": 0.7366071428571429,
+   "brier": 0.0025518955825520927
+  }
+ }
+}

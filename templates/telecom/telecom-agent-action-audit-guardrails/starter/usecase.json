@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/telecom-agent-action-audit-guardrails",
+ "title": "Telecom Agent Action Audit & Guardrails",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 20577,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Change tier of request",
+   "definition": "the network layer and customer count affected",
+   "asOfRule": "Inventory system"
+  },
+  {
+   "name": "Provisioning actions per hour",
+   "definition": "volume against the domain baseline",
+   "asOfRule": "Orchestration log"
+  },
+  {
+   "name": "Duty manager override rate",
+   "definition": "proposals changed or declined by managers",
+   "asOfRule": "Approval records"
+  },
+  {
+   "name": "Service quality after change",
+   "definition": "alarms and complaints after the action",
+   "asOfRule": "Assurance system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Telecom Agent Action Audit & Guardrails\": Gate and record the actions AI agents take on network configuration, service provisioning and billing adjustments so that operations, regulators and customers can rely on a complete trail. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: One shared automation account."
+}

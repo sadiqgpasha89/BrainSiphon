@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/device-upgrade-propensity",
+ "engine": "tabular",
+ "seed": 64808,
+ "knobs": {
+  "n_entities": 1880,
+  "positive_entity_rate": 0.031,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.0,
+ "results": {
+  "rows": 148958,
+  "positive_rate": 0.0037393090669853245,
+  "test_rows": 50650,
+  "test_positive_rate": 0.0034945705824284304,
+  "baseline_lr": {
+   "pr_auc": 0.7264119812615211,
+   "recall_at_0.5pct_fpr": 0.8026024916702883,
+   "brier": 0.0016951230389026391
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7431428779736245,
+   "recall_at_0.5pct_fpr": 0.8305084745762712,
+   "brier": 0.0015566159648496443
+  }
+ }
+}

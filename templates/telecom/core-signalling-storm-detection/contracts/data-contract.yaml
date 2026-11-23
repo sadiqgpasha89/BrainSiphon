@@ -1,0 +1,17 @@
+# the blueprint's contract example did not parse as YAML; kept verbatim below
+# contract: core_signalling_storm_detection_inputs.v1
+# owner: network-engineering@example.com
+# system_of_record: OSS: inventory, fault and performance management
+# schema:
+#   registry_compatibility: BACKWARD_TRANSITIVE
+#   fields:
+#     - { name: event_id, type: string, unique: true }
+#     - { name: event_time, type: timestamp, required: true, tz: UTC }
+#     - { name: rate_versus_expected, type: double, nullable: false }
+#     - { name: source_concentration, type: double, nullable: false }
+#     - { name: failure_and_retry_ratio, type: double, nullable: false }
+# sla:
+#   freshness_p95: 30 seconds
+#   completeness: ">=99.5%"
+#   duplicates: "<0.01%"
+# on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

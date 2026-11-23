@@ -1,0 +1,59 @@
+{
+ "slug": "manufacturing/changeover-time-prediction",
+ "title": "Changeover Time Prediction",
+ "domain": "manufacturing",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 79089,
+ "knobs": {
+  "n": 20980,
+  "outlier_share": 0.025,
+  "drift": 0.167
+ },
+ "blueprintSignals": [
+  {
+   "name": "Product pair attributes",
+   "definition": "differences in tooling, material and colour or size",
+   "asOfRule": "From the product master"
+  },
+  {
+   "name": "Tool and fixture change needs",
+   "definition": "whether the tooling must change",
+   "asOfRule": "From routings"
+  },
+  {
+   "name": "Crew size and skill mix",
+   "definition": "number and skill of changeover crew",
+   "asOfRule": "Aggregated not individual"
+  },
+  {
+   "name": "Time since last similar changeover",
+   "definition": "days since the last changeover of this type",
+   "asOfRule": "From history"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Changeover Time Prediction\": Predict the time a changeover will take between two products on a machine so schedules and sequences use realistic changeover times. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using stop time as changeover time."
+}

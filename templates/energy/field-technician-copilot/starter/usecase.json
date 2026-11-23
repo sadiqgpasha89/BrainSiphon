@@ -1,0 +1,55 @@
+{
+ "slug": "energy/field-technician-copilot",
+ "title": "Field Technician Copilot",
+ "domain": "energy",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 44957,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Equipment identification",
+   "definition": "asset type and model",
+   "asOfRule": "From the work order"
+  },
+  {
+   "name": "Document revision",
+   "definition": "current or superseded",
+   "asOfRule": "From document control"
+  },
+  {
+   "name": "Question intent",
+   "definition": "procedure, parts or history",
+   "asOfRule": "Classified"
+  },
+  {
+   "name": "Technician qualification",
+   "definition": "training and authorisation",
+   "asOfRule": "From training records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Field Technician Copilot\": Answer technician questions on site about equipment, procedures and safety steps from controlled manuals and past work orders, in the technician's language, without altering any record. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Paraphrased safety steps."
+}

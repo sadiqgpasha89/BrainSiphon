@@ -1,0 +1,50 @@
+{
+ "use_case": "energy/line-inspection-drone-defects",
+ "engine": "cv",
+ "seed": 75311,
+ "knobs": {
+  "n": 4160,
+  "prevalence": 0.091
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.9,
+ "results": {
+  "images": 4160,
+  "train": 1450,
+  "prevalence": 0.08918269230769231,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9463671889134132,
+    "sens_at_95_spec": 0.7471264367816092
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9627318904593639,
+    "sens_at_95_spec": 0.875
+   },
+   "site_B": {
+    "auc": 0.769059594022506,
+    "sens_at_95_spec": 0.3390804597701149
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3045977011494253,
+    "false_positive_rate": 0.04407135362014691
+   }
+  }
+ }
+}

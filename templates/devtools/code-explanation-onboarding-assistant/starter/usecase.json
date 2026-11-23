@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/code-explanation-onboarding-assistant",
+ "title": "Code Explanation and Onboarding Assistant",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 7340,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Code and doc retrieval",
+   "definition": "relevant files and pages",
+   "asOfRule": "From the index"
+  },
+  {
+   "name": "Ownership data",
+   "definition": "owning team and on-call",
+   "asOfRule": "From the portal"
+  },
+  {
+   "name": "Recent change history",
+   "definition": "recent commits and incidents",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Question intent",
+   "definition": "what, why, how to run or who owns",
+   "asOfRule": "Classified"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Code Explanation and Onboarding Assistant\": Explain what a module, function or service does, who owns it and how it is deployed, with links to the code and docs, so new engineers get productive faster. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Answers with no links."
+}

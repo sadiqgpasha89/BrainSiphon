@@ -1,0 +1,16 @@
+contract: automated_decision_fairness_monitoring_inputs.v1
+owner: digital-service-delivery@example.com
+system_of_record: Case management and CRM
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: outcome_rate_by_group, type: double, nullable: false }
+    - { name: error_rate_by_group, type: double, nullable: false }
+    - { name: input_drift, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

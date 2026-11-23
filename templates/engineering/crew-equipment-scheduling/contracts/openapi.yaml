@@ -1,0 +1,97 @@
+openapi: 3.1.0
+info:
+  title: Crew and Equipment Scheduling API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/crew-equipment-scheduling/plans:
+    post:
+      summary: 'Crew and Equipment Scheduling: request a decision'
+      operationId: crew_equipment_scheduling
+      description: Illustrative contract taken from the blueprint's low-level design.  Replace the placeholder values
+        with your own fields and keep the error behaviour.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plan_id:
+                  type: string
+                horizon:
+                  type: object
+                  properties:
+                    start:
+                      type: string
+                    end:
+                      type: string
+                scenario:
+                  type: string
+                objective:
+                  type: string
+                constraints_version:
+                  type: string
+                warm_start_plan_id:
+                  type: string
+                time_limit_s:
+                  type: integer
+            example:
+              plan_id: pl_20261107_a
+              horizon:
+                start: '2026-11-08'
+                end: '2026-11-14'
+              scenario: base
+              objective: min_total_cost
+              constraints_version: c42
+              warm_start_plan_id: pl_20261106_a
+              time_limit_s: 120
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plan_id:
+                    type: string
+                  status:
+                    type: string
+                  objective_value:
+                    type: integer
+                  gap_pct:
+                    type: number
+                  violated_soft_constraints:
+                    type: array
+                    items: {}
+                  explanation_uri:
+                    type: string
+                  solver_version:
+                    type: string
+                  model_version:
+                    type: string
+              example:
+                plan_id: pl_20261107_a
+                status: OPTIMAL | FEASIBLE | INFEASIBLE | TIMEOUT
+                objective_value: 0
+                gap_pct: 0.4
+                violated_soft_constraints: []
+                explanation_uri: s3://…/pl_20261107_a/explain.json
+                solver_version: …
+                model_version: …
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

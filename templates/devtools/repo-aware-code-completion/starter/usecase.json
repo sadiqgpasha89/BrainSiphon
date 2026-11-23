@@ -1,0 +1,53 @@
+{
+ "slug": "devtools/repo-aware-code-completion",
+ "title": "Repository-Aware Code Completion",
+ "domain": "devtools",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 15102,
+ "knobs": {
+  "n": 243
+ },
+ "blueprintSignals": [
+  {
+   "name": "Cursor and file context",
+   "definition": "code around the cursor",
+   "asOfRule": "From the editor"
+  },
+  {
+   "name": "Related file retrieval",
+   "definition": "similar or imported files",
+   "asOfRule": "From the code index"
+  },
+  {
+   "name": "Language and framework",
+   "definition": "detected language and libraries",
+   "asOfRule": "From the project"
+  },
+  {
+   "name": "Acceptance history aggregate",
+   "definition": "aggregate acceptance by language and kind",
+   "asOfRule": "Team-level"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Repository-Aware Code Completion\": Suggest the next lines and functions while a developer types, using the open files and the repository's own conventions, so common code is written faster and consistent with the codebase. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Shown-suggestion metrics."
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "manufacturing/soft-sensor-hard-to-measure-quantities",
+ "title": "Soft Sensor for Hard-to-Measure Quantities",
+ "domain": "manufacturing",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 77618,
+ "knobs": {
+  "n": 18510,
+  "outlier_share": 0.035,
+  "drift": 0.158
+ },
+ "blueprintSignals": [
+  {
+   "name": "Lagged process signals",
+   "definition": "lagged temperature, flow and pressure features aligned to residence time",
+   "asOfRule": "Residence time from the process"
+  },
+  {
+   "name": "Recent lab residual",
+   "definition": "error of the last lab values against the estimate",
+   "asOfRule": "Needs timely lab entry"
+  },
+  {
+   "name": "Feed property indicators",
+   "definition": "measurements of the incoming material",
+   "asOfRule": "From analysers"
+  },
+  {
+   "name": "Equipment state",
+   "definition": "fouling and wear indicators",
+   "asOfRule": "From maintenance data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Soft Sensor for Hard-to-Measure Quantities\": Estimate quantities such as composition, viscosity or moisture that are measured rarely in a lab from fast process signals, so control and quality decisions can be made in real time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using sample time as process time."
+}

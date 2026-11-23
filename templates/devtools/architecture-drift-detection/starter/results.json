@@ -1,0 +1,34 @@
+{
+ "use_case": "devtools/architecture-drift-detection",
+ "engine": "tabular",
+ "seed": 54990,
+ "knobs": {
+  "n_entities": 2050,
+  "positive_entity_rate": 0.024,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.0,
+ "results": {
+  "rows": 155778,
+  "positive_rate": 0.00401211981152666,
+  "test_rows": 51916,
+  "test_positive_rate": 0.0038716388011403036,
+  "baseline_lr": {
+   "pr_auc": 0.7507716264351731,
+   "recall_at_0.5pct_fpr": 0.8706467661691543,
+   "brier": 0.0023673722087486
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7797487436780174,
+   "recall_at_0.5pct_fpr": 0.8706467661691543,
+   "brier": 0.00149343968706049
+  }
+ }
+}

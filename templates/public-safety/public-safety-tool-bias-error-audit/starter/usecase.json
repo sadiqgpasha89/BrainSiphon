@@ -1,0 +1,59 @@
+{
+ "slug": "public-safety/public-safety-tool-bias-error-audit",
+ "title": "Public Safety Tool Bias and Error Audit",
+ "domain": "public-safety",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 76542,
+ "knobs": {
+  "n_entities": 1890,
+  "positive_entity_rate": 0.042,
+  "n_flash_sales": 6
+ },
+ "blueprintSignals": [
+  {
+   "name": "Error rate by group",
+   "definition": "false positives and negatives",
+   "asOfRule": "From reviewed samples"
+  },
+  {
+   "name": "Outcome rate by group",
+   "definition": "review or action rates by group",
+   "asOfRule": "From audit data"
+  },
+  {
+   "name": "Input and output drift",
+   "definition": "changes in data and scores",
+   "asOfRule": "From logs"
+  },
+  {
+   "name": "Override and complaint rates",
+   "definition": "reversals and complaints",
+   "asOfRule": "From the case system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Public Safety Tool Bias and Error Audit\": Audit each deployed tool for error rates, outcome gaps and drift across groups and areas, test with held-out reviews and report results to an oversight board with the power to pause a tool. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Overall accuracy only."
+}

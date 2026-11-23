@@ -1,0 +1,46 @@
+{
+ "use_case": "it-ops/infrastructure-capacity-forecasting",
+ "engine": "forecast",
+ "seed": 19035,
+ "knobs": {
+  "n_series": 275
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 28.4,
+ "results": {
+  "rows": 25004,
+  "h1": {
+   "wmape_model": 0.11580644136237395,
+   "wmape_baseline": 0.20588421014649638,
+   "fva": 0.4375166445257158
+  },
+  "h3": {
+   "wmape_model": 0.11371460992857559,
+   "wmape_baseline": 0.20553636716694357,
+   "fva": 0.4467421435146183
+  },
+  "h7": {
+   "wmape_model": 0.11922338048981619,
+   "wmape_baseline": 0.19615999231037257,
+   "fva": 0.3922135748191917
+  },
+  "h14": {
+   "wmape_model": 0.1455056538435726,
+   "wmape_baseline": 0.20905734307889384,
+   "fva": 0.3039916622844392
+  },
+  "p90_coverage": 0.887697968325068,
+  "wmape_sku_level": 0.12309341423513041,
+  "wmape_aggregate": 0.025356282868520177,
+  "late_feed": {
+   "missing_as_zero": 0.19560278103012993,
+   "missing_as_nan": 0.1368173316190366
+  }
+ }
+}

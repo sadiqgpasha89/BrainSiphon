@@ -32,7 +32,7 @@ A discrete-time hazard model trained on earlier cohorts ranks later cohorts with
 
 ## 5. An edge case from the blueprint
 
-**New control.** no history. Planned response: Category prior and a low-confidence flag. Write the test that replays this case through your pipeline before you tune anything.
+**New control.** no test history to estimate failure risk from. Planned response: Category prior and a low-confidence flag. Write the test that replays this case through your pipeline before you tune anything.
 
 ## 6. What to expect on your own data
 

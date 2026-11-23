@@ -1,0 +1,50 @@
+{
+ "use_case": "manufacturing/worker-safety-zone-monitoring",
+ "engine": "cv",
+ "seed": 58246,
+ "knobs": {
+  "n": 3810,
+  "prevalence": 0.159
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 3810,
+  "train": 1350,
+  "prevalence": 0.15748031496062992,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9391936357199383,
+    "sens_at_95_spec": 0.7715231788079471
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9758564286866174,
+    "sens_at_95_spec": 0.9120879120879121
+   },
+   "site_B": {
+    "auc": 0.7721375317589236,
+    "sens_at_95_spec": 0.3443708609271523
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.32450331125827814,
+    "false_positive_rate": 0.0440251572327044
+   }
+  }
+ }
+}

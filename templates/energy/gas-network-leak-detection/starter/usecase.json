@@ -1,0 +1,59 @@
+{
+ "slug": "energy/gas-network-leak-detection",
+ "title": "Gas Network Leak Detection",
+ "domain": "energy",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 2661,
+ "knobs": {
+  "n": 14800,
+  "label_noise": 0.066,
+  "dup_share": 0.342
+ },
+ "blueprintSignals": [
+  {
+   "name": "Methane concentration enhancement",
+   "definition": "readings above background",
+   "asOfRule": "From survey sensors"
+  },
+  {
+   "name": "Wind speed and direction",
+   "definition": "wind at measurement time",
+   "asOfRule": "From weather"
+  },
+  {
+   "name": "Distance to buildings and roads",
+   "definition": "proximity to receptors",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Pipe material and age",
+   "definition": "pipe attributes",
+   "asOfRule": "From the register"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Gas Network Leak Detection\": Detect gas leaks along pipelines and in the distribution network from sensors, mobile survey data and pressure behaviour so repair crews are sent to the highest-risk leaks first. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Counting leaks equally."
+}

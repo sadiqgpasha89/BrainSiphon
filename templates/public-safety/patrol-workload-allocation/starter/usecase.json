@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/patrol-workload-allocation",
+ "title": "Patrol Workload Allocation from Calls for Service",
+ "domain": "public-safety",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 60970,
+ "knobs": {
+  "n_series": 176
+ },
+ "blueprintSignals": [
+  {
+   "name": "Calls for service workload",
+   "definition": "counts by beat and hour",
+   "asOfRule": "From CAD"
+  },
+  {
+   "name": "Call handling time",
+   "definition": "time per call by type",
+   "asOfRule": "From CAD"
+  },
+  {
+   "name": "Response time gap to target",
+   "definition": "gap to the target",
+   "asOfRule": "Computed"
+  },
+  {
+   "name": "Events and holidays",
+   "definition": "calendar",
+   "asOfRule": "From calendars"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Patrol Workload Allocation from Calls for Service\": Allocate patrol hours across areas and shifts to match calls-for-service workload and response time targets, using aggregated demand and never scoring individuals or places for crime propensity. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Crime prediction."
+}

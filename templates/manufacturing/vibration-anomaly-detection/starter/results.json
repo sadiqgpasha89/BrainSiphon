@@ -1,0 +1,43 @@
+{
+ "use_case": "manufacturing/vibration-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 31604,
+ "knobs": {
+  "n_series": 99,
+  "anomalies_per_series": 3.48
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 20.1,
+ "results": {
+  "series": 99,
+  "hours": 2016,
+  "events": 338,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.28598250159588445,
+   "recall": 0.5549132947976878,
+   "median_delay_h": 0.0,
+   "events": 173
+  },
+  "seasonal_z": {
+   "threshold": 4.0,
+   "false_alerts_per_series_week": 0.7233675040366491,
+   "recall": 0.930635838150289,
+   "median_delay_h": 0.0,
+   "events": 173
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5172918778866734,
+   "recall": 0.9421965317919075,
+   "median_delay_h": 0.0,
+   "events": 173
+  }
+ }
+}

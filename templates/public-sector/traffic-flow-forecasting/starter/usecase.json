@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/traffic-flow-forecasting",
+ "title": "Traffic Flow Forecasting",
+ "domain": "public-sector",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 24113,
+ "knobs": {
+  "n_series": 204
+ },
+ "blueprintSignals": [
+  {
+   "name": "Upstream flow and speed",
+   "definition": "conditions on neighbouring links",
+   "asOfRule": "From the graph"
+  },
+  {
+   "name": "Event and incident flags",
+   "definition": "known events and incidents",
+   "asOfRule": "From operations"
+  },
+  {
+   "name": "Weather",
+   "definition": "rain, snow and visibility",
+   "asOfRule": "From weather data"
+  },
+  {
+   "name": "Time and calendar",
+   "definition": "hour, day type and holidays",
+   "asOfRule": "From the calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Traffic Flow Forecasting\": Forecast traffic flow and travel times on city roads for the next hours from detectors and aggregated probe data so operators and travellers plan around congestion. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Independent link models."
+}

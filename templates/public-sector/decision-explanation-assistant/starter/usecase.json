@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/decision-explanation-assistant",
+ "title": "Decision Explanation and Appeal Assistant",
+ "domain": "public-sector",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 8788,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Decision record fields",
+   "definition": "outcome, reasons and facts relied on",
+   "asOfRule": "From the case system"
+  },
+  {
+   "name": "Legal basis",
+   "definition": "statute and policy sections",
+   "asOfRule": "From the rule base"
+  },
+  {
+   "name": "Appeal deadline and route",
+   "definition": "statutory deadlines",
+   "asOfRule": "From templates"
+  },
+  {
+   "name": "Reading level",
+   "definition": "grade level of the text",
+   "asOfRule": "From metrics"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Decision Explanation and Appeal Assistant\": Help caseworkers write clear decision letters from the recorded reasons and legal basis and tell people how to appeal, without changing the decision or adding reasons. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Invented reasons."
+}

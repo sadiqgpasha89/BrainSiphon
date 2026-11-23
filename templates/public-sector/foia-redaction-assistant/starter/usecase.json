@@ -1,0 +1,53 @@
+{
+ "slug": "public-sector/foia-redaction-assistant",
+ "title": "Records Request Redaction Assistant",
+ "domain": "public-sector",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 56070,
+ "knobs": {
+  "n_train": 970
+ },
+ "blueprintSignals": [
+  {
+   "name": "Entity detection",
+   "definition": "names, IDs and contact details",
+   "asOfRule": "From NER"
+  },
+  {
+   "name": "Exemption match",
+   "definition": "whether the text fits an exemption",
+   "asOfRule": "From rules and model"
+  },
+  {
+   "name": "Context cues",
+   "definition": "whether a name is public or private",
+   "asOfRule": "From context"
+  },
+  {
+   "name": "Document type",
+   "definition": "email, case file or report",
+   "asOfRule": "From the classifier"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Records Request Redaction Assistant\": Suggest redactions in documents released under public records laws by finding personal data and exempt material, so staff review faster and releases are consistent. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic release."
+}

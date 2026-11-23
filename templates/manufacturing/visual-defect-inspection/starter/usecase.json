@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/visual-defect-inspection",
+ "title": "Visual Defect Inspection",
+ "domain": "manufacturing",
+ "engine": "cv",
+ "fit": "exact",
+ "problemType": "vision-classification",
+ "seed": 84259,
+ "knobs": {
+  "n": 3520,
+  "prevalence": 0.096
+ },
+ "blueprintSignals": [
+  {
+   "name": "Defect probability map",
+   "definition": "model score per image region",
+   "asOfRule": "Calibrate per defect class"
+  },
+  {
+   "name": "Part pose and fixture state",
+   "definition": "position and orientation of the part in frame",
+   "asOfRule": "From the fixture sensors"
+  },
+  {
+   "name": "Lighting and lens drift indicators",
+   "definition": "image brightness and focus statistics",
+   "asOfRule": "Track per camera"
+  },
+  {
+   "name": "Upstream process context",
+   "definition": "tool, material lot and recent process alarms",
+   "asOfRule": "Join from MES by part id"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Visual Defect Inspection\": Detect surface and assembly defects on parts moving on a line from camera images, classify the defect type and reject or flag the part before it ships. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on operator rejects as truth."
+}

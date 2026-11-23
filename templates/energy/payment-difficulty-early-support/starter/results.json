@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/payment-difficulty-early-support",
+ "engine": "tabular",
+ "seed": 80030,
+ "knobs": {
+  "n_entities": 1910,
+  "positive_entity_rate": 0.022,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.9,
+ "results": {
+  "rows": 148407,
+  "positive_rate": 0.00280310227954207,
+  "test_rows": 49250,
+  "test_positive_rate": 0.0022944162436548225,
+  "baseline_lr": {
+   "pr_auc": 0.44454807264193563,
+   "recall_at_0.5pct_fpr": 0.5343505056890012,
+   "brier": 0.0018005308509358464
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.5211995165401895,
+   "recall_at_0.5pct_fpr": 0.6283185840707964,
+   "brier": 0.0014390813755836107
+  }
+ }
+}

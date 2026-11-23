@@ -1,0 +1,53 @@
+{
+ "slug": "engineering/fatigue-life-estimation",
+ "title": "Fatigue Life Estimation",
+ "domain": "engineering",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 28376,
+ "knobs": {
+  "n": 217
+ },
+ "blueprintSignals": [
+  {
+   "name": "Load cycle histogram",
+   "definition": "counted cycles and ranges",
+   "asOfRule": "From sensor data"
+  },
+  {
+   "name": "Material fatigue curve",
+   "definition": "S-N curve",
+   "asOfRule": "From standards"
+  },
+  {
+   "name": "Hot spot stress",
+   "definition": "stress at critical details",
+   "asOfRule": "From models"
+  },
+  {
+   "name": "Environment",
+   "definition": "corrosion and temperature",
+   "asOfRule": "From site data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Fatigue Life Estimation\": Estimate fatigue damage accumulation in structures and components from measured load histories, to plan inspections and repairs with safety margins. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Average load."
+}

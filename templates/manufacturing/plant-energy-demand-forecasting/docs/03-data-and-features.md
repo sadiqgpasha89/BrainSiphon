@@ -1,0 +1,162 @@
+# Plant Energy Demand Forecasting: data and feature specification
+
+> Generated from the blueprint `manufacturing/plant-energy-demand-forecasting` (content last verified 2026-11-07). Numbers marked *modelled* are starting points from a capacity and cost model, not measurements. Fill the blanks, strike what does not apply, and keep the decisions you change.
+
+**Use case:** Plant Energy Demand Forecasting · **Domain:** manufacturing · **Latency tier:** batch · **Difficulty:** foundational
+
+The contract between the data owner and the modelling team: what is a feature, what is the label, what time each is known, and what must never be used.
+
+## Label definition
+
+For "Plant Energy Demand Forecasting": Forecast electricity, gas and steam demand for a plant by interval so purchasing, peak management and on-site generation plans use realistic loads. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Mean-only forecasts.
+
+## Feature specification
+
+| Feature | Definition | Why it carries signal | As-of rule and leakage risk | Source table | Owner | Available at decision time? (y/n) |
+|---|---|---|---|---|---|---|
+| Planned production by line | scheduled hours and output | Main driver | From planning |   |   |   |
+| Weather forecast | temperature and humidity | Cooling and heating | Forecast not actual |   |   |   |
+| Same hour last week | load at the same hour in prior weeks | Anchor | Aligned on local time |   |   |   |
+| Equipment state | machines on and off | Baseload | From MES |   |   |   |
+
+## Signal versus noise
+
+| Concept | True signal | Common noise | Why engineers fail here |
+|---|---|---|---|
+| Driver | Production plan and weather | History alone | Energy follows what is produced |
+| Peak | Quantiles around peaks | Mean forecast | Demand charges depend on the peak |
+| Hierarchy | Plant, line and meter totals consistent | Meter-only forecasts | Sums must agree for planning |
+
+## Features to drop
+
+| Feature | Why it is noise |
+|---|---|
+| Meter name | an identifier |
+| Billing period label | an artefact |
+| Operator name | irrelevant |
+
+## Data sources
+
+| Source | Owner | System Of Record | Ingestion | Quality |
+|---|---|---|---|---|
+| Planned production by line inputs | Plant operations | MES (manufacturing execution system) | Daily partition (CDC snapshot or file drop) with a manifest and row counts | Point-in-time rule: from planning. |
+| Weather forecast inputs | Quality engineering | ERP and production planning | Daily partition (CDC snapshot or file drop) with a manifest and row counts | Point-in-time rule: forecast not actual. |
+| Same hour last week inputs | Reliability and maintenance | CMMS or EAM maintenance system | Daily partition (CDC snapshot or file drop) with a manifest and row counts | Point-in-time rule: aligned on local time. |
+| Equipment state inputs | Plant operations | MES (manufacturing execution system) | Daily partition (CDC snapshot or file drop) with a manifest and row counts | Point-in-time rule: from MES. |
+
+## Data contract
+
+The contract below is a starting point; the owner edits and versions it.
+
+```yaml
+contract: plant_energy_demand_forecasting_inputs.v1
+owner: plant-operations@example.com
+system_of_record: MES (manufacturing execution system)
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: planned_production_by_line, type: double, nullable: false }
+    - { name: weather_forecast, type: double, nullable: false }
+    - { name: same_hour_last_week, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }
+```
+
+## Quality SLAs
+
+- **Dimension:** Completeness<br>**Target:** 99.5% of required fields populated<br>**Check:** Null-rate assertion on Planned production by line and the event key, evaluated per partition
+- **Dimension:** Accuracy<br>**Target:** Values sampled and reconciled weekly<br>**Check:** Reconcile aggregates for Weather forecast against MES (manufacturing execution system)
+- **Dimension:** Freshness<br>**Target:** Inputs landed before the run window opens<br>**Check:** Measured at the consumer (not the producer) and alerted against the contract
+- **Dimension:** Uniqueness<br>**Target:** Duplicate event_id rate below 0.01%<br>**Check:** Idempotent consumers plus a duplicate-rate assertion
+- **Dimension:** Validity<br>**Target:** Zero schema violations reach the model plane<br>**Check:** Registry compatibility check in CI; violating rows go to a quarantine table with a reason
+- **Dimension:** Point-in-time correctness<br>**Target:** Every training feature is reproducible from data known at decision time<br>**Check:** Replay the logged feature vector for a sample and compare with the offline join
+
+## Lineage, schema change, corrections, privacy
+
+- **Lineage:** Capture source-to-target and column-level lineage (OpenLineage events from every job) so that any served feature, such as Planned production by line, traces back to MES (manufacturing execution system); the decision ledger links each decision to the feature-vector hash and dataset snapshot.
+- **On schema change:** Producers publish a new contract version; consumers run the compatibility check in CI and the data-quality gate before each run. A breaking change gets a migration window, never a silent flip.
+- **Corrections and backfills:** Late corrections and backfills write to a versioned namespace at a capped share of store IOPS; a pointer flips only after count and distribution checks pass, and the decision ledger is never rewritten.
+- **Privacy and deletion:** Workers are never identified in vision data by default, shop-floor analytics are aggregated and works-council agreements govern any use of operator data. Deletion requests propagate by key to feature stores, embeddings, caches and training snapshots, with a measured deletion latency.
+
+## Public datasets to prototype on
+
+| Dataset | URL | Licence | What it gives | Caveat |
+|---|---|---|---|---|
+| Monash Time Series Forecasting Archive | https://forecastingdata.org/ | Per-dataset licences (see the site) | A curated archive of forecasting datasets across domains with standard splits | Benchmarks, not your data. Matched by domain and task type, not made for this exact use case: check the fit before committing. |
+| M5 Forecasting - Accuracy (Walmart) | https://www.kaggle.com/c/m5-forecasting-accuracy | Competition rules; free Kaggle login | Five years of daily unit sales for about 30,000 item-store series with prices, promotions and calendar events | Intermittent series and no order-book or weather signals. Matched by domain and task type, not made for this exact use case: check the fit before committing. |
+| ETT electricity transformer dataset | https://github.com/zhouhaoyi/ETDataset | CC BY-ND 4.0 (see the repository) | Multivariate transformer temperature and load data used for long-horizon forecasting benchmarks | One asset type. Matched by domain and task type, not made for this exact use case: check the fit before committing. |
+
+## Reference data model (illustrative)
+
+```sql
+-- a run is the unit of work: inputs, outputs and counts are reconcilable
+CREATE TABLE plant_energy_demand_runs (
+  run_id TEXT PRIMARY KEY, run_date DATE NOT NULL, status TEXT NOT NULL, model_version TEXT NOT NULL,
+  rows_in BIGINT, rows_out BIGINT, rows_quarantined BIGINT, started_at TIMESTAMPTZ, finished_at TIMESTAMPTZ
+);
+
+CREATE TABLE plant_energy_demand_outputs (
+  run_id TEXT NOT NULL REFERENCES plant_energy_demand_runs, entity_id TEXT NOT NULL, score REAL, band TEXT, reason_codes JSONB,
+  PRIMARY KEY (run_id, entity_id)
+) PARTITION BY HASH (entity_id);
+
+-- rows that failed validation are kept, not dropped, so the gap is explainable
+CREATE TABLE plant_energy_demand_quarantine (
+  run_id TEXT NOT NULL, entity_id TEXT, reason TEXT NOT NULL, payload JSONB, PRIMARY KEY (run_id, entity_id, reason)
+);
+
+CREATE TABLE plant_energy_demand_labels (
+  entity_id TEXT NOT NULL, run_id TEXT NOT NULL, label SMALLINT NOT NULL, label_source TEXT NOT NULL, labeled_at TIMESTAMPTZ NOT NULL,
+  PRIMARY KEY (entity_id, run_id, labeled_at)
+);
+```
+
+## Domain knowledge to learn first
+
+Manufacturing is judged on yield, uptime, throughput and safety, and the data comes from machines, sensors, inspection stations and planning systems that were never designed to agree. Models must work with rare failures, strict real-time limits on the line and operators who stay accountable for stopping production. For this use case, "Plant Energy Demand Forecasting": Forecast electricity, gas and steam demand for a plant by interval so purchasing, peak management and on-site generation plans use realistic loads. The terms and ideas below are the ones to learn before you talk to the people who own the data and the decision.
+
+**Concepts**
+
+| Concept | Explanation | Why it matters here |
+|---|---|---|
+| Planning and scheduling are constraint problems | Production plans must respect machine capabilities, changeover times, material availability, labour and due dates. Small disruptions force a re-plan. | A forecast alone is not a plan, so models need to feed an optimiser that respects the constraints. |
+| Overall equipment effectiveness shows where capacity is lost | OEE multiplies availability, performance and quality. Losses come from breakdowns, changeovers, slow cycles, minor stops and scrap, each with different causes and different fixes. | A model that improves one loss can worsen another, so the loss it targets must be named. |
+| Failures are rare and degrade before they happen | Machines usually show vibration, temperature, current or pressure drift before they fail, but failures are rare and maintenance often replaces parts early, which hides the failure labels. | Training on few failures without care produces models that alarm constantly or never. |
+| Forecasting: horizons, origins and leakage | A forecast is made at an origin for one or more horizons ahead. Evaluation must replay origins in time order and use only information available at each origin; random splits leak the future. Probabilistic forecasts give quantiles, not just a point. | Report accuracy per horizon and against a seasonal or naive baseline, and judge probabilistic forecasts by coverage and pinball loss. |
+| Offline evaluation versus the real world | Offline metrics are computed on historical data; the business cares about outcomes after deployment. The two differ because of leakage, selection bias, delayed labels, distribution shift and feedback loops, which is why launches go through shadow mode and controlled experiments. | Treat every offline number as an estimate with a known direction of bias, and plan the online test before you trust it. |
+| This use case's strongest signal: Planned production by line | Scheduled hours and output. Main driver. | Leakage risk to design against: From planning. |
+| A signal-versus-noise trap in this use case: Driver | The true signal is production plan and weather; the common noise is history alone. | Energy follows what is produced. |
+
+**Ask the experts**
+
+- [ ] What exactly does "15-minute resolution for 7 days ahead" mean in practice for plant energy demand forecasting: who owns the requirement, how is it measured and what happens when it is missed?
+- [ ] Which systems feed "Planned production by line" and "Weather forecast", how fresh is each at decision time and who owns them?
+- [ ] How is the outcome behind "Demand charges" measured, how long after the decision is it known, and which cases never receive a label?
+- [ ] Which of our data or evaluation habits could cause this: mean-only forecasts, and who can confirm the cut-off times and splits?
+- [ ] How often does "Plan change" happen here, and who handles it today?
+
+**Glossary**
+
+| Term | Definition |
+|---|---|
+| MES | Manufacturing execution system: software that tracks production on the shop floor. |
+| Digital twin | A model of a machine or plant kept in step with real data. |
+| Edge gateway | A device that collects and pre-processes plant data near the machines. |
+| Historian | A database for time-stamped sensor data from plants. |
+| Takt time | The pace of production needed to meet demand. |
+| Batch | A quantity of product made together under the same conditions. |
+| FMEA | Failure mode and effects analysis: a structured review of how a design or process can fail. |
+| Lockout tagout | A procedure to isolate energy before maintenance. |
+| Prediction interval coverage | The share of outcomes that fall inside the forecast's stated interval. |
+| Forecast horizon | How many steps ahead a forecast looks. |
+| Intermittent demand | A series with many zeros and occasional spikes, such as slow-moving items. |
+| Hierarchical forecasting | Forecasting at several levels (item, category, total) that must add up. |
+| Point-in-time correctness | Building each training example only from data that existed at the moment of the decision. |
+| Data leakage | Information in the training data that would not be available at prediction time, making offline results unrealistically good. |
+| Train-serve skew | A difference between how features are computed in training and in production. |
+| MAPE / WMAPE / sMAPE | Percentage error measures; WMAPE weights by volume and sMAPE is symmetric. |

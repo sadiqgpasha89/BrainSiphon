@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: measurement_aggregation, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: grid_build, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: propagation_and_clutter_features, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: coverage_score_model, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: hole_clustering, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: planning_list, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: validation_drive_test, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Planned sites placed in confirmed holes"
+    - "Coverage complaints per area"
+    - "Drive-test cost"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

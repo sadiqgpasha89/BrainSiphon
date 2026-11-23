@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/pull-request-review-assistant",
+ "title": "Pull Request Review Assistant",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-generation",
+ "seed": 68230,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Static analysis findings",
+   "definition": "linter and analyser results on the diff",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Changed code risk indicators",
+   "definition": "complexity, ownership and churn",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Test coverage delta",
+   "definition": "coverage change",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Similar past defects",
+   "definition": "earlier bugs in similar code",
+   "asOfRule": "From the issue tracker"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Pull Request Review Assistant\": Comment on pull requests with likely bugs, missing tests and style problems, each backed by evidence from the diff and repository, while human reviewers keep the approval decision. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Approving merges."
+}

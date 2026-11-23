@@ -1,0 +1,59 @@
+{
+ "slug": "public-sector/tax-compliance-outreach-prioritisation",
+ "title": "Tax Compliance Outreach Prioritisation",
+ "domain": "public-sector",
+ "engine": "uplift",
+ "fit": "exact",
+ "problemType": "uplift-causal-effect",
+ "seed": 82896,
+ "knobs": {
+  "n": 42180,
+  "confound": 0.985,
+  "holdout": 0.192
+ },
+ "blueprintSignals": [
+  {
+   "name": "Past filing and payment behaviour",
+   "definition": "timeliness of filings and payments",
+   "asOfRule": "From tax records"
+  },
+  {
+   "name": "Notice response history",
+   "definition": "response to earlier reminders",
+   "asOfRule": "From outreach tests"
+  },
+  {
+   "name": "Debt size and age",
+   "definition": "amount and age of debt",
+   "asOfRule": "From accounts"
+  },
+  {
+   "name": "Contact preference and language",
+   "definition": "channel and language",
+   "asOfRule": "From records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "confounder (x0)",
+   "meaning": "drives both who is treated and the outcome"
+  },
+  {
+   "feature": "effect modifier (x1)",
+   "meaning": "the treatment helps only when this is positive"
+  },
+  {
+   "feature": "harm modifier (x2)",
+   "meaning": "with x1 it marks the group the treatment harms"
+  },
+  {
+   "feature": "outcome driver (x3)",
+   "meaning": "raises the baseline outcome"
+  },
+  {
+   "feature": "noise (x4)",
+   "meaning": "irrelevant to both"
+  }
+ ],
+ "label": "For \"Tax Compliance Outreach Prioritisation\": Choose who receives reminders, letters or help with late filing and payment so outreach improves compliance at the lowest cost, with support first and enforcement only through officers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Risk scores without tests."
+}

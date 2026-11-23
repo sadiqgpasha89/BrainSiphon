@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/pr-description-commit-message-drafting",
+ "title": "Pull Request Description and Commit Message Drafting",
+ "domain": "devtools",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 73834,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Diff summary",
+   "definition": "files and changes by area",
+   "asOfRule": "From the diff"
+  },
+  {
+   "name": "Linked issue text",
+   "definition": "the issue the change closes",
+   "asOfRule": "From the tracker"
+  },
+  {
+   "name": "Test changes",
+   "definition": "tests added or changed",
+   "asOfRule": "From the diff"
+  },
+  {
+   "name": "Template fields",
+   "definition": "required sections",
+   "asOfRule": "From the repo"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Pull Request Description and Commit Message Drafting\": Draft pull request descriptions and commit messages from the diff, linked issues and conventions so reviewers understand a change quickly, with the author editing before submission. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Auto-posting."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "devtools/coding-agent-sandbox-permissions",
+ "title": "Coding Agent Sandbox and Permission Policy",
+ "domain": "devtools",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 5672,
+ "knobs": {
+  "n_train": 1290
+ },
+ "blueprintSignals": [
+  {
+   "name": "Sandbox policy compliance",
+   "definition": "whether commands stayed in policy",
+   "asOfRule": "From logs"
+  },
+  {
+   "name": "Token scope and lifetime",
+   "definition": "permissions and expiry",
+   "asOfRule": "From the credential service"
+  },
+  {
+   "name": "Egress attempts",
+   "definition": "blocked and allowed connections",
+   "asOfRule": "From network logs"
+  },
+  {
+   "name": "Resource usage",
+   "definition": "CPU, memory and time",
+   "asOfRule": "From the sandbox"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Coding Agent Sandbox and Permission Policy\": Run coding agents inside isolated sandboxes with least-privilege, short-lived credentials and egress controls so agents can build and test code but cannot reach production or exfiltrate data. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Developer credentials for agents."
+}

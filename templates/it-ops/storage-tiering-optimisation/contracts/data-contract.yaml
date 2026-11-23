@@ -1,0 +1,16 @@
+contract: storage_tiering_optimisation_inputs.v1
+owner: infrastructure-and-operations@example.com
+system_of_record: IT service management platform
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: access_recency_and_frequency, type: double, nullable: false }
+    - { name: object_type_and_size, type: double, nullable: false }
+    - { name: retention_class, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

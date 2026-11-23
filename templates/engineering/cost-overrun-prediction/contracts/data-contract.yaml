@@ -1,0 +1,16 @@
+contract: cost_overrun_prediction_inputs.v1
+owner: engineering-management@example.com
+system_of_record: CAD, BIM and document management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: earned_value_indicators, type: double, nullable: false }
+    - { name: committed_cost_and_change_orders, type: double, nullable: false }
+    - { name: productivity_rates, type: double, nullable: false }
+sla:
+  freshness_p95: available_before_run
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

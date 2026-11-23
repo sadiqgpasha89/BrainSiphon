@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/public-facility-demand-forecasting",
+ "title": "Public Facility Demand Forecasting",
+ "domain": "public-sector",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 86125,
+ "knobs": {
+  "n_series": 299
+ },
+ "blueprintSignals": [
+  {
+   "name": "Past visits by hour and day",
+   "definition": "counts by site",
+   "asOfRule": "From counters"
+  },
+  {
+   "name": "Weather and holidays",
+   "definition": "weather and calendar",
+   "asOfRule": "From calendars"
+  },
+  {
+   "name": "Programme schedule",
+   "definition": "classes and events",
+   "asOfRule": "From bookings"
+  },
+  {
+   "name": "Local population changes",
+   "definition": "new housing and demographics",
+   "asOfRule": "From statistics"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Public Facility Demand Forecasting\": Forecast use of libraries, pools and community centres by site and hour so opening hours, staffing and programmes match demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Maximising use only."
+}

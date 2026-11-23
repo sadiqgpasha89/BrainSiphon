@@ -1,0 +1,45 @@
+{
+ "use_case": "telecom/field-technician-dispatch-optimisation",
+ "engine": "optimize",
+ "seed": 11104,
+ "knobs": {
+  "n_instances": 157,
+  "noise": 0.328
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.2,
+ "results": {
+  "instances": 157,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 125.1899591400498,
+   "promised_cost": 97.33791493741576,
+   "optimism_gap_pct": 28.613767020324754,
+   "regret_vs_oracle_pct": 36.34109206296148
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 111.8197709399749,
+   "promised_cost": 78.28534179206481,
+   "optimism_gap_pct": 42.8361534615018,
+   "regret_vs_oracle_pct": 21.77997172385944
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 107.48171399408069,
+   "promised_cost": 80.47792549385096,
+   "optimism_gap_pct": 33.55428005197897,
+   "regret_vs_oracle_pct": 17.055507992923385
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.82115035593073,
+   "promised_cost": 96.90530473741411,
+   "optimism_gap_pct": -5.246518129487342,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

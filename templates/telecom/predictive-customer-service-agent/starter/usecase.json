@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/predictive-customer-service-agent",
+ "title": "Predictive Customer Service Agent",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 3451,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Experience score trend",
+   "definition": "change in per-customer throughput, drops and latency over 7 days",
+   "asOfRule": "Join to the customer's serving cells"
+  },
+  {
+   "name": "Cause attribution",
+   "definition": "whether degradation links to a cell fault, device or plan limit",
+   "asOfRule": "Needs network and device data"
+  },
+  {
+   "name": "Prior contacts",
+   "definition": "contacts about the same issue in 30 days",
+   "asOfRule": "From CRM as at action time"
+  },
+  {
+   "name": "Customer value tier",
+   "definition": "plan and tenure band",
+   "asOfRule": "Use bands not exact revenue"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Predictive Customer Service Agent\": Spot customers whose service is degrading, work out the cause from network and account data and act first with a fix, a credit or a message, so many problems are resolved before the customer contacts care. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Counting avoided calls without a control."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "public-sector/bus-bunching-prevention",
+ "title": "Bus Bunching Prevention",
+ "domain": "public-sector",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 77749,
+ "knobs": {
+  "n_instances": 148,
+  "noise": 0.449
+ },
+ "blueprintSignals": [
+  {
+   "name": "Headway gap to the vehicle ahead",
+   "definition": "time gap to the leader",
+   "asOfRule": "From AVL"
+  },
+  {
+   "name": "Passenger load",
+   "definition": "onboard count",
+   "asOfRule": "From counters"
+  },
+  {
+   "name": "Traffic delay forecast",
+   "definition": "delay on the next segment",
+   "asOfRule": "From traffic data"
+  },
+  {
+   "name": "Layover and driver hours remaining",
+   "definition": "time left and break needs",
+   "asOfRule": "From the system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Bus Bunching Prevention\": Recommend holding, speed and dispatch adjustments that keep buses evenly spaced on frequent routes, as advice to controllers and drivers within safety and labour rules. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: On-time at timepoints only."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "engineering/contract-clause-risk-review",
+ "title": "Contract Clause Risk Review",
+ "domain": "engineering",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 29364,
+ "knobs": {
+  "n_train": 1320
+ },
+ "blueprintSignals": [
+  {
+   "name": "Clause type and text",
+   "definition": "liability, payment or delay clause",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Playbook position",
+   "definition": "accepted and fallback positions",
+   "asOfRule": "From the legal playbook"
+  },
+  {
+   "name": "Deviation severity",
+   "definition": "distance from the position",
+   "asOfRule": "From comparison"
+  },
+  {
+   "name": "Jurisdiction",
+   "definition": "governing law",
+   "asOfRule": "From the contract"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Contract Clause Risk Review\": Read tender and contract documents, extract clauses on liability, payment, delay and change, compare them with company positions and flag risks with citations for legal counsel to decide. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model memory of law."
+}

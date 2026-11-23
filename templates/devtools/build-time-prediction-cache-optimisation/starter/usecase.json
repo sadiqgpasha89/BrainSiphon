@@ -1,0 +1,59 @@
+{
+ "slug": "devtools/build-time-prediction-cache-optimisation",
+ "title": "Build Time Prediction and Cache Optimisation",
+ "domain": "devtools",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 26173,
+ "knobs": {
+  "n": 20510,
+  "outlier_share": 0.017,
+  "drift": 0.168
+ },
+ "blueprintSignals": [
+  {
+   "name": "Target duration history",
+   "definition": "time per build target",
+   "asOfRule": "From build tools"
+  },
+  {
+   "name": "Dependency graph",
+   "definition": "the build graph",
+   "asOfRule": "From build files"
+  },
+  {
+   "name": "Cache hit rate by target",
+   "definition": "share of cache hits",
+   "asOfRule": "From the cache"
+  },
+  {
+   "name": "Change footprint",
+   "definition": "files changed",
+   "asOfRule": "From version control"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Build Time Prediction and Cache Optimisation\": Predict build times and find the targets that dominate them, then recommend cache and parallelisation changes that cut waiting time safely. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Speed at any cost."
+}

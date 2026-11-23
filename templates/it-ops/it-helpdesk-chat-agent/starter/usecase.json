@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/it-helpdesk-chat-agent",
+ "title": "IT Helpdesk Chat Agent",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 51746,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Intent and category",
+   "definition": "what the employee needs",
+   "asOfRule": "From classification"
+  },
+  {
+   "name": "Article match",
+   "definition": "the best knowledge article",
+   "asOfRule": "From retrieval"
+  },
+  {
+   "name": "Device and application context",
+   "definition": "device type and software",
+   "asOfRule": "From the asset record"
+  },
+  {
+   "name": "Employee confirmation",
+   "definition": "whether the fix worked",
+   "asOfRule": "From the chat"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"IT Helpdesk Chat Agent\": Answer common employee IT questions and guide troubleshooting from approved knowledge articles, creating a ticket with context and handing over to a human when the issue is not resolved. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Closing by timeout."
+}

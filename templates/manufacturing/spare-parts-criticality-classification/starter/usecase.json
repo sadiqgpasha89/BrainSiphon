@@ -1,0 +1,53 @@
+{
+ "slug": "manufacturing/spare-parts-criticality-classification",
+ "title": "Spare Parts Criticality Classification",
+ "domain": "manufacturing",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 57457,
+ "knobs": {
+  "n": 247
+ },
+ "blueprintSignals": [
+  {
+   "name": "Equipment downtime cost",
+   "definition": "cost per hour of the asset the part serves",
+   "asOfRule": "From finance and production"
+  },
+  {
+   "name": "Failure rate of the part",
+   "definition": "failures per unit-year",
+   "asOfRule": "From work orders"
+  },
+  {
+   "name": "Lead time and single source",
+   "definition": "supplier lead time and sourcing options",
+   "asOfRule": "From purchasing"
+  },
+  {
+   "name": "Interchangeability",
+   "definition": "alternative part availability",
+   "asOfRule": "From the part master"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Spare Parts Criticality Classification\": Classify spare parts by the downtime cost of being out of stock and by failure likelihood, so stocking policy covers critical parts at the right level. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Classifying by spend alone."
+}

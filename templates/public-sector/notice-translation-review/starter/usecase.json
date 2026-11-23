@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/notice-translation-review",
+ "title": "Official Notice Translation Review",
+ "domain": "public-sector",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 60715,
+ "knobs": {
+  "n_docs": 5250
+ },
+ "blueprintSignals": [
+  {
+   "name": "Glossary term match",
+   "definition": "whether key terms follow the glossary",
+   "asOfRule": "From the glossary"
+  },
+  {
+   "name": "Back-translation difference",
+   "definition": "difference after translating back",
+   "asOfRule": "From the check"
+  },
+  {
+   "name": "Deadline and amount extraction",
+   "definition": "dates and numbers in the text",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Notice risk class",
+   "definition": "rights, payment or information",
+   "asOfRule": "From the notice type"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Official Notice Translation Review\": Translate official notices and letters into residents' languages and flag meaning drift for a reviewer so the text stays accurate and readable. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fluency as the metric."
+}

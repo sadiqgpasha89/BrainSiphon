@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/production-scheduling-optimisation",
+ "title": "Production Scheduling Optimisation",
+ "domain": "manufacturing",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 1996,
+ "knobs": {
+  "n_instances": 193,
+  "noise": 0.343
+ },
+ "blueprintSignals": [
+  {
+   "name": "Predicted processing time",
+   "definition": "duration model by product, machine and tool",
+   "asOfRule": "Use confirmed durations"
+  },
+  {
+   "name": "Sequence-dependent changeover",
+   "definition": "changeover minutes between product pairs",
+   "asOfRule": "From the changeover matrix"
+  },
+  {
+   "name": "Material availability",
+   "definition": "confirmed arrival dates of inputs",
+   "asOfRule": "From ERP"
+  },
+  {
+   "name": "Order priority and due date slack",
+   "definition": "days to due date and customer priority",
+   "asOfRule": "From orders"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Production Scheduling Optimisation\": Build and repair finite-capacity production schedules that respect machines, tooling, materials and due dates, so delivery performance rises and changeovers and idle time fall. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Planning on nominal capacity."
+}

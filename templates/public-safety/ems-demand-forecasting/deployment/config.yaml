@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: call_count_extraction, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: incident_aggregation, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: incident_feature_build, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: incident_forecast_model, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: incident_interval_estimate, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: staffing_view, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: incident_accuracy_tracking, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Response times"
+    - "Unit-hours idle"
+    - "Coverage gaps by zone"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

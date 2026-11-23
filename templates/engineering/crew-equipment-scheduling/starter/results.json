@@ -1,0 +1,45 @@
+{
+ "use_case": "engineering/crew-equipment-scheduling",
+ "engine": "optimize",
+ "seed": 41250,
+ "knobs": {
+  "n_instances": 123,
+  "noise": 0.289
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "instances": 123,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 122.47111134636252,
+   "promised_cost": 99.02438481341346,
+   "optimism_gap_pct": 23.677730063285434,
+   "regret_vs_oracle_pct": 33.879881484083334
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 106.30474173111192,
+   "promised_cost": 80.50846956840651,
+   "optimism_gap_pct": 32.04168741623738,
+   "regret_vs_oracle_pct": 16.2075371710102
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 103.84352027513636,
+   "promised_cost": 82.17661595514122,
+   "optimism_gap_pct": 26.366264986894482,
+   "regret_vs_oracle_pct": 13.51704115762624
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.47835357243189,
+   "promised_cost": 94.64268738085946,
+   "optimism_gap_pct": -3.343453040057616,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

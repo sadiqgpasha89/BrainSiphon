@@ -1,0 +1,50 @@
+{
+ "use_case": "public-safety/enforcement-image-quality-triage",
+ "engine": "cv",
+ "seed": 44647,
+ "knobs": {
+  "n": 3550,
+  "prevalence": 0.111
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.8,
+ "results": {
+  "images": 3550,
+  "train": 1267,
+  "prevalence": 0.10732394366197183,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9430556520530814,
+    "sens_at_95_spec": 0.7189189189189189
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9850740951838131,
+    "sens_at_95_spec": 0.9310344827586207
+   },
+   "site_B": {
+    "auc": 0.7420065309525464,
+    "sens_at_95_spec": 0.3081081081081081
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.3081081081081081,
+    "false_positive_rate": 0.04884318766066838
+   }
+  }
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "public-safety/building-fire-inspection-prioritisation",
+ "engine": "tabular",
+ "seed": 34797,
+ "knobs": {
+  "n_entities": 2780,
+  "positive_entity_rate": 0.037,
+  "n_flash_sales": 8
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.9,
+ "results": {
+  "rows": 209605,
+  "positive_rate": 0.00497125545669235,
+  "test_rows": 70601,
+  "test_positive_rate": 0.0044758572824747525,
+  "baseline_lr": {
+   "pr_auc": 0.7215248425951085,
+   "recall_at_0.5pct_fpr": 0.783564082278481,
+   "brier": 0.0023897529688426595
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7929650052702726,
+   "recall_at_0.5pct_fpr": 0.8354430379746836,
+   "brier": 0.0016645768397966546
+  }
+ }
+}

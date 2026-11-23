@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: alert_stream_intake, timeout_ms: 223, on_timeout: fallback_level_1 }
+    - { name: deduplication, timeout_ms: 222, on_timeout: fallback_level_1 }
+    - { name: topology_and_time_clustering, timeout_ms: 890, on_timeout: fallback_level_1 }
+    - { name: incident_creation, timeout_ms: 334, on_timeout: fallback_level_1 }
+    - { name: owner_routing, timeout_ms: 334, on_timeout: fallback_level_1 }
+    - { name: page_decision, timeout_ms: 222, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Pages per on-call shift"
+    - "Time to acknowledge"
+    - "Missed incidents"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

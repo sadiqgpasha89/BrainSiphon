@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/data-sharing-purpose-gateway",
+ "title": "Cross-Agency Data Sharing Purpose Gateway",
+ "domain": "public-sector",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 30915,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Requester and purpose code",
+   "definition": "agency and declared purpose",
+   "asOfRule": "From the request"
+  },
+  {
+   "name": "Legal basis and consent state",
+   "definition": "statute, agreement and consent",
+   "asOfRule": "From the policy store"
+  },
+  {
+   "name": "Field sensitivity class",
+   "definition": "sensitivity of requested fields",
+   "asOfRule": "From the catalogue"
+  },
+  {
+   "name": "Request volume anomaly",
+   "definition": "unusual request rates",
+   "asOfRule": "From logs"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Cross-Agency Data Sharing Purpose Gateway\": Check each cross-agency data request against its legal basis, purpose and consent before data is released, and log every share so people can see who used their data and why. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Prompt-based enforcement."
+}

@@ -1,0 +1,43 @@
+{
+ "use_case": "energy/grid-ot-anomaly-detection",
+ "engine": "anomaly",
+ "seed": 17830,
+ "knobs": {
+  "n_series": 90,
+  "anomalies_per_series": 2.9
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 21.4,
+ "results": {
+  "series": 90,
+  "hours": 2016,
+  "events": 243,
+  "naive_z": {
+   "threshold": 2.5,
+   "false_alerts_per_series_week": 0.249814126394052,
+   "recall": 0.4375,
+   "median_delay_h": 0.0,
+   "events": 128
+  },
+  "seasonal_z": {
+   "threshold": 4.5,
+   "false_alerts_per_series_week": 0.606030565881867,
+   "recall": 0.8359375,
+   "median_delay_h": 0.0,
+   "events": 128
+  },
+  "seasonal_z_calendar": {
+   "threshold": 3.0,
+   "false_alerts_per_series_week": 0.5181330028913672,
+   "recall": 0.953125,
+   "median_delay_h": 0.0,
+   "events": 128
+  }
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "use_case": "it-ops/autoscaling-policy-optimisation",
+ "engine": "control",
+ "seed": 16746,
+ "knobs": {
+  "days": 58
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.8,
+ "results": {
+  "days": 58,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 7.822312170275544,
+   "end_of_day_underdelivery_pct": 4.98101005435116,
+   "overshoot_max_pct": 8.93733735778052,
+   "oscillation": 0.0,
+   "hit_cap": 0.5862068965517241
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.8978835893394335,
+   "end_of_day_underdelivery_pct": 0.8075481038250506,
+   "overshoot_max_pct": 5.9853148890952035,
+   "oscillation": 0.012218041071330532,
+   "hit_cap": 0.39655172413793105
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.2667102222033855,
+   "end_of_day_underdelivery_pct": 0.04849338346004267,
+   "overshoot_max_pct": 2.2331671689959967,
+   "oscillation": 0.0941216613379931,
+   "hit_cap": 0.43103448275862066
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.965432123210652,
+   "end_of_day_underdelivery_pct": 1.4985914464043935,
+   "overshoot_max_pct": 14.89577703677234,
+   "oscillation": 0.019320813932735523,
+   "hit_cap": 0.6206896551724138
+  },
+  "rmse_reduction_vs_open_loop": 0.6295361874777552
+ }
+}

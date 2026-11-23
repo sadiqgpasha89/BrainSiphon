@@ -1,0 +1,33 @@
+{
+ "id": "cluster",
+ "label": "Clustering and segmentation with scaling, outliers and drift",
+ "summary": "Unscaled k-means against robust scaling with a data-driven k, bootstrap stability, a minimum segment size and a segment-mix drift check.",
+ "problemTypes": [
+  "clustering-segmentation"
+ ],
+ "traps": [
+  "One feature in thousands dwarfing the rest",
+  "Outliers that capture a cluster",
+  "Overlapping segments, so silhouette picks a coarse k",
+  "A segment mix that shifts in the last period"
+ ],
+ "origin": "brainsiphon-pro",
+ "slots": [
+  {
+   "feature": "value feature (f0)",
+   "meaning": "in currency units, thousands of times larger than the others"
+  },
+  {
+   "feature": "behaviour features (f1-f3)",
+   "meaning": "separate the segments"
+  },
+  {
+   "feature": "engagement features (f4-f6)",
+   "meaning": "separate some segments"
+  },
+  {
+   "feature": "noise feature (f7)",
+   "meaning": "carries little structure"
+  }
+ ]
+}

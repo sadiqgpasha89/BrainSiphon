@@ -1,0 +1,23 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: question_intake, timeout_ms: 154, on_timeout: fallback_level_1 }
+    - { name: permission_aware_retrieval, timeout_ms: 460, on_timeout: fallback_level_1 }
+    - { name: answer_with_citations, timeout_ms: 614, on_timeout: fallback_level_1 }
+    - { name: freshness_check, timeout_ms: 153, on_timeout: fallback_level_1 }
+    - { name: gap_logging, timeout_ms: 614, on_timeout: fallback_level_1 }
+    - { name: owner_notification, timeout_ms: 230, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Questions answered without humans"
+    - "Doc gaps closed"
+    - "Time to find an answer"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

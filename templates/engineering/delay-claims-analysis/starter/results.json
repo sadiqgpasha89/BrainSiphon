@@ -1,0 +1,42 @@
+{
+ "use_case": "engineering/delay-claims-analysis",
+ "engine": "generative",
+ "seed": 46269,
+ "knobs": {
+  "n": 317
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "golden_items": 317,
+  "v1_pass_rate_strict_judge": 0.14195583596214512,
+  "v1_pass_rate_fuzzy_judge": 0.5110410094637224,
+  "v2_pass_rate_fuzzy_judge": 0.583596214511041,
+  "v1_pass_rate_ci95": [
+   0.4541798107255521,
+   0.5679022082018927
+  ],
+  "v2_minus_v1": 0.07255520504731862,
+  "v2_minus_v1_ci95": [
+   -0.006388012618296525,
+   0.15141955835962145
+  ],
+  "judge_agreement_kappa_v1": 0.2733204020454945,
+  "judge_disagreement_share_v1": 0.36908517350157727,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4479495268138801,
+   "date_correct": 0.10410094637223975,
+   "within_length": 0.025236593059936908,
+   "no_forbidden_claims": 0.06624605678233439
+  },
+  "ci_width_at_60_items": 0.25,
+  "ci_width_at_full_set": 0.11372239747634066
+ }
+}

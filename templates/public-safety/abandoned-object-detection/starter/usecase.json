@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/abandoned-object-detection",
+ "title": "Abandoned Object Detection in Transit Stations",
+ "domain": "public-safety",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 61973,
+ "knobs": {
+  "n": 3570,
+  "prevalence": 0.103
+ },
+ "blueprintSignals": [
+  {
+   "name": "Static object detection",
+   "definition": "objects not moving",
+   "asOfRule": "From vision"
+  },
+  {
+   "name": "Owner proximity",
+   "definition": "whether people stay near the object",
+   "asOfRule": "From anonymised tracks"
+  },
+  {
+   "name": "Dwell time",
+   "definition": "time static",
+   "asOfRule": "Computed"
+  },
+  {
+   "name": "Crowd density",
+   "definition": "people in the area",
+   "asOfRule": "From counts"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Abandoned Object Detection in Transit Stations\": Detect bags or objects left unattended in stations and alert operations staff to check them, without tracking or identifying the people who left them. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Tracking people."
+}

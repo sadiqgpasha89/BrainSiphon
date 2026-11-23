@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/homelessness-service-demand-forecasting",
+ "title": "Homelessness Service Demand Forecasting",
+ "domain": "public-sector",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 72622,
+ "knobs": {
+  "n_series": 294
+ },
+ "blueprintSignals": [
+  {
+   "name": "Past service use",
+   "definition": "counts by service and month",
+   "asOfRule": "From services"
+  },
+  {
+   "name": "Weather and season",
+   "definition": "cold nights and winter",
+   "asOfRule": "From weather data"
+  },
+  {
+   "name": "Housing and economic indicators",
+   "definition": "rents, evictions and unemployment",
+   "asOfRule": "From statistics"
+  },
+  {
+   "name": "Policy changes",
+   "definition": "new programmes and rules",
+   "asOfRule": "From policy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Homelessness Service Demand Forecasting\": Forecast demand for shelter, outreach and prevention services from aggregated data so capacity and funding are planned ahead, without tracking individuals. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual risk scoring."
+}

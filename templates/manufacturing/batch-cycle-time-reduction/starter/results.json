@@ -1,0 +1,34 @@
+{
+ "use_case": "manufacturing/batch-cycle-time-reduction",
+ "engine": "tabular",
+ "seed": 21617,
+ "knobs": {
+  "n_entities": 2520,
+  "positive_entity_rate": 0.032,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.7,
+ "results": {
+  "rows": 187181,
+  "positive_rate": 0.004370101666301601,
+  "test_rows": 62209,
+  "test_positive_rate": 0.005706569788937292,
+  "baseline_lr": {
+   "pr_auc": 0.7484600037750098,
+   "recall_at_0.5pct_fpr": 0.7549295774647887,
+   "brier": 0.002399312481209904
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7677670885505443,
+   "recall_at_0.5pct_fpr": 0.7661971830985915,
+   "brier": 0.002462880967435917
+  }
+ }
+}

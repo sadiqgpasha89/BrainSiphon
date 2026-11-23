@@ -1,0 +1,57 @@
+{
+ "slug": "telecom/cell-level-traffic-forecasting",
+ "title": "Cell-Level Traffic Forecasting",
+ "domain": "telecom",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 70143,
+ "knobs": {
+  "n_series": 279
+ },
+ "blueprintSignals": [
+  {
+   "name": "Same hour last week",
+   "definition": "traffic at the same hour in the previous weeks",
+   "asOfRule": "Align on local time"
+  },
+  {
+   "name": "Event calendar flags",
+   "definition": "stadium, festival and holiday indicators near the cell",
+   "asOfRule": "Calendar must be curated"
+  },
+  {
+   "name": "Neighbour cell load",
+   "definition": "load on adjacent cells over the previous hour",
+   "asOfRule": "Beware of cells that go offline"
+  },
+  {
+   "name": "Recent trend",
+   "definition": "14-day slope in busy-hour traffic",
+   "asOfRule": "Dampen the trend to avoid runaway"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Cell-Level Traffic Forecasting\": Forecast traffic and user counts per cell for hours to weeks ahead so capacity, energy and maintenance plans use realistic demand with uncertainty. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on saturated throughput as demand."
+}

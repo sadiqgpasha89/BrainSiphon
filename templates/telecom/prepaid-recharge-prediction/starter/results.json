@@ -1,0 +1,42 @@
+{
+ "use_case": "telecom/prepaid-recharge-prediction",
+ "engine": "generative",
+ "seed": 22495,
+ "knobs": {
+  "n": 271
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "golden_items": 271,
+  "v1_pass_rate_strict_judge": 0.17712177121771217,
+  "v1_pass_rate_fuzzy_judge": 0.47232472324723246,
+  "v2_pass_rate_fuzzy_judge": 0.6199261992619927,
+  "v1_pass_rate_ci95": [
+   0.41697416974169743,
+   0.5277675276752767
+  ],
+  "v2_minus_v1": 0.14760147601476015,
+  "v2_minus_v1_ci95": [
+   0.05894833948339484,
+   0.23247232472324722
+  ],
+  "judge_agreement_kappa_v1": 0.3877089923181202,
+  "judge_disagreement_share_v1": 0.2952029520295203,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.5018450184501845,
+   "date_correct": 0.16974169741697417,
+   "within_length": 0.02952029520295203,
+   "no_forbidden_claims": 0.05904059040590406
+  },
+  "ci_width_at_60_items": 0.2333333333333334,
+  "ci_width_at_full_set": 0.11079335793357925
+ }
+}

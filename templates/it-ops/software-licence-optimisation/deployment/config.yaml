@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: usage_and_install_data, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: entitlement_join, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: position_calculation, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: reclaim_candidates, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: notice_and_approval, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: reclaim, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: savings_tracking, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Licence spend"
+    - "Audit true-up costs"
+    - "Unused seats"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

@@ -1,0 +1,55 @@
+{
+ "slug": "engineering/engineering-agent-action-guardrails",
+ "title": "Engineering Agent Action Guardrails",
+ "domain": "engineering",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 28498,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Release state of the target",
+   "definition": "working copy or released revision",
+   "asOfRule": "Product data system"
+  },
+  {
+   "name": "Edits per part per day",
+   "definition": "change volume against design norms",
+   "asOfRule": "Revision log"
+  },
+  {
+   "name": "Engineer rejection rate",
+   "definition": "agent edits declined by design owners",
+   "asOfRule": "Approval records"
+  },
+  {
+   "name": "Simulation result after edit",
+   "definition": "stress and fit checks after the change",
+   "asOfRule": "Simulation system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Engineering Agent Action Guardrails\": Control how AI agents change CAD models, bills of materials and simulation setups, keep release authority with named engineers and retain a design history that regulators and customers can inspect. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Write access to released data."
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "manufacturing/injection-moulding-parameter-tuning",
+ "engine": "tabular",
+ "seed": 30380,
+ "knobs": {
+  "n_entities": 2980,
+  "positive_entity_rate": 0.03,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.5,
+ "results": {
+  "rows": 225460,
+  "positive_rate": 0.004147077086844673,
+  "test_rows": 75687,
+  "test_positive_rate": 0.005443471137711892,
+  "baseline_lr": {
+   "pr_auc": 0.7827283606657681,
+   "recall_at_0.5pct_fpr": 0.8058837932209163,
+   "brier": 0.001963542513074868
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8096171425781895,
+   "recall_at_0.5pct_fpr": 0.8398058252427184,
+   "brier": 0.001931152361447242
+  }
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "use_case": "public-sector/traffic-signal-timing-optimisation",
+ "engine": "control",
+ "seed": 46939,
+ "knobs": {
+  "days": 55
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.6,
+ "results": {
+  "days": 55,
+  "steps_per_day": 288,
+  "open_loop": {
+   "tracking_rmse_pct": 6.1925132337936155,
+   "end_of_day_underdelivery_pct": 3.9357249901431812,
+   "overshoot_max_pct": 7.72056440917183,
+   "oscillation": 0.0,
+   "hit_cap": 0.6
+  },
+  "pid": {
+   "tracking_rmse_pct": 2.698087156461798,
+   "end_of_day_underdelivery_pct": 1.2699917930756737,
+   "overshoot_max_pct": 5.7670689331409335,
+   "oscillation": 0.011747061729407666,
+   "hit_cap": 0.34545454545454546
+  },
+  "pid_aggressive_gains": {
+   "tracking_rmse_pct": 1.0863435770605747,
+   "end_of_day_underdelivery_pct": 0.03454507749617692,
+   "overshoot_max_pct": 1.9008966175295743,
+   "oscillation": 0.09377620906810205,
+   "hit_cap": 0.5272727272727272
+  },
+  "pid_with_two_hour_feedback_delay": {
+   "tracking_rmse_pct": 5.478685452864071,
+   "end_of_day_underdelivery_pct": 2.155679461987665,
+   "overshoot_max_pct": 13.435089042916694,
+   "oscillation": 0.01795983964230091,
+   "hit_cap": 0.5454545454545454
+  },
+  "rmse_reduction_vs_open_loop": 0.5642985239437407
+ }
+}

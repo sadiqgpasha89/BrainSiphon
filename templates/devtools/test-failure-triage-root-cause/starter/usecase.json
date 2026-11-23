@@ -1,0 +1,55 @@
+{
+ "slug": "devtools/test-failure-triage-root-cause",
+ "title": "Test Failure Triage and Root Cause Agent",
+ "domain": "devtools",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 57690,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Error signature",
+   "definition": "normalised error message and stack",
+   "asOfRule": "From logs"
+  },
+  {
+   "name": "Suspect commit window",
+   "definition": "commits since the last pass",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Environment health",
+   "definition": "infrastructure alarms",
+   "asOfRule": "From monitoring"
+  },
+  {
+   "name": "Flake history",
+   "definition": "past flip rate of the test",
+   "asOfRule": "From CI"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Test Failure Triage and Root Cause Agent\": Classify test failures as product bug, test bug, environment or flake and point to the likely cause with log evidence so engineers fix the right thing quickly. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Closing without confirmation."
+}

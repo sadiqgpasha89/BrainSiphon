@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/water-waste-anomaly-detection",
+ "title": "Water and Waste Stream Anomaly Detection",
+ "domain": "manufacturing",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 64138,
+ "knobs": {
+  "n_series": 101,
+  "anomalies_per_series": 3.107
+ },
+ "blueprintSignals": [
+  {
+   "name": "Water per unit produced",
+   "definition": "litres per unit by line",
+   "asOfRule": "From meters and production"
+  },
+  {
+   "name": "Effluent quality indicators",
+   "definition": "pH, conductivity and load measures",
+   "asOfRule": "From analysers"
+  },
+  {
+   "name": "Waste volume by stream",
+   "definition": "tonnes by waste class",
+   "asOfRule": "From scales"
+  },
+  {
+   "name": "Production state",
+   "definition": "running, idle or cleaning",
+   "asOfRule": "From MES"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Water and Waste Stream Anomaly Detection\": Detect abnormal water use, effluent quality and waste volumes by line so leaks, spills and permit exceedances are found early. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Absolute baselines."
+}

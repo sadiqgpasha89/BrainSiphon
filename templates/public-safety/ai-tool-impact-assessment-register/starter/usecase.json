@@ -1,0 +1,55 @@
+{
+ "slug": "public-safety/ai-tool-impact-assessment-register",
+ "title": "AI Tool Impact Assessment and Public Register",
+ "domain": "public-safety",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 42802,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Assessment completeness",
+   "definition": "required sections completed",
+   "asOfRule": "From the form"
+  },
+  {
+   "name": "Data sensitivity class",
+   "definition": "data categories used",
+   "asOfRule": "From the catalogue"
+  },
+  {
+   "name": "Decision impact on people",
+   "definition": "whether people are affected directly",
+   "asOfRule": "From the assessment"
+  },
+  {
+   "name": "Change events",
+   "definition": "model, data or scope changes",
+   "asOfRule": "From release records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"AI Tool Impact Assessment and Public Register\": Guide teams through a structured impact assessment for each AI tool before use, check it for gaps, and publish a register entry that states purpose, limits, data and oversight. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optional assessments."
+}

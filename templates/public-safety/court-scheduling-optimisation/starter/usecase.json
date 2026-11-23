@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/court-scheduling-optimisation",
+ "title": "Court Hearing Scheduling Optimisation",
+ "domain": "public-safety",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 90542,
+ "knobs": {
+  "n_instances": 199,
+  "noise": 0.312
+ },
+ "blueprintSignals": [
+  {
+   "name": "Case type and expected duration",
+   "definition": "hearing length by type",
+   "asOfRule": "From history"
+  },
+  {
+   "name": "Participant needs",
+   "definition": "interpreters and accessibility",
+   "asOfRule": "From the case file"
+  },
+  {
+   "name": "Statutory deadline",
+   "definition": "days to the legal limit",
+   "asOfRule": "From rules"
+  },
+  {
+   "name": "Adjournment risk",
+   "definition": "share of similar hearings adjourned",
+   "asOfRule": "From history"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Court Hearing Scheduling Optimisation\": Schedule hearings and courtrooms to cut waiting time and adjournments while respecting statutory timelines, judge availability and accessibility needs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Overbooking for utilisation."
+}

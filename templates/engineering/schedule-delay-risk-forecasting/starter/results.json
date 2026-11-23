@@ -1,0 +1,34 @@
+{
+ "use_case": "engineering/schedule-delay-risk-forecasting",
+ "engine": "tabular",
+ "seed": 22395,
+ "knobs": {
+  "n_entities": 2380,
+  "positive_entity_rate": 0.044,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.7,
+ "results": {
+  "rows": 187574,
+  "positive_rate": 0.005533815987290349,
+  "test_rows": 62340,
+  "test_positive_rate": 0.005967276227141482,
+  "baseline_lr": {
+   "pr_auc": 0.7465966717264728,
+   "recall_at_0.5pct_fpr": 0.7903225806451613,
+   "brier": 0.002829378093331408
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8062274644622325,
+   "recall_at_0.5pct_fpr": 0.8198924731182796,
+   "brier": 0.002217628439756997
+  }
+ }
+}

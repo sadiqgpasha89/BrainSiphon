@@ -1,0 +1,49 @@
+{
+ "use_case": "energy/vegetation-encroachment-detection",
+ "engine": "regression",
+ "seed": 33108,
+ "knobs": {
+  "n": 25220,
+  "outlier_share": 0.035,
+  "drift": 0.174
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.3,
+ "results": {
+  "rows": 25220,
+  "train_rows": 17654,
+  "test_rows": 7566,
+  "baseline_ridge": {
+   "mae": 8.124308580340749,
+   "rmse": 14.655381620609917,
+   "wape": 0.15348665467068892,
+   "r2": 0.3374357907063663
+  },
+  "challenger_gbm": {
+   "mae": 5.466583737526426,
+   "rmse": 12.967468902212287,
+   "wape": 0.10327619169715624,
+   "r2": 0.48126668725846933
+  },
+  "mae_gain_vs_baseline": 0.32713243429053174,
+  "interval_80_coverage": 0.7211208035950304,
+  "interval_80_mean_width": 9.656004693808352,
+  "segment_mae": {
+   "0": 5.307714941348513,
+   "1": 5.640502480382085,
+   "2": 5.486043536725773,
+   "3": 5.992133541860499
+  },
+  "worst_segment_vs_overall": 1.096138617748839,
+  "leaky_feature_rmse": 1.4765034397506231,
+  "honest_rmse": 12.967468902212287,
+  "random_split_mae": 5.072266378136592,
+  "chronological_mae": 5.466583737526426
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/operator-work-instruction-assistant",
+ "title": "Operator Work-Instruction Assistant",
+ "domain": "manufacturing",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 43334,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Station and product context",
+   "definition": "station and the product on it",
+   "asOfRule": "From MES"
+  },
+  {
+   "name": "Document revision status",
+   "definition": "current or superseded",
+   "asOfRule": "From document control"
+  },
+  {
+   "name": "Question intent",
+   "definition": "procedure, parameter, defect or safety",
+   "asOfRule": "Classified"
+  },
+  {
+   "name": "Operator qualification",
+   "definition": "certification for the task",
+   "asOfRule": "From training records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Operator Work-Instruction Assistant\": Answer operator questions about work instructions, quality checks and changeover steps at the station, in the operator's language, from controlled documents only. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Free translation of safety steps."
+}

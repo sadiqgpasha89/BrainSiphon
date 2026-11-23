@@ -1,0 +1,45 @@
+{
+ "use_case": "public-safety/evacuation-route-planning",
+ "engine": "optimize",
+ "seed": 18110,
+ "knobs": {
+  "n_instances": 194,
+  "noise": 0.263
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "instances": 194,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 118.89391490754925,
+   "promised_cost": 99.40123175820071,
+   "optimism_gap_pct": 19.61010221358788,
+   "regret_vs_oracle_pct": 30.319791195803138
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 103.67738173043352,
+   "promised_cost": 81.98513263656176,
+   "optimism_gap_pct": 26.458759529039266,
+   "regret_vs_oracle_pct": 13.640927286681253
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 101.45114566872617,
+   "promised_cost": 83.30675282133873,
+   "optimism_gap_pct": 21.780218569196006,
+   "regret_vs_oracle_pct": 11.20074673631527
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.2324320171088,
+   "promised_cost": 93.88528891654875,
+   "optimism_gap_pct": -2.8256364016709457,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/knowledge-article-generation",
+ "title": "Knowledge Article Generation from Tickets",
+ "domain": "it-ops",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 46318,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Resolution steps",
+   "definition": "the fix recorded in the ticket",
+   "asOfRule": "From the ticket"
+  },
+  {
+   "name": "Recurrence count",
+   "definition": "how often the issue appears",
+   "asOfRule": "From history"
+  },
+  {
+   "name": "Existing article match",
+   "definition": "similar published articles",
+   "asOfRule": "From the knowledge base"
+  },
+  {
+   "name": "Resolution confirmation",
+   "definition": "whether the requester confirmed the fix",
+   "asOfRule": "From the ticket"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Knowledge Article Generation from Tickets\": Draft knowledge articles from solved tickets and chat transcripts, remove personal data and route them to subject matter experts for review before publication. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Auto-publishing."
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/transit-demand-forecasting",
+ "title": "Public Transit Demand Forecasting",
+ "domain": "public-sector",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 34350,
+ "knobs": {
+  "n_series": 179
+ },
+ "blueprintSignals": [
+  {
+   "name": "Boardings last week",
+   "definition": "boardings at the same time last week",
+   "asOfRule": "Aligned"
+  },
+  {
+   "name": "Events and school terms",
+   "definition": "event calendars and term dates",
+   "asOfRule": "From calendars"
+  },
+  {
+   "name": "Weather",
+   "definition": "rain and temperature",
+   "asOfRule": "From weather"
+  },
+  {
+   "name": "Service changes",
+   "definition": "timetable changes",
+   "asOfRule": "From schedules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Public Transit Demand Forecasting\": Forecast boardings by route, stop and time from card, count and event data so timetables, vehicle sizes and crowding information match demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Observed boardings as demand."
+}

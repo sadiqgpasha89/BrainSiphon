@@ -1,0 +1,42 @@
+{
+ "use_case": "engineering/safety-critical-ai-validation",
+ "engine": "generative",
+ "seed": 73890,
+ "knobs": {
+  "n": 241
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.6,
+ "results": {
+  "golden_items": 241,
+  "v1_pass_rate_strict_judge": 0.13278008298755187,
+  "v1_pass_rate_fuzzy_judge": 0.4730290456431535,
+  "v2_pass_rate_fuzzy_judge": 0.5809128630705395,
+  "v1_pass_rate_ci95": [
+   0.4107883817427386,
+   0.5435684647302904
+  ],
+  "v2_minus_v1": 0.1078838174273859,
+  "v2_minus_v1_ci95": [
+   0.02064315352697096,
+   0.18682572614107876
+  ],
+  "judge_agreement_kappa_v1": 0.2914306202940121,
+  "judge_disagreement_share_v1": 0.34024896265560167,
+  "v1_failure_share_by_check": {
+   "has_entity": 0.0,
+   "amount_correct": 0.4896265560165975,
+   "date_correct": 0.16597510373443983,
+   "within_length": 0.03319502074688797,
+   "no_forbidden_claims": 0.04149377593360996
+  },
+  "ci_width_at_60_items": 0.23374999999999996,
+  "ci_width_at_full_set": 0.13278008298755184
+ }
+}

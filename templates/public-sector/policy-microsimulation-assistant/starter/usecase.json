@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/policy-microsimulation-assistant",
+ "title": "Policy Microsimulation Assistant",
+ "domain": "public-sector",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 15546,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Policy parameter change",
+   "definition": "thresholds, rates and rules changed",
+   "asOfRule": "From the policy team"
+  },
+  {
+   "name": "Population weights",
+   "definition": "survey weights to the population",
+   "asOfRule": "From statistics"
+  },
+  {
+   "name": "Behavioural response assumptions",
+   "definition": "elasticities used",
+   "asOfRule": "From literature and ranges"
+  },
+  {
+   "name": "Take-up assumptions",
+   "definition": "share of eligible who claim",
+   "asOfRule": "From admin data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Policy Microsimulation Assistant\": Run microsimulation of tax and benefit changes on synthetic or aggregated populations and explain who gains and loses, with the assumptions and uncertainty shown. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Typical-household averages."
+}

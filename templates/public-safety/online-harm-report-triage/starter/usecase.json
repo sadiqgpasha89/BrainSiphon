@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/online-harm-report-triage",
+ "title": "Online Harm Report Triage",
+ "domain": "public-safety",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 26538,
+ "knobs": {
+  "n_docs": 6640
+ },
+ "blueprintSignals": [
+  {
+   "name": "Threat and self-harm cues",
+   "definition": "words indicating danger",
+   "asOfRule": "From text"
+  },
+  {
+   "name": "Harm type",
+   "definition": "harassment, hate, grooming or other",
+   "asOfRule": "Classified"
+  },
+  {
+   "name": "Reporter vulnerability flags",
+   "definition": "minors or at-risk reporters",
+   "asOfRule": "From the report form"
+  },
+  {
+   "name": "Evidence completeness",
+   "definition": "whether links and screenshots are present",
+   "asOfRule": "From the report"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Online Harm Report Triage\": Classify reports of online abuse and harassment by type and urgency so people at risk reach a human fast and referral partners get the right cases, with no automatic decisions on content or users. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic sanctions."
+}

@@ -1,0 +1,45 @@
+{
+ "use_case": "telecom/traffic-reroute-congestion-mitigation",
+ "engine": "optimize",
+ "seed": 24622,
+ "knobs": {
+  "n_instances": 104,
+  "noise": 0.355
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.3,
+ "results": {
+  "instances": 104,
+  "size": 30,
+  "greedy_on_predictions": {
+   "realised_cost": 127.34654360525404,
+   "promised_cost": 94.73102203331698,
+   "optimism_gap_pct": 34.42961014446372,
+   "regret_vs_oracle_pct": 39.364069891886906
+  },
+  "optimal_on_predictions": {
+   "realised_cost": 112.37517758853116,
+   "promised_cost": 76.43166812788732,
+   "optimism_gap_pct": 47.02698546432649,
+   "regret_vs_oracle_pct": 22.97987570127595
+  },
+  "optimal_with_uncertainty_penalty": {
+   "realised_cost": 108.65889753036134,
+   "promised_cost": 78.460683372506,
+   "optimism_gap_pct": 38.48833945848263,
+   "regret_vs_oracle_pct": 18.91289516845499
+  },
+  "oracle_true_costs": {
+   "realised_cost": 91.37688337032954,
+   "promised_cost": 95.58873602144666,
+   "optimism_gap_pct": -4.406222768938109,
+   "regret_vs_oracle_pct": 0.0
+  }
+ }
+}

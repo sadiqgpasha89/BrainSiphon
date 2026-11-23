@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/multilingual-call-interpretation-assist",
+ "title": "Multilingual Call Interpretation Assist",
+ "domain": "public-safety",
+ "engine": "nlp",
+ "fit": "exact",
+ "problemType": "text-classification",
+ "seed": 6747,
+ "knobs": {
+  "n_docs": 4700
+ },
+ "blueprintSignals": [
+  {
+   "name": "Language identification confidence",
+   "definition": "confidence in the language",
+   "asOfRule": "From the classifier"
+  },
+  {
+   "name": "Number and address confidence",
+   "definition": "confidence in digits and places",
+   "asOfRule": "From the ASR"
+  },
+  {
+   "name": "Translation quality estimate",
+   "definition": "estimated translation quality",
+   "asOfRule": "From the quality model"
+  },
+  {
+   "name": "Interpreter availability",
+   "definition": "connected and waiting interpreters",
+   "asOfRule": "From the telephony system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Multilingual Call Interpretation Assist\": Provide live transcription and translation hints for calls in other languages while a human interpreter is connected, so key facts reach the call taker sooner. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Replacing interpreters."
+}

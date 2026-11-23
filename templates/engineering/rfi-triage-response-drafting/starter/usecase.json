@@ -1,0 +1,57 @@
+{
+ "slug": "engineering/rfi-triage-response-drafting",
+ "title": "RFI Triage and Response Drafting",
+ "domain": "engineering",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 19751,
+ "knobs": {
+  "n_docs": 4660
+ },
+ "blueprintSignals": [
+  {
+   "name": "RFI text and sketch",
+   "definition": "the question and attachments",
+   "asOfRule": "From the RFI system"
+  },
+  {
+   "name": "Related documents",
+   "definition": "matching drawings and clauses",
+   "asOfRule": "From retrieval"
+  },
+  {
+   "name": "Schedule link",
+   "definition": "activity blocked by the RFI",
+   "asOfRule": "From the schedule"
+  },
+  {
+   "name": "Similar past RFIs",
+   "definition": "previous answers",
+   "asOfRule": "From history"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"RFI Triage and Response Drafting\": Classify requests for information, find the relevant drawings and specifications and draft a response for the design team to review, tracking time to answer. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Answers without citations."
+}

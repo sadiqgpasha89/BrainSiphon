@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/government-form-completeness-check",
+ "title": "Government Form Completeness Check",
+ "domain": "public-sector",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 12480,
+ "knobs": {
+  "n_docs": 6580
+ },
+ "blueprintSignals": [
+  {
+   "name": "Required field presence",
+   "definition": "missing or malformed fields",
+   "asOfRule": "From the form schema"
+  },
+  {
+   "name": "Document type match",
+   "definition": "whether the attachment is the requested type",
+   "asOfRule": "From the classifier"
+  },
+  {
+   "name": "Image quality",
+   "definition": "legibility of scans and photos",
+   "asOfRule": "From the image"
+  },
+  {
+   "name": "Prior returns for the form",
+   "definition": "common errors for this form",
+   "asOfRule": "From history"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Government Form Completeness Check\": Check submitted forms and attachments for missing fields, wrong documents and unreadable scans at the time of submission so applicants fix problems before a caseworker sees them. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Blocking submissions."
+}

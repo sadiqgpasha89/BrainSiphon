@@ -1,0 +1,58 @@
+{
+ "slug": "public-sector/public-health-signal-detection",
+ "title": "Public Health Signal Detection",
+ "domain": "public-sector",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 14631,
+ "knobs": {
+  "n_series": 86,
+  "anomalies_per_series": 1.947
+ },
+ "blueprintSignals": [
+  {
+   "name": "Syndromic counts",
+   "definition": "visits and calls for symptoms",
+   "asOfRule": "Aggregated"
+  },
+  {
+   "name": "Wastewater concentration",
+   "definition": "viral load in sewage",
+   "asOfRule": "From labs"
+  },
+  {
+   "name": "Lab positivity",
+   "definition": "share of positive tests",
+   "asOfRule": "From labs"
+  },
+  {
+   "name": "Reporting lag and holidays",
+   "definition": "delays and calendar effects",
+   "asOfRule": "From the calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Public Health Signal Detection\": Detect early rises in illness from aggregated syndromic, wastewater and lab data so public health teams investigate sooner, without individual-level tracking. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual-level tracking."
+}

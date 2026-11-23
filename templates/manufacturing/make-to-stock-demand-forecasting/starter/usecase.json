@@ -1,0 +1,57 @@
+{
+ "slug": "manufacturing/make-to-stock-demand-forecasting",
+ "title": "Demand Forecasting for Make-to-Stock Items",
+ "domain": "manufacturing",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 6957,
+ "knobs": {
+  "n_series": 206
+ },
+ "blueprintSignals": [
+  {
+   "name": "Same week last year",
+   "definition": "demand in the matching week of prior years",
+   "asOfRule": "Aligned by week number"
+  },
+  {
+   "name": "Promotion and launch calendar",
+   "definition": "planned promotions and launches",
+   "asOfRule": "From sales"
+  },
+  {
+   "name": "Customer order backlog",
+   "definition": "confirmed open orders by need date",
+   "asOfRule": "From ERP"
+  },
+  {
+   "name": "Price and mix changes",
+   "definition": "list price changes by item",
+   "asOfRule": "By item family"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Demand Forecasting for Make-to-Stock Items\": Forecast item-level demand with intervals for make-to-stock products so production plans, safety stock and raw material orders match demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using shipments as demand."
+}

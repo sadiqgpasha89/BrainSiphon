@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/caseworker-case-summarisation-assistant",
+ "title": "Caseworker Case Summarisation Assistant",
+ "domain": "public-sector",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 11448,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Note date and author",
+   "definition": "when and who wrote the note",
+   "asOfRule": "From the case system"
+  },
+  {
+   "name": "Topic of the note",
+   "definition": "housing, health or safety",
+   "asOfRule": "Classified"
+  },
+  {
+   "name": "Time since last contact",
+   "definition": "days since the last contact",
+   "asOfRule": "From the case system"
+  },
+  {
+   "name": "Open actions",
+   "definition": "tasks not completed",
+   "asOfRule": "From the case system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Caseworker Case Summarisation Assistant\": Summarise long case histories for caseworkers with links to the source notes so they prepare faster for visits, with no recommendation about outcomes for the person. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Predictions about the person."
+}

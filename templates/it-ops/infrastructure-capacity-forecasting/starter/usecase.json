@@ -1,0 +1,57 @@
+{
+ "slug": "it-ops/infrastructure-capacity-forecasting",
+ "title": "Infrastructure Capacity Forecasting",
+ "domain": "it-ops",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 19035,
+ "knobs": {
+  "n_series": 275
+ },
+ "blueprintSignals": [
+  {
+   "name": "Utilisation history",
+   "definition": "CPU, memory, storage and network use",
+   "asOfRule": "From monitoring"
+  },
+  {
+   "name": "Growth drivers",
+   "definition": "users and transactions",
+   "asOfRule": "From business data"
+  },
+  {
+   "name": "Planned launches and migrations",
+   "definition": "events that change demand",
+   "asOfRule": "From planning"
+  },
+  {
+   "name": "Seasonality",
+   "definition": "weekly and yearly patterns",
+   "asOfRule": "Calendar"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Infrastructure Capacity Forecasting\": Forecast compute, storage and network demand by service with uncertainty ranges so capacity is ordered or reserved before headroom runs out. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Averages as the target."
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "it-ops/hardware-failure-prediction",
+ "title": "Hardware Failure Prediction",
+ "domain": "it-ops",
+ "engine": "tabular",
+ "fit": "exact",
+ "problemType": "binary-event-classification",
+ "seed": 6403,
+ "knobs": {
+  "n_entities": 2280,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 7
+ },
+ "blueprintSignals": [
+  {
+   "name": "SMART and error counters",
+   "definition": "disk reallocated sectors and errors",
+   "asOfRule": "From device telemetry"
+  },
+  {
+   "name": "Temperature and power trend",
+   "definition": "thermal and power drift",
+   "asOfRule": "From sensors"
+  },
+  {
+   "name": "Age and model",
+   "definition": "hardware batch and age",
+   "asOfRule": "From the CMDB"
+  },
+  {
+   "name": "Workload intensity",
+   "definition": "read and write load",
+   "asOfRule": "From monitoring"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Hardware Failure Prediction\": Predict disk, memory and power supply failures from device telemetry so teams replace parts during planned windows and avoid unplanned outages. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fixed-age replacement."
+}

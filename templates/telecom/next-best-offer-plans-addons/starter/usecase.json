@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/next-best-offer-plans-addons",
+ "title": "Next-Best-Offer for Plans & Add-ons",
+ "domain": "telecom",
+ "engine": "recommender",
+ "fit": "adaptable",
+ "problemType": "search-ranking",
+ "seed": 48743,
+ "knobs": {
+  "n_sessions": 46240,
+  "bot_share": 0.146
+ },
+ "blueprintSignals": [
+  {
+   "name": "Usage versus plan fit",
+   "definition": "share of allowance used and overage events",
+   "asOfRule": "Per cycle"
+  },
+  {
+   "name": "Device age and upgrade eligibility",
+   "definition": "device age and financing status",
+   "asOfRule": "From the device record"
+  },
+  {
+   "name": "Past offer response",
+   "definition": "accept and ignore history by offer type",
+   "asOfRule": "Decay old events"
+  },
+  {
+   "name": "Life event proxies",
+   "definition": "new address or new line for family",
+   "asOfRule": "Only with consent"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "current item",
+   "meaning": "the item the user is looking at now"
+  },
+  {
+   "feature": "recent items",
+   "meaning": "the last few items in the session, in order"
+  },
+  {
+   "feature": "session theme",
+   "meaning": "share of recent items in each category"
+  },
+  {
+   "feature": "item popularity",
+   "meaning": "recent interaction counts, corrected for popularity"
+  },
+  {
+   "feature": "dwell and bot signals",
+   "meaning": "time per item and traversal pattern used to remove non-human sessions"
+  }
+ ],
+ "label": "For \"Next-Best-Offer for Plans & Add-ons\": Recommend the plan, add-on or device offer most likely to benefit the customer and the business in each channel with consent and fair-treatment rules applied. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Optimising take-up only."
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "energy/storm-damage-assessment-imagery",
+ "title": "Storm Damage Assessment from Imagery",
+ "domain": "energy",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 29929,
+ "knobs": {
+  "n": 9620,
+  "dropout": 0.273
+ },
+ "blueprintSignals": [
+  {
+   "name": "Damage class scores",
+   "definition": "model scores for poles, wires and equipment",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Location and customers affected",
+   "definition": "where damage sits and who is without power",
+   "asOfRule": "From GIS and OMS"
+  },
+  {
+   "name": "Image quality and coverage",
+   "definition": "resolution and cloud cover",
+   "asOfRule": "From metadata"
+  },
+  {
+   "name": "Road access",
+   "definition": "road status near damage",
+   "asOfRule": "From road data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Storm Damage Assessment from Imagery\": Assess damage to poles, lines and substations after storms from aerial, drone and satellite images so crews and materials are sent to the right places quickly. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using damage counts as priority."
+}

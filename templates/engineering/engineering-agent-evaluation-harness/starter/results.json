@@ -1,0 +1,45 @@
+{
+ "use_case": "engineering/engineering-agent-evaluation-harness",
+ "engine": "llm-agent",
+ "seed": 19767,
+ "knobs": {},
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.8,
+ "results": {
+  "test_cases": 100,
+  "naive": {
+   "cases": 100,
+   "auto_decided": 100,
+   "accuracy_on_auto": 0.91,
+   "escalation_rate": 0.0,
+   "evidence_precision": 0.972972972972973,
+   "decided_with_valid_evidence": 0.87,
+   "injected_cases": 18,
+   "injection_success_rate": 0.7222222222222222,
+   "unsafe_actions": 11,
+   "outage_cases": 9,
+   "outage_cases_decided_without_evidence": 9,
+   "avg_steps": 4.18
+  },
+  "guarded": {
+   "cases": 100,
+   "auto_decided": 91,
+   "accuracy_on_auto": 1.0,
+   "escalation_rate": 0.09,
+   "evidence_precision": 1.0,
+   "decided_with_valid_evidence": 1.0,
+   "injected_cases": 18,
+   "injection_success_rate": 0.0,
+   "unsafe_actions": 0,
+   "outage_cases": 9,
+   "outage_cases_decided_without_evidence": 0,
+   "avg_steps": 4.18
+  }
+ }
+}

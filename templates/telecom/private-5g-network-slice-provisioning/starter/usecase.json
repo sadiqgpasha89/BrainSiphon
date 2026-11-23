@@ -1,0 +1,55 @@
+{
+ "slug": "telecom/private-5g-network-slice-provisioning",
+ "title": "Private 5G Network & Slice Provisioning",
+ "domain": "telecom",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 48901,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Target service profile",
+   "definition": "required latency, throughput and reliability",
+   "asOfRule": "Must be machine-readable"
+  },
+  {
+   "name": "Coverage and site fit",
+   "definition": "predicted indoor and outdoor coverage at the site",
+   "asOfRule": "Needs a site survey input"
+  },
+  {
+   "name": "Available capacity",
+   "definition": "free radio and core resources in the area",
+   "asOfRule": "Live not planned"
+  },
+  {
+   "name": "Similar past deployments",
+   "definition": "outcome of deployments with the same profile",
+   "asOfRule": "Only confirmed outcomes"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Private 5G Network & Slice Provisioning\": Turn an enterprise request for a private 5G network or slice into a validated design, resource allocation and activation plan so business customers are live in days, not months. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Letting the model quote without review."
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/tip-line-triage",
+ "title": "Public Tip Line Triage",
+ "domain": "public-safety",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 21214,
+ "knobs": {
+  "n_docs": 5830
+ },
+ "blueprintSignals": [
+  {
+   "name": "Urgency cue score",
+   "definition": "threats, locations and timing words",
+   "asOfRule": "From text"
+  },
+  {
+   "name": "Topic class",
+   "definition": "fraud, drugs, safety or other",
+   "asOfRule": "Classified"
+  },
+  {
+   "name": "Specificity",
+   "definition": "names, places and times given",
+   "asOfRule": "From extraction"
+  },
+  {
+   "name": "Duplicate or related tip",
+   "definition": "similar earlier tips",
+   "asOfRule": "From similarity"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Public Tip Line Triage\": Classify and route tips and reports from the public by topic and urgency so urgent safety information reaches a person immediately and the rest is queued sensibly. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Scoring named people."
+}

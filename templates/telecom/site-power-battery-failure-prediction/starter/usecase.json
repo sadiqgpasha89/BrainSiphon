@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/site-power-battery-failure-prediction",
+ "title": "Site Battery & Power Failure Prediction",
+ "domain": "telecom",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 53531,
+ "knobs": {
+  "n_series": 117,
+  "anomalies_per_series": 2.073
+ },
+ "blueprintSignals": [
+  {
+   "name": "Autonomy time during outages",
+   "definition": "hours the battery held the load in the last outages",
+   "asOfRule": "From site logs"
+  },
+  {
+   "name": "Float voltage and temperature trend",
+   "definition": "slope of float voltage and temperature",
+   "asOfRule": "Calibrate per model"
+  },
+  {
+   "name": "Mains outage frequency",
+   "definition": "mains drops per month",
+   "asOfRule": "From alarms"
+  },
+  {
+   "name": "Battery age and chemistry",
+   "definition": "months in service and type",
+   "asOfRule": "From asset records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Site Battery & Power Failure Prediction\": Predict battery, rectifier and mains failures at radio sites so spares and crews arrive before the site goes down. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Replacing by age only."
+}

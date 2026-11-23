@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: detector_capture, timeout_ms: 509, on_timeout: fallback_level_1 }
+    - { name: state_estimation, timeout_ms: 508, on_timeout: fallback_level_1 }
+    - { name: plan_optimiser, timeout_ms: 508, on_timeout: fallback_level_1 }
+    - { name: safety_clip, timeout_ms: 127, on_timeout: fallback_level_1 }
+    - { name: plan_deployment_with_approval, timeout_ms: 191, on_timeout: fallback_level_1 }
+    - { name: performance_evaluation, timeout_ms: 191, on_timeout: fallback_level_1 }
+    - { name: retraining, timeout_ms: 191, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Person delay"
+    - "Bus travel time"
+    - "Pedestrian wait time"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

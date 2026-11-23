@@ -1,0 +1,54 @@
+{
+ "slug": "it-ops/application-rationalisation-analysis",
+ "title": "Application Rationalisation Analysis",
+ "domain": "it-ops",
+ "engine": "cluster",
+ "fit": "exact",
+ "problemType": "clustering-segmentation",
+ "seed": 63682,
+ "knobs": {
+  "n": 5970,
+  "outlier_share": 0.008
+ },
+ "blueprintSignals": [
+  {
+   "name": "Usage trend",
+   "definition": "active users and transactions",
+   "asOfRule": "From usage data"
+  },
+  {
+   "name": "Total cost",
+   "definition": "licence, hosting and support",
+   "asOfRule": "From finance"
+  },
+  {
+   "name": "Functional similarity",
+   "definition": "descriptions and features compared",
+   "asOfRule": "From text models"
+  },
+  {
+   "name": "Technical health",
+   "definition": "end-of-support and vulnerability state",
+   "asOfRule": "From scans"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "value feature (f0)",
+   "meaning": "in currency units, thousands of times larger than the others"
+  },
+  {
+   "feature": "behaviour features (f1-f3)",
+   "meaning": "separate the segments"
+  },
+  {
+   "feature": "engagement features (f4-f6)",
+   "meaning": "separate some segments"
+  },
+  {
+   "feature": "noise feature (f7)",
+   "meaning": "carries little structure"
+  }
+ ],
+ "label": "For \"Application Rationalisation Analysis\": Group applications by function, use, cost and technical health and recommend retire, consolidate or invest options with the evidence, for business and IT owners to decide. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Age as the criterion."
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/materials-selection-assistant",
+ "title": "Materials Selection Assistant",
+ "domain": "engineering",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 8935,
+ "knobs": {
+  "n": 14560,
+  "label_noise": 0.071,
+  "dup_share": 0.444
+ },
+ "blueprintSignals": [
+  {
+   "name": "Required property ranges",
+   "definition": "strength, temperature and corrosion needs",
+   "asOfRule": "From requirements"
+  },
+  {
+   "name": "Material property data",
+   "definition": "measured properties",
+   "asOfRule": "From the materials database"
+  },
+  {
+   "name": "Regulatory flags",
+   "definition": "restricted substances",
+   "asOfRule": "From compliance data"
+  },
+  {
+   "name": "Supply and cost",
+   "definition": "availability and price",
+   "asOfRule": "From procurement"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Materials Selection Assistant\": Recommend candidate materials from requirements such as strength, temperature, corrosion, cost and supply, with data sources, for engineers to validate before use. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Unverified web data."
+}

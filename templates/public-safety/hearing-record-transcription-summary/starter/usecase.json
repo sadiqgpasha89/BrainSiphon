@@ -1,0 +1,55 @@
+{
+ "slug": "public-safety/hearing-record-transcription-summary",
+ "title": "Hearing Record Transcription and Summary Assistant",
+ "domain": "public-safety",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 71018,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "ASR confidence",
+   "definition": "confidence per segment",
+   "asOfRule": "From ASR"
+  },
+  {
+   "name": "Speaker role turns",
+   "definition": "judge, counsel or witness turns",
+   "asOfRule": "From diarisation by role"
+  },
+  {
+   "name": "Legal term lexicon match",
+   "definition": "recognition of legal terms",
+   "asOfRule": "From glossaries"
+  },
+  {
+   "name": "Audio quality",
+   "definition": "noise and overlap",
+   "asOfRule": "From audio"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Hearing Record Transcription and Summary Assistant\": Produce draft transcripts and summaries of recorded hearings for court staff to check, with every summary line linked to the time in the recording. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating drafts as official."
+}

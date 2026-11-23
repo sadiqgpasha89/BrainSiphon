@@ -1,0 +1,57 @@
+{
+ "slug": "telecom/spare-parts-swap-inventory-forecasting",
+ "title": "Spare Parts & Swap Inventory Forecasting",
+ "domain": "telecom",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 52947,
+ "knobs": {
+  "n_series": 168
+ },
+ "blueprintSignals": [
+  {
+   "name": "Installed base by age",
+   "definition": "count of units by age band",
+   "asOfRule": "From asset records"
+  },
+  {
+   "name": "Failure rate by part type",
+   "definition": "failures per thousand unit-months",
+   "asOfRule": "From repair data"
+  },
+  {
+   "name": "Supplier lead time",
+   "definition": "median and p90 lead time",
+   "asOfRule": "From purchase orders"
+  },
+  {
+   "name": "Planned rollout",
+   "definition": "upcoming installs and upgrades",
+   "asOfRule": "From the project plan"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Spare Parts & Swap Inventory Forecasting\": Forecast the demand for spare parts, modems and swap units by depot and part so stock-outs and write-offs both fall. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fixed lead times."
+}

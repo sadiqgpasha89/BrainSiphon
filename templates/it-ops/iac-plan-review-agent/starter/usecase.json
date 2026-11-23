@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/iac-plan-review-agent",
+ "title": "Infrastructure Code Plan Review",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 76347,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Destructive actions in the plan",
+   "definition": "deletes and replacements",
+   "asOfRule": "From plan parsing"
+  },
+  {
+   "name": "Policy violations",
+   "definition": "security and tagging breaches",
+   "asOfRule": "From policy as code"
+  },
+  {
+   "name": "Cost delta",
+   "definition": "change in monthly cost",
+   "asOfRule": "From the cost estimator"
+  },
+  {
+   "name": "Blast radius",
+   "definition": "resources and services affected",
+   "asOfRule": "From the CMDB"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Infrastructure Code Plan Review\": Review infrastructure code and planned changes for cost, security and resilience problems and comment on the pull request with evidence, leaving apply decisions to humans. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Summaries as review."
+}

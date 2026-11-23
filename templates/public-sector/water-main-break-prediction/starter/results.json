@@ -1,0 +1,34 @@
+{
+ "use_case": "public-sector/water-main-break-prediction",
+ "engine": "tabular",
+ "seed": 21386,
+ "knobs": {
+  "n_entities": 2430,
+  "positive_entity_rate": 0.029,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.7,
+ "results": {
+  "rows": 183672,
+  "positive_rate": 0.00435014591227841,
+  "test_rows": 60501,
+  "test_positive_rate": 0.005454455298259533,
+  "baseline_lr": {
+   "pr_auc": 0.7792058345687489,
+   "recall_at_0.5pct_fpr": 0.8212121212121212,
+   "brier": 0.0019956960279653643
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8293952634593215,
+   "recall_at_0.5pct_fpr": 0.8757575757575757,
+   "brier": 0.0018173634228978188
+  }
+ }
+}

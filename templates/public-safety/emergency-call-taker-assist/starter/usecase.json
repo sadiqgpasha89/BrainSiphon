@@ -1,0 +1,55 @@
+{
+ "slug": "public-safety/emergency-call-taker-assist",
+ "title": "Emergency Call Taker Assist",
+ "domain": "public-safety",
+ "engine": "llm-rag",
+ "fit": "adaptable",
+ "problemType": "grounded-qa",
+ "seed": 86516,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Incident type cues",
+   "definition": "words and phrases indicating fire, injury or crime",
+   "asOfRule": "From speech and text"
+  },
+  {
+   "name": "Location mentions",
+   "definition": "places and landmarks said by the caller",
+   "asOfRule": "From the transcript"
+  },
+  {
+   "name": "Missing protocol questions",
+   "definition": "required questions not yet asked",
+   "asOfRule": "From the protocol"
+  },
+  {
+   "name": "Distress and urgency cues",
+   "definition": "breathing, shouting and keywords",
+   "asOfRule": "From audio and text"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Emergency Call Taker Assist\": Listen to emergency calls in real time and show call takers a structured list of what has been said and which questions remain, so critical details are captured faster while the call taker decides every action. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic priority setting."
+}

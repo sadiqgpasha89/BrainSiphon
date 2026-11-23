@@ -1,0 +1,53 @@
+{
+ "slug": "public-safety/court-document-classification-redaction",
+ "title": "Court Document Classification and Redaction",
+ "domain": "public-safety",
+ "engine": "extraction",
+ "fit": "exact",
+ "problemType": "information-extraction",
+ "seed": 35914,
+ "knobs": {
+  "n_train": 920
+ },
+ "blueprintSignals": [
+  {
+   "name": "Document type",
+   "definition": "motion, order or exhibit",
+   "asOfRule": "From the classifier"
+  },
+  {
+   "name": "Personal data entities",
+   "definition": "names, IDs and birthdates",
+   "asOfRule": "From NER"
+  },
+  {
+   "name": "Sealed or restricted flags",
+   "definition": "case and document flags",
+   "asOfRule": "From case system"
+  },
+  {
+   "name": "Rule match",
+   "definition": "which redaction rule applies",
+   "asOfRule": "From the rule base"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "token shape",
+   "meaning": "capitalisation and digit pattern of a token"
+  },
+  {
+   "feature": "neighbouring words",
+   "meaning": "the words before and after, which carry the layout"
+  },
+  {
+   "feature": "line position",
+   "meaning": "where in the document the token sits"
+  },
+  {
+   "feature": "field rules",
+   "meaning": "layout-specific regular expressions"
+  }
+ ],
+ "label": "For \"Court Document Classification and Redaction\": Classify filings by type and suggest redactions of personal data required by court rules so clerks process documents faster and releases comply. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Redaction with no rule cited."
+}

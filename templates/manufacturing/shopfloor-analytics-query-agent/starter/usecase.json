@@ -1,0 +1,55 @@
+{
+ "slug": "manufacturing/shopfloor-analytics-query-agent",
+ "title": "Shop-Floor Analytics Query Agent",
+ "domain": "manufacturing",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 6437,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Metric match",
+   "definition": "whether the question maps to a governed metric",
+   "asOfRule": "Semantic layer coverage"
+  },
+  {
+   "name": "Time and entity resolution",
+   "definition": "lines, shifts and periods resolved",
+   "asOfRule": "Check ambiguities"
+  },
+  {
+   "name": "Data freshness",
+   "definition": "age of the data used",
+   "asOfRule": "From pipelines"
+  },
+  {
+   "name": "Query validation result",
+   "definition": "row count and sanity checks",
+   "asOfRule": "Rules"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Shop-Floor Analytics Query Agent\": Let supervisors and engineers ask questions in plain language about output, quality, downtime and energy and get correct charts and numbers with the definitions and sources shown. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Free SQL on raw tables."
+}

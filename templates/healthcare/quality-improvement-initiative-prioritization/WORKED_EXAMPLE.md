@@ -6,7 +6,7 @@
 
 **Objective.** Rank proposed improvement projects by patient impact, compliance urgency, feasibility, cost, equity and expected benefit, giving leaders a transparent portfolio with trade-offs and assumptions to decide from.
 
-**Constraints that shape the design.** Leadership sets criteria weights and makes the final portfolio decision; Hard constraints cover budget, staffing capacity and mandatory compliance projects; The scoring method is transparent with sensitivity to weights
+**Constraints that shape the design.** Leadership sets criteria weights and makes the final portfolio decision; Hard constraints cover budget, staffing capacity and mandatory compliance projects; The scoring method is transparent and its weights are versioned
 
 **Label in this use case.** For "Quality Improvement Initiative Prioritization": Rank proposed improvement projects by patient impact, compliance urgency, feasibility, cost, equity and expected benefit, giving leaders a transparent portfolio with trade-offs and assumptions to decide from. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Treating estimated benefits as certain.
 

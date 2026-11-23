@@ -1,0 +1,34 @@
+{
+ "use_case": "manufacturing/scrap-rework-prediction",
+ "engine": "tabular",
+ "seed": 53626,
+ "knobs": {
+  "n_entities": 2490,
+  "positive_entity_rate": 0.028,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.9,
+ "results": {
+  "rows": 193829,
+  "positive_rate": 0.0034256999726563105,
+  "test_rows": 64876,
+  "test_positive_rate": 0.0035914667981996424,
+  "baseline_lr": {
+   "pr_auc": 0.7051624483361381,
+   "recall_at_0.5pct_fpr": 0.7811158798283262,
+   "brier": 0.004175048194091797
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7508281008824073,
+   "recall_at_0.5pct_fpr": 0.7896995708154506,
+   "brier": 0.0014779717976199718
+  }
+ }
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/quantity-takeoff-from-drawings",
+ "title": "Quantity Takeoff from Drawings and Models",
+ "domain": "engineering",
+ "engine": "regression",
+ "fit": "exact",
+ "problemType": "regression-estimation",
+ "seed": 84110,
+ "knobs": {
+  "n": 20470,
+  "outlier_share": 0.015,
+  "drift": 0.287
+ },
+ "blueprintSignals": [
+  {
+   "name": "Element quantities",
+   "definition": "areas, volumes and counts",
+   "asOfRule": "From the model"
+  },
+  {
+   "name": "Drawing scale and units",
+   "definition": "scale bar and units",
+   "asOfRule": "From the drawing"
+  },
+  {
+   "name": "Assembly definitions",
+   "definition": "materials per element",
+   "asOfRule": "From the cost database"
+  },
+  {
+   "name": "Historic ratios",
+   "definition": "quantities per floor area",
+   "asOfRule": "From past projects"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "main driver (x1)",
+   "meaning": "the strongest continuous driver; interacts with x2 and shifts in the last quarter"
+  },
+  {
+   "feature": "interaction partner (x2)",
+   "meaning": "modifies the effect of x1 and sets the noise level"
+  },
+  {
+   "feature": "non-linear effect (x3)",
+   "meaning": "a smooth non-linear effect that a straight line cannot fit"
+  },
+  {
+   "feature": "threshold flag (x4)",
+   "meaning": "matters only above a threshold"
+  },
+  {
+   "feature": "segment",
+   "meaning": "a categorical segment with its own level and noise"
+  }
+ ],
+ "label": "For \"Quantity Takeoff from Drawings and Models\": Measure quantities such as areas, lengths and counts from models and drawings and compare them with estimates, with estimators confirming the results. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Unchecked scale."
+}

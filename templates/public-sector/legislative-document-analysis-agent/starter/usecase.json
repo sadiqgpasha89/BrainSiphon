@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/legislative-document-analysis-agent",
+ "title": "Legislative Document Analysis Agent",
+ "domain": "public-sector",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 45835,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Section cross-references",
+   "definition": "links between sections",
+   "asOfRule": "From the parser"
+  },
+  {
+   "name": "Definition conflicts",
+   "definition": "the same term defined differently",
+   "asOfRule": "From definitions"
+  },
+  {
+   "name": "Amendment diff",
+   "definition": "changes between versions",
+   "asOfRule": "From version control"
+  },
+  {
+   "name": "Effective dates",
+   "definition": "when provisions apply",
+   "asOfRule": "From the text"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Legislative Document Analysis Agent\": Help policy analysts compare bill texts, amendments and existing law with citations so they find conflicts, cross-references and definitions quickly. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Legal advice by the agent."
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "telecom/prepaid-recharge-prediction",
+ "title": "Prepaid Recharge & Top-up Prediction",
+ "domain": "telecom",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 22495,
+ "knobs": {
+  "n": 271
+ },
+ "blueprintSignals": [
+  {
+   "name": "Days since last recharge",
+   "definition": "gap to the usual interval",
+   "asOfRule": "Per customer"
+  },
+  {
+   "name": "Balance and burn rate",
+   "definition": "current balance and recent daily spend",
+   "asOfRule": "Real-time balance"
+  },
+  {
+   "name": "Payday and calendar effects",
+   "definition": "pay days and holidays",
+   "asOfRule": "Local calendar"
+  },
+  {
+   "name": "Recharge channel mix",
+   "definition": "channels used over 90 days",
+   "asOfRule": "Aggregates only"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Prepaid Recharge & Top-up Prediction\": Predict when each prepaid customer will recharge and how much so offers, reminders and liquidity forecasts reflect real behaviour. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Counting zero recharge as churn."
+}

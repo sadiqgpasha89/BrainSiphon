@@ -1,0 +1,55 @@
+{
+ "slug": "public-safety/public-safety-agent-action-guardrails",
+ "title": "Public Safety Agent Action Guardrails",
+ "domain": "public-safety",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 56739,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Action tier of the proposal",
+   "definition": "whether it moves a unit or sends a public message",
+   "asOfRule": "Dispatch system"
+  },
+  {
+   "name": "Proposals per incident",
+   "definition": "suggestion volume against the incident norm",
+   "asOfRule": "Dispatch log"
+  },
+  {
+   "name": "Dispatcher override rate",
+   "definition": "proposals changed or declined by dispatchers",
+   "asOfRule": "Decision records"
+  },
+  {
+   "name": "Response time after proposal",
+   "definition": "clock time from proposal to unit en route",
+   "asOfRule": "Dispatch timeline"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Public Safety Agent Action Guardrails\": Bound what AI agents may do in dispatch, records and alerting systems for emergency services, keep a human decision on every consequential step and preserve a record that can stand up to review. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Direct dispatch rights."
+}

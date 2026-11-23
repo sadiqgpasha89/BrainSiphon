@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/robot-cell-anomaly-detection",
+ "title": "Robot Cell Anomaly Detection",
+ "domain": "manufacturing",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 22381,
+ "knobs": {
+  "n_series": 91,
+  "anomalies_per_series": 1.92
+ },
+ "blueprintSignals": [
+  {
+   "name": "Current profile deviation",
+   "definition": "distance between the cycle current profile and the baseline",
+   "asOfRule": "Per step"
+  },
+  {
+   "name": "Cycle time drift",
+   "definition": "change in cycle duration",
+   "asOfRule": "By programme"
+  },
+  {
+   "name": "Temperature and vibration",
+   "definition": "motor and gearbox measures",
+   "asOfRule": "Per joint"
+  },
+  {
+   "name": "Programme version",
+   "definition": "the robot programme in use",
+   "asOfRule": "From the controller"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Robot Cell Anomaly Detection\": Detect abnormal behaviour in robot cells from joint currents, torque and cycle signatures so drive wear, tool faults and programme errors are found early. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Global torque limits."
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "public-sector/improper-payment-risk-review-queue",
+ "engine": "tabular",
+ "seed": 27835,
+ "knobs": {
+  "n_entities": 2140,
+  "positive_entity_rate": 0.031,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.4,
+ "results": {
+  "rows": 168020,
+  "positive_rate": 0.004064992262825854,
+  "test_rows": 56520,
+  "test_positive_rate": 0.0033439490445859874,
+  "baseline_lr": {
+   "pr_auc": 0.773177862217268,
+   "recall_at_0.5pct_fpr": 0.8618253968253968,
+   "brier": 0.00149593657321483
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.781349485925732,
+   "recall_at_0.5pct_fpr": 0.8253968253968254,
+   "brier": 0.0013209830470987326
+  }
+ }
+}

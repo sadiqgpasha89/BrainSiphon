@@ -1,0 +1,58 @@
+{
+ "slug": "engineering/site-hazard-ppe-detection",
+ "title": "Site Hazard and PPE Detection",
+ "domain": "engineering",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 28388,
+ "knobs": {
+  "n": 7300,
+  "dropout": 0.124
+ },
+ "blueprintSignals": [
+  {
+   "name": "Hazard condition classification",
+   "definition": "open edge, blocked exit or zone breach",
+   "asOfRule": "From a vision model"
+  },
+  {
+   "name": "Zone and activity context",
+   "definition": "what work is planned there",
+   "asOfRule": "From the site plan"
+  },
+  {
+   "name": "Equipment proximity",
+   "definition": "vehicle or crane near an exclusion zone",
+   "asOfRule": "From telematics"
+  },
+  {
+   "name": "Persistence",
+   "definition": "whether the condition lasts",
+   "asOfRule": "From video"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Site Hazard and PPE Detection\": Detect scene-level hazards such as missing edge protection, unguarded openings, blocked exits and exclusion zone breaches from site cameras and alert the safety manager, without identifying or scoring individual workers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Individual identification."
+}

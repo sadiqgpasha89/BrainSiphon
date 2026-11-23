@@ -1,0 +1,49 @@
+{
+ "use_case": "telecom/fibre-fault-localisation",
+ "engine": "regression",
+ "seed": 13650,
+ "knobs": {
+  "n": 21140,
+  "outlier_share": 0.016,
+  "drift": 0.163
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.7,
+ "results": {
+  "rows": 21140,
+  "train_rows": 14797,
+  "test_rows": 6343,
+  "baseline_ridge": {
+   "mae": 6.8422481760217,
+   "rmse": 11.2533002527865,
+   "wape": 0.13018414528822378,
+   "r2": 0.4598143794347904
+  },
+  "challenger_gbm": {
+   "mae": 4.129244822462537,
+   "rmse": 9.06915246796966,
+   "wape": 0.07856514322031863,
+   "r2": 0.6491539328834546
+  },
+  "mae_gain_vs_baseline": 0.3965075927919044,
+  "interval_80_coverage": 0.7297808607914236,
+  "interval_80_mean_width": 8.88060633209413,
+  "segment_mae": {
+   "0": 3.902801973918506,
+   "1": 4.05191454976184,
+   "2": 4.3708153075320615,
+   "3": 6.012890575038377
+  },
+  "worst_segment_vs_overall": 1.4561719717680726,
+  "leaky_feature_rmse": 1.5624048145271667,
+  "honest_rmse": 9.06915246796966,
+  "random_split_mae": 3.9537132985736436,
+  "chronological_mae": 4.129244822462537
+ }
+}

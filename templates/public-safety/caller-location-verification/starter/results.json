@@ -1,0 +1,36 @@
+{
+ "use_case": "public-safety/caller-location-verification",
+ "engine": "nlp",
+ "seed": 56440,
+ "knobs": {
+  "n_docs": 5630
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 6.0,
+ "results": {
+  "docs": 5630,
+  "duplicate_share": 0.2440497335701599,
+  "random_split_with_leak": {
+   "macro_f1": 0.8922492562556579,
+   "ece": 0.12804440016366228
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4758660704217031,
+   "ece": 0.051627322882889085
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8412122156038087,
+   "ece": 0.13499890165992692
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4758660704217031,
+   "ece": 0.051627322882889085
+  }
+ }
+}

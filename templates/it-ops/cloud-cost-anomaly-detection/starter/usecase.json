@@ -1,0 +1,58 @@
+{
+ "slug": "it-ops/cloud-cost-anomaly-detection",
+ "title": "Cloud Cost Anomaly Detection",
+ "domain": "it-ops",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 42914,
+ "knobs": {
+  "n_series": 82,
+  "anomalies_per_series": 2.32
+ },
+ "blueprintSignals": [
+  {
+   "name": "Spend deviation by service",
+   "definition": "residual versus baseline",
+   "asOfRule": "From billing"
+  },
+  {
+   "name": "New resource types",
+   "definition": "services not used before",
+   "asOfRule": "From inventory"
+  },
+  {
+   "name": "Usage change",
+   "definition": "quantity versus unit price change",
+   "asOfRule": "From billing"
+  },
+  {
+   "name": "Deployment and launch calendar",
+   "definition": "planned events",
+   "asOfRule": "From planning"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Cloud Cost Anomaly Detection\": Detect unusual spend by account, service and tag, explain the likely cause and route the alert to the owning team before the monthly bill closes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Total-spend budgets only."
+}

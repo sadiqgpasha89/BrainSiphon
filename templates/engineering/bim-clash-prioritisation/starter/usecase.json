@@ -1,0 +1,59 @@
+{
+ "slug": "engineering/bim-clash-prioritisation",
+ "title": "BIM Clash Prioritisation",
+ "domain": "engineering",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 36253,
+ "knobs": {
+  "n": 12800,
+  "label_noise": 0.088,
+  "dup_share": 0.438
+ },
+ "blueprintSignals": [
+  {
+   "name": "Element types in clash",
+   "definition": "systems involved",
+   "asOfRule": "From the model"
+  },
+  {
+   "name": "Clash depth and tolerance context",
+   "definition": "penetration and allowances",
+   "asOfRule": "From geometry"
+  },
+  {
+   "name": "Space and access criticality",
+   "definition": "impact on maintenance and egress",
+   "asOfRule": "From the model"
+  },
+  {
+   "name": "Construction sequence",
+   "definition": "whether the work is soon",
+   "asOfRule": "From the schedule"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"BIM Clash Prioritisation\": Rank model clashes between disciplines by real impact and likely fix owner so coordination meetings resolve the important ones first and ignore harmless overlaps. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Overlap volume as severity."
+}

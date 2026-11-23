@@ -1,0 +1,16 @@
+contract: data_loss_prevention_classification_inputs.v1
+owner: infrastructure-and-operations@example.com
+system_of_record: IT service management platform
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: content_classifier_output, type: double, nullable: false }
+    - { name: destination_type, type: double, nullable: false }
+    - { name: sender_role_and_data_access, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

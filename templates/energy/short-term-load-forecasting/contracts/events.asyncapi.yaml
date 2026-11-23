@@ -1,0 +1,46 @@
+asyncapi: 3.0.0
+info:
+  title: Short-Term Load Forecasting events (illustrative)
+  version: 0.1.0
+  description: Generated from the blueprint's event schema. Partition by the entity key so one entity's events stay
+    ordered.
+channels:
+  events:
+    address: short.term.load.forecasting.events
+    messages:
+      event:
+        $ref: '#/components/messages/Event'
+operations:
+  publishEvents:
+    action: send
+    channel:
+      $ref: '#/channels/events'
+components:
+  messages:
+    Event:
+      name: Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EventPayload'
+  schemas:
+    EventPayload:
+      type: object
+      properties:
+        type:
+          type: string
+          description: BatchRunCompleted
+        run_id:
+          type: string
+        run_date:
+          type: string
+          description: date
+        status:
+          type: string
+        rows_in:
+          type: integer
+        rows_out:
+          type: integer
+        rows_quarantined:
+          type: integer
+        manifest_uri:
+          type: string

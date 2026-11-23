@@ -1,0 +1,58 @@
+{
+ "slug": "energy/substation-thermal-imaging-anomaly",
+ "title": "Substation Thermal Imaging Anomaly Detection",
+ "domain": "energy",
+ "engine": "cv",
+ "fit": "exact",
+ "problemType": "vision-classification",
+ "seed": 7557,
+ "knobs": {
+  "n": 4840,
+  "prevalence": 0.158
+ },
+ "blueprintSignals": [
+  {
+   "name": "Temperature difference between phases",
+   "definition": "difference between similar parts",
+   "asOfRule": "From the image"
+  },
+  {
+   "name": "Load at capture time",
+   "definition": "current at the time of the image",
+   "asOfRule": "From SCADA"
+  },
+  {
+   "name": "Ambient and wind",
+   "definition": "outdoor temperature and wind speed",
+   "asOfRule": "From weather"
+  },
+  {
+   "name": "Component type and history",
+   "definition": "type and past findings",
+   "asOfRule": "From the register"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Substation Thermal Imaging Anomaly Detection\": Find hot spots on connectors, breakers and transformers in thermal images and fixed camera feeds, rank them by temperature rise and load, and schedule repairs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Absolute temperature thresholds."
+}

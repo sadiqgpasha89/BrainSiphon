@@ -1,0 +1,55 @@
+{
+ "slug": "energy/billing-inquiry-copilot",
+ "title": "Billing Inquiry Copilot",
+ "domain": "energy",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 54283,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Identity verification state",
+   "definition": "whether the customer is verified",
+   "asOfRule": "From the contact system"
+  },
+  {
+   "name": "Bill line items",
+   "definition": "charges, credits and estimates",
+   "asOfRule": "From billing"
+  },
+  {
+   "name": "Tariff and policy version",
+   "definition": "the rule version that applies",
+   "asOfRule": "From the policy store"
+  },
+  {
+   "name": "Inquiry type",
+   "definition": "high bill, estimate, payment or move",
+   "asOfRule": "Classified"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Billing Inquiry Copilot\": Help contact centre agents explain bills, tariffs and adjustments by retrieving the customer's own billing facts and the controlled policy, with every figure computed by tools. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model-computed amounts."
+}

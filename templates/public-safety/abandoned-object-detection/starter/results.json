@@ -1,0 +1,50 @@
+{
+ "use_case": "public-safety/abandoned-object-detection",
+ "engine": "cv",
+ "seed": 61973,
+ "knobs": {
+  "n": 3570,
+  "prevalence": 0.103
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 0.7,
+ "results": {
+  "images": 3570,
+  "train": 1272,
+  "prevalence": 0.09971988795518208,
+  "pixels_lr": {
+   "site_A_heldout": {
+    "auc": 1.0,
+    "sens_at_95_spec": 1.0
+   },
+   "site_B": {
+    "auc": 0.9561153429509776,
+    "sens_at_95_spec": 0.7433155080213903
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 1.0,
+    "false_positive_rate": 1.0
+   }
+  },
+  "contrast_aug_lr": {
+   "site_A_heldout": {
+    "auc": 0.9788263494318181,
+    "sens_at_95_spec": 0.8863636363636364
+   },
+   "site_B": {
+    "auc": 0.7566483828257992,
+    "sens_at_95_spec": 0.3422459893048128
+   },
+   "site_B_at_A_threshold": {
+    "sensitivity": 0.33689839572192515,
+    "false_positive_rate": 0.044372990353697746
+   }
+  }
+ }
+}

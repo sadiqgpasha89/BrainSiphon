@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/zoning-code-question-agent",
+ "title": "Zoning and Building Code Question Agent",
+ "domain": "public-sector",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 48693,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Parcel zone and overlays",
+   "definition": "zone and overlay layers at the parcel",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Ordinance version and date",
+   "definition": "effective version",
+   "asOfRule": "From the rule store"
+  },
+  {
+   "name": "Question type",
+   "definition": "uses, setbacks, height or process",
+   "asOfRule": "Classified"
+  },
+  {
+   "name": "Variance history",
+   "definition": "prior variances nearby",
+   "asOfRule": "From records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Zoning and Building Code Question Agent\": Answer questions about what can be built on a parcel by retrieving the zoning rules, overlays and code with citations, and refer binding determinations to planners. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Giving determinations."
+}

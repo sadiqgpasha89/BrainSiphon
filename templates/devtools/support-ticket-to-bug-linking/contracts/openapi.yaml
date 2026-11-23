@@ -1,0 +1,91 @@
+openapi: 3.1.0
+info:
+  title: Support Ticket to Bug Linking API (illustrative)
+  version: 0.1.0
+  description: Generated from the BrainSiphon blueprint. This is the shape of the interface, not a deployed service.
+servers:
+- url: https://scoring.internal.example.com
+paths:
+  /v1/support-ticket-to-bug-linking/decide:
+    post:
+      summary: 'Support Ticket to Bug Linking: request a decision'
+      operationId: support_ticket_to_bug_linking
+      description: 'Illustrative contract taken from the blueprint''s low-level design. End-to-end deadline: 2500
+        ms. Replace the placeholder values with your own fields and keep the error behaviour.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_id:
+                  type: string
+                entity_id:
+                  type: string
+                occurred_at:
+                  type: string
+                inline_signals:
+                  type: object
+                  properties:
+                    error_message_and_version_match:
+                      type: integer
+                    text_similarity_to_bug_reports:
+                      type: integer
+                deadline_ms:
+                  type: integer
+            example:
+              request_id: 01JABCDEF…
+              entity_id: ent_8f3a
+              occurred_at: '2026-11-07T10:15:30Z'
+              inline_signals:
+                error_message_and_version_match: 0
+                text_similarity_to_bug_reports: 3
+              deadline_ms: 2500
+      responses:
+        '200':
+          description: Decision returned inside the deadline
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                  decision:
+                    type: string
+                  score:
+                    type: number
+                  reason_codes:
+                    type: array
+                    items:
+                      type: string
+                  model_version:
+                    type: string
+                  latency_ms:
+                    type: number
+                  degraded:
+                    type: boolean
+              example:
+                request_id: 01JABCDEF…
+                decision: PASS | REVIEW | ACT
+                score: 0.0134
+                reason_codes:
+                - error_message_and_version_match
+                - text_similarity_to_bug_reports
+                model_version: 2026-11-03.r2
+                latency_ms: 4.2
+                degraded: false
+        '400':
+          description: Invalid request; never retried
+        '429':
+          description: Rate limited or load shed; retry with backoff and the same idempotency key
+        '503':
+          description: Dependency unavailable; the service answers from its degradation ladder when it can
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

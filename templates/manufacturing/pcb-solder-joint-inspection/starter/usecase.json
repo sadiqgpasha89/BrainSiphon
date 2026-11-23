@@ -1,0 +1,58 @@
+{
+ "slug": "manufacturing/pcb-solder-joint-inspection",
+ "title": "PCB Solder Joint Inspection",
+ "domain": "manufacturing",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 8005,
+ "knobs": {
+  "n": 4720,
+  "prevalence": 0.155
+ },
+ "blueprintSignals": [
+  {
+   "name": "Joint shape and volume",
+   "definition": "3D height map statistics per joint",
+   "asOfRule": "Needs calibrated height"
+  },
+  {
+   "name": "Component offset and rotation",
+   "definition": "placement offsets against the pad",
+   "asOfRule": "From the placement file"
+  },
+  {
+   "name": "Stencil and paste measurement",
+   "definition": "paste volume from the printer inspection",
+   "asOfRule": "Join by board id"
+  },
+  {
+   "name": "Reflow profile summary",
+   "definition": "peak temperature and time above liquidus",
+   "asOfRule": "From the oven log"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"PCB Solder Joint Inspection\": Classify solder joints and component placement on circuit boards from 2D and 3D images so shorts, opens and tombstones are caught before test. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Trusting machine rejects as labels."
+}

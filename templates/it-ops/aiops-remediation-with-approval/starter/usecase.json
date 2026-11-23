@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/aiops-remediation-with-approval",
+ "title": "AIOps Remediation with Approval",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 58305,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Incident pattern match",
+   "definition": "match to a certified pattern",
+   "asOfRule": "From pattern library"
+  },
+  {
+   "name": "Blast radius",
+   "definition": "services and users affected by the action",
+   "asOfRule": "From the CMDB"
+  },
+  {
+   "name": "Pre-check results",
+   "definition": "health checks before the step",
+   "asOfRule": "From monitoring"
+  },
+  {
+   "name": "Post-check results",
+   "definition": "health checks after the step",
+   "asOfRule": "From monitoring"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"AIOps Remediation with Approval\": Propose and run approved remediation steps for known incident patterns, such as restarting a service or clearing a queue, with verification and rollback, under pre-approved runbooks and human approval for anything else. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Free-form commands."
+}

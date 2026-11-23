@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/network-change-risk-scoring",
+ "engine": "tabular",
+ "seed": 9195,
+ "knobs": {
+  "n_entities": 2420,
+  "positive_entity_rate": 0.034,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.5,
+ "results": {
+  "rows": 183779,
+  "positive_rate": 0.004592472480533684,
+  "test_rows": 61422,
+  "test_positive_rate": 0.005405229396633128,
+  "baseline_lr": {
+   "pr_auc": 0.7260448430498053,
+   "recall_at_0.5pct_fpr": 0.7409638554216867,
+   "brier": 0.002277386699961877
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7332965743960994,
+   "recall_at_0.5pct_fpr": 0.7168674698795181,
+   "brier": 0.0022878631731550474
+  }
+ }
+}

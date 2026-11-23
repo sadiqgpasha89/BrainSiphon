@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/wildfire-camera-detection",
+ "title": "Wildfire Smoke Detection from Cameras",
+ "domain": "public-safety",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 6913,
+ "knobs": {
+  "n": 4600,
+  "prevalence": 0.138
+ },
+ "blueprintSignals": [
+  {
+   "name": "Smoke probability by region",
+   "definition": "model score on image regions",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Plume growth over frames",
+   "definition": "growth and drift of the plume",
+   "asOfRule": "From frame sequences"
+  },
+  {
+   "name": "Weather and fire danger",
+   "definition": "wind, humidity and fire danger rating",
+   "asOfRule": "From weather"
+  },
+  {
+   "name": "Camera health",
+   "definition": "image quality and obstruction",
+   "asOfRule": "From the camera"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Wildfire Smoke Detection from Cameras\": Detect early smoke plumes in tower camera feeds and alert fire dispatchers with the image evidence so crews arrive while fires are small. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Automatic dispatch."
+}

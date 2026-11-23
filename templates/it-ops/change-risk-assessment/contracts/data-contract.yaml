@@ -1,0 +1,16 @@
+contract: change_risk_assessment_inputs.v1
+owner: infrastructure-and-operations@example.com
+system_of_record: IT service management platform
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: target_criticality, type: double, nullable: false }
+    - { name: change_type_and_size, type: double, nullable: false }
+    - { name: past_failure_rate_for_the_service, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

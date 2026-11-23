@@ -1,0 +1,58 @@
+{
+ "slug": "telecom/usage-revenue-leakage-detection",
+ "title": "Usage & Rating Revenue Leakage Detection",
+ "domain": "telecom",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 56197,
+ "knobs": {
+  "n_series": 63,
+  "anomalies_per_series": 3.48
+ },
+ "blueprintSignals": [
+  {
+   "name": "Record count ratio between steps",
+   "definition": "records in versus out per day and service",
+   "asOfRule": "Align on the same period"
+  },
+  {
+   "name": "Rate plan assignment gaps",
+   "definition": "usage without a matching rating rule",
+   "asOfRule": "Needs the catalogue history"
+  },
+  {
+   "name": "Unrated or zero-value share",
+   "definition": "share of usage with zero charge by product",
+   "asOfRule": "Per product"
+  },
+  {
+   "name": "Change adjacency",
+   "definition": "catalogue or system changes near the shift",
+   "asOfRule": "Needs change records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Usage & Rating Revenue Leakage Detection\": Find usage that was delivered but not billed or billed incorrectly across mediation, rating and billing so revenue assurance recovers lost revenue and fixes the root cause. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Using total bill checks only."
+}

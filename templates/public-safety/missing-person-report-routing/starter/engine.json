@@ -1,0 +1,33 @@
+{
+ "id": "generative",
+ "label": "Evaluating generated or specialised output with a golden set and two judges",
+ "summary": "A golden set of checkable items, stand-ins for two generator versions with controlled failure rates, a strict and a fuzzy judge, their agreement, and bootstrap intervals on the difference; replace the stand-in with your model.",
+ "problemTypes": [
+  "generative-or-other"
+ ],
+ "traps": [
+  "A strict judge that rejects valid formats",
+  "Two judges that disagree on borderline outputs",
+  "A golden set too small to tell versions apart",
+  "A forbidden claim that must never pass"
+ ],
+ "origin": "brainsiphon-pro",
+ "slots": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ]
+}

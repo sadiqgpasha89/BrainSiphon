@@ -1,0 +1,41 @@
+{
+ "use_case": "public-sector/caseworker-case-summarisation-assistant",
+ "engine": "llm-rag",
+ "seed": 11448,
+ "knobs": {},
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 1.9,
+ "results": {
+  "chunks": 132,
+  "golden": 132,
+  "test_questions": 66,
+  "naive": {
+   "answerable": 48,
+   "unanswerable": 18,
+   "accuracy": 0.6041666666666666,
+   "answered_precision": 0.6041666666666666,
+   "abstained_on_answerable": 0.0,
+   "hallucination_rate": 1.0,
+   "stale_or_changelog_errors": 1,
+   "recall@5": 1.0,
+   "citation_support": 1.0
+  },
+  "guarded": {
+   "answerable": 48,
+   "unanswerable": 18,
+   "accuracy": 0.625,
+   "answered_precision": 1.0,
+   "abstained_on_answerable": 0.375,
+   "hallucination_rate": 0.0,
+   "stale_or_changelog_errors": 0,
+   "recall@5": 1.0,
+   "citation_support": 1.0
+  }
+ }
+}

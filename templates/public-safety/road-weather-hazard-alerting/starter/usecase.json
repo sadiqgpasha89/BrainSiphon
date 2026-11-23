@@ -1,0 +1,58 @@
+{
+ "slug": "public-safety/road-weather-hazard-alerting",
+ "title": "Road Weather Hazard Alerting",
+ "domain": "public-safety",
+ "engine": "survival",
+ "fit": "exact",
+ "problemType": "survival-time-to-event",
+ "seed": 90474,
+ "knobs": {
+  "n": 7680,
+  "dropout": 0.138
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pavement temperature forecast",
+   "definition": "predicted surface temperature",
+   "asOfRule": "From models"
+  },
+  {
+   "name": "Precipitation type and timing",
+   "definition": "rain, snow and freezing rain",
+   "asOfRule": "From radar"
+  },
+  {
+   "name": "Surface moisture",
+   "definition": "wet or dry surface",
+   "asOfRule": "From sensors"
+  },
+  {
+   "name": "Visibility readings",
+   "definition": "fog and spray",
+   "asOfRule": "From sensors"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "risk factor (x0)",
+   "meaning": "raises the hazard"
+  },
+  {
+   "feature": "protective factor (x1)",
+   "meaning": "lowers the hazard"
+  },
+  {
+   "feature": "secondary risk (x2)",
+   "meaning": "a smaller risk effect"
+  },
+  {
+   "feature": "noise (x3)",
+   "meaning": "irrelevant"
+  },
+  {
+   "feature": "entry date",
+   "meaning": "the cohort the subject joined, used for the time-based split"
+  }
+ ],
+ "label": "For \"Road Weather Hazard Alerting\": Forecast ice, flooding and low visibility on road segments from sensors and weather models and alert maintenance teams and drivers in time to treat or warn. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Air temperature as the only input."
+}

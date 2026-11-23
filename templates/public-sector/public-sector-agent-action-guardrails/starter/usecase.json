@@ -1,0 +1,55 @@
+{
+ "slug": "public-sector/public-sector-agent-action-guardrails",
+ "title": "Public Sector Agent Action Guardrails",
+ "domain": "public-sector",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 28568,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Decision tier of the draft",
+   "definition": "whether it changes entitlement or payment",
+   "asOfRule": "Case system"
+  },
+  {
+   "name": "Drafts per caseworker per day",
+   "definition": "volume against the team norm",
+   "asOfRule": "Workflow log"
+  },
+  {
+   "name": "Caseworker change rate",
+   "definition": "drafts edited or rejected before release",
+   "asOfRule": "Decision trail"
+  },
+  {
+   "name": "Appeal rate after release",
+   "definition": "decisions later challenged by residents",
+   "asOfRule": "Appeals system"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Public Sector Agent Action Guardrails\": Limit and record what AI agents do inside benefit systems, citizen records and payment runs so that every decision affecting a resident has a named human owner and a record an ombudsman can review. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Direct edit rights across case systems."
+}

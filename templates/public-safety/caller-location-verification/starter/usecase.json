@@ -1,0 +1,57 @@
+{
+ "slug": "public-safety/caller-location-verification",
+ "title": "Caller Location Verification",
+ "domain": "public-safety",
+ "engine": "nlp",
+ "fit": "exact",
+ "problemType": "text-classification",
+ "seed": 56440,
+ "knobs": {
+  "n_docs": 5630
+ },
+ "blueprintSignals": [
+  {
+   "name": "Device location accuracy radius",
+   "definition": "reported fix and accuracy",
+   "asOfRule": "From the carrier"
+  },
+  {
+   "name": "Address text match",
+   "definition": "match between spoken address and the gazetteer",
+   "asOfRule": "From geocoding"
+  },
+  {
+   "name": "Landmark and road mentions",
+   "definition": "named landmarks and road names",
+   "asOfRule": "From transcripts"
+  },
+  {
+   "name": "Distance between sources",
+   "definition": "gap between device and spoken locations",
+   "asOfRule": "Computed"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Caller Location Verification\": Combine spoken addresses, device location and map data to propose the most likely incident location for the call taker to confirm, and flag conflicts between sources. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Single-pin output."
+}

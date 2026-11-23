@@ -1,0 +1,58 @@
+{
+ "slug": "engineering/crew-equipment-scheduling",
+ "title": "Crew and Equipment Scheduling",
+ "domain": "engineering",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 41250,
+ "knobs": {
+  "n_instances": 123,
+  "noise": 0.289
+ },
+ "blueprintSignals": [
+  {
+   "name": "Activity demand",
+   "definition": "work and crew type needed",
+   "asOfRule": "From the schedule"
+  },
+  {
+   "name": "Resource availability",
+   "definition": "crews and equipment by day",
+   "asOfRule": "From the resource plan"
+  },
+  {
+   "name": "Site constraints",
+   "definition": "lift zones and access",
+   "asOfRule": "From the site plan"
+  },
+  {
+   "name": "Weather outlook",
+   "definition": "days with limits",
+   "asOfRule": "From forecasts"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Crew and Equipment Scheduling\": Plan crews, cranes and equipment across work fronts to meet the schedule with fewer conflicts and idle time, subject to labour rules and safety limits, for planners to approve. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Utilisation alone."
+}

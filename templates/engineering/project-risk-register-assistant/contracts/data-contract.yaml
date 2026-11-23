@@ -1,0 +1,16 @@
+contract: project_risk_register_assistant_inputs.v1
+owner: engineering-management@example.com
+system_of_record: CAD, BIM and document management system
+schema:
+  registry_compatibility: BACKWARD_TRANSITIVE
+  fields:
+    - { name: event_id, type: string, unique: true }
+    - { name: event_time, type: timestamp, required: true, tz: UTC }
+    - { name: project_scope_and_stage, type: double, nullable: false }
+    - { name: similar_past_risks, type: double, nullable: false }
+    - { name: register_gaps, type: double, nullable: false }
+sla:
+  freshness_p95: 60 seconds
+  completeness: ">=99.5%"
+  duplicates: "<0.01%"
+on_breach: { notify: owner, action: quarantine_and_serve_stale, escalate_after: 30m }

@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/parking-occupancy-prediction",
+ "title": "Parking Occupancy Prediction",
+ "domain": "public-sector",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 79289,
+ "knobs": {
+  "n_series": 170
+ },
+ "blueprintSignals": [
+  {
+   "name": "Current occupancy",
+   "definition": "occupancy now by zone",
+   "asOfRule": "From sensors and payments"
+  },
+  {
+   "name": "Same time last week",
+   "definition": "occupancy in prior weeks",
+   "asOfRule": "Aligned"
+  },
+  {
+   "name": "Events and weather",
+   "definition": "event calendar and weather",
+   "asOfRule": "From data"
+  },
+  {
+   "name": "Price and rules",
+   "definition": "prices and time limits",
+   "asOfRule": "From policy"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Parking Occupancy Prediction\": Predict parking occupancy by street and lot for the next hours so drivers get guidance and pricing and enforcement follow demand. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Plate-level tracking."
+}

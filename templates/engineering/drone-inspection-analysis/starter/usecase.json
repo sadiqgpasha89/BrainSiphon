@@ -1,0 +1,58 @@
+{
+ "slug": "engineering/drone-inspection-analysis",
+ "title": "Drone Inspection Analysis",
+ "domain": "engineering",
+ "engine": "cv",
+ "fit": "adaptable",
+ "problemType": "vision-classification",
+ "seed": 40472,
+ "knobs": {
+  "n": 3520,
+  "prevalence": 0.128
+ },
+ "blueprintSignals": [
+  {
+   "name": "Defect candidates",
+   "definition": "cracks, corrosion and loose items",
+   "asOfRule": "From a vision model"
+  },
+  {
+   "name": "Pose and registration",
+   "definition": "position of images over time",
+   "asOfRule": "From survey data"
+  },
+  {
+   "name": "Measurement scale",
+   "definition": "resolution and scale",
+   "asOfRule": "From metadata"
+  },
+  {
+   "name": "Asset history",
+   "definition": "earlier findings",
+   "asOfRule": "From records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "local contrast",
+   "meaning": "how strongly a region stands out from its neighbourhood"
+  },
+  {
+   "feature": "pooled maximum",
+   "meaning": "the strongest local contrast anywhere in the image"
+  },
+  {
+   "feature": "noise-normalised score",
+   "meaning": "contrast divided by the image's own noise level"
+  },
+  {
+   "feature": "site or device",
+   "meaning": "which scanner or camera produced the image"
+  },
+  {
+   "feature": "brightness jitter",
+   "meaning": "augmentation that stops the model using overall brightness"
+  }
+ ],
+ "label": "For \"Drone Inspection Analysis\": Analyse drone images of roofs, towers, stockpiles and facades to detect damage and measure change over time, for inspectors to confirm and plan repairs. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model findings as labels."
+}

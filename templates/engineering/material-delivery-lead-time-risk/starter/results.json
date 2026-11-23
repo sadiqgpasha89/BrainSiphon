@@ -1,0 +1,34 @@
+{
+ "use_case": "engineering/material-delivery-lead-time-risk",
+ "engine": "tabular",
+ "seed": 11303,
+ "knobs": {
+  "n_entities": 2840,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 6
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.2,
+ "results": {
+  "rows": 213410,
+  "positive_rate": 0.0032332130640551054,
+  "test_rows": 71585,
+  "test_positive_rate": 0.00370189285464832,
+  "baseline_lr": {
+   "pr_auc": 0.6210537155890357,
+   "recall_at_0.5pct_fpr": 0.7534397677793905,
+   "brier": 0.011049149347504896
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7405504510580336,
+   "recall_at_0.5pct_fpr": 0.7773584905660378,
+   "brier": 0.0017299659890286795
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "slug": "public-safety/incident-situation-report-agent",
+ "title": "Incident Situation Report Agent",
+ "domain": "public-safety",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 27761,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Event timeline",
+   "definition": "ordered events with times",
+   "asOfRule": "From CAD"
+  },
+  {
+   "name": "Resource status",
+   "definition": "units and assets by status",
+   "asOfRule": "From CAD"
+  },
+  {
+   "name": "Hazard and map layers",
+   "definition": "hazard extent and closures",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Report conflict flags",
+   "definition": "disagreements between sources",
+   "asOfRule": "From checks"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Incident Situation Report Agent\": Compile situation reports for incident commanders from radio logs, dispatch events, field reports and maps, with every statement linked to its source and the time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Uncited statements."
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "energy/meter-to-cash-exception-triage",
+ "title": "Meter-to-Cash Exception Triage",
+ "domain": "energy",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 10274,
+ "knobs": {
+  "n": 13360,
+  "label_noise": 0.071,
+  "dup_share": 0.302
+ },
+ "blueprintSignals": [
+  {
+   "name": "Exception code and text",
+   "definition": "code and free-text note",
+   "asOfRule": "From the billing system"
+  },
+  {
+   "name": "Account and meter context",
+   "definition": "account type and meter changes",
+   "asOfRule": "From CIS"
+  },
+  {
+   "name": "Value at risk",
+   "definition": "estimated unbilled amount",
+   "asOfRule": "From billing"
+  },
+  {
+   "name": "Age of the exception",
+   "definition": "days since it arose",
+   "asOfRule": "From the queue"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Meter-to-Cash Exception Triage\": Classify and route billing exceptions such as unusual reads, rejected bills and mismatched accounts so analysts fix the most costly ones first. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Code-only labels."
+}

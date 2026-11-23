@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: n/a  # batch: run window = 2h
+  stages:
+    - { name: wafer_path_and_metrology_ingestion, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: path_join, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: excursion_detector, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: attribution_model, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: ranked_tool_and_step_list, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: hold_decision, timeout_ms: n/a, on_timeout: fallback_level_1 }
+    - { name: outcome_tracking, timeout_ms: n/a, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "Wafers affected per excursion"
+    - "Time to containment"
+    - "Yield loss"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

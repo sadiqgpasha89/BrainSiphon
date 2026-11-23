@@ -1,0 +1,24 @@
+serving:
+  deadline_ms: 2500
+  stages:
+    - { name: change_analysis, timeout_ms: 267, on_timeout: fallback_level_1 }
+    - { name: coverage_mapping, timeout_ms: 267, on_timeout: fallback_level_1 }
+    - { name: failure_model, timeout_ms: 712, on_timeout: fallback_level_1 }
+    - { name: selection_and_ordering, timeout_ms: 178, on_timeout: fallback_level_1 }
+    - { name: ci_run, timeout_ms: 267, on_timeout: fallback_level_1 }
+    - { name: miss_monitoring, timeout_ms: 267, on_timeout: fallback_level_1 }
+    - { name: retraining, timeout_ms: 267, on_timeout: fallback_level_1 }
+breaker:            # per dependency, not global
+  error_rate_open: 0.5
+  window_s: 10
+  half_open_probes: 5
+rollout:
+  shadow_days: 7
+  canary_steps_pct: [1, 5, 25, 100]
+  auto_rollback_if_degraded:
+    - "CI time"
+    - "Time to first failure"
+    - "Escaped failures"
+privacy:
+  pii_in_logs: false
+  retention_days: 400

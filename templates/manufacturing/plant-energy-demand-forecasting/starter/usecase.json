@@ -1,0 +1,57 @@
+{
+ "slug": "manufacturing/plant-energy-demand-forecasting",
+ "title": "Plant Energy Demand Forecasting",
+ "domain": "manufacturing",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 29641,
+ "knobs": {
+  "n_series": 154
+ },
+ "blueprintSignals": [
+  {
+   "name": "Planned production by line",
+   "definition": "scheduled hours and output",
+   "asOfRule": "From planning"
+  },
+  {
+   "name": "Weather forecast",
+   "definition": "temperature and humidity",
+   "asOfRule": "Forecast not actual"
+  },
+  {
+   "name": "Same hour last week",
+   "definition": "load at the same hour in prior weeks",
+   "asOfRule": "Aligned on local time"
+  },
+  {
+   "name": "Equipment state",
+   "definition": "machines on and off",
+   "asOfRule": "From MES"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"Plant Energy Demand Forecasting\": Forecast electricity, gas and steam demand for a plant by interval so purchasing, peak management and on-site generation plans use realistic loads. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Mean-only forecasts."
+}

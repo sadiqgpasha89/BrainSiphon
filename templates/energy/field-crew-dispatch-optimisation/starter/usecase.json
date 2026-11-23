@@ -1,0 +1,58 @@
+{
+ "slug": "energy/field-crew-dispatch-optimisation",
+ "title": "Field Crew Dispatch Optimisation",
+ "domain": "energy",
+ "engine": "optimize",
+ "fit": "adaptable",
+ "problemType": "optimisation-allocation",
+ "seed": 84839,
+ "knobs": {
+  "n_instances": 172,
+  "noise": 0.449
+ },
+ "blueprintSignals": [
+  {
+   "name": "Job priority and deadline",
+   "definition": "emergency level and due time",
+   "asOfRule": "From work management"
+  },
+  {
+   "name": "Crew skills and location",
+   "definition": "certifications and position",
+   "asOfRule": "From the crew app"
+  },
+  {
+   "name": "Parts availability on truck",
+   "definition": "stock held on the vehicle",
+   "asOfRule": "From inventory"
+  },
+  {
+   "name": "Travel time forecast",
+   "definition": "predicted road time",
+   "asOfRule": "From traffic data"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "predicted cost",
+   "meaning": "model estimate of the cost of each task-resource pairing"
+  },
+  {
+   "feature": "prediction uncertainty",
+   "meaning": "how reliable each estimate is"
+  },
+  {
+   "feature": "hard constraints",
+   "meaning": "capacity, time windows and compatibility the plan must satisfy"
+  },
+  {
+   "feature": "promised versus realised cost",
+   "meaning": "what the plan said it would cost against what it cost"
+  },
+  {
+   "feature": "plan churn",
+   "meaning": "how much the plan changes between re-solves"
+  }
+ ],
+ "label": "For \"Field Crew Dispatch Optimisation\": Assign crews to jobs and routes by skills, parts, travel time and priority so emergency work is fast and planned work is efficient. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Nearest-crew assignment only."
+}

@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/der-hosting-capacity-estimation",
+ "engine": "tabular",
+ "seed": 33215,
+ "knobs": {
+  "n_entities": 2760,
+  "positive_entity_rate": 0.032,
+  "n_flash_sales": 4
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.1,
+ "results": {
+  "rows": 205698,
+  "positive_rate": 0.004623282676545226,
+  "test_rows": 67769,
+  "test_positive_rate": 0.0051646032846876895,
+  "baseline_lr": {
+   "pr_auc": 0.515178027184476,
+   "recall_at_0.5pct_fpr": 0.7142857142857143,
+   "brier": 0.0051924805180484064
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.768417999473846,
+   "recall_at_0.5pct_fpr": 0.7942857142857143,
+   "brier": 0.002004924888203608
+  }
+ }
+}

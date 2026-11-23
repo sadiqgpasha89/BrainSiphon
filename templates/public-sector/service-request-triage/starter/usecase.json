@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/service-request-triage",
+ "title": "Service Request Triage (311)",
+ "domain": "public-sector",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 59272,
+ "knobs": {
+  "n_docs": 6590
+ },
+ "blueprintSignals": [
+  {
+   "name": "Text and photo content",
+   "definition": "description and image evidence",
+   "asOfRule": "From the request"
+  },
+  {
+   "name": "Location and nearby requests",
+   "definition": "place and clusters of similar requests",
+   "asOfRule": "From GIS"
+  },
+  {
+   "name": "Hazard terms",
+   "definition": "words and visuals indicating danger",
+   "asOfRule": "From the lexicon and vision"
+  },
+  {
+   "name": "Asset record",
+   "definition": "the asset at the location",
+   "asOfRule": "From the asset register"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Service Request Triage (311)\": Classify and route non-emergency service requests such as potholes, graffiti and noise from text and photos to the right team with a priority, so residents get faster fixes. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Prioritising by request volume."
+}

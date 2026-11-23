@@ -1,0 +1,36 @@
+{
+ "use_case": "manufacturing/work-order-failure-code-classification",
+ "engine": "nlp",
+ "seed": 3773,
+ "knobs": {
+  "n_docs": 5570
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 5.0,
+ "results": {
+  "docs": 5570,
+  "duplicate_share": 0.2515260323159785,
+  "random_split_with_leak": {
+   "macro_f1": 0.9026341577456696,
+   "ece": 0.13337338545123
+  },
+  "time_split_clean": {
+   "macro_f1": 0.4577921958702096,
+   "ece": 0.05016369882598174
+  },
+  "frozen_model_next_month": {
+   "macro_f1": 0.8425577051403794,
+   "ece": 0.1253312770778672
+  },
+  "frozen_model_months_6_7": {
+   "macro_f1": 0.4577921958702096,
+   "ece": 0.05016369882598174
+  }
+ }
+}

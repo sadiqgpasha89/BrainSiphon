@@ -1,0 +1,34 @@
+{
+ "use_case": "public-sector/public-appointment-no-show-prediction",
+ "engine": "tabular",
+ "seed": 54556,
+ "knobs": {
+  "n_entities": 2220,
+  "positive_entity_rate": 0.021,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.4,
+ "results": {
+  "rows": 171163,
+  "positive_rate": 0.00286861062262288,
+  "test_rows": 56593,
+  "test_positive_rate": 0.00302157510646193,
+  "baseline_lr": {
+   "pr_auc": 0.7684806615415897,
+   "recall_at_0.5pct_fpr": 0.8070175438596491,
+   "brier": 0.0011522709101640218
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8032372498375994,
+   "recall_at_0.5pct_fpr": 0.8245614035087719,
+   "brier": 0.001034822172580549
+  }
+ }
+}

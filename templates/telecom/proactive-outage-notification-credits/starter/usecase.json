@@ -1,0 +1,59 @@
+{
+ "slug": "telecom/proactive-outage-notification-credits",
+ "title": "Proactive Outage Notification & Credits",
+ "domain": "telecom",
+ "engine": "tabular",
+ "fit": "adaptable",
+ "problemType": "binary-event-classification",
+ "seed": 9582,
+ "knobs": {
+  "n_entities": 1850,
+  "positive_entity_rate": 0.023,
+  "n_flash_sales": 4
+ },
+ "blueprintSignals": [
+  {
+   "name": "Impact membership",
+   "definition": "verified link between the customer and the affected elements",
+   "asOfRule": "Join to live topology"
+  },
+  {
+   "name": "Restoration estimate",
+   "definition": "predicted time to restore from the incident type and crew status",
+   "asOfRule": "Calibrated range"
+  },
+  {
+   "name": "Contact preference",
+   "definition": "channel and quiet hours",
+   "asOfRule": "From consent records"
+  },
+  {
+   "name": "Service importance",
+   "definition": "enterprise, emergency or medical flags held with consent",
+   "asOfRule": "Use only declared flags"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "short-window activity",
+   "meaning": "count and sum of the entity's events in the last minute, hour and day, closed strictly before the decision time"
+  },
+  {
+   "feature": "shared-group fan-out",
+   "meaning": "distinct entities seen on the same group in the last 24 hours"
+  },
+  {
+   "feature": "new-group flag",
+   "meaning": "first time this entity is seen on this group"
+  },
+  {
+   "feature": "counterparty rate",
+   "meaning": "share of confirmed positives at the counterparty, using only labels that had arrived by decision time"
+  },
+  {
+   "feature": "relative amount",
+   "meaning": "value compared with the entity's own normal"
+  }
+ ],
+ "label": "For \"Proactive Outage Notification & Credits\": Notify affected customers of outages in their own channel with accurate restoration estimates and calculate goodwill credits within policy, so contacts during incidents fall. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Notifying by postcode."
+}

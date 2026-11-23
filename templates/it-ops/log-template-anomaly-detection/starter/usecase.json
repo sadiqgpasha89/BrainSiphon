@@ -1,0 +1,57 @@
+{
+ "slug": "it-ops/log-template-anomaly-detection",
+ "title": "Log Template Anomaly Detection",
+ "domain": "it-ops",
+ "engine": "nlp",
+ "fit": "adaptable",
+ "problemType": "text-classification",
+ "seed": 27891,
+ "knobs": {
+  "n_docs": 4750
+ },
+ "blueprintSignals": [
+  {
+   "name": "Template frequency change",
+   "definition": "rate of each template versus baseline",
+   "asOfRule": "From parsing"
+  },
+  {
+   "name": "New template appearance",
+   "definition": "templates unseen before",
+   "asOfRule": "From parsing"
+  },
+  {
+   "name": "Severity level mix",
+   "definition": "error and warning share",
+   "asOfRule": "From logs"
+  },
+  {
+   "name": "Release marker",
+   "definition": "version and deployment time",
+   "asOfRule": "From change records"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "topic terms",
+   "meaning": "words and phrases most associated with each class"
+  },
+  {
+   "feature": "text length and structure",
+   "meaning": "document length, templates and boilerplate"
+  },
+  {
+   "feature": "source and thread",
+   "meaning": "which conversation or document family a text belongs to"
+  },
+  {
+   "feature": "recency",
+   "meaning": "when the text was written, for time-based splits"
+  },
+  {
+   "feature": "calibrated confidence",
+   "meaning": "probability that the top class is right"
+  }
+ ],
+ "label": "For \"Log Template Anomaly Detection\": Learn normal log patterns per service, flag new or rare message templates and unusual rates after releases, and surface them with sample lines to engineers. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Keyword alerts only."
+}

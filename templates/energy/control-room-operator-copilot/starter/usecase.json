@@ -1,0 +1,55 @@
+{
+ "slug": "energy/control-room-operator-copilot",
+ "title": "Control Room Operator Copilot",
+ "domain": "energy",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 22519,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Procedure revision status",
+   "definition": "whether the document is current",
+   "asOfRule": "From document control"
+  },
+  {
+   "name": "Event similarity",
+   "definition": "similarity to past incidents",
+   "asOfRule": "Embedding and metadata"
+  },
+  {
+   "name": "Question intent",
+   "definition": "procedure, equipment data or history",
+   "asOfRule": "Classified"
+  },
+  {
+   "name": "Operator role",
+   "definition": "operator, supervisor or planner",
+   "asOfRule": "From identity"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"Control Room Operator Copilot\": Help control-room operators find procedures, similar past events and switching sheets during an incident by answering from controlled documents and giving the evidence, without issuing or preparing live commands. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Paraphrasing switching steps."
+}

@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/it-agent-evaluation-harness",
+ "title": "IT Agent Evaluation Harness",
+ "domain": "it-ops",
+ "engine": "llm-agent",
+ "fit": "adaptable",
+ "problemType": "agentic-read-only",
+ "seed": 90447,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Task success rate",
+   "definition": "tasks completed correctly",
+   "asOfRule": "From the harness"
+  },
+  {
+   "name": "Safety violations",
+   "definition": "policy breaches during runs",
+   "asOfRule": "From gateway logs"
+  },
+  {
+   "name": "Tool call accuracy",
+   "definition": "right tool and arguments",
+   "asOfRule": "From traces"
+  },
+  {
+   "name": "Cost and steps",
+   "definition": "tokens and steps",
+   "asOfRule": "From traces"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "typed read-only tools",
+   "meaning": "narrow queries for context and evidence, with no free-form shell or query language"
+  },
+  {
+   "feature": "deciding evidence",
+   "meaning": "the specific records that justify a verdict"
+  },
+  {
+   "feature": "untrusted fields",
+   "meaning": "text fields an outsider can influence, treated as data"
+  },
+  {
+   "feature": "approval token",
+   "meaning": "required for any action that changes a system"
+  },
+  {
+   "feature": "step budget",
+   "meaning": "maximum tool calls before the agent must stop or escalate"
+  }
+ ],
+ "label": "For \"IT Agent Evaluation Harness\": Evaluate IT assistants and agents on real past tickets and incidents with expected outcomes, safety scenarios and cost so changes to prompts, tools and models are judged on evidence before rollout. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Model-written answers as truth."
+}

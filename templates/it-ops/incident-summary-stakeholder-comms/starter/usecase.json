@@ -1,0 +1,55 @@
+{
+ "slug": "it-ops/incident-summary-stakeholder-comms",
+ "title": "Incident Summary and Stakeholder Communication",
+ "domain": "it-ops",
+ "engine": "llm-rag",
+ "fit": "exact",
+ "problemType": "grounded-qa",
+ "seed": 46152,
+ "knobs": {},
+ "blueprintSignals": [
+  {
+   "name": "Timeline events",
+   "definition": "confirmed actions and findings",
+   "asOfRule": "From the incident record"
+  },
+  {
+   "name": "Impact scope",
+   "definition": "affected services and customers",
+   "asOfRule": "From monitoring"
+  },
+  {
+   "name": "Severity and status",
+   "definition": "severity and phase",
+   "asOfRule": "From the ITSM record"
+  },
+  {
+   "name": "Previous updates",
+   "definition": "what was already said",
+   "asOfRule": "From the update log"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "source type",
+   "meaning": "reference, tutorial or changelog, so factual answers come only from reference pages"
+  },
+  {
+   "feature": "version",
+   "meaning": "the version the user is on, from context first and the question second"
+  },
+  {
+   "feature": "intent",
+   "meaning": "what fact the question asks for, so the system can abstain when none is documented"
+  },
+  {
+   "feature": "retrieval score",
+   "meaning": "keyword plus similarity rank fusion over chunks"
+  },
+  {
+   "feature": "supporting passage",
+   "meaning": "the passage that must literally contain the stated value"
+  }
+ ],
+ "label": "For \"Incident Summary and Stakeholder Communication\": Draft status updates and executive summaries from the incident timeline in plain language for the communications lead to review and send on a fixed cadence. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Posting without approval."
+}

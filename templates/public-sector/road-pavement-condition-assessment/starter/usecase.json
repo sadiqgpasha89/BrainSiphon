@@ -1,0 +1,53 @@
+{
+ "slug": "public-sector/road-pavement-condition-assessment",
+ "title": "Road Pavement Condition Assessment",
+ "domain": "public-sector",
+ "engine": "generative",
+ "fit": "adaptable",
+ "problemType": "generative-or-other",
+ "seed": 17965,
+ "knobs": {
+  "n": 226
+ },
+ "blueprintSignals": [
+  {
+   "name": "Crack and pothole detection",
+   "definition": "model score per defect",
+   "asOfRule": "Calibrated"
+  },
+  {
+   "name": "Traffic volume and road class",
+   "definition": "vehicles and class",
+   "asOfRule": "From the register"
+  },
+  {
+   "name": "Surface age and last treatment",
+   "definition": "years since treatment",
+   "asOfRule": "From the asset system"
+  },
+  {
+   "name": "Weather exposure",
+   "definition": "freeze and thaw cycles",
+   "asOfRule": "From weather"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "key facts",
+   "meaning": "the entity, amount and date every output must contain"
+  },
+  {
+   "feature": "constraints",
+   "meaning": "length and forbidden claims"
+  },
+  {
+   "feature": "strict judge",
+   "meaning": "exact canonical strings"
+  },
+  {
+   "feature": "fuzzy judge",
+   "meaning": "any valid format"
+  }
+ ],
+ "label": "For \"Road Pavement Condition Assessment\": Measure cracks, potholes and rutting from vehicle-mounted and drone imagery so maintenance budgets target the roads that need repair. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Raw image storage."
+}

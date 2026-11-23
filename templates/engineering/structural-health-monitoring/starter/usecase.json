@@ -1,0 +1,58 @@
+{
+ "slug": "engineering/structural-health-monitoring",
+ "title": "Structural Health Monitoring",
+ "domain": "engineering",
+ "engine": "anomaly",
+ "fit": "adaptable",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 59756,
+ "knobs": {
+  "n_series": 76,
+  "anomalies_per_series": 2.467
+ },
+ "blueprintSignals": [
+  {
+   "name": "Strain and displacement",
+   "definition": "measured response",
+   "asOfRule": "From sensors"
+  },
+  {
+   "name": "Modal frequencies",
+   "definition": "natural frequency shifts",
+   "asOfRule": "From vibration data"
+  },
+  {
+   "name": "Temperature and load",
+   "definition": "environmental drivers",
+   "asOfRule": "From weather and traffic data"
+  },
+  {
+   "name": "Sensor health",
+   "definition": "drift and dropouts",
+   "asOfRule": "From diagnostics"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Structural Health Monitoring\": Detect abnormal structural behaviour from strain, vibration, tilt and temperature sensors on bridges and buildings and alert engineers with context, separating environmental effects from real change. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Fixed limits."
+}

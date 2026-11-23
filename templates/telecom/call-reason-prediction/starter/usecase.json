@@ -1,0 +1,59 @@
+{
+ "slug": "telecom/call-reason-prediction",
+ "title": "Call Reason Prediction",
+ "domain": "telecom",
+ "engine": "multiclass",
+ "fit": "exact",
+ "problemType": "multiclass-classification",
+ "seed": 51811,
+ "knobs": {
+  "n": 15790,
+  "label_noise": 0.075,
+  "dup_share": 0.254
+ },
+ "blueprintSignals": [
+  {
+   "name": "Recent bill event",
+   "definition": "days since the last bill and a bill change flag",
+   "asOfRule": "As at contact time"
+  },
+  {
+   "name": "Open network incident near the customer",
+   "definition": "whether a fault is open near their serving cells",
+   "asOfRule": "From live incidents"
+  },
+  {
+   "name": "Recent order or plan change",
+   "definition": "order status and days since change",
+   "asOfRule": "From order management"
+  },
+  {
+   "name": "Prior contact reason",
+   "definition": "the previous coded reason in 30 days",
+   "asOfRule": "Use coded not free text"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "separating feature (x1)",
+   "meaning": "the feature that best separates the classes"
+  },
+  {
+   "feature": "second separating feature (x2)",
+   "meaning": "a second independent separator"
+  },
+  {
+   "feature": "confusable-pair feature (x3)",
+   "meaning": "the feature on which classes 2 and 3 barely differ"
+  },
+  {
+   "feature": "noise feature (x4)",
+   "meaning": "carries little class information"
+  },
+  {
+   "feature": "entity group",
+   "meaning": "the repeat entity that must not appear on both sides of a split"
+  }
+ ],
+ "label": "For \"Call Reason Prediction\": Predict why a customer is contacting care as they enter the queue so the right skill, content or self-service step is offered immediately. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Training on menu choices."
+}

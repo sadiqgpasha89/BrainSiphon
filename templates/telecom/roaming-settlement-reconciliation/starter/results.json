@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/roaming-settlement-reconciliation",
+ "engine": "tabular",
+ "seed": 31649,
+ "knobs": {
+  "n_entities": 2920,
+  "positive_entity_rate": 0.04,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 4.5,
+ "results": {
+  "rows": 218884,
+  "positive_rate": 0.0052813362328904805,
+  "test_rows": 73878,
+  "test_positive_rate": 0.005509082541487317,
+  "baseline_lr": {
+   "pr_auc": 0.6262669713102298,
+   "recall_at_0.5pct_fpr": 0.7174670824670826,
+   "brier": 0.005131215323933328
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7901279860283871,
+   "recall_at_0.5pct_fpr": 0.7886977886977887,
+   "brier": 0.0019876629372875374
+  }
+ }
+}

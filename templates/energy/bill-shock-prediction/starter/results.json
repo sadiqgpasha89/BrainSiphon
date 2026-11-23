@@ -1,0 +1,34 @@
+{
+ "use_case": "energy/bill-shock-prediction",
+ "engine": "tabular",
+ "seed": 23244,
+ "knobs": {
+  "n_entities": 1990,
+  "positive_entity_rate": 0.036,
+  "n_flash_sales": 7
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.3,
+ "results": {
+  "rows": 153478,
+  "positive_rate": 0.0052776293670754116,
+  "test_rows": 52399,
+  "test_positive_rate": 0.00541995076241913,
+  "baseline_lr": {
+   "pr_auc": 0.7369550091932711,
+   "recall_at_0.5pct_fpr": 0.8116437259923176,
+   "brier": 0.006044669455266832
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8067814404024173,
+   "recall_at_0.5pct_fpr": 0.8169014084507042,
+   "brier": 0.0018040611827967073
+  }
+ }
+}

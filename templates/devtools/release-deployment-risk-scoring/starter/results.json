@@ -1,0 +1,34 @@
+{
+ "use_case": "devtools/release-deployment-risk-scoring",
+ "engine": "tabular",
+ "seed": 30681,
+ "knobs": {
+  "n_entities": 1920,
+  "positive_entity_rate": 0.039,
+  "n_flash_sales": 3
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 3.0,
+ "results": {
+  "rows": 143574,
+  "positive_rate": 0.0055163191107024945,
+  "test_rows": 48585,
+  "test_positive_rate": 0.005186786045075641,
+  "baseline_lr": {
+   "pr_auc": 0.4740443999113931,
+   "recall_at_0.5pct_fpr": 0.6785714285714286,
+   "brier": 0.007770751839976546
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.7342187303084817,
+   "recall_at_0.5pct_fpr": 0.7579365079365079,
+   "brier": 0.002250828735813897
+  }
+ }
+}

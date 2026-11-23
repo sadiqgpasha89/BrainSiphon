@@ -1,0 +1,34 @@
+{
+ "use_case": "telecom/per-customer-network-experience-scoring",
+ "engine": "tabular",
+ "seed": 87761,
+ "knobs": {
+  "n_entities": 1830,
+  "positive_entity_rate": 0.04,
+  "n_flash_sales": 5
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "sklearn": "1.9.1",
+  "scipy": "1.18.1"
+ },
+ "seconds": 2.7,
+ "results": {
+  "rows": 142214,
+  "positive_rate": 0.005822211596607929,
+  "test_rows": 47022,
+  "test_positive_rate": 0.005763259750754966,
+  "baseline_lr": {
+   "pr_auc": 0.8013031596574272,
+   "recall_at_0.5pct_fpr": 0.8191881918819188,
+   "brier": 0.0019773772096158397
+  },
+  "challenger_hgb": {
+   "pr_auc": 0.8410428242975678,
+   "recall_at_0.5pct_fpr": 0.8450184501845018,
+   "brier": 0.0017391128344184403
+  }
+ }
+}

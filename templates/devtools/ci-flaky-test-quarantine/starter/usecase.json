@@ -1,0 +1,58 @@
+{
+ "slug": "devtools/ci-flaky-test-quarantine",
+ "title": "Flaky Test Detection and Quarantine",
+ "domain": "devtools",
+ "engine": "anomaly",
+ "fit": "exact",
+ "problemType": "time-series-anomaly-detection",
+ "seed": 13629,
+ "knobs": {
+  "n_series": 60,
+  "anomalies_per_series": 2.787
+ },
+ "blueprintSignals": [
+  {
+   "name": "Pass-fail flip rate on same commit",
+   "definition": "outcome changes without code change",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Time and resource correlation",
+   "definition": "failures with load or time",
+   "asOfRule": "From CI"
+  },
+  {
+   "name": "Test age and dependencies",
+   "definition": "external services and timing use",
+   "asOfRule": "From analysis"
+  },
+  {
+   "name": "Rerun outcomes",
+   "definition": "pass after retry",
+   "asOfRule": "From CI"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "seasonal residual",
+   "meaning": "value minus the median of the same hour of the same weekday in previous weeks"
+  },
+  {
+   "feature": "robust spread",
+   "meaning": "median absolute deviation of recent residuals"
+  },
+  {
+   "feature": "calendar flag",
+   "meaning": "known events that are supposed to move the level"
+  },
+  {
+   "feature": "level shift and drift features",
+   "meaning": "persistence of a deviation over several hours"
+  },
+  {
+   "feature": "alert refractory period",
+   "meaning": "quiet time after an alert so one event raises one alert"
+  }
+ ],
+ "label": "For \"Flaky Test Detection and Quarantine\": Identify tests that fail intermittently, estimate their cost and quarantine or fix them so CI results are trusted and engineers stop re-running pipelines. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Silent skips."
+}

@@ -1,0 +1,57 @@
+{
+ "slug": "public-sector/school-enrolment-forecasting",
+ "title": "School Enrolment Forecasting",
+ "domain": "public-sector",
+ "engine": "forecast",
+ "fit": "adaptable",
+ "problemType": "forecasting",
+ "seed": 80715,
+ "knobs": {
+  "n_series": 217
+ },
+ "blueprintSignals": [
+  {
+   "name": "Births by area",
+   "definition": "births five years earlier",
+   "asOfRule": "From registers"
+  },
+  {
+   "name": "Housing completions",
+   "definition": "new homes by type and area",
+   "asOfRule": "From planning data"
+  },
+  {
+   "name": "Cohort progression",
+   "definition": "transition rates between grades",
+   "asOfRule": "From past enrolment"
+  },
+  {
+   "name": "Migration and mobility",
+   "definition": "movement in and out",
+   "asOfRule": "From statistics"
+  }
+ ],
+ "engineFeatures": [
+  {
+   "feature": "recent level and momentum",
+   "meaning": "mean of the last 7 and 28 days and their ratio, known at the forecast origin"
+  },
+  {
+   "feature": "same-weekday history",
+   "meaning": "values on the same weekday in previous weeks"
+  },
+  {
+   "feature": "leading indicator",
+   "meaning": "what is already booked or ordered for the target day at the origin"
+  },
+  {
+   "feature": "planned events",
+   "meaning": "promotion and external-signal flags for the target day, as published at the origin"
+  },
+  {
+   "feature": "missing-days count",
+   "meaning": "how many of the recent days are missing in the feed"
+  }
+ ],
+ "label": "For \"School Enrolment Forecasting\": Forecast student numbers by school and year from births, housing and migration so capacity, catchments and staffing are planned in time. Define the label exactly as in milestone M1: what counts as a positive or a correct outcome, and when it becomes known. Design around this trap first: Trend-only forecasts."
+}
