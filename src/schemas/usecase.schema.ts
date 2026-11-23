@@ -165,6 +165,13 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     blurb:
       'Incident and alert intelligence, service desk agents, capacity and cloud cost, change and configuration, security operations and network health, with human-approved remediation and no individual employee scoring.',
   },
+  engineering: {
+    name: 'Engineering, Design & Projects',
+    short: 'Engineering',
+    topics: 'Engineering design, BIM and drawings, construction projects, inspection, estimating, PMO',
+    blurb:
+      'Design exploration and simulation, drawing and BIM intelligence, construction scheduling and cost, site safety and inspection, estimating and contracts and project portfolio management, with licensed engineers signing off and no individual worker scoring.',
+  },
   'real-estate': {
     name: 'Real Estate & PropTech',
     short: 'Real Estate',

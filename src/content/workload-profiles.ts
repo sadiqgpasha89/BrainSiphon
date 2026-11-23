@@ -185,6 +185,7 @@ export const DOMAIN_DIMENSIONS: Record<Domain, string> = {
   'public-safety': 'Calls and incidents per day, video feeds, documents per case and dispatch events',
   devtools: 'Repositories, commits per day, pipeline runs, test executions and agent sessions',
   'it-ops': 'Services, configuration items, alerts per day, tickets and cloud resources',
+  engineering: 'Projects, drawings and model elements, schedule activities, inspection records and sensor streams',
   'real-estate': 'Listings, properties, images and property updates',
 };
 
@@ -205,6 +206,7 @@ const DOMAIN_PROFILE: Record<Domain, ProfileId> = {
   'public-safety': 'asset',
   devtools: 'asset',
   'it-ops': 'asset',
+  engineering: 'asset',
   'real-estate': 'asset',
 };
 

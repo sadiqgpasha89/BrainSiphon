@@ -44,6 +44,7 @@ const DOMAIN_DATA: Record<Domain, string> = {
   'public-safety': 'Keep call, case and evidence data inside the agency boundary, never score or identify individuals and log every tool use against the case',
   devtools: 'Keep source code and secrets inside the company boundary, give agents short-lived scoped access in a sandbox and log every action against the change',
   'it-ops': 'Keep logs, configuration and identity data inside the company boundary, give automation least-privilege short-lived access and route every production change through approval and logging',
+  engineering: 'Keep designs, bids and client data inside the company boundary, make licensed engineers sign every output and keep site analytics at scene level with no worker identification',
   'real-estate': 'Mask tenant, buyer and owner personal data, keep protected attributes and their proxies out of features, and log the evidence behind each value or score',
 };
 
@@ -64,6 +65,7 @@ const DOMAIN_OWNER: Record<Domain, string> = {
   'public-safety': 'the operations owner with general counsel and the ethics officer',
   devtools: 'the engineering owner with application security',
   'it-ops': 'the infrastructure owner with security operations',
+  engineering: 'the engineer of record with the project director',
   'real-estate': 'the valuation, leasing or asset-management owner',
 };
 

@@ -119,6 +119,7 @@ export const PROTOCOLS: Record<Domain, string> = {
   'public-safety': 'CAD and records APIs, NG911 and text-to-911 interfaces, CAP alerting, video management system APIs, evidence management and court case management APIs',
   devtools: 'Git and code host webhooks and APIs, CI/CD events, package registry APIs, SARIF and SBOM formats (SPDX, CycloneDX), issue tracker APIs and OpenTelemetry',
   'it-ops': 'OpenTelemetry, syslog and SNMP, ITSM REST APIs, cloud billing and resource APIs, SCIM and OIDC for identity, STIX and TAXII for threat data, and SIEM event formats',
+  engineering: 'IFC and BIM Collaboration Format, CAD and PDF drawing exchange, schedule exchange (P6 and MS Project formats), OPC UA and MQTT for sensors, document management APIs, and ERP and cost system APIs',
   'real-estate': 'RESO Web API, MLS feeds, BIM/IFC and BACnet/Modbus building protocols',
 };
 
@@ -142,6 +143,7 @@ export const LABEL_DELAY: Record<Domain, string> = {
   'public-safety': 'case outcomes, appeals and audits that arrive months or years after the incident',
   devtools: 'production defects and security incidents that appear weeks or months after a change ships',
   'it-ops': 'problem records and root causes confirmed days after an incident, and change failures that appear after a window closes',
+  engineering: 'defects, rework and cost overruns that appear months after the work is done, and structural performance that shows over years',
   'real-estate': 'sale, lease and valuation outcomes that take months',
 };
 
@@ -162,6 +164,7 @@ export const TAIL_COHORTS: Record<Domain, string> = {
   'public-safety': 'rare incident types, small language communities, rural areas and major events',
   devtools: 'new repositories, rarely used languages, large refactors and first-time contributors',
   'it-ops': 'new services, rarely used systems, major incidents and remote or legacy sites',
+  engineering: 'first-of-a-kind designs, new clients, remote sites and unusual ground conditions',
   'real-estate': 'thin-comp micro-markets, unusual property types and new developments',
 };
 
