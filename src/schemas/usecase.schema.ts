@@ -14,6 +14,7 @@ export const DOMAINS = [
   'saas',
   'bfsi',
   'real-estate',
+  'telecom',
 ] as const;
 export const ML_PARADIGMS = [
   'tabular',
@@ -114,6 +115,13 @@ export const DOMAIN_META: Record<Domain, { name: string; short: string; topics: 
     topics: 'Lending, treasury, settlement, claims',
     blurb:
       'How incumbent banks, insurers, asset managers and custodians run: lending, treasury, settlement, wealth, claims and compliance, where a regulator reads the model.',
+  },
+  telecom: {
+    name: 'Telecommunications & Networks',
+    short: 'Telecom',
+    topics: 'Self-healing networks, care, provisioning, revenue',
+    blurb:
+      'Network self-healing, predictive customer care, real-time service activation, revenue assurance and edge services for operators running carrier-grade networks.',
   },
   'real-estate': {
     name: 'Real Estate & PropTech',

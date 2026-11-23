@@ -23,6 +23,7 @@ const LABEL_DELAY: Partial<Record<Domain, string>> = {
   cybersecurity: 'Confirmed incidents are found late or never; unreported attacks look like clean traffic.',
   edtech: 'Learning outcomes arrive at the end of a course or term, long after the recommendation.',
   saas: 'Retention and expansion outcomes arrive over billing cycles; usage is a proxy for value.',
+  telecom: 'Root causes are confirmed after repair and customer-reported impact trails the fault; churn and disputes resolve over weeks.',
   'real-estate': 'Sale prices and outcomes lag the valuation; listings that do not transact leave no price.',
 };
 
@@ -31,6 +32,7 @@ const SLICES: Partial<Record<Domain, string[]>> = {
   bfsi: ['Income band, age band and thin-file applicants', 'Product, channel and region', 'Protected classes under the applicable fair-lending or conduct rules'],
   healthcare: ['Age, sex, ethnicity and language', 'Site and device (case mix, equipment differences)', 'Comorbidity and acuity bands, including the sickest decile'],
   edtech: ['Age band, with minors analysed separately', 'First-generation, language and accessibility groups', 'Course, cohort and device'],
+  telecom: ['Region, vendor and technology generation (4G or 5G)', 'Subscriber segment, plan type and tenure', 'Urban, suburban and rural cells and enterprise versus consumer traffic'],
   'real-estate': ['Neighbourhood and price band', 'Property type and listing age', 'Fair-housing protected-class proxies such as area-level demographics'],
 };
 
