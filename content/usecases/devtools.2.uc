@@ -46,7 +46,7 @@ off: Wait time in replay ; Cost in replay ; Starvation incidents
 on: Median wait time ; Compute cost ; Release build delays
 gap: Utilisation as the goal ; One queue for everything ; No simulation before use
 
-== deployment-risk-prediction | Deployment Risk Prediction | tabular | seconds | advanced | a=0.5 k=5
+== release-deployment-risk-scoring | Deployment Risk Prediction | tabular | seconds | advanced | a=0.5 k=5
 obj: Estimate the risk of a deployment from the change, the service and the timing so teams add canaries, approvals or delay when risk is high, without blocking safe changes.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Risk shown with the drivers ; Policy decides gates not the model alone ; Calibrated probabilities ; Score within 2 s ; 100K deployments per month
@@ -236,7 +236,7 @@ off: Recall of true vulnerabilities ; Reduction in alerts shown ; Calibration
 on: Alerts per pull request ; True vulnerabilities missed ; Developer dismissal rate
 gap: Hiding alerts silently ; Developer dismissals as truth ; Alert reduction as the goal
 
-== malicious-package-detection | Malicious Package Detection | nlp,graph | batch | advanced | a=0.5 k=5
+== typosquat-malicious-package-blocking | Malicious Package Detection | nlp,graph | batch | advanced | a=0.5 k=5
 obj: Detect suspicious new package versions in registries and in build dependencies, such as typosquats and install-time scripts that fetch payloads, and block them before they enter builds.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Block high-confidence malicious packages at the proxy ; Analyst reviews borderline cases ; Allow-list for trusted publishers ; New version scan within 5 minutes ; 5M package versions per day

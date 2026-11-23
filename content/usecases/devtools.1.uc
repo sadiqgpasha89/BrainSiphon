@@ -350,7 +350,7 @@ off: Mutation score of generated tests ; Pass and stability rate ; Reviewer acce
 on: Coverage of critical code ; Escaped defects ; Test maintenance cost
 gap: Coverage as the goal ; Auto-merge ; Assertions of current output only
 
-== flaky-test-detection | Flaky Test Detection and Quarantine | time-series,tabular | batch | foundational | a=1 k=4
+== ci-flaky-test-quarantine | Flaky Test Detection and Quarantine | time-series,tabular | batch | foundational | a=1 k=4
 obj: Identify tests that fail intermittently, estimate their cost and quarantine or fix them so CI results are trusted and engineers stop re-running pipelines.
 loss: \mathcal{L}=\mathrm{FL}(\hat{p},y)+\lambda\,\mathrm{ECE}(\hat{p})
 con: Flaky classification with evidence from reruns ; Quarantine with an owner and a deadline ; Quarantined tests still run and report ; Daily analysis of 20M test results
