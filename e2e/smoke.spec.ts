@@ -619,7 +619,7 @@ test('about page explains the platform, blueprint anatomy, role guides, and navi
   await expect(page).toHaveURL(/\/about$/);
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Signal in.');
-  await expect(page.getByTestId('about-stats')).toContainText('575');
+  await expect(page.getByTestId('about-stats')).toContainText('975');
   await expect(page.getByRole('heading', { name: 'What is BrainSiphon?' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What Every Single Blueprint Contains' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'How to Read BrainSiphon by Role' })).toBeVisible();
@@ -652,7 +652,7 @@ test('the release report lists maturity levels, kit runs and every feasibility w
   await expect(page.getByRole('heading', { level: 1 })).toContainText('What has been checked');
   await expect(page.getByTestId('release-identity')).toContainText(m.contentVersion);
   await expect(page.getByTestId('maturity-ladder').locator('tbody tr')).toHaveCount(5);
-  await expect(page.getByTestId('ladder-platform-integrated')).toContainText('0 of 575');
+  await expect(page.getByTestId('ladder-platform-integrated')).toContainText('0 of 975');
 
   const warnings = page.getByTestId('feasibility-warning');
   await expect(warnings).toHaveCount(m.checks.feasibility.warnings.length);

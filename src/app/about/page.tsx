@@ -101,7 +101,7 @@ export default async function AboutPage() {
           <p className="mt-1 text-xs text-mute">Enterprise Blueprints</p>
         </div>
         <div className="card p-4 text-center">
-          <p className="font-mono text-2xl font-bold text-signal sm:text-3xl">10</p>
+          <p className="font-mono text-2xl font-bold text-signal sm:text-3xl">{DOMAINS.length}</p>
           <p className="mt-1 text-xs text-mute">Industry Domains</p>
         </div>
         <div className="card p-4 text-center">
